@@ -56,8 +56,24 @@ const background = [
   <main class="portfolio-main">
     <section class="hero" id="sobre" aria-labelledby="hero-title">
       <div class="hero-intro">
-        <p class="hello">🍄 Hello, it's me</p>
-        <h1 id="hero-title">{PROFILE.name}</h1>
+        <p class="hello">
+          <span class="pixel-mushroom" aria-hidden="true">
+            <svg viewBox="0 0 16 16" role="img">
+              <rect x="5" y="1" width="6" height="1"></rect>
+              <rect x="3" y="2" width="10" height="1"></rect>
+              <rect x="2" y="3" width="12" height="1"></rect>
+              <rect x="1" y="4" width="14" height="3"></rect>
+              <rect class="mushroom-spot" x="4" y="4" width="2" height="2"></rect>
+              <rect class="mushroom-spot" x="10" y="5" width="2" height="2"></rect>
+              <rect x="3" y="7" width="10" height="1"></rect>
+              <rect class="mushroom-stem" x="5" y="8" width="6" height="1"></rect>
+              <rect class="mushroom-stem" x="4" y="9" width="8" height="4"></rect>
+              <rect class="mushroom-stem" x="5" y="13" width="6" height="1"></rect>
+            </svg>
+          </span>
+          <span>Hello, it's me</span>
+        </p>
+        <h1 id="hero-title" class="block-name">{PROFILE.name}</h1>
         <p class="role">Escrita · Documentação · Informação</p>
       </div>
 
