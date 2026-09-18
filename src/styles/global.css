@@ -1472,6 +1472,45 @@ h3 {
   line-height: 1;
 }
 
+.project-link {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(71, 60, 51, 0.18);
+
+  border-radius:
+    var(--radius-full);
+
+  background:
+    rgba(255, 250, 240, 0.52);
+
+  color:
+    inherit;
+
+  text-decoration: none;
+
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.project-link:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    rgba(255, 250, 240, 0.82);
+
+  border-color:
+    rgba(71, 60, 51, 0.30);
+}
+
 .tag-row {
   display: flex;
   flex-wrap: wrap;
