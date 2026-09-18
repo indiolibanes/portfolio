@@ -907,4 +907,76 @@ h3 {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+
+  :root {
+  --prism-ink: #4c4036;
+  --prism-white: #fff9ef;
+
+  --prism-red: #d9655d;
+  --prism-orange: #e39a4f;
+  --prism-yellow: #e4c34e;
+  --prism-green: #8eaf73;
+  --prism-blue: #6f97c3;
+  --prism-violet: #8b79c9;
+  }
+
+  .name-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.prism-mark {
+  display: inline-flex;
+  align-items: center;
+  width: clamp(150px, 24vw, 220px);
+  opacity: 0.96;
+}
+
+.prism-mark svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.prism-mark .beam-in,
+.prism-mark .beam-out {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 4.5;
+}
+
+.prism-mark .beam-in {
+  stroke: var(--prism-white);
+  filter: drop-shadow(0 0 4px rgba(255, 249, 239, 0.7));
+}
+
+.prism-mark .prism-body {
+  fill: rgba(255, 250, 240, 0.16);
+  stroke: var(--prism-ink);
+  stroke-width: 3;
+}
+
+.prism-mark .beam-red { stroke: var(--prism-red); }
+.prism-mark .beam-orange { stroke: var(--prism-orange); }
+.prism-mark .beam-yellow { stroke: var(--prism-yellow); }
+.prism-mark .beam-green { stroke: var(--prism-green); }
+.prism-mark .beam-blue { stroke: var(--prism-blue); }
+.prism-mark .beam-violet { stroke: var(--prism-violet); }
+
+.block-name {
+  display: inline-block;
+  width: fit-content;
+  font-family: var(--font-retro);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  color: #5e4b2c;
+  text-shadow:
+    1px 0 0 #5e4b2c,
+    0 1px 0 #5e4b2c,
+    2px 2px 0 #c28d47,
+    4px 4px 0 rgba(116, 82, 42, 0.22);
+}
 }
