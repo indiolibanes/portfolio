@@ -30,16 +30,28 @@ const projects = [
 ];
 
 const lab = [
-  ['Escrita & edição', 'Pesquisar, sintetizar e revisar com atenção à clareza, ao ritmo e à precisão conceitual.'],
-  ['Documentação', 'Transformar conhecimento disperso em informação legível, rastreável e reutilizável.'],
-  ['Organização', 'Criar estruturas, taxonomias e fluxos que reduzam dependência de memória individual.'],
-  ['Publicação digital', 'Usar tecnologia como meio para manter conteúdo consistente entre escrita, versão e entrega.'],
+  [
+    'Escrita & edição',
+    'Pesquisar, sintetizar e revisar com atenção à clareza, ao ritmo e à precisão conceitual.',
+  ],
+  [
+    'Documentação',
+    'Transformar conhecimento disperso em informação legível, rastreável e reutilizável.',
+  ],
+  [
+    'Organização',
+    'Criar estruturas, taxonomias e fluxos que reduzam a dependência de memória individual.',
+  ],
+  [
+    'Publicação digital',
+    'Usar tecnologia como meio para manter conteúdo consistente entre escrita, versão e entrega.',
+  ],
 ];
 
 const background = [
   {
     title: 'Formação',
-    text: 'Curso técnico em Automação Industrial, experiência anterior em suporte e TI e curso complementar em UX Design.',
+    text: 'Curso técnico em Automação Industrial, experiência anterior em suporte e TI e formação complementar em UX Design.',
   },
   {
     title: 'Direção atual',
@@ -47,7 +59,7 @@ const background = [
   },
   {
     title: 'Método',
-    text: 'Aprendizado autodidata, engenharia reversa e tornar explícitas as relações que fundamentam um sistema.',
+    text: 'Aprendizado autodidata, engenharia reversa e o esforço de tornar explícitas as relações que fundamentam um sistema.',
   },
 ];
 ---
@@ -58,110 +70,276 @@ const background = [
       <div class="hero-intro">
         <p class="hello">
           <span class="pixel-mushroom" aria-hidden="true">
-            <svg viewBox="0 0 16 16" role="img">
+            <svg viewBox="0 0 16 16">
               <rect x="5" y="1" width="6" height="1"></rect>
               <rect x="3" y="2" width="10" height="1"></rect>
               <rect x="2" y="3" width="12" height="1"></rect>
               <rect x="1" y="4" width="14" height="3"></rect>
+
               <rect class="mushroom-spot" x="4" y="4" width="2" height="2"></rect>
               <rect class="mushroom-spot" x="10" y="5" width="2" height="2"></rect>
+
               <rect x="3" y="7" width="10" height="1"></rect>
+
               <rect class="mushroom-stem" x="5" y="8" width="6" height="1"></rect>
               <rect class="mushroom-stem" x="4" y="9" width="8" height="4"></rect>
               <rect class="mushroom-stem" x="5" y="13" width="6" height="1"></rect>
             </svg>
           </span>
+
           <span>Hello, it's me</span>
         </p>
-        <h1 id="hero-title" class="block-name">{PROFILE.name}</h1>
-        <p class="role">Escrita · Documentação · Informação</p>
+
+        <div class="name-stack">
+          <span class="prism-mark" aria-hidden="true">
+            <svg viewBox="0 0 240 96">
+              <defs>
+                <linearGradient id="prism-glass" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#fffaf0" stop-opacity="0.46" />
+                  <stop offset="100%" stop-color="#7896ad" stop-opacity="0.10" />
+                </linearGradient>
+              </defs>
+
+              <!-- feixe de entrada -->
+              <line
+                class="beam-in"
+                x1="4"
+                y1="48"
+                x2="82"
+                y2="48"
+              ></line>
+
+              <!-- prisma -->
+              <polygon
+                class="prism-body"
+                points="84,16 136,48 84,80"
+                fill="url(#prism-glass)"
+              ></polygon>
+
+              <!-- espectro -->
+              <line
+                class="beam-out beam-red"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="15"
+              ></line>
+
+              <line
+                class="beam-out beam-orange"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="27"
+              ></line>
+
+              <line
+                class="beam-out beam-yellow"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="39"
+              ></line>
+
+              <line
+                class="beam-out beam-green"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="51"
+              ></line>
+
+              <line
+                class="beam-out beam-blue"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="63"
+              ></line>
+
+              <line
+                class="beam-out beam-violet"
+                x1="136"
+                y1="48"
+                x2="232"
+                y2="75"
+              ></line>
+            </svg>
+          </span>
+
+          <h1 id="hero-title" class="block-name">
+            {PROFILE.name}
+          </h1>
+        </div>
+
+        <p class="role">
+          Escrita · Documentação · Informação
+        </p>
       </div>
 
       <div class="hero-statement">
         <p class="eyebrow">Sobre</p>
-        <h2>Escrevo para dar forma às ideias — e documento para que elas permaneçam úteis depois.</h2>
+
+        <h2>
+          Escrevo para dar forma às ideias — e documento para que elas permaneçam úteis depois.
+        </h2>
+
         <p>
-          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reciclada:
-          pesquisar, escrever, estruturar, documentar e revisar.
-          A escrita é o ponto de partida; a documentação é o que faz o conhecimento permanecer compreensível para outras pessoas
-          e a revisão permite estar sempre atualizada.
+          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma
+          que possa ser lida, encontrada e reutilizada: pesquisar, escrever,
+          estruturar, documentar e revisar.
+          A escrita é o ponto de partida; a documentação permite que o conhecimento
+          permaneça compreensível, verificável e atualizável para outras pessoas.
         </p>
+
         <div class="hero-actions">
-          <a class="button primary-button" href="#projetos">Ver projetos ↓</a>
-          <a class="button soft-button" href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a class="button primary-button" href="#projetos">
+            Ver projetos ↓
+          </a>
+
+          <a
+            class="button soft-button"
+            href={PROFILE.linkedin}
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn ↗
+          </a>
         </div>
       </div>
 
       <aside class="hero-note" aria-label="Resumo profissional">
         <span class="tape" aria-hidden="true"></span>
-        <p class="note-label">Em uma simples soma</p>
-        <p class="note-big">linguagem + estrutura + contexto</p>
-        <p class="note-small">Tecnologia é bem vinda quando auxilia na preservação, organização e publicação desses três.</p>
+
+        <p class="note-label">
+          Em uma simples soma
+        </p>
+
+        <p class="note-big">
+          linguagem + estrutura + contexto
+        </p>
+
+        <p class="note-small">
+          Tecnologia é bem-vinda quando auxilia na preservação,
+          organização e publicação desses três.
+        </p>
       </aside>
     </section>
 
-    <section class="projects section" id="projetos" aria-labelledby="projects-title">
+    <section
+      class="projects section"
+      id="projetos"
+      aria-labelledby="projects-title"
+    >
       <div class="section-heading">
         <div>
           <p class="eyebrow">Projetos</p>
-          <h2 id="projects-title">Trabalho selecionado</h2>
+
+          <h2 id="projects-title">
+            Trabalho selecionado
+          </h2>
         </div>
+
         <p>
-          Projetos autorais usados como laboratório para escrita, documentação, organização do conhecimento e publicação.
-          Mais do que meras vitrines: revelam como uma ideia é pesquisada, estruturada, registrada e entregue.
+          Projetos autorais usados como laboratório para escrita,
+          documentação, organização do conhecimento e publicação.
+          Mais do que meras vitrines: revelam como uma ideia é
+          pesquisada, estruturada, registrada e entregue.
         </p>
       </div>
 
       <div class="project-list">
         {projects.map((project) => (
           <article class:list={['project-card', `tone-${project.tone}`]}>
-            <div class="project-number">{project.number}</div>
+            <div class="project-number">
+              {project.number}
+            </div>
+
             <div class="project-copy">
-              <p class="project-label">{project.label}</p>
-              <h3>{project.title}</h3>
-              <p>{project.text}</p>
+              <p class="project-label">
+                {project.label}
+              </p>
+
+              <h3>
+                {project.title}
+              </h3>
+
+              <p>
+                {project.text}
+              </p>
+
               <div class="tag-row">
-                {project.tags.map((tag) => <span>{tag}</span>)}
+                {project.tags.map((tag) => (
+                  <span>{tag}</span>
+                ))}
               </div>
             </div>
-            <div class="project-arrow" aria-hidden="true">↗</div>
+
+            <div class="project-arrow" aria-hidden="true">
+              ↗
+            </div>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="lab section" id="lab" aria-labelledby="lab-title">
+    <section
+      class="lab section"
+      id="lab"
+      aria-labelledby="lab-title"
+    >
       <div class="lab-heading">
         <p class="eyebrow">Laboratório</p>
-        <h2 id="lab-title">O que faço</h2>
+
+        <h2 id="lab-title">
+          O que faço
+        </h2>
+
         <p>
-          Quatro práticas se entrelaçam: compreender, escrever, estruturar e manter o resultado constante.
+          Quatro práticas se entrelaçam:
+          compreender, escrever, estruturar
+          e manter o resultado utilizável.
         </p>
       </div>
 
       <div class="lab-grid">
         {lab.map(([title, text], index) => (
           <article class:list={['lab-card', `lab-${index + 1}`]}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
+            <span>
+              {String(index + 1).padStart(2, '0')}
+            </span>
+
             <h3>{title}</h3>
+
             <p>{text}</p>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="background section" id="percurso" aria-labelledby="background-title">
+    <section
+      class="background section"
+      id="percurso"
+      aria-labelledby="background-title"
+    >
       <div class="background-title">
         <p class="eyebrow">Percurso</p>
-        <h2 id="background-title">Base técnica; vocação editorial.</h2>
+
+        <h2 id="background-title">
+          Base técnica; vocação editorial.
+        </h2>
       </div>
 
       <div class="background-list">
         {background.map((item, index) => (
           <article>
-            <span class="background-number">{String(index + 1).padStart(2, '0')}</span>
+            <span class="background-number">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+
             <div>
               <h3>{item.title}</h3>
+
               <p>{item.text}</p>
             </div>
           </article>
@@ -169,11 +347,31 @@ const background = [
       </div>
     </section>
 
-    <section class="closing section" aria-labelledby="closing-title">
-      <p class="eyebrow">Contato</p>
-      <h2 id="closing-title">✒️ Toda boa página tem origem em uma boa estrutura imaginativa.</h2>
-      <p>Posso detalhar qualquer texto, projeto, decisão de estrutura ou processo apresentado aqui.</p>
-      <a class="button primary-button" href={PROFILE.linkedin} target="_blank" rel="noreferrer">Entrar em contato pelo LinkedIn ↗</a>
+    <section
+      class="closing section"
+      aria-labelledby="closing-title"
+    >
+      <p class="eyebrow">
+        Contato
+      </p>
+
+      <h2 id="closing-title">
+        ✒️ Toda boa página tem origem em uma boa estrutura imaginativa.
+      </h2>
+
+      <p>
+        Posso detalhar qualquer texto, projeto,
+        decisão de estrutura ou processo apresentado aqui.
+      </p>
+
+      <a
+        class="button primary-button"
+        href={PROFILE.linkedin}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Entrar em contato pelo LinkedIn ↗
+      </a>
     </section>
   </main>
 </BaseLayout>
