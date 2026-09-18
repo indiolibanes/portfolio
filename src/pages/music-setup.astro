@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Configurar Apple Music — Kauê Alencar"
+  description="Página privada de configuração da integração MusicKit."
+>
+  <main class="music-setup-page">
+    <section class="music-setup-card">
+      <p class="eyebrow">MusicKit · configuração</p>
+      <h1>Autorizar minha conta Apple Music</h1>
+      <p>
+        Esta página existe apenas para obter o Music User Token da sua própria conta.
+        O token deve ser tratado como segredo e salvo no Cloudflare Pages; ele não deve
+        ser commitado no GitHub.
+      </p>
+
+      <div class="music-setup-actions">
+        <button class="button primary-button" id="authorize-music" type="button">
+          Autorizar Apple Music
+        </button>
+        <button class="button soft-button" id="copy-token" type="button" hidden>
+          Copiar token
+        </button>
+      </div>
+
+      <p class="music-setup-status" id="music-setup-status" aria-live="polite">
+        Aguardando autorização.
+      </p>
+
+      <textarea
+        id="music-user-token"
+        class="music-token-output"
+        rows="8"
+        readonly
+        hidden
+        aria-label="Music User Token"
+      ></textarea>
+
+      <p class="music-setup-footnote">
+        Depois de copiar, crie o segredo <code>APPLE_MUSIC_USER_TOKEN</code> no
+        Cloudflare Pages e faça um novo deploy. Você pode então fechar esta página.
+      </p>
+    </section>
+  </main>
+
+  <script is:inline>
+    const status = document.getElementById('music-setup-status');
+    const authorizeButton = document.getElementById('authorize-music');
+    const copyButton = document.getElementById('copy-token');
+    const output = document.getElementById('music-user-token');
+
+    function loadMusicKit() {
+      return new Promise((resolve, reject) => {
+        if (window.MusicKit) {
+          resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://js-cdn.music.apple.com/musickit/v3/musickit.js';
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Não foi possível carregar o MusicKit.'));
+        document.head.appendChild(script);
+      });
+    }
+
+    authorizeButton?.addEventListener('click', async () => {
+      authorizeButton.disabled = true;
+      status.textContent = 'Carregando o MusicKit…';
+
+      try {
+        const tokenResponse = await fetch('/api/music/developer-token', {
+          cache: 'no-store',
+        });
+        const tokenData = await tokenResponse.json();
+
+        if (!tokenResponse.ok || !tokenData.developerToken) {
+          throw new Error(tokenData.message || 'Developer Token indisponível.');
+        }
+
+        await loadMusicKit();
+
+        window.MusicKit.configure({
+          developerToken: tokenData.developerToken,
+          app: {
+            name: 'Kauê Alencar — Portfólio',
+            build: '1.0.0',
+          },
+        });
+
+        const music = window.MusicKit.getInstance();
+        status.textContent = 'Abra a janela da Apple e autorize o acesso.';
+        const musicUserToken = await music.authorize();
+
+        output.value = musicUserToken;
+        output.hidden = false;
+        copyButton.hidden = false;
+        status.textContent = 'Token obtido. Copie-o e salve como segredo no Cloudflare.';
+      } catch (error) {
+        console.error(error);
+        status.textContent = error instanceof Error
+          ? error.message
+          : 'Não foi possível concluir a autorização.';
+      } finally {
+        authorizeButton.disabled = false;
+      }
+    });
+
+    copyButton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        status.textContent = 'Token copiado. Agora salve-o no Cloudflare.';
+      } catch {
+        output.focus();
+        output.select();
+        status.textContent = 'Selecione e copie manualmente o token.';
+      }
+    });
+  </script>
+</BaseLayout>
