@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PROFILE } from '../config';
+
+const capabilities = [
+  {
+    number: '01',
+    title: 'Documentação',
+    text: 'Transformar processos, decisões e conhecimento disperso em informação legível, rastreável e útil.',
+    tone: 'violet',
+  },
+  {
+    number: '02',
+    title: 'Organização da informação',
+    text: 'Criar estruturas, taxonomias e fluxos para que o conhecimento continue encontrável depois de produzido.',
+    tone: 'coral',
+  },
+  {
+    number: '03',
+    title: 'Escrita & edição',
+    text: 'Pesquisar, sintetizar e revisar ideias com atenção à precisão conceitual, clareza e coerência.',
+    tone: 'mint',
+  },
+  {
+    number: '04',
+    title: 'Publicação digital',
+    text: 'Construir fluxos simples entre escrita, Markdown, Git e web — usando tecnologia como meio, não como fim.',
+    tone: 'amber',
+  },
+];
+
+const cases = [
+  {
+    eyebrow: 'Arquitetura de conteúdo',
+    title: 'Sistema editorial independente',
+    text: 'Estrutura de conteúdo, metadados e publicação estática para um arquivo autoral de longa duração.',
+    tags: ['Astro', 'Markdown', 'Taxonomia'],
+    tone: 'violet',
+  },
+  {
+    eyebrow: 'Workflow',
+    title: 'Craft → Git → Web',
+    text: 'Separação entre ambiente de escrita, fonte canônica, versionamento e camada de apresentação.',
+    tags: ['Craft', 'Git', 'Automação'],
+    tone: 'mint',
+  },
+  {
+    eyebrow: 'Gestão da informação',
+    title: 'Biblioteca de leituras e notas',
+    text: 'Organização de referências, citações e notas para reduzir duplicação e tornar relações entre conteúdos explícitas.',
+    tags: ['Metadados', 'Pesquisa', 'Curadoria'],
+    tone: 'coral',
+  },
+];
+
+const workflow = [
+  ['01', 'Coletar', 'Reunir material bruto sem misturar captura com apresentação final.'],
+  ['02', 'Estruturar', 'Dar nomes, relações, metadados e hierarquia ao que antes estava disperso.'],
+  ['03', 'Documentar', 'Registrar decisões e transformar contexto tácito em informação reutilizável.'],
+  ['04', 'Publicar', 'Escolher a forma adequada para cada público: documento, página, base ou sistema.'],
+];
+---
+
+<BaseLayout>
+  <main class="portfolio-main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="hero-kicker-row">
+          <span class="chip chip-strong">Portfólio · 2026</span>
+          <span class="chip">Em construção consciente</span>
+        </div>
+
+        <div>
+          <p class="eyebrow">{PROFILE.name}</p>
+          <h1 id="hero-title">Organizo complexidade para que ela possa ser lida.</h1>
+          <p class="hero-lead">
+            Documentação, gestão da informação, escrita e sistemas editoriais. Meu interesse está no intervalo entre uma ideia e a forma em que outras pessoas finalmente conseguem usá-la.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#trabalho">Ver trabalho ↓</a>
+          <a class="button button-tonal" href="#sobre">Sobre mim</a>
+        </div>
+      </div>
+
+      <aside class="hero-art" aria-label="Mapa visual das áreas do portfólio">
+        <div class="art-grid" aria-hidden="true"></div>
+        <div class="orbit orbit-a"><span>DOC</span></div>
+        <div class="orbit orbit-b"><span>MAP</span></div>
+        <div class="orbit orbit-c"><span>WRITE</span></div>
+        <div class="orbit orbit-d"><span>SHIP</span></div>
+        <div class="art-note note-a">clareza</div>
+        <div class="art-note note-b">estrutura</div>
+        <div class="art-note note-c">contexto</div>
+      </aside>
+    </section>
+
+    <section class="ticker" aria-label="Áreas e ferramentas">
+      <div>
+        <span>DOCUMENTAÇÃO</span><i>✦</i><span>INFORMAÇÃO</span><i>✦</i><span>ESCRITA</span><i>✦</i><span>PESQUISA</span><i>✦</i><span>MARKDOWN</span><i>✦</i><span>GIT</span><i>✦</i><span>ASTRO</span><i>✦</i><span>CRAFT</span>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="capabilities-title">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">Áreas de trabalho</p>
+          <h2 id="capabilities-title">O que eu faço</h2>
+        </div>
+        <p>Quatro capacidades que se sobrepõem: compreender o material, dar-lhe estrutura, comunicá-lo e manter o resultado utilizável.</p>
+      </div>
+
+      <div class="capability-grid">
+        {capabilities.map((item, index) => (
+          <article class:list={['capability-card', `tone-${item.tone}`, index % 2 ? 'tilt-right' : 'tilt-left']}>
+            <span class="card-number">{item.number}</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section" id="trabalho" aria-labelledby="work-title">
+      <div class="section-heading">
+        <p class="eyebrow">Trabalho selecionado</p>
+        <h2 id="work-title">Sistemas antes de vitrines.</h2>
+        <p class="section-intro">Projetos autorais usados como laboratório para documentação, organização do conhecimento e publicação. O foco aqui é mostrar processo e critério, não fabricar senioridade.</p>
+      </div>
+
+      <div class="case-grid">
+        {cases.map((item) => (
+          <article class:list={['case-card', `tone-${item.tone}`]}>
+            <div class="case-topline">
+              <span>{item.eyebrow}</span>
+              <span aria-hidden="true">↗</span>
+            </div>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+            <div class="tag-row" aria-label="Tecnologias e temas">
+              {item.tags.map((tag) => <span>{tag}</span>)}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section process-section" id="processo" aria-labelledby="process-title">
+      <div class="process-intro">
+        <p class="eyebrow">Processo</p>
+        <h2 id="process-title">Da informação bruta à forma útil.</h2>
+        <p>Documentação não começa no editor de texto. Começa entendendo o que precisa sobreviver, para quem e em que contexto.</p>
+      </div>
+
+      <div class="process-list">
+        {workflow.map(([number, title, text]) => (
+          <article class="process-step">
+            <span class="process-number">{number}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section about-card" id="sobre" aria-labelledby="about-title">
+      <div class="about-mark" aria-hidden="true">KA</div>
+      <div class="about-copy">
+        <p class="eyebrow">Sobre</p>
+        <h2 id="about-title">Perfil técnico; inclinação editorial.</h2>
+        <p class="about-lead">Tenho formação técnica em Automação Industrial e experiência anterior em ambientes de suporte e TI. Meu interesse profissional hoje está no ponto em que conhecimento técnico precisa ser organizado, explicado e mantido.</p>
+        <p>Sou especialmente atraído por documentação, gestão da informação, pesquisa, revisão e sistemas de publicação. Este portfólio existe para tornar essas capacidades observáveis por meio de trabalho concreto.</p>
+        <a class="button button-dark" href={PROFILE.linkedin} target="_blank" rel="noreferrer">Ver LinkedIn ↗</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
