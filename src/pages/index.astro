@@ -178,7 +178,6 @@ const background = [
                 </linearGradient>
               </defs>
 
-              <!-- feixe branco -->
               <line
                 class="beam-in"
                 x1="18"
@@ -187,14 +186,12 @@ const background = [
                 y2="130"
               ></line>
 
-              <!-- prisma -->
               <polygon
                 class="prism-body"
                 points="250,42 366,130 250,218"
                 fill="url(#prism-glass)"
               ></polygon>
 
-              <!-- espectro -->
               <line
                 class="beam-out beam-red"
                 x1="366"
@@ -478,27 +475,57 @@ const background = [
       class="closing section"
       aria-labelledby="closing-title"
     >
-      <p class="eyebrow">
-        Contato
-      </p>
+      <div class="closing-copy">
+        <p class="eyebrow">
+          Contato
+        </p>
 
-      <h2 id="closing-title">
-        ✒️ Toda boa página tem origem em uma boa estrutura imaginativa.
-      </h2>
+        <h2 id="closing-title">
+          ✒️ Toda boa página tem origem em uma boa estrutura imaginativa.
+        </h2>
 
-      <p>
-        Posso detalhar qualquer texto, projeto,
-        decisão de estrutura ou processo apresentado aqui.
-      </p>
+        <p>
+          Posso detalhar qualquer texto, projeto,
+          decisão de estrutura ou processo apresentado aqui.
+        </p>
 
-      <a
-        class="button primary-button"
-        href={PROFILE.linkedin}
-        target="_blank"
-        rel="noreferrer"
+        <a
+          class="button primary-button"
+          href={PROFILE.linkedin}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Entrar em contato pelo LinkedIn ↗
+        </a>
+      </div>
+
+      <div
+        class="triforce-stage"
+        aria-hidden="true"
       >
-        Entrar em contato pelo LinkedIn ↗
-      </a>
+        <span class="triforce-glow"></span>
+
+        <svg
+          class="triforce-mark"
+          viewBox="0 0 240 210"
+          role="presentation"
+        >
+          <polygon
+            class="triforce-piece triforce-top"
+            points="120,16 70,102 170,102"
+          ></polygon>
+
+          <polygon
+            class="triforce-piece triforce-left"
+            points="70,102 20,188 120,188"
+          ></polygon>
+
+          <polygon
+            class="triforce-piece triforce-right"
+            points="170,102 120,188 220,188"
+          ></polygon>
+        </svg>
+      </div>
     </section>
 
   </main>
