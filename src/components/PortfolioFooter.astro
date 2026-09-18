@@ -1,5 +1,5 @@
 ---
-import { PROFILE } from '../config';
+import { PROFILE, SOCIALS } from '../config';
 const today = new Date();
 ---
 
@@ -11,11 +11,57 @@ const today = new Date();
       <p class="footer-legal">© {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados™.</p>
     </div>
 
-    <div class="footer-actions" aria-label="Contato e navegação">
+    <div class="footer-actions" aria-label="Contato, perfis e navegação">
       {PROFILE.email && (
         <a href={`mailto:${PROFILE.email}`}>E-mail</a>
       )}
-      <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+
+      <a
+        href={PROFILE.linkedin}
+        target="_blank"
+        rel="noreferrer"
+      >
+        LinkedIn ↗
+      </a>
+
+      <a
+        href={SOCIALS.github}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`GitHub ${SOCIALS.handle}`}
+      >
+        GitHub {SOCIALS.handle} ↗
+      </a>
+
+      <a
+        href={SOCIALS.lastfm}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Last.fm ${SOCIALS.handle}`}
+      >
+        Last.fm {SOCIALS.handle} ↗
+      </a>
+
+      {SOCIALS.appleMusic && (
+        <a
+          href={SOCIALS.appleMusic}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Apple Music {SOCIALS.handle} ↗
+        </a>
+      )}
+
+      {SOCIALS.spotify && (
+        <a
+          href={SOCIALS.spotify}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Spotify {SOCIALS.handle} ↗
+        </a>
+      )}
+
       <a href="#top">Voltar ao topo ↑</a>
     </div>
   </div>
