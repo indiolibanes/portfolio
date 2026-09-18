@@ -11,13 +11,15 @@ export const PROFILE = {
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
   // Intencionalmente sem e-mail público por enquanto: o endereço atual usa
   // um domínio ligado ao projeto autoral que este portfólio deve manter separado.
-  email: 'kauealencar@protonmail.com'
+  email: 'kaue@tuta.com'
 };
 
 
 export const SOCIALS = {
   handle: '@indiolibanes',
   github: 'https://github.com/indiolibanes',
+  portfolioRepo: 'https://github.com/indiolibanes/portfolio',
+  githubAvatar: 'https://avatars.githubusercontent.com/u/32935701?v=4',
   lastfm: 'https://last.fm/user/kauealencar123',
 
   // Preencha quando quiser expor os perfis públicos diretamente.
