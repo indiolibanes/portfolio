@@ -13,3 +13,15 @@ export const PROFILE = {
   // um domínio ligado ao projeto autoral que este portfólio deve manter separado.
   email: 'kauealencar@protonmail.com'
 };
+
+
+export const MUSIC = {
+  // O Last.fm fornece “agora tocando” / “ouvido recentemente”.
+  // As playlists continuam sendo links públicos do próprio Apple Music.
+  publicPlaylists: [] as Array<{
+    name: string;
+    url: string;
+    artwork?: string;
+    note?: string;
+  }>,
+};
