@@ -15,6 +15,16 @@ export const PROFILE = {
 };
 
 
+export const SOCIALS = {
+  handle: '@indiolibanes',
+  github: 'https://github.com/indiolibanes',
+  lastfm: 'https://www.last.fm/user/indiolibanes',
+
+  // Preencha quando quiser expor os perfis públicos diretamente.
+  appleMusic: '',
+  spotify: '',
+};
+
 export const MUSIC = {
   // O Last.fm fornece “agora tocando” / “ouvido recentemente”.
   // As playlists continuam sendo links públicos do próprio Apple Music.
