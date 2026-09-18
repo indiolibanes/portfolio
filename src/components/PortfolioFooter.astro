@@ -1,0 +1,22 @@
+---
+import { PROFILE } from '../config';
+const today = new Date();
+---
+
+<footer class="portfolio-footer">
+  <div class="footer-shell">
+    <div>
+      <p class="footer-mark">{PROFILE.name}</p>
+      <p class="footer-copy">Documentação, organização da informação, escrita e publicação digital.</p>
+      <p class="footer-legal">© {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.</p>
+    </div>
+
+    <div class="footer-actions" aria-label="Contato e navegação">
+      {PROFILE.email && (
+        <a href={`mailto:${PROFILE.email}`}>E-mail</a>
+      )}
+      <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+      <a href="#top">Voltar ao topo ↑</a>
+    </div>
+  </div>
+</footer>
