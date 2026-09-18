@@ -11,5 +11,5 @@ export const PROFILE = {
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
   // Intencionalmente sem e-mail público por enquanto: o endereço atual usa
   // um domínio ligado ao projeto autoral que este portfólio deve manter separado.
-  email: 'kauealencar@protonmail.com',
+  email: 'kauealencar@protonmail.com'
 };
