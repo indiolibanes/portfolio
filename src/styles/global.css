@@ -234,6 +234,24 @@ h1 {
   letter-spacing: -0.065em;
 }
 
+/* A deliberate voxel/pixel accent for the name only.
+   It suggests block-game typography without copying a proprietary game font. */
+.block-name {
+  display: inline-block;
+  width: fit-content;
+  font-family: var(--font-retro);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  color: #5e4b2c;
+  text-shadow:
+    1px 0 0 #5e4b2c,
+    0 1px 0 #5e4b2c,
+    2px 2px 0 #c28d47,
+    4px 4px 0 rgba(116, 82, 42, 0.22);
+  transform: translateZ(0);
+}
+
 h2 {
   margin: 0;
   font-family: var(--font-display);
@@ -278,7 +296,39 @@ h3 {
 
 .hello {
   margin: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   color: #785f28;
+}
+
+.pixel-mushroom {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  transform: rotate(-3deg);
+  filter: drop-shadow(2px 2px 0 rgba(94, 72, 49, 0.16));
+}
+
+.pixel-mushroom svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+.pixel-mushroom rect {
+  fill: var(--rose);
+}
+
+.pixel-mushroom .mushroom-spot {
+  fill: var(--surface);
+}
+
+.pixel-mushroom .mushroom-stem {
+  fill: var(--peach-soft);
 }
 
 .role {
@@ -352,6 +402,67 @@ h3 {
   margin: 0.55rem 0 0;
   color: #5c705d;
   font-size: 0.88rem;
+}
+
+/* Small game-like accent: original sparkle on hover, no custom cursor. */
+.nav-links a,
+.button,
+.footer-actions a,
+.brand {
+  position: relative;
+}
+
+.nav-links a::after,
+.button::after,
+.footer-actions a::after,
+.brand::after {
+  content: '✦';
+  position: absolute;
+  top: -0.5rem;
+  right: -0.45rem;
+  z-index: 2;
+  color: var(--sun);
+  font-family: var(--font-retro);
+  font-size: 0.9rem;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.45) rotate(-18deg);
+  transform-origin: center;
+  pointer-events: none;
+  text-shadow: 0 0 0 transparent;
+  transition:
+    opacity 130ms ease,
+    transform 180ms cubic-bezier(.2,.8,.2,1),
+    text-shadow 180ms ease;
+}
+
+.nav-links a:hover::after,
+.button:hover::after,
+.footer-actions a:hover::after,
+.brand:hover::after,
+.nav-links a:focus-visible::after,
+.button:focus-visible::after,
+.footer-actions a:focus-visible::after,
+.brand:focus-visible::after {
+  opacity: 1;
+  transform: scale(1) rotate(10deg);
+  text-shadow:
+    0 0 7px rgba(230, 187, 74, 0.72),
+    0 0 14px rgba(230, 187, 74, 0.32);
+}
+
+@keyframes tiny-sparkle {
+  0%, 100% { transform: scale(0.86) rotate(-4deg); }
+  50% { transform: scale(1.12) rotate(12deg); }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .nav-links a:hover::after,
+  .button:hover::after,
+  .footer-actions a:hover::after,
+  .brand:hover::after {
+    animation: tiny-sparkle 780ms ease-in-out infinite;
+  }
 }
 
 /* Buttons */
