@@ -66,10 +66,19 @@ const background = [
 
 <BaseLayout>
   <main class="portfolio-main">
-    <section class="hero" id="sobre" aria-labelledby="hero-title">
+
+    <section
+      class="hero"
+      id="sobre"
+      aria-labelledby="hero-title"
+    >
       <div class="hero-intro">
+
         <p class="hello">
-          <span class="pixel-mushroom" aria-hidden="true">
+          <span
+            class="pixel-mushroom"
+            aria-hidden="true"
+          >
             <svg viewBox="0 0 16 16">
               <rect x="5" y="1" width="6" height="1"></rect>
               <rect x="3" y="2" width="10" height="1"></rect>
@@ -92,7 +101,12 @@ const background = [
                 height="2"
               ></rect>
 
-              <rect x="3" y="7" width="10" height="1"></rect>
+              <rect
+                x="3"
+                y="7"
+                width="10"
+                height="1"
+              ></rect>
 
               <rect
                 class="mushroom-stem"
@@ -124,7 +138,11 @@ const background = [
         </p>
 
         <div class="identity-cluster">
-          <div class="prism-stage" aria-hidden="true">
+
+          <div
+            class="prism-stage"
+            aria-hidden="true"
+          >
             <span class="prism-stage-glow"></span>
 
             <svg
@@ -158,27 +176,9 @@ const background = [
                     stop-opacity="0.015"
                   />
                 </linearGradient>
-
-                <filter
-                  id="soft-glow"
-                  x="-30%"
-                  y="-30%"
-                  width="160%"
-                  height="160%"
-                >
-                  <feGaussianBlur
-                    stdDeviation="3"
-                    result="blur"
-                  />
-
-                  <feMerge>
-                    <feMergeNode in="blur"></feMergeNode>
-                    <feMergeNode in="SourceGraphic"></feMergeNode>
-                  </feMerge>
-                </filter>
               </defs>
 
-              <!-- feixe branco de entrada -->
+              <!-- feixe branco -->
               <line
                 class="beam-in"
                 x1="18"
@@ -245,16 +245,24 @@ const background = [
             </svg>
           </div>
 
-          <h1
-            id="hero-title"
-            class="block-name"
-          >
-            {PROFILE.name}
-          </h1>
+          <div class="name-brick-plate">
+            <span
+              class="gold-block"
+              aria-hidden="true"
+            ></span>
+
+            <h1
+              id="hero-title"
+              class="block-name"
+            >
+              {PROFILE.name}
+            </h1>
+          </div>
 
           <p class="role">
             Escrita · Documentação · Informação
           </p>
+
         </div>
       </div>
 
@@ -492,5 +500,6 @@ const background = [
         Entrar em contato pelo LinkedIn ↗
       </a>
     </section>
+
   </main>
 </BaseLayout>
