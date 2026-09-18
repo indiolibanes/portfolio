@@ -1,0 +1,286 @@
+---
+import { MUSIC } from '../config';
+
+const hasPlaylists = MUSIC.publicPlaylists.length > 0;
+---
+
+<section
+  class="music-shelf section"
+  id="musica"
+  aria-labelledby="music-title"
+  data-music-shelf
+  data-has-playlists={String(hasPlaylists)}
+  hidden={!hasPlaylists}
+>
+  <div class="music-heading">
+    <div>
+      <p class="eyebrow music-source-label">
+        Apple Music
+        <span>via Last.fm</span>
+      </p>
+
+      <h2 id="music-title">
+        O que anda tocando.
+      </h2>
+    </div>
+
+    <p>
+      Uma pequena janela para minhas audições recentes e para as playlists
+      que resolvi compartilhar.
+    </p>
+  </div>
+
+  <div class="music-grid">
+    <article
+      class="recent-track-card"
+      data-recent-card
+      hidden
+    >
+      <div class="recent-artwork-shell">
+        <div
+          class="recent-artwork-fallback"
+          data-artwork-fallback
+          aria-hidden="true"
+        >
+          ♪
+        </div>
+
+        <img
+          class="recent-artwork"
+          data-track-artwork
+          alt=""
+          loading="lazy"
+          hidden
+        />
+      </div>
+
+      <div class="recent-track-copy">
+        <p class="music-kicker">
+          <span
+            class="music-kicker-dot"
+            data-status-dot
+            aria-hidden="true"
+          ></span>
+
+          <span data-track-status>
+            ouvido recentemente
+          </span>
+
+          <span
+            class="music-track-age"
+            data-track-age
+          ></span>
+        </p>
+
+        <h3 data-track-title></h3>
+
+        <p
+          class="recent-artist"
+          data-track-artist
+        ></p>
+
+        <p
+          class="recent-album"
+          data-track-album
+        ></p>
+
+        <div class="music-meta-row">
+          <a
+            class="apple-music-link"
+            data-track-link
+            target="_blank"
+            rel="noreferrer"
+            hidden
+          >
+            Ver no Last.fm ↗
+          </a>
+
+          <span class="music-provenance">
+            scrobble do Apple Music
+          </span>
+        </div>
+      </div>
+    </article>
+
+    {hasPlaylists && (
+      <div class="public-playlists">
+        <div class="playlists-heading">
+          <div>
+            <p class="project-label">
+              Playlists públicas
+            </p>
+
+            <h3>
+              Seleções que resolvi compartilhar.
+            </h3>
+          </div>
+
+          <p>
+            As playlists continuam hospedadas no próprio Apple Music;
+            aqui ficam apenas atalhos para as seleções públicas.
+          </p>
+        </div>
+
+        <div class="playlist-grid">
+          {MUSIC.publicPlaylists.map((playlist) => (
+            <a
+              class="playlist-card"
+              href={playlist.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {playlist.artwork ? (
+                <img
+                  src={playlist.artwork}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  class="playlist-artwork-fallback"
+                  aria-hidden="true"
+                >
+                  ♫
+                </span>
+              )}
+
+              <span class="playlist-card-copy">
+                <strong>{playlist.name}</strong>
+
+                <small>
+                  {playlist.note || 'Apple Music'}
+                </small>
+              </span>
+
+              <span
+                class="playlist-card-arrow"
+                aria-hidden="true"
+              >
+                ↗
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<script is:inline>
+  const shelf = document.querySelector('[data-music-shelf]');
+  const recentCard = document.querySelector('[data-recent-card]');
+
+  const artwork = document.querySelector('[data-track-artwork]');
+  const artworkFallback = document.querySelector('[data-artwork-fallback]');
+  const title = document.querySelector('[data-track-title]');
+  const artist = document.querySelector('[data-track-artist]');
+  const album = document.querySelector('[data-track-album]');
+  const link = document.querySelector('[data-track-link]');
+  const statusText = document.querySelector('[data-track-status]');
+  const ageText = document.querySelector('[data-track-age]');
+  const statusDot = document.querySelector('[data-status-dot]');
+
+  const hasPlaylists =
+    shelf?.dataset.hasPlaylists === 'true';
+
+  function relativeTime(timestamp) {
+    if (!timestamp) return '';
+
+    const seconds = Math.max(
+      0,
+      Math.floor((Date.now() - timestamp) / 1000),
+    );
+
+    if (seconds < 60) return 'agora';
+    if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      return `há ${minutes} min`;
+    }
+
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      return `há ${hours} h`;
+    }
+
+    const days = Math.floor(seconds / 86400);
+    return `há ${days} d`;
+  }
+
+  function renderTrack(track) {
+    if (!track) {
+      recentCard.hidden = true;
+      shelf.hidden = !hasPlaylists;
+      return;
+    }
+
+    title.textContent = track.name || '';
+    artist.textContent = track.artist || '';
+    album.textContent = track.album || '';
+
+    if (track.artwork) {
+      artwork.src = track.artwork;
+      artwork.alt = track.album
+        ? `Capa de ${track.album}`
+        : `Capa de ${track.name}`;
+      artwork.hidden = false;
+      artworkFallback.hidden = true;
+    } else {
+      artwork.removeAttribute('src');
+      artwork.hidden = true;
+      artworkFallback.hidden = false;
+    }
+
+    if (track.url) {
+      link.href = track.url;
+      link.hidden = false;
+    } else {
+      link.hidden = true;
+    }
+
+    if (track.nowPlaying) {
+      recentCard.dataset.nowPlaying = 'true';
+      statusText.textContent = 'agora tocando';
+      ageText.textContent = '';
+      statusDot.classList.add('is-live');
+    } else {
+      recentCard.dataset.nowPlaying = 'false';
+      statusText.textContent = 'ouvido recentemente';
+      ageText.textContent = relativeTime(track.playedAt);
+      statusDot.classList.remove('is-live');
+    }
+
+    recentCard.hidden = false;
+    shelf.hidden = false;
+  }
+
+  async function hydrateMusic() {
+    try {
+      const response = await fetch(
+        '/api/music/recent',
+        { cache: 'default' },
+      );
+
+      if (!response.ok) {
+        if (!hasPlaylists) shelf.hidden = true;
+        return;
+      }
+
+      const data = await response.json();
+      renderTrack(data.track);
+    } catch (error) {
+      console.debug(
+        'Last.fm listening data unavailable.',
+        error,
+      );
+
+      if (!hasPlaylists) shelf.hidden = true;
+    }
+  }
+
+  hydrateMusic();
+
+  window.setInterval(
+    hydrateMusic,
+    90000,
+  );
+</script>
