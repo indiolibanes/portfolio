@@ -12,7 +12,7 @@
   --ink-soft: #75685d;
   --line: #cdbca5;
 
-  /* Paleta quente principal */
+  /* Paleta quente */
   --sun: #e6bb4a;
   --sun-soft: #f5df9c;
 
@@ -31,7 +31,7 @@
   --violet: #8174a3;
   --violet-soft: #d6d0e4;
 
-  /* Prisma / faixa escura */
+  /* Prisma */
   --prism-stage: #1c1b19;
   --prism-stage-soft: #25231f;
   --prism-stage-edge: #35322d;
@@ -44,6 +44,22 @@
   --prism-green: #819d72;
   --prism-blue: #6f88a7;
   --prism-violet: #8174a3;
+
+  /* Blocos */
+  --brick-light: #c47a4e;
+  --brick-mid: #ad6541;
+  --brick-dark: #82482f;
+  --brick-shadow: #653723;
+  --brick-line: #ead8b9;
+
+  --gold-block: #e0ae42;
+  --gold-block-light: #f1ce69;
+  --gold-block-dark: #9d6e27;
+
+  /* Nome */
+  --title-fill: #fff4d8;
+  --title-outline: #493122;
+  --title-shadow: #d29a4c;
 
   /* Tipografia */
   --font-ui:
@@ -424,31 +440,6 @@ h3 {
 }
 
 /* --------------------------------------------------
-   Voxel-style name
--------------------------------------------------- */
-
-.block-name {
-  display: inline-block;
-  width: fit-content;
-
-  font-family: var(--font-retro);
-  font-weight: 700;
-
-  line-height: 0.82;
-  letter-spacing: -0.045em;
-
-  color: #5e4b2c;
-
-  text-shadow:
-    1px 0 0 #5e4b2c,
-    0 1px 0 #5e4b2c,
-    2px 2px 0 #c28d47,
-    4px 4px 0 rgba(116, 82, 42, 0.22);
-
-  transform: translateZ(0);
-}
-
-/* --------------------------------------------------
    Hero
 -------------------------------------------------- */
 
@@ -490,7 +481,7 @@ h3 {
 }
 
 .hero-intro {
-  min-height: 580px;
+  min-height: 600px;
 
   display: flex;
   flex-direction: column;
@@ -510,16 +501,15 @@ h3 {
 
   background:
     linear-gradient(
-      150deg,
-      transparent 0 52%,
-      rgba(230, 187, 74, 0.17)
-      52% 100%
+      155deg,
+      rgba(255, 255, 255, 0.10),
+      transparent 52%
     ),
-    var(--sun-soft);
+    #f2df9e;
 }
 
 /* --------------------------------------------------
-   Mushroom / greeting
+   Mushroom
 -------------------------------------------------- */
 
 .hello {
@@ -608,9 +598,9 @@ h3 {
 
   margin-bottom:
     clamp(
-      1.5rem,
-      3vw,
-      2.2rem
+      1.3rem,
+      2.8vw,
+      2rem
     );
 
   display: flex;
@@ -721,12 +711,16 @@ h3 {
 
 .prism-mark {
   position: relative;
-
   z-index: 1;
 
   display: block;
 
-  width: min(100%, 570px);
+  width:
+    min(
+      100%,
+      570px
+    );
+
   height: auto;
 
   overflow: visible;
@@ -776,40 +770,244 @@ h3 {
 }
 
 .prism-mark .beam-red {
-  stroke:
-    var(--prism-red);
+  stroke: var(--prism-red);
 }
 
 .prism-mark .beam-orange {
-  stroke:
-    var(--prism-orange);
+  stroke: var(--prism-orange);
 }
 
 .prism-mark .beam-yellow {
-  stroke:
-    var(--prism-yellow);
+  stroke: var(--prism-yellow);
 }
 
 .prism-mark .beam-green {
-  stroke:
-    var(--prism-green);
+  stroke: var(--prism-green);
 }
 
 .prism-mark .beam-blue {
-  stroke:
-    var(--prism-blue);
+  stroke: var(--prism-blue);
 }
 
 .prism-mark .beam-violet {
-  stroke:
-    var(--prism-violet);
+  stroke: var(--prism-violet);
+}
+
+/* --------------------------------------------------
+   Brick name plate
+-------------------------------------------------- */
+
+.name-brick-plate {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+  max-width: 100%;
+
+  padding:
+    clamp(0.65rem, 1.5vw, 1rem)
+    clamp(0.9rem, 2vw, 1.35rem)
+    clamp(0.6rem, 1.4vw, 0.9rem);
+
+  border:
+    3px solid
+    var(--brick-dark);
+
+  border-radius: 8px;
+
+  background-color:
+    var(--brick-mid);
+
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0 48%,
+      rgba(101, 55, 35, 0.70) 48% 52%,
+      transparent 52% 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08) 0 6%,
+      transparent 6% 94%,
+      rgba(73, 39, 25, 0.16) 94% 100%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 0 46%,
+      var(--brick-line) 46% 51%,
+      transparent 51% 100%
+    ),
+    linear-gradient(
+      180deg,
+      var(--brick-light),
+      var(--brick-mid)
+    );
+
+  background-size:
+    70px 38px,
+    70px 38px,
+    70px 38px,
+    100% 100%;
+
+  box-shadow:
+    inset 0 3px 0
+      rgba(255, 255, 255, 0.16),
+    inset 0 -4px 0
+      rgba(82, 44, 29, 0.20),
+    0 5px 0
+      var(--brick-shadow),
+    0 10px 18px
+      rgba(71, 60, 51, 0.14);
+
+  isolation: isolate;
+}
+
+/* segunda fileira deslocada visualmente */
+.name-brick-plate::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 50% 0 0;
+
+  z-index: -1;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0 23%,
+      rgba(101, 55, 35, 0.62) 23% 27%,
+      transparent 27% 73%,
+      rgba(101, 55, 35, 0.62) 73% 77%,
+      transparent 77% 100%
+    );
+
+  background-size:
+    70px 100%;
+
+  pointer-events: none;
+}
+
+/* bloco-acento dourado */
+.gold-block {
+  position: absolute;
+
+  top: -13px;
+  right: -13px;
+
+  width: 27px;
+  height: 27px;
+
+  z-index: 3;
+
+  border:
+    3px solid
+    var(--gold-block-dark);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--gold-block-light) 0 28%,
+      var(--gold-block) 28% 72%,
+      #c78d30 72% 100%
+    );
+
+  box-shadow:
+    inset 3px 3px 0
+      rgba(255, 247, 184, 0.46),
+    inset -3px -3px 0
+      rgba(119, 76, 24, 0.22),
+    3px 3px 0
+      rgba(91, 54, 28, 0.22);
+
+  transform:
+    rotate(2deg);
+
+  image-rendering:
+    pixelated;
+}
+
+.gold-block::before,
+.gold-block::after {
+  content: '';
+
+  position: absolute;
+
+  width: 4px;
+  height: 4px;
+
+  background:
+    rgba(112, 70, 22, 0.55);
+}
+
+.gold-block::before {
+  top: 3px;
+  left: 3px;
+}
+
+.gold-block::after {
+  right: 3px;
+  bottom: 3px;
+}
+
+/* --------------------------------------------------
+   Pixel title
+-------------------------------------------------- */
+
+.block-name {
+  position: relative;
+  z-index: 2;
+
+  display: inline-block;
+
+  width: fit-content;
+  max-width: 100%;
+
+  font-family:
+    var(--font-retro);
+
+  font-size:
+    clamp(
+      3.8rem,
+      8.2vw,
+      7.3rem
+    );
+
+  font-weight: 700;
+
+  line-height: 0.82;
+
+  letter-spacing:
+    -0.045em;
+
+  color:
+    var(--title-fill);
+
+  text-shadow:
+    2px 0 0
+      var(--title-outline),
+    -2px 0 0
+      var(--title-outline),
+    0 2px 0
+      var(--title-outline),
+    0 -2px 0
+      var(--title-outline),
+    3px 3px 0
+      var(--title-shadow),
+    5px 5px 0
+      rgba(73, 49, 34, 0.42);
+
+  transform:
+    translateZ(0);
 }
 
 .role {
   max-width: 40ch;
 
   margin:
-    1.15rem 0 0;
+    1.35rem 0 0;
 
   color: #705a32;
 
@@ -959,7 +1157,7 @@ h3 {
 }
 
 /* --------------------------------------------------
-   Game-inspired sparkle
+   Sparkle interaction
 -------------------------------------------------- */
 
 .nav-links a,
@@ -1425,7 +1623,7 @@ h3 {
 }
 
 /* --------------------------------------------------
-   Background / percurso
+   Percurso
 -------------------------------------------------- */
 
 .background {
@@ -1687,7 +1885,11 @@ h3 {
   }
 
   .prism-mark {
-    width: min(100%, 620px);
+    width:
+      min(
+        100%,
+        620px
+      );
   }
 }
 
@@ -1727,20 +1929,11 @@ h3 {
   }
 
   .hero-intro {
-    min-height: 500px;
+    min-height: 520px;
 
     padding: 1.3rem;
 
     border-radius: 20px;
-  }
-
-  h1 {
-    font-size:
-      clamp(
-        3.25rem,
-        17vw,
-        5.5rem
-      );
   }
 
   .hello {
@@ -1750,7 +1943,7 @@ h3 {
   .prism-stage {
     min-height: 180px;
 
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.25rem;
 
     padding: 0.7rem;
 
@@ -1761,6 +1954,35 @@ h3 {
 
   .prism-mark {
     width: 100%;
+  }
+
+  .name-brick-plate {
+    max-width: 100%;
+
+    padding:
+      0.7rem
+      0.8rem
+      0.65rem;
+  }
+
+  .block-name {
+    font-size:
+      clamp(
+        3rem,
+        14vw,
+        5.1rem
+      );
+
+    letter-spacing:
+      -0.04em;
+  }
+
+  .gold-block {
+    width: 23px;
+    height: 23px;
+
+    top: -10px;
+    right: -9px;
   }
 
   .hero-statement {
