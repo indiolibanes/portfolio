@@ -76,109 +76,192 @@ const background = [
               <rect x="2" y="3" width="12" height="1"></rect>
               <rect x="1" y="4" width="14" height="3"></rect>
 
-              <rect class="mushroom-spot" x="4" y="4" width="2" height="2"></rect>
-              <rect class="mushroom-spot" x="10" y="5" width="2" height="2"></rect>
+              <rect
+                class="mushroom-spot"
+                x="4"
+                y="4"
+                width="2"
+                height="2"
+              ></rect>
+
+              <rect
+                class="mushroom-spot"
+                x="10"
+                y="5"
+                width="2"
+                height="2"
+              ></rect>
 
               <rect x="3" y="7" width="10" height="1"></rect>
 
-              <rect class="mushroom-stem" x="5" y="8" width="6" height="1"></rect>
-              <rect class="mushroom-stem" x="4" y="9" width="8" height="4"></rect>
-              <rect class="mushroom-stem" x="5" y="13" width="6" height="1"></rect>
+              <rect
+                class="mushroom-stem"
+                x="5"
+                y="8"
+                width="6"
+                height="1"
+              ></rect>
+
+              <rect
+                class="mushroom-stem"
+                x="4"
+                y="9"
+                width="8"
+                height="4"
+              ></rect>
+
+              <rect
+                class="mushroom-stem"
+                x="5"
+                y="13"
+                width="6"
+                height="1"
+              ></rect>
             </svg>
           </span>
 
           <span>Hello, it's me</span>
         </p>
 
-        <div class="name-stack">
-          <span class="prism-mark" aria-hidden="true">
-            <svg viewBox="0 0 240 96">
+        <div class="identity-cluster">
+          <div class="prism-stage" aria-hidden="true">
+            <span class="prism-stage-glow"></span>
+
+            <svg
+              class="prism-mark"
+              viewBox="0 0 600 260"
+              preserveAspectRatio="xMidYMid meet"
+            >
               <defs>
-                <linearGradient id="prism-glass" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#fffaf0" stop-opacity="0.46" />
-                  <stop offset="100%" stop-color="#7896ad" stop-opacity="0.10" />
+                <linearGradient
+                  id="prism-glass"
+                  x1="0"
+                  x2="1"
+                  y1="0"
+                  y2="1"
+                >
+                  <stop
+                    offset="0%"
+                    stop-color="#f5f1e9"
+                    stop-opacity="0.10"
+                  />
+
+                  <stop
+                    offset="55%"
+                    stop-color="#9cabb5"
+                    stop-opacity="0.035"
+                  />
+
+                  <stop
+                    offset="100%"
+                    stop-color="#ffffff"
+                    stop-opacity="0.015"
+                  />
                 </linearGradient>
+
+                <filter
+                  id="soft-glow"
+                  x="-30%"
+                  y="-30%"
+                  width="160%"
+                  height="160%"
+                >
+                  <feGaussianBlur
+                    stdDeviation="3"
+                    result="blur"
+                  />
+
+                  <feMerge>
+                    <feMergeNode in="blur"></feMergeNode>
+                    <feMergeNode in="SourceGraphic"></feMergeNode>
+                  </feMerge>
+                </filter>
               </defs>
 
-              <!-- feixe de entrada -->
+              <!-- feixe branco de entrada -->
               <line
                 class="beam-in"
-                x1="4"
-                y1="48"
-                x2="82"
-                y2="48"
+                x1="18"
+                y1="130"
+                x2="248"
+                y2="130"
               ></line>
 
               <!-- prisma -->
               <polygon
                 class="prism-body"
-                points="84,16 136,48 84,80"
+                points="250,42 366,130 250,218"
                 fill="url(#prism-glass)"
               ></polygon>
 
               <!-- espectro -->
               <line
                 class="beam-out beam-red"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="15"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="62"
               ></line>
 
               <line
                 class="beam-out beam-orange"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="27"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="84"
               ></line>
 
               <line
                 class="beam-out beam-yellow"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="39"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="106"
               ></line>
 
               <line
                 class="beam-out beam-green"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="51"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="130"
               ></line>
 
               <line
                 class="beam-out beam-blue"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="63"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="154"
               ></line>
 
               <line
                 class="beam-out beam-violet"
-                x1="136"
-                y1="48"
-                x2="232"
-                y2="75"
+                x1="366"
+                y1="130"
+                x2="582"
+                y2="178"
               ></line>
             </svg>
-          </span>
+          </div>
 
-          <h1 id="hero-title" class="block-name">
+          <h1
+            id="hero-title"
+            class="block-name"
+          >
             {PROFILE.name}
           </h1>
-        </div>
 
-        <p class="role">
-          Escrita · Documentação · Informação
-        </p>
+          <p class="role">
+            Escrita · Documentação · Informação
+          </p>
+        </div>
       </div>
 
       <div class="hero-statement">
-        <p class="eyebrow">Sobre</p>
+        <p class="eyebrow">
+          Sobre
+        </p>
 
         <h2>
           Escrevo para dar forma às ideias — e documento para que elas permaneçam úteis depois.
@@ -193,7 +276,10 @@ const background = [
         </p>
 
         <div class="hero-actions">
-          <a class="button primary-button" href="#projetos">
+          <a
+            class="button primary-button"
+            href="#projetos"
+          >
             Ver projetos ↓
           </a>
 
@@ -208,8 +294,14 @@ const background = [
         </div>
       </div>
 
-      <aside class="hero-note" aria-label="Resumo profissional">
-        <span class="tape" aria-hidden="true"></span>
+      <aside
+        class="hero-note"
+        aria-label="Resumo profissional"
+      >
+        <span
+          class="tape"
+          aria-hidden="true"
+        ></span>
 
         <p class="note-label">
           Em uma simples soma
@@ -233,7 +325,9 @@ const background = [
     >
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Projetos</p>
+          <p class="eyebrow">
+            Projetos
+          </p>
 
           <h2 id="projects-title">
             Trabalho selecionado
@@ -250,7 +344,12 @@ const background = [
 
       <div class="project-list">
         {projects.map((project) => (
-          <article class:list={['project-card', `tone-${project.tone}`]}>
+          <article
+            class:list={[
+              'project-card',
+              `tone-${project.tone}`,
+            ]}
+          >
             <div class="project-number">
               {project.number}
             </div>
@@ -275,7 +374,10 @@ const background = [
               </div>
             </div>
 
-            <div class="project-arrow" aria-hidden="true">
+            <div
+              class="project-arrow"
+              aria-hidden="true"
+            >
               ↗
             </div>
           </article>
@@ -289,7 +391,9 @@ const background = [
       aria-labelledby="lab-title"
     >
       <div class="lab-heading">
-        <p class="eyebrow">Laboratório</p>
+        <p class="eyebrow">
+          Laboratório
+        </p>
 
         <h2 id="lab-title">
           O que faço
@@ -304,14 +408,23 @@ const background = [
 
       <div class="lab-grid">
         {lab.map(([title, text], index) => (
-          <article class:list={['lab-card', `lab-${index + 1}`]}>
+          <article
+            class:list={[
+              'lab-card',
+              `lab-${index + 1}`,
+            ]}
+          >
             <span>
               {String(index + 1).padStart(2, '0')}
             </span>
 
-            <h3>{title}</h3>
+            <h3>
+              {title}
+            </h3>
 
-            <p>{text}</p>
+            <p>
+              {text}
+            </p>
           </article>
         ))}
       </div>
@@ -323,7 +436,9 @@ const background = [
       aria-labelledby="background-title"
     >
       <div class="background-title">
-        <p class="eyebrow">Percurso</p>
+        <p class="eyebrow">
+          Percurso
+        </p>
 
         <h2 id="background-title">
           Base técnica; vocação editorial.
@@ -338,9 +453,13 @@ const background = [
             </span>
 
             <div>
-              <h3>{item.title}</h3>
+              <h3>
+                {item.title}
+              </h3>
 
-              <p>{item.text}</p>
+              <p>
+                {item.text}
+              </p>
             </div>
           </article>
         ))}
