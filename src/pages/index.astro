@@ -22,11 +22,12 @@ const projects = [
   },
   {
     number: '03',
-    label: 'Gestão da informação',
-    title: 'Biblioteca de leituras e notas',
-    text: 'Organização de referências, citações e notas para reduzir duplicação e explicitar relações entre conteúdos.',
-    tags: ['Metadados', 'Pesquisa', 'Curadoria'],
+    label: 'Projeto aberto',
+    title: 'Portfólio pessoal',
+    text: 'Este próprio site como estudo de arquitetura de conteúdo, identidade visual, documentação e integração entre Astro, GitHub e serviços externos.',
+    tags: ['Astro', 'GitHub', 'Cloudflare'],
     tone: 'rose',
+    url: 'https://github.com/indiolibanes/portfolio',
   },
 ];
 
@@ -380,12 +381,25 @@ const background = [
               </div>
             </div>
 
-            <div
-              class="project-arrow"
-              aria-hidden="true"
-            >
-              ↗
-            </div>
+            {project.url ? (
+              <a
+                class="project-arrow project-link"
+                href={project.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Abrir ${project.title} no GitHub`}
+                title="Ver projeto no GitHub"
+              >
+                ↗
+              </a>
+            ) : (
+              <div
+                class="project-arrow"
+                aria-hidden="true"
+              >
+                ↗
+              </div>
+            )}
           </article>
         ))}
       </div>
