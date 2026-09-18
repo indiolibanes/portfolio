@@ -1,0 +1,22 @@
+---
+import { PROFILE } from '../config';
+---
+
+<header class="site-header">
+  <nav class="nav-shell" aria-label="Navegação principal">
+    <a class="brand" href="#top" aria-label={`${PROFILE.name}, início`}>
+      <span class="brand-mark" aria-hidden="true">K</span>
+      <span class="brand-copy">
+        <strong>{PROFILE.name}</strong>
+        <small>{PROFILE.tagline}</small>
+      </span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#trabalho">Trabalho</a>
+      <a href="#processo">Processo</a>
+      <a href="#sobre">Sobre</a>
+      <a class="nav-cta" href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+    </div>
+  </nav>
+</header>
