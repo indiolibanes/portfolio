@@ -1,0 +1,23 @@
+---
+import { SITE } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+} = Astro.props;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+<meta name="description" content={description} />
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+<meta name="theme-color" content="#6a55ff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#15131c" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<title>{title}</title>
