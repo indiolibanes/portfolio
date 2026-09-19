@@ -1726,12 +1726,9 @@ h3 {
 
 .hero-statement {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 
   align-self: center;
-
-  isolation: isolate;
-  overflow: hidden;
 
   padding:
     clamp(
@@ -1776,41 +1773,39 @@ h3 {
 /* PHROLOVA UNDERLAY */
 
 /*
-  Layer order inside the white About panel:
-  1. panel background
-  2. Phrolova artwork
-  3. copy / buttons
-  The post-it is a sibling with a higher z-index and therefore
-  also remains above the artwork where the two visually meet.
+  Camadas da seção Sobre:
+  1. fundo branco da .hero
+  2. arte da Phrolova
+  3. texto/botões
+  4. post-it
 */
 
 .phrolova-underlay {
-  position: absolute;
+  position: relative;
+  z-index: 1;
 
-  right:
-    clamp(
-      -92px,
-      -6vw,
-      -34px
-    );
+  grid-column: 2;
+  grid-row: 1;
 
-  bottom:
-    clamp(
-      -100px,
-      -7vw,
-      -38px
-    );
-
-  z-index: 0;
+  align-self: center;
+  justify-self: end;
 
   width:
     clamp(
-      330px,
+      340px,
       40vw,
       540px
     );
 
-  aspect-ratio: 1;
+  margin:
+    4.5rem
+    clamp(
+      -90px,
+      -6vw,
+      -34px
+    )
+    -6rem
+    0;
 
   pointer-events: none;
 
@@ -1819,6 +1814,9 @@ h3 {
 
   transform-origin:
     62% 58%;
+
+  transition:
+    transform 300ms ease;
 }
 
 .phrolova-underlay svg {
@@ -1829,7 +1827,7 @@ h3 {
 
   overflow: visible;
 
-  opacity: 0.96;
+  opacity: 0.98;
 
   filter:
     drop-shadow(
@@ -1838,8 +1836,13 @@ h3 {
     );
 }
 
+.hero-intro {
+  position: relative;
+  z-index: 2;
+}
+
 .hero-statement
-> :not(.phrolova-underlay) {
+> * {
   position: relative;
   z-index: 2;
 }
@@ -1862,21 +1865,24 @@ h3 {
   }
 }
 
-.phrolova-underlay {
-  transition:
-    transform 300ms ease;
-}
-
 @media (max-width: 920px) {
   .phrolova-underlay {
-    right: -54px;
-    bottom: -54px;
+    grid-column: 1;
+    grid-row: 2;
+
+    align-self: end;
 
     width:
       min(
-        56vw,
-        430px
+        64vw,
+        440px
       );
+
+    margin:
+      3rem
+      -54px
+      -4.5rem
+      0;
   }
 }
 
@@ -1886,14 +1892,17 @@ h3 {
   }
 
   .phrolova-underlay {
-    right: -76px;
-    bottom: -46px;
-
     width:
       min(
-        88vw,
+        90vw,
         390px
       );
+
+    margin:
+      6rem
+      -72px
+      -3.5rem
+      0;
 
     transform:
       rotate(-4deg);
