@@ -21,10 +21,11 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 
 <title>{title}</title>
 <meta name="description" content={description} />
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 <meta name="theme-color" content="#f6efdc" />
 
 <link rel="canonical" href={canonicalUrl} />
+<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
 <meta property="og:locale" content="pt_BR" />
