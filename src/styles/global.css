@@ -1846,7 +1846,7 @@ h3 {
 .phrolova-underlay {
   position: absolute;
 
-  top: 45.5%;
+  top: 49%;
 
   right:
     clamp(
@@ -1930,7 +1930,7 @@ h3 {
   .phrolova-underlay {
     top: auto;
     right: -62px;
-    bottom: 142px;
+    bottom: 118px;
 
     width:
       min(
@@ -1944,7 +1944,7 @@ h3 {
   .phrolova-underlay {
     top: auto;
     right: -78px;
-    bottom: 138px;
+    bottom: 118px;
 
     width:
       min(
