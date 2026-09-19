@@ -11,8 +11,8 @@ const {
   description = SITE.description,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, SITE.url);
-const socialImageUrl = new URL(SITE.ogImage, SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 ---
 
 <meta charset="UTF-8" />
@@ -27,15 +27,15 @@ const socialImageUrl = new URL(SITE.ogImage, SITE.url);
 <link rel="canonical" href={canonicalUrl} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-<meta property="og:type" content="website" />
 <meta property="og:locale" content="pt_BR" />
-<meta property="og:site_name" content="Kauê Alencar — Portfólio" />
+<meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
-<meta property="og:image" content={socialImageUrl} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image:height" content="628" />
 <meta
   property="og:image:alt"
   content="Kauê Alencar — Escrita, Documentação e Informação"
@@ -44,7 +44,7 @@ const socialImageUrl = new URL(SITE.ogImage, SITE.url);
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={socialImageUrl} />
+<meta name="twitter:image" content={ogImageUrl} />
 <meta
   name="twitter:image:alt"
   content="Kauê Alencar — Escrita, Documentação e Informação"
