@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7e8"/>
+      <stop offset="0.54" stop-color="#f6e9d2"/>
+      <stop offset="1" stop-color="#d9b89d"/>
+    </linearGradient>
+
+    <linearGradient id="prism" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#30221c"/>
+      <stop offset="0.52" stop-color="#17110f"/>
+      <stop offset="1" stop-color="#050404"/>
+    </linearGradient>
+
+    <linearGradient id="inkFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4b2a21" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#4b2a21" stop-opacity="0.28"/>
+    </linearGradient>
+
+    <radialGradient id="redGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#d5262e" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#d5262e" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="11"/>
+      <feOffset dx="0" dy="12" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.28"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <pattern id="pixels" width="26" height="26" patternUnits="userSpaceOnUse">
+      <rect width="26" height="26" fill="none"/>
+      <rect width="12" height="12" fill="#3f302a" opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#paper)"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#pixels)" opacity="0.24"/>
+
+  <!-- dark editorial corner -->
+  <path d="M947 0H1200V218H1106L1038 151L947 96Z" fill="#171313"/>
+  <g fill="#fffaf0" opacity="0.74">
+    <circle cx="1115" cy="55" r="1.8"/>
+    <circle cx="1156" cy="84" r="1.2"/>
+    <circle cx="1087" cy="104" r="1.4"/>
+    <circle cx="1178" cy="42" r="1.5"/>
+    <path d="M1128 131h34M1145 114v34" stroke="#fffaf0" stroke-width="1" opacity="0.34"/>
+  </g>
+
+  <!-- small editorial label -->
+  <text x="68" y="78"
+        fill="#8e6a58"
+        font-family="DejaVu Sans Mono, monospace"
+        font-size="14"
+        letter-spacing="7">TEMPORA SCRIBUNT</text>
+  <line x1="276" y1="73" x2="340" y2="73" stroke="#9f7f6f" stroke-width="1" opacity="0.65"/>
+
+  <!-- identity -->
+  <text x="66" y="220"
+        fill="#3e2119"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="82"
+        letter-spacing="-3">Kauê Alencar</text>
+
+  <text x="70" y="270"
+        fill="#4b2d25"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="30">Escrita · Documentação · Informação</text>
+
+  <text x="70" y="336"
+        fill="#72594d"
+        font-family="DejaVu Sans Mono, monospace"
+        font-size="17"
+        letter-spacing="1.4">
+    <tspan x="70" dy="0">Ideias organizadas.</tspan>
+    <tspan x="70" dy="28">Conhecimento que permanece.</tspan>
+    <tspan x="70" dy="28">Um olhar mais atento sobre a realidade.</tspan>
+  </text>
+
+  <line x1="70" y1="438" x2="70" y2="505" stroke="#6a4a3d" stroke-width="2"/>
+  <text x="94" y="448"
+        fill="#75594d"
+        font-family="DejaVu Sans Mono, monospace"
+        font-size="13"
+        letter-spacing="5">
+    <tspan x="94" dy="0">FILOSOFIA</tspan>
+    <tspan x="94" dy="24">LINGUÍSTICA</tspan>
+    <tspan x="94" dy="24">NEUROCIÊNCIA</tspan>
+    <tspan x="94" dy="24">FÍSICA</tspan>
+  </text>
+
+  <g transform="translate(69 538)" fill="#3f302a">
+    <rect x="0" y="10" width="12" height="12"/>
+    <rect x="12" y="0" width="12" height="12"/>
+    <rect x="12" y="20" width="12" height="12"/>
+    <rect x="24" y="10" width="12" height="12"/>
+  </g>
+  <text x="122" y="551"
+        fill="#7e6254"
+        font-family="DejaVu Sans Mono, monospace"
+        font-size="13"
+        letter-spacing="4">VERITAS · ORDO · PERMANENTIA</text>
+
+  <!-- flower glow -->
+  <circle cx="875" cy="230" r="170" fill="url(#redGlow)"/>
+
+  <!-- stylized red spider lily -->
+  <g transform="translate(866 210)" filter="url(#softShadow)">
+    <g fill="#bf2028" stroke="#76151a" stroke-width="2.2">
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(-8)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(32)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(69)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(106)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(143)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(181)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(218)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(255)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(292)"/>
+      <ellipse cx="0" cy="-58" rx="22" ry="82" transform="rotate(329)"/>
+    </g>
+    <circle cx="0" cy="0" r="26" fill="#8e171d"/>
+    <circle cx="-7" cy="-9" r="8" fill="#e14b50" opacity="0.75"/>
+
+    <g fill="none" stroke-linecap="round">
+      <path d="M-15 -15 C-104 -120 -160 -94 -188 -20" stroke="#d6363c" stroke-width="3"/>
+      <path d="M8 -18 C66 -144 140 -135 167 -55" stroke="#c92a32" stroke-width="3"/>
+      <path d="M18 2 C128 -30 171 35 142 78" stroke="#d84549" stroke-width="2.6"/>
+      <path d="M-22 7 C-132 25 -173 78 -132 116" stroke="#c3242c" stroke-width="2.6"/>
+      <path d="M0 -18 C8 -152 47 -171 69 -150" stroke="#7f8e9a" stroke-width="2.4"/>
+      <path d="M-8 -14 C-55 -144 -95 -164 -117 -130" stroke="#95a4ae" stroke-width="2.4"/>
+    </g>
+  </g>
+
+  <!-- musical staff -->
+  <g transform="rotate(-12 860 330)" fill="none" stroke="#ba2c32">
+    <path d="M650 330 C780 285 918 314 1118 266" stroke-width="2" opacity="0.52"/>
+    <path d="M650 340 C780 295 918 324 1118 276" stroke-width="2" opacity="0.52"/>
+    <path d="M650 350 C780 305 918 334 1118 286" stroke-width="2" opacity="0.52"/>
+    <path d="M650 360 C780 315 918 344 1118 296" stroke-width="2" opacity="0.52"/>
+    <path d="M650 370 C780 325 918 354 1118 306" stroke-width="2" opacity="0.52"/>
+  </g>
+
+  <g fill="#bd3137" font-family="Georgia, serif" font-size="43" opacity="0.78">
+    <text x="705" y="350">♪</text>
+    <text x="778" y="332">♫</text>
+    <text x="1002" y="306">♪</text>
+    <text x="1068" y="274">♫</text>
+  </g>
+
+  <!-- prism -->
+  <g filter="url(#softShadow)">
+    <polygon points="706,520 842,281 990,520"
+             fill="url(#prism)"
+             stroke="#7c4c35"
+             stroke-width="3"/>
+    <polyline points="706,520 842,281 990,520"
+              fill="none"
+              stroke="#c49362"
+              stroke-width="1.6"
+              opacity="0.72"/>
+    <circle cx="843" cy="421" r="5" fill="#fff4d8"/>
+    <path d="M817 421h52M843 395v52"
+          stroke="#fff0c7"
+          stroke-width="2"
+          opacity="0.88"/>
+    <circle cx="843" cy="421" r="28" fill="none" stroke="#eab66a" stroke-width="1" opacity="0.2"/>
+  </g>
+
+  <!-- books -->
+  <g transform="translate(990 440)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="188" height="46" rx="4" fill="#241611"/>
+    <rect x="-6" y="48" width="194" height="46" rx="4" fill="#2b1812"/>
+    <rect x="-13" y="96" width="201" height="46" rx="4" fill="#1e1310"/>
+    <text x="22" y="30" fill="#c89968" font-family="Georgia, serif" font-size="18">PHILOSOPHIA</text>
+    <text x="22" y="78" fill="#c89968" font-family="Georgia, serif" font-size="18">LINGUA</text>
+    <text x="22" y="126" fill="#c89968" font-family="Georgia, serif" font-size="18">SCIENTIA</text>
+  </g>
+
+  <!-- fountain pen -->
+  <g transform="translate(900 583) rotate(-8)">
+    <rect x="0" y="0" width="246" height="18" rx="9" fill="#18110f"/>
+    <path d="M246 0l42 9-42 9z" fill="#7f5a3e"/>
+    <circle cx="36" cy="9" r="6" fill="#b58659"/>
+    <line x1="12" y1="4" x2="218" y2="4" stroke="#a17b5b" stroke-width="1" opacity="0.45"/>
+  </g>
+
+  <text x="1015" y="74"
+        fill="#c2a898"
+        font-family="Georgia, serif"
+        font-size="13"
+        font-style="italic"
+        letter-spacing="4">
+    <tspan x="1015" dy="0">Ad perpetuam</tspan>
+    <tspan x="1015" dy="22">rei memoriam.</tspan>
+  </text>
+
+  <!-- final texture -->
+  <rect width="1200" height="630" fill="url(#inkFade)" opacity="0.015"/>
+</svg>
