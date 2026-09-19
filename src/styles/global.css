@@ -2002,6 +2002,7 @@ h3 {
     var(--shadow-card);
 
   transform:
+    translateY(-18px)
     rotate(-1.4deg);
 }
 
@@ -3186,6 +3187,10 @@ h3 {
       );
 
     margin-inline: auto;
+
+    transform:
+      translateY(-10px)
+      rotate(-1.4deg);
   }
 
   .project-card {
