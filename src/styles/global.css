@@ -1183,6 +1183,10 @@ h3 {
 }
 
 .hero-intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
   min-height: 600px;
 
   display: flex;
@@ -1208,6 +1212,153 @@ h3 {
       transparent 52%
     ),
     #f2df9e;
+}
+
+/* PHROLOVA BATON ORNAMENT */
+
+/* --------------------------------------------------
+   Phrolova-inspired baton ornament
+-------------------------------------------------- */
+
+.phrolova-ornament {
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+.phrolova-baton {
+  position: absolute;
+
+  right:
+    clamp(
+      -10px,
+      1vw,
+      12px
+    );
+
+  bottom:
+    clamp(
+      -70px,
+      -4vw,
+      -24px
+    );
+
+  width:
+    clamp(
+      170px,
+      23vw,
+      265px
+    );
+
+  height: auto;
+
+  opacity: 0.16;
+
+  transform:
+    rotate(18deg);
+
+  filter:
+    drop-shadow(
+      0 12px 28px
+      rgba(94, 72, 49, 0.18)
+    );
+}
+
+.baton-glow {
+  opacity: 0.34;
+}
+
+.baton-stem {
+  opacity: 0.92;
+}
+
+.baton-stem-inner {
+  fill:
+    rgba(255, 244, 216, 0.25);
+}
+
+.baton-end {
+  fill:
+    #9d6e27;
+
+  opacity: 0.9;
+}
+
+.baton-core {
+  fill:
+    #cf6f60;
+
+  stroke:
+    rgba(73, 49, 34, 0.46);
+
+  stroke-width: 3;
+}
+
+.baton-bloom ellipse {
+  fill:
+    rgba(200, 95, 88, 0.82);
+
+  stroke:
+    rgba(73, 49, 34, 0.22);
+
+  stroke-width: 2.4;
+}
+
+.baton-ribbon {
+  fill: none;
+
+  stroke:
+    rgba(129, 116, 163, 0.34);
+
+  stroke-width: 6;
+
+  stroke-linecap: round;
+}
+
+.baton-joint {
+  fill:
+    rgba(244, 213, 108, 0.72);
+
+  stroke:
+    rgba(73, 49, 34, 0.22);
+
+  stroke-width: 2;
+}
+
+.hero-intro > *:not(.phrolova-ornament) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 920px) {
+  .phrolova-baton {
+    width:
+      clamp(
+        150px,
+        24vw,
+        220px
+      );
+
+    opacity: 0.14;
+  }
+}
+
+@media (max-width: 720px) {
+  .phrolova-baton {
+    width:
+      min(
+        40vw,
+        210px
+      );
+
+    right: -18px;
+    bottom: -58px;
+
+    opacity: 0.12;
+  }
 }
 
 /* --------------------------------------------------
