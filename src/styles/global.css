@@ -1966,6 +1966,118 @@ h3 {
 }
 
 
+/* SHOREKEEPER / BLACK SHORES UNDERLAY */
+
+.shorekeeper-underlay {
+  position: absolute;
+
+  left:
+    clamp(
+      18px,
+      3vw,
+      42px
+    );
+
+  bottom:
+    clamp(
+      6px,
+      1.5vw,
+      18px
+    );
+
+  z-index: 1;
+
+  width:
+    clamp(
+      210px,
+      27vw,
+      320px
+    );
+
+  pointer-events: none;
+
+  opacity: 0.96;
+
+  transform:
+    rotate(-2deg);
+
+  transform-origin:
+    50% 58%;
+}
+
+.shorekeeper-underlay img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  filter:
+    saturate(1.14)
+    contrast(1.06)
+    brightness(1.03)
+    drop-shadow(
+      0 12px 24px
+      rgba(46, 66, 128, 0.14)
+    );
+
+  mix-blend-mode:
+    multiply;
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse 76% 72% at 50% 52%,
+      #000 0%,
+      #000 48%,
+      rgba(0, 0, 0, 0.88) 60%,
+      rgba(0, 0, 0, 0.46) 76%,
+      transparent 100%
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse 76% 72% at 50% 52%,
+      #000 0%,
+      #000 48%,
+      rgba(0, 0, 0, 0.88) 60%,
+      rgba(0, 0, 0, 0.46) 76%,
+      transparent 100%
+    );
+}
+
+@media (max-width: 920px) {
+  .shorekeeper-underlay {
+    left: 12px;
+    bottom: 16px;
+
+    width:
+      min(
+        42vw,
+        240px
+      );
+
+    opacity: 0.90;
+  }
+}
+
+@media (max-width: 720px) {
+  .shorekeeper-underlay {
+    left: 4px;
+    bottom: 12px;
+
+    width:
+      min(
+        48vw,
+        180px
+      );
+
+    opacity: 0.82;
+
+    transform:
+      rotate(-1deg);
+  }
+}
+
+
 /* --------------------------------------------------
    Note
 -------------------------------------------------- */
