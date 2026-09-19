@@ -1146,6 +1146,10 @@ h3 {
 -------------------------------------------------- */
 
 .hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
   display: grid;
 
   grid-template-columns:
@@ -1775,37 +1779,36 @@ h3 {
 /*
   Camadas da seção Sobre:
   1. fundo branco da .hero
-  2. arte da Phrolova
-  3. texto/botões
+  2. arte da Phrolova — fora do fluxo, sem alterar a altura do banner
+  3. texto / bloco amarelo
   4. post-it
 */
 
 .phrolova-underlay {
-  position: relative;
+  position: absolute;
+
+  right:
+    clamp(
+      -86px,
+      -5vw,
+      -38px
+    );
+
+  bottom:
+    clamp(
+      42px,
+      5vw,
+      78px
+    );
+
   z-index: 1;
-
-  grid-column: 2;
-  grid-row: 1;
-
-  align-self: center;
-  justify-self: end;
 
   width:
     clamp(
-      340px,
+      360px,
       40vw,
       540px
     );
-
-  margin:
-    4.5rem
-    clamp(
-      -90px,
-      -6vw,
-      -34px
-    )
-    -6rem
-    0;
 
   pointer-events: none;
 
@@ -1836,7 +1839,8 @@ h3 {
     );
 }
 
-.hero-intro {
+.hero-intro,
+.hero-statement {
   position: relative;
   z-index: 2;
 }
@@ -1867,42 +1871,27 @@ h3 {
 
 @media (max-width: 920px) {
   .phrolova-underlay {
-    grid-column: 1;
-    grid-row: 2;
-
-    align-self: end;
+    right: -62px;
+    bottom: 92px;
 
     width:
       min(
-        64vw,
+        62vw,
         440px
       );
-
-    margin:
-      3rem
-      -54px
-      -4.5rem
-      0;
   }
 }
 
 @media (max-width: 720px) {
-  .hero-statement {
-    min-height: 520px;
-  }
-
   .phrolova-underlay {
+    right: -78px;
+    bottom: 84px;
+
     width:
       min(
-        90vw,
+        88vw,
         390px
       );
-
-    margin:
-      6rem
-      -72px
-      -3.5rem
-      0;
 
     transform:
       rotate(-4deg);
