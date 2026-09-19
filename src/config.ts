@@ -2,6 +2,8 @@ export const SITE = {
   title: 'Kauê Alencar — Portfólio',
   description:
     'Portfólio pessoal de Kauê Alencar: documentação, organização da informação, escrita e publicação digital.',
+  url: 'https://kaue.pages.dev',
+  ogImage: '/og-portfolio.jpg',
 };
 
 export const PROFILE = {
@@ -9,8 +11,6 @@ export const PROFILE = {
   shortName: 'Kauê',
   tagline: 'Documentação · Informação · Escrita',
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
-  // Intencionalmente sem e-mail público por enquanto: o endereço atual usa
-  // um domínio ligado ao projeto autoral que este portfólio deve manter separado.
   email: 'kaue@tuta.com'
 };
 
