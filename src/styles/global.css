@@ -1734,6 +1734,8 @@ h3 {
 
   align-self: center;
 
+  isolation: isolate;
+
   padding:
     clamp(
       1.3rem,
@@ -1742,13 +1744,62 @@ h3 {
     );
 }
 
+.hero-statement::before {
+  content: '';
+
+  position: absolute;
+
+  inset:
+    clamp(
+      0.55rem,
+      1.6vw,
+      1rem
+    )
+    clamp(
+      -0.55rem,
+      -1vw,
+      -0.2rem
+    )
+    clamp(
+      0.55rem,
+      1.6vw,
+      1rem
+    )
+    0;
+
+  z-index: 1;
+
+  border-radius:
+    22px 30px
+    24px 28px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 250, 240, 0.94) 0%,
+      rgba(255, 250, 240, 0.86) 48%,
+      rgba(255, 250, 240, 0.60) 72%,
+      rgba(255, 250, 240, 0.18) 92%,
+      transparent 100%
+    );
+
+  pointer-events: none;
+}
+
 .hero-statement h2 {
+  color:
+    #3f302a;
+
   font-size:
     clamp(
       2.2rem,
       4.5vw,
       4.2rem
     );
+
+  text-shadow:
+    0 1px 0
+    rgba(255, 250, 240, 0.72);
 }
 
 .hero-statement
@@ -1759,9 +1810,17 @@ h3 {
     1.2rem 0 0;
 
   color:
-    var(--ink-soft);
+    #51443d;
+
+  font-weight: 520;
 
   line-height: 1.75;
+}
+
+.hero-statement
+> .eyebrow {
+  color:
+    #823f36;
 }
 
 .hero-actions {
@@ -1787,6 +1846,8 @@ h3 {
 .phrolova-underlay {
   position: absolute;
 
+  top: 45.5%;
+
   right:
     clamp(
       -86px,
@@ -1794,12 +1855,7 @@ h3 {
       -38px
     );
 
-  bottom:
-    clamp(
-      42px,
-      5vw,
-      78px
-    );
+  bottom: auto;
 
   z-index: 1;
 
@@ -1813,6 +1869,7 @@ h3 {
   pointer-events: none;
 
   transform:
+    translateY(-50%)
     rotate(-4deg);
 
   transform-origin:
@@ -1863,16 +1920,17 @@ h3 {
   .hero:hover
   .phrolova-underlay {
     transform:
+      translateY(calc(-50% - 4px))
       rotate(-2.5deg)
-      translateY(-4px)
       scale(1.015);
   }
 }
 
 @media (max-width: 920px) {
   .phrolova-underlay {
+    top: auto;
     right: -62px;
-    bottom: 92px;
+    bottom: 142px;
 
     width:
       min(
@@ -1884,8 +1942,9 @@ h3 {
 
 @media (max-width: 720px) {
   .phrolova-underlay {
+    top: auto;
     right: -78px;
-    bottom: 84px;
+    bottom: 138px;
 
     width:
       min(
@@ -1895,6 +1954,14 @@ h3 {
 
     transform:
       rotate(-4deg);
+  }
+
+  .hero-statement::before {
+    inset:
+      0.55rem
+      -0.2rem
+      0.55rem
+      0;
   }
 }
 
