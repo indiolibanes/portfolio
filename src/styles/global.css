@@ -393,37 +393,17 @@ a:focus-visible {
 
 .github-heading {
   grid-template-columns:
-    minmax(0, 1fr)
-    max-content;
-
-  column-gap:
-    clamp(
-      1.5rem,
-      4vw,
-      3.5rem
-    );
-
-  row-gap:
-    0.8rem;
-
-  align-items: start;
-}
-
-.github-heading-top {
-  grid-column: 1 / -1;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
+    minmax(0, 0.72fr)
+    minmax(320px, 1.28fr);
 
   gap:
     clamp(
-      0.9rem,
-      2vw,
-      1.4rem
+      1.5rem,
+      6vw,
+      5rem
     );
 
-  min-width: 0;
+  align-items: start;
 }
 
 .github-heading h2 {
@@ -434,69 +414,46 @@ a:focus-visible {
   min-width: 0;
 }
 
-.github-gif-luna {
-  display: block;
-
-  width:
-    clamp(
-      220px,
-      24vw,
-      300px
-    );
-
-  height: auto;
-
-  flex: 0 0 auto;
-
-  aspect-ratio:
-    16 / 9;
-
-  object-fit: cover;
-
-  border-radius:
-    12px 16px
-    13px 14px;
-
-  box-shadow:
-    0 8px 20px
-    rgba(71, 60, 51, 0.12);
-}
-
-.github-heading > p {
-  grid-column: 1;
-  grid-row: 2;
-
+.github-heading-copy > p:not(.eyebrow) {
   max-width: 48ch;
 
-  margin-top: 0;
+  margin:
+    clamp(
+      0.85rem,
+      1.8vw,
+      1.2rem
+    )
+    0 0;
+
+  color:
+    var(--ink-soft);
+
+  line-height: 1.75;
 }
 
-.github-gif-grid {
-  grid-column: 2;
-  grid-row: 2;
-
-  width: max-content;
-  max-width: 100%;
+.github-luna-slot {
+  width: 100%;
 
   display: grid;
 
   grid-template-columns:
     repeat(
       2,
-      clamp(
-        220px,
-        24vw,
-        300px
-      )
+      minmax(0, 1fr)
     );
 
-  gap: 0.42rem;
+  gap:
+    clamp(
+      0.5rem,
+      1.2vw,
+      0.8rem
+    );
 
   align-self: start;
-  justify-self: end;
 }
 
-.github-gif-grid img {
+.github-gif-luna,
+.github-gif-strip img {
   display: block;
 
   width: 100%;
@@ -514,6 +471,36 @@ a:focus-visible {
   box-shadow:
     0 8px 20px
     rgba(71, 60, 51, 0.12);
+}
+
+.github-gif-strip {
+  grid-column: 1 / -1;
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap:
+    clamp(
+      0.5rem,
+      1.2vw,
+      0.8rem
+    );
+
+  margin-top:
+    clamp(
+      -0.2rem,
+      -0.4vw,
+      -0.05rem
+    );
+
+  overflow: hidden;
 }
 
 .github-feature {
@@ -1137,27 +1124,20 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .github-heading-top,
-  .github-gif-grid,
-  .github-heading > p {
-    grid-column: 1;
+  .github-luna-slot {
+    max-width:
+      min(
+        100%,
+        680px
+      );
   }
 
-  .github-heading > p,
-  .github-gif-grid {
-    grid-row: auto;
-  }
-
-  .github-gif-grid {
-    width: max-content;
-
+  .github-gif-strip {
     grid-template-columns:
       repeat(
-        2,
-        220px
+        3,
+        minmax(0, 1fr)
       );
-
-    justify-self: start;
   }
 
   .github-feature {
@@ -1178,32 +1158,20 @@ a:focus-visible {
     max-width: 100%;
   }
 
-  .github-heading-top {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .github-gif-luna {
-    width:
-      min(
-        72vw,
-        300px
-      );
-  }
-
-  .github-gif-grid {
-    width: 100%;
-
+  .github-luna-slot {
     grid-template-columns:
       repeat(
         2,
-        minmax(
-          0,
-          1fr
-        )
+        minmax(0, 1fr)
       );
+  }
 
-    gap: 0.38rem;
+  .github-gif-strip {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
   }
 
   .github-feature {
