@@ -406,12 +406,62 @@ a:focus-visible {
   align-items: start;
 }
 
+.github-heading {
+  grid-template-columns: 1fr;
+
+  gap:
+    clamp(
+      1rem,
+      2.4vw,
+      1.6rem
+    );
+
+  align-items: start;
+}
+
 .github-heading h2 {
   max-width: 11ch;
 }
 
 .github-heading-copy {
   min-width: 0;
+}
+
+.github-title-row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+
+  gap:
+    clamp(
+      0.8rem,
+      2vw,
+      1.35rem
+    );
+
+  max-width: 100%;
+}
+
+.github-gif-luna {
+  display: block;
+
+  flex: 0 0 auto;
+
+  width: auto;
+  height: auto;
+
+  max-width: 100%;
+  max-height: 220px;
+
+  object-fit: contain;
+
+  border-radius:
+    12px 16px
+    13px 14px;
+
+  box-shadow:
+    0 8px 20px
+    rgba(71, 60, 51, 0.12);
 }
 
 .github-heading-copy > p:not(.eyebrow) {
@@ -431,38 +481,36 @@ a:focus-visible {
   line-height: 1.75;
 }
 
-.github-luna-slot {
+.github-gif-strip {
   width: 100%;
+  max-width: 100%;
 
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 
   gap:
     clamp(
-      0.5rem,
-      1.2vw,
-      0.8rem
+      0.65rem,
+      1.4vw,
+      1rem
     );
 
-  align-self: start;
+  overflow: hidden;
 }
 
-.github-gif-luna,
 .github-gif-strip img {
   display: block;
 
-  width: 100%;
+  flex: 0 0 auto;
+
+  width: auto;
   height: auto;
 
-  aspect-ratio:
-    16 / 9;
+  max-width: 100%;
+  max-height: 220px;
 
-  object-fit: cover;
+  object-fit: contain;
 
   border-radius:
     12px 16px
@@ -471,36 +519,6 @@ a:focus-visible {
   box-shadow:
     0 8px 20px
     rgba(71, 60, 51, 0.12);
-}
-
-.github-gif-strip {
-  grid-column: 1 / -1;
-
-  width: 100%;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
-
-  gap:
-    clamp(
-      0.5rem,
-      1.2vw,
-      0.8rem
-    );
-
-  margin-top:
-    clamp(
-      -0.2rem,
-      -0.4vw,
-      -0.05rem
-    );
-
-  overflow: hidden;
 }
 
 .github-feature {
@@ -1158,20 +1176,13 @@ a:focus-visible {
     max-width: 100%;
   }
 
-  .github-luna-slot {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+  .github-title-row {
+    align-items: flex-start;
   }
 
-  .github-gif-strip {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
+  .github-gif-luna,
+  .github-gif-strip img {
+    max-height: 180px;
   }
 
   .github-feature {
