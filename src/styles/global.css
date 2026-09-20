@@ -4057,3 +4057,701 @@ h3 {
     flex-direction: column;
   }
 }
+
+
+/* --------------------------------------------------
+   Temporary experiment: dark denim GitHub card
+-------------------------------------------------- */
+
+.github-feature {
+  gap: 0;
+
+  border-color:
+    #142d3d;
+
+  background-color:
+    #18384c;
+
+  background-image:
+    repeating-linear-gradient(
+      42deg,
+      rgba(255, 255, 255, 0.035)
+      0 1px,
+      transparent 1px 4px
+    ),
+    repeating-linear-gradient(
+      -42deg,
+      rgba(5, 18, 28, 0.10)
+      0 1px,
+      transparent 1px 5px
+    ),
+    linear-gradient(
+      135deg,
+      #274b60 0%,
+      #1a3a50 48%,
+      #102a3d 100%
+    );
+
+  color:
+    #f7f3e8;
+}
+
+.github-feature-copy {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025),
+      transparent 74%
+    );
+}
+
+.github-feature-owner img {
+  border-color:
+    rgba(247, 243, 232, 0.34);
+
+  box-shadow:
+    0 4px 0
+    rgba(5, 18, 28, 0.24);
+}
+
+.github-overline {
+  color:
+    #e9c574;
+}
+
+.github-feature-owner strong,
+.github-feature-copy h3 {
+  color:
+    #fffaf0;
+}
+
+.github-feature-copy > p {
+  color:
+    rgba(239, 244, 245, 0.80);
+}
+
+.github-tags span {
+  border-color:
+    rgba(247, 243, 232, 0.24);
+
+  background:
+    rgba(247, 243, 232, 0.10);
+
+  color:
+    #f7f3e8;
+}
+
+.github-cta {
+  border-color:
+    rgba(247, 243, 232, 0.38);
+
+  background:
+    rgba(247, 243, 232, 0.92);
+
+  color:
+    #173247;
+}
+
+.github-feature:hover {
+  border-color:
+    #0b2232;
+}
+
+.github-feature:hover .github-cta {
+  background:
+    #fff3c8;
+}
+
+.github-visual {
+  border-left:
+    1px solid
+    rgba(247, 243, 232, 0.12);
+}
+
+
+/* --------------------------------------------------
+   Modo serio — text-first, circa 1998
+-------------------------------------------------- */
+
+html[data-serious-mode='true'] {
+  color-scheme: light;
+
+  background:
+    #c0c0c0;
+
+  scroll-behavior: auto;
+}
+
+html[data-serious-mode='true'],
+html[data-serious-mode='true'] body {
+  cursor:
+    auto !important;
+}
+
+html[data-serious-mode='true'] body {
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 16px;
+  line-height: 1.5;
+
+  text-rendering: auto;
+  -webkit-font-smoothing: auto;
+}
+
+html[data-serious-mode='true'] .ambient,
+html[data-serious-mode='true'] .hero-cover-art,
+html[data-serious-mode='true'] .pixel-mushroom,
+html[data-serious-mode='true'] .phrolova-underlay,
+html[data-serious-mode='true'] .shorekeeper-underlay,
+html[data-serious-mode='true'] .github-gif-luna,
+html[data-serious-mode='true'] .github-gif-strip,
+html[data-serious-mode='true'] .github-visual,
+html[data-serious-mode='true'] .triforce-stage,
+html[data-serious-mode='true'] .recent-artwork-shell,
+html[data-serious-mode='true'] .playlist-artwork-fallback,
+html[data-serious-mode='true'] main img,
+html[data-serious-mode='true'] main svg {
+  display:
+    none !important;
+}
+
+html[data-serious-mode='true'] .site-header {
+  position: static;
+
+  padding:
+    8px 12px 0;
+}
+
+html[data-serious-mode='true'] .nav-shell {
+  width:
+    min(
+      960px,
+      100%
+    );
+
+  padding:
+    6px 8px;
+
+  border:
+    2px outset
+    #efefef;
+
+  border-radius: 0;
+
+  background:
+    #c0c0c0;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  box-shadow: none;
+}
+
+html[data-serious-mode='true'] .brand {
+  color:
+    #000000;
+}
+
+html[data-serious-mode='true'] .brand-mark {
+  width: 34px;
+  height: 34px;
+
+  border:
+    2px outset
+    #efefef;
+
+  border-radius: 0;
+
+  background:
+    #c0c0c0;
+
+  color:
+    #000000;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 0.9rem;
+
+  box-shadow: none;
+}
+
+html[data-serious-mode='true'] .brand-copy small {
+  color:
+    #333333;
+
+  font-family:
+    "Courier New",
+    monospace;
+}
+
+html[data-serious-mode='true'] .nav-links {
+  gap: 0.3rem;
+}
+
+html[data-serious-mode='true'] .nav-links a {
+  padding:
+    0.25rem 0.35rem;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 0.82rem;
+
+  text-decoration:
+    underline;
+}
+
+html[data-serious-mode='true'] .nav-links a:visited {
+  color:
+    #551a8b;
+}
+
+html[data-serious-mode='true'] .serious-toggle {
+  min-height: 34px;
+
+  padding:
+    0.28rem 0.55rem;
+
+  border:
+    2px outset
+    #efefef !important;
+
+  border-radius:
+    0 !important;
+
+  background:
+    #c0c0c0 !important;
+
+  color:
+    #000000 !important;
+
+  box-shadow:
+    none !important;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif !important;
+
+  font-size:
+    0.78rem !important;
+
+  transform:
+    none !important;
+}
+
+html[data-serious-mode='true'] .portfolio-main {
+  width:
+    min(
+      960px,
+      calc(100% - 24px)
+    );
+
+  padding:
+    18px 0 40px;
+}
+
+html[data-serious-mode='true'] h1,
+html[data-serious-mode='true'] h2,
+html[data-serious-mode='true'] h3 {
+  color:
+    #000000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  letter-spacing: 0;
+}
+
+html[data-serious-mode='true'] .eyebrow,
+html[data-serious-mode='true'] .project-label,
+html[data-serious-mode='true'] .note-label,
+html[data-serious-mode='true'] .hello,
+html[data-serious-mode='true'] .github-overline {
+  color:
+    #000000;
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  letter-spacing:
+    0.04em;
+}
+
+html[data-serious-mode='true'] .hero {
+  display: block;
+
+  padding:
+    16px;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  box-shadow: none;
+}
+
+html[data-serious-mode='true'] .hero-intro {
+  min-height: 0;
+
+  padding: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+}
+
+html[data-serious-mode='true'] .identity-cluster {
+  display: block;
+}
+
+html[data-serious-mode='true'] .name-brick-plate {
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-serious-mode='true'] .gold-block {
+  display: none;
+}
+
+html[data-serious-mode='true'] .block-name {
+  color:
+    #000000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  font-size:
+    clamp(
+      2.4rem,
+      8vw,
+      4.8rem
+    );
+
+  letter-spacing: 0;
+
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+html[data-serious-mode='true'] .role {
+  color:
+    #333333;
+}
+
+html[data-serious-mode='true'] .hero-statement {
+  margin-top:
+    2rem;
+
+  padding: 0;
+
+  background:
+    transparent;
+}
+
+html[data-serious-mode='true'] .hero-statement::before {
+  content:
+    none;
+}
+
+html[data-serious-mode='true'] .hero-note {
+  width: 100%;
+
+  margin:
+    1.5rem 0 0;
+
+  padding:
+    12px;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #f5f5f5;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-serious-mode='true'] .hero-note .tape {
+  display: none;
+}
+
+html[data-serious-mode='true'] .section {
+  margin-top:
+    24px;
+}
+
+html[data-serious-mode='true'] .section-heading,
+html[data-serious-mode='true'] .github-heading,
+html[data-serious-mode='true'] .music-heading,
+html[data-serious-mode='true'] .lab,
+html[data-serious-mode='true'] .background,
+html[data-serious-mode='true'] .closing {
+  grid-template-columns:
+    1fr;
+
+  gap:
+    1rem;
+}
+
+html[data-serious-mode='true'] .github-title-row {
+  display: block;
+}
+
+html[data-serious-mode='true'] .github-heading h2,
+html[data-serious-mode='true'] .github-feature-copy h3,
+html[data-serious-mode='true'] .closing h2,
+html[data-serious-mode='true'] .background-title h2,
+html[data-serious-mode='true'] .music-heading > div > h2 {
+  max-width:
+    none;
+}
+
+html[data-serious-mode='true'] .github-feature {
+  grid-template-columns:
+    1fr;
+
+  gap: 0;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-serious-mode='true'] .github-feature-copy {
+  padding:
+    16px;
+
+  background:
+    transparent;
+}
+
+html[data-serious-mode='true'] .github-feature-owner img {
+  display:
+    none !important;
+}
+
+html[data-serious-mode='true'] .github-feature-owner strong,
+html[data-serious-mode='true'] .github-feature-copy h3,
+html[data-serious-mode='true'] .github-feature-copy > p {
+  color:
+    #000000;
+}
+
+html[data-serious-mode='true'] .github-tags span,
+html[data-serious-mode='true'] .music-source-label span {
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #eeeeee;
+
+  color:
+    #000000;
+
+  font-family:
+    "Courier New",
+    monospace;
+}
+
+html[data-serious-mode='true'] .github-cta,
+html[data-serious-mode='true'] .apple-music-link,
+html[data-serious-mode='true'] .primary-button {
+  border: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  box-shadow: none;
+
+  text-decoration:
+    underline;
+
+  transform: none;
+}
+
+html[data-serious-mode='true'] .lab-card,
+html[data-serious-mode='true'] .background-list article,
+html[data-serious-mode='true'] .closing,
+html[data-serious-mode='true'] .recent-track-card,
+html[data-serious-mode='true'] .playlist-card {
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-serious-mode='true'] .recent-track-card {
+  grid-template-columns:
+    1fr;
+
+  min-height: 0;
+}
+
+html[data-serious-mode='true'] .playlist-card {
+  grid-template-columns:
+    minmax(0, 1fr)
+    20px;
+}
+
+html[data-serious-mode='true'] .social-links {
+  flex-wrap: wrap;
+
+  gap:
+    0.75rem;
+}
+
+html[data-serious-mode='true'] .social-links a {
+  width: auto;
+  height: auto;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  box-shadow: none;
+
+  text-decoration:
+    underline;
+}
+
+html[data-serious-mode='true'] .social-links svg {
+  display:
+    none;
+}
+
+html[data-serious-mode='true'] .social-links .sr-only {
+  position:
+    static !important;
+
+  width:
+    auto !important;
+
+  height:
+    auto !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    visible !important;
+
+  clip:
+    auto !important;
+
+  white-space:
+    normal !important;
+}
+
+html[data-serious-mode='true'] .portfolio-footer {
+  border-radius: 0;
+
+  background:
+    #eeeeee;
+}
+
+@media (max-width: 720px) {
+  html[data-serious-mode='true'] .nav-shell {
+    align-items:
+      flex-start;
+  }
+
+  html[data-serious-mode='true'] .nav-links {
+    flex-wrap:
+      wrap;
+
+    justify-content:
+      flex-end;
+  }
+
+  html[data-serious-mode='true'] .github-gif-luna,
+  html[data-serious-mode='true'] .github-gif-strip {
+    display:
+      none !important;
+  }
+}
