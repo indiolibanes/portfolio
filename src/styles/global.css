@@ -392,21 +392,6 @@ a:focus-visible {
 -------------------------------------------------- */
 
 .github-heading {
-  grid-template-columns:
-    minmax(0, 0.72fr)
-    minmax(320px, 1.28fr);
-
-  gap:
-    clamp(
-      1.5rem,
-      6vw,
-      5rem
-    );
-
-  align-items: start;
-}
-
-.github-heading {
   grid-template-columns: 1fr;
 
   gap:
@@ -428,30 +413,37 @@ a:focus-visible {
 }
 
 .github-title-row {
-  display: flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
 
   gap:
     clamp(
-      0.8rem,
-      2vw,
-      1.35rem
+      1rem,
+      3vw,
+      2.2rem
     );
 
+  align-items: end;
+
+  width: 100%;
   max-width: 100%;
 }
 
 .github-gif-luna {
   display: block;
 
-  flex: 0 0 auto;
-
   width: auto;
   height: auto;
 
   max-width: 100%;
   max-height: 220px;
+
+  margin-right: 4%;
+
+  justify-self: end;
 
   object-fit: contain;
 
@@ -488,10 +480,9 @@ a:focus-visible {
   display: grid;
 
   grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+    auto
+    minmax(0, 1fr)
+    auto;
 
   gap:
     clamp(
@@ -526,10 +517,14 @@ a:focus-visible {
 }
 
 .github-gif-ikalgo {
+  grid-column: 1;
+
   justify-self: start;
 }
 
 .github-gif-right {
+  grid-column: 3;
+
   justify-self: end;
 
   transform:
@@ -1201,7 +1196,15 @@ a:focus-visible {
   }
 
   .github-title-row {
+    grid-template-columns: 1fr;
+
     align-items: flex-start;
+  }
+
+  .github-gif-luna {
+    margin-right: 0;
+
+    justify-self: start;
   }
 
   .github-gif-luna,
