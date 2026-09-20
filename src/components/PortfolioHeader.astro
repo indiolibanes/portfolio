@@ -1,5 +1,6 @@
 ---
 import { PROFILE } from '../config';
+import SeriousModeToggle from './SeriousModeToggle.astro';
 ---
 
 <header class="site-header">
@@ -19,6 +20,7 @@ import { PROFILE } from '../config';
       <a href="#percurso">Percurso</a>
       <a href="#musica">Música</a>
       <a class="nav-cta" href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+      <SeriousModeToggle />
     </div>
   </nav>
 </header>
