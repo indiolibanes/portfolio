@@ -485,24 +485,28 @@ a:focus-visible {
   width: 100%;
   max-width: 100%;
 
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
   gap:
     clamp(
-      0.65rem,
-      1.4vw,
-      1rem
+      0.8rem,
+      1.6vw,
+      1.15rem
     );
+
+  align-items: start;
 
   overflow: hidden;
 }
 
 .github-gif-strip img {
   display: block;
-
-  flex: 0 0 auto;
 
   width: auto;
   height: auto;
@@ -519,6 +523,26 @@ a:focus-visible {
   box-shadow:
     0 8px 20px
     rgba(71, 60, 51, 0.12);
+}
+
+.github-gif-ikalgo {
+  justify-self: start;
+}
+
+.github-gif-right {
+  justify-self: end;
+
+  transform:
+    scale(1.06);
+
+  transform-origin:
+    right top;
+}
+
+.github-gif-violet {
+  grid-column: 1 / -1;
+
+  justify-self: center;
 }
 
 .github-feature {
