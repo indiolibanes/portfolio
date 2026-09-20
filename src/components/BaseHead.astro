@@ -24,6 +24,21 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 <meta name="theme-color" content="#f6efdc" />
 
+<script is:inline>
+  (() => {
+    try {
+      if (
+        localStorage.getItem(
+          'portfolio-serious-mode',
+        ) === 'true'
+      ) {
+        document.documentElement.dataset
+          .seriousMode = 'true';
+      }
+    } catch {}
+  })();
+</script>
+
 <link rel="canonical" href={canonicalUrl} />
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
