@@ -4757,52 +4757,84 @@ html[data-serious-mode='true'] .portfolio-footer {
 }
 
 /* --------------------------------------------------
-   Shannon entropy — transparent chalk beside headline
+   Shannon blackboard — animated entropy stage
 -------------------------------------------------- */
 
-.github-feature {
-  grid-template-columns: 1fr;
-}
-
-.github-headline {
-  display: grid;
+.github-feature-shannon {
   grid-template-columns:
-    minmax(0, 1fr)
-    clamp(190px, 26vw, 320px);
-
-  gap:
-    clamp(
-      1rem,
-      3vw,
-      2.4rem
-    );
+    minmax(0, 0.92fr)
+    minmax(420px, 1.08fr);
 
   align-items: center;
 }
 
-.github-headline h3 {
-  max-width: 12ch;
+.github-feature-shannon
+.github-feature-copy h3 {
+  max-width: 11ch;
 
   color:
     #e9c574;
 }
 
-.github-shannon-gif {
+.github-board-stage {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio:
+    4 / 3;
+
+  align-self: center;
+
+  overflow: hidden;
+
+  border-left:
+    1px solid
+    rgba(247, 243, 232, 0.12);
+
+  background:
+    #101b22;
+
+  isolation: isolate;
+}
+
+.github-board-base {
+  position: absolute;
+  inset: 0;
+
   display: block;
 
   width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  filter:
+    grayscale(1)
+    contrast(1.04);
+}
+
+.github-board-overlay {
+  position: absolute;
+
+  left: 41.85%;
+  top: 24.03%;
+
+  z-index: 2;
+
+  display: block;
+
+  width: 46.82%;
   height: auto;
-
-  justify-self: end;
-
-  opacity: 0.97;
 
   pointer-events: none;
 
+  opacity: 0.98;
+
   filter:
     drop-shadow(
-      0 5px 12px
-      rgba(5, 18, 28, 0.24)
+      0 4px 10px
+      rgba(0, 0, 0, 0.20)
     );
 }
 
@@ -4811,69 +4843,74 @@ html[data-serious-mode='true'] .portfolio-footer {
   and
   (prefers-reduced-motion: no-preference) {
 
-  .github-feature:hover
-  .github-shannon-gif {
+  .github-feature-shannon:hover
+  .github-board-overlay {
     animation:
-      github-shannon-float
+      github-shannon-board-float
       2.8s
       ease-in-out
       infinite;
   }
 }
 
-@keyframes github-shannon-float {
+@keyframes github-shannon-board-float {
   0%,
   100% {
     transform:
       translateY(0)
-      rotate(-0.2deg);
+      rotate(-0.12deg);
   }
 
   50% {
     transform:
-      translateY(-4px)
-      rotate(0.15deg);
+      translateY(-2px)
+      rotate(0.08deg);
+  }
+}
+
+@media (max-width: 1040px) {
+  .github-feature-shannon {
+    grid-template-columns:
+      minmax(0, 0.95fr)
+      minmax(360px, 1.05fr);
   }
 }
 
 @media (max-width: 920px) {
-  .github-headline {
-    grid-template-columns:
-      minmax(0, 1fr)
-      minmax(170px, 240px);
+  .github-feature-shannon {
+    grid-template-columns: 1fr;
+  }
+
+  .github-feature-shannon
+  .github-feature-copy h3 {
+    max-width: 15ch;
+  }
+
+  .github-board-stage {
+    border-left: 0;
+
+    border-top:
+      1px solid
+      rgba(247, 243, 232, 0.12);
   }
 }
 
 @media (max-width: 720px) {
-  .github-headline {
-    grid-template-columns: 1fr;
-
-    align-items: start;
-  }
-
-  .github-headline h3 {
-    max-width: 15ch;
-  }
-
-  .github-shannon-gif {
-    width:
-      min(
-        72vw,
-        280px
-      );
-
-    justify-self: end;
+  .github-board-stage {
+    aspect-ratio:
+      4 / 3;
   }
 }
 
 html[data-serious-mode='true']
-.github-headline h3 {
-  color:
-    #000000;
-}
-
-html[data-serious-mode='true']
-.github-shannon-gif {
+.github-board-stage {
   display:
     none !important;
+}
+
+html[data-serious-mode='true']
+.github-feature-shannon
+.github-feature-copy h3 {
+  color:
+    #000000;
 }
