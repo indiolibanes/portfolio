@@ -4993,9 +4993,9 @@ html[data-serious-mode='true']
     width: 100%;
     height:
       clamp(
-        200px,
-        18vw,
-        230px
+        250px,
+        24vw,
+        320px
       );
 
     max-width: 100%;
@@ -5065,7 +5065,7 @@ html[data-serious-mode='true']
 
   border-radius: 0;
 
-  opacity: 1;
+  opacity: 0.96;
 
   background:
     transparent;
@@ -5074,6 +5074,10 @@ html[data-serious-mode='true']
 
   box-shadow:
     none;
+
+  filter:
+    contrast(0.78)
+    brightness(1.16);
 }
 
 .closing-marks .triforce-stage {
