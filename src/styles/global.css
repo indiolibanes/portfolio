@@ -4933,75 +4933,87 @@ html[data-serious-mode='true']
     #000000;
 }
 
-
-
 /* --------------------------------------------------
    Desktop GIF alignment — GitHub showcase only
 -------------------------------------------------- */
 
 .github-gif-luna-desktop {
-  display: none;
+  display: none !important;
 }
 
 @media (min-width: 921px) {
   .github-title-row {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+
+    align-items: end;
   }
 
   .github-gif-luna {
-    display: none;
-  }
-
-  .github-gif-luna-desktop {
     display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 100%;
+    max-height: 220px;
+
+    margin-right: 4%;
+
+    justify-self: end;
+
+    object-fit: contain;
+
+    transform:
+      translateY(10px);
   }
 
   .github-gif-strip {
     grid-template-columns:
       repeat(
-        4,
-        minmax(0, 1fr)
+        3,
+        max-content
       );
+
+    justify-content: center;
 
     gap:
       clamp(
-        0.75rem,
-        1.4vw,
-        1.1rem
+        0.8rem,
+        1.6vw,
+        1.15rem
       );
 
-    align-items: center;
+    align-items: start;
 
     overflow: visible;
   }
 
-  .github-gif-strip img,
-  .github-gif-ikalgo,
-  .github-gif-right,
-  .github-gif-violet,
-  .github-gif-luna-desktop {
-    grid-column: auto;
+  .github-gif-strip img {
+    width: auto;
+    height: auto;
 
-    width: 100%;
-    height:
-      clamp(
-        118px,
-        12vw,
-        168px
-      );
+    max-width: 100%;
+    max-height: 220px;
 
-    max-width: none;
-    max-height: none;
+    object-fit: contain;
 
     margin: 0;
 
-    justify-self: stretch;
+    transform: none;
+  }
 
-    object-fit: cover;
+  .github-gif-ikalgo,
+  .github-gif-right,
+  .github-gif-violet {
+    grid-column: auto;
+
+    justify-self: center;
+
+    margin-right: 0;
 
     transform: none;
-
-    transform-origin: center;
   }
 }
 
@@ -5031,22 +5043,33 @@ html[data-serious-mode='true']
 
   width:
     clamp(
-      96px,
+      108px,
       11vw,
-      145px
+      150px
     );
+
+  aspect-ratio:
+    1 / 1;
 
   height: auto;
 
   flex: 0 0 auto;
 
-  opacity: 0.92;
+  object-fit: cover;
+  object-position: center;
 
-  filter:
-    drop-shadow(
-      0 8px 14px
-      rgba(71, 60, 51, 0.12)
-    );
+  border-radius: 50%;
+
+  background:
+    #fffaf0;
+
+  border:
+    1px solid
+    rgba(71, 60, 51, 0.18);
+
+  box-shadow:
+    0 8px 14px
+    rgba(71, 60, 51, 0.12);
 }
 
 .closing-marks .triforce-stage {
