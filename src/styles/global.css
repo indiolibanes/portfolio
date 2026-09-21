@@ -4755,3 +4755,125 @@ html[data-serious-mode='true'] .portfolio-footer {
       none !important;
   }
 }
+
+
+/* --------------------------------------------------
+   Shannon entropy — transparent chalk over denim
+-------------------------------------------------- */
+
+.github-visual {
+  display: grid;
+  place-items: center;
+
+  min-height:
+    clamp(
+      320px,
+      34vw,
+      460px
+    );
+
+  padding:
+    clamp(
+      1.25rem,
+      3vw,
+      2.4rem
+    );
+
+  background:
+    transparent;
+
+  isolation: isolate;
+}
+
+.github-visual::before {
+  content: none;
+}
+
+.github-shannon-gif {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+
+  width:
+    min(
+      94%,
+      480px
+    );
+
+  height: auto;
+
+  opacity: 0.97;
+
+  filter:
+    drop-shadow(
+      0 5px 12px
+      rgba(5, 18, 28, 0.24)
+    );
+}
+
+@media
+  (hover: hover)
+  and
+  (prefers-reduced-motion: no-preference) {
+
+  .github-feature:hover
+  .github-shannon-gif {
+    animation:
+      github-shannon-float
+      2.8s
+      ease-in-out
+      infinite;
+  }
+}
+
+@keyframes github-shannon-float {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-0.2deg);
+  }
+
+  50% {
+    transform:
+      translateY(-4px)
+      rotate(0.15deg);
+  }
+}
+
+@media (max-width: 920px) {
+  .github-visual {
+    min-height: 260px;
+
+    border-left: 0;
+
+    border-top:
+      1px solid
+      rgba(247, 243, 232, 0.12);
+  }
+
+  .github-shannon-gif {
+    width:
+      min(
+        92%,
+        440px
+      );
+  }
+}
+
+@media (max-width: 720px) {
+  .github-visual {
+    min-height: 220px;
+
+    padding: 1rem;
+  }
+
+  .github-shannon-gif {
+    width:
+      min(
+        94%,
+        380px
+      );
+  }
+}
