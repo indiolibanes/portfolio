@@ -4933,3 +4933,166 @@ html[data-serious-mode='true']
     #000000;
 }
 
+
+
+/* --------------------------------------------------
+   Desktop GIF alignment — GitHub showcase only
+-------------------------------------------------- */
+
+.github-gif-luna-desktop {
+  display: none;
+}
+
+@media (min-width: 921px) {
+  .github-title-row {
+    grid-template-columns: 1fr;
+  }
+
+  .github-gif-luna {
+    display: none;
+  }
+
+  .github-gif-luna-desktop {
+    display: block;
+  }
+
+  .github-gif-strip {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      clamp(
+        0.75rem,
+        1.4vw,
+        1.1rem
+      );
+
+    align-items: center;
+
+    overflow: visible;
+  }
+
+  .github-gif-strip img,
+  .github-gif-ikalgo,
+  .github-gif-right,
+  .github-gif-violet,
+  .github-gif-luna-desktop {
+    grid-column: auto;
+
+    width: 100%;
+    height:
+      clamp(
+        118px,
+        12vw,
+        168px
+      );
+
+    max-width: none;
+    max-height: none;
+
+    margin: 0;
+
+    justify-self: stretch;
+
+    object-fit: cover;
+
+    transform: none;
+
+    transform-origin: center;
+  }
+}
+
+/* --------------------------------------------------
+   Emil + Triforce
+-------------------------------------------------- */
+
+.closing-marks {
+  justify-self: end;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap:
+    clamp(
+      0.85rem,
+      2vw,
+      1.5rem
+    );
+
+  min-width: 0;
+}
+
+.emil-mark {
+  display: block;
+
+  width:
+    clamp(
+      96px,
+      11vw,
+      145px
+    );
+
+  height: auto;
+
+  flex: 0 0 auto;
+
+  opacity: 0.92;
+
+  filter:
+    drop-shadow(
+      0 8px 14px
+      rgba(71, 60, 51, 0.12)
+    );
+}
+
+.closing-marks .triforce-stage {
+  justify-self: auto;
+
+  flex: 0 1
+    clamp(
+      190px,
+      21vw,
+      290px
+    );
+}
+
+@media (max-width: 720px) {
+  .closing-marks {
+    width: 100%;
+
+    justify-self: center;
+    justify-content: center;
+  }
+
+  .emil-mark {
+    width:
+      min(
+        28vw,
+        105px
+      );
+  }
+
+  .closing-marks .triforce-stage {
+    width:
+      min(
+        54vw,
+        220px
+      );
+
+    flex-basis:
+      min(
+        54vw,
+        220px
+      );
+  }
+}
+
+html[data-serious-mode='true']
+.closing-marks {
+  display:
+    none !important;
+}
