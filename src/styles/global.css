@@ -4990,15 +4990,20 @@ html[data-serious-mode='true']
 
     display: block;
 
-    width: auto;
-    height: auto;
+    width: 100%;
+    height:
+      clamp(
+        200px,
+        18vw,
+        230px
+      );
 
     max-width: 100%;
-    max-height: 220px;
+    max-height: none;
 
     margin: 0;
 
-    justify-self: center;
+    justify-self: stretch;
 
     object-fit: contain;
 
@@ -5055,23 +5060,20 @@ html[data-serious-mode='true']
 
   justify-self: center;
 
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 
-  border-radius: 50%;
+  border-radius: 0;
 
   opacity: 1;
 
   background:
-    #fffaf0;
+    transparent;
 
-  border:
-    1px solid
-    rgba(71, 60, 51, 0.20);
+  border: 0;
 
   box-shadow:
-    0 8px 18px
-    rgba(71, 60, 51, 0.14);
+    none;
 }
 
 .closing-marks .triforce-stage {
