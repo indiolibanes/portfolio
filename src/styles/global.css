@@ -4756,54 +4756,48 @@ html[data-serious-mode='true'] .portfolio-footer {
   }
 }
 
-
 /* --------------------------------------------------
-   Shannon entropy — transparent chalk over denim
+   Shannon entropy — transparent chalk beside headline
 -------------------------------------------------- */
 
-.github-visual {
+.github-feature {
+  grid-template-columns: 1fr;
+}
+
+.github-headline {
   display: grid;
-  place-items: center;
+  grid-template-columns:
+    minmax(0, 1fr)
+    clamp(190px, 26vw, 320px);
 
-  min-height:
+  gap:
     clamp(
-      320px,
-      34vw,
-      460px
-    );
-
-  padding:
-    clamp(
-      1.25rem,
+      1rem,
       3vw,
       2.4rem
     );
 
-  background:
-    transparent;
-
-  isolation: isolate;
+  align-items: center;
 }
 
-.github-visual::before {
-  content: none;
+.github-headline h3 {
+  max-width: 12ch;
+
+  color:
+    #e9c574;
 }
 
 .github-shannon-gif {
-  position: relative;
-  z-index: 1;
-
   display: block;
 
-  width:
-    min(
-      94%,
-      480px
-    );
-
+  width: 100%;
   height: auto;
 
+  justify-self: end;
+
   opacity: 0.97;
+
+  pointer-events: none;
 
   filter:
     drop-shadow(
@@ -4843,37 +4837,43 @@ html[data-serious-mode='true'] .portfolio-footer {
 }
 
 @media (max-width: 920px) {
-  .github-visual {
-    min-height: 260px;
-
-    border-left: 0;
-
-    border-top:
-      1px solid
-      rgba(247, 243, 232, 0.12);
-  }
-
-  .github-shannon-gif {
-    width:
-      min(
-        92%,
-        440px
-      );
+  .github-headline {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(170px, 240px);
   }
 }
 
 @media (max-width: 720px) {
-  .github-visual {
-    min-height: 220px;
+  .github-headline {
+    grid-template-columns: 1fr;
 
-    padding: 1rem;
+    align-items: start;
+  }
+
+  .github-headline h3 {
+    max-width: 15ch;
   }
 
   .github-shannon-gif {
     width:
       min(
-        94%,
-        380px
+        72vw,
+        280px
       );
+
+    justify-self: end;
   }
+}
+
+html[data-serious-mode='true']
+.github-headline h3 {
+  color:
+    #000000;
+}
+
+html[data-serious-mode='true']
+.github-shannon-gif {
+  display:
+    none !important;
 }
