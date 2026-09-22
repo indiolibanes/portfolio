@@ -5026,121 +5026,42 @@ html[data-serious-mode='true']
 }
 
 /* --------------------------------------------------
-   Emil + Triforce
+   Emil + Triforce — combined closing visual
 -------------------------------------------------- */
 
 .closing-marks {
   position: relative;
   z-index: 2;
 
-  justify-self: end;
+  justify-self: stretch;
 
   width: 100%;
-  max-width: 430px;
+  min-width: 0;
 
   display: grid;
+  place-items: center;
 
-  grid-template-columns:
-    minmax(120px, 0.72fr)
-    minmax(190px, 1.28fr);
-
-  gap:
-    clamp(
-      0.8rem,
-      2vw,
-      1.4rem
-    );
-
-  align-items: center;
+  overflow: visible;
 }
 
-.emil-mark {
-  position: relative;
-  z-index: 3;
-
+.closing-emil-triforce {
   display: block;
 
-  width:
-    clamp(
-      128px,
-      12.5vw,
-      168px
-    );
-
+  width: 100%;
+  max-width: 100%;
   height: auto;
-
-  aspect-ratio: 1 / 1;
-
-  justify-self: center;
 
   object-fit: contain;
   object-position: center;
 
-  border-radius: 0;
-
-  opacity: 0.96;
-
-  background:
-    transparent;
-
-  border: 0;
-
-  box-shadow:
-    none;
+  opacity: 1;
 
   filter:
-    contrast(0.90)
-    brightness(1.04);
-}
-
-.closing-marks .triforce-stage {
-  justify-self: center;
-
-  width:
-    min(
-      100%,
-      260px
+    drop-shadow(
+      0 12px 24px
+      rgba(71, 60, 51, 0.10)
     );
 }
-
-@media (max-width: 720px) {
-  .closing-marks {
-    max-width: 100%;
-
-    grid-template-columns:
-      minmax(90px, 0.65fr)
-      minmax(160px, 1.35fr);
-
-    justify-self: center;
-  }
-
-  .emil-mark {
-    width:
-      min(
-        28vw,
-        110px
-      );
-  }
-
-  .closing-marks .triforce-stage {
-    width:
-      min(
-        54vw,
-        220px
-      );
-  }
-}
-
-html[data-serious-mode='true']
-.closing-marks {
-  display:
-    none !important;
-}
-
-
-/* --------------------------------------------------
-   Closing visual balance — full right half
--------------------------------------------------- */
 
 @media (min-width: 921px) {
   .closing {
@@ -5154,71 +5075,66 @@ html[data-serious-mode='true']
         3vw,
         2.5rem
       );
+
+    align-items: center;
   }
 
   .closing-marks {
-    justify-self: stretch;
-
-    width: 100%;
-    max-width: none;
-
     min-height:
       clamp(
-        300px,
-        31vw,
-        390px
+        320px,
+        34vw,
+        430px
       );
 
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
-
-    gap:
+    padding:
       clamp(
-        0.75rem,
-        1.5vw,
-        1.25rem
+        0.25rem,
+        0.8vw,
+        0.7rem
       );
-
-    align-items: center;
-    justify-items: center;
   }
 
-  .emil-mark {
+  .closing-emil-triforce {
     width:
       min(
         100%,
-        260px
+        560px
       );
 
-    height: auto;
+    transform:
+      scale(1.06);
 
-    aspect-ratio: 1 / 1;
+    transform-origin: center;
+  }
+}
 
-    border-radius: 50%;
-
-    object-fit: cover;
-    object-position: center;
-
-    opacity: 1;
-
-    filter: none;
-
-    background: transparent;
+@media (max-width: 920px) {
+  .closing-marks {
+    margin-top: 1rem;
   }
 
-  .closing-marks
-  .triforce-stage {
+  .closing-emil-triforce {
     width:
       min(
         100%,
-        315px
+        620px
       );
-
-    margin: 0;
-
-    justify-self: center;
   }
+}
+
+@media (max-width: 720px) {
+  .closing-emil-triforce {
+    width:
+      min(
+        100%,
+        520px
+      );
+  }
+}
+
+html[data-serious-mode='true']
+.closing-marks {
+  display:
+    none !important;
 }
