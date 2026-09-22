@@ -3,25 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import MusicShelf from '../components/MusicShelf.astro';
 import { PROFILE, SOCIALS } from '../config';
 
-const lab = [
-  [
-    'Escrita & edição',
-    'Pesquisar, sintetizar e revisar com atenção à clareza, ao ritmo e à precisão conceitual.',
-  ],
-  [
-    'Documentação',
-    'Transformar conhecimento disperso em informação legível, rastreável e reutilizável.',
-  ],
-  [
-    'Organização',
-    'Criar estruturas, taxonomias e fluxos que reduzam a dependência de memória individual.',
-  ],
-  [
-    'Publicação digital',
-    'Usar tecnologia como meio para manter conteúdo consistente entre escrita, versão e entrega.',
-  ],
-];
-
 const background = [
   {
     title: 'Formação',
@@ -391,33 +372,50 @@ const background = [
         <h2 id="lab-title">
           <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
         </h2>
-
-        <p>
-          Quatro práticas se entrelaçam: compreender, escrever, estruturar e manter um resultado constante.
-        </p>
       </div>
 
-      <div class="lab-grid">
-        {lab.map(([title, text], index) => (
-          <article
-            class:list={[
-              'lab-card',
-              `lab-${index + 1}`,
-            ]}
+      <div
+        class="lab-works"
+        aria-label="Trabalhos selecionados"
+      >
+        <article class="lab-work lab-work-translation">
+          <span
+            class="lab-work-number"
+            aria-hidden="true"
           >
-            <span>
-              {String(index + 1).padStart(2, '0')}
-            </span>
+            01
+          </span>
+
+          <div class="lab-work-content">
+            <p class="lab-work-kind">
+              Tradução · EN → PT-BR
+            </p>
 
             <h3>
-              {title}
+              Tradução
             </h3>
 
-            <p>
-              {text}
+            <p class="lab-work-source">
+              <cite>The Big Picture</cite>
+              <span aria-hidden="true">—</span>
+              Sean Carroll
             </p>
-          </article>
-        ))}
+
+            <p class="lab-work-description">
+              Trabalho de tradução e revisão em preparação para publicação no portfólio.
+            </p>
+          </div>
+
+          <div class="lab-work-state">
+            <span>
+              em migração
+            </span>
+
+            <small>
+              Obsidian → GitHub
+            </small>
+          </div>
+        </article>
       </div>
     </section>
 
