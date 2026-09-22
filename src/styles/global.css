@@ -2782,18 +2782,12 @@ h3 {
 
   display: grid;
 
-  grid-template-columns:
-    minmax(260px, 0.66fr)
-    minmax(0, 1.34fr);
-
   gap:
     clamp(
       2rem,
-      6vw,
-      5rem
+      4vw,
+      3.5rem
     );
-
-  align-items: start;
 
   padding:
     clamp(
@@ -2865,8 +2859,8 @@ h3 {
 }
 
 .lab-heading {
-  position: sticky;
-  top: 110px;
+  position: relative;
+  z-index: 1;
 }
 
 .lab .eyebrow {
@@ -2875,7 +2869,7 @@ h3 {
 }
 
 .lab-heading h2 {
-  max-width: 9.5ch;
+  max-width: 15ch;
 
   color:
     #f3efe7;
@@ -2890,74 +2884,67 @@ h3 {
     #262523;
 }
 
-.lab-works {
+/* Material You work card */
+
+.lab-project-card {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
   min-width: 0;
 
   display: grid;
 
-  gap: 1rem;
-}
+  grid-template-columns:
+    minmax(0, 1.22fr)
+    minmax(280px, 0.78fr);
 
-.lab-work {
-  position: relative;
+  align-items: stretch;
+
   overflow: hidden;
 
   min-height:
     clamp(
-      300px,
-      30vw,
-      390px
-    );
-
-  display: grid;
-
-  grid-template-columns:
-    56px
-    minmax(0, 1fr)
-    auto;
-
-  gap:
-    clamp(
-      1rem,
-      2.5vw,
-      2rem
-    );
-
-  align-items: stretch;
-
-  padding:
-    clamp(
-      1.25rem,
-      3vw,
-      2rem
+      430px,
+      42vw,
+      560px
     );
 
   border:
     1px solid
-    rgba(39, 38, 36, 0.28);
+    rgba(255, 255, 255, 0.08);
 
   border-radius:
-    22px 34px
-    24px 30px;
+    clamp(
+      28px,
+      3.4vw,
+      42px
+    );
 
   background:
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(255, 255, 255, 0.055),
+      transparent 24%
+    ),
     linear-gradient(
-      145deg,
-      rgba(245, 241, 232, 0.90),
-      rgba(226, 222, 213, 0.84)
+      135deg,
+      #171717 0%,
+      #101010 58%,
+      #0b0b0b 100%
     );
 
   color:
-    #302f2c;
+    #f6f2e9;
 
   box-shadow:
-    0 16px 34px
-      rgba(38, 36, 33, 0.16),
+    0 22px 54px
+      rgba(27, 25, 22, 0.28),
     inset 0 1px 0
-      rgba(255, 255, 255, 0.58);
+      rgba(255, 255, 255, 0.055);
 }
 
-.lab-work::before {
+.lab-project-card::before {
   content: '';
 
   position: absolute;
@@ -2965,187 +2952,367 @@ h3 {
 
   pointer-events: none;
 
-  opacity: 0.28;
+  opacity: 0.18;
 
   background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 5px,
-      rgba(53, 51, 48, 0.025) 6px
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.18) 0 0.7px,
+      transparent 0.8px
+    );
+
+  background-size:
+    7px 7px;
+
+  mask-image:
+    linear-gradient(
+      90deg,
+      #000,
+      transparent 72%
     );
 }
 
-.lab-work-number {
+.lab-project-copy {
   position: relative;
-  z-index: 1;
-
-  font-family:
-    var(--font-retro);
-
-  font-size: 0.76rem;
-  font-weight: 700;
-
-  letter-spacing: 0.12em;
-
-  color:
-    rgba(48, 47, 44, 0.58);
-}
-
-.lab-work-content {
-  position: relative;
-  z-index: 1;
-
-  align-self: end;
+  z-index: 2;
 
   min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  padding:
+    clamp(
+      1.6rem,
+      4.5vw,
+      4rem
+    );
 }
 
-.lab-work-kind {
-  margin:
-    0 0 1rem;
+.lab-project-meta {
+  position: absolute;
 
+  top:
+    clamp(
+      1.5rem,
+      3vw,
+      2.4rem
+    );
+
+  left:
+    clamp(
+      1.6rem,
+      4.5vw,
+      4rem
+    );
+
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.65rem;
+}
+
+.lab-project-index,
+.lab-project-status,
+.lab-project-kicker,
+.lab-project-footer {
   font-family:
     var(--font-retro);
+}
+
+.lab-project-index {
+  color:
+    rgba(246, 242, 233, 0.52);
 
   font-size: 0.72rem;
   font-weight: 700;
 
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-
-  color:
-    #725746;
+  letter-spacing: 0.12em;
 }
 
-.lab-work h3 {
-  font-size:
-    clamp(
-      2.4rem,
-      5vw,
-      4.6rem
-    );
+.lab-project-status {
+  display: inline-flex;
+  align-items: center;
 
-  letter-spacing:
-    -0.05em;
+  min-height: 34px;
 
-  color:
-    #2a2927;
-}
-
-.lab-work-source {
-  margin:
-    0.75rem 0 0;
-
-  display: flex;
-  flex-wrap: wrap;
-
-  gap:
-    0.35rem 0.55rem;
-
-  align-items: baseline;
-
-  font-family:
-    var(--font-display);
-
-  font-size:
-    clamp(
-      1.05rem,
-      1.8vw,
-      1.4rem
-    );
-
-  color:
-    #4e4b46;
-}
-
-.lab-work-description {
-  max-width: 48ch;
-
-  margin:
-    1rem 0 0;
-
-  line-height: 1.68;
-
-  color:
-    #5d5a55;
-}
-
-.lab-work-state {
-  position: relative;
-  z-index: 1;
-
-  align-self: start;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-
-  gap: 0.3rem;
-
-  text-align: right;
-}
-
-.lab-work-state span {
   padding:
-    0.4rem 0.62rem;
+    0.42rem 0.72rem;
 
   border:
     1px solid
-    rgba(48, 47, 44, 0.22);
+    rgba(233, 197, 116, 0.26);
 
   border-radius:
     var(--radius-full);
 
   background:
-    rgba(255, 250, 240, 0.38);
+    rgba(233, 197, 116, 0.10);
 
-  font-family:
-    var(--font-retro);
+  color:
+    #e9c574;
 
-  font-size: 0.65rem;
+  font-size: 0.64rem;
   font-weight: 700;
 
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.lab-work-state small {
+.lab-project-kicker {
+  margin:
+    0 0 0.8rem;
+
   color:
-    rgba(48, 47, 44, 0.62);
+    rgba(246, 242, 233, 0.60);
 
   font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-@media (hover: hover) {
-  .lab-work {
+.lab-project-card h3 {
+  max-width: 9ch;
+
+  font-size:
+    clamp(
+      3.7rem,
+      8.6vw,
+      7.8rem
+    );
+
+  font-weight: 700;
+
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+
+  color:
+    #f6f2e9;
+}
+
+.lab-project-book {
+  margin-top:
+    clamp(
+      1.2rem,
+      2.5vw,
+      1.9rem
+    );
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+
+  gap:
+    0.35rem 0.8rem;
+}
+
+.lab-project-book p {
+  margin: 0;
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    clamp(
+      1.2rem,
+      2vw,
+      1.65rem
+    );
+
+  color:
+    #e9c574;
+}
+
+.lab-project-book span {
+  color:
+    rgba(246, 242, 233, 0.60);
+
+  font-size:
+    clamp(
+      0.92rem,
+      1.5vw,
+      1.05rem
+    );
+}
+
+.lab-project-description {
+  max-width: 54ch;
+
+  margin:
+    1rem 0 0;
+
+  color:
+    rgba(246, 242, 233, 0.68);
+
+  line-height: 1.7;
+}
+
+.lab-project-footer {
+  margin-top:
+    clamp(
+      1.5rem,
+      3vw,
+      2.5rem
+    );
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  color:
+    rgba(246, 242, 233, 0.44);
+
+  font-size: 0.66rem;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lab-project-cover {
+  position: relative;
+  z-index: 1;
+
+  min-width: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding:
+    clamp(
+      1.25rem,
+      3vw,
+      2.6rem
+    );
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(45, 156, 164, 0.18),
+      transparent 42%
+    ),
+    linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.035),
+      transparent 54%
+    );
+}
+
+.lab-project-cover-frame {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      310px
+    );
+
+  aspect-ratio:
+    299 / 450;
+
+  overflow: hidden;
+
+  border-radius:
+    clamp(
+      18px,
+      2.2vw,
+      28px
+    );
+
+  background:
+    #0b0b0b;
+
+  box-shadow:
+    0 24px 46px
+      rgba(0, 0, 0, 0.42),
+    0 0 0 1px
+      rgba(255, 255, 255, 0.08);
+}
+
+.lab-project-cover-frame::after {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  border-radius: inherit;
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.14);
+}
+
+.lab-project-cover img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+@media
+  (hover: hover)
+  and
+  (prefers-reduced-motion: no-preference) {
+
+  .lab-project-card {
     transition:
       transform 180ms ease,
       box-shadow 180ms ease;
   }
 
-  .lab-work:hover {
+  .lab-project-cover-frame {
+    transition:
+      transform 220ms ease;
+  }
+
+  .lab-project-card:hover {
     transform:
       translateY(-3px);
 
     box-shadow:
-      0 20px 40px
-        rgba(38, 36, 33, 0.19),
+      0 28px 64px
+        rgba(27, 25, 22, 0.32),
       inset 0 1px 0
-        rgba(255, 255, 255, 0.62);
+        rgba(255, 255, 255, 0.06);
+  }
+
+  .lab-project-card:hover
+  .lab-project-cover-frame {
+    transform:
+      rotate(1deg)
+      scale(1.025);
   }
 }
 
 @media (max-width: 920px) {
-  .lab {
-    grid-template-columns: 1fr;
-  }
-
-  .lab-heading {
-    position: static;
-  }
-
   .lab-heading h2 {
-    max-width: 13ch;
+    max-width: 16ch;
+  }
+
+  .lab-project-card {
+    grid-template-columns:
+      minmax(0, 1.05fr)
+      minmax(220px, 0.65fr);
+
+    min-height: 440px;
+  }
+
+  .lab-project-card h3 {
+    font-size:
+      clamp(
+        3.4rem,
+        9vw,
+        6rem
+      );
   }
 }
 
@@ -3157,33 +3324,51 @@ h3 {
       var(--radius-lg);
   }
 
-  .lab-work {
-    min-height: 300px;
+  .lab-project-card {
+    grid-template-columns: 1fr;
 
-    grid-template-columns:
-      40px
-      minmax(0, 1fr);
-
-    gap: 0.85rem;
-
-    padding: 1.1rem;
+    min-height: 0;
 
     border-radius:
-      18px 24px
-      20px 22px;
+      24px;
   }
 
-  .lab-work-state {
-    grid-column:
-      2;
+  .lab-project-copy {
+    min-height: 420px;
 
-    align-self: end;
+    padding:
+      1.35rem;
+  }
 
-    align-items: flex-start;
+  .lab-project-meta {
+    top: 1.35rem;
+    left: 1.35rem;
+  }
 
-    margin-top: 1.2rem;
+  .lab-project-card h3 {
+    font-size:
+      clamp(
+        3.25rem,
+        17vw,
+        5.4rem
+      );
+  }
 
-    text-align: left;
+  .lab-project-cover {
+    padding:
+      1.4rem;
+
+    border-top:
+      1px solid
+      rgba(255, 255, 255, 0.07);
+  }
+
+  .lab-project-cover-frame {
+    width:
+      min(
+        68vw,
+        270px
+      );
   }
 }
 
@@ -3214,7 +3399,7 @@ html[data-serious-mode='true']
 }
 
 html[data-serious-mode='true']
-.lab-work {
+.lab-project-card {
   border:
     1px solid
     #808080;
@@ -3224,9 +3409,30 @@ html[data-serious-mode='true']
   background:
     #ffffff;
 
+  color:
+    #000000;
+
   box-shadow: none;
 
   transform: none;
+}
+
+html[data-serious-mode='true']
+.lab-project-card h3,
+html[data-serious-mode='true']
+.lab-project-book p,
+html[data-serious-mode='true']
+.lab-project-book span,
+html[data-serious-mode='true']
+.lab-project-description,
+html[data-serious-mode='true']
+.lab-project-kicker,
+html[data-serious-mode='true']
+.lab-project-index,
+html[data-serious-mode='true']
+.lab-project-footer {
+  color:
+    #000000;
 }
 
 /* --------------------------------------------------

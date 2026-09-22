@@ -374,49 +374,69 @@ const background = [
         </h2>
       </div>
 
-      <div
-        class="lab-works"
-        aria-label="Trabalhos selecionados"
+      <article
+        class="lab-project-card"
+        aria-labelledby="translation-title"
       >
-        <article class="lab-work lab-work-translation">
-          <span
-            class="lab-work-number"
-            aria-hidden="true"
-          >
-            01
-          </span>
-
-          <div class="lab-work-content">
-            <p class="lab-work-kind">
-              Tradução · EN → PT-BR
-            </p>
-
-            <h3>
-              Tradução
-            </h3>
-
-            <p class="lab-work-source">
-              <cite>The Big Picture</cite>
-              <span aria-hidden="true">—</span>
-              Sean Carroll
-            </p>
-
-            <p class="lab-work-description">
-              Trabalho de tradução e revisão em preparação para publicação no portfólio.
-            </p>
-          </div>
-
-          <div class="lab-work-state">
-            <span>
-              em migração
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              01
             </span>
 
-            <small>
-              Obsidian → GitHub
-            </small>
+            <span class="lab-project-status">
+              Em andamento
+            </span>
           </div>
-        </article>
-      </div>
+
+          <p class="lab-project-kicker">
+            EN → PT-BR · tradução & revisão
+          </p>
+
+          <h3 id="translation-title">
+            TRADUÇÃO
+          </h3>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>The Big Picture</cite>
+            </p>
+
+            <span>
+              Sean Carroll
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Tradução em português brasileiro de uma obra que cruza física,
+            filosofia, cosmologia e as perguntas fundamentais sobre significado,
+            vida e universo.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Obsidian → publicação
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        <div class="lab-project-cover">
+          <div class="lab-project-cover-frame">
+            <img
+              src="https://images1.penguinrandomhouse.com/cover/9781101984253"
+              alt="Capa de The Big Picture, de Sean Carroll"
+              width="299"
+              height="450"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </article>
     </section>
 
     <section
