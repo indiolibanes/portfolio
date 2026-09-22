@@ -4956,7 +4956,11 @@ html[data-serious-mode='true']
 
   .github-gif-strip {
     width: 100%;
-    max-width: 100%;
+    max-width:
+      min(
+        100%,
+        1040px
+      );
 
     margin-inline: auto;
 
@@ -4971,14 +4975,14 @@ html[data-serious-mode='true']
     gap:
       clamp(
         1rem,
-        2vw,
-        1.5rem
+        1.8vw,
+        1.35rem
       );
 
     align-items: center;
     justify-items: center;
 
-    overflow: hidden;
+    overflow: visible;
   }
 
   .github-gif-strip img,
@@ -4990,25 +4994,34 @@ html[data-serious-mode='true']
 
     display: block;
 
-    width: 100%;
-    height:
-      clamp(
-        250px,
-        24vw,
-        320px
+    width:
+      min(
+        100%,
+        500px
       );
 
+    height: auto;
+
     max-width: 100%;
-    max-height: none;
+    max-height: 360px;
 
     margin: 0;
 
-    justify-self: stretch;
+    justify-self: center;
 
     object-fit: contain;
 
     transform: none;
     transform-origin: center;
+  }
+
+  .github-gif-luna-desktop,
+  .github-gif-violet {
+    width:
+      min(
+        96%,
+        485px
+      );
   }
 }
 
@@ -5049,9 +5062,9 @@ html[data-serious-mode='true']
 
   width:
     clamp(
-      120px,
-      12vw,
-      155px
+      128px,
+      12.5vw,
+      168px
     );
 
   height: auto;
@@ -5076,8 +5089,8 @@ html[data-serious-mode='true']
     none;
 
   filter:
-    contrast(0.78)
-    brightness(1.16);
+    contrast(0.90)
+    brightness(1.04);
 }
 
 .closing-marks .triforce-stage {
