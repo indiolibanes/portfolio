@@ -5099,11 +5099,11 @@ html[data-serious-mode='true']
     width:
       min(
         100%,
-        560px
+        590px
       );
 
     transform:
-      scale(1.06);
+      scale(1.09);
 
     transform-origin: center;
   }
