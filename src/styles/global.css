@@ -2869,7 +2869,7 @@ h3 {
 }
 
 .lab-heading h2 {
-  max-width: 15ch;
+  max-width: 100%;
 
   color:
     #f3efe7;
@@ -3295,7 +3295,7 @@ h3 {
 
 @media (max-width: 920px) {
   .lab-heading h2 {
-    max-width: 16ch;
+    max-width: 100%;
   }
 
   .lab-project-card {
