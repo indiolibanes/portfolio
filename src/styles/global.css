@@ -3295,11 +3295,18 @@ h3 {
 .lab-project-kicker {
   max-width: 48ch;
 
+  margin-top:
+    clamp(
+      1rem,
+      1.8vw,
+      1.45rem
+    );
+
   margin-bottom:
     clamp(
-      1.8rem,
-      3vw,
-      2.6rem
+      1.9rem,
+      3.1vw,
+      2.7rem
     );
 }
 
@@ -3342,7 +3349,15 @@ h3 {
 }
 
 .lab-project-card-essay
-.lab-project-meta,
+.lab-project-meta {
+  top:
+    clamp(
+      2.45rem,
+      4vw,
+      3.35rem
+    );
+}
+
 .lab-project-card-architecture
 .lab-project-meta {
   top:
