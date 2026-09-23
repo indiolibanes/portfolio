@@ -3265,22 +3265,29 @@ h3 {
 }
 
 .lab-project-card-essay {
+  min-height:
+    clamp(
+      500px,
+      46vw,
+      610px
+    );
+
   background:
     radial-gradient(
-      circle at 82% 32%,
-      rgba(111, 136, 167, 0.16),
-      transparent 28%
+      circle at 82% 30%,
+      rgba(151, 190, 211, 0.22),
+      transparent 31%
     ),
     radial-gradient(
       circle at 18% 18%,
-      rgba(255, 255, 255, 0.045),
-      transparent 24%
+      rgba(255, 255, 255, 0.07),
+      transparent 26%
     ),
     linear-gradient(
       135deg,
-      #171717 0%,
-      #101010 58%,
-      #0b0b0b 100%
+      #334751 0%,
+      #293b44 54%,
+      #22333b 100%
     );
 }
 
@@ -3335,6 +3342,18 @@ h3 {
 }
 
 .lab-project-card-essay
+.lab-project-meta,
+.lab-project-card-architecture
+.lab-project-meta {
+  top:
+    clamp(
+      2rem,
+      3.6vw,
+      3rem
+    );
+}
+
+.lab-project-card-essay
 .lab-project-status {
   border-color:
     rgba(169, 199, 216, 0.28);
@@ -3384,17 +3403,24 @@ h3 {
 
 
 .lab-project-card-architecture {
+  min-height:
+    clamp(
+      500px,
+      46vw,
+      610px
+    );
+
   background:
     radial-gradient(
       circle at 82% 42%,
-      rgba(154, 184, 145, 0.16),
-      transparent 30%
+      rgba(190, 218, 180, 0.20),
+      transparent 32%
     ),
     linear-gradient(
       135deg,
-      #171817 0%,
-      #101110 58%,
-      #0b0c0b 100%
+      #405245 0%,
+      #34463a 56%,
+      #2b3c32 100%
     );
 }
 
@@ -3419,14 +3445,14 @@ h3 {
   background:
     radial-gradient(
       circle at 82% 38%,
-      rgba(188, 154, 200, 0.15),
-      transparent 30%
+      rgba(225, 190, 228, 0.19),
+      transparent 31%
     ),
     linear-gradient(
       135deg,
-      #181718 0%,
-      #111011 58%,
-      #0c0b0c 100%
+      #514052 0%,
+      #453647 56%,
+      #392d3b 100%
     );
 }
 
@@ -3496,20 +3522,94 @@ h3 {
 
 .architecture-root,
 .architecture-output,
-.architecture-branches span,
-.architecture-meta span,
+.architecture-node,
+.architecture-meta-node,
 .knowledge-flow span,
 .knowledge-note {
   border:
     1px solid
-    rgba(255, 255, 255, 0.11);
-
-  background:
-    rgba(255, 255, 255, 0.055);
+    rgba(255, 255, 255, 0.13);
 
   box-shadow:
     inset 0 1px 0
-    rgba(255, 255, 255, 0.05);
+    rgba(255, 255, 255, 0.08);
+}
+
+.architecture-root {
+  background:
+    rgba(238, 241, 235, 0.13);
+}
+
+.architecture-node {
+  color:
+    #182019 !important;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 8px 18px
+      rgba(21, 29, 23, 0.14),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.42);
+}
+
+.architecture-node-essays {
+  border-color:
+    rgba(174, 211, 234, 0.62);
+
+  background:
+    #b9d9ea;
+}
+
+.architecture-node-notes {
+  border-color:
+    rgba(235, 207, 150, 0.65);
+
+  background:
+    #e7cf9d;
+}
+
+.architecture-node-readings {
+  border-color:
+    rgba(202, 188, 231, 0.62);
+
+  background:
+    #cdbfe5;
+}
+
+.architecture-meta-node {
+  border-color:
+    rgba(255, 255, 255, 0.07);
+
+  background:
+    rgba(17, 27, 20, 0.27);
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.025);
+}
+
+.architecture-output {
+  border-color:
+    rgba(183, 224, 180, 0.60);
+
+  background:
+    #b9ddb5;
+
+  color:
+    #1d2a1f !important;
+
+  box-shadow:
+    0 9px 20px
+      rgba(21, 29, 23, 0.15),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.44);
+}
+
+.knowledge-flow span,
+.knowledge-note {
+  background:
+    rgba(255, 255, 255, 0.055);
 }
 
 .architecture-root,
@@ -3586,9 +3686,6 @@ h3 {
 
   text-align: center;
 
-  color:
-    rgba(246, 242, 233, 0.72);
-
   font-size: 0.76rem;
 }
 
@@ -3602,7 +3699,7 @@ h3 {
 
 .architecture-meta span {
   color:
-    rgba(246, 242, 233, 0.52);
+    rgba(246, 242, 233, 0.46);
 
   font-family:
     var(--font-retro);
@@ -6163,4 +6260,23 @@ html[data-serious-mode='true']
 .knowledge-note small {
   color:
     #000000;
+}
+
+
+html[data-serious-mode='true']
+.architecture-node,
+html[data-serious-mode='true']
+.architecture-meta-node,
+html[data-serious-mode='true']
+.architecture-output {
+  border-color:
+    #808080;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000 !important;
+
+  box-shadow: none;
 }
