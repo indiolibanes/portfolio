@@ -3998,7 +3998,9 @@ html[data-serious-mode='true']
 html[data-serious-mode='true']
 .lab-heading h2,
 html[data-serious-mode='true']
-.lab-heading h2 b {
+.lab-heading h2 b,
+html[data-serious-mode='true']
+.lab-note {
   color:
     #000000;
 
