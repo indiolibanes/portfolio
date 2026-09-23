@@ -3286,9 +3286,38 @@ h3 {
 
 .lab-project-card-essay
 .lab-project-kicker {
-  max-width: 44ch;
+  max-width: 48ch;
 
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.lab-project-tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    0.5rem 0.75rem;
+
+  align-items: center;
+
+  line-height: 1.45;
+}
+
+.lab-project-tags span {
+  display: inline-flex;
+  align-items: center;
+
+  white-space: nowrap;
+}
+
+.lab-project-tags
+span:not(:last-child)::after {
+  content: '·';
+
+  margin-left: 0.75rem;
+
+  color:
+    rgba(246, 242, 233, 0.34);
 }
 
 .lab-project-card-essay
