@@ -3296,28 +3296,33 @@ h3 {
   flex-wrap: wrap;
 
   gap:
-    0.5rem 0.75rem;
+    0.6rem;
 
   align-items: center;
 
-  line-height: 1.45;
+  line-height: 1.2;
 }
 
 .lab-project-tags span {
   display: inline-flex;
   align-items: center;
 
+  min-height: 30px;
+
+  padding:
+    0.34rem 0.58rem;
+
+  border:
+    1px solid
+    rgba(246, 242, 233, 0.12);
+
+  border-radius:
+    var(--radius-full);
+
+  background:
+    rgba(246, 242, 233, 0.055);
+
   white-space: nowrap;
-}
-
-.lab-project-tags
-span:not(:last-child)::after {
-  content: '·';
-
-  margin-left: 0.75rem;
-
-  color:
-    rgba(246, 242, 233, 0.34);
 }
 
 .lab-project-card-essay
