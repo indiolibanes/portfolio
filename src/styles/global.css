@@ -3074,8 +3074,12 @@ h3 {
   font-size: 0.72rem;
   font-weight: 700;
 
-  letter-spacing: 0.12em;
+  line-height: 1.55;
+
+  letter-spacing: 0.10em;
   text-transform: uppercase;
+
+  text-wrap: pretty;
 }
 
 .lab-project-card h3 {
@@ -3278,6 +3282,13 @@ h3 {
       #101010 58%,
       #0b0b0b 100%
     );
+}
+
+.lab-project-card-essay
+.lab-project-kicker {
+  max-width: 44ch;
+
+  margin-bottom: 1rem;
 }
 
 .lab-project-card-essay
