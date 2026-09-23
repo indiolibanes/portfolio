@@ -2884,6 +2884,31 @@ h3 {
     #262523;
 }
 
+.lab-note {
+  max-width: 78ch;
+
+  margin:
+    clamp(
+      1rem,
+      1.8vw,
+      1.35rem
+    )
+    0
+    0;
+
+  color:
+    rgba(243, 239, 231, 0.72);
+
+  font-size:
+    clamp(
+      0.92rem,
+      1.25vw,
+      1.05rem
+    );
+
+  line-height: 1.65;
+}
+
 /* Material You work card */
 
 .lab-project-card {
