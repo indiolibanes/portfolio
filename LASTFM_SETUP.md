@@ -1,6 +1,6 @@
-# Last.fm → Apple Music listening status
+# Last.fm listening status
 
-O portfólio usa o Last.fm apenas como ponte de leitura para os scrobbles enviados pelo Apple Music no Android.
+O portfólio usa o Last.fm como fonte neutra para a atividade musical recente. Qualquer player ou scrobbler conectado à mesma conta pode alimentar o widget — por exemplo, BitChord diretamente ou Apple Music por meio de um scrobbler compatível.
 
 ## Cloudflare Pages
 
@@ -13,16 +13,23 @@ Não é necessário usar o shared secret do Last.fm, session key ou autenticaç�
 
 Depois de salvar as variáveis, faça um novo deploy.
 
-## Android
+## Players e scrobblers
 
-Use um scrobbler compatível com Apple Music, por exemplo Pano Scrobbler, e conecte-o à mesma conta Last.fm. O portfólio distingue:
+Conecte ao mesmo perfil Last.fm todos os players que devem aparecer no widget.
 
-- `nowplaying="true"` → “agora tocando”
-- faixa histórica → “ouvido recentemente”
+Exemplos:
+
+- BitChord → integração Last.fm nativa;
+- Apple Music → scrobbler compatível no Android.
+
+O portfólio não tenta inferir qual aplicativo originou cada scrobble. Ele apresenta apenas o estado consolidado do Last.fm:
+
+- `nowplaying="true"` → “agora tocando”;
+- faixa histórica → “ouvido recentemente”.
 
 ## Playlists do Apple Music
 
-Links públicos de playlists podem ser adicionados manualmente em `src/config.ts`, na lista `MUSIC.publicPlaylists`.
+Links públicos de playlists podem continuar sendo adicionados manualmente em `src/config.ts`, na lista `MUSIC.publicPlaylists`.
 
 Exemplo:
 
