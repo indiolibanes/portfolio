@@ -11,6 +11,7 @@ export const PROFILE = {
   shortName: 'Kauê',
   tagline: 'Documentação · Informação · Escrita',
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
+  whatsapp: 'https://wa.me/5547989105443',
   email: 'kaue@tuta.com'
 };
 
