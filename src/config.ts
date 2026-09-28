@@ -20,7 +20,7 @@ export const SOCIALS = {
   handle: '@indiolibanes',
   github: 'https://github.com/indiolibanes',
   portfolioRepo: 'https://github.com/indiolibanes/portfolio',
-  githubAvatar: 'https://avatars.githubusercontent.com/u/32935701?v=4',
+  githubAvatar: '/assets/github-avatar.png',
   lastfm: 'https://last.fm/user/kauealencar123',
 
   // Preencha quando quiser expor os perfis públicos diretamente.
