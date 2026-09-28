@@ -2149,6 +2149,17 @@ h3 {
 
 
 .lab-project-card-documentation {
+  min-height:
+    clamp(
+      540px,
+      47vw,
+      620px
+    );
+
+  grid-template-columns:
+    minmax(0, 1.18fr)
+    minmax(300px, 0.82fr);
+
   background:
     radial-gradient(
       circle at 82% 36%,
@@ -2178,6 +2189,46 @@ h3 {
 
   background:
     rgba(240, 201, 151, 0.10);
+}
+
+.lab-project-card-documentation
+.lab-project-copy {
+  padding-top:
+    clamp(
+      6.8rem,
+      11vw,
+      8.6rem
+    );
+}
+
+.lab-project-card-documentation h3 {
+  max-width: 100%;
+
+  font-size:
+    clamp(
+      2.8rem,
+      5.25vw,
+      5.15rem
+    );
+
+  line-height: 0.92;
+  letter-spacing: -0.052em;
+
+  overflow-wrap: anywhere;
+}
+
+.lab-project-card-documentation
+.lab-project-kicker {
+  max-width: 52ch;
+
+  margin:
+    clamp(
+      1.25rem,
+      2.2vw,
+      1.7rem
+    )
+    0
+    0;
 }
 
 .documentation-pipeline {
@@ -4233,16 +4284,65 @@ html[data-serious-mode='true']
       7vw,
       6rem
     );
+
+  padding:
+    clamp(
+      1.7rem,
+      4vw,
+      3.5rem
+    );
+
+  border:
+    1px solid
+    rgba(199, 180, 224, 0.30);
+
+  border-radius:
+    var(--radius-xl);
+
+  background:
+    radial-gradient(
+      circle at 14% 18%,
+      rgba(227, 207, 244, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 76%,
+      rgba(129, 116, 163, 0.24),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #5a486f 0%,
+      #49385f 48%,
+      #352a48 100%
+    );
+
+  color:
+    #f7f2fb;
+
+  box-shadow:
+    0 20px 50px
+      rgba(56, 42, 72, 0.18),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.08);
 }
 
 .background-title h2 {
   max-width: 9ch;
+
+  color:
+    #f7f2fb;
+}
+
+.background .eyebrow {
+  color:
+    #ead59b;
 }
 
 .background-list {
   border-top:
     1px solid
-    var(--line);
+    rgba(247, 242, 251, 0.20);
 }
 
 .background-list article {
@@ -4258,16 +4358,21 @@ html[data-serious-mode='true']
 
   border-bottom:
     1px solid
-    var(--line);
+    rgba(247, 242, 251, 0.16);
 }
 
 .background-number {
-  color: #9a4c40;
+  color: #ead59b;
 
   font-family:
     var(--font-retro);
 
   font-weight: 700;
+}
+
+.background-list h3 {
+  color:
+    #ffffff;
 }
 
 .background-list p {
@@ -4277,7 +4382,7 @@ html[data-serious-mode='true']
     0.5rem 0 0;
 
   color:
-    var(--ink-soft);
+    rgba(247, 242, 251, 0.72);
 }
 
 /* --------------------------------------------------
@@ -4320,7 +4425,7 @@ html[data-serious-mode='true']
 
   border:
     1px solid
-    #b8877e;
+    rgba(255, 255, 255, 0.10);
 
   border-radius:
     var(--radius-xl);
@@ -4328,24 +4433,29 @@ html[data-serious-mode='true']
   background:
     radial-gradient(
       circle at 82% 48%,
-      rgba(216, 184, 78, 0.19),
-      transparent 24%
+      rgba(216, 184, 78, 0.12),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 18% 22%,
+      rgba(129, 116, 163, 0.12),
+      transparent 30%
     ),
     linear-gradient(
-      120deg,
-      rgba(200, 95, 88, 0.17),
-      rgba(213, 141, 77, 0.15),
-      rgba(216, 184, 78, 0.13),
-      rgba(129, 157, 114, 0.13),
-      rgba(111, 136, 167, 0.13),
-      rgba(129, 116, 163, 0.15)
-    ),
-    var(--surface);
+      135deg,
+      #151515 0%,
+      #0d0d0d 54%,
+      #050505 100%
+    );
 
-  color: #5d342e;
+  color:
+    #f7f3eb;
 
   box-shadow:
-    var(--shadow-soft);
+    0 24px 58px
+      rgba(0, 0, 0, 0.24),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.05);
 }
 
 .closing-copy {
@@ -4353,8 +4463,16 @@ html[data-serious-mode='true']
   z-index: 2;
 }
 
+.closing .eyebrow {
+  color:
+    #e7c977;
+}
+
 .closing h2 {
   max-width: 12ch;
+
+  color:
+    #ffffff;
 }
 
 .closing-copy
@@ -4363,6 +4481,52 @@ html[data-serious-mode='true']
 
   margin:
     1rem 0 1.3rem;
+
+  color:
+    rgba(247, 243, 235, 0.70);
+}
+
+.closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 0.7rem;
+}
+
+.closing-email-button {
+  border-color:
+    rgba(255, 255, 255, 0.86);
+
+  background:
+    #f7f3eb;
+
+  color:
+    #111111;
+
+  box-shadow:
+    0 10px 22px
+      rgba(0, 0, 0, 0.20);
+}
+
+.closing-email-button:hover {
+  background:
+    #ffffff;
+}
+
+.closing-whatsapp-button {
+  border-color:
+    rgba(128, 210, 154, 0.48);
+
+  background:
+    rgba(55, 158, 88, 0.16);
+
+  color:
+    #bce8c9;
+}
+
+.closing-whatsapp-button:hover {
+  background:
+    rgba(55, 158, 88, 0.25);
 }
 
 /* --------------------------------------------------
@@ -4921,6 +5085,57 @@ html[data-serious-mode='true']
 /* --------------------------------------------------
    Apple Music-like listening shelf
 -------------------------------------------------- */
+
+.music-shelf {
+  overflow: hidden;
+
+  padding:
+    clamp(
+      1.6rem,
+      4vw,
+      3.4rem
+    );
+
+  border:
+    1px solid
+    rgba(74, 65, 58, 0.18);
+
+  border-radius:
+    var(--radius-xl);
+
+  background-color:
+    #ddd5c9;
+
+  background-image:
+    linear-gradient(
+      45deg,
+      rgba(58, 51, 47, 0.095) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(58, 51, 47, 0.095) 75%,
+      rgba(58, 51, 47, 0.095)
+    ),
+    linear-gradient(
+      45deg,
+      rgba(58, 51, 47, 0.095) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(58, 51, 47, 0.095) 75%,
+      rgba(58, 51, 47, 0.095)
+    );
+
+  background-position:
+    0 0,
+    24px 24px;
+
+  background-size:
+    48px 48px;
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.34),
+    var(--shadow-soft);
+}
 
 .music-shelf[hidden],
 .recent-track-card[hidden] {
@@ -6512,4 +6727,69 @@ html[data-serious-mode='true']
 .documentation-note {
   color:
     #000000;
+}
+
+
+html[data-serious-mode='true']
+.background,
+html[data-serious-mode='true']
+.music-shelf,
+html[data-serious-mode='true']
+.closing {
+  border-color:
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  box-shadow: none;
+}
+
+html[data-serious-mode='true']
+.background .eyebrow,
+html[data-serious-mode='true']
+.background-title h2,
+html[data-serious-mode='true']
+.background-number,
+html[data-serious-mode='true']
+.background-list h3,
+html[data-serious-mode='true']
+.background-list p,
+html[data-serious-mode='true']
+.closing .eyebrow,
+html[data-serious-mode='true']
+.closing h2,
+html[data-serious-mode='true']
+.closing-copy > p:not(.eyebrow) {
+  color:
+    #000000;
+}
+
+html[data-serious-mode='true']
+.background-list,
+html[data-serious-mode='true']
+.background-list article {
+  border-color:
+    #b0b0b0;
+}
+
+html[data-serious-mode='true']
+.closing-email-button,
+html[data-serious-mode='true']
+.closing-whatsapp-button {
+  border-color:
+    #000000;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  box-shadow: none;
 }

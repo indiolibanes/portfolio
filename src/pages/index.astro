@@ -702,13 +702,18 @@ const background = [
             </span>
           </div>
 
-          <p class="lab-project-kicker">
-            documentação técnica · fluxo · manutenção
-          </p>
-
           <h3 id="documentation-title">
             DOCUMENTAÇÃO
           </h3>
+
+          <p
+            class="lab-project-kicker lab-project-tags"
+            aria-label="Temas da documentação"
+          >
+            <span>documentação técnica</span>
+            <span>fluxo</span>
+            <span>manutenção</span>
+          </p>
 
           <div class="lab-project-book">
             <p>
@@ -825,21 +830,30 @@ const background = [
         </p>
 
         <h2 id="closing-title">
-          ✒️ Toda boa página tem origem em uma boa estrutura imaginativa.
+          ✦ Toda boa página tem origem em uma boa estrutura imaginativa.
         </h2>
 
         <p>
           Posso detalhar qualquer texto, projeto, decisão de estrutura ou processo apresentado aqui.
         </p>
 
-        <a
-          class="button primary-button"
-          href={PROFILE.linkedin}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Entrar em contato pelo LinkedIn ↗
-        </a>
+        <div class="closing-actions">
+          <a
+            class="button closing-email-button"
+            href={`mailto:${PROFILE.email}`}
+          >
+            Enviar e-mail ↗
+          </a>
+
+          <a
+            class="button closing-whatsapp-button"
+            href={PROFILE.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+          >
+            WhatsApp ↗
+          </a>
+        </div>
       </div>
 
       <div
