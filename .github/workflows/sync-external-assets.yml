@@ -17,35 +17,111 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install project dependencies
+        shell: bash
+        run: |
+          npm install --no-audit --no-fund
+
       - name: Download external visual assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/portfolio-assets
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif"             -o /tmp/portfolio-assets/luna-sailor-moon.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif"             -o /tmp/portfolio-assets/typing-left.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif"             -o /tmp/portfolio-assets/typing-right.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif"             -o /tmp/portfolio-assets/violet-evergarden.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://images1.penguinrandomhouse.com/cover/9781101984253"             -o /tmp/portfolio-assets/the-big-picture-cover.jpg
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://cdn.pixabay.com/photo/2015/07/15/20/08/paris-846873_1280.jpg"             -o /tmp/portfolio-assets/e-se-paris.jpg
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://avatars.githubusercontent.com/u/32935701?v=4"             -o /tmp/portfolio-assets/github-avatar
+
+      - name: Optimize local assets
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p public/assets
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif"             -o public/assets/luna-sailor-moon.gif
+          node --input-type=module <<'NODE'
+          import sharp from 'sharp';
+          import { copyFile, rm } from 'node:fs/promises';
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif"             -o public/assets/typing-left.gif
+          const animated = [
+            ['luna-sailor-moon.gif', 'luna-sailor-moon.webp'],
+            ['typing-left.gif', 'typing-left.webp'],
+            ['typing-right.gif', 'typing-right.webp'],
+            ['violet-evergarden.gif', 'violet-evergarden.webp'],
+          ];
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif"             -o public/assets/typing-right.gif
+          for (const [input, output] of animated) {
+            await sharp('/tmp/portfolio-assets/' + input, {
+              animated: true,
+              limitInputPixels: false,
+            })
+              .webp({
+                quality: 80,
+                effort: 3,
+              })
+              .toFile('public/assets/' + output);
+          }
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif"             -o public/assets/violet-evergarden.gif
+          await sharp('/tmp/portfolio-assets/github-avatar', {
+            limitInputPixels: false,
+          })
+            .resize(256, 256, {
+              fit: 'cover',
+              withoutEnlargement: true,
+            })
+            .webp({
+              quality: 86,
+              effort: 4,
+            })
+            .toFile('public/assets/github-avatar.webp');
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://images1.penguinrandomhouse.com/cover/9781101984253"             -o public/assets/the-big-picture-cover.jpg
+          await sharp('/tmp/portfolio-assets/the-big-picture-cover.jpg')
+            .resize({
+              width: 600,
+              withoutEnlargement: true,
+            })
+            .jpeg({
+              quality: 88,
+              progressive: true,
+            })
+            .toFile('public/assets/the-big-picture-cover.jpg');
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://cdn.pixabay.com/photo/2015/07/15/20/08/paris-846873_1280.jpg"             -o public/assets/e-se-paris.jpg
+          await sharp('/tmp/portfolio-assets/e-se-paris.jpg')
+            .resize({
+              width: 1280,
+              withoutEnlargement: true,
+            })
+            .jpeg({
+              quality: 86,
+              progressive: true,
+            })
+            .toFile('public/assets/e-se-paris.jpg');
 
-          curl -fL --retry 3 -A "Mozilla/5.0"             "https://avatars.githubusercontent.com/u/32935701?v=4"             -o public/assets/github-avatar.png
+          for (const oldAsset of [
+            'luna-sailor-moon.gif',
+            'typing-left.gif',
+            'typing-right.gif',
+            'violet-evergarden.gif',
+            'github-avatar.png',
+          ]) {
+            await rm('public/assets/' + oldAsset, {
+              force: true,
+            });
+          }
+          NODE
 
-          test -s public/assets/luna-sailor-moon.gif
-          test -s public/assets/typing-left.gif
-          test -s public/assets/typing-right.gif
-          test -s public/assets/violet-evergarden.gif
-          test -s public/assets/the-big-picture-cover.jpg
-          test -s public/assets/e-se-paris.jpg
-          test -s public/assets/github-avatar.png
+          du -h public/assets/*
 
-      - name: Point portfolio to local assets
+      - name: Point portfolio to optimized local assets
         shell: python
         run: |
           from pathlib import Path
@@ -54,10 +130,14 @@ jobs:
           content = index.read_text(encoding="utf-8")
 
           replacements = {
-              "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif": "/assets/luna-sailor-moon.gif",
-              "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif": "/assets/typing-left.gif",
-              "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif": "/assets/typing-right.gif",
-              "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif": "/assets/violet-evergarden.gif",
+              "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif": "/assets/luna-sailor-moon.webp",
+              "/assets/luna-sailor-moon.gif": "/assets/luna-sailor-moon.webp",
+              "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif": "/assets/typing-left.webp",
+              "/assets/typing-left.gif": "/assets/typing-left.webp",
+              "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif": "/assets/typing-right.webp",
+              "/assets/typing-right.gif": "/assets/typing-right.webp",
+              "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif": "/assets/violet-evergarden.webp",
+              "/assets/violet-evergarden.gif": "/assets/violet-evergarden.webp",
               "https://images1.penguinrandomhouse.com/cover/9781101984253": "/assets/the-big-picture-cover.jpg",
               "https://cdn.pixabay.com/photo/2015/07/15/20/08/paris-846873_1280.jpg": "/assets/e-se-paris.jpg",
           }
@@ -69,19 +149,24 @@ jobs:
 
           config = Path("src/config.ts")
           content = config.read_text(encoding="utf-8")
-          content = content.replace(
+
+          for old in (
               "https://avatars.githubusercontent.com/u/32935701?v=4",
               "/assets/github-avatar.png",
-          )
+          ):
+              content = content.replace(
+                  old,
+                  "/assets/github-avatar.webp",
+              )
+
           config.write_text(content, encoding="utf-8")
 
       - name: Validate production build
         shell: bash
         run: |
-          npm install --no-audit --no-fund
           npm run build
 
-      - name: Commit imported assets
+      - name: Commit optimized assets
         shell: bash
         run: |
           set -euo pipefail
@@ -96,5 +181,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: serve portfolio visuals locally"
+          git commit -m "perf: optimize locally served portfolio visuals"
           git push
