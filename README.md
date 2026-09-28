@@ -20,6 +20,9 @@ src/
   pages/
   styles/
 
+docs/
+  publishing-workflow.md
+
 functions/
   api/
 ```

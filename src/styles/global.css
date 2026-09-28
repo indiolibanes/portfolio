@@ -2147,6 +2147,158 @@ h3 {
   z-index: 3;
 }
 
+
+.lab-project-card-documentation {
+  background:
+    radial-gradient(
+      circle at 82% 36%,
+      rgba(240, 201, 151, 0.20),
+      transparent 31%
+    ),
+    linear-gradient(
+      135deg,
+      #5a493d 0%,
+      #4b3d34 56%,
+      #3d322c 100%
+    );
+}
+
+.lab-project-card-documentation
+.lab-project-status,
+.lab-project-card-documentation
+.lab-project-book p {
+  color:
+    #f0c997;
+}
+
+.lab-project-card-documentation
+.lab-project-status {
+  border-color:
+    rgba(240, 201, 151, 0.28);
+
+  background:
+    rgba(240, 201, 151, 0.10);
+}
+
+.documentation-pipeline {
+  width:
+    min(
+      100%,
+      400px
+    );
+
+  display: grid;
+
+  grid-template-columns:
+    1fr auto
+    1fr auto
+    1fr auto
+    1fr;
+
+  gap: 0.42rem;
+
+  align-items: center;
+}
+
+.documentation-step {
+  min-height: 86px;
+
+  display: grid;
+  place-items: center;
+
+  align-content: center;
+
+  gap: 0.25rem;
+
+  padding:
+    0.75rem 0.48rem;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius:
+    16px;
+
+  text-align: center;
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.18),
+    0 8px 18px
+      rgba(26, 19, 15, 0.13);
+}
+
+.documentation-step strong {
+  color:
+    #241d18;
+
+  font-size: 0.82rem;
+}
+
+.documentation-step small {
+  color:
+    rgba(36, 29, 24, 0.70);
+
+  font-family:
+    var(--font-retro);
+
+  font-size: 0.59rem;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.documentation-step-source {
+  background:
+    #c7d7e9;
+}
+
+.documentation-step-version {
+  background:
+    #e4b29a;
+}
+
+.documentation-step-build {
+  background:
+    #cdbde2;
+}
+
+.documentation-step-deploy {
+  background:
+    #e8d394;
+}
+
+.documentation-arrow {
+  color:
+    rgba(246, 242, 233, 0.50);
+
+  font-size: 1rem;
+}
+
+.documentation-note {
+  margin:
+    clamp(
+      1.4rem,
+      3vw,
+      2.2rem
+    )
+    0
+    0;
+
+  color:
+    rgba(246, 242, 233, 0.52);
+
+  font-family:
+    var(--font-retro);
+
+  font-size: 0.65rem;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 @media
   (hover: hover)
   and
@@ -2176,6 +2328,26 @@ h3 {
 }
 
 @media (max-width: 720px) {
+  .documentation-pipeline {
+    grid-template-columns: 1fr;
+
+    width:
+      min(
+        100%,
+        280px
+      );
+
+    gap: 0.5rem;
+  }
+
+  .documentation-arrow {
+    justify-self: center;
+
+    transform:
+      rotate(90deg);
+  }
+
+
   .phrolova-underlay {
     top: auto;
     right: -78px;
@@ -6316,4 +6488,28 @@ html[data-serious-mode='true']
     #000000 !important;
 
   box-shadow: none;
+}
+
+
+html[data-serious-mode='true']
+.documentation-step {
+  border-color:
+    #808080;
+
+  background:
+    #ffffff;
+
+  box-shadow: none;
+}
+
+html[data-serious-mode='true']
+.documentation-step strong,
+html[data-serious-mode='true']
+.documentation-step small,
+html[data-serious-mode='true']
+.documentation-arrow,
+html[data-serious-mode='true']
+.documentation-note {
+  color:
+    #000000;
 }

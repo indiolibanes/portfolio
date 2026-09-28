@@ -1,0 +1,100 @@
+name: Sync external portfolio assets
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/sync-external-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download external visual assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/assets
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif"             -o public/assets/luna-sailor-moon.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif"             -o public/assets/typing-left.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif"             -o public/assets/typing-right.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif"             -o public/assets/violet-evergarden.gif
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://images1.penguinrandomhouse.com/cover/9781101984253"             -o public/assets/the-big-picture-cover.jpg
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://cdn.pixabay.com/photo/2015/07/15/20/08/paris-846873_1280.jpg"             -o public/assets/e-se-paris.jpg
+
+          curl -fL --retry 3 -A "Mozilla/5.0"             "https://avatars.githubusercontent.com/u/32935701?v=4"             -o public/assets/github-avatar.png
+
+          test -s public/assets/luna-sailor-moon.gif
+          test -s public/assets/typing-left.gif
+          test -s public/assets/typing-right.gif
+          test -s public/assets/violet-evergarden.gif
+          test -s public/assets/the-big-picture-cover.jpg
+          test -s public/assets/e-se-paris.jpg
+          test -s public/assets/github-avatar.png
+
+      - name: Point portfolio to local assets
+        shell: python
+        run: |
+          from pathlib import Path
+
+          index = Path("src/pages/index.astro")
+          content = index.read_text(encoding="utf-8")
+
+          replacements = {
+              "https://media1.tenor.com/m/BnIPE5qUprgAAAAC/luna-sailor-moon.gif": "/assets/luna-sailor-moon.gif",
+              "https://media1.tenor.com/m/-fsSXGol-1AAAAAC/type-typing.gif": "/assets/typing-left.gif",
+              "https://media1.tenor.com/m/Jn2gJceZAAYAAAAC/type-typing.gif": "/assets/typing-right.gif",
+              "https://media1.tenor.com/m/gb2xC6a_UZgAAAAC/violet-evergarden-violet.gif": "/assets/violet-evergarden.gif",
+              "https://images1.penguinrandomhouse.com/cover/9781101984253": "/assets/the-big-picture-cover.jpg",
+              "https://cdn.pixabay.com/photo/2015/07/15/20/08/paris-846873_1280.jpg": "/assets/e-se-paris.jpg",
+          }
+
+          for old, new in replacements.items():
+              content = content.replace(old, new)
+
+          index.write_text(content, encoding="utf-8")
+
+          config = Path("src/config.ts")
+          content = config.read_text(encoding="utf-8")
+          content = content.replace(
+              "https://avatars.githubusercontent.com/u/32935701?v=4",
+              "/assets/github-avatar.png",
+          )
+          config.write_text(content, encoding="utf-8")
+
+      - name: Validate production build
+        shell: bash
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Commit imported assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/assets src/pages/index.astro src/config.ts
+
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: serve portfolio visuals locally"
+          git push

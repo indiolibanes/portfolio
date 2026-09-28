@@ -27,7 +27,19 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <script is:inline>
   (() => {
     try {
+      const seriousParam =
+        new URLSearchParams(window.location.search)
+          .get('serious');
+
       if (
+        seriousParam === '1' ||
+        seriousParam === 'true'
+      ) {
+        document.documentElement.dataset
+          .seriousMode = 'true';
+      } else if (
+        seriousParam !== '0' &&
+        seriousParam !== 'false' &&
         localStorage.getItem(
           'portfolio-serious-mode',
         ) === 'true'
@@ -51,7 +63,7 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="628" />
+<meta property="og:image:height" content="630" />
 <meta
   property="og:image:alt"
   content="Kauê Alencar — Escrita, Documentação e Informação"
