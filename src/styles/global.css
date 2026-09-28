@@ -4274,6 +4274,13 @@ html[data-serious-mode='true']
 .background {
   display: grid;
 
+  margin-top:
+    clamp(
+      5rem,
+      9vw,
+      8.5rem
+    );
+
   grid-template-columns:
     minmax(260px, 0.68fr)
     minmax(0, 1.32fr);
@@ -5088,6 +5095,13 @@ html[data-serious-mode='true']
 
 .music-shelf {
   overflow: hidden;
+
+  margin-top:
+    clamp(
+      5rem,
+      9vw,
+      8.5rem
+    );
 
   padding:
     clamp(
