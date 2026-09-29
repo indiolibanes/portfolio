@@ -1,0 +1,245 @@
+<div
+  class="atom-cursor"
+  data-atom-cursor
+  aria-hidden="true"
+>
+  <svg viewBox="0 0 40 40" role="presentation">
+    <g class="atom-orbit atom-orbit-a">
+      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
+      <circle cx="35" cy="20" r="1.7"></circle>
+    </g>
+
+    <g class="atom-orbit atom-orbit-b">
+      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
+      <circle cx="35" cy="20" r="1.7"></circle>
+    </g>
+
+    <g class="atom-orbit atom-orbit-c">
+      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
+      <circle cx="35" cy="20" r="1.7"></circle>
+    </g>
+
+    <circle class="atom-nucleus" cx="20" cy="20" r="3.2"></circle>
+  </svg>
+</div>
+
+<script is:inline>
+  (() => {
+    const finePointer =
+      window.matchMedia('(pointer: fine)');
+    const reducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      );
+    const cursor =
+      document.querySelector('[data-atom-cursor]');
+
+    if (
+      !cursor ||
+      !finePointer.matches ||
+      reducedMotion.matches
+    ) {
+      return;
+    }
+
+    document.documentElement.dataset
+      .customCursor = 'true';
+
+    let x = -100;
+    let y = -100;
+    let frame = 0;
+
+    const render = () => {
+      cursor.style.transform =
+        `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      frame = 0;
+    };
+
+    const move = (event) => {
+      x = event.clientX;
+      y = event.clientY;
+
+      if (!frame) {
+        frame = requestAnimationFrame(render);
+      }
+
+      cursor.dataset.visible = 'true';
+    };
+
+    const setInteractive = (event) => {
+      const target =
+        event.target instanceof Element
+          ? event.target
+          : null;
+
+      cursor.dataset.interactive =
+        target?.closest(
+          'a, button, [role="button"], input, select, textarea, summary',
+        )
+          ? 'true'
+          : 'false';
+    };
+
+    window.addEventListener(
+      'pointermove',
+      move,
+      { passive: true },
+    );
+
+    document.addEventListener(
+      'pointerover',
+      setInteractive,
+      { passive: true },
+    );
+
+    document.documentElement.addEventListener(
+      'mouseleave',
+      () => {
+        cursor.dataset.visible = 'false';
+      },
+    );
+  })();
+</script>
+
+<style is:global>
+  .atom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    width: 38px;
+    height: 38px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    filter:
+      drop-shadow(
+        0 2px 7px
+        rgba(35, 92, 105, 0.22)
+      );
+
+    transition:
+      opacity 100ms ease,
+      width 120ms ease,
+      height 120ms ease;
+
+    will-change:
+      transform;
+  }
+
+  .atom-cursor[data-visible='true'] {
+    opacity: 1;
+  }
+
+  .atom-cursor[data-interactive='true'] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .atom-cursor svg {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+  }
+
+  .atom-orbit {
+    transform-origin:
+      20px 20px;
+
+    fill: none;
+
+    stroke:
+      rgba(20, 113, 132, 0.82);
+
+    stroke-width: 1.25;
+
+    animation:
+      atom-orbit-spin
+      2.7s
+      linear
+      infinite;
+  }
+
+  .atom-orbit circle {
+    fill:
+      #177f94;
+
+    stroke: none;
+  }
+
+  .atom-orbit-b {
+    transform:
+      rotate(60deg);
+
+    animation-duration:
+      3.4s;
+
+    animation-direction:
+      reverse;
+  }
+
+  .atom-orbit-c {
+    transform:
+      rotate(120deg);
+
+    animation-duration:
+      4.1s;
+  }
+
+  .atom-nucleus {
+    fill:
+      #a3263e;
+
+    stroke:
+      rgba(255, 255, 255, 0.86);
+
+    stroke-width: 1;
+  }
+
+  @keyframes atom-orbit-spin {
+    from {
+      rotate: 0deg;
+    }
+
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  @media
+    (pointer: fine)
+    and
+    (prefers-reduced-motion: no-preference) {
+
+    html[data-custom-cursor='true']:not(
+      [data-serious-mode='true']
+    ),
+    html[data-custom-cursor='true']:not(
+      [data-serious-mode='true']
+    ) body,
+    html[data-custom-cursor='true']:not(
+      [data-serious-mode='true']
+    ) a,
+    html[data-custom-cursor='true']:not(
+      [data-serious-mode='true']
+    ) button,
+    html[data-custom-cursor='true']:not(
+      [data-serious-mode='true']
+    ) [role='button'] {
+      cursor:
+        none !important;
+    }
+  }
+
+  html[data-serious-mode='true']
+  .atom-cursor {
+    display:
+      none !important;
+  }
+</style>

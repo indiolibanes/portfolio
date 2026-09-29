@@ -15,8 +15,12 @@
       aria-hidden="true"
     >
       <path
-        fill="currentColor"
-        d="M12 3a9 9 0 1 0 9 9c0-.35-.02-.7-.06-1.04A7 7 0 0 1 13.04 3.06C12.7 3.02 12.35 3 12 3Zm0 2v14a7 7 0 0 1 0-14Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"
       ></path>
     </svg>
 
@@ -34,7 +38,29 @@
 
     if (!button) return;
 
-    const applyMode = (enabled, persist = true) => {
+    const syncUrl = (enabled) => {
+      try {
+        const url = new URL(window.location.href);
+
+        if (enabled) {
+          url.searchParams.set('serious', '1');
+        } else {
+          url.searchParams.delete('serious');
+        }
+
+        history.replaceState(
+          history.state,
+          '',
+          url.pathname + url.search + url.hash,
+        );
+      } catch {}
+    };
+
+    const applyMode = (
+      enabled,
+      persist = true,
+      updateUrl = true,
+    ) => {
       document.documentElement.dataset.seriousMode =
         enabled ? 'true' : 'false';
 
@@ -46,21 +72,21 @@
       button.setAttribute(
         'aria-label',
         enabled
-          ? 'Desativar Modo sério'
+          ? 'Voltar ao modo autoral'
           : 'Ativar Modo sério',
       );
 
       button.setAttribute(
         'title',
         enabled
-          ? 'Voltar ao modo normal'
+          ? 'Voltar ao modo autoral'
           : 'Modo sério',
       );
 
       if (label) {
         label.textContent =
           enabled
-            ? 'Modo normal'
+            ? 'Modo autoral'
             : 'Modo sério';
       }
 
@@ -73,7 +99,7 @@
         themeColor.setAttribute(
           'content',
           enabled
-            ? '#c0c0c0'
+            ? '#f2f2f2'
             : '#f6efdc',
         );
       }
@@ -86,13 +112,24 @@
           );
         } catch {}
       }
+
+      if (updateUrl) {
+        syncUrl(enabled);
+      }
+
+      window.dispatchEvent(
+        new CustomEvent(
+          'portfolio:serious-mode',
+          { detail: { enabled } },
+        ),
+      );
     };
 
     const enabled =
       document.documentElement.dataset
         .seriousMode === 'true';
 
-    applyMode(enabled, false);
+    applyMode(enabled, false, false);
 
     button.addEventListener('click', () => {
       const current =
@@ -153,7 +190,8 @@
       transform 160ms ease,
       background-color 160ms ease,
       color 160ms ease,
-      border-color 160ms ease;
+      border-color 160ms ease,
+      border-radius 160ms ease;
   }
 
   .serious-toggle:hover {
@@ -169,6 +207,30 @@
 
   .serious-icon {
     flex: 0 0 auto;
+  }
+
+  :global(html[data-serious-mode='true'])
+  .serious-toggle {
+    border-color:
+      #000000;
+
+    border-radius:
+      2px;
+
+    background:
+      #ffffff;
+
+    color:
+      #000000;
+
+    box-shadow:
+      none;
+  }
+
+  :global(html[data-serious-mode='true'])
+  .serious-toggle:hover {
+    background:
+      #eeeeee;
   }
 
   @media (max-width: 720px) {

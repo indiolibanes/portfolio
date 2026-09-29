@@ -12,7 +12,8 @@ export const PROFILE = {
   tagline: 'Documentação · Informação · Escrita',
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
   whatsapp: 'https://wa.me/5547989105443',
-  email: 'kaue@tuta.com'
+  email: 'kaue@tuta.com',
+  resumePdf: '/curriculo-kaue-alencar.pdf'
 };
 
 
