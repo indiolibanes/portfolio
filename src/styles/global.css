@@ -2148,7 +2148,7 @@ h3 {
 }
 
 
-.lab-project-card-documentation {
+.lab-project-card.lab-project-card-documentation {
   min-height:
     clamp(
       560px,
@@ -2175,15 +2175,15 @@ h3 {
     );
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-status,
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-book p {
   color:
     #f4ffff;
 }
 
-.lab-project-card-documentation h3 {
+.lab-project-card.lab-project-card-documentation h3 {
   color:
     #ffffff;
 
@@ -2192,21 +2192,21 @@ h3 {
       rgba(0, 60, 82, 0.20);
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-description,
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-book span {
   color:
     rgba(247, 255, 255, 0.88);
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-footer {
   color:
     rgba(241, 255, 255, 0.72);
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-tags span {
   border-color:
     rgba(240, 255, 255, 0.44);
@@ -2222,7 +2222,7 @@ h3 {
       rgba(255, 255, 255, 0.14);
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-status {
   border-color:
     rgba(242, 255, 255, 0.48);
@@ -2234,7 +2234,7 @@ h3 {
     #f6ffff;
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-copy {
   padding-top:
     clamp(
@@ -2244,7 +2244,7 @@ h3 {
     );
 }
 
-.lab-project-card-documentation h3 {
+.lab-project-card.lab-project-card-documentation h3 {
   max-width: 8ch;
 
   font-size:
@@ -2263,11 +2263,11 @@ h3 {
   hyphens: none;
 }
 
-.lab-project-card-documentation h3 span {
+.lab-project-card.lab-project-card-documentation h3 span {
   display: block;
 }
 
-.lab-project-card-documentation
+.lab-project-card.lab-project-card-documentation
 .lab-project-kicker {
   max-width: 52ch;
 
@@ -2429,7 +2429,7 @@ h3 {
 }
 
 @media (max-width: 720px) {
-  .lab-project-card-documentation h3 {
+  .lab-project-card.lab-project-card-documentation h3 {
     max-width: 8ch;
 
     font-size:
@@ -6863,6 +6863,6 @@ html[data-serious-mode='true']
 
 
 html[data-serious-mode='true']
-.lab-project-card-documentation::before {
+.lab-project-card.lab-project-card-documentation::before {
   opacity: 0;
 }
