@@ -2162,15 +2162,30 @@ h3 {
 
   background:
     radial-gradient(
-      circle at 82% 36%,
-      rgba(240, 201, 151, 0.20),
-      transparent 31%
+      ellipse at 18% 24%,
+      rgba(255, 255, 255, 0.24) 0 2%,
+      transparent 11%
+    ),
+    radial-gradient(
+      ellipse at 76% 18%,
+      rgba(255, 255, 255, 0.18) 0 2.5%,
+      transparent 13%
+    ),
+    radial-gradient(
+      ellipse at 58% 74%,
+      rgba(255, 255, 255, 0.16) 0 2%,
+      transparent 12%
+    ),
+    radial-gradient(
+      ellipse at 24% 84%,
+      rgba(2, 87, 104, 0.22) 0 4%,
+      transparent 18%
     ),
     linear-gradient(
-      135deg,
-      #5a493d 0%,
-      #4b3d34 56%,
-      #3d322c 100%
+      145deg,
+      #37c8cf 0%,
+      #1aa9b8 46%,
+      #087f99 100%
     );
 }
 
@@ -2179,16 +2194,16 @@ h3 {
 .lab-project-card-documentation
 .lab-project-book p {
   color:
-    #f0c997;
+    #eaffff;
 }
 
 .lab-project-card-documentation
 .lab-project-status {
   border-color:
-    rgba(240, 201, 151, 0.28);
+    rgba(234, 255, 255, 0.34);
 
   background:
-    rgba(240, 201, 151, 0.10);
+    rgba(234, 255, 255, 0.12);
 }
 
 .lab-project-card-documentation
@@ -2206,15 +2221,18 @@ h3 {
 
   font-size:
     clamp(
-      2.8rem,
-      5.25vw,
-      5.15rem
+      2.45rem,
+      4.65vw,
+      4.65rem
     );
 
-  line-height: 0.92;
-  letter-spacing: -0.052em;
+  line-height: 0.94;
+  letter-spacing: -0.048em;
 
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .lab-project-card-documentation
@@ -2379,6 +2397,17 @@ h3 {
 }
 
 @media (max-width: 720px) {
+  .lab-project-card-documentation h3 {
+    font-size:
+      clamp(
+        2rem,
+        10.5vw,
+        3.35rem
+      );
+
+    white-space: nowrap;
+  }
+
   .documentation-pipeline {
     grid-template-columns: 1fr;
 
@@ -5112,38 +5141,38 @@ html[data-serious-mode='true']
 
   border:
     1px solid
-    rgba(74, 65, 58, 0.18);
+    rgba(74, 65, 58, 0.28);
 
   border-radius:
     var(--radius-xl);
 
   background-color:
-    #ddd5c9;
+    #d8cebf;
 
   background-image:
     linear-gradient(
       45deg,
-      rgba(58, 51, 47, 0.095) 25%,
+      rgba(48, 42, 39, 0.20) 25%,
       transparent 25%,
       transparent 75%,
-      rgba(58, 51, 47, 0.095) 75%,
-      rgba(58, 51, 47, 0.095)
+      rgba(48, 42, 39, 0.20) 75%,
+      rgba(48, 42, 39, 0.20)
     ),
     linear-gradient(
       45deg,
-      rgba(58, 51, 47, 0.095) 25%,
+      rgba(255, 255, 255, 0.14) 25%,
       transparent 25%,
       transparent 75%,
-      rgba(58, 51, 47, 0.095) 75%,
-      rgba(58, 51, 47, 0.095)
+      rgba(255, 255, 255, 0.14) 75%,
+      rgba(255, 255, 255, 0.14)
     );
 
   background-position:
     0 0,
-    24px 24px;
+    44px 44px;
 
   background-size:
-    48px 48px;
+    88px 88px;
 
   box-shadow:
     inset 0 1px 0
@@ -5207,41 +5236,35 @@ html[data-serious-mode='true']
   align-items: center;
   min-height: 320px;
   padding: clamp(1rem, 2.5vw, 1.6rem);
-  border: 1px solid rgba(112, 90, 70, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(
-      circle at 14% 18%,
-      rgba(207, 111, 96, 0.13),
-      transparent 28%
-    ),
     linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.42),
-      transparent 58%
-    ),
-    var(--surface-soft);
-  box-shadow: var(--shadow-card);
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.60)
+    );
+  backdrop-filter:
+    blur(2px);
+  box-shadow:
+    0 18px 38px
+      rgba(71, 60, 51, 0.10),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.72);
 }
 
 .recent-track-card[data-now-playing="true"] {
   background:
     radial-gradient(
-      circle at 14% 18%,
-      rgba(207, 111, 96, 0.20),
-      transparent 31%
-    ),
-    radial-gradient(
-      circle at 78% 18%,
-      rgba(216, 184, 78, 0.12),
+      circle at 16% 18%,
+      rgba(207, 111, 96, 0.09),
       transparent 28%
     ),
     linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.44),
-      transparent 58%
-    ),
-    var(--surface-soft);
+      rgba(255, 255, 255, 0.82),
+      rgba(255, 255, 255, 0.64)
+    );
 }
 
 .recent-artwork-shell {
