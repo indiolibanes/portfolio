@@ -391,6 +391,46 @@ a:focus-visible {
    GitHub showcase
 -------------------------------------------------- */
 
+.github-showcase {
+  margin-top:
+    clamp(
+      5rem,
+      9vw,
+      8.5rem
+    );
+
+  padding:
+    clamp(
+      1.7rem,
+      4vw,
+      3.5rem
+    );
+
+  border:
+    1px solid
+    rgba(120, 34, 48, 0.16);
+
+  border-radius:
+    var(--radius-xl);
+
+  background:
+    radial-gradient(
+      circle at 86% 14%,
+      rgba(150, 49, 65, 0.10),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(116, 30, 44, 0.075),
+      rgba(91, 24, 36, 0.045) 56%,
+      rgba(255, 250, 240, 0.16)
+    );
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.26);
+}
+
 .github-heading {
   grid-template-columns: 1fr;
 
@@ -2245,26 +2285,22 @@ h3 {
 }
 
 .lab-project-card.lab-project-card-documentation h3 {
-  max-width: 8ch;
+  max-width: 100%;
 
   font-size:
     clamp(
-      3rem,
-      5.5vw,
-      5.4rem
+      2.45rem,
+      4.55vw,
+      4.55rem
     );
 
-  line-height: 0.80;
-  letter-spacing: -0.055em;
+  line-height: 0.90;
+  letter-spacing: -0.052em;
 
-  white-space: normal;
-  word-break: normal;
+  white-space: nowrap;
+  word-break: keep-all;
   overflow-wrap: normal;
   hyphens: none;
-}
-
-.lab-project-card.lab-project-card-documentation h3 span {
-  display: block;
 }
 
 .lab-project-card.lab-project-card-documentation
@@ -2430,17 +2466,17 @@ h3 {
 
 @media (max-width: 720px) {
   .lab-project-card.lab-project-card-documentation h3 {
-    max-width: 8ch;
+    max-width: 100%;
 
     font-size:
       clamp(
-        2.7rem,
-        13vw,
-        4rem
+        2rem,
+        9.2vw,
+        3.05rem
       );
 
-    line-height: 0.82;
-    white-space: normal;
+    line-height: 0.90;
+    white-space: nowrap;
   }
 
   .documentation-pipeline {
@@ -3586,21 +3622,39 @@ h3 {
 
   background:
     radial-gradient(
-      circle at 82% 30%,
-      rgba(151, 190, 211, 0.22),
-      transparent 31%
+      circle at 82% 24%,
+      rgba(111, 104, 212, 0.28),
+      transparent 24%
     ),
     radial-gradient(
-      circle at 18% 18%,
-      rgba(255, 255, 255, 0.07),
-      transparent 26%
+      circle at 62% 68%,
+      rgba(46, 128, 173, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 16% 16%,
+      rgba(255, 255, 255, 0.12) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 34% 62%,
+      rgba(255, 255, 255, 0.10) 0 0.8px,
+      transparent 1.3px
     ),
     linear-gradient(
       135deg,
-      #334751 0%,
-      #293b44 54%,
-      #22333b 100%
+      #17192f 0%,
+      #202343 42%,
+      #192d48 70%,
+      #102132 100%
     );
+
+  background-size:
+    auto,
+    auto,
+    96px 96px,
+    130px 130px,
+    auto;
 }
 
 .lab-project-card-essay
@@ -3678,19 +3732,19 @@ h3 {
 .lab-project-card-essay
 .lab-project-status {
   border-color:
-    rgba(169, 199, 216, 0.28);
+    rgba(183, 188, 255, 0.30);
 
   background:
-    rgba(169, 199, 216, 0.10);
+    rgba(148, 152, 226, 0.12);
 
   color:
-    #c3dbe7;
+    #d7d9ff;
 }
 
 .lab-project-card-essay
 .lab-project-book p {
   color:
-    #c3dbe7;
+    #d7d9ff;
 }
 
 .lab-project-cover-essay {
@@ -3766,15 +3820,20 @@ h3 {
 .lab-project-card-knowledge {
   background:
     radial-gradient(
-      circle at 82% 38%,
-      rgba(225, 190, 228, 0.19),
+      circle at 82% 30%,
+      rgba(255, 221, 171, 0.24),
       transparent 31%
+    ),
+    radial-gradient(
+      circle at 18% 78%,
+      rgba(255, 170, 92, 0.13),
+      transparent 30%
     ),
     linear-gradient(
       135deg,
-      #514052 0%,
-      #453647 56%,
-      #392d3b 100%
+      #8f4d22 0%,
+      #b75f28 48%,
+      #d57a32 100%
     );
 }
 
@@ -3783,16 +3842,16 @@ h3 {
 .lab-project-card-knowledge
 .lab-project-book p {
   color:
-    #d9bedf;
+    #ffd6a1;
 }
 
 .lab-project-card-knowledge
 .lab-project-status {
   border-color:
-    rgba(217, 190, 223, 0.26);
+    rgba(255, 214, 161, 0.32);
 
   background:
-    rgba(217, 190, 223, 0.09);
+    rgba(255, 214, 161, 0.10);
 }
 
 .lab-project-system {
@@ -4074,7 +4133,7 @@ h3 {
 
 .knowledge-flow i {
   color:
-    rgba(217, 190, 223, 0.56);
+    rgba(255, 214, 161, 0.64);
 
   font-style: normal;
 }
@@ -4109,7 +4168,7 @@ h3 {
 
 .knowledge-note strong {
   color:
-    #d9bedf;
+    #ffd6a1;
 
   font-family:
     var(--font-display);
@@ -6865,4 +6924,24 @@ html[data-serious-mode='true']
 html[data-serious-mode='true']
 .lab-project-card.lab-project-card-documentation::before {
   opacity: 0;
+}
+
+
+html[data-serious-mode='true']
+.github-showcase {
+  margin-top:
+    24px;
+
+  padding:
+    0;
+
+  border: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  box-shadow:
+    none;
 }
