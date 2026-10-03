@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SophiaSigil from '../components/SophiaSigil.astro';
+
+const fragments = [
+  'Observada no Laboratório, entre traduções e esquemas.',
+  'Avistada no Cofre, onde o silêncio é mais denso.',
+  'Associada a livros, rastros de luz e perguntas sem resolução imediata.',
+  'Algumas presenças não explicam o arquivo; apenas o tornam habitável.',
+];
+---
+
+<BaseLayout
+  title="Sophia — Portfólio de Kauê Alencar"
+  description="Sophia, uma pequena raposa associada à curiosidade, à sabedoria e aos espaços ainda incompletos deste portfólio."
+>
+  <main class="sophia-page">
+    <section class="sophia-hero" aria-labelledby="sophia-title">
+      <div class="sophia-hero__copy">
+        <p class="eyebrow">Sapientia</p>
+        <h1 id="sophia-title">Sophia</h1>
+        <p class="sophia-hero__lead">Uma presença que habita o arquivo.</p>
+      </div>
+
+      <button
+        class="sophia-orbit"
+        type="button"
+        data-sophia-orbit
+        aria-label="Pedir outro fragmento sobre Sophia"
+      >
+        <SophiaSigil className="sophia-orbit__sigil" labelled={true} title="Sigilo de Sophia" />
+        <span aria-hidden="true">✦</span>
+      </button>
+    </section>
+
+    <section class="sophia-biography" aria-labelledby="sophia-bio-title">
+      <p class="eyebrow">registro</p>
+      <h2 id="sophia-bio-title">Quem é Sophia?</h2>
+
+      <div class="sophia-prose">
+        <p>Ninguém sabe exatamente quando ela apareceu.</p>
+
+        <p>Talvez estivesse aqui antes mesmo deste lugar ter um nome.</p>
+
+        <p>
+          Sophia é uma pequena raposa de procedência incerta, encontrada com frequência entre livros,
+          diagramas, estrelas e projetos ainda incompletos. Tem o hábito inconveniente de permanecer
+          justamente onde há alguma coisa que ainda não compreendemos.
+        </p>
+
+        <p>
+          Seu nome vem de <i>σοφία</i> — sabedoria — embora ela própria pareça muito mais interessada
+          em perguntas do que em respostas.
+        </p>
+
+        <p>Não trabalha aqui.</p>
+
+        <p><strong>Também nunca foi embora.</strong></p>
+      </div>
+    </section>
+
+    <section class="sophia-fragments" aria-labelledby="sophia-fragments-title">
+      <div class="sophia-fragments__heading">
+        <div>
+          <p class="eyebrow">fragmentos</p>
+          <h2 id="sophia-fragments-title">Avistamentos</h2>
+        </div>
+        <p>Clique no sigilo acima para alternar o registro.</p>
+      </div>
+
+      <blockquote class="sophia-fragment" data-sophia-fragment>
+        {fragments[0]}
+      </blockquote>
+
+      <div class="sophia-fragment-index" aria-label="Fragmentos registrados">
+        {fragments.map((fragment, index) => (
+          <button
+            type="button"
+            data-fragment-index={index}
+            class:list={['sophia-fragment-dot', { 'is-active': index === 0 }]}
+            aria-label={`Exibir fragmento ${index + 1}`}
+            title={fragment}
+          >
+            {String(index + 1).padStart(2, '0')}
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <nav class="sophia-return" aria-label="Atalhos">
+      <a href="/#lab">Voltar ao Laboratório</a>
+      <a href="/">Voltar ao portfólio</a>
+    </nav>
+  </main>
+
+  <script define:vars={{ fragments }}>
+    const output = document.querySelector('[data-sophia-fragment]');
+    const orbit = document.querySelector('[data-sophia-orbit]');
+    const dots = [...document.querySelectorAll('[data-fragment-index]')];
+    let current = 0;
+
+    const show = (index) => {
+      current = Number(index) % fragments.length;
+      if (output) output.textContent = fragments[current];
+      dots.forEach((dot) => dot.classList.toggle('is-active', Number(dot.dataset.fragmentIndex) === current));
+    };
+
+    orbit?.addEventListener('click', () => show(current + 1));
+    dots.forEach((dot) => dot.addEventListener('click', () => show(dot.dataset.fragmentIndex)));
+  </script>
+</BaseLayout>
