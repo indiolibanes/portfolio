@@ -5325,6 +5325,7 @@ html[data-serious-mode='true']
   display: grid;
   grid-template-columns:
     minmax(0, 1fr)
+    clamp(100px, 12vw, 160px)
     minmax(280px, 0.62fr);
   gap: clamp(1.5rem, 6vw, 5rem);
   align-items: end;
@@ -7512,3 +7513,34 @@ html[data-serious-mode='true'] .sophia-404__panel {
   border-radius: 0;
   box-shadow: none;
 }
+
+/* Sophia: ilustrações orientais animadas. */
+.sophia-animation { display: block; width: clamp(110px, 12vw, 160px); aspect-ratio: 1; flex: 0 0 auto; border-radius: 18px; }
+.sophia-animation:focus-visible { outline: 2px solid #c99738; outline-offset: 5px; }
+.sophia-animation__frame { display: block; width: 100%; height: 100%; background-repeat: no-repeat; background-position: 0 0; }
+.sophia-animation--music .sophia-animation__frame {
+  background-image: url('/images/sophia/music-oriental.webp');
+  background-size: 200% 100%; transform-origin: 50% 90%;
+  animation: sophia-listen-poses 1.8s steps(1, end) infinite, sophia-listen-sway 1.8s ease-in-out infinite;
+}
+.sophia-animation--lab .sophia-animation__frame {
+  background-image: url('/images/sophia/lab-oriental.webp');
+  background-size: 400% 100%; animation: sophia-notes 3.2s steps(1, end) infinite;
+}
+.lab-title-with-sophia { display: flex; align-items: center; gap: 1.25rem; margin-bottom: .75rem; }
+.lab-title-with-sophia > .eyebrow { margin: 0; }
+.lab-title-with-sophia .sophia-animation { width: clamp(100px, 10vw, 140px); }
+@keyframes sophia-listen-poses { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 0; } }
+@keyframes sophia-listen-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(-2px); } }
+@keyframes sophia-notes {
+  0%, 100% { background-position: 0 0; } 25% { background-position: 33.333333% 0; }
+  50% { background-position: 66.666667% 0; } 75% { background-position: 100% 0; }
+}
+@media (max-width: 920px) {
+  .music-heading { gap: 1rem; }
+  .music-heading > .sophia-animation { justify-self: center; width: 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .sophia-animation__frame { animation: none; transform: none; } }
+html[data-serious-mode='true'] .sophia-animation { display: none; }
+html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(0, 1fr) minmax(280px, .62fr); }
+@media (max-width: 920px) { html[data-serious-mode='true'] .music-heading { grid-template-columns: 1fr; } }
