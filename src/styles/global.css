@@ -7527,9 +7527,22 @@ html[data-serious-mode='true'] .sophia-404__panel {
   background-image: url('/images/sophia/lab-oriental.webp');
   background-size: 400% 100%; animation: sophia-notes 3.2s steps(1, end) infinite;
 }
-.lab-title-with-sophia { display: flex; align-items: center; gap: 1.25rem; margin-bottom: .75rem; }
-.lab-title-with-sophia > .eyebrow { margin: 0; }
-.lab-title-with-sophia .sophia-animation { width: clamp(100px, 10vw, 140px); }
+.lab-title-with-sophia {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(200px, 23vw, 280px);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  margin-bottom: .75rem;
+}
+.lab-title-with-sophia > h2 { min-width: 0; margin: 0; }
+.lab-title-with-sophia .sophia-animation { width: 100%; }
+@media (max-width: 640px) {
+  .lab-title-with-sophia { grid-template-columns: minmax(0, 1fr) 120px; gap: .75rem; }
+}
+@media (max-width: 380px) {
+  .lab-title-with-sophia { grid-template-columns: minmax(0, 1fr) 96px; }
+}
+html[data-serious-mode='true'] .lab-title-with-sophia { grid-template-columns: minmax(0, 1fr); }
 @keyframes sophia-listen-poses { 0%, 100% { background-position: 0 0; } 50% { background-position: 100% 0; } }
 @keyframes sophia-listen-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(-2px); } }
 @keyframes sophia-notes {
