@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Sophia perdeu a página"
+  description="A página procurada não foi encontrada."
+>
+  <main class="sophia-404">
+    <section class="sophia-404__panel" aria-labelledby="missing-title">
+      <div class="sophia-404__copy">
+        <p class="eyebrow">erro 404</p>
+        <h1 id="missing-title">Esta página se perdeu entre os arquivos.</h1>
+        <p>
+          Sophia a procurou por aqui, mas parece que este fragmento escapou do mapa.
+        </p>
+
+        <div class="sophia-404__actions">
+          <a href="/">Voltar ao portfólio</a>
+          <a href="/#lab">Ir ao Laboratório</a>
+          <a href="/sophia">Encontrar Sophia</a>
+        </div>
+      </div>
+
+      <div class="sophia-runner" aria-hidden="true">
+        <div class="sophia-runner__sky">
+          <span>·</span><span>✦</span><span>·</span>
+        </div>
+
+        <div class="sophia-runner__track">
+          <svg class="sophia-pixel-fox" viewBox="0 0 32 24" shape-rendering="crispEdges">
+            <g fill="currentColor">
+              <rect x="7" y="3" width="3" height="3"/>
+              <rect x="17" y="3" width="3" height="3"/>
+              <rect x="9" y="5" width="10" height="2"/>
+              <rect x="6" y="7" width="16" height="6"/>
+              <rect x="8" y="13" width="12" height="4"/>
+              <rect x="5" y="14" width="4" height="2"/>
+              <rect x="20" y="11" width="5" height="3"/>
+              <rect x="24" y="9" width="4" height="3"/>
+              <rect x="27" y="7" width="3" height="3"/>
+              <rect x="9" y="17" width="3" height="4"/>
+              <rect x="17" y="17" width="3" height="4"/>
+              <rect x="5" y="21" width="8" height="2"/>
+              <rect x="16" y="21" width="7" height="2"/>
+            </g>
+            <rect x="10" y="9" width="2" height="2" fill="var(--sophia-pixel-eye, #000)"/>
+            <rect x="17" y="9" width="2" height="2" fill="var(--sophia-pixel-eye, #000)"/>
+          </svg>
+
+          <span class="sophia-runner__obstacle sophia-runner__obstacle--book"></span>
+          <span class="sophia-runner__obstacle sophia-runner__obstacle--star">✦</span>
+          <span class="sophia-runner__obstacle sophia-runner__obstacle--block"></span>
+        </div>
+      </div>
+
+      <p class="sophia-404__aside">Nem tudo que se perde deixa de existir. Às vezes, apenas saiu para orbitar.</p>
+    </section>
+  </main>
+</BaseLayout>
