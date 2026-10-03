@@ -1,0 +1,13 @@
+---
+interface Props {
+  variant: 'music' | 'lab';
+}
+const { variant } = Astro.props;
+const description = variant === 'music'
+  ? 'Sophia, raposa lunar com fones, acompanha o ritmo da música.'
+  : 'Sophia de jaleco branco, anotando suas descobertas no caderno.';
+---
+
+<a class={`sophia-animation sophia-animation--${variant}`} href="/sophia" aria-label={`${description} Conhecer Sophia.`}>
+  <span class="sophia-animation__frame" aria-hidden="true"></span>
+</a>
