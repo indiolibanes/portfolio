@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MusicShelf from '../components/MusicShelf.astro';
+import SophiaSigil from '../components/SophiaSigil.astro';
 import { PROFILE, SOCIALS } from '../config';
 
 const background = [
@@ -386,6 +387,15 @@ const background = [
           Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
           transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
         </p>
+
+        <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
+          <SophiaSigil className="lab-sophia-guide__sigil" />
+          <span>
+            <strong>Sophia percorre o laboratório.</strong>
+            <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
+          </span>
+          <i aria-hidden="true">↗</i>
+        </a>
       </div>
 
       <article
@@ -410,6 +420,11 @@ const background = [
           <h3 id="translation-title">
             TRADUÇÃO
           </h3>
+
+          <span class="lab-sophia-presence" title="Sophia encontrou aqui um texto ainda em travessia.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Sophia encontrou aqui um texto ainda em travessia.
+          </span>
 
           <div class="lab-project-book">
             <p>
@@ -473,6 +488,11 @@ const background = [
           <h3 id="essay-title">
             REFLEXÃO
           </h3>
+
+          <span class="lab-sophia-presence" title="Algumas ideias preferem surgir como constelações.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Algumas ideias preferem surgir como constelações.
+          </span>
 
           <p
             class="lab-project-kicker lab-project-tags"
@@ -630,6 +650,11 @@ const background = [
             CURADORIA
           </h3>
 
+          <span class="lab-sophia-presence" title="Há sempre algo à espera de ser reencontrado.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Há sempre algo à espera de ser reencontrado.
+          </span>
+
           <div class="lab-project-book">
             <p>
               <cite>Readwise</cite>
@@ -714,6 +739,11 @@ const background = [
           <h3 id="documentation-title">
             DOCUMENTAÇÃO
           </h3>
+
+          <span class="lab-sophia-presence" title="Até o rigor pode ter mistério.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Até o rigor pode ter mistério.
+          </span>
 
           <p
             class="lab-project-kicker lab-project-tags"
