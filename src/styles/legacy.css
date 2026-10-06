@@ -739,3 +739,12 @@ html[data-legacy-mode='true'] main a:visited {
 html[data-legacy-mode='true'] :is(a, button) {
   cursor: pointer !important;
 }
+
+
+/* Legacy uses native browser interaction rather than contemporary motion polish. */
+html[data-legacy-mode='true'] *,
+html[data-legacy-mode='true'] *::before,
+html[data-legacy-mode='true'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
