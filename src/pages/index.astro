@@ -22,7 +22,8 @@ const background = [
 ---
 
 <BaseLayout>
-  <main class="portfolio-main">
+  <main class="portfolio-main" id="conteudo">
+      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal / Kauê Alencar</span><span>Escrita · estrutura · curiosidade</span></div>
 
     <section
       class="hero"
@@ -138,7 +139,7 @@ const background = [
 
       <div class="hero-statement">
         <p class="eyebrow">
-          Sobre
+          01 / Uma forma de pensar
         </p>
 
         <h2>
@@ -151,6 +152,7 @@ const background = [
           conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
           sempre atualizado.
         </p>
+        <div class="hero-actions"><a class="button editorial-primary" href="#lab">Explorar trabalhos <span aria-hidden="true">↘</span></a><a class="editorial-text-link" href="#contato">Vamos conversar ↗</a></div>
       </div>
 
       <div
@@ -234,6 +236,472 @@ const background = [
     </section>
 
     <section
+      class="lab section"
+      id="lab"
+      aria-labelledby="lab-title"
+    >
+      <div class="lab-heading">
+        <p class="eyebrow">02 / Laboratório</p>
+
+        <div class="lab-title-with-sophia">
+          <h2 id="lab-title">
+            <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
+          </h2>
+          <SophiaAnimation variant="lab" />
+        </div>
+
+        <p class="lab-note">
+          Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
+          transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
+        </p>
+
+        <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
+          <SophiaSigil className="lab-sophia-guide__sigil" />
+          <span>
+            <strong>Sophia percorre o laboratório.</strong>
+            <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
+          </span>
+          <i aria-hidden="true">↗</i>
+        </a>
+      </div>
+
+      <nav class="work-index" aria-label="Índice dos trabalhos">
+        <a href="#traducao"><span>01</span> Tradução ↘</a>
+        <a href="#reflexao"><span>02</span> Reflexão ↘</a>
+        <a href="#arquitetura"><span>03</span> Arquitetura ↘</a>
+        <a href="#curadoria"><span>04</span> Curadoria ↘</a>
+        <a href="#documentacao"><span>05</span> Documentação ↘</a>
+      </nav>
+
+      <article
+        id="traducao"
+        class="lab-project-card"
+        aria-labelledby="translation-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              01
+            </span>
+
+            <span class="lab-project-status">
+              Em andamento
+            </span>
+          </div>
+
+          <p class="lab-project-kicker">
+            EN → PT-BR · seleção, tradução & revisão
+          </p>
+
+          <h3 id="translation-title">
+            TRADUÇÃO
+          </h3>
+
+          <span class="lab-sophia-presence" title="Sophia encontrou aqui um texto ainda em travessia.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Sophia encontrou aqui um texto ainda em travessia.
+          </span>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>The Big Picture</cite>
+            </p>
+
+            <span>
+              Sean Carroll
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Tradução em português brasileiro de uma obra que cruza física,
+            filosofia, cosmologia e as perguntas fundamentais sobre significado,
+            vida e universo: <i>Filosofia da ciência</i> para os familiarizados.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Obsidian → Git → Astro → Pages
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        <div class="lab-project-cover">
+          <div class="lab-project-cover-frame">
+            <img
+              src="/assets/the-big-picture-cover.jpg"
+              alt="Capa de The Big Picture, de Sean Carroll"
+              width="299"
+              height="450"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </article>
+
+      <a
+        id="reflexao"
+        class="lab-project-card lab-project-card-essay"
+        href="https://horologiarius.com/blog/essays/e-se-reflexoes-sobre-a-viagem-no-tempo-e-relacoes-interpessoais/"
+        target="_blank"
+        rel="noreferrer"
+        aria-labelledby="essay-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              02
+            </span>
+
+            <span class="lab-project-status">
+              Publicado
+            </span>
+          </div>
+
+          <h3 id="essay-title">
+            REFLEXÃO
+          </h3>
+
+          <span class="lab-sophia-presence" title="Algumas ideias preferem surgir como constelações.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Algumas ideias preferem surgir como constelações.
+          </span>
+
+          <p
+            class="lab-project-kicker lab-project-tags"
+            aria-label="Temas da reflexão"
+          >
+            <span>ensaio</span>
+            <span>metafísica</span>
+            <span>ética</span>
+            <span>filosofia da ciência</span>
+          </p>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>E se</cite>
+            </p>
+
+            <span>
+              <i>Reflexões sobre a viagem no tempo e relações interpessoais segundo Aristóteles</i>
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Memória, causalidade, livre-arbítrio e amizade virtuosa se encontram
+            numa reflexão sobre o desejo de reescrever o passado e a tarefa de
+            ordenar o presente.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Ler em <i>Horologiarius</i>.com
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        <div class="lab-project-cover lab-project-cover-essay">
+          <div class="lab-project-cover-frame lab-project-cover-frame-essay">
+            <img
+              src="/assets/e-se-paris.jpg"
+              alt="Torre Eiffel sob um céu dramático, imagem utilizada no ensaio E se"
+              width="1280"
+              height="853"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </a>
+
+      <a
+        id="arquitetura"
+        class="lab-project-card lab-project-card-architecture"
+        href="https://horologiarius.com/"
+        target="_blank"
+        rel="noreferrer"
+        aria-labelledby="architecture-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              03
+            </span>
+
+            <span class="lab-project-status">
+              Sistema ativo
+            </span>
+          </div>
+
+          <p class="lab-project-kicker">
+            arquitetura da informação · taxonomia · publicação
+          </p>
+
+          <h3 id="architecture-title">
+            ARQUITETURA
+          </h3>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>Horologiarius</cite>
+            </p>
+
+            <span>
+              Do conteúdo disperso a um sistema editorial navegável.
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Textos, notas e leituras foram organizados por função, assunto,
+            estado editorial e metadados. O resultado é um acervo encontrável,
+            consistente e reutilizável — sem depender da memória de quem o mantém.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Abrir Horologiarius
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="lab-project-system lab-project-system-architecture"
+          aria-hidden="true"
+        >
+          <div class="architecture-map">
+            <span class="architecture-root">
+              Conteúdo
+            </span>
+
+            <div class="architecture-branches">
+              <span class="architecture-node architecture-node-essays">Ensaios</span>
+              <span class="architecture-node architecture-node-notes">Notas</span>
+              <span class="architecture-node architecture-node-readings">Leituras</span>
+            </div>
+
+            <div class="architecture-meta">
+              <span class="architecture-meta-node">assunto</span>
+              <span class="architecture-meta-node">status</span>
+              <span class="architecture-meta-node">idioma</span>
+              <span class="architecture-meta-node">série</span>
+            </div>
+
+            <span class="architecture-output">
+              Publicação
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <article
+        id="curadoria"
+        class="lab-project-card lab-project-card-knowledge"
+        aria-labelledby="knowledge-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              04
+            </span>
+
+            <span class="lab-project-status">
+              Em organização
+            </span>
+          </div>
+
+          <p class="lab-project-kicker">
+            captura · curadoria · recuperação · reutilização
+          </p>
+
+          <h3 id="knowledge-title">
+            CURADORIA
+          </h3>
+
+          <span class="lab-sophia-presence" title="Há sempre algo à espera de ser reencontrado.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Há sempre algo à espera de ser reencontrado.
+          </span>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>Readwise</cite>
+            </p>
+
+            <span>
+              Gestão de conhecimento pessoal e bibliográfico.
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            A camada de captura já reúne destaques e notas de leitura.
+            O trabalho em curso é transformar esse material bruto em conhecimento
+            revisado, classificado, pesquisável e reaproveitável na escrita.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              estruturação em andamento
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="lab-project-system lab-project-system-knowledge"
+          aria-hidden="true"
+        >
+          <div class="knowledge-flow">
+            <span>
+              Captura
+            </span>
+
+            <i>→</i>
+
+            <span>
+              Revisão
+            </span>
+
+            <i>→</i>
+
+            <span>
+              Classificação
+            </span>
+
+            <i>→</i>
+
+            <span>
+              Reuso
+            </span>
+          </div>
+
+          <div class="knowledge-note">
+            <strong>
+              Readwise
+            </strong>
+
+            <small>
+              destaques + notas
+            </small>
+          </div>
+        </div>
+      </article>
+
+      <a
+        id="documentacao"
+        class="lab-project-card lab-project-card-documentation"
+        href="https://github.com/indiolibanes/portfolio/blob/main/docs/publishing-workflow.md"
+        target="_blank"
+        rel="noreferrer"
+        aria-labelledby="documentation-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              05
+            </span>
+
+            <span class="lab-project-status">
+              Documentado
+            </span>
+          </div>
+
+          <h3 id="documentation-title">
+            DOCUMENTAÇÃO
+          </h3>
+
+          <span class="lab-sophia-presence" title="Até o rigor pode ter mistério.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Até o rigor pode ter mistério.
+          </span>
+
+          <p
+            class="lab-project-kicker lab-project-tags"
+            aria-label="Temas da documentação"
+          >
+            <span>documentação técnica</span>
+            <span>fluxo</span>
+            <span>manutenção</span>
+          </p>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>Fluxo de publicação</cite>
+            </p>
+
+            <span>
+              Obsidian → Git → Astro → Cloudflare Pages.
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Um runbook curto torna explícitos fonte, versionamento, build,
+            publicação, atualização e recuperação do portfólio. A documentação
+            descreve o processo para que ele continue compreensível sem depender
+            da memória de quem o executa.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Ler documentação
+            </span>
+
+            <span aria-hidden="true">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="lab-project-system lab-project-system-documentation"
+          aria-hidden="true"
+        >
+          <div class="documentation-pipeline">
+            <div class="documentation-step documentation-step-source">
+              <strong>Obsidian</strong>
+              <small>fonte</small>
+            </div>
+
+            <span class="documentation-arrow">→</span>
+
+            <div class="documentation-step documentation-step-version">
+              <strong>Git</strong>
+              <small>versão</small>
+            </div>
+
+            <span class="documentation-arrow">→</span>
+
+            <div class="documentation-step documentation-step-build">
+              <strong>Astro</strong>
+              <small>build</small>
+            </div>
+
+            <span class="documentation-arrow">→</span>
+
+            <div class="documentation-step documentation-step-deploy">
+              <strong>Pages</strong>
+              <small>deploy</small>
+            </div>
+          </div>
+
+          <p class="documentation-note">
+            fonte → histórico → geração → publicação
+          </p>
+        </div>
+      </a>
+    </section>
+
+    <section
       class="projects section github-showcase"
       id="projetos"
       aria-labelledby="projects-title"
@@ -241,7 +709,7 @@ const background = [
       <div class="section-heading github-heading">
         <div class="github-heading-copy">
           <p class="eyebrow">
-            GitHub
+            03 / Bastidores · GitHub
           </p>
 
           <div class="github-title-row">
@@ -371,466 +839,13 @@ const background = [
     </section>
 
     <section
-      class="lab section"
-      id="lab"
-      aria-labelledby="lab-title"
-    >
-      <div class="lab-heading">
-        <p class="eyebrow">Laboratório</p>
-
-        <div class="lab-title-with-sophia">
-          <h2 id="lab-title">
-            <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
-          </h2>
-          <SophiaAnimation variant="lab" />
-        </div>
-
-        <p class="lab-note">
-          Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
-          transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
-        </p>
-
-        <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
-          <SophiaSigil className="lab-sophia-guide__sigil" />
-          <span>
-            <strong>Sophia percorre o laboratório.</strong>
-            <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
-          </span>
-          <i aria-hidden="true">↗</i>
-        </a>
-      </div>
-
-      <article
-        class="lab-project-card"
-        aria-labelledby="translation-title"
-      >
-        <div class="lab-project-copy">
-          <div class="lab-project-meta">
-            <span class="lab-project-index">
-              01
-            </span>
-
-            <span class="lab-project-status">
-              Em andamento
-            </span>
-          </div>
-
-          <p class="lab-project-kicker">
-            EN → PT-BR · seleção, tradução & revisão
-          </p>
-
-          <h3 id="translation-title">
-            TRADUÇÃO
-          </h3>
-
-          <span class="lab-sophia-presence" title="Sophia encontrou aqui um texto ainda em travessia.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Sophia encontrou aqui um texto ainda em travessia.
-          </span>
-
-          <div class="lab-project-book">
-            <p>
-              <cite>The Big Picture</cite>
-            </p>
-
-            <span>
-              Sean Carroll
-            </span>
-          </div>
-
-          <p class="lab-project-description">
-            Tradução em português brasileiro de uma obra que cruza física,
-            filosofia, cosmologia e as perguntas fundamentais sobre significado,
-            vida e universo: <i>Filosofia da ciência</i> para os familiarizados.
-          </p>
-
-          <div class="lab-project-footer">
-            <span>
-              Obsidian → Git → Astro → Pages
-            </span>
-
-            <span aria-hidden="true">
-              ↗
-            </span>
-          </div>
-        </div>
-
-        <div class="lab-project-cover">
-          <div class="lab-project-cover-frame">
-            <img
-              src="/assets/the-big-picture-cover.jpg"
-              alt="Capa de The Big Picture, de Sean Carroll"
-              width="299"
-              height="450"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </article>
-
-      <a
-        class="lab-project-card lab-project-card-essay"
-        href="https://horologiarius.com/blog/essays/e-se-reflexoes-sobre-a-viagem-no-tempo-e-relacoes-interpessoais/"
-        target="_blank"
-        rel="noreferrer"
-        aria-labelledby="essay-title"
-      >
-        <div class="lab-project-copy">
-          <div class="lab-project-meta">
-            <span class="lab-project-index">
-              02
-            </span>
-
-            <span class="lab-project-status">
-              Publicado
-            </span>
-          </div>
-
-          <h3 id="essay-title">
-            REFLEXÃO
-          </h3>
-
-          <span class="lab-sophia-presence" title="Algumas ideias preferem surgir como constelações.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Algumas ideias preferem surgir como constelações.
-          </span>
-
-          <p
-            class="lab-project-kicker lab-project-tags"
-            aria-label="Temas da reflexão"
-          >
-            <span>ensaio</span>
-            <span>metafísica</span>
-            <span>ética</span>
-            <span>filosofia da ciência</span>
-          </p>
-
-          <div class="lab-project-book">
-            <p>
-              <cite>E se</cite>
-            </p>
-
-            <span>
-              <i>Reflexões sobre a viagem no tempo e relações interpessoais segundo Aristóteles</i>
-            </span>
-          </div>
-
-          <p class="lab-project-description">
-            Memória, causalidade, livre-arbítrio e amizade virtuosa se encontram
-            numa reflexão sobre o desejo de reescrever o passado e a tarefa de
-            ordenar o presente.
-          </p>
-
-          <div class="lab-project-footer">
-            <span>
-              Ler em <i>Horologiarius</i>.com
-            </span>
-
-            <span aria-hidden="true">
-              ↗
-            </span>
-          </div>
-        </div>
-
-        <div class="lab-project-cover lab-project-cover-essay">
-          <div class="lab-project-cover-frame lab-project-cover-frame-essay">
-            <img
-              src="/assets/e-se-paris.jpg"
-              alt="Torre Eiffel sob um céu dramático, imagem utilizada no ensaio E se"
-              width="1280"
-              height="853"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </a>
-
-      <a
-        class="lab-project-card lab-project-card-architecture"
-        href="https://horologiarius.com/"
-        target="_blank"
-        rel="noreferrer"
-        aria-labelledby="architecture-title"
-      >
-        <div class="lab-project-copy">
-          <div class="lab-project-meta">
-            <span class="lab-project-index">
-              03
-            </span>
-
-            <span class="lab-project-status">
-              Sistema ativo
-            </span>
-          </div>
-
-          <p class="lab-project-kicker">
-            arquitetura da informação · taxonomia · publicação
-          </p>
-
-          <h3 id="architecture-title">
-            ARQUITETURA
-          </h3>
-
-          <div class="lab-project-book">
-            <p>
-              <cite>Horologiarius</cite>
-            </p>
-
-            <span>
-              Do conteúdo disperso a um sistema editorial navegável.
-            </span>
-          </div>
-
-          <p class="lab-project-description">
-            Textos, notas e leituras foram organizados por função, assunto,
-            estado editorial e metadados. O resultado é um acervo encontrável,
-            consistente e reutilizável — sem depender da memória de quem o mantém.
-          </p>
-
-          <div class="lab-project-footer">
-            <span>
-              Abrir Horologiarius
-            </span>
-
-            <span aria-hidden="true">
-              ↗
-            </span>
-          </div>
-        </div>
-
-        <div
-          class="lab-project-system lab-project-system-architecture"
-          aria-hidden="true"
-        >
-          <div class="architecture-map">
-            <span class="architecture-root">
-              Conteúdo
-            </span>
-
-            <div class="architecture-branches">
-              <span class="architecture-node architecture-node-essays">Ensaios</span>
-              <span class="architecture-node architecture-node-notes">Notas</span>
-              <span class="architecture-node architecture-node-readings">Leituras</span>
-            </div>
-
-            <div class="architecture-meta">
-              <span class="architecture-meta-node">assunto</span>
-              <span class="architecture-meta-node">status</span>
-              <span class="architecture-meta-node">idioma</span>
-              <span class="architecture-meta-node">série</span>
-            </div>
-
-            <span class="architecture-output">
-              Publicação
-            </span>
-          </div>
-        </div>
-      </a>
-
-      <article
-        class="lab-project-card lab-project-card-knowledge"
-        aria-labelledby="knowledge-title"
-      >
-        <div class="lab-project-copy">
-          <div class="lab-project-meta">
-            <span class="lab-project-index">
-              04
-            </span>
-
-            <span class="lab-project-status">
-              Em organização
-            </span>
-          </div>
-
-          <p class="lab-project-kicker">
-            captura · curadoria · recuperação · reutilização
-          </p>
-
-          <h3 id="knowledge-title">
-            CURADORIA
-          </h3>
-
-          <span class="lab-sophia-presence" title="Há sempre algo à espera de ser reencontrado.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Há sempre algo à espera de ser reencontrado.
-          </span>
-
-          <div class="lab-project-book">
-            <p>
-              <cite>Readwise</cite>
-            </p>
-
-            <span>
-              Gestão de conhecimento pessoal e bibliográfico.
-            </span>
-          </div>
-
-          <p class="lab-project-description">
-            A camada de captura já reúne destaques e notas de leitura.
-            O trabalho em curso é transformar esse material bruto em conhecimento
-            revisado, classificado, pesquisável e reaproveitável na escrita.
-          </p>
-
-          <div class="lab-project-footer">
-            <span>
-              estruturação em andamento
-            </span>
-          </div>
-        </div>
-
-        <div
-          class="lab-project-system lab-project-system-knowledge"
-          aria-hidden="true"
-        >
-          <div class="knowledge-flow">
-            <span>
-              Captura
-            </span>
-
-            <i>→</i>
-
-            <span>
-              Revisão
-            </span>
-
-            <i>→</i>
-
-            <span>
-              Classificação
-            </span>
-
-            <i>→</i>
-
-            <span>
-              Reuso
-            </span>
-          </div>
-
-          <div class="knowledge-note">
-            <strong>
-              Readwise
-            </strong>
-
-            <small>
-              destaques + notas
-            </small>
-          </div>
-        </div>
-      </article>
-
-      <a
-        class="lab-project-card lab-project-card-documentation"
-        href="https://github.com/indiolibanes/portfolio/blob/main/docs/publishing-workflow.md"
-        target="_blank"
-        rel="noreferrer"
-        aria-labelledby="documentation-title"
-      >
-        <div class="lab-project-copy">
-          <div class="lab-project-meta">
-            <span class="lab-project-index">
-              05
-            </span>
-
-            <span class="lab-project-status">
-              Documentado
-            </span>
-          </div>
-
-          <h3 id="documentation-title">
-            DOCUMENTAÇÃO
-          </h3>
-
-          <span class="lab-sophia-presence" title="Até o rigor pode ter mistério.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Até o rigor pode ter mistério.
-          </span>
-
-          <p
-            class="lab-project-kicker lab-project-tags"
-            aria-label="Temas da documentação"
-          >
-            <span>documentação técnica</span>
-            <span>fluxo</span>
-            <span>manutenção</span>
-          </p>
-
-          <div class="lab-project-book">
-            <p>
-              <cite>Fluxo de publicação</cite>
-            </p>
-
-            <span>
-              Obsidian → Git → Astro → Cloudflare Pages.
-            </span>
-          </div>
-
-          <p class="lab-project-description">
-            Um runbook curto torna explícitos fonte, versionamento, build,
-            publicação, atualização e recuperação do portfólio. A documentação
-            descreve o processo para que ele continue compreensível sem depender
-            da memória de quem o executa.
-          </p>
-
-          <div class="lab-project-footer">
-            <span>
-              Ler documentação
-            </span>
-
-            <span aria-hidden="true">
-              ↗
-            </span>
-          </div>
-        </div>
-
-        <div
-          class="lab-project-system lab-project-system-documentation"
-          aria-hidden="true"
-        >
-          <div class="documentation-pipeline">
-            <div class="documentation-step documentation-step-source">
-              <strong>Obsidian</strong>
-              <small>fonte</small>
-            </div>
-
-            <span class="documentation-arrow">→</span>
-
-            <div class="documentation-step documentation-step-version">
-              <strong>Git</strong>
-              <small>versão</small>
-            </div>
-
-            <span class="documentation-arrow">→</span>
-
-            <div class="documentation-step documentation-step-build">
-              <strong>Astro</strong>
-              <small>build</small>
-            </div>
-
-            <span class="documentation-arrow">→</span>
-
-            <div class="documentation-step documentation-step-deploy">
-              <strong>Pages</strong>
-              <small>deploy</small>
-            </div>
-          </div>
-
-          <p class="documentation-note">
-            fonte → histórico → geração → publicação
-          </p>
-        </div>
-      </a>
-    </section>
-
-    <section
       class="background section"
       id="percurso"
       aria-labelledby="background-title"
     >
       <div class="background-title">
         <p class="eyebrow">
-          Percurso
+          04 / Percurso
         </p>
 
         <h2 id="background-title">
@@ -863,6 +878,7 @@ const background = [
 
     <section
       class="closing section"
+      id="contato"
       aria-labelledby="closing-title"
     >
       <div class="closing-copy">

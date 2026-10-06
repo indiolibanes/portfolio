@@ -5,7 +5,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
 
 <header class="site-header">
   <nav class="nav-shell" aria-label="Navegação principal">
-    <a class="brand" href="#top" aria-label={`${PROFILE.name}, início`}>
+    <a class="brand" href="/#top" aria-label={`${PROFILE.name}, início`}>
       <span class="brand-mark" aria-hidden="true">K</span>
       <span class="brand-copy">
         <strong>{PROFILE.name}</strong>
@@ -14,12 +14,12 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     </a>
 
     <div class="nav-links">
-      <a href="#sobre">Sobre</a>
-      <a href="#projetos">Projetos</a>
-      <a href="#lab">Laboratório</a>
-      <a href="#percurso">Percurso</a>
-      <a href="#musica">Música</a>
-      <a class="nav-cta" href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+      <a href="/#sobre">Sobre</a>
+      <a href="/#lab">Trabalhos</a>
+      <a href="/#projetos">Bastidores</a>
+      <a href="/#percurso">Percurso</a>
+      <a href="/#musica">Música</a>
+      <a class="nav-cta" href="/#contato">Contato ↗</a>
       <SeriousModeToggle />
     </div>
   </nav>
