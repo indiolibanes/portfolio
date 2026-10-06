@@ -92,3 +92,6 @@ html[data-serious-mode='true'] :is(a, button) { cursor: pointer !important; }
   html[data-serious-mode='true'] .lab-heading h2 { font-size: 1.6rem; }
   html[data-serious-mode='true'] .github-board-stage { border-left: 0; }
 }
+/* Stronger selectors neutralize the documentation card's white-on-turquoise text. */
+html[data-serious-mode='true'] .lab-project-card.lab-project-card-documentation :is(.lab-project-description, .lab-project-footer, .lab-project-book p, .lab-project-book span, .lab-project-kicker, .lab-project-index) { color: var(--ink); }
+html[data-serious-mode='true'] .github-feature-owner strong { color: var(--ink); }
