@@ -71,7 +71,8 @@ html[data-serious-mode='true'] .github-board-stage { filter: grayscale(1); }
 html[data-serious-mode='true'] :is(.github-tags span, .music-source-label span) { background: var(--surface); color: var(--ink); border-color: var(--line); }
 html[data-serious-mode='true'] .github-cta { color: var(--ink); background: var(--surface); border: 1px solid var(--line); box-shadow: none; }
 html[data-serious-mode='true'] .background { margin-top: 2rem; }
-html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(0, 1fr) auto minmax(0, .8fr); }
+html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(0, 1fr) clamp(220px, 27vw, 320px) minmax(0, 1fr); }
+html[data-serious-mode='true'] .music-heading > p { color: var(--ink); text-shadow: none; }
 html[data-serious-mode='true'] :is(.recent-track-card, .playlist-card) { background: var(--surface-soft); color: var(--ink); border-color: var(--line); box-shadow: none; }
 html[data-serious-mode='true'] .closing { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 html[data-serious-mode='true'] .closing-emil-triforce { transform: none; }
@@ -82,9 +83,19 @@ html[data-serious-mode='true'] :is(a, button) { cursor: pointer !important; }
 @media (max-width: 920px) {
   html[data-serious-mode='true'] .hero { grid-template-columns: minmax(0, 1fr); }
   html[data-serious-mode='true'] .hero-intro { max-width: 620px; width: 100%; margin: 0 auto; }
-  html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(0, 1fr) auto; }
-  html[data-serious-mode='true'] .music-heading > p { grid-column: 1 / -1; }
+  html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(150px, .8fr) minmax(0, 1.2fr); }
+  html[data-serious-mode='true'] .music-heading > div { grid-column: 1 / -1; }
+  html[data-serious-mode='true'] .music-heading > .sophia-animation { grid-column: 1; grid-row: 2; width: min(220px, 100%); }
+  html[data-serious-mode='true'] .music-heading > p { grid-column: 2; grid-row: 2; }
   html[data-serious-mode='true'] .closing { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  html[data-serious-mode='true'] .music-heading { grid-template-columns: minmax(0, 1fr); }
+  html[data-serious-mode='true'] .music-heading > div,
+  html[data-serious-mode='true'] .music-heading > .sophia-animation,
+  html[data-serious-mode='true'] .music-heading > p { grid-column: 1; grid-row: auto; }
+  html[data-serious-mode='true'] .music-heading > .sophia-animation { width: min(220px, 72vw); }
+  html[data-serious-mode='true'] .music-heading > p { text-align: center; }
 }
 @media (max-width: 700px) {
   html[data-serious-mode='true'] :is(.lab-project-card, .github-feature-shannon) { grid-template-columns: minmax(0, 1fr); }
