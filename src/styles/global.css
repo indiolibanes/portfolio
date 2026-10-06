@@ -6954,10 +6954,9 @@ html[data-serious-mode='true'] .lab-title-with-sophia { grid-template-columns: m
   75% { background-position: 100% 0; }
 }
 @keyframes sophia-music-hop {
-  0%, 100% { transform: translateX(6%) translateY(-12px) rotate(2deg); }
-  25% { transform: translateX(6%) translateY(0) rotate(2deg); }
-  50% { transform: translateX(-6%) translateY(-12px) rotate(-2deg); }
-  75% { transform: translateX(-6%) translateY(0) rotate(-2deg); }
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  25%, 75% { transform: translateY(-5px) rotate(0); }
+  50% { transform: translateY(-10px) rotate(2deg); }
 }
 @keyframes sophia-notes {
   0%, 100% { background-position: 0 0; } 25% { background-position: 33.333333% 0; }
