@@ -219,18 +219,28 @@
 
     html[data-custom-cursor='true']:not(
       [data-serious-mode='true']
+    ):not(
+      [data-legacy-mode='true']
     ),
     html[data-custom-cursor='true']:not(
       [data-serious-mode='true']
+    ):not(
+      [data-legacy-mode='true']
     ) body,
     html[data-custom-cursor='true']:not(
       [data-serious-mode='true']
+    ):not(
+      [data-legacy-mode='true']
     ) a,
     html[data-custom-cursor='true']:not(
       [data-serious-mode='true']
+    ):not(
+      [data-legacy-mode='true']
     ) button,
     html[data-custom-cursor='true']:not(
       [data-serious-mode='true']
+    ):not(
+      [data-legacy-mode='true']
     ) [role='button'] {
       cursor:
         none !important;
@@ -238,6 +248,8 @@
   }
 
   html[data-serious-mode='true']
+  .atom-cursor,
+  html[data-legacy-mode='true']
   .atom-cursor {
     display:
       none !important;

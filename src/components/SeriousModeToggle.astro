@@ -3,9 +3,8 @@
     class="serious-toggle"
     type="button"
     data-serious-toggle
-    aria-pressed="false"
-    aria-label="Ativar Modo sério"
-    title="Modo sério"
+    aria-label="Modo atual: Autoral. Mudar para Editorial"
+    title="Autoral → Editorial"
   >
     <svg
       class="serious-icon"
@@ -24,28 +23,49 @@
       ></path>
     </svg>
 
-    <span data-serious-label>
-      Modo sério
-    </span>
+    <span data-serious-label>Modo Editorial</span>
   </button>
 </div>
 
 <script is:inline>
   (() => {
-    const key = 'portfolio-serious-mode';
+    const key = 'portfolio-mode';
+    const oldKey = 'portfolio-serious-mode';
+    const modes = ['authorial', 'editorial', 'legacy'];
+    const names = {
+      authorial: 'Autoral',
+      editorial: 'Editorial',
+      legacy: 'Legacy',
+    };
+    const themeColors = {
+      authorial: '#f6efdc',
+      editorial: '#f5f5f3',
+      legacy: '#c0c0c0',
+    };
+
     const button = document.querySelector('[data-serious-toggle]');
     const label = document.querySelector('[data-serious-label]');
 
     if (!button) return;
 
-    const syncUrl = (enabled) => {
+    const normalizeMode = (mode) =>
+      modes.includes(mode) ? mode : 'authorial';
+
+    const nextMode = (mode) => {
+      const currentIndex = modes.indexOf(normalizeMode(mode));
+      return modes[(currentIndex + 1) % modes.length];
+    };
+
+    const syncUrl = (mode) => {
       try {
         const url = new URL(window.location.href);
 
-        if (enabled) {
-          url.searchParams.set('serious', '1');
+        url.searchParams.delete('serious');
+
+        if (mode === 'authorial') {
+          url.searchParams.delete('mode');
         } else {
-          url.searchParams.delete('serious');
+          url.searchParams.set('mode', mode);
         }
 
         history.replaceState(
@@ -57,86 +77,88 @@
     };
 
     const applyMode = (
-      enabled,
+      requestedMode,
       persist = true,
       updateUrl = true,
     ) => {
+      const mode = normalizeMode(requestedMode);
+      const next = nextMode(mode);
+
+      document.documentElement.dataset.portfolioMode = mode;
       document.documentElement.dataset.seriousMode =
-        enabled ? 'true' : 'false';
+        mode === 'editorial' ? 'true' : 'false';
+      document.documentElement.dataset.legacyMode =
+        mode === 'legacy' ? 'true' : 'false';
 
-      button.setAttribute(
-        'aria-pressed',
-        String(enabled),
-      );
-
+      button.dataset.portfolioModeCurrent = mode;
       button.setAttribute(
         'aria-label',
-        enabled
-          ? 'Voltar ao modo autoral'
-          : 'Ativar Modo sério',
+        'Modo atual: ' + names[mode] + '. Mudar para ' + names[next],
       );
-
       button.setAttribute(
         'title',
-        enabled
-          ? 'Voltar ao modo autoral'
-          : 'Modo sério',
+        names[mode] + ' → ' + names[next],
       );
 
       if (label) {
-        label.textContent =
-          enabled
-            ? 'Modo autoral'
-            : 'Modo sério';
+        label.textContent = 'Modo ' + names[next];
       }
 
-      const themeColor =
-        document.querySelector(
-          'meta[name="theme-color"]',
-        );
+      const themeColor = document.querySelector(
+        'meta[name="theme-color"]',
+      );
 
       if (themeColor) {
         themeColor.setAttribute(
           'content',
-          enabled
-            ? '#f5f5f3'
-            : '#f6efdc',
+          themeColors[mode],
         );
       }
 
       if (persist) {
         try {
-          localStorage.setItem(
-            key,
-            String(enabled),
-          );
+          localStorage.setItem(key, mode);
+          localStorage.removeItem(oldKey);
         } catch {}
       }
 
       if (updateUrl) {
-        syncUrl(enabled);
+        syncUrl(mode);
       }
 
       window.dispatchEvent(
         new CustomEvent(
+          'portfolio:mode',
+          { detail: { mode } },
+        ),
+      );
+
+      window.dispatchEvent(
+        new CustomEvent(
           'portfolio:serious-mode',
-          { detail: { enabled } },
+          { detail: { enabled: mode === 'editorial' } },
         ),
       );
     };
 
-    const enabled =
-      document.documentElement.dataset
-        .seriousMode === 'true';
+    const initialMode =
+      document.documentElement.dataset.portfolioMode ||
+      (
+        document.documentElement.dataset.seriousMode === 'true'
+          ? 'editorial'
+          : document.documentElement.dataset.legacyMode === 'true'
+            ? 'legacy'
+            : 'authorial'
+      );
 
-    applyMode(enabled, false, false);
+    applyMode(initialMode, false, false);
 
     button.addEventListener('click', () => {
       const current =
-        document.documentElement.dataset
-          .seriousMode === 'true';
+        document.documentElement.dataset.portfolioMode ||
+        'authorial';
 
-      applyMode(!current);
+      applyMode(nextMode(current));
     });
   })();
 </script>
@@ -149,43 +171,21 @@
 
   .serious-toggle {
     min-height: 42px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     gap: 0.42rem;
-
-    padding:
-      0.55rem 0.78rem;
-
-    border:
-      1px solid
-      rgba(205, 188, 165, 0.92);
-
-    border-radius:
-      var(--radius-full);
-
-    background:
-      rgba(255, 250, 240, 0.76);
-
-    color:
-      var(--ink-soft);
-
-    box-shadow:
-      0 3px 12px
-      rgba(94, 72, 49, 0.07);
-
+    padding: 0.55rem 0.78rem;
+    border: 1px solid rgba(205, 188, 165, 0.92);
+    border-radius: var(--radius-full);
+    background: rgba(255, 250, 240, 0.76);
+    color: var(--ink-soft);
+    box-shadow: 0 3px 12px rgba(94, 72, 49, 0.07);
     cursor: pointer;
-
-    font-family:
-      var(--font-ui);
-
+    font-family: var(--font-ui);
     font-size: 0.78rem;
     font-weight: 800;
-
     white-space: nowrap;
-
     transition:
       transform 160ms ease,
       background-color 160ms ease,
@@ -195,51 +195,61 @@
   }
 
   .serious-toggle:hover {
-    transform:
-      translateY(-1px);
-
-    background:
-      var(--surface-soft);
-
-    color:
-      var(--ink);
+    transform: translateY(-1px);
+    background: var(--surface-soft);
+    color: var(--ink);
   }
 
   .serious-icon {
     flex: 0 0 auto;
   }
 
-  :global(html[data-serious-mode='true'])
-  .serious-toggle {
-    border-color:
-      #000000;
-
-    border-radius:
-      2px;
-
-    background:
-      #ffffff;
-
-    color:
-      #000000;
-
-    box-shadow:
-      none;
+  :global(html[data-serious-mode='true']) .serious-toggle {
+    border-color: #000000;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #000000;
+    box-shadow: none;
   }
 
-  :global(html[data-serious-mode='true'])
-  .serious-toggle:hover {
-    background:
-      #eeeeee;
+  :global(html[data-serious-mode='true']) .serious-toggle:hover {
+    background: #eeeeee;
+  }
+
+  :global(html[data-legacy-mode='true']) .serious-toggle {
+    min-height: 34px;
+    padding: 0.28rem 0.55rem;
+    border: 2px outset #efefef;
+    border-radius: 0;
+    background: #c0c0c0;
+    color: #000000;
+    box-shadow: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    transform: none;
+  }
+
+  :global(html[data-legacy-mode='true']) .serious-toggle:hover {
+    background: #c0c0c0;
+    color: #000000;
+    transform: none;
+  }
+
+  :global(html[data-legacy-mode='true']) .serious-toggle:active {
+    border-style: inset;
   }
 
   @media (max-width: 720px) {
     .serious-toggle {
       min-height: 40px;
+      padding: 0.48rem 0.64rem;
+      font-size: 0.72rem;
+    }
 
-      padding:
-        0.48rem 0.64rem;
-
+    :global(html[data-legacy-mode='true']) .serious-toggle {
+      min-height: 34px;
+      padding: 0.28rem 0.5rem;
       font-size: 0.72rem;
     }
   }
