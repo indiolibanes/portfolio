@@ -4610,27 +4610,48 @@ html[data-serious-mode='true']
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.10);
+    rgba(222, 179, 128, 0.22);
 
   border-radius:
     var(--radius-xl);
 
+  /* Dark walnut: warm enough to separate Contact from the AMOLED Translation card,
+     restrained enough to keep Emil/Triforce and the gold accents in the foreground. */
   background:
     radial-gradient(
-      circle at 82% 48%,
-      rgba(216, 184, 78, 0.12),
-      transparent 26%
+      ellipse at 84% 48%,
+      rgba(229, 188, 97, 0.14) 0%,
+      rgba(229, 188, 97, 0.035) 24%,
+      transparent 44%
     ),
     radial-gradient(
-      circle at 18% 22%,
-      rgba(129, 116, 163, 0.12),
-      transparent 30%
+      ellipse at 14% 30%,
+      rgba(112, 58, 34, 0.30) 0%,
+      rgba(112, 58, 34, 0.08) 9%,
+      transparent 20%
+    ),
+    repeating-linear-gradient(
+      2deg,
+      rgba(255, 240, 214, 0.025) 0px,
+      rgba(255, 240, 214, 0.025) 1px,
+      rgba(51, 25, 16, 0.05) 2px,
+      transparent 4px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 238px,
+      rgba(35, 17, 11, 0.22) 239px,
+      rgba(181, 116, 73, 0.10) 240px,
+      transparent 241px,
+      transparent 480px
     ),
     linear-gradient(
       135deg,
-      #151515 0%,
-      #0d0d0d 54%,
-      #050505 100%
+      #5a3927 0%,
+      #43291d 48%,
+      #2f1c15 100%
     );
 
   color:
@@ -4638,9 +4659,9 @@ html[data-serious-mode='true']
 
   box-shadow:
     0 24px 58px
-      rgba(0, 0, 0, 0.24),
+      rgba(48, 24, 15, 0.28),
     inset 0 1px 0
-      rgba(255, 255, 255, 0.05);
+      rgba(255, 241, 220, 0.08);
 }
 
 .closing-copy {
@@ -4680,17 +4701,17 @@ html[data-serious-mode='true']
 
 .closing-email-button {
   border-color:
-    rgba(255, 255, 255, 0.86);
+    rgba(255, 246, 232, 0.88);
 
   background:
     #f7f3eb;
 
   color:
-    #111111;
+    #24150f;
 
   box-shadow:
     0 10px 22px
-      rgba(0, 0, 0, 0.20);
+      rgba(49, 25, 16, 0.24);
 }
 
 .closing-email-button:hover {
