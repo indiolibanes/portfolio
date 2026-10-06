@@ -27,26 +27,40 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <script is:inline>
   (() => {
     try {
-      const seriousParam =
-        new URLSearchParams(window.location.search)
-          .get('serious');
+      const params = new URLSearchParams(window.location.search);
+      const requestedMode = params.get('mode');
+      const seriousParam = params.get('serious');
+      const supportedModes = ['authorial', 'editorial', 'legacy'];
 
-      if (
-        seriousParam === '1' ||
-        seriousParam === 'true'
-      ) {
-        document.documentElement.dataset
-          .seriousMode = 'true';
-      } else if (
-        seriousParam !== '0' &&
-        seriousParam !== 'false' &&
-        localStorage.getItem(
-          'portfolio-serious-mode',
-        ) === 'true'
-      ) {
-        document.documentElement.dataset
-          .seriousMode = 'true';
+      let mode = null;
+
+      if (requestedMode === '1998') {
+        mode = 'legacy';
+      } else if (supportedModes.includes(requestedMode)) {
+        mode = requestedMode;
+      } else if (seriousParam === '1' || seriousParam === 'true') {
+        mode = 'editorial';
+      } else if (seriousParam === '0' || seriousParam === 'false') {
+        mode = 'authorial';
+      } else {
+        const storedMode = localStorage.getItem('portfolio-mode');
+
+        if (supportedModes.includes(storedMode)) {
+          mode = storedMode;
+        } else if (
+          localStorage.getItem('portfolio-serious-mode') === 'true'
+        ) {
+          mode = 'editorial';
+        }
       }
+
+      if (!mode) mode = 'authorial';
+
+      document.documentElement.dataset.portfolioMode = mode;
+      document.documentElement.dataset.seriousMode =
+        mode === 'editorial' ? 'true' : 'false';
+      document.documentElement.dataset.legacyMode =
+        mode === 'legacy' ? 'true' : 'false';
     } catch {}
   })();
 </script>
