@@ -1,0 +1,741 @@
+/* --------------------------------------------------
+   Legacy — text-first, circa 1998
+-------------------------------------------------- */
+
+html[data-legacy-mode='true'] {
+  color-scheme: light;
+
+  background:
+    #c0c0c0;
+
+  scroll-behavior: auto;
+}
+
+html[data-legacy-mode='true'],
+html[data-legacy-mode='true'] body {
+  cursor:
+    auto !important;
+}
+
+html[data-legacy-mode='true'] body {
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 16px;
+  line-height: 1.5;
+
+  text-rendering: auto;
+  -webkit-font-smoothing: auto;
+}
+
+html[data-legacy-mode='true'] .ambient,
+html[data-legacy-mode='true'] .hero-cover-art,
+html[data-legacy-mode='true'] .pixel-mushroom,
+html[data-legacy-mode='true'] .phrolova-underlay,
+html[data-legacy-mode='true'] .shorekeeper-underlay,
+html[data-legacy-mode='true'] .github-gif-luna,
+html[data-legacy-mode='true'] .github-gif-strip,
+html[data-legacy-mode='true'] .github-visual,
+html[data-legacy-mode='true'] .triforce-stage,
+html[data-legacy-mode='true'] .recent-artwork-shell,
+html[data-legacy-mode='true'] .playlist-artwork-fallback,
+html[data-legacy-mode='true'] main img,
+html[data-legacy-mode='true'] main svg {
+  display:
+    none !important;
+}
+
+html[data-legacy-mode='true'] .site-header {
+  position: static;
+
+  padding:
+    8px 12px 0;
+}
+
+html[data-legacy-mode='true'] .nav-shell {
+  width:
+    min(
+      960px,
+      100%
+    );
+
+  padding:
+    6px 8px;
+
+  border:
+    2px outset
+    #efefef;
+
+  border-radius: 0;
+
+  background:
+    #c0c0c0;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .brand {
+  color:
+    #000000;
+}
+
+html[data-legacy-mode='true'] .brand-mark {
+  width: 34px;
+  height: 34px;
+
+  border:
+    2px outset
+    #efefef;
+
+  border-radius: 0;
+
+  background:
+    #c0c0c0;
+
+  color:
+    #000000;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 0.9rem;
+
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .brand-copy small {
+  color:
+    #333333;
+
+  font-family:
+    "Courier New",
+    monospace;
+}
+
+html[data-legacy-mode='true'] .nav-links {
+  gap: 0.3rem;
+}
+
+html[data-legacy-mode='true'] .nav-links a {
+  padding:
+    0.25rem 0.35rem;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 0.82rem;
+
+  text-decoration:
+    underline;
+}
+
+html[data-legacy-mode='true'] .nav-links a:visited {
+  color:
+    #551a8b;
+}
+
+html[data-legacy-mode='true'] .serious-toggle {
+  min-height: 34px;
+
+  padding:
+    0.28rem 0.55rem;
+
+  border:
+    2px outset
+    #efefef !important;
+
+  border-radius:
+    0 !important;
+
+  background:
+    #c0c0c0 !important;
+
+  color:
+    #000000 !important;
+
+  box-shadow:
+    none !important;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif !important;
+
+  font-size:
+    0.78rem !important;
+
+  transform:
+    none !important;
+}
+
+html[data-legacy-mode='true'] .portfolio-main {
+  width:
+    min(
+      960px,
+      calc(100% - 24px)
+    );
+
+  padding:
+    18px 0 40px;
+}
+
+html[data-legacy-mode='true'] h1,
+html[data-legacy-mode='true'] h2,
+html[data-legacy-mode='true'] h3 {
+  color:
+    #000000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  letter-spacing: 0;
+}
+
+html[data-legacy-mode='true'] .eyebrow,
+html[data-legacy-mode='true'] .project-label,
+html[data-legacy-mode='true'] .note-label,
+html[data-legacy-mode='true'] .hello,
+html[data-legacy-mode='true'] .github-overline {
+  color:
+    #000000;
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  letter-spacing:
+    0.04em;
+}
+
+html[data-legacy-mode='true'] .hero {
+  display: block;
+
+  padding:
+    16px;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .hero-intro {
+  min-height: 0;
+
+  padding: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+}
+
+html[data-legacy-mode='true'] .identity-cluster {
+  display: block;
+}
+
+html[data-legacy-mode='true'] .name-brick-plate {
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-legacy-mode='true'] .gold-block {
+  display: none;
+}
+
+html[data-legacy-mode='true'] .block-name {
+  color:
+    #000000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  font-size:
+    clamp(
+      2.4rem,
+      8vw,
+      4.8rem
+    );
+
+  letter-spacing: 0;
+
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+html[data-legacy-mode='true'] .role {
+  color:
+    #333333;
+}
+
+html[data-legacy-mode='true'] .hero-statement {
+  margin-top:
+    2rem;
+
+  padding: 0;
+
+  background:
+    transparent;
+}
+
+html[data-legacy-mode='true'] .hero-statement::before {
+  content:
+    none;
+}
+
+html[data-legacy-mode='true'] .hero-note {
+  width: 100%;
+
+  margin:
+    1.5rem 0 0;
+
+  padding:
+    12px;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #f5f5f5;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-legacy-mode='true'] .hero-note .tape {
+  display: none;
+}
+
+html[data-legacy-mode='true'] .section {
+  margin-top:
+    24px;
+}
+
+html[data-legacy-mode='true'] .section-heading,
+html[data-legacy-mode='true'] .github-heading,
+html[data-legacy-mode='true'] .music-heading,
+html[data-legacy-mode='true'] .lab,
+html[data-legacy-mode='true'] .background,
+html[data-legacy-mode='true'] .closing {
+  grid-template-columns:
+    1fr;
+
+  gap:
+    1rem;
+}
+
+html[data-legacy-mode='true'] .github-title-row {
+  display: block;
+}
+
+html[data-legacy-mode='true'] .github-heading h2,
+html[data-legacy-mode='true'] .github-feature-copy h3,
+html[data-legacy-mode='true'] .closing h2,
+html[data-legacy-mode='true'] .background-title h2,
+html[data-legacy-mode='true'] .music-heading > div > h2 {
+  max-width:
+    none;
+}
+
+html[data-legacy-mode='true'] .github-feature {
+  grid-template-columns:
+    1fr;
+
+  gap: 0;
+
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-legacy-mode='true'] .github-feature-copy {
+  padding:
+    16px;
+
+  background:
+    transparent;
+}
+
+html[data-legacy-mode='true'] .github-feature-owner img {
+  display:
+    none !important;
+}
+
+html[data-legacy-mode='true'] .github-feature-owner strong,
+html[data-legacy-mode='true'] .github-feature-copy h3,
+html[data-legacy-mode='true'] .github-feature-copy > p {
+  color:
+    #000000;
+}
+
+html[data-legacy-mode='true'] .github-tags span,
+html[data-legacy-mode='true'] .music-source-label span {
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #eeeeee;
+
+  color:
+    #000000;
+
+  font-family:
+    "Courier New",
+    monospace;
+}
+
+html[data-legacy-mode='true'] .github-cta,
+html[data-legacy-mode='true'] .apple-music-link,
+html[data-legacy-mode='true'] .primary-button {
+  border: 0;
+
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  box-shadow: none;
+
+  text-decoration:
+    underline;
+
+  transform: none;
+}
+
+html[data-legacy-mode='true'] .background-list article,
+html[data-legacy-mode='true'] .closing,
+html[data-legacy-mode='true'] .recent-track-card,
+html[data-legacy-mode='true'] .playlist-card {
+  border:
+    1px solid
+    #808080;
+
+  border-radius: 0;
+
+  background:
+    #ffffff;
+
+  box-shadow: none;
+
+  transform: none;
+}
+
+html[data-legacy-mode='true'] .recent-track-card {
+  grid-template-columns:
+    1fr;
+
+  min-height: 0;
+}
+
+html[data-legacy-mode='true'] .playlist-card {
+  grid-template-columns:
+    minmax(0, 1fr)
+    20px;
+}
+
+html[data-legacy-mode='true'] .social-links {
+  flex-wrap: wrap;
+
+  gap:
+    0.75rem;
+}
+
+html[data-legacy-mode='true'] .social-links a {
+  width: auto;
+  height: auto;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background:
+    transparent;
+
+  color:
+    #0000ee;
+
+  box-shadow: none;
+
+  text-decoration:
+    underline;
+}
+
+html[data-legacy-mode='true'] .social-links svg {
+  display:
+    none;
+}
+
+html[data-legacy-mode='true'] .social-links .sr-only {
+  position:
+    static !important;
+
+  width:
+    auto !important;
+
+  height:
+    auto !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    visible !important;
+
+  clip:
+    auto !important;
+
+  white-space:
+    normal !important;
+}
+
+html[data-legacy-mode='true'] .portfolio-footer {
+  border-radius: 0;
+
+  background:
+    #eeeeee;
+}
+
+@media (max-width: 720px) {
+  html[data-legacy-mode='true'] .nav-shell {
+    align-items:
+      flex-start;
+  }
+
+  html[data-legacy-mode='true'] .nav-links {
+    flex-wrap:
+      wrap;
+
+    justify-content:
+      flex-end;
+  }
+
+  html[data-legacy-mode='true'] .github-gif-luna,
+  html[data-legacy-mode='true'] .github-gif-strip {
+    display:
+      none !important;
+  }
+}
+
+
+
+/* Compatibility with sections/components introduced after the original 1998 mode. */
+html[data-legacy-mode='true'] .lab-heading {
+  grid-template-columns: 1fr !important;
+  gap: 0.75rem !important;
+}
+
+html[data-legacy-mode='true'] .lab-companion,
+html[data-legacy-mode='true'] .lab-sophia-guide,
+html[data-legacy-mode='true'] .lab-sophia-presence,
+html[data-legacy-mode='true'] .sophia-animation,
+html[data-legacy-mode='true'] .github-board-stage,
+html[data-legacy-mode='true'] .closing-marks {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] :is(
+  .lab,
+  .github-showcase,
+  .background,
+  .music-shelf,
+  .closing
+) {
+  padding: 16px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] :is(
+  .lab,
+  .hero,
+  .github-showcase,
+  .background,
+  .music-shelf,
+  .closing
+)::before,
+html[data-legacy-mode='true'] :is(
+  .lab,
+  .hero,
+  .github-showcase,
+  .background,
+  .music-shelf,
+  .closing
+)::after {
+  content: none !important;
+}
+
+html[data-legacy-mode='true'] .work-index {
+  display: block;
+  margin: 0 !important;
+  padding: 8px;
+  border: 1px solid #808080;
+  border-radius: 0;
+  background: #eeeeee;
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .work-index a {
+  display: inline;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #0000ee;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: underline;
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .work-index a + a::before {
+  content: " | ";
+  color: #000000;
+  text-decoration: none;
+}
+
+html[data-legacy-mode='true'] .work-index a span {
+  color: #333333;
+}
+
+html[data-legacy-mode='true'] .lab-project-card {
+  display: block !important;
+  min-height: 0 !important;
+  margin-top: 16px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html[data-legacy-mode='true'] .lab-project-card::before,
+html[data-legacy-mode='true'] .lab-project-card::after {
+  content: none !important;
+}
+
+html[data-legacy-mode='true'] .lab-project-copy {
+  min-height: 0 !important;
+  padding: 12px !important;
+}
+
+html[data-legacy-mode='true'] .lab-project-cover,
+html[data-legacy-mode='true'] .lab-project-system {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .lab-project-card h3 {
+  max-width: none !important;
+  color: #000000 !important;
+  font-family: "Times New Roman", Times, serif !important;
+  letter-spacing: 0 !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+html[data-legacy-mode='true'] :is(
+  .lab-project-description,
+  .lab-project-footer,
+  .lab-project-kicker,
+  .lab-project-index,
+  .lab-project-book p,
+  .lab-project-book span
+) {
+  color: #000000 !important;
+}
+
+html[data-legacy-mode='true'] :is(
+  .lab-project-status,
+  .lab-project-tags span
+) {
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #eeeeee !important;
+  color: #000000 !important;
+  font-family: "Courier New", monospace !important;
+  box-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] main a {
+  color: #0000ee;
+}
+
+html[data-legacy-mode='true'] main a:visited {
+  color: #551a8b;
+}
+
+html[data-legacy-mode='true'] :is(a, button) {
+  cursor: pointer !important;
+}
