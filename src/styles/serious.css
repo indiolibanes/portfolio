@@ -95,3 +95,4 @@ html[data-serious-mode='true'] :is(a, button) { cursor: pointer !important; }
 /* Stronger selectors neutralize the documentation card's white-on-turquoise text. */
 html[data-serious-mode='true'] .lab-project-card.lab-project-card-documentation :is(.lab-project-description, .lab-project-footer, .lab-project-book p, .lab-project-book span, .lab-project-kicker, .lab-project-index) { color: var(--ink); }
 html[data-serious-mode='true'] .github-feature-owner strong { color: var(--ink); }
+html[data-serious-mode='true'] .lab-project-card.lab-project-card-documentation :is(.lab-project-status, .lab-project-tags span) { background: var(--surface-soft); border-color: var(--line); color: var(--ink); }
