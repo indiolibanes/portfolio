@@ -241,28 +241,30 @@ const background = [
       aria-labelledby="lab-title"
     >
       <div class="lab-heading">
-        <p class="eyebrow">02 / Laboratório</p>
-
-        <div class="lab-title-with-sophia">
-          <h2 id="lab-title">
-            <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
-          </h2>
-          <SophiaAnimation variant="lab" />
+        <div class="lab-heading-copy">
+          <p class="eyebrow">02 / Laboratório</p>
+          <div class="lab-title-with-sophia">
+            <h2 id="lab-title">
+              <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
+            </h2>
+          </div>
+          <p class="lab-note">
+            Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
+            transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
+          </p>
         </div>
 
-        <p class="lab-note">
-          Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
-          transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
-        </p>
-
-        <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
-          <SophiaSigil className="lab-sophia-guide__sigil" />
-          <span>
-            <strong>Sophia percorre o laboratório.</strong>
-            <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
-          </span>
-          <i aria-hidden="true">↗</i>
-        </a>
+        <div class="lab-companion">
+          <SophiaAnimation variant="lab" />
+          <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
+            <SophiaSigil className="lab-sophia-guide__sigil" />
+            <span>
+              <strong>Sophia percorre o laboratório.</strong>
+              <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
+            </span>
+            <i aria-hidden="true">↗</i>
+          </a>
+        </div>
       </div>
 
       <nav class="work-index" aria-label="Índice dos trabalhos">
@@ -716,15 +718,6 @@ const background = [
             <h2 id="projects-title">
               O trabalho projeta no código um meio.
             </h2>
-
-            <img
-              class="github-gif-luna"
-              src="/assets/luna-sailor-moon.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              aria-hidden="true"
-            />
           </div>
 
           <p>
