@@ -8,7 +8,7 @@ const today = new Date();
     <div>
       <p class="footer-mark">{PROFILE.name}</p>
       <p class="footer-copy">Documentação, organização da informação, escrita e publicação digital.</p>
-      <p class="footer-legal">© {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados™.</p>
+      <p class="footer-legal">© {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.</p>
     </div>
 
     <div class="social-links" aria-label="Contato, perfis e navegação">
@@ -86,10 +86,10 @@ const today = new Date();
         href={SOCIALS.lastfm}
         target="_blank"
         rel="noreferrer"
-        aria-label={`Last.fm ${SOCIALS.handle}`}
-        title={`Last.fm ${SOCIALS.handle}`}
+        aria-label={`Last.fm ${SOCIALS.lastfmHandle}`}
+        title={`Last.fm ${SOCIALS.lastfmHandle}`}
       >
-        <span class="sr-only">Last.fm {SOCIALS.handle}</span>
+        <span class="sr-only">Last.fm {SOCIALS.lastfmHandle}</span>
         <svg viewBox="0 0 24 24" aria-hidden="true" width="23" height="23">
           <path
             fill="currentColor"
@@ -133,6 +133,15 @@ const today = new Date();
           </svg>
         </a>
       )}
+
+      <a
+        href="/sophia/"
+        aria-label="Conhecer Sophia"
+        title="Sophia"
+      >
+        <span class="sr-only">Conhecer Sophia</span>
+        <span aria-hidden="true">✦</span>
+      </a>
 
       <a
         href="#top"
