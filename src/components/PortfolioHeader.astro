@@ -14,13 +14,48 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     </a>
 
     <div class="nav-links">
-      <a href="/#sobre">Sobre</a>
-      <a href="/#lab">Trabalhos</a>
-      <a href="/#projetos">Bastidores</a>
-      <a href="/#percurso">Percurso</a>
-      <a href="/#musica">Música</a>
-      <a class="nav-cta" href="/#contato">Contato ↗</a>
+      <a href="/#sobre" data-nav-section="sobre">Sobre</a>
+      <a href="/#lab" data-nav-section="lab">Laboratório</a>
+      <a href="/#bastidores" data-nav-section="bastidores">Bastidores</a>
+      <a href="/#percurso" data-nav-section="percurso">Percurso</a>
+      <a href="/#musica" data-nav-section="musica">Música</a>
+      <a class="nav-cta" href="/#contato" data-nav-section="contato">Contato</a>
       <SeriousModeToggle />
     </div>
   </nav>
 </header>
+
+
+<script is:inline>
+  (() => {
+    if (window.location.pathname !== '/') return;
+
+    const links = [...document.querySelectorAll('[data-nav-section]')];
+    const sections = links
+      .map((link) => document.getElementById(link.dataset.navSection))
+      .filter(Boolean);
+
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+
+    const setCurrent = (id) => {
+      links.forEach((link) => {
+        const active = link.dataset.navSection === id;
+        if (active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]) setCurrent(visible[0].target.id);
+      },
+      { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.01, 0.15] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  })();
+</script>
