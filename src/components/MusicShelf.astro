@@ -11,13 +11,13 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   aria-labelledby="music-title"
   data-music-shelf
   data-has-playlists={String(hasPlaylists)}
-  hidden={!hasPlaylists}
+  aria-busy="true"
 >
   <div class="music-heading">
     <div>
       <p class="eyebrow music-source-label">
-        Last.fm
-        <span>atividade recente</span>
+        05 / Música
+        <span>Last.fm · atividade recente</span>
       </p>
 
       <h2 id="music-title">
@@ -34,6 +34,10 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   </div>
 
   <div class="music-grid">
+    <p class="music-loading" data-music-loading role="status" aria-live="polite">
+      Consultando atividade recente…
+    </p>
+
     <article
       class="recent-track-card"
       data-recent-card
@@ -182,6 +186,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   const statusText = document.querySelector('[data-track-status]');
   const ageText = document.querySelector('[data-track-age]');
   const statusDot = document.querySelector('[data-status-dot]');
+  const loadingState = document.querySelector('[data-music-loading]');
 
   const hasPlaylists =
     shelf?.dataset.hasPlaylists === 'true';
@@ -209,10 +214,23 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     return `há ${days} d`;
   }
 
+  function settleShelf(message = '') {
+    shelf?.setAttribute('aria-busy', 'false');
+
+    if (loadingState) {
+      loadingState.textContent = message;
+      loadingState.hidden = !message;
+    }
+  }
+
   function renderTrack(track) {
     if (!track) {
       recentCard.hidden = true;
-      shelf.hidden = !hasPlaylists;
+      settleShelf(
+        hasPlaylists
+          ? ''
+          : 'Atividade recente indisponível no momento.',
+      );
       return;
     }
 
@@ -253,7 +271,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     }
 
     recentCard.hidden = false;
-    shelf.hidden = false;
+    settleShelf('');
   }
 
   async function hydrateMusic() {
@@ -264,7 +282,11 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       );
 
       if (!response.ok) {
-        if (!hasPlaylists) shelf.hidden = true;
+        settleShelf(
+          hasPlaylists
+            ? ''
+            : 'Atividade recente indisponível no momento.',
+        );
         return;
       }
 
@@ -276,7 +298,11 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         error,
       );
 
-      if (!hasPlaylists) shelf.hidden = true;
+      settleShelf(
+        hasPlaylists
+          ? ''
+          : 'Atividade recente indisponível no momento.',
+      );
     }
   }
 
