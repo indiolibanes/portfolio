@@ -122,7 +122,7 @@ export async function onRequestGet(context) {
       },
       {
         headers: {
-          "Cache-Control": "public, max-age=45, stale-while-revalidate=120",
+          "Cache-Control": "public, max-age=45, s-maxage=60, stale-while-revalidate=300",
         },
       },
     );
