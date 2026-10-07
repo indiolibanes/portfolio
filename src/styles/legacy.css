@@ -466,7 +466,7 @@ html[data-legacy-mode='true'] .primary-button {
   transform: none;
 }
 
-html[data-legacy-mode='true'] .background-list article,
+html[data-legacy-mode='true'] .background-list li,
 html[data-legacy-mode='true'] .closing,
 html[data-legacy-mode='true'] .recent-track-card,
 html[data-legacy-mode='true'] .playlist-card {
@@ -747,4 +747,23 @@ html[data-legacy-mode='true'] *::before,
 html[data-legacy-mode='true'] *::after {
   animation: none !important;
   transition: none !important;
+}
+
+
+html[data-legacy-mode='true'] .nav-links a[aria-current='true'] {
+  background: #000080;
+  color: #ffffff;
+}
+
+html[data-legacy-mode='true'] .closing-linkedin-button {
+  border-color: #808080;
+  background: #c0c0c0;
+  color: #000000;
+}
+
+html[data-legacy-mode='true'] .music-loading {
+  border: 1px solid #808080;
+  border-radius: 0;
+  background: #ffffff;
+  color: #000000;
 }
