@@ -22,15 +22,23 @@ const fragments = [
         <p class="sophia-hero__lead">Uma presença que habita o arquivo.</p>
       </div>
 
-      <button
-        class="sophia-orbit"
-        type="button"
-        data-sophia-orbit
-        aria-label="Pedir outro fragmento sobre Sophia"
-      >
-        <SophiaSigil className="sophia-orbit__sigil" labelled={true} title="Sigilo de Sophia" />
-        <span aria-hidden="true">✦</span>
-      </button>
+      <div class="sophia-orbit-shell">
+        <button
+          class="sophia-orbit"
+          type="button"
+          data-sophia-orbit
+          aria-label="Pedir outro fragmento sobre Sophia"
+          aria-controls="sophia-fragment-output"
+          aria-describedby="sophia-orbit-help"
+        >
+          <SophiaSigil className="sophia-orbit__sigil" labelled={true} title="Sigilo de Sophia" />
+          <span aria-hidden="true">✦</span>
+        </button>
+
+        <p id="sophia-orbit-help" class="sophia-orbit-help">
+          Clique no sigilo para alternar o registro.
+        </p>
+      </div>
     </section>
 
     <section class="sophia-biography" aria-labelledby="sophia-bio-title">
@@ -65,10 +73,17 @@ const fragments = [
           <p class="eyebrow">fragmentos</p>
           <h2 id="sophia-fragments-title">Avistamentos</h2>
         </div>
-        <p>Clique no sigilo acima para alternar o registro.</p>
+        <p>Quatro registros recuperados do arquivo.</p>
       </div>
 
-      <blockquote class="sophia-fragment" data-sophia-fragment>
+      <blockquote
+        id="sophia-fragment-output"
+        class="sophia-fragment"
+        data-sophia-fragment
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {fragments[0]}
       </blockquote>
 
@@ -79,6 +94,8 @@ const fragments = [
             data-fragment-index={index}
             class:list={['sophia-fragment-dot', { 'is-active': index === 0 }]}
             aria-label={`Exibir fragmento ${index + 1}`}
+            aria-controls="sophia-fragment-output"
+            aria-pressed={index === 0 ? 'true' : 'false'}
             title={fragment}
           >
             {String(index + 1).padStart(2, '0')}
@@ -102,7 +119,16 @@ const fragments = [
     const show = (index) => {
       current = Number(index) % fragments.length;
       if (output) output.textContent = fragments[current];
-      dots.forEach((dot) => dot.classList.toggle('is-active', Number(dot.dataset.fragmentIndex) === current));
+      dots.forEach((dot) => {
+        const active = Number(dot.dataset.fragmentIndex) === current;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-pressed', String(active));
+      });
+
+      orbit?.setAttribute(
+        'aria-label',
+        `Pedir outro fragmento sobre Sophia. Atual: ${current + 1} de ${fragments.length}`,
+      );
     };
 
     orbit?.addEventListener('click', () => show(current + 1));
