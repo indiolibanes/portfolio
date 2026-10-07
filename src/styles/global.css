@@ -4530,7 +4530,7 @@ html[data-serious-mode='true']
     rgba(247, 242, 251, 0.20);
 }
 
-.background-list article {
+.background-list li {
   display: grid;
 
   grid-template-columns:
@@ -5227,7 +5227,7 @@ html[data-serious-mode='true']
     margin-bottom: 2rem;
   }
 
-  .background-list article {
+  .background-list li {
     grid-template-columns:
       46px 1fr;
   }
@@ -6381,7 +6381,7 @@ html[data-serious-mode='true']
 html[data-serious-mode='true']
 .background-list,
 html[data-serious-mode='true']
-.background-list article {
+.background-list li {
   border-color:
     #b0b0b0;
 }
@@ -7020,4 +7020,139 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
   html[data-serious-mode='true'] .music-heading > p { grid-column: 1; grid-row: auto; }
   html[data-serious-mode='true'] .music-heading > .sophia-animation { width: min(220px, 72vw); }
   html[data-serious-mode='true'] .music-heading > p { text-align: center; }
+}
+
+
+/* --------------------------------------------------
+   Audit refinements: navigation, hierarchy and a11y
+-------------------------------------------------- */
+
+:is(
+  .hero,
+  .lab,
+  .github-showcase,
+  .background,
+  .music-shelf,
+  .closing,
+  .lab-project-card,
+  .anchor-alias
+) {
+  scroll-margin-top: clamp(5rem, 8vw, 6.5rem);
+}
+
+.anchor-alias {
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.nav-links a[aria-current='true'] {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.hero-current {
+  max-width: 62ch;
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.hero-current strong {
+  color: var(--ink);
+}
+
+.hero-actions {
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.hero-actions .cv-download-button {
+  margin-top: 0;
+}
+
+.lab-project-status::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.78;
+}
+
+.background-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.background-list li {
+  grid-template-columns: minmax(4rem, 5rem) minmax(0, 1fr);
+}
+
+.background-meta {
+  margin: 0 0 0.28rem !important;
+  color: #ead59b !important;
+  font-family: var(--font-retro);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.closing-linkedin-button {
+  border-color: rgba(255, 246, 232, 0.48);
+  background: rgba(247, 243, 235, 0.08);
+  color: #f7f3eb;
+}
+
+.closing-linkedin-button:hover {
+  background: rgba(247, 243, 235, 0.16);
+}
+
+.music-loading {
+  min-height: 7rem;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.music-loading[hidden] {
+  display: none;
+}
+
+.sophia-orbit-shell {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-width: 0;
+}
+
+.sophia-orbit:focus-visible {
+  outline: 2px solid #e7cd74;
+  outline-offset: 6px;
+}
+
+.sophia-orbit-help {
+  max-width: 28ch;
+  margin: -1.2rem auto 0;
+  color: rgba(246, 238, 217, 0.68);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .background-list li {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .hero-actions {
+    align-items: stretch;
+  }
 }
