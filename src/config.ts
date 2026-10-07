@@ -23,6 +23,7 @@ export const SOCIALS = {
   portfolioRepo: 'https://github.com/indiolibanes/portfolio',
   githubAvatar: '/assets/github-avatar.webp',
   lastfm: 'https://last.fm/user/kauealencar123',
+  lastfmHandle: '@kauealencar123',
 
   // Preencha quando quiser expor os perfis públicos diretamente.
   appleMusic: '',
