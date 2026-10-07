@@ -7,16 +7,24 @@ import { PROFILE, SOCIALS } from '../config';
 
 const background = [
   {
-    title: 'Formação',
-    text: 'Curso técnico em Automação Industrial, experiência anterior em suporte e TI e formação complementar em UX Design.',
+    meta: 'Atual · UFMS',
+    title: 'Sistemas de Informação',
+    text: 'Bacharelado em andamento, como base formal para aprofundar sistemas, informação e processos digitais.',
   },
   {
-    title: 'Direção atual',
-    text: 'Escrita, documentação técnica, gestão da informação, pesquisa e organização do conhecimento.',
+    meta: 'Formação técnica',
+    title: 'Automação Industrial',
+    text: 'Base em processos, lógica e documentação técnica — repertório que ainda informa a forma como organizo sistemas.',
   },
   {
-    title: 'Método',
-    text: 'Aprendizado autodidata, engenharia reversa e o esforço de tornar explícitas as relações que fundamentam um sistema.',
+    meta: '2020–2022 · Procuradoria',
+    title: 'Suporte de TI',
+    text: 'Estágio em suporte e operação de TI, com contato direto com usuários, rotinas técnicas e resolução de problemas.',
+  },
+  {
+    meta: 'Direção atual',
+    title: 'Escrita e documentação',
+    text: 'Technical Writing, gestão da informação, pesquisa e organização do conhecimento como eixo principal do trabalho.',
   },
 ];
 ---
@@ -92,7 +100,7 @@ const background = [
             </svg>
           </span>
 
-          <span>Hello, it's me</span>
+          <span lang="en">Hello, it's me</span>
         </p>
 
         <div class="identity-cluster">
@@ -122,17 +130,8 @@ const background = [
           </div>
 
           <p class="role">
-            <i>Technical Writing</i> · Documentação · Informação
+            <i lang="en">Technical Writing</i> · Documentação · Informação
           </p>
-
-          <a
-            class="cv-download-button"
-            href={PROFILE.resumePdf}
-            download="Kaue-Alencar-Curriculo.pdf"
-          >
-            Currículo PDF
-            <span aria-hidden="true">↓</span>
-          </a>
 
         </div>
       </div>
@@ -143,16 +142,32 @@ const background = [
         </p>
 
         <h2>
-          Escrevo para dar forma às ideias — e documento para que elas se mantenham inspiradoras depois.
+          Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.
         </h2>
 
         <p>
-          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reciclada:
+          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reaproveitada:
           pesquisar, escrever, estruturar, documentar e revisar. A escrita é o ponto de partida; a documentação permite que o
           conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
           sempre atualizado.
         </p>
-        <div class="hero-actions"><a class="button editorial-primary" href="#lab">Explorar trabalhos <span aria-hidden="true">↘</span></a><a class="editorial-text-link" href="#contato">Vamos conversar ↗</a></div>
+        <p class="hero-current">
+          <strong>Agora:</strong> traduzindo <cite lang="en">The Big Picture</cite>, mantendo o Horologiarius e documentando fluxos de publicação.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button editorial-primary" href="#lab">
+            Explorar trabalhos <span aria-hidden="true">↘</span>
+          </a>
+          <a class="editorial-text-link" href="#contato">Vamos conversar</a>
+          <a
+            class="cv-download-button"
+            href={PROFILE.resumePdf}
+            download="Kaue-Alencar-Curriculo.pdf"
+          >
+            Currículo PDF <span aria-hidden="true">↓</span>
+          </a>
+        </div>
       </div>
 
       <div
@@ -256,7 +271,7 @@ const background = [
 
         <div class="lab-companion">
           <SophiaAnimation variant="lab" />
-          <a class="lab-sophia-guide" href="/sophia" aria-label="Conhecer Sophia">
+          <a class="lab-sophia-guide" href="/sophia/" aria-label="Conhecer Sophia">
             <SophiaSigil className="lab-sophia-guide__sigil" />
             <span>
               <strong>Sophia percorre o laboratório.</strong>
@@ -286,7 +301,7 @@ const background = [
               01
             </span>
 
-            <span class="lab-project-status">
+            <span class="lab-project-status" data-status="progress">
               Em andamento
             </span>
           </div>
@@ -322,7 +337,7 @@ const background = [
 
           <div class="lab-project-footer">
             <span>
-              Obsidian → Git → Astro → Pages
+              projeto em desenvolvimento
             </span>
 
             <span aria-hidden="true">
@@ -359,7 +374,7 @@ const background = [
               02
             </span>
 
-            <span class="lab-project-status">
+            <span class="lab-project-status" data-status="published">
               Publicado
             </span>
           </div>
@@ -414,7 +429,7 @@ const background = [
           <div class="lab-project-cover-frame lab-project-cover-frame-essay">
             <img
               src="/assets/e-se-paris.jpg"
-              alt="Torre Eiffel sob um céu dramático, imagem utilizada no ensaio E se"
+              alt="Torre Eiffel sob céu dramático"
               width="1280"
               height="853"
               loading="lazy"
@@ -438,8 +453,8 @@ const background = [
               03
             </span>
 
-            <span class="lab-project-status">
-              Sistema ativo
+            <span class="lab-project-status" data-status="active">
+              Ativo
             </span>
           </div>
 
@@ -518,8 +533,8 @@ const background = [
               04
             </span>
 
-            <span class="lab-project-status">
-              Em organização
+            <span class="lab-project-status" data-status="progress">
+              Em andamento
             </span>
           </div>
 
@@ -613,7 +628,7 @@ const background = [
               05
             </span>
 
-            <span class="lab-project-status">
+            <span class="lab-project-status" data-status="documented">
               Documentado
             </span>
           </div>
@@ -705,9 +720,10 @@ const background = [
 
     <section
       class="projects section github-showcase"
-      id="projetos"
+      id="bastidores"
       aria-labelledby="projects-title"
     >
+      <span id="projetos" class="anchor-alias" aria-hidden="true"></span>
       <div class="section-heading github-heading">
         <div class="github-heading-copy">
           <p class="eyebrow">
@@ -716,13 +732,13 @@ const background = [
 
           <div class="github-title-row">
             <h2 id="projects-title">
-              O trabalho projeta no código um meio.
+              O trabalho também vive no código — e aqui ele está à vista.
             </h2>
           </div>
 
           <p>
-            Este portfólio é um projeto aberto: arquitetura de conteúdo, identidade visual, documentação e integrações construídas
-            em público. O repositório registra não apenas o resultado, mas também os <i>commits</i>.
+            Este portfólio é construído em público: arquitetura de conteúdo, identidade visual, documentação e integrações ficam
+            visíveis no repositório, que registra tanto o resultado quanto o processo — decisões, documentação e histórico de <i>commits</i>.
           </p>
         </div>
 
@@ -805,7 +821,7 @@ const background = [
             <span>Cloudflare</span>
             <span>Git</span>
             <span>Documentação</span>
-            <span>Uma mente curiosa</span>
+            <span>Arquitetura da informação</span>
           </div>
 
           <span class="github-cta">
@@ -846,14 +862,16 @@ const background = [
         </h2>
       </div>
 
-      <div class="background-list">
+      <ol class="background-list">
         {background.map((item, index) => (
-          <article>
+          <li>
             <span class="background-number">
               {String(index + 1).padStart(2, '0')}
             </span>
 
             <div>
+              <p class="background-meta">{item.meta}</p>
+
               <h3>
                 {item.title}
               </h3>
@@ -862,9 +880,9 @@ const background = [
                 {item.text}
               </p>
             </div>
-          </article>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
 
     <MusicShelf />
@@ -876,7 +894,7 @@ const background = [
     >
       <div class="closing-copy">
         <p class="eyebrow">
-          Contato
+          06 / Contato
         </p>
 
         <h2 id="closing-title">
@@ -900,8 +918,19 @@ const background = [
             href={PROFILE.whatsapp}
             target="_blank"
             rel="noreferrer"
+            aria-label="Abrir conversa no WhatsApp"
           >
             WhatsApp ↗
+          </a>
+
+          <a
+            class="button closing-linkedin-button"
+            href={PROFILE.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Abrir perfil no LinkedIn"
+          >
+            LinkedIn ↗
           </a>
         </div>
       </div>
