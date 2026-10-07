@@ -4560,6 +4560,46 @@ html[data-serious-mode='true']
     #ffffff;
 }
 
+.background-entry {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.background-mark {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  padding: 0.45rem;
+  border: 1px solid rgba(247, 242, 251, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  filter: saturate(0.88);
+}
+
+.background-entry-copy {
+  min-width: 0;
+}
+
+@media (max-width: 620px) {
+  .background-list li {
+    grid-template-columns: 42px 1fr;
+  }
+
+  .background-entry {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .background-mark {
+    width: 48px;
+    height: 48px;
+    padding: 0.35rem;
+    border-radius: 11px;
+  }
+}
+
 .background-list p {
   max-width: 56ch;
 
