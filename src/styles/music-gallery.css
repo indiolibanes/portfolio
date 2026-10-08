@@ -69,6 +69,21 @@
   font-weight: 500;
 }
 
+/* A versão animada de Sophia é um pequeno detalhe editorial, não uma segunda figura gigante sobre a arte. */
+.music-shelf .music-heading--gallery .music-sophia-mini {
+  width: min(128px, 48%);
+  margin: 1.1rem auto 0;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.music-shelf .music-heading--gallery .music-sophia-mini .sophia-animation--music {
+  display: block;
+  width: 100%;
+  max-width: 128px;
+  margin-inline: auto;
+}
+
 .music-shelf .music-heading--gallery .music-listening-panel {
   grid-area: player;
   z-index: 2;
