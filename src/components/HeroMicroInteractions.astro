@@ -70,7 +70,7 @@
     0% { opacity: 0; transform: translate(-50%, -50%) rotate(-8deg) scale(.48); }
     9% { opacity: 1; }
     25% { opacity: 1; transform: translate(calc(-50% + var(--micro-sway)), -41px) rotate(-10deg) scale(.78); }
-    58% { opacity: .92; transform: translate(calc(-50% + var(--micro-dx) * .55), -88px) rotate(10deg) scale(.93); }
+    58% { opacity: .92; transform: translate(calc(-50% + var(--micro-mid-x)), -88px) rotate(10deg) scale(.93); }
     100% { opacity: 0; transform: translate(calc(-50% + var(--micro-dx)), var(--micro-dy)) rotate(var(--micro-rotate)) scale(1.02); }
   }
   @keyframes hero-butterfly-wingbeat {
@@ -189,6 +189,7 @@
         if (effect === 'butterfly') {
           particle.style.setProperty('--micro-sway', '14px');
           particle.style.setProperty('--micro-dx', '-112px');
+          particle.style.setProperty('--micro-mid-x', '-62px');
           particle.style.setProperty('--micro-dy', '-176px');
           particle.style.setProperty('--micro-rotate', '-19deg');
           particle.appendChild(makeSprite('hero-micro-butterfly', artwork.butterfly, 231, 143));
