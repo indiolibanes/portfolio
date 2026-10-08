@@ -5,7 +5,7 @@
   .hero .hero-micro-effects {
     position: absolute;
     inset: 0;
-    z-index: 3;
+    z-index: 5;
     overflow: hidden;
     pointer-events: none;
     contain: layout style;
@@ -21,7 +21,7 @@
   .hero-micro-particle--butterfly {
     width: clamp(43px, 5.5vw, 76px);
     aspect-ratio: 231 / 143;
-    animation: hero-butterfly-departure 1250ms cubic-bezier(.18,.62,.32,1) both;
+    animation: hero-butterfly-departure 1450ms cubic-bezier(.18,.62,.32,1) both;
   }
   .hero-micro-particle--butterfly img {
     display: block;
@@ -30,16 +30,16 @@
     object-fit: contain;
     transform-origin: 50% 48%;
     filter: drop-shadow(0 3px 7px rgba(70, 105, 195, .25));
-    animation: hero-butterfly-wingbeat 140ms ease-in-out 0ms 7 alternate;
+    animation: hero-butterfly-wingbeat 130ms ease-in-out 0ms 11 alternate;
   }
-  /* The original baton briefly recedes while its existing bow cutout separates. */
+  /* The baton yields to the cut-out ribbons; the Shorekeeper flower stays untouched. */
   .hero .phrolova-underlay.is-unraveling svg image {
     animation: hero-baton-unravel 1150ms ease-out both;
   }
   @keyframes hero-baton-unravel {
     0%, 100% { opacity: 1; }
-    30% { opacity: .68; }
-    60% { opacity: .38; }
+    30% { opacity: .72; }
+    60% { opacity: .46; }
   }
   .hero-micro-particle--ribbon {
     width: clamp(64px, 7vw, 90px);
@@ -67,10 +67,11 @@
   .hero-micro-ribbon-piece--knot img { clip-path: circle(29% at 50% 48%); }
 
   @keyframes hero-butterfly-departure {
-    0% { opacity: 0; transform: translate(-50%, -50%) rotate(-12deg) scale(.42); }
-    12% { opacity: .95; }
-    35% { opacity: 1; transform: translate(calc(-50% + var(--micro-sway)), -39px) rotate(9deg) scale(.8); }
-    100% { opacity: 0; transform: translate(calc(-50% + var(--micro-dx)), var(--micro-dy)) rotate(var(--micro-rotate)) scale(1.04); }
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(-8deg) scale(.48); }
+    9% { opacity: 1; }
+    25% { opacity: 1; transform: translate(calc(-50% + var(--micro-sway)), -41px) rotate(-10deg) scale(.78); }
+    58% { opacity: .92; transform: translate(calc(-50% + var(--micro-dx) * .55), -88px) rotate(10deg) scale(.93); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--micro-dx)), var(--micro-dy)) rotate(var(--micro-rotate)) scale(1.02); }
   }
   @keyframes hero-butterfly-wingbeat {
     from { transform: perspective(160px) rotateY(-36deg) scaleX(.68); }
@@ -111,6 +112,11 @@
 
     type Effect = keyof typeof artwork;
     let previousZone: Effect | null = null;
+    let scrollDistance = 0;
+    let lastScrollY = window.scrollY;
+    let lastScrollEffect = -Infinity;
+    let nextScrollEffect: Effect = 'butterfly';
+    let batonResetTimer: number | undefined;
     const lastPlayed: Record<Effect, number> = { butterfly: -Infinity, ribbon: -Infinity };
 
     const motionDisabled = () =>
@@ -132,6 +138,16 @@
       return null;
     }
 
+    function artworkOrigin(effect: Effect): { x: number; y: number } | null {
+      const subject = effect === 'butterfly' ? butterflyArt : batonArt;
+      if (!subject) return null;
+      const r = subject.getBoundingClientRect();
+      // Start from the illustration, not from the scroll bar or the last touch point.
+      return effect === 'butterfly'
+        ? { x: r.left + r.width * .52, y: r.top + r.height * .42 }
+        : { x: r.left + r.width * .50, y: r.top + r.height * .50 };
+    }
+
     function makeSprite(className: string, src: string, width: number, height: number): HTMLImageElement {
       const sprite = document.createElement('img');
       sprite.className = className;
@@ -143,36 +159,38 @@
       return sprite;
     }
 
-    function play(effect: Effect, clientX: number, clientY: number, clicked: boolean) {
+    function play(effect: Effect, clientX: number, clientY: number, clicked: boolean, fromArtwork = false) {
       if (motionDisabled()) return;
       const now = performance.now();
       if (now - lastPlayed[effect] < (clicked ? 520 : 1650)) return;
       lastPlayed[effect] = now;
 
       if (effect === 'ribbon' && batonArt) {
+        if (batonResetTimer !== undefined) window.clearTimeout(batonResetTimer);
         batonArt.classList.remove('is-unraveling');
-        // Restart the subtle source fade for a subsequent click, never relocate the artwork.
+        // The baton stays fixed; only the ribbons scatter momentarily.
         void batonArt.offsetWidth;
         batonArt.classList.add('is-unraveling');
-        window.setTimeout(() => batonArt.classList.remove('is-unraveling'), 1170);
+        batonResetTimer = window.setTimeout(() => batonArt.classList.remove('is-unraveling'), 1170);
       }
 
       const rect = hero!.getBoundingClientRect();
-      // Keep the miniature departures within the hero and away from the margins.
-      const x = Math.max(32, Math.min(rect.width - 32, clientX - rect.left));
-      const y = Math.max(36, Math.min(rect.height - 36, clientY - rect.top));
+      const origin = fromArtwork ? artworkOrigin(effect) : null;
+      // Stay inside the section even if the illustration extends beyond its edges.
+      const x = Math.max(32, Math.min(rect.width - 32, (origin?.x ?? clientX) - rect.left));
+      const y = Math.max(36, Math.min(rect.height - 36, (origin?.y ?? clientY) - rect.top));
 
-      for (let i = 0, n = effect === 'butterfly' ? 2 : 1; i < n; i++) {
+      for (let i = 0; i < 1; i++) {
         const particle = document.createElement('span');
         particle.className = 'hero-micro-particle hero-micro-particle--' + effect;
-        particle.style.setProperty('--micro-x', (x + (i ? 14 : -8)) + 'px');
-        particle.style.setProperty('--micro-y', (y + (i ? 6 : 0)) + 'px');
+        particle.style.setProperty('--micro-x', x + 'px');
+        particle.style.setProperty('--micro-y', y + 'px');
 
         if (effect === 'butterfly') {
-          particle.style.setProperty('--micro-sway', (i ? '18px' : '-12px'));
-          particle.style.setProperty('--micro-dx', (i ? '96px' : '-65px'));
-          particle.style.setProperty('--micro-dy', (i ? '-112px' : '-155px'));
-          particle.style.setProperty('--micro-rotate', (i ? '20deg' : '-24deg'));
+          particle.style.setProperty('--micro-sway', '14px');
+          particle.style.setProperty('--micro-dx', '-112px');
+          particle.style.setProperty('--micro-dy', '-176px');
+          particle.style.setProperty('--micro-rotate', '-19deg');
           particle.appendChild(makeSprite('hero-micro-butterfly', artwork.butterfly, 231, 143));
         } else {
           for (const pieceName of ['left', 'right', 'knot']) {
@@ -191,12 +209,39 @@
       }
     }
 
+    // Scroll gestures (including touch dragging) alternate the two ornaments.
+    // Scrolling elsewhere on the page never emits particles into other sections.
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY;
+      lastScrollY = currentY;
+      if (motionDisabled() || Math.abs(delta) > window.innerHeight) {
+        scrollDistance = 0;
+        return;
+      }
+      const visible = hero.getBoundingClientRect();
+      if (visible.bottom <= window.innerHeight * .12 || visible.top >= window.innerHeight * .88) {
+        scrollDistance = 0;
+        return;
+      }
+      scrollDistance += Math.abs(delta);
+      const now = performance.now();
+      if (scrollDistance < 90 || now - lastScrollEffect < 2300) return;
+      scrollDistance = 0;
+      const effect = nextScrollEffect;
+      const origin = artworkOrigin(effect);
+      if (!origin) return;
+      lastScrollEffect = now;
+      nextScrollEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
+      play(effect, origin.x, origin.y, false, true);
+    }, { passive: true });
+
     hero.addEventListener('pointermove', (event) => {
       if (!finePointer.matches || event.pointerType === 'touch') return;
       const zone = findZone(event.clientX, event.clientY);
       if (zone !== previousZone) {
         previousZone = zone;
-        if (zone) play(zone, event.clientX, event.clientY, false);
+        if (zone) play(zone, event.clientX, event.clientY, false, true);
       }
     }, { passive: true });
 
@@ -205,7 +250,7 @@
     hero.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
       const zone = findZone(event.clientX, event.clientY);
-      if (zone) play(zone, event.clientX, event.clientY, true);
+      if (zone) play(zone, event.clientX, event.clientY, true, true);
     }, { passive: true });
   }
 </script>
