@@ -7303,3 +7303,10 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .hero .hero-intro,.hero .hero-statement,.hero .hero-note{position:relative;z-index:4}
 @media(max-width:920px){.hero .phrolova-underlay{top:auto;right:-14px;bottom:155px;width:min(62vw,490px)}.hero .shorekeeper-underlay{left:0;bottom:0;width:min(45vw,320px)}}
 @media(max-width:720px){.hero .phrolova-underlay{top:auto;right:-12px;bottom:160px;width:min(77vw,380px)}.hero .shorekeeper-underlay{left:0;bottom:0;width:min(47vw,220px)}}
+
+/* Phrolova baton: dedicated right-side display, above decorative paper but below copy. */
+.hero .phrolova-underlay{top:8%;right:-3%;bottom:auto;width:clamp(450px,53vw,720px);z-index:3;transform:rotate(7deg);transform-origin:70% 40%}
+.hero .phrolova-underlay svg{opacity:1;filter:drop-shadow(0 12px 22px rgba(105,22,58,.35))}
+.hero .hero-intro,.hero .hero-statement,.hero .hero-note{z-index:4}
+@media(max-width:920px){.hero .phrolova-underlay{top:10%;right:-8%;bottom:auto;width:min(65vw,550px);transform:rotate(5deg)}}
+@media(max-width:720px){.hero .phrolova-underlay{top:14%;right:-10%;bottom:auto;width:min(85vw,440px);transform:rotate(5deg)}}
