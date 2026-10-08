@@ -7331,3 +7331,22 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 @media(max-width:960px){.method-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.method-steps{grid-template-columns:1fr}.method-section{padding:1.3rem}.method-steps li:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.method-steps li{transition:none}}
+
+/* Music stage: editorial UI remains real and accessible above the scenery. */
+.music-shelf{position:relative;isolation:isolate;background-color:#160f25;background-image:radial-gradient(ellipse at 26% 45%,rgba(148,34,79,.38),transparent 46%),radial-gradient(ellipse at 78% 35%,rgba(48,91,175,.38),transparent 48%),linear-gradient(115deg,#190d20,#10142d 75%);color:#f7eaf6}
+.music-heading.music-heading--stage{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,1.05fr) minmax(0,1fr);gap:clamp(1rem,2vw,2rem);align-items:center;min-height:340px}
+.music-heading--stage .music-heading-copy,.music-heading--stage .music-sophia-stage,.music-heading--stage .listening-note{position:relative;z-index:2}
+.music-heading--stage .music-heading-copy{align-self:start}
+.music-heading--stage .music-heading-copy h2{color:#e8a9f6}
+.music-heading--stage .music-heading-description{color:#e8d8e9}
+.music-heading--stage .music-source-label{color:#d9b7e7}
+.music-heading--stage .music-sophia-stage{align-self:end;filter:drop-shadow(0 16px 20px rgba(0,0,0,.45))}
+.music-heading--stage .music-character{position:absolute;z-index:0;top:0;bottom:0;width:34%;pointer-events:none;opacity:.7;background-repeat:no-repeat;background-size:contain;background-position:center bottom;mask-image:linear-gradient(to bottom,#000 65%,transparent 100%)}
+.music-heading--stage .music-character--phrolova{left:12%;background-image:linear-gradient(90deg,rgba(128,20,56,.28),transparent)}
+.music-heading--stage .music-character--shorekeeper{right:13%;background-image:linear-gradient(270deg,rgba(49,96,191,.25),transparent)}
+.music-heading--stage .listening-note--moonlight{transform:rotate(-2deg);box-shadow:7px 11px 0 rgba(0,0,0,.22),0 20px 42px rgba(0,0,0,.35)}
+.music-grid--stage{position:relative;z-index:3;max-width:670px;margin-top:1rem}
+.music-grid--stage .recent-track-card{background:rgba(16,11,29,.9);color:#f8e9ff;border:1px solid rgba(195,149,238,.4);box-shadow:0 14px 36px rgba(0,0,0,.3)}
+.music-grid--stage .recent-track-card h3,.music-grid--stage .recent-artist,.music-grid--stage .recent-album,.music-grid--stage .music-provenance{color:inherit}
+@media(max-width:960px){.music-heading.music-heading--stage{grid-template-columns:repeat(2,minmax(0,1fr))}.music-heading--stage .music-heading-copy{grid-column:1/-1}.music-heading--stage .music-sophia-stage{grid-column:1}.music-heading--stage .listening-note{grid-column:2}.music-heading--stage .music-character{opacity:.38}}
+@media(max-width:560px){.music-heading.music-heading--stage{grid-template-columns:minmax(0,1fr)}.music-heading--stage .music-heading-copy,.music-heading--stage .music-sophia-stage,.music-heading--stage .listening-note{grid-column:1;grid-row:auto}.music-heading--stage .music-character{opacity:.2;width:55%}.music-heading--stage .listening-note--moonlight{transform:rotate(-1deg)}}
