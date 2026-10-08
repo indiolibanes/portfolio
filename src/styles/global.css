@@ -7262,3 +7262,37 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .hero .hero-note{z-index:3;margin-right:0;transform:translate(18px,-18px) rotate(-1.4deg)}
 @media(max-width:920px){.hero .phrolova-underlay{top:auto;right:-36px;bottom:105px;width:min(58vw,430px)}.hero .shorekeeper-underlay{left:0;bottom:8px;width:min(38vw,270px)}.hero .hero-note{transform:translateY(-12px) rotate(-1.4deg)}}
 @media(max-width:720px){.hero .phrolova-underlay{right:-45px;bottom:115px;width:min(76vw,380px)}.hero .shorekeeper-underlay{left:-4px;bottom:4px;width:min(44vw,205px)}.hero .hero-note{margin-inline:auto;transform:translateY(-10px) rotate(-1.4deg)}}
+
+/* Hero character emblems: visible in the margins, never over readable copy. */
+.hero .phrolova-underlay{
+  top:35%;
+  right:clamp(-18px,-1vw,-4px);
+  bottom:auto;
+  width:clamp(400px,45vw,610px);
+  z-index:1;
+  opacity:1;
+}
+.hero .phrolova-underlay svg{
+  opacity:1;
+  filter:drop-shadow(0 9px 16px rgba(102,24,51,.32));
+}
+.hero .shorekeeper-underlay{
+  left:clamp(12px,2.5vw,42px);
+  bottom:clamp(10px,2vw,28px);
+  width:clamp(285px,34vw,425px);
+  z-index:1;
+  opacity:1;
+}
+.hero .shorekeeper-underlay img{
+  filter:drop-shadow(0 9px 17px rgba(52,67,160,.30));
+}
+.hero .hero-intro,.hero .hero-statement{position:relative;z-index:2}
+.hero .hero-note{position:relative;z-index:3}
+@media(max-width:920px){
+  .hero .phrolova-underlay{top:auto;right:-24px;bottom:145px;width:min(57vw,460px)}
+  .hero .shorekeeper-underlay{left:8px;bottom:12px;width:min(42vw,300px)}
+}
+@media(max-width:720px){
+  .hero .phrolova-underlay{top:auto;right:-25px;bottom:150px;width:min(74vw,360px)}
+  .hero .shorekeeper-underlay{left:6px;bottom:8px;width:min(43vw,195px)}
+}
