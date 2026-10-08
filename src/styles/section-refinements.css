@@ -13,8 +13,6 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .bloc
    fragments created by HeroMicroInteractions may unravel on hover. */
 #sobre .hero-statement { z-index: 4; }
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero-statement::before { background: #fffaf0f7; }
-#sobre .hero-ornament-particle--butterfly img { filter: saturate(1.45) drop-shadow(0 0 7px #5299e8aa); }
-#sobre .hero-ornament-ribbon-piece img { filter: contrast(1.7) saturate(1.4) drop-shadow(0 3px 5px #610c45aa); }
 .sophia-animation--lab .sophia-animation__frame { background-image: url('/images/sophia/lab-single-tail.webp'); background-size: contain; background-position: center; animation: lab-attention 4s ease-in-out infinite; transform-origin: 50% 88%; }
 @keyframes lab-attention { 0%,100% { transform: rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
 /* Shared skeleton, five individual materials. Dark surfaces keep copy clear. */
