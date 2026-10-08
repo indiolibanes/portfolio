@@ -1,8 +1,8 @@
 /*
  * Sala de escuta — painel editorial e composição panorâmica 16:9.
- * O arquivo de arte definitivo deve estar em
- * public/assets/music-panorama-16x9.webp.
- * Com a arte ausente, os três retratos já existentes fornecem um fallback.
+ * A ilustração panorâmica está versionada em
+ * public/assets/music-panorama-16x9.avif.
+ * Os retratos existentes oferecem uma alternativa caso a arte não carregue.
  */
 .music-shelf.music-shelf--gallery {
   position: relative;
@@ -67,21 +67,6 @@
   font-size: clamp(.82rem, 1.14vw, .98rem);
   line-height: 1.58;
   font-weight: 500;
-}
-
-/* A versão animada de Sophia é um pequeno detalhe editorial, não uma segunda figura gigante sobre a arte. */
-.music-shelf .music-heading--gallery .music-sophia-mini {
-  width: min(128px, 48%);
-  margin: 1.1rem auto 0;
-  display: grid;
-  place-items: center;
-  position: relative;
-}
-.music-shelf .music-heading--gallery .music-sophia-mini .sophia-animation--music {
-  display: block;
-  width: 100%;
-  max-width: 128px;
-  margin-inline: auto;
 }
 
 .music-shelf .music-heading--gallery .music-listening-panel {
@@ -262,13 +247,13 @@
   box-shadow: 0 22px 50px rgba(0, 0, 0, .37);
 }
 
-/* A arte definitiva entra aqui; o fallback funciona mesmo com a URL ausente. */
+/* A arte 16:9 ocupa toda a área, sem sobrepor os controles editoriais. */
 .music-shelf .music-heading--gallery .music-panorama::after {
   content: "";
   position: absolute;
   z-index: 2;
   inset: 0;
-  background: url('/assets/music-panorama-16x9.webp') center / cover no-repeat;
+  background: url('/assets/music-panorama-16x9.avif') center / cover no-repeat;
   pointer-events: none;
 }
 

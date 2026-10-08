@@ -1,6 +1,5 @@
 ---
 import { MUSIC } from '../config';
-import SophiaAnimation from './SophiaAnimation.astro';
 
 const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 ---
@@ -24,7 +23,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         Uma pequena janela para as audições registradas no Last.fm,
         independentemente do player usado.
       </p>
-      <div class="music-sophia-mini"><SophiaAnimation variant="music" /></div>
     </div>
 
     <div class="music-listening-panel" aria-label="Atividade musical recente">
