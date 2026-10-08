@@ -7350,3 +7350,17 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .music-grid--stage .recent-track-card h3,.music-grid--stage .recent-artist,.music-grid--stage .recent-album,.music-grid--stage .music-provenance{color:inherit}
 @media(max-width:960px){.music-heading.music-heading--stage{grid-template-columns:repeat(2,minmax(0,1fr))}.music-heading--stage .music-heading-copy{grid-column:1/-1}.music-heading--stage .music-sophia-stage{grid-column:1}.music-heading--stage .listening-note{grid-column:2}.music-heading--stage .music-character{opacity:.38}}
 @media(max-width:560px){.music-heading.music-heading--stage{grid-template-columns:minmax(0,1fr)}.music-heading--stage .music-heading-copy,.music-heading--stage .music-sophia-stage,.music-heading--stage .listening-note{grid-column:1;grid-row:auto}.music-heading--stage .music-character{opacity:.2;width:55%}.music-heading--stage .listening-note--moonlight{transform:rotate(-1deg)}}
+
+/* Music triptych: crimson / Sophia / moonlight. Decorative layers never intercept UI. */
+.music-shelf:has(.music-heading--stage){background-image:radial-gradient(ellipse at 24% 35%,rgba(128,22,62,.36),transparent 50%),radial-gradient(ellipse at 79% 34%,rgba(36,75,156,.38),transparent 52%),linear-gradient(120deg,#160b19 0%,#100e24 53%,#09152c 100%);color:#f6e9f9}
+.music-heading.music-heading--stage{isolation:isolate;min-height:clamp(400px,42vw,610px);grid-template-columns:minmax(0,1fr) minmax(190px,1.15fr) minmax(0,1fr)}
+.music-heading--stage .music-character{z-index:0;width:36%;opacity:.8;filter:drop-shadow(0 12px 22px rgba(0,0,0,.4))}
+.music-heading--stage .music-character--phrolova{left:8%;background-image:radial-gradient(ellipse at 40% 50%,rgba(202,42,89,.32),transparent 68%)}
+.music-heading--stage .music-character--shorekeeper{right:9%;background-image:radial-gradient(ellipse at 55% 42%,rgba(62,125,244,.3),transparent 70%)}
+.music-heading--stage .music-sophia-stage{z-index:3;justify-self:center;align-self:center}
+.music-heading--stage .listening-note--moonlight{z-index:4;justify-self:end;max-width:380px;transform:rotate(-2.2deg);border-color:#aa7b55;box-shadow:0 20px 40px rgba(0,0,0,.48)}
+.music-heading--stage .listening-note--moonlight:hover{transform:rotate(-.7deg) translateY(-4px)}
+.music-grid--stage{max-width:610px;margin-top:-3.5rem}
+@media(max-width:960px){.music-heading.music-heading--stage{min-height:0;grid-template-columns:repeat(2,minmax(0,1fr))}.music-grid--stage{margin-top:1rem}.music-heading--stage .listening-note--moonlight{max-width:100%}}
+@media(max-width:560px){.music-heading.music-heading--stage{grid-template-columns:1fr}.music-heading--stage .music-character{opacity:.22}.music-heading--stage .listening-note--moonlight{justify-self:stretch;transform:rotate(-1deg)}}
+@media(prefers-reduced-motion:reduce){.music-heading--stage .listening-note--moonlight:hover{transform:none}}
