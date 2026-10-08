@@ -1,22 +1,18 @@
 ---
 import { MUSIC } from '../config';
-import SophiaAnimation from './SophiaAnimation.astro';
 
 const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 ---
 
 <section
-  class="music-shelf section"
+  class="music-shelf music-shelf--gallery section"
   id="musica"
   aria-labelledby="music-title"
   data-music-shelf
   data-has-playlists={String(hasPlaylists)}
   aria-busy="true"
 >
-  <div class="music-heading music-heading--editorial music-heading--stage music-heading--opposites">
-    <div class="music-character music-character--phrolova" aria-hidden="true"><img src="/phrolova.jpg" alt="" loading="lazy" decoding="async" /></div>
-    <div class="music-character music-character--shorekeeper" aria-hidden="true"><img src="/shorekeeper.jpg" alt="" loading="lazy" decoding="async" /></div>
-    <div class="music-hsin-presence" aria-hidden="true"><img src="/hsin.webp" alt="" loading="lazy" decoding="async" /></div>
+  <div class="music-heading music-heading--gallery">
     <div class="music-heading-copy">
       <p class="eyebrow music-source-label">
         06 / Música
@@ -109,10 +105,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       </div>
     </div>
 
-    <div class="music-sophia-stage music-sophia-stage--center">
-      <SophiaAnimation variant="music" />
-    </div>
-
     <aside class="listening-note listening-note--moonlight" aria-label="Fragmento do ensaio Moonlight Sonata">
       <div class="listening-note-top">
         <span>Fragmento / 01</span>
@@ -120,10 +112,22 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       </div>
       <div class="listening-note-score" aria-hidden="true"><span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span></div>
       <blockquote class="listening-note-quote listening-note-typewriter">
-        Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.
+        <span class="music-quote-assistive">Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
+        <span class="music-quote-typed" aria-hidden="true" data-sonata-typing>Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
       </blockquote>
       <p class="listening-note-footer">Moonlight Sonata <span aria-hidden="true">—</span> A harmonia do pretérito imperfeito</p>
     </aside>
+
+    <figure class="music-panorama" aria-labelledby="music-panorama-caption">
+      <div class="music-panorama-fallback" aria-hidden="true">
+        <img class="music-panorama-fallback-phrolova" src="/phrolova.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="music-panorama-fallback-hsin" src="/hsin.webp" alt="" loading="lazy" decoding="async" />
+        <img class="music-panorama-fallback-shorekeeper" src="/shorekeeper.jpg" alt="" loading="lazy" decoding="async" />
+      </div>
+      <figcaption id="music-panorama-caption" class="music-panorama-caption">
+        Phrolova à esquerda e Shorekeeper à direita, em oposição cromática; Hsin, sua forma de raposa e a lua ao centro. Sophia lê e escuta música ao lado de uma pequena raposa branca.
+      </figcaption>
+    </figure>
   </div>
 
   <div class="music-playlist-region">
@@ -322,6 +326,42 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
           : 'Atividade recente indisponível no momento.',
       );
     }
+  }
+
+  // A citação permanece disponível por inteiro sem JavaScript ou com movimento reduzido.
+  const sonataQuote = shelf?.querySelector('[data-sonata-typing]');
+
+  if (
+    sonataQuote &&
+    'IntersectionObserver' in window &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    const originalQuote = sonataQuote.textContent.trim();
+    let started = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (started || !entries.some((entry) => entry.isIntersecting)) return;
+      started = true;
+      observer.disconnect();
+
+      let position = 0;
+      sonataQuote.textContent = '';
+      sonataQuote.classList.add('music-quote-typing');
+
+      const typeNext = () => {
+        position = Math.min(position + 1, originalQuote.length);
+        sonataQuote.textContent = originalQuote.slice(0, position);
+        if (position < originalQuote.length) {
+          window.setTimeout(typeNext, 38);
+        } else {
+          sonataQuote.classList.remove('music-quote-typing');
+        }
+      };
+
+      typeNext();
+    }, { threshold: 0.35 });
+
+    observer.observe(sonataQuote.closest('.listening-note') || sonataQuote);
   }
 
   hydrateMusic();
