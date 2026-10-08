@@ -33,7 +33,7 @@
   /* Despite its .otf suffix, this asset uses TrueType outlines. */
   src: url("../../assets/fonts/Heart Breaking Bad.otf") format("truetype");
   font-style: normal;
-  font-weight: 400 700;
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -311,4 +311,282 @@ html[data-serious-mode='true'] .method-index { color: var(--ink-soft); }
   html:not([data-legacy-mode='true']) .method-steps li {
     transition: none;
   }
+}
+
+/* Portfolio typography / v2 — semantic scale and optical polish.
+   v1 retains local @font-face declarations and the responsive Method layout.
+   This layer calibrates an intentional hierarchy without changing artwork,
+   navigation behaviour, music effects, or the 1998 presentation. */
+:root {
+  --type-chapter-xl: clamp(2.35rem, 3.9vw, 4.35rem);
+  --type-chapter-lg: clamp(2.12rem, 3.35vw, 3.65rem);
+  --type-chapter-md: clamp(1.94rem, 2.8vw, 3.1rem);
+  --type-project: clamp(1.65rem, 3.05vw, 3.05rem);
+  --type-feature: clamp(1.75rem, 3.15vw, 3.2rem);
+  --type-subhead: clamp(1.18rem, 1.5vw, 1.55rem);
+  --type-body-reading: clamp(.97rem, .94rem + .18vw, 1.075rem);
+  --type-leading: clamp(1.06rem, 1vw + .4rem, 1.24rem);
+  --type-folio: clamp(.74rem, .69rem + .15vw, .81rem);
+  --type-reading-measure: 64ch;
+}
+
+/* A diamond-shaped printer's ornament makes chapter labels easier to scan.
+   Using currentColor keeps the original colour coding of every section. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement, .lab-heading-copy, .method-intro, .github-heading-copy,
+    .background-title, .music-heading-copy, .closing-copy)
+> .eyebrow {
+  font-size: var(--type-folio);
+  line-height: 1.5;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement, .lab-heading-copy, .method-intro, .github-heading-copy,
+    .background-title, .music-heading-copy, .closing-copy)
+> .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: .42em;
+  height: .42em;
+  margin-inline-end: .8em;
+  border: 1px solid currentColor;
+  transform: rotate(45deg) translateY(-.08em);
+  vertical-align: .08em;
+  opacity: .85;
+}
+
+/* Level 1 — editorial chapters. Their sizes respond to the length of
+   each heading instead of forcing an identical size on unequal phrases. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement h2, .lab-heading h2, .method-intro h2,
+    .github-heading h2, .background-title h2, .music-heading-copy > h2,
+    .closing-copy > h2) {
+  font-family: var(--font-chapter);
+  font-weight: 700;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  letter-spacing: -.017em;
+  line-height: 1.13;
+  text-wrap: balance;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.hero-statement h2 {
+  font-size: var(--type-chapter-md);
+  max-width: 27ch;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.lab-heading h2 {
+  font-size: clamp(1.9rem, 2.85vw, 3.05rem);
+  max-width: 38ch;
+  line-height: 1.21;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.method-intro h2,
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.background-title h2 {
+  font-size: var(--type-chapter-xl);
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.github-heading h2 {
+  font-size: var(--type-chapter-lg);
+  max-width: 17ch;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.music-shelf .music-heading--gallery .music-heading-copy h2 {
+  font-size: var(--type-chapter-xl);
+  max-width: 16ch;
+  line-height: 1.12;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.closing-copy > h2 {
+  font-size: var(--type-chapter-xl);
+  max-width: 13ch;
+}
+
+/* The name is an identity mark, not a sixth chapter heading. Bookman's
+   greater glyph width requires its own optical scale to protect the brick. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.block-name {
+  font-family: var(--font-subtitle);
+  font-size: clamp(2.5rem, 5.1vw, 4.75rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -.054em;
+  white-space: nowrap;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.role {
+  font-family: var(--font-ui);
+  font-size: clamp(.95rem, 1.13vw, 1.12rem);
+  line-height: 1.5;
+  letter-spacing: .01em;
+}
+
+/* Level 2 — projects and supporting headings. Bookman contrasts with
+   Benguiat while keeping repeated cards visually consistent. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.lab-project-card h3 {
+  font-family: var(--font-subtitle);
+  font-size: var(--type-project);
+  line-height: 1.13;
+  font-weight: 700;
+  letter-spacing: -.032em;
+  text-wrap: balance;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.lab-project-card.lab-project-card-documentation h3 {
+  /* The Portuguese label is longer and Bookman is wider than Inter. */
+  font-size: clamp(1.45rem, 2.55vw, 2.5rem);
+  line-height: 1.16;
+  letter-spacing: -.034em;
+  white-space: nowrap;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.github-feature-copy h3, .playlists-heading h3) {
+  font-family: var(--font-subtitle);
+  font-size: var(--type-feature);
+  line-height: 1.18;
+  letter-spacing: -.024em;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.method-steps h3, .background-entry-copy h3, .lab-project-book p,
+    .note-big, .playlist-grid h3) {
+  font-family: var(--font-subtitle);
+  font-size: var(--type-subhead);
+  font-weight: 700;
+  line-height: 1.27;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.method-steps h3 {
+  margin-block: .3rem .25rem;
+  font-size: clamp(1.16rem, 1.43vw, 1.46rem);
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.background-entry-copy h3 { font-size: clamp(1.12rem, 1.55vw, 1.53rem); }
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.note-big { font-size: clamp(1.19rem, 1.9vw, 1.58rem); }
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.brand-copy strong {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  font-size: clamp(.82rem, .9vw, .98rem);
+  letter-spacing: -.008em;
+  line-height: 1.18;
+}
+
+/* Level 3 — reading and navigation. Neither handwritten nor display
+   faces belong in continuous Portuguese prose or functional controls. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement > p:not(.eyebrow), .lab-note, .lab-project-description,
+    .method-lead, .github-heading-copy > p:not(.eyebrow),
+    .github-feature-copy > p, .background-entry-copy > p:not(.background-meta),
+    .closing-copy > p:not(.eyebrow), .music-heading-description) {
+  font-family: var(--font-ui);
+  font-size: var(--type-body-reading);
+  line-height: 1.76;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement > p:not(.eyebrow), .method-lead,
+    .github-heading-copy > p:not(.eyebrow)) {
+  max-width: var(--type-reading-measure);
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.method-lead {
+  font-size: var(--type-leading);
+  line-height: 1.68;
+  max-width: 60ch;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.method-disclosure, .method-steps p, .lab-project-book span,
+    .note-small, .background-meta, .listening-note-footer) {
+  font-family: var(--font-ui);
+  letter-spacing: 0;
+  line-height: 1.63;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.nav-links a, .work-index a, .editorial-text-link, .hero-actions a,
+    .github-cta, .social-links a) {
+  font-family: var(--font-ui);
+  font-weight: 650;
+  line-height: 1.38;
+  letter-spacing: .005em;
+}
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.eyebrow, .project-label, .lab-project-index, .method-index,
+    .lab-project-kicker, .background-number, .github-overline) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Handwriting is intentionally limited to the two signatures defined in v1.
+   The Moonlight Sonata quotation remains an upright reading serif. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.listening-note--moonlight .listening-note-quote {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(.94rem, 1.08vw, 1.12rem);
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: -.005em;
+}
+
+/* Non-authorial modes keep their individual palettes and type logic.
+   Serious mode gets restrained Bookman subheads; 1998 remains untouched. */
+html[data-serious-mode='true'] :is(.method-steps h3,
+  .background-entry-copy h3, .method-closing) {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  line-height: 1.3;
+}
+html[data-serious-mode='true'] :is(.method-lead,
+  .method-disclosure, .method-steps p) {
+  max-width: 65ch;
+  font-family: var(--font-ui);
+  line-height: 1.7;
+}
+
+/* A narrow viewport takes priority over decorative display size. */
+@media (max-width: 920px) {
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .block-name { font-size: clamp(2.45rem, 6.6vw, 4.75rem); }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .hero-statement h2 { max-width: 27ch; }
+}
+@media (max-width: 640px) {
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .block-name {
+    font-size: clamp(2.08rem, 7.55vw, 3.08rem);
+    letter-spacing: -.05em;
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  :is(.hero-statement h2, .lab-heading h2, .method-intro h2,
+      .github-heading h2, .background-title h2,
+      .music-heading-copy > h2, .closing-copy > h2) {
+    font-size: clamp(1.85rem, 7.1vw, 2.55rem);
+    line-height: 1.19;
+    letter-spacing: -.012em;
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .lab-heading h2 { font-size: clamp(1.58rem, 5.9vw, 2.2rem); }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .lab-project-card h3 { font-size: clamp(1.52rem, 6vw, 2.3rem); }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .lab-project-card.lab-project-card-documentation h3 {
+    font-size: clamp(1.32rem, 5.15vw, 2rem);
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .method-steps h3 { font-size: 1.3rem; }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .music-shelf .music-heading--gallery .music-heading-copy h2 {
+    font-size: clamp(2.04rem, 7.4vw, 2.7rem);
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .listening-note--moonlight .listening-note-quote { font-size: 1.02rem; }
 }
