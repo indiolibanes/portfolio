@@ -23,7 +23,7 @@
       ></path>
     </svg>
 
-    <span data-serious-label>Modo Editorial</span>
+    <span data-serious-label>Autoral → Editorial</span>
   </button>
 </div>
 
@@ -101,7 +101,7 @@
       );
 
       if (label) {
-        label.textContent = 'Modo ' + names[next];
+        label.textContent = names[mode] + ' → ' + names[next];
       }
 
       const themeColor = document.querySelector(
@@ -170,7 +170,7 @@
   }
 
   .serious-toggle {
-    min-height: 42px;
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -217,7 +217,7 @@
   }
 
   :global(html[data-legacy-mode='true']) .serious-toggle {
-    min-height: 34px;
+    min-height: 44px;
     padding: 0.28rem 0.55rem;
     border: 2px outset #efefef;
     border-radius: 0;
@@ -242,13 +242,13 @@
 
   @media (max-width: 720px) {
     .serious-toggle {
-      min-height: 40px;
+      min-height: 44px;
       padding: 0.48rem 0.64rem;
       font-size: 0.72rem;
     }
 
     :global(html[data-legacy-mode='true']) .serious-toggle {
-      min-height: 34px;
+      min-height: 44px;
       padding: 0.28rem 0.5rem;
       font-size: 0.72rem;
     }

@@ -1,13 +1,15 @@
 ---
 interface Props {
   variant: 'music' | 'lab';
+  linked?: boolean;
 }
-const { variant } = Astro.props;
+const { variant, linked = true } = Astro.props;
+const Tag = linked ? 'a' : 'div';
 const description = variant === 'music'
   ? 'Sophia, raposa lunar com fones, acompanha o ritmo da música.'
   : 'Sophia de jaleco branco, anotando suas descobertas no caderno.';
 ---
 
-<a class={`sophia-animation sophia-animation--${variant}`} href="/sophia" aria-label={`${description} Conhecer Sophia.`}>
+<Tag data-decorative-motion class={`sophia-animation sophia-animation--${variant}`} href={linked ? "/sophia/" : undefined} aria-label={linked ? `${description} Conhecer Sophia.` : undefined} aria-hidden={linked ? undefined : "true"}>
   <span class="sophia-animation__frame" aria-hidden="true"></span>
-</a>
+</Tag>

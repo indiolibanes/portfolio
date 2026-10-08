@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MusicShelf from '../components/MusicShelf.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
+import MotionImage from '../components/MotionImage.astro';
 import SophiaAnimation from '../components/SophiaAnimation.astro';
 import { PROFILE, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
@@ -41,7 +42,7 @@ const background = [
 
 <BaseLayout>
   <main class="portfolio-main" id="conteudo">
-      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal / Kauê Alencar</span><span>Escrita · estrutura · curiosidade</span></div>
+      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal</span><span>Escrita · estrutura · curiosidade</span></div>
 
     <section
       class="hero"
@@ -148,7 +149,7 @@ const background = [
 
       <div class="hero-statement">
         <p class="eyebrow">
-          {sectionNumber('sobre')} / Uma forma de pensar
+          {sectionNumber('sobre')} / Sobre · Uma forma de pensar
         </p>
 
         <h2>
@@ -169,7 +170,7 @@ const background = [
           <a class="button editorial-primary" href="#lab">
             Explorar trabalhos <span aria-hidden="true">↘</span>
           </a>
-          <a class="editorial-text-link" href="#contato">Vamos conversar</a>
+          <a class="editorial-text-link" href="#contato">Vamos conversar <span aria-hidden="true">↘</span></a>
           <a
             class="cv-download-button"
             href={PROFILE.resumePdf}
@@ -280,14 +281,14 @@ const background = [
         </div>
 
         <div class="lab-companion">
-          <SophiaAnimation variant="lab" />
+          <SophiaAnimation variant="lab" linked={false} />
           <a class="lab-sophia-guide" href="/sophia/" aria-label="Conhecer Sophia">
             <SophiaSigil className="lab-sophia-guide__sigil" />
             <span>
               <strong>Sophia percorre o laboratório.</strong>
               <small>Ela costuma aparecer onde ainda existe alguma coisa a compreender.</small>
             </span>
-            <i aria-hidden="true">↗</i>
+            <i aria-hidden="true">→</i>
           </a>
         </div>
       </div>
@@ -349,10 +350,6 @@ const background = [
             <span>
               projeto em desenvolvimento
             </span>
-
-            <span aria-hidden="true">
-              ↗
-            </span>
           </div>
         </div>
 
@@ -375,8 +372,8 @@ const background = [
         class="lab-project-card lab-project-card-essay"
         href="https://horologiarius.com/blog/essays/e-se-reflexoes-sobre-a-viagem-no-tempo-e-relacoes-interpessoais/"
         target="_blank"
-        rel="noreferrer"
-        aria-labelledby="essay-title"
+        rel="noopener noreferrer"
+        aria-labelledby="essay-title essay-title-new-tab"
       >
         <div class="lab-project-copy">
           <div class="lab-project-meta">
@@ -389,15 +386,6 @@ const background = [
             </span>
           </div>
 
-          <h3 id="essay-title">
-            REFLEXÃO
-          </h3>
-
-          <span class="lab-sophia-presence" title="Algumas ideias preferem surgir como constelações.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Algumas ideias preferem surgir como constelações.
-          </span>
-
           <p
             class="lab-project-kicker lab-project-tags"
             aria-label="Temas da reflexão"
@@ -407,6 +395,17 @@ const background = [
             <span>ética</span>
             <span>filosofia da ciência</span>
           </p>
+
+          <span id="essay-title-new-tab" class="sr-only">(abre em nova aba)</span>
+          <h3 id="essay-title">
+            REFLEXÃO
+          </h3>
+
+          <span class="lab-sophia-presence" title="Algumas ideias preferem surgir como constelações.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Algumas ideias preferem surgir como constelações.
+          </span>
+
 
           <div class="lab-project-book">
             <p>
@@ -454,8 +453,8 @@ const background = [
         class="lab-project-card lab-project-card-architecture"
         href="https://horologiarius.com/"
         target="_blank"
-        rel="noreferrer"
-        aria-labelledby="architecture-title"
+        rel="noopener noreferrer"
+        aria-labelledby="architecture-title architecture-title-new-tab"
       >
         <div class="lab-project-copy">
           <div class="lab-project-meta">
@@ -463,8 +462,8 @@ const background = [
               03
             </span>
 
-            <span class="lab-project-status" data-status="active">
-              Ativo
+            <span class="lab-project-status" data-status="published">
+              Publicado
             </span>
           </div>
 
@@ -472,9 +471,14 @@ const background = [
             arquitetura da informação · taxonomia · publicação
           </p>
 
+          <span id="architecture-title-new-tab" class="sr-only">(abre em nova aba)</span>
           <h3 id="architecture-title">
             ARQUITETURA
           </h3>
+          <span class="lab-sophia-presence">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Sophia procura caminhos entre os textos.
+          </span>
 
           <div class="lab-project-book">
             <p>
@@ -629,8 +633,8 @@ const background = [
         class="lab-project-card lab-project-card-documentation"
         href="https://github.com/indiolibanes/portfolio/blob/main/docs/publishing-workflow.md"
         target="_blank"
-        rel="noreferrer"
-        aria-labelledby="documentation-title"
+        rel="noopener noreferrer"
+        aria-labelledby="documentation-title documentation-title-new-tab"
       >
         <div class="lab-project-copy">
           <div class="lab-project-meta">
@@ -638,19 +642,10 @@ const background = [
               05
             </span>
 
-            <span class="lab-project-status" data-status="documented">
-              Documentado
+            <span class="lab-project-status" data-status="published">
+              Publicado
             </span>
           </div>
-
-          <h3 id="documentation-title">
-            DOCUMENTAÇÃO
-          </h3>
-
-          <span class="lab-sophia-presence" title="Até o rigor pode ter mistério.">
-            <SophiaSigil className="lab-sophia-presence__sigil" />
-            Até o rigor pode ter mistério.
-          </span>
 
           <p
             class="lab-project-kicker lab-project-tags"
@@ -660,6 +655,17 @@ const background = [
             <span>fluxo</span>
             <span>manutenção</span>
           </p>
+
+          <span id="documentation-title-new-tab" class="sr-only">(abre em nova aba)</span>
+          <h3 id="documentation-title">
+            DOCUMENTAÇÃO
+          </h3>
+
+          <span class="lab-sophia-presence" title="Até o rigor pode ter mistério.">
+            <SophiaSigil className="lab-sophia-presence__sigil" />
+            Até o rigor pode ter mistério.
+          </span>
+
 
           <div class="lab-project-book">
             <p>
@@ -772,14 +778,14 @@ const background = [
           class="github-gif-strip"
           aria-hidden="true"
         >
-          <img
+          <MotionImage
             class="github-gif-luna-desktop"
             src="/assets/luna-sailor-moon.webp"
             alt=""
             loading="lazy"
             decoding="async"
           />
-          <img
+          <MotionImage
             class="github-gif-ikalgo"
             src="/assets/typing-left.webp"
             alt=""
@@ -787,7 +793,7 @@ const background = [
             decoding="async"
           />
 
-          <img
+          <MotionImage
             class="github-gif-right"
             src="/assets/typing-right.webp"
             alt=""
@@ -795,7 +801,7 @@ const background = [
             decoding="async"
           />
 
-          <img
+          <MotionImage
             class="github-gif-violet"
             src="/assets/violet-evergarden.webp"
             alt=""
@@ -809,7 +815,7 @@ const background = [
         class="github-feature github-feature-shannon"
         href={SOCIALS.portfolioRepo}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         aria-label="Abrir o repositório deste site no GitHub"
       >
         <div class="github-feature-copy">
@@ -860,7 +866,7 @@ const background = [
           class="github-board-stage"
           aria-hidden="true"
         >
-          <img
+          <MotionImage
             class="github-board-overlay"
             src="/shannon-blackboard-transparent.gif"
             alt=""
@@ -929,7 +935,7 @@ const background = [
         </p>
 
         <h2 id="closing-title">
-          ✦ Toda boa página se inicia por meio de uma boa estrutura imaginativa.
+          <span aria-hidden="true">✦</span> Toda boa página se inicia por meio de uma boa estrutura imaginativa.
         </h2>
 
         <p>
@@ -948,7 +954,7 @@ const background = [
             class="button closing-whatsapp-button"
             href={PROFILE.whatsapp}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label="Abrir conversa no WhatsApp"
           >
             WhatsApp ↗
@@ -958,7 +964,7 @@ const background = [
             class="button closing-linkedin-button"
             href={PROFILE.linkedin}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label="Abrir perfil no LinkedIn"
           >
             LinkedIn ↗

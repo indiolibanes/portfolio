@@ -59,3 +59,29 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     sections.forEach((section) => observer.observe(section));
   })();
 </script>
+
+<script is:inline>
+  (() => {
+    const chips = [...document.querySelectorAll('.work-index a')];
+    const targets = chips.map((chip) => document.querySelector(chip.getAttribute('href'))).filter(Boolean);
+    if (!targets.length) return;
+    const update = () => {
+      const position = window.innerHeight * 0.4;
+      const current = targets.find((target) => {
+        const box = target.getBoundingClientRect();
+        return box.top <= position && box.bottom > position;
+      });
+      chips.forEach((chip) => {
+        if (current && chip.hash === '#' + current.id) chip.setAttribute('aria-current', 'true');
+        else chip.removeAttribute('aria-current');
+      });
+    };
+    let queued = false;
+    window.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { update(); queued = false; });
+    }, { passive: true });
+    update();
+  })();
+</script>

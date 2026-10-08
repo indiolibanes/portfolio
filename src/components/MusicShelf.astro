@@ -1,5 +1,5 @@
 ---
-import { MUSIC } from '../config';
+import { MUSIC, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
 
 const hasPlaylists = MUSIC.publicPlaylists.length > 0;
@@ -11,7 +11,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   aria-labelledby="music-title"
   data-music-shelf
   data-has-playlists={String(hasPlaylists)}
-  aria-busy="true"
+  aria-busy="false"
 >
   <div class="music-heading music-heading--gallery">
     <div class="music-heading-copy">
@@ -29,8 +29,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     <div class="music-listening-panel" aria-label="Atividade musical recente">
       <p class="music-panel-label"><span aria-hidden="true">◉</span> Na vitrola / Last.fm</p>
       <div class="music-grid music-grid--stage">
-      <p class="music-loading" data-music-loading role="status" aria-live="polite">
-        Consultando atividade recente…
+      <p class="music-loading" data-music-loading role="status" aria-live="polite" hidden></p>
+      <p class="music-profile-fallback">
+        <a href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer">Consultar o perfil no Last.fm <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>
       </p>
 
       <article
@@ -111,7 +112,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         <span>Fragmento / 01</span>
         <span>Memória &amp; música</span>
       </div>
-      <div class="listening-note-score" aria-hidden="true"><span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span></div>
+      <div class="listening-note-score" data-decorative-motion aria-hidden="true"><span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span></div>
       <blockquote class="listening-note-quote listening-note-typewriter">
         <span class="music-quote-assistive">Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
         <span class="music-quote-typed" aria-hidden="true" data-sonata-typing>Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
@@ -260,17 +261,28 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     }
   }
 
+  let lastTrackKey = '';
+  const announcement = document.createElement('p');
+  announcement.className = 'sr-only';
+  announcement.setAttribute('aria-live', 'polite');
+  shelf?.appendChild(announcement);
+
   function renderTrack(track) {
     if (!track) {
       recentCard.hidden = true;
       settleShelf(
         hasPlaylists
           ? ''
-          : 'Atividade recente indisponível no momento.',
+          : 'Nenhuma audição recente registrada.',
       );
       return;
     }
 
+    const trackKey = [track.name, track.artist, track.nowPlaying].join('|');
+    if (trackKey !== lastTrackKey) {
+      announcement.textContent = `${track.nowPlaying ? 'Agora tocando' : 'Ouvido recentemente'}: ${track.name}, ${track.artist}.`;
+      lastTrackKey = trackKey;
+    }
     title.textContent = track.name || '';
     artist.textContent = track.artist || '';
     album.textContent = track.album || '';
@@ -311,18 +323,21 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     settleShelf('');
   }
 
+  let musicRequestPending = false;
   async function hydrateMusic() {
+    if (document.hidden || musicRequestPending) return;
+    musicRequestPending = true;
     try {
       const response = await fetch(
         '/api/music/recent',
-        { cache: 'default' },
+        { cache: 'default', signal: AbortSignal.timeout(10000) },
       );
 
       if (!response.ok) {
         settleShelf(
           hasPlaylists
             ? ''
-            : 'Atividade recente indisponível no momento.',
+            : 'Last.fm indisponível por ora. Consulte o perfil abaixo.',
         );
         return;
       }
@@ -338,8 +353,10 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       settleShelf(
         hasPlaylists
           ? ''
-          : 'Atividade recente indisponível no momento.',
+          : 'Last.fm indisponível por ora. Consulte o perfil abaixo.',
       );
+    } finally {
+      musicRequestPending = false;
     }
   }
 
@@ -469,6 +486,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     });
   }
 
+  shelf?.setAttribute('aria-busy', 'true');
+  if (loadingState) { loadingState.hidden = false; loadingState.textContent = 'Consultando atividade recente…'; }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) hydrateMusic(); });
   hydrateMusic();
 
   window.setInterval(

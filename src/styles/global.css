@@ -4260,7 +4260,7 @@ html[data-serious-mode='true']
       transform 220ms ease;
   }
 
-  .lab-project-card:hover {
+  a.lab-project-card:hover {
     transform:
       translateY(-3px);
 
@@ -4271,7 +4271,7 @@ html[data-serious-mode='true']
         rgba(255, 255, 255, 0.06);
   }
 
-  .lab-project-card:hover
+  a.lab-project-card:hover
   .lab-project-cover-frame {
     transform:
       rotate(1deg)

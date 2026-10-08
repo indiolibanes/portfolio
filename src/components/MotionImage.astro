@@ -1,0 +1,8 @@
+---
+const { src, ...attributes } = Astro.props;
+const staticSrc = `/assets/motion-stills/${src.split('/').pop().replace(/\.[^.]+$/, '')}.webp`;
+---
+<picture class="motion-picture">
+  <source media="(prefers-reduced-motion: reduce)" srcset={staticSrc} />
+  <img {...attributes} src={staticSrc} data-motion-src={src} data-motion-still={staticSrc} data-decorative-motion />
+</picture>
