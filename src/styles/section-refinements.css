@@ -9,8 +9,8 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .bloc
 @keyframes prism-dispersion { 0%,8% { stroke-dashoffset: 620; opacity: .25; } 32%,75% { stroke-dashoffset: 0; opacity: 1; } 95%,100% { stroke-dashoffset: 0; opacity: .35; } }
 #sobre .phrolova-underlay, #sobre:hover .phrolova-underlay { transform: rotate(7deg); transition: none; right: 0; }
 #sobre .phrolova-underlay svg { filter: contrast(2.1) saturate(1.4) drop-shadow(0 4px 3px #4a082d55); }
-#sobre .phrolova-underlay.is-releasing svg { animation: baton-release 1.9s ease both; }
-@keyframes baton-release { 0%,8% { opacity: 1; } 25%,72% { opacity: 0; } 100% { opacity: 1; } }
+/* Preserve the complete baton at full opacity; only the separate ribbon
+   fragments created by HeroMicroInteractions may unravel on hover. */
 #sobre .hero-statement { z-index: 4; }
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero-statement::before { background: #fffaf0f7; }
 #sobre .hero-ornament-particle--butterfly img { filter: saturate(1.45) drop-shadow(0 0 7px #5299e8aa); }
@@ -43,10 +43,10 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .b
 @keyframes emil-greeting { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
 @keyframes triforce-light { 0%,60%,100% { fill: #dbad34; filter: brightness(1); } 24%,36% { fill: #fff0a2; filter: brightness(1.2) drop-shadow(0 0 7px #efc75a); } }
 html[data-serious-mode='true'] :is(.prism-spectrum,.closing-relics),html[data-legacy-mode='true'] :is(.prism-spectrum,.closing-relics) { display: none; }
-@media (prefers-reduced-motion: reduce) { #sobre .prism-ray,.sophia-animation--lab .sophia-animation__frame,.closing-emil,.closing-triforce path,#sobre .phrolova-underlay.is-releasing svg { animation: none!important; } }
+@media (prefers-reduced-motion: reduce) { #sobre .prism-ray,.sophia-animation--lab .sophia-animation__frame,.closing-emil,.closing-triforce path { animation: none!important; } }
 
 /* Give the source illustrations room of their own, away from text. */
-#sobre .hero-ornaments { position: relative; grid-column: 1 / -1; height: clamp(170px,20vw,240px); margin-top: -1rem; }
+#sobre .hero-ornaments { position: relative; grid-column: 1 / -1; height: clamp(170px,20vw,240px); margin-top: -1rem; /* overflow stays visible for the butterfly's upward flight */ overflow: visible; }
 #sobre .hero-ornaments .phrolova-underlay,#sobre:hover .hero-ornaments .phrolova-underlay { top: 50%; right: 4%; bottom: auto; width: min(43%,340px); transform: translateY(-50%) rotate(7deg); }
 #sobre .hero-ornaments .shorekeeper-underlay,#sobre:hover .hero-ornaments .shorekeeper-underlay { top: 50%; left: 5%; bottom: auto; width: min(34%,245px); transform: translateY(-50%) rotate(-2deg); }
 #sobre .hero-note { z-index: 4; }
