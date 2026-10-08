@@ -1,5 +1,5 @@
 ---
-import { MUSIC } from '../config';
+import { MUSIC, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
 
 const hasPlaylists = MUSIC.publicPlaylists.length > 0;
@@ -27,8 +27,10 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     </div>
 
     <div class="music-listening-panel" aria-label="Atividade musical recente">
+      <noscript><p class="music-no-script">As audições recentes precisam de JavaScript. <a href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer">Abrir Last.fm <span aria-hidden="true">↗</span></a></p></noscript>
       <div class="music-grid music-grid--stage">
       <p class="music-loading" data-music-loading role="status" aria-live="polite" hidden></p>
+      <a class="music-status-profile" href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer" data-music-profile hidden>Abrir Last.fm <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>
 
       <article
         class="recent-track-card"
@@ -88,7 +90,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
               class="apple-music-link"
               data-track-link
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               hidden
             >
               Ver no Last.fm ↗
@@ -113,10 +115,14 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         <span class="music-quote-assistive">Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
         <span class="music-quote-typed" aria-hidden="true" data-sonata-typing>Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
       </blockquote>
-      <p class="listening-note-footer">Moonlight Sonata <span aria-hidden="true">—</span> A harmonia do pretérito imperfeito</p>
+      <p class="listening-note-footer"><cite>Moonlight Sonata</cite> <span aria-hidden="true">—</span> A harmonia do pretérito imperfeito</p>
     </aside>
 
     <figure class="music-panorama" aria-labelledby="music-panorama-caption" data-music-panorama>
+      <picture class="music-scene-art">
+        <source type="image/avif" srcset="/assets/music-moonlit-terrace-v2.avif" />
+        <img src="/assets/music-moonlit-terrace-v2.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async" />
+      </picture>
       <div class="music-panorama-glint" aria-hidden="true"></div>
       <div class="music-panorama-effects" data-music-effects aria-hidden="true"></div>
       <button
@@ -126,13 +132,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         aria-label="Animar a ilustração: alternar borboletas celestiais e laços carmesins"
         hidden
       ></button>
-      <div class="music-panorama-fallback" aria-hidden="true">
-        <img class="music-panorama-fallback-phrolova" src="/phrolova.jpg" alt="" loading="lazy" decoding="async" />
-        <img class="music-panorama-fallback-hsin" src="/hsin.webp" alt="" loading="lazy" decoding="async" />
-        <img class="music-panorama-fallback-shorekeeper" src="/shorekeeper.jpg" alt="" loading="lazy" decoding="async" />
-      </div>
       <figcaption id="music-panorama-caption" class="music-panorama-caption">
-        Phrolova à esquerda e Shorekeeper à direita, em oposição cromática; Hsin, sua forma de raposa e a lua ao centro. Sophia lê e escuta música ao lado de uma pequena raposa branca.
+        Em um terraço sobre um lago ao luar, Phrolova à esquerda e Shorekeeper à direita se contrapõem em carmesim e azul. Hsin e sua forma de raposa ocupam o centro sob a lua. Em primeiro plano, Sophia, de marfim, azul noturno e ouro, escuta música e contempla a paisagem com um livro aberto, ao lado de uma pequena raposa branca com detalhes vermelhos.
       </figcaption>
     </figure>
   </div>
@@ -163,7 +164,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
               class="playlist-card"
               href={playlist.url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               {playlist.artwork ? (
                 <img
@@ -216,6 +217,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   const ageText = document.querySelector('[data-track-age]');
   const statusDot = document.querySelector('[data-status-dot]');
   const loadingState = document.querySelector('[data-music-loading]');
+  const profileFallback = document.querySelector('[data-music-profile]');
 
   const hasPlaylists =
     shelf?.dataset.hasPlaylists === 'true';
@@ -245,6 +247,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
   function settleShelf(message = '') {
     shelf?.setAttribute('aria-busy', 'false');
+    if (profileFallback) profileFallback.hidden = !message;
 
     if (loadingState) {
       loadingState.textContent = message;
@@ -275,8 +278,11 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       lastTrackKey = trackKey;
     }
     title.textContent = track.name || '';
+    title.title = track.name || '';
     artist.textContent = track.artist || '';
+    artist.title = track.artist || '';
     album.textContent = track.album || '';
+    album.title = track.album || '';
 
     if (track.artwork) {
       artwork.src = track.artwork;
