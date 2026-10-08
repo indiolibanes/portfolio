@@ -29,6 +29,85 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       </p>
     </div>
 
+    <div class="music-listening-panel" aria-label="Atividade musical recente">
+      <p class="music-panel-label"><span aria-hidden="true">◉</span> Na vitrola / Last.fm</p>
+    <div class="music-grid music-grid--stage">
+      <p class="music-loading" data-music-loading role="status" aria-live="polite">
+        Consultando atividade recente…
+      </p>
+
+      <article
+        class="recent-track-card"
+        data-recent-card
+        hidden
+      >
+        <div class="recent-artwork-shell">
+          <div
+            class="recent-artwork-fallback"
+            data-artwork-fallback
+            aria-hidden="true"
+          >
+            ♪
+          </div>
+
+          <img
+            class="recent-artwork"
+            data-track-artwork
+            alt=""
+            loading="lazy"
+            hidden
+          />
+        </div>
+
+        <div class="recent-track-copy">
+          <p class="music-kicker">
+            <span
+              class="music-kicker-dot"
+              data-status-dot
+              aria-hidden="true"
+            ></span>
+
+            <span data-track-status>
+              ouvido recentemente
+            </span>
+
+            <span
+              class="music-track-age"
+              data-track-age
+            ></span>
+          </p>
+
+          <h3 data-track-title></h3>
+
+          <p
+            class="recent-artist"
+            data-track-artist
+          ></p>
+
+          <p
+            class="recent-album"
+            data-track-album
+          ></p>
+
+          <div class="music-meta-row">
+            <a
+              class="apple-music-link"
+              data-track-link
+              target="_blank"
+              rel="noreferrer"
+              hidden
+            >
+              Ver no Last.fm ↗
+            </a>
+
+            <span class="music-provenance">
+              scrobble via Last.fm
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+
     <div class="music-sophia-stage music-sophia-stage--center">
       <SophiaAnimation variant="music" />
     </div>
@@ -46,82 +125,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     </aside>
   </div>
 
-  <div class="music-grid music-grid--stage">
-    <p class="music-loading" data-music-loading role="status" aria-live="polite">
-      Consultando atividade recente…
-    </p>
-
-    <article
-      class="recent-track-card"
-      data-recent-card
-      hidden
-    >
-      <div class="recent-artwork-shell">
-        <div
-          class="recent-artwork-fallback"
-          data-artwork-fallback
-          aria-hidden="true"
-        >
-          ♪
-        </div>
-
-        <img
-          class="recent-artwork"
-          data-track-artwork
-          alt=""
-          loading="lazy"
-          hidden
-        />
-      </div>
-
-      <div class="recent-track-copy">
-        <p class="music-kicker">
-          <span
-            class="music-kicker-dot"
-            data-status-dot
-            aria-hidden="true"
-          ></span>
-
-          <span data-track-status>
-            ouvido recentemente
-          </span>
-
-          <span
-            class="music-track-age"
-            data-track-age
-          ></span>
-        </p>
-
-        <h3 data-track-title></h3>
-
-        <p
-          class="recent-artist"
-          data-track-artist
-        ></p>
-
-        <p
-          class="recent-album"
-          data-track-album
-        ></p>
-
-        <div class="music-meta-row">
-          <a
-            class="apple-music-link"
-            data-track-link
-            target="_blank"
-            rel="noreferrer"
-            hidden
-          >
-            Ver no Last.fm ↗
-          </a>
-
-          <span class="music-provenance">
-            scrobble via Last.fm
-          </span>
-        </div>
-      </div>
-    </article>
-
+  <div class="music-playlist-region">
     {hasPlaylists && (
       <div class="public-playlists">
         <div class="playlists-heading">
