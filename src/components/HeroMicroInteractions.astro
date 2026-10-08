@@ -32,6 +32,15 @@
     filter: drop-shadow(0 3px 7px rgba(70, 105, 195, .25));
     animation: hero-butterfly-wingbeat 140ms ease-in-out 0ms 7 alternate;
   }
+  /* The original baton briefly recedes while its existing bow cutout separates. */
+  .hero .phrolova-underlay.is-unraveling svg image {
+    animation: hero-baton-unravel 1150ms ease-out both;
+  }
+  @keyframes hero-baton-unravel {
+    0%, 100% { opacity: 1; }
+    30% { opacity: .68; }
+    60% { opacity: .38; }
+  }
   .hero-micro-particle--ribbon {
     width: clamp(64px, 7vw, 90px);
     aspect-ratio: 133 / 125;
@@ -78,6 +87,7 @@
     100% { transform: translate(var(--piece-x), var(--piece-y)) rotate(var(--piece-rotate)); }
   }
   @media (prefers-reduced-motion: reduce) {
+    .hero .phrolova-underlay.is-unraveling svg image,
     .hero-micro-particle,
     .hero-micro-particle *,
     .hero-micro-ribbon-piece { animation: none !important; display: none !important; }
@@ -138,6 +148,14 @@
       const now = performance.now();
       if (now - lastPlayed[effect] < (clicked ? 520 : 1650)) return;
       lastPlayed[effect] = now;
+
+      if (effect === 'ribbon' && batonArt) {
+        batonArt.classList.remove('is-unraveling');
+        // Restart the subtle source fade for a subsequent click, never relocate the artwork.
+        void batonArt.offsetWidth;
+        batonArt.classList.add('is-unraveling');
+        window.setTimeout(() => batonArt.classList.remove('is-unraveling'), 1170);
+      }
 
       const rect = hero!.getBoundingClientRect();
       // Keep the miniature departures within the hero and away from the margins.
