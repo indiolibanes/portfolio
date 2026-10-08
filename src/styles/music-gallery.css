@@ -371,6 +371,189 @@
   }
 }
 
+
+/* A arte é clicável, mas o efeito jamais tampa definitivamente a ilustração. */
+.music-shelf .music-heading--gallery .music-panorama-glint {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle 110px at var(--music-glint-x, 50%) var(--music-glint-y, 50%),
+    rgba(172, 227, 255, .16) 0%, transparent 100%
+  );
+  transition: opacity .22s ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .music-shelf .music-heading--gallery .music-panorama:hover .music-panorama-glint,
+  .music-shelf .music-heading--gallery .music-panorama:focus-within .music-panorama-glint {
+    opacity: 1;
+  }
+}
+.music-shelf .music-heading--gallery .music-panorama-action {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: clamp(.55rem, 1.8vw, 1.25rem);
+  border: 0;
+  background: transparent;
+  color: #fff4e6;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.music-shelf .music-heading--gallery .music-panorama-action[hidden] { display: none; }
+.music-shelf .music-heading--gallery .music-panorama-action:focus-visible {
+  outline: 3px solid #9de6ff;
+  outline-offset: -5px;
+  border-radius: inherit;
+}
+.music-shelf .music-heading--gallery .music-panorama-action-label {
+  display: inline-block;
+  max-width: min(100%, 285px);
+  padding: .38rem .9rem;
+  border: 1px solid rgba(235, 213, 193, .4);
+  border-radius: 999px;
+  background: rgba(20, 17, 36, .76);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .36);
+  backdrop-filter: blur(8px);
+  font-size: clamp(.66rem, 1vw, .78rem);
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-align: center;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, .6);
+  transition: border-color .2s, background .2s;
+  pointer-events: none;
+}
+.music-shelf .music-heading--gallery .music-panorama-action:hover .music-panorama-action-label,
+.music-shelf .music-heading--gallery .music-panorama-action:focus-visible .music-panorama-action-label {
+  border-color: rgba(173, 228, 255, .82);
+  background: rgba(15, 29, 57, .86);
+}
+.music-shelf .music-heading--gallery .music-panorama[data-last-effect='ribbons'] .music-panorama-action-label {
+  border-color: rgba(249, 143, 157, .7);
+}
+.music-shelf .music-heading--gallery .music-panorama[data-last-effect='butterflies'] .music-panorama-action-label {
+  border-color: rgba(145, 228, 255, .7);
+}
+
+.music-shelf .music-heading--gallery .music-panorama-effects {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  overflow: hidden;
+  pointer-events: none;
+}
+.music-shelf .music-heading--gallery .music-effect-particle {
+  position: absolute;
+  top: var(--fx-y);
+  left: var(--fx-x);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation-delay: var(--fx-delay, 0ms);
+  animation-fill-mode: both;
+}
+.music-shelf .music-heading--gallery .music-effect-particle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.music-shelf .music-heading--gallery .music-effect-particle--butterflies {
+  width: clamp(23px, 3.6vw, 41px);
+  aspect-ratio: 1;
+  color: #8cdefe;
+  filter: drop-shadow(0 0 7px rgba(84, 203, 255, .8));
+  animation: music-butterfly-release 1050ms ease-out forwards;
+  animation-delay: var(--fx-delay, 0ms);
+}
+.music-shelf .music-heading--gallery .music-wing {
+  fill: currentColor;
+  stroke: #e8ffff;
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: music-wing-flutter 160ms ease-in-out infinite alternate;
+}
+.music-shelf .music-heading--gallery .music-wing--right { animation-direction: alternate-reverse; }
+.music-shelf .music-heading--gallery .music-butterfly-body {
+  fill: #335da5;
+}
+.music-shelf .music-heading--gallery .music-butterfly-antennae {
+  fill: none;
+  stroke: #dcfaff;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+@keyframes music-wing-flutter {
+  from { transform: scaleX(.52); }
+  to { transform: scaleX(1); }
+}
+@keyframes music-butterfly-release {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.35) rotate(-10deg); }
+  18% { opacity: .96; }
+  75% { opacity: .9; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy)))
+      rotate(var(--fx-rotate)) scale(1.2);
+  }
+}
+.music-shelf .music-heading--gallery .music-effect-particle--ribbons {
+  width: clamp(85px, 11vw, 150px);
+  aspect-ratio: 1;
+  filter: drop-shadow(0 0 7px rgba(249, 70, 112, .65));
+  animation: music-ribbon-release 1170ms cubic-bezier(.13, .5, .35, 1) forwards;
+  animation-delay: var(--fx-delay, 0ms);
+}
+.music-shelf .music-heading--gallery .music-ribbon-shade,
+.music-shelf .music-heading--gallery .music-ribbon-highlight,
+.music-shelf .music-heading--gallery .music-ribbon-thread {
+  fill: none;
+  stroke-linecap: round;
+}
+.music-shelf .music-heading--gallery .music-ribbon-shade {
+  stroke: #7a173b;
+  stroke-width: 13;
+}
+.music-shelf .music-heading--gallery .music-ribbon-highlight {
+  stroke: #ff6477;
+  stroke-width: 5;
+}
+.music-shelf .music-heading--gallery .music-ribbon-thread {
+  stroke: #ffd3d3;
+  stroke-width: 2;
+}
+@keyframes music-ribbon-release {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) scale(.28); }
+  25% { opacity: .96; }
+  73% { opacity: .92; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy)))
+      rotate(var(--fx-rotate)) scale(1.15);
+  }
+}
+@media (max-width: 680px) {
+  .music-shelf .music-heading--gallery .music-panorama-action { padding: .35rem; }
+  .music-shelf .music-heading--gallery .music-panorama-action-label {
+    padding: .26rem .7rem;
+    font-size: .65rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .music-shelf .music-heading--gallery .music-panorama-glint { display: none; }
+  .music-shelf .music-heading--gallery .music-effect-particle,
+  .music-shelf .music-heading--gallery .music-wing { animation: none; }
+  .music-shelf .music-heading--gallery .music-panorama-action-label { transition: none; }
+}
+
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery :is(.music-heading-copy, .music-panel-label) {
   color: var(--ink);
 }

@@ -4,6 +4,7 @@ import MusicShelf from '../components/MusicShelf.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import SophiaAnimation from '../components/SophiaAnimation.astro';
 import { PROFILE, SOCIALS } from '../config';
+import { sectionNumber } from '../section-order';
 
 const background = [
   {
@@ -147,7 +148,7 @@ const background = [
 
       <div class="hero-statement">
         <p class="eyebrow">
-          01 / Uma forma de pensar
+          {sectionNumber('sobre')} / Uma forma de pensar
         </p>
 
         <h2>
@@ -266,7 +267,7 @@ const background = [
     >
       <div class="lab-heading">
         <div class="lab-heading-copy">
-          <p class="eyebrow">02 / Laboratório</p>
+          <p class="eyebrow">{sectionNumber('lab')} / Laboratório</p>
           <div class="lab-title-with-sophia">
             <h2 id="lab-title">
               <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
@@ -729,7 +730,7 @@ const background = [
 
     <section class="method-section section" id="metodo" aria-labelledby="method-title">
       <div class="method-intro">
-        <p class="eyebrow">03 / Método</p>
+        <p class="eyebrow">{sectionNumber('metodo')} / Método</p>
         <h2 id="method-title">Da ideia à estrutura.</h2>
         <p class="method-lead">Escrevo, organizo, especifico, experimento e reviso. A tecnologia amplia minhas possibilidades de execução; não substitui minhas decisões.</p>
         <p class="method-disclosure"><strong>Autoria e IA, sem mistificação.</strong> Concepção, curadoria, requisitos e avaliação são conduzidos por mim; a implementação técnica deste portfólio conta com assistência de inteligência artificial. Isso não equivale a reivindicar domínio independente de desenvolvimento front-end.</p>
@@ -752,7 +753,7 @@ const background = [
       <div class="section-heading github-heading">
         <div class="github-heading-copy">
           <p class="eyebrow">
-            04 / Bastidores · GitHub
+            {sectionNumber('bastidores')} / Bastidores · GitHub
           </p>
 
           <div class="github-title-row">
@@ -879,7 +880,7 @@ const background = [
     >
       <div class="background-title">
         <p class="eyebrow">
-          05 / Percurso
+          {sectionNumber('percurso')} / Percurso
         </p>
 
         <h2 id="background-title">
@@ -924,7 +925,7 @@ const background = [
     >
       <div class="closing-copy">
         <p class="eyebrow">
-          07 / Contato
+          {sectionNumber('contato')} / Contato
         </p>
 
         <h2 id="closing-title">
