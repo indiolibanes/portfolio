@@ -1,9 +1,13 @@
 ---
 const bodies = [
-  { name: 'mushroom', phase: '18%', duration: '19s', tilt: '-14deg', counter: '14deg', width: '48%', height: '30%' },
-  { name: 'block', phase: '64%', duration: '29s', tilt: '24deg', counter: '-24deg', width: '64%', height: '42%' },
-  { name: 'prism', phase: '40%', duration: '43s', tilt: '-22deg', counter: '22deg', width: '78%', height: '55%' },
-  { name: 'emil', phase: '86%', duration: '61s', tilt: '12deg', counter: '-12deg', width: '87%', height: '70%' },
+  { name: 'mushroom', phase: '18%', duration: '23s', tilt: '-14deg', counter: '14deg', width: '44%', height: '30%' },
+  { name: 'pokeball', phase: '67%', duration: '31s', tilt: '8deg', counter: '-8deg', width: '49%', height: '36%' },
+  { name: 'assassins-creed', phase: '38%', duration: '41s', tilt: '20deg', counter: '-20deg', width: '58%', height: '45%' },
+  { name: 'overwatch', phase: '89%', duration: '53s', tilt: '-18deg', counter: '18deg', width: '66%', height: '49%' },
+  { name: 'kingdom-hearts', phase: '9%', duration: '67s', tilt: '-24deg', counter: '24deg', width: '81%', height: '60%' },
+  { name: 'emil', phase: '56%', duration: '79s', tilt: '10deg', counter: '-10deg', width: '86%', height: '65%' },
+  { name: 'final-fantasy-vii', phase: '30%', duration: '97s', tilt: '-8deg', counter: '8deg', width: '68%', height: '76%' },
+  { name: 'wuthering-waves', phase: '79%', duration: '113s', tilt: '12deg', counter: '-12deg', width: '70%', height: '80%' },
 ];
 ---
 <div class="triforce-system" data-triforce-system>
@@ -18,21 +22,20 @@ const bodies = [
           <div class={`triforce-system__body triforce-system__body--${body.name}`}>
             <div class="triforce-system__gesture">
               {body.name === 'emil' && <div class="triforce-system__emil-crop"><img src="/emil-triforce.webp" alt="" width="1000" height="591" loading="lazy" decoding="async" /></div>}
-              {body.name === 'prism' && <svg class="triforce-system__prism" viewBox="0 0 160 100">
-                <path d="M2 68 63 48" stroke="#fff7dc" stroke-width="2" />
-                <path d="M79 13 114 77H44Z" fill="#1b2333" stroke="#c7d4dc" stroke-width="3" />
-                {['#f45366','#ffa752','#ffe866','#83d683','#55cbed','#ae7bdc'].map((color,i)=><path class="triforce-system__ray" style={`--color-index:${i}`} d={`M${92+i*1.4} ${41+i*3} L158 ${46+i*7}`} stroke={color} stroke-width="6" />)}
+              {body.name === 'pokeball' && <svg viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="21" fill="#f7f4e9" stroke="#202535" stroke-width="3" />
+                <path d="M3 24a21 21 0 0 1 42 0Z" fill="#e8595b" />
+                <path d="M3 24h42" stroke="#202535" stroke-width="4" />
+                <circle cx="24" cy="24" r="7" fill="#f7f4e9" stroke="#202535" stroke-width="3" />
+                <circle cx="24" cy="24" r="3" fill="#dbe2e7" />
               </svg>}
+              {['assassins-creed','kingdom-hearts','final-fantasy-vii','wuthering-waves','overwatch'].includes(body.name) && <img class={`triforce-system__logo triforce-system__logo--${body.name}`} src={`/assets/contact-games/${body.name}.${body.name === 'overwatch' ? 'webp' : 'svg'}`} alt="" loading="lazy" decoding="async" />}
               {body.name === 'mushroom' && <svg class="triforce-system__mushroom" viewBox="0 0 16 16" shape-rendering="crispEdges">
                 <path d="M5 1h6v1h2v1h1v1h1v4H1V4h1V3h1V2h2Z" fill="#e16b55" />
                 <path d="M4 4h3v3H4Zm6-1h2v2h-2ZM5 8h6v1h1v4h-1v1H5v-1H4V9h1Z" fill="#fff4d0" />
                 <path d="M6 9h1v3H6Zm3 0h1v3H9Z" fill="#302522" />
               </svg>}
-              {body.name === 'block' && <svg class="triforce-system__block" viewBox="0 0 48 48" shape-rendering="crispEdges">
-                <path fill="#794724" d="M2 2h44v44H2Z" /><path fill="#e6b84e" d="M5 5h38v38H5Z" /><path fill="#ffe69d" d="M5 5h38v4H9v34H5Z" />
-                <path fill="#70451f" d="M18 12h14v4h4v10h-8v6h-7V22h8v-5H18Zm3 23h7v6h-7Z" />
-                <path fill="#8d5527" d="M9 10h3v3H9Zm27 0h3v3h-3ZM9 36h3v3H9Zm27 0h3v3h-3Z" />
-              </svg>}
+
             </div>
           </div>
         </div>
@@ -49,18 +52,26 @@ const bodies = [
   .triforce-system__core::before { content: ''; position: absolute; inset: -55%; border-radius: 50%; background: radial-gradient(ellipse,#f6d66a35,transparent 70%); animation: triforce-core-glow 6s ease-in-out infinite; }
   .triforce-system__core svg { display: block; position: relative; width: 100%; fill: #efd16c; stroke: #a9802b; stroke-width: 3; filter: drop-shadow(0 0 8px #f5c65155); }
   .triforce-system__orbit { position: absolute; width: var(--orbit-width); height: var(--orbit-height); left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(var(--tilt)); transform-origin: center; }
-  .triforce-system__track { position: absolute; inset: 0; border: 1px solid #edce8f30; border-radius: 50%; }
+  .triforce-system__track { position: absolute; inset: 0; border: 1px solid #edce8f22; border-radius: 50%; }
   .triforce-system__runner { position: absolute; inset: 0; width: 100%; height: 100%; offset-path: ellipse(50% 50% at 50% 50%); offset-anchor: center; offset-rotate: 0deg; offset-distance: var(--phase); animation: triforce-orbit var(--period) linear infinite; }
   .triforce-system__body { position: absolute; left: 50%; top: 50%; width: 7cqi; transform: translate(-50%,-50%) rotate(var(--counter)); }
-  .triforce-system__body--emil { width: 14cqi; }
-  .triforce-system__body--prism { width: 17cqi; }
+  .triforce-system__body--emil { width: 13cqi; }
+  .triforce-system__body--pokeball { width: 6.5cqi; }
+  .triforce-system__body--assassins-creed { width: 8cqi; }
+  .triforce-system__body--overwatch { width: 8cqi; }
+  .triforce-system__body--kingdom-hearts { width: 10cqi; }
+  .triforce-system__body--final-fantasy-vii { width: 23cqi; }
+  .triforce-system__body--wuthering-waves { width: 24cqi; }
+  .triforce-system__logo { display: block; width: 100%; height: auto; max-height: 14cqi; object-fit: contain; filter: drop-shadow(0 2px 4px #0008); }
+  .triforce-system__logo--assassins-creed,.triforce-system__logo--wuthering-waves { filter: invert(1) drop-shadow(0 2px 4px #0008); }
+  .triforce-system__logo--final-fantasy-vii { background: #eef5ec; padding: .5cqi; border-radius: 1cqi; box-sizing: border-box; }
+  :global(html[data-serious-mode='true']) .triforce-system__logo--assassins-creed,:global(html[data-serious-mode='true']) .triforce-system__logo--wuthering-waves { filter: none; }
   .triforce-system__body--mushroom { width: 6cqi; }
   .triforce-system__gesture { animation: triforce-body-float 7s ease-in-out infinite; }
   .triforce-system__body--emil .triforce-system__gesture { animation: triforce-emil-float 9s ease-in-out infinite; }
   .triforce-system__emil-crop { width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 50%; filter: drop-shadow(0 0 5px #fff4d733); }
   .triforce-system__emil-crop img { display: block; width: 209%; max-width: none; height: auto; }
   .triforce-system__body svg { display: block; width: 100%; overflow: visible; filter: drop-shadow(0 3px 4px #1b141b55); }
-  .triforce-system__ray { stroke-dasharray: 90; stroke-dashoffset: 0; animation: triforce-prism-spectrum 8s ease-in-out infinite; animation-delay: calc(var(--color-index)*.22s); }
   .triforce-system__pause { display: block; margin: .3rem auto 0; padding: .5rem .85rem; min-height: 44px; color: #f2dfb5; background: #2b1d1455; border: 1px solid #c5a77570; border-radius: 100px; font: inherit; font-size: .72rem; cursor: pointer; }
   .triforce-system__pause[hidden] { display: none; }
   .triforce-system[data-orbits-paused='true'] .triforce-system__scene *, .triforce-system[data-orbits-paused='true'] .triforce-system__scene *::before { animation-play-state: paused !important; }
@@ -69,7 +80,6 @@ const bodies = [
   @keyframes triforce-core-glow { 0%,100% { opacity: .5; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.08); } }
   @keyframes triforce-body-float { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(2px); } }
   @keyframes triforce-emil-float { 0%,100% { transform: rotate(-3deg) scale(.98); filter: brightness(1); } 50% { transform: rotate(3deg) scale(1.03); filter: brightness(1.12); } }
-  @keyframes triforce-prism-spectrum { 0%,10% { stroke-dashoffset: 90; opacity: .3; } 35%,80% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: .5; } }
   :global(html[data-serious-mode='true']) .triforce-system__scene { filter: grayscale(1); }
   :global(html[data-serious-mode='true']) .triforce-system__scene *, :global(html[data-serious-mode='true']) .triforce-system__scene *::before { animation: none !important; }
   :global(html[data-serious-mode='true']) .triforce-system__track { border-color: #5556; }
