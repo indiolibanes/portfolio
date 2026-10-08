@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MusicShelf from '../components/MusicShelf.astro';
+import TriforceSystem from '../components/TriforceSystem.astro';
 import HeroMicroInteractions from '../components/HeroMicroInteractions.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import MotionImage from '../components/MotionImage.astro';
@@ -984,20 +985,10 @@ const background = [
         </div>
       </div>
 
-      <div
-        class="closing-marks"
-        aria-hidden="true"
-      >
-        <div class="closing-relics" data-decorative-motion>
-          <div class="closing-emil"><img src="/emil-triforce.webp" alt="" width="1000" height="591" loading="lazy" /></div>
-          <svg class="closing-triforce" viewBox="0 0 220 200" aria-hidden="true">
-            <path style="--facet:0" d="M110 12 160 98H60Z" />
-            <path style="--facet:1" d="M58 102 108 188H8Z" />
-            <path style="--facet:2" d="M162 102 212 188H112Z" />
-          </svg>
-          <span class="closing-orbit"></span>
-        </div>
+      <div class="closing-marks closing-marks--orbital">
+        <TriforceSystem />
       </div>
+
     </section>
 
   </main>

@@ -1,0 +1,9 @@
+/* All layout changes are confined to the contact section. */
+#contato { isolation: isolate; }
+#contato .closing-copy { position: relative; z-index: 5; min-width: 0; }
+#contato .closing-actions { position: relative; z-index: 6; }
+#contato .closing-marks--orbital { position: relative; z-index: 2; min-width: 0; pointer-events: none; }
+#contato .triforce-system__pause { pointer-events: auto; }
+@media (min-width: 921px) { #contato { grid-template-columns: minmax(0,1fr) minmax(0,1fr); column-gap: clamp(1.5rem,3vw,3rem); } }
+@media (max-width: 920px) { #contato { grid-template-columns: minmax(0,1fr); } #contato .closing-marks--orbital { grid-column: 1; width: min(100%,480px); margin: .75rem auto 0; } }
+html[data-serious-mode='true'] #contato .closing-actions .button { color: #111; border-color: #555; background: #fff; }
