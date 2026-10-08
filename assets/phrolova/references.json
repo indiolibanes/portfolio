@@ -36,13 +36,6 @@
       "role": "standalone inspection sheet: whole silhouette, bloom zoom, rod zoom",
       "status": "created",
       "note": "Embeds only the image already present in the repository."
-    },
-    {
-      "id": "deprecated",
-      "path": "public/assets/phrolova-baton-bow.webp",
-      "role": "failed previous cutout",
-      "status": "do-not-use",
-      "note": "Low-resolution square crop with background contamination; not a trustworthy vectorization source."
     }
   ],
   "external_references": [
@@ -131,5 +124,13 @@
     "second": "assets/phrolova/overlay-check.png (not yet created)",
     "third": "assets/phrolova/morph-storyboard.svg (only after vector accuracy approved)",
     "final": "src/components/HeroMicroInteractions.astro (ONLY after approved geometry and browser checks)"
-  }
+  },
+  "removed_assets": [
+    {
+      "path": "public/assets/phrolova-baton-bow.webp",
+      "removed_in_commit": "85b5d3c55f51b16f7931c4bbcfcb5f47ea4485fa",
+      "reason": "Defective bow crop: included background and generated disconnected ribbon fragments. Do not reuse.",
+      "restore": false
+    }
+  ]
 }
