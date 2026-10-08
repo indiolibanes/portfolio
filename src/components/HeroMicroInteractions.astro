@@ -1,56 +1,20 @@
-<!-- Source-preserving ornaments exclusive to #sobre:
-     Shorekeeper: separate build-time alpha layers, fixed flower.
-     Phrolova: original blossom/rod remains recognizable while three ribbons unfold.
-     Never imports or changes the Music cursor effect system. -->
-<!-- Phrolova remains static while its decorative vector is rebuilt.
-     Original imagery stays recognisable: no improvised ribbons or fragments. -->
+<!-- Static #sobre artwork only: original Shorekeeper layers and editable Phrolova SVG. -->
 <div class="phrolova-underlay" data-about-baton aria-hidden="true">
-  <svg class="about-baton-art" viewBox="0 0 448 448"
-    xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false">
-    <defs>
-      <filter id="about-baton-alpha" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
-        <feColorMatrix in="SourceGraphic" type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          1.25 .25 .20 0 -.08"/>
-      </filter>
-    </defs>
-    <image class="about-baton-source" href="/phrolova-baton.webp"
-      x="0" y="0" width="448" height="448"
-      preserveAspectRatio="xMidYMid meet" filter="url(#about-baton-alpha)" />
-  </svg>
+  <img class="about-baton-art" src="/assets/phrolova/crimson-baton.svg" width="448" height="448" alt="" decoding="async" />
 </div>
 
 <div class="shorekeeper-underlay" data-about-butterfly aria-hidden="true">
   <div class="about-shorekeeper-layers">
-    <!-- Assets are generated from the ORIGINAL illustration using Sharp.
-         The base retains neutral/ivory flower pixels. The wings have the
-         identical dimensions and origin as the source: never a mini-butterfly. -->
-    <img class="about-shorekeeper-flower" src="/assets/about-shorekeeper-base.webp"
-      width="800" height="689" alt="" decoding="async"/>
-    <img class="about-shorekeeper-wings" src="/assets/about-shorekeeper-wings.webp"
-      width="800" height="689" alt="" decoding="async"/>
+    <img class="about-shorekeeper-flower" src="/assets/about/shorekeeper-flower.webp" width="1477" height="1065" alt="" decoding="async" />
+    <img class="about-shorekeeper-wings" src="/assets/about/shorekeeper-butterfly.webp" width="1477" height="1065" alt="" decoding="async" />
   </div>
 </div>
 
 <style is:global>
-  /* Strong scope: no other portfolio section or cursor effects are touched. */
-  #sobre .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay),
-  #sobre:hover .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay) {
+  #sobre .hero-ornaments :is(.phrolova-underlay,.shorekeeper-underlay) {
     pointer-events: none;
     transition: none !important;
   }
-  #sobre .hero-ornaments .phrolova-underlay,
-  #sobre:hover .hero-ornaments .phrolova-underlay {
-    transform: translateY(-50%) rotate(7deg);
-  }
-  #sobre .hero-ornaments .shorekeeper-underlay,
-  #sobre:hover .hero-ornaments .shorekeeper-underlay {
-    transform: translateY(-50%) rotate(-2deg);
-  }
-
-  /* Phrolova: fixed reference image until a faithful vector is ready. */
   #sobre .hero-ornaments .about-baton-art {
     display: block;
     width: 100%;
@@ -58,15 +22,10 @@
     overflow: visible;
     filter: none !important;
   }
-  #sobre .hero-ornaments .about-baton-source {
-    opacity: 1 !important;
-  }
-
   #sobre .about-shorekeeper-layers {
     position: relative;
     width: 100%;
-    aspect-ratio: 800 / 689;
-    overflow: visible;
+    aspect-ratio: 1477 / 1065;
   }
   #sobre .about-shorekeeper-layers img {
     position: absolute;
@@ -74,96 +33,12 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain;
     max-width: none;
+    object-fit: contain;
     pointer-events: none;
-  }
-  #sobre .about-shorekeeper-flower {
     transform: none !important;
-    filter: drop-shadow(0 8px 16px rgba(52,67,160,.22));
+    filter: none !important;
   }
-  #sobre .about-shorekeeper-wings {
-    transform-origin: 52% 40%;
-    will-change: transform;
-    filter: drop-shadow(0 1px 5px rgba(75,175,236,.2));
-  }
-  #sobre .shorekeeper-underlay.is-in-flight .about-shorekeeper-wings {
-    animation: about-wings-takeoff 2550ms cubic-bezier(.23,.63,.23,1) both;
-  }
-  @keyframes about-wings-takeoff {
-    0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
-    14% { transform: translate(8px,-11px) rotate(2deg) scale(1.02,.95); opacity: 1; }
-    30% { transform: translate(24px,-47px) rotate(7deg) scale(.96,1.03); opacity: 1; }
-    49% { transform: translate(-38px,-111px) rotate(-9deg) scale(1.04,.9); opacity: 1; }
-    70% { transform: translate(25px,-205px) rotate(10deg) scale(.95,1.02); opacity: 1; }
-    100% { transform: translate(-155px,-317px) rotate(-12deg) scale(.84,.97); opacity: .12; }
-  }
-
   html[data-serious-mode='true'] #sobre .hero-ornaments,
-  html[data-legacy-mode='true'] #sobre .hero-ornaments {
-    display: none;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    #sobre .about-shorekeeper-wings { animation: none !important; will-change: auto; }
-  }
+  html[data-legacy-mode='true'] #sobre .hero-ornaments { display: none; }
 </style>
-
-<script>
-  const hero = document.querySelector<HTMLElement>('#sobre');
-  const shorekeeper = hero?.querySelector<HTMLElement>('[data-about-butterfly]');
-
-  if (hero && shorekeeper) {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const disabled = () =>
-      reduced.matches ||
-      document.documentElement.dataset.seriousMode === 'true' ||
-      document.documentElement.dataset.legacyMode === 'true';
-
-    type AboutOrnament = 'butterfly';
-    let active: AboutOrnament | null = null;
-    let touchStart: { id: number; x: number; y: number; zone: AboutOrnament } | null = null;
-
-    const distance = (node: HTMLElement, x: number, y: number) => {
-      const rect = node.getBoundingClientRect();
-      const dx = (x - rect.left - rect.width * .5) / (rect.width * .46);
-      const dy = (y - rect.top - rect.height * .5) / (rect.height * .48);
-      return dx * dx + dy * dy;
-    };
-    // The Phrolova artwork is deliberately not an interaction target.
-    const zoneAt = (x: number, y: number): AboutOrnament | null =>
-      distance(shorekeeper, x, y) <= 1 ? 'butterfly' : null;
-    const setActive = (next: AboutOrnament | null) => {
-      if (active === next) return;
-      active = next;
-      shorekeeper.classList.toggle('is-in-flight', next === 'butterfly' && !disabled());
-    };
-
-    hero.addEventListener('pointermove', (event) => {
-      if (event.pointerType !== 'mouse' || disabled()) return setActive(null);
-      setActive(zoneAt(event.clientX, event.clientY));
-    }, { passive: true });
-    hero.addEventListener('pointerleave', () => setActive(null));
-
-    // Tap, not pointerdown: scrolling the page does not trigger artwork.
-    hero.addEventListener('pointerdown', (event) => {
-      touchStart = null;
-      if (event.pointerType === 'mouse' || disabled()) return;
-      if ((event.target as Element).closest('a,button,input,textarea,select')) return;
-      const zone = zoneAt(event.clientX, event.clientY);
-      if (zone) touchStart = { id: event.pointerId, x: event.clientX, y: event.clientY, zone };
-    }, { passive: true });
-    hero.addEventListener('pointerup', (event) => {
-      const start = touchStart;
-      touchStart = null;
-      if (!start || start.id !== event.pointerId || disabled()) return;
-      if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
-      if (zoneAt(event.clientX, event.clientY) !== start.zone) return;
-      setActive(active === start.zone ? null : start.zone);
-    }, { passive: true });
-    hero.addEventListener('pointercancel', () => { touchStart = null; });
-    reduced.addEventListener('change', () => setActive(null));
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) setActive(null);
-    });
-  }
-</script>

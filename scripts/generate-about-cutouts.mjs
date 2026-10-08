@@ -1,93 +1,61 @@
-/**
- * Split Shorekeeper's existing illustration into a fixed flower/background
- * and an in-place cyan-wing overlay. The original pixels are preserved:
- * unlike the previous SVG alpha matrix, this mask never removes pale flower
- * petals simply because they are close to the butterfly.
- *
- * This is generated at build time with Sharp; no canvas or per-frame image
- * processing is performed on visitors' devices.
+/** Build the two static Shorekeeper layers from a reviewed spatial mask.
+ * The source butterfly keeps its original RGBA pixels; no color keying is used.
+ * The occluded part of the flower is restored under its original visible pixels.
  */
 import sharp from 'sharp';
-import { mkdir } from 'node:fs/promises';
+import { readFile, mkdir } from 'node:fs/promises';
 
-const source = 'public/shorekeeper-black-shores.png';
-const directory = 'public/assets';
-const baseTarget = directory + '/about-shorekeeper-base.webp';
-const wingsTarget = directory + '/about-shorekeeper-wings.webp';
+const outputDir = 'public/assets/about';
+await mkdir(outputDir, { recursive: true });
 
-const { data, info } = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-const { width, height, channels } = info;
-const base = Buffer.from(data);
-const wings = Buffer.alloc(data.length, 0);
-
-const clamp = (v, low = 0, high = 1) => Math.max(low, Math.min(high, v));
-const smooth = (a, b, v) => {
-  const t = clamp((v - a) / (b - a));
-  return t * t * (3 - 2 * t);
-};
-
-let weightedPixels = 0;
-let significantPixels = 0;
-
-for (let y = 0; y < height; y++) {
-  for (let x = 0; x < width; x++) {
-    const pos = (y * width + x) * channels;
-    const [red, green, blue, alpha] = data.subarray(pos, pos + 4);
-    if (alpha < 5) continue;
-
-    // Spatial region of the original butterfly, feathered at the boundary.
-    // Coordinates are defined relative to the SVG source's 800x689 viewBox.
-    const dx = (x / width - 0.52) / 0.30;
-    const dy = (y / height - 0.40) / 0.275;
-    const radial = Math.sqrt(dx * dx + dy * dy);
-    const region = 1 - smooth(0.79, 1, radial);
-    if (region <= 0) continue;
-
-    // The butterfly is luminous cyan/blue; the pale flower is primarily
-    // neutral white. Never use colour alone over the full illustration.
-    const coolChromaticity = 0.70 * (blue - red) + 0.30 * (green - red);
-    const blueScore = smooth(18, 76, coolChromaticity);
-    const foreground = smooth(95, 175, Math.max(green, blue));
-    const nonNeutral = smooth(8, 36, Math.max(blue, green) - red);
-    // Explicitly protect the lower half, where the ivory flower blooms.
-    // The wings occupy the upper centre; no lower petals are extracted.
-    const petalGuard = 1 - smooth(0.48, 0.62, y / height);
-    const confidence = region * blueScore * foreground * nonNeutral * petalGuard;
-    const wingAlpha = Math.round(alpha * confidence);
-    if (wingAlpha === 0) continue;
-
-    // Full image dimensions guarantee that the departing wings begin at
-    // exactly the original location and size; no thumbnail is introduced.
-    wings[pos] = red;
-    wings[pos + 1] = green;
-    wings[pos + 2] = blue;
-    wings[pos + 3] = wingAlpha;
-    base[pos + 3] = Math.round(alpha * (1 - confidence));
-    weightedPixels += wingAlpha / 255;
-    if (wingAlpha > 120) significantPixels++;
-  }
+const source = await sharp('public/shorekeeper-black-shores.png')
+  .ensureAlpha()
+  .raw()
+  .toBuffer({ resolveWithObject: true });
+const { data: sourcePixels, info } = source;
+const { width, height } = info;
+if (width !== 1477 || height !== 1065) {
+  throw new Error('Shorekeeper source dimensions changed; review both hand-drawn masks.');
 }
 
-// Guard against future source replacement. When segmentation is
-// inconclusive, preserve the ORIGINAL UNTOUCHED illustration rather than
-// clipping a flower or preventing the rest of the portfolio from deploying.
-const coverage = weightedPixels / (width * height);
-if (coverage < 0.00045 || coverage > 0.145 || significantPixels < 80) {
-  console.warn(
-    `Shorekeeper segmentation uncertain (${width}x${height}; ` +
-    `${(100 * coverage).toFixed(3)}%; ${significantPixels} significant pixels). ` +
-    'Keeping the complete original image as a safe fallback.'
-  );
-  data.copy(base);
-  wings.fill(0);
-}
-
-await mkdir(directory, { recursive: true });
-await Promise.all([
-  sharp(base, { raw: { width, height, channels } }).webp({ lossless: true, effort: 4 }).toFile(baseTarget),
-  sharp(wings, { raw: { width, height, channels } }).webp({ lossless: true, effort: 4 }).toFile(wingsTarget),
+const butterflySvg = await readFile('assets/about/shorekeeper-butterfly-mask.svg');
+const flowerSvg = await readFile('assets/about/shorekeeper-flower-envelope.svg');
+const [butterflyMask, flowerEnvelope, restoration] = await Promise.all([
+  sharp(butterflySvg).resize(width, height).ensureAlpha().raw().toBuffer(),
+  sharp(flowerSvg).resize(width, height).ensureAlpha().raw().toBuffer(),
+  sharp('assets/about/flower-restoration.webp').ensureAlpha().raw().toBuffer(),
 ]);
-console.log(
-  `Shorekeeper assets: ${width}x${height}; butterfly coverage ` +
-  `${(100 * coverage).toFixed(2)}%; fixed flower kept outside cyan region.`
-);
+if (restoration.length !== sourcePixels.length) {
+  throw new Error('Flower restoration dimensions must match the original artwork.');
+}
+
+const butterfly = Buffer.from(sourcePixels);
+const originalFlower = Buffer.from(sourcePixels);
+const restoredFlower = Buffer.from(restoration);
+
+// The repair zone overlaps the hand-traced shared edge. Soft coverage removes
+// the butterfly's luminous fringe from the stationary flower without RGB tests.
+const repairSvg = Buffer.from(butterflySvg.toString()
+  .replace('fill="white"', 'fill="white" stroke="white" stroke-width="16"'));
+const repairMask = await sharp(repairSvg).resize(width, height).blur(5).ensureAlpha().raw().toBuffer();
+
+for (let i = 0; i < sourcePixels.length; i += 4) {
+  const silhouette = butterflyMask[i + 3] / 255;
+  const envelope = flowerEnvelope[i + 3] / 255;
+  const removed = repairMask[i + 3] / 255;
+  butterfly[i + 3] = Math.round(sourcePixels[i + 3] * silhouette);
+  originalFlower[i + 3] = Math.round(sourcePixels[i + 3] * (1 - removed) * envelope);
+  // Clip every generated pixel to the hand-drawn flower boundary. This avoids
+  // stray restoration alpha outside the petals and keeps the flower stationary.
+  restoredFlower[i + 3] = Math.round(restoration[i + 3] * envelope);
+}
+
+await sharp(butterfly, { raw: { width, height, channels: 4 } })
+  .webp({ lossless: true })
+  .toFile(`${outputDir}/shorekeeper-butterfly.webp`);
+
+const flowerBase = await sharp(restoredFlower, { raw: { width, height, channels: 4 } }).png().toBuffer();
+await sharp(flowerBase)
+  .composite([{ input: await sharp(originalFlower, { raw: { width, height, channels: 4 } }).png().toBuffer() }])
+  .webp({ lossless: true })
+  .toFile(`${outputDir}/shorekeeper-flower.webp`);
