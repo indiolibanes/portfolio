@@ -29,7 +29,9 @@ const bodies = [
                 <circle cx="24" cy="24" r="7" fill="#f7f4e9" stroke="#202535" stroke-width="3" />
                 <circle cx="24" cy="24" r="3" fill="#dbe2e7" />
               </svg>}
+              {body.name === 'wuthering-waves' && <span class="triforce-system__saturn-rings triforce-system__saturn-rings--back"></span>}
               {['assassins-creed','kingdom-hearts','final-fantasy-vii','wuthering-waves','overwatch'].includes(body.name) && <img class={`triforce-system__logo triforce-system__logo--${body.name}`} src={`/assets/contact-games/${body.name}.${body.name === 'overwatch' ? 'webp' : 'svg'}`} alt="" loading="lazy" decoding="async" />}
+              {body.name === 'wuthering-waves' && <span class="triforce-system__saturn-rings triforce-system__saturn-rings--front"></span>}
               {body.name === 'mushroom' && <svg class="triforce-system__mushroom" viewBox="0 0 16 16" shape-rendering="crispEdges">
                 <path d="M5 1h6v1h2v1h1v1h1v4H1V4h1V3h1V2h2Z" fill="#e16b55" />
                 <path d="M4 4h3v3H4Zm6-1h2v2h-2ZM5 8h6v1h1v4h-1v1H5v-1H4V9h1Z" fill="#fff4d0" />
@@ -48,9 +50,9 @@ const bodies = [
 <style>
   .triforce-system { width: 100%; max-width: 540px; justify-self: center; position: relative; }
   .triforce-system__scene { position: relative; aspect-ratio: 1; width: 100%; container-type: inline-size; isolation: isolate; pointer-events: none; }
-  .triforce-system__core { position: absolute; width: 21%; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 3; }
-  .triforce-system__core::before { content: ''; position: absolute; inset: -55%; border-radius: 50%; background: radial-gradient(ellipse,#f6d66a35,transparent 70%); animation: triforce-core-glow 6s ease-in-out infinite; }
-  .triforce-system__core svg { display: block; position: relative; width: 100%; fill: #efd16c; stroke: #a9802b; stroke-width: 3; filter: drop-shadow(0 0 8px #f5c65155); }
+  .triforce-system__core { position: absolute; width: 27%; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 3; }
+  .triforce-system__core::before { content: ''; position: absolute; inset: -78%; border-radius: 50%; background: radial-gradient(ellipse,#ffe78370 0%,#f6d66a3b 36%,#e3b6431a 57%,transparent 72%); filter: blur(2px); animation: triforce-core-glow 6s ease-in-out infinite; }
+  .triforce-system__core svg { display: block; position: relative; width: 100%; fill: #efd16c; stroke: #a9802b; stroke-width: 2.5; filter: drop-shadow(0 0 9px #ffe077cc) drop-shadow(0 0 23px #f5c6519c) drop-shadow(0 0 42px #e4a93655); }
   .triforce-system__orbit { position: absolute; width: var(--orbit-width); height: var(--orbit-height); left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(var(--tilt)); transform-origin: center; }
   .triforce-system__track { position: absolute; inset: 0; border: 1px solid #edce8f22; border-radius: 50%; }
   .triforce-system__runner { position: absolute; inset: 0; width: 100%; height: 100%; offset-path: ellipse(50% 50% at 50% 50%); offset-anchor: center; offset-rotate: 0deg; offset-distance: var(--phase); animation: triforce-orbit var(--period) linear infinite; }
@@ -61,10 +63,15 @@ const bodies = [
   .triforce-system__body--overwatch { width: 8cqi; }
   .triforce-system__body--kingdom-hearts { width: 10cqi; }
   .triforce-system__body--final-fantasy-vii { width: 23cqi; }
-  .triforce-system__body--wuthering-waves { width: 24cqi; }
+  .triforce-system__body--wuthering-waves { width: 21cqi; position: relative; isolation: isolate; }
   .triforce-system__logo { display: block; width: 100%; height: auto; max-height: 14cqi; object-fit: contain; filter: drop-shadow(0 2px 4px #0008); }
   .triforce-system__logo--assassins-creed,.triforce-system__logo--wuthering-waves { filter: invert(1) drop-shadow(0 2px 4px #0008); }
-  .triforce-system__logo--final-fantasy-vii { background: #eef5ec; padding: .5cqi; border-radius: 1cqi; box-sizing: border-box; }
+  .triforce-system__saturn-rings { position: absolute; z-index: 0; left: 50%; top: 50%; width: 158%; height: 78%; transform: translate(-50%,-50%) rotate(-18deg) scaleY(.42); border: 1.5px solid #dfc88780; border-radius: 50%; pointer-events: none; }
+  .triforce-system__saturn-rings::after { content: ''; position: absolute; inset: 12% 8%; border: 1px solid #d5bd8055; border-radius: inherit; }
+  .triforce-system__logo--wuthering-waves { position: relative; z-index: 1; }
+  .triforce-system__saturn-rings--back { clip-path: inset(0 0 52%); }
+  .triforce-system__saturn-rings--front { z-index: 2; clip-path: inset(48% 0 0); border-color: #f0dca9aa; filter: drop-shadow(0 0 2px #e5d39a66); }
+  .triforce-system__logo--final-fantasy-vii { filter: drop-shadow(0 0 3px #a9d8cf55); }
   :global(html[data-serious-mode='true']) .triforce-system__logo--assassins-creed,:global(html[data-serious-mode='true']) .triforce-system__logo--wuthering-waves { filter: none; }
   .triforce-system__body--mushroom { width: 6cqi; }
   .triforce-system__gesture { animation: triforce-body-float 7s ease-in-out infinite; }
@@ -77,16 +84,17 @@ const bodies = [
   .triforce-system[data-orbits-paused='true'] .triforce-system__scene *, .triforce-system[data-orbits-paused='true'] .triforce-system__scene *::before { animation-play-state: paused !important; }
   .triforce-system__scene:not([data-motion-playing='true']) .triforce-system__core::before { animation-play-state: paused; }
   @keyframes triforce-orbit { from { offset-distance: var(--phase); } to { offset-distance: calc(var(--phase) + 100%); } }
-  @keyframes triforce-core-glow { 0%,100% { opacity: .5; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.08); } }
+  @keyframes triforce-core-glow { 0%,100% { opacity: .5; transform: scale(.94); } 50% { opacity: .92; transform: scale(1.045); } }
   @keyframes triforce-body-float { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(2px); } }
   @keyframes triforce-emil-float { 0%,100% { transform: rotate(-3deg) scale(.98); filter: brightness(1); } 50% { transform: rotate(3deg) scale(1.03); filter: brightness(1.12); } }
   :global(html[data-serious-mode='true']) .triforce-system__scene { filter: grayscale(1); }
   :global(html[data-serious-mode='true']) .triforce-system__scene *, :global(html[data-serious-mode='true']) .triforce-system__scene *::before { animation: none !important; }
   :global(html[data-serious-mode='true']) .triforce-system__track { border-color: #5556; }
+  :global(html[data-serious-mode='true']) .triforce-system__saturn-rings { border-color: #5559; }
   :global(html[data-serious-mode='true']) .triforce-system__pause { display: none; }
   :global(html[data-legacy-mode='true']) .triforce-system { display: none; }
   @supports not (offset-path: ellipse(50% 50% at 50% 50%)) { .triforce-system__runner { animation: none; width: 0; height: 0; left: 80%; top: 20%; } .triforce-system__pause { display: none; } }
-  @media (prefers-reduced-motion: reduce) { .triforce-system__scene *, .triforce-system__scene *::before { animation: none !important; } .triforce-system__pause { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .triforce-system__scene *, .triforce-system__scene *::before { animation: none !important; } .triforce-system__saturn-rings { filter: none; } .triforce-system__pause { display: none; } }
 </style>
 <script>
   document.querySelectorAll<HTMLElement>('[data-triforce-system]').forEach((system) => {

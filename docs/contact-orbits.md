@@ -28,6 +28,10 @@ Validação: build Astro; Chromium em 360, 390, 430, 768 e 1440 px; amostragem d
 - Kingdom Hearts: [Kingdom Hearts logo.svg](https://commons.wikimedia.org/wiki/File:Kingdom_Hearts_logo.svg), símbolo coração/coroa da franquia, asset preservado.
 - Overwatch: [Overwatch circle logo2.svg](https://commons.wikimedia.org/wiki/File:Overwatch_circle_logo2.svg), Gameposo, CC BY-SA 4.0. Conversão do raster embutido para WebP 256 px, sem alteração do desenho; versão convertida sob a mesma licença.
 - Wuthering Waves: [Wuthering Waves logo.svg](https://commons.wikimedia.org/wiki/File:Wuthering_Waves_logo.svg), Kuro Games, vetorização Argenti Aertheri/VulcanSphere; asset preservado e inversão de cor via CSS no tema escuro.
-- Final Fantasy VII: [Freebie Supply](https://freebiesupply.com/logos/final-fantasy-vii-logo/), logo Square Enix, SVG preservado e superfície clara atrás do logo para contraste.
+- Final Fantasy VII: [Freebie Supply](https://freebiesupply.com/logos/final-fantasy-vii-logo/), logo Square Enix. O wordmark vetorial claro contrasta sobre o céu escuro sem bloco de fundo.
 
 Marcas e personagens pertencem aos respectivos titulares. [Licença CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+## Refinos visuais
+
+A Triforce ocupa 27% do palco com um halo dourado mais amplo e brilhante, mantendo a pulsação lenta. Wuthering Waves recebe anéis elípticos inclinados em duas camadas sobrepostas, atrás e à frente do logo. O contorno e o brilho dos anéis são reduzidos no modo sério; movimento reduzido desativa animações.
