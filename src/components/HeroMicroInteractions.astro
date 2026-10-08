@@ -1,257 +1,217 @@
+<!-- The existing transparent cut-outs are deliberately separate from both original illustrations. -->
 <div class="hero-micro-effects" data-hero-micro-effects aria-hidden="true"></div>
 
 <style is:global>
-  /* Interactive ornaments are decorative: links and text keep pointer priority. */
-  .hero .hero-micro-effects {
+  /* Only #sobre: never reuse the music panorama's pointer/click effects. */
+  #sobre .hero-micro-effects {
     position: absolute;
     inset: 0;
-    z-index: 5;
+    z-index: 3; /* artwork above the paper, below hero copy (z-index: 4) */
     overflow: hidden;
     pointer-events: none;
     contain: layout style;
   }
-  .hero-micro-particle {
+
+  #sobre .hero-ornament-particle {
     position: absolute;
-    left: var(--micro-x);
-    top: var(--micro-y);
+    left: var(--ornament-x);
+    top: var(--ornament-y);
     display: block;
     pointer-events: none;
     will-change: transform, opacity;
   }
-  .hero-micro-particle--butterfly {
-    width: clamp(43px, 5.5vw, 76px);
+
+  /* The flower belongs to the unchanged Shorekeeper illustration.
+     Only the separately cut-out butterfly takes flight. */
+  #sobre .hero-ornament-particle--butterfly {
+    width: clamp(55px, 6.5vw, 91px);
     aspect-ratio: 231 / 143;
-    animation: hero-butterfly-departure 1450ms cubic-bezier(.18,.62,.32,1) both;
+    transform-origin: 50% 50%;
+    animation: about-butterfly-flight 1450ms cubic-bezier(.18,.61,.33,1) both;
   }
-  .hero-micro-particle--butterfly img {
+  #sobre .hero-ornament-particle--butterfly img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transform-origin: 50% 48%;
-    filter: drop-shadow(0 3px 7px rgba(70, 105, 195, .25));
-    animation: hero-butterfly-wingbeat 130ms ease-in-out 0ms 11 alternate;
+    transform-origin: 50% 50%;
+    filter: drop-shadow(0 5px 9px rgba(54,83,166,.26));
+    animation: about-butterfly-flutter 150ms ease-in-out 0ms 9 alternate;
   }
-  /* The baton yields to the cut-out ribbons; the Shorekeeper flower stays untouched. */
-  .hero .phrolova-underlay.is-unraveling svg image {
-    animation: hero-baton-unravel 1150ms ease-out both;
+  @keyframes about-butterfly-flight {
+    0% {
+      opacity: 0;
+      transform: translate(-50%,-50%) rotate(-9deg) scale(.75);
+    }
+    9% { opacity: 1; }
+    26% {
+      opacity: 1;
+      transform: translate(calc(-50% + 13px),calc(-50% - 31px)) rotate(11deg) scale(.86);
+    }
+    55% {
+      opacity: .96;
+      transform: translate(calc(-50% - 35px),calc(-50% - 85px)) rotate(-8deg) scale(.95);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% - 106px),calc(-50% - 157px)) rotate(-17deg) scale(.85);
+    }
   }
-  @keyframes hero-baton-unravel {
-    0%, 100% { opacity: 1; }
-    30% { opacity: .72; }
-    60% { opacity: .46; }
+  @keyframes about-butterfly-flutter {
+    from { transform: perspective(180px) rotateY(-36deg) scaleX(.68); }
+    to   { transform: perspective(180px) rotateY(26deg) scaleX(1); }
   }
-  .hero-micro-particle--ribbon {
-    width: clamp(64px, 7vw, 90px);
+
+  /* The original baton stays fixed. Three transparent pieces of its bow
+     split away independently rather than fading the entire illustration. */
+  #sobre .hero-ornament-particle--ribbon {
+    width: clamp(82px,9vw,118px);
     aspect-ratio: 133 / 125;
-    animation: hero-ribbon-resolve 1200ms ease-out both;
+    animation: about-ribbon-vanish 1150ms ease-out both;
   }
-  .hero-micro-ribbon-piece {
+  #sobre .hero-ornament-ribbon-piece {
     position: absolute;
     inset: 0;
     display: block;
-    animation: hero-ribbon-unravel 1050ms cubic-bezier(.2,.56,.22,1) both;
+    transform-origin: center;
+    animation: about-ribbon-unwind 1100ms cubic-bezier(.22,.59,.26,1) both;
   }
-  .hero-micro-ribbon-piece img {
+  #sobre .hero-ornament-ribbon-piece img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 3px 5px rgba(125, 28, 63, .2));
+    filter: drop-shadow(0 5px 7px rgba(100,19,60,.25));
   }
-  .hero-micro-ribbon-piece--left { --piece-x: -55px; --piece-y: -26px; --piece-rotate: -72deg; }
-  .hero-micro-ribbon-piece--right { --piece-x: 58px; --piece-y: -35px; --piece-rotate: 84deg; }
-  .hero-micro-ribbon-piece--knot { --piece-x: 5px; --piece-y: -74px; --piece-rotate: 24deg; }
-  .hero-micro-ribbon-piece--left img { clip-path: inset(0 50% 0 0); }
-  .hero-micro-ribbon-piece--right img { clip-path: inset(0 0 0 50%); }
-  .hero-micro-ribbon-piece--knot img { clip-path: circle(29% at 50% 48%); }
+  #sobre .hero-ornament-ribbon-piece--left {
+    --ribbon-x: -57px;
+    --ribbon-y: -33px;
+    --ribbon-angle: -65deg;
+  }
+  #sobre .hero-ornament-ribbon-piece--right {
+    --ribbon-x: 62px;
+    --ribbon-y: -24px;
+    --ribbon-angle: 78deg;
+  }
+  #sobre .hero-ornament-ribbon-piece--knot {
+    --ribbon-x: 5px;
+    --ribbon-y: -82px;
+    --ribbon-angle: 31deg;
+  }
+  #sobre .hero-ornament-ribbon-piece--left img { clip-path: inset(0 50% 0 0); }
+  #sobre .hero-ornament-ribbon-piece--right img { clip-path: inset(0 0 0 50%); }
+  #sobre .hero-ornament-ribbon-piece--knot img { clip-path: circle(27% at 50% 49%); }
 
-  @keyframes hero-butterfly-departure {
-    0% { opacity: 0; transform: translate(-50%, -50%) rotate(-8deg) scale(.48); }
-    9% { opacity: 1; }
-    25% { opacity: 1; transform: translate(calc(-50% + var(--micro-sway)), -41px) rotate(-10deg) scale(.78); }
-    58% { opacity: .92; transform: translate(calc(-50% + var(--micro-mid-x)), -88px) rotate(10deg) scale(.93); }
-    100% { opacity: 0; transform: translate(calc(-50% + var(--micro-dx)), var(--micro-dy)) rotate(var(--micro-rotate)) scale(1.02); }
+  @keyframes about-ribbon-vanish {
+    0% { opacity: 0; transform: translate(-50%,-50%) rotate(-4deg) scale(.86); }
+    12%, 50% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%,calc(-50% - 22px)) rotate(7deg) scale(1.02); }
   }
-  @keyframes hero-butterfly-wingbeat {
-    from { transform: perspective(160px) rotateY(-36deg) scaleX(.68); }
-    to { transform: perspective(160px) rotateY(28deg) scaleX(1); }
+  @keyframes about-ribbon-unwind {
+    0%, 16% { transform: translate(0,0) rotate(0deg); }
+    100% { transform: translate(var(--ribbon-x),var(--ribbon-y)) rotate(var(--ribbon-angle)); }
   }
-  @keyframes hero-ribbon-resolve {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(.6) rotate(-8deg); }
-    14% { opacity: 1; }
-    65% { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -67%) scale(1.02) rotate(11deg); }
-  }
-  @keyframes hero-ribbon-unravel {
-    0%, 18% { transform: translate(0,0) rotate(0); }
-    100% { transform: translate(var(--piece-x), var(--piece-y)) rotate(var(--piece-rotate)); }
-  }
+
   @media (prefers-reduced-motion: reduce) {
-    .hero .phrolova-underlay.is-unraveling svg image,
-    .hero-micro-particle,
-    .hero-micro-particle *,
-    .hero-micro-ribbon-piece { animation: none !important; display: none !important; }
+    #sobre .hero-ornament-particle,
+    #sobre .hero-ornament-particle * {
+      animation: none !important;
+      display: none !important;
+    }
   }
 </style>
 
 <script>
+  // The underlays have pointer-events:none so copy, CV links and buttons win.
+  // Hit-testing their rectangles allows a real hover without blocking any UI.
   const hero = document.querySelector<HTMLElement>('#sobre');
   const layer = hero?.querySelector<HTMLElement>('[data-hero-micro-effects]');
 
   if (hero && layer) {
-    const butterflyArt = hero.querySelector<HTMLElement>('.shorekeeper-underlay');
-    const batonArt = hero.querySelector<HTMLElement>('.phrolova-underlay');
+    type Ornament = 'butterfly' | 'ribbon';
+    const shorekeeper = hero.querySelector<HTMLElement>('.shorekeeper-underlay');
+    const phrolova = hero.querySelector<HTMLElement>('.phrolova-underlay');
+    const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const artwork = {
+    const spritePaths: Record<Ornament, string> = {
       butterfly: '/assets/shorekeeper-butterfly.webp',
       ribbon: '/assets/phrolova-baton-bow.webp',
     };
-    Object.values(artwork).forEach((src) => { const img = new Image(); img.src = src; });
+    let previous: Ornament | null = null;
 
-    type Effect = keyof typeof artwork;
-    let previousZone: Effect | null = null;
-    let scrollDistance = 0;
-    let lastScrollY = window.scrollY;
-    let lastScrollEffect = -Infinity;
-    let nextScrollEffect: Effect = 'butterfly';
-    let batonResetTimer: number | undefined;
-    const lastPlayed: Record<Effect, number> = { butterfly: -Infinity, ribbon: -Infinity };
-
-    const motionDisabled = () =>
+    const disabled = () =>
+      !hoverCapable.matches ||
       reducedMotion.matches ||
       document.documentElement.dataset.seriousMode === 'true' ||
       document.documentElement.dataset.legacyMode === 'true';
 
-    function hit(element: Element | null, x: number, y: number): boolean {
+    function inside(element: HTMLElement | null, x: number, y: number) {
       if (!element) return false;
-      const rect = element.getBoundingClientRect();
-      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      const r = element.getBoundingClientRect();
+      // Exclude the outer empty margins of each transparent asset.
+      const padX = r.width * .09;
+      const padY = r.height * .09;
+      return x >= r.left + padX && x <= r.right - padX
+        && y >= r.top + padY && y <= r.bottom - padY;
     }
 
-    function findZone(x: number, y: number): Effect | null {
-      // The ornaments intentionally have pointer-events:none, so we hit-test
-      // their rendered rectangles without intercepting content controls.
-      if (hit(batonArt, x, y)) return 'ribbon';
-      if (hit(butterflyArt, x, y)) return 'butterfly';
+    function zoneAt(x: number, y: number): Ornament | null {
+      if (inside(phrolova, x, y)) return 'ribbon';
+      if (inside(shorekeeper, x, y)) return 'butterfly';
       return null;
     }
 
-    function artworkOrigin(effect: Effect): { x: number; y: number } | null {
-      const subject = effect === 'butterfly' ? butterflyArt : batonArt;
-      if (!subject) return null;
-      const r = subject.getBoundingClientRect();
-      // Start from the illustration, not from the scroll bar or the last touch point.
-      return effect === 'butterfly'
-        ? { x: r.left + r.width * .52, y: r.top + r.height * .42 }
-        : { x: r.left + r.width * .50, y: r.top + r.height * .50 };
+    function cutout(src: string, width: number, height: number) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.width = width;
+      img.height = height;
+      img.alt = '';
+      img.draggable = false;
+      return img;
     }
 
-    function makeSprite(className: string, src: string, width: number, height: number): HTMLImageElement {
-      const sprite = document.createElement('img');
-      sprite.className = className;
-      sprite.src = src;
-      sprite.alt = '';
-      sprite.width = width;
-      sprite.height = height;
-      sprite.draggable = false;
-      return sprite;
-    }
+    function animate(ornament: Ornament) {
+      const source = ornament === 'butterfly' ? shorekeeper : phrolova;
+      if (!source || !layer) return;
+      const sourceRect = source.getBoundingClientRect();
+      const heroRect = hero!.getBoundingClientRect();
+      const x = sourceRect.left + sourceRect.width * (ornament === 'butterfly' ? .52 : .50) - heroRect.left;
+      const y = sourceRect.top + sourceRect.height * (ornament === 'butterfly' ? .42 : .50) - heroRect.top;
+      const particle = document.createElement('span');
+      particle.className = 'hero-ornament-particle hero-ornament-particle--' + ornament;
+      particle.style.setProperty('--ornament-x', x + 'px');
+      particle.style.setProperty('--ornament-y', y + 'px');
 
-    function play(effect: Effect, clientX: number, clientY: number, clicked: boolean, fromArtwork = false) {
-      if (motionDisabled()) return;
-      const now = performance.now();
-      if (now - lastPlayed[effect] < (clicked ? 520 : 1650)) return;
-      lastPlayed[effect] = now;
-
-      if (effect === 'ribbon' && batonArt) {
-        if (batonResetTimer !== undefined) window.clearTimeout(batonResetTimer);
-        batonArt.classList.remove('is-unraveling');
-        // The baton stays fixed; only the ribbons scatter momentarily.
-        void batonArt.offsetWidth;
-        batonArt.classList.add('is-unraveling');
-        batonResetTimer = window.setTimeout(() => batonArt.classList.remove('is-unraveling'), 1170);
-      }
-
-      const rect = hero!.getBoundingClientRect();
-      const origin = fromArtwork ? artworkOrigin(effect) : null;
-      // Stay inside the section even if the illustration extends beyond its edges.
-      const x = Math.max(32, Math.min(rect.width - 32, (origin?.x ?? clientX) - rect.left));
-      const y = Math.max(36, Math.min(rect.height - 36, (origin?.y ?? clientY) - rect.top));
-
-      for (let i = 0; i < 1; i++) {
-        const particle = document.createElement('span');
-        particle.className = 'hero-micro-particle hero-micro-particle--' + effect;
-        particle.style.setProperty('--micro-x', x + 'px');
-        particle.style.setProperty('--micro-y', y + 'px');
-
-        if (effect === 'butterfly') {
-          particle.style.setProperty('--micro-sway', '14px');
-          particle.style.setProperty('--micro-dx', '-112px');
-          particle.style.setProperty('--micro-mid-x', '-62px');
-          particle.style.setProperty('--micro-dy', '-176px');
-          particle.style.setProperty('--micro-rotate', '-19deg');
-          particle.appendChild(makeSprite('hero-micro-butterfly', artwork.butterfly, 231, 143));
-        } else {
-          for (const pieceName of ['left', 'right', 'knot']) {
-            const piece = document.createElement('span');
-            piece.className = 'hero-micro-ribbon-piece hero-micro-ribbon-piece--' + pieceName;
-            piece.appendChild(makeSprite('', artwork.ribbon, 133, 125));
-            particle.appendChild(piece);
-          }
+      if (ornament === 'butterfly') {
+        particle.appendChild(cutout(spritePaths.butterfly, 231, 143));
+      } else {
+        for (const name of ['left', 'right', 'knot']) {
+          const piece = document.createElement('span');
+          piece.className = 'hero-ornament-ribbon-piece hero-ornament-ribbon-piece--' + name;
+          piece.appendChild(cutout(spritePaths.ribbon, 133, 125));
+          particle.appendChild(piece);
         }
-
-        layer!.appendChild(particle);
-        particle.addEventListener('animationend', (event) => {
-          if (event.target === particle) particle.remove();
-        });
-        window.setTimeout(() => particle.remove(), 1500);
       }
+
+      layer.appendChild(particle);
+      particle.addEventListener('animationend', (event) => {
+        if (event.target === particle) particle.remove();
+      });
     }
-
-    // Scroll gestures (including touch dragging) alternate the two ornaments.
-    // Scrolling elsewhere on the page never emits particles into other sections.
-    window.addEventListener('scroll', () => {
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollY;
-      lastScrollY = currentY;
-      if (motionDisabled() || Math.abs(delta) > window.innerHeight) {
-        scrollDistance = 0;
-        return;
-      }
-      const visible = hero.getBoundingClientRect();
-      if (visible.bottom <= window.innerHeight * .12 || visible.top >= window.innerHeight * .88) {
-        scrollDistance = 0;
-        return;
-      }
-      scrollDistance += Math.abs(delta);
-      const now = performance.now();
-      if (scrollDistance < 90 || now - lastScrollEffect < 2300) return;
-      scrollDistance = 0;
-      const effect = nextScrollEffect;
-      const origin = artworkOrigin(effect);
-      if (!origin) return;
-      lastScrollEffect = now;
-      nextScrollEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
-      play(effect, origin.x, origin.y, false, true);
-    }, { passive: true });
 
     hero.addEventListener('pointermove', (event) => {
-      if (!finePointer.matches || event.pointerType === 'touch') return;
-      const zone = findZone(event.clientX, event.clientY);
-      if (zone !== previousZone) {
-        previousZone = zone;
-        if (zone) play(zone, event.clientX, event.clientY, false, true);
+      if (event.pointerType !== 'mouse' || disabled()) {
+        previous = null;
+        return;
       }
+      const next = zoneAt(event.clientX, event.clientY);
+      if (next === previous) return;
+      previous = next;
+      if (next) animate(next);
     }, { passive: true });
-
-    hero.addEventListener('pointerleave', () => { previousZone = null; });
-
-    hero.addEventListener('pointerdown', (event) => {
-      if (event.button !== 0) return;
-      const zone = findZone(event.clientX, event.clientY);
-      if (zone) play(zone, event.clientX, event.clientY, true, true);
-    }, { passive: true });
+    hero.addEventListener('pointerleave', () => { previous = null; });
+    // No scroll, page-wide cursor sprites, or click listeners: the two effects
+    // are confined to hovering their respective artworks in the About section.
   }
 </script>
