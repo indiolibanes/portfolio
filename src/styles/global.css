@@ -7254,3 +7254,11 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .listening-note-score span:nth-child(3){font-size:1.1rem;color:#9a694b;animation-duration:1.9s}
 .listening-note-score span:nth-child(4){font-size:1.9rem;color:#695078;animation-duration:3.1s}
 .listening-note-score span:nth-child(5){animation-delay:-.8s}
+
+/* Hero character ornaments: foreground visibility without blocking content */
+.hero .phrolova-underlay{top:43%;right:clamp(-30px,-2vw,-10px);width:clamp(400px,44vw,580px);z-index:2;opacity:1}
+.hero .phrolova-underlay svg{opacity:1;filter:drop-shadow(0 10px 20px rgba(100,18,40,.25))}
+.hero .shorekeeper-underlay{left:clamp(8px,1.5vw,24px);bottom:clamp(8px,1.5vw,22px);width:clamp(250px,31vw,385px);z-index:2}
+.hero .hero-note{z-index:3;margin-right:0;transform:translate(18px,-18px) rotate(-1.4deg)}
+@media(max-width:920px){.hero .phrolova-underlay{top:auto;right:-36px;bottom:105px;width:min(58vw,430px)}.hero .shorekeeper-underlay{left:0;bottom:8px;width:min(38vw,270px)}.hero .hero-note{transform:translateY(-12px) rotate(-1.4deg)}}
+@media(max-width:720px){.hero .phrolova-underlay{right:-45px;bottom:115px;width:min(76vw,380px)}.hero .shorekeeper-underlay{left:-4px;bottom:4px;width:min(44vw,205px)}.hero .hero-note{margin-inline:auto;transform:translateY(-10px) rotate(-1.4deg)}}
