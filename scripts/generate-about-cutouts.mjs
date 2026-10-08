@@ -49,7 +49,10 @@ for (let y = 0; y < height; y++) {
     const blueScore = smooth(18, 76, coolChromaticity);
     const foreground = smooth(95, 175, Math.max(green, blue));
     const nonNeutral = smooth(8, 36, Math.max(blue, green) - red);
-    const confidence = region * blueScore * foreground * nonNeutral;
+    // Explicitly protect the lower half, where the ivory flower blooms.
+    // The wings occupy the upper centre; no lower petals are extracted.
+    const petalGuard = 1 - smooth(0.48, 0.62, y / height);
+    const confidence = region * blueScore * foreground * nonNeutral * petalGuard;
     const wingAlpha = Math.round(alpha * confidence);
     if (wingAlpha === 0) continue;
 
