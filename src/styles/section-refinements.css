@@ -52,7 +52,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .b
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list :is(h3,p,strong) { color: #302439; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list :is(.background-meta,.background-number,.background-case-study__label,a) { color: #614326; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab { background: radial-gradient(ellipse at 90% 5%,#4b4b63,transparent 42%),#30333b; }
-@media(max-width:600px) { #sobre .hero-ornaments { height: 220px; margin-top: 0; } #sobre .hero-ornaments .phrolova-underlay { width: 55%; right: -2%; } #sobre .hero-ornaments .shorekeeper-underlay { width: 43%; left: 0; } }
+@media(max-width:600px) { #sobre .hero-ornaments { height: 220px; margin-top: 0; } #sobre .hero-ornaments .phrolova-underlay { width: 55%; right: 0; } #sobre .hero-ornaments .shorekeeper-underlay { width: 43%; left: 0; } }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-meta { color: #614326 !important; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab :is(#curadoria,#documentacao) :is(.lab-project-book p,.lab-project-book cite,.lab-project-index,.lab-project-tags span) { color: #263c37; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab :is(#curadoria,#documentacao) :is(.lab-project-status,.lab-project-tags span) { color: #203c35; background: #e1eccc; border-color: #50796a; }
