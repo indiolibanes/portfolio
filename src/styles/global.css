@@ -7228,3 +7228,12 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .listening-note-footer{border-top:1px solid rgba(80,55,43,.22);padding-top:.65rem;margin:0;font-size:.69rem;letter-spacing:.06em;text-transform:uppercase}
 @media(max-width:960px){.music-heading.music-heading--editorial{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.music-heading--editorial .music-heading-copy{grid-column:1/-1}.music-sophia-stage{grid-column:1}.listening-note{grid-column:2}}
 @media(max-width:560px){.music-heading.music-heading--editorial{grid-template-columns:minmax(0,1fr);gap:1.25rem}.music-heading--editorial .music-heading-copy,.music-sophia-stage,.listening-note{grid-column:1;grid-row:auto}.music-sophia-stage .sophia-animation{width:min(75vw,280px)}.listening-note{max-width:none}}
+
+/* Moonlight Sonata: refined literary post-it */
+.listening-note--moonlight{position:relative;isolation:isolate;gap:1.15rem;padding:clamp(1.2rem,2.5vw,2rem);background:linear-gradient(155deg,#fff5d8 0%,#f6e4bb 70%,#eddaa9 100%);border:1px solid rgba(115,84,47,.28);border-radius:3px 17px 5px 5px;box-shadow:3px 5px 0 rgba(83,56,32,.1),9px 14px 22px rgba(83,56,32,.12);color:#45372e;transform:rotate(.45deg)}
+.listening-note--moonlight::before{content:"";position:absolute;top:0;right:0;width:35px;height:35px;background:linear-gradient(45deg,rgba(159,121,65,.16) 0 49%,rgba(255,255,255,.65) 50%);clip-path:polygon(0 0,100% 100%,100% 0);border-top-right-radius:16px;pointer-events:none}
+.listening-note--moonlight .listening-note-top{font-size:.64rem;letter-spacing:.1em;color:#7c654b}
+.listening-note-ornament{display:block;color:#987c55;font-size:1.3rem;line-height:1}
+.listening-note--moonlight .listening-note-quote{border:0;padding:0;margin:0;font-family:Georgia,serif;font-size:clamp(1.06rem,1.5vw,1.38rem);font-weight:400;line-height:1.55;font-style:italic;letter-spacing:-.015em;max-width:33ch}
+.listening-note--moonlight .listening-note-footer{margin-top:auto;padding-top:.9rem;border-top:1px solid rgba(115,84,47,.25);font-size:.7rem;line-height:1.5;letter-spacing:.045em;text-transform:none;color:#745b42}
+@media(max-width:560px){.listening-note--moonlight{transform:none}.listening-note--moonlight .listening-note-quote{max-width:none}}
