@@ -7,8 +7,8 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && astro dev",
-    "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && astro build",
+    "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro dev",
+    "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
