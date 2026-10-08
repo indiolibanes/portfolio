@@ -11,7 +11,7 @@
     "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test:music-state": "node scripts/test-music-state.mjs"
+    "check:ux": "node scripts/check-ux-contract.mjs"
   },
   "dependencies": {
     "astro": "^7.3.1",
