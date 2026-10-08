@@ -10,7 +10,8 @@
     "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro dev",
     "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test:music-state": "node scripts/test-music-state.mjs"
   },
   "dependencies": {
     "astro": "^7.3.1",
