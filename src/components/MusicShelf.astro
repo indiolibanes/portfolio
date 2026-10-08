@@ -12,6 +12,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   data-music-shelf
   data-has-playlists={String(hasPlaylists)}
   aria-busy="false"
+  data-music-state="idle"
 >
   <div class="music-heading music-heading--gallery">
     <div class="music-heading-copy">
@@ -245,8 +246,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     return `há ${days} d`;
   }
 
-  function settleShelf(message = '') {
+  function settleShelf(message = '', state = 'recent') {
     shelf?.setAttribute('aria-busy', 'false');
+    if (shelf) shelf.dataset.musicState = state;
     if (profileFallback) profileFallback.hidden = !message;
 
     if (loadingState) {
@@ -266,8 +268,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       recentCard.hidden = true;
       settleShelf(
         hasPlaylists
-          ? ''
+          ? 'Nenhuma audição recente. As playlists públicas continuam disponíveis.'
           : 'Nenhuma audição recente registrada.',
+        'empty',
       );
       return;
     }
@@ -317,7 +320,13 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     }
 
     recentCard.hidden = false;
-    settleShelf('');
+    settleShelf('', track.nowPlaying ? 'playing' : 'recent');
+  }
+
+  function showMusicError() {
+    // Never leave a stale “agora tocando” card on an API failure.
+    if (recentCard) recentCard.hidden = true;
+    settleShelf('Last.fm indisponível por ora. Consulte o perfil para ver as audições.', 'error');
   }
 
   let musicRequestPending = false;
@@ -331,11 +340,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       );
 
       if (!response.ok) {
-        settleShelf(
-          hasPlaylists
-            ? ''
-            : 'Atividade recente indisponível no momento.',
-        );
+        showMusicError();
         return;
       }
 
@@ -347,11 +352,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         error,
       );
 
-      settleShelf(
-        hasPlaylists
-          ? ''
-          : 'Atividade recente indisponível no momento.',
-      );
+      showMusicError();
     } finally {
       musicRequestPending = false;
     }
@@ -480,6 +481,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
 
   shelf?.setAttribute('aria-busy', 'true');
+  if (shelf) shelf.dataset.musicState = 'loading';
   if (loadingState) { loadingState.hidden = false; loadingState.textContent = 'Consultando atividade recente…'; }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) hydrateMusic(); });
   hydrateMusic();
