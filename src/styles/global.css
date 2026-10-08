@@ -7198,3 +7198,8 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 }
 
 .background-entry{display:grid;grid-template-columns:64px minmax(0,1fr);gap:1rem;align-items:start}.background-mark{width:64px;height:64px;object-fit:contain;padding:.45rem;border:1px solid #ffffff33;border-radius:14px}.background-entry-copy{min-width:0}.background-case-study{margin-top:1rem;padding:1rem;border:1px solid #ffffff44;border-radius:14px}.background-case-study__label{display:block;font-size:.75rem;color:#ead59b}.background-case-study strong{display:block;color:#fff}.background-case-study a{color:#ffe7aa;text-decoration:underline;text-underline-offset:3px}.background-case-study a:focus-visible{outline:2px solid currentColor;outline-offset:4px}@media(max-width:620px){.background-entry{grid-template-columns:48px minmax(0,1fr)}.background-mark{width:48px;height:48px}}
+
+/* Official institution wordmarks in Percurso */
+.background-entry{grid-template-columns:minmax(90px,132px) minmax(0,1fr)}
+.background-mark{width:100%;height:72px;object-fit:contain;background:#fff;padding:.7rem;border-radius:12px;filter:none}
+@media(max-width:620px){.background-entry{grid-template-columns:minmax(76px,96px) minmax(0,1fr)}.background-mark{width:100%;height:62px;padding:.45rem}}
