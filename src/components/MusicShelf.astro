@@ -1,5 +1,5 @@
 ---
-import { MUSIC, SOCIALS } from '../config';
+import { MUSIC } from '../config';
 import { sectionNumber } from '../section-order';
 
 const hasPlaylists = MUSIC.publicPlaylists.length > 0;
@@ -27,12 +27,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     </div>
 
     <div class="music-listening-panel" aria-label="Atividade musical recente">
-      <p class="music-panel-label"><span aria-hidden="true">◉</span> Na vitrola / Last.fm</p>
       <div class="music-grid music-grid--stage">
       <p class="music-loading" data-music-loading role="status" aria-live="polite" hidden></p>
-      <p class="music-profile-fallback">
-        <a href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer">Consultar o perfil no Last.fm <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>
-      </p>
 
       <article
         class="recent-track-card"
@@ -127,14 +123,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         class="music-panorama-action"
         data-music-effect-toggle
         type="button"
-        aria-label="Soltar borboletas celestiais na ilustração"
-        title="Clique na imagem para alternar entre borboletas azuis e fitas carmesins"
+        aria-label="Animar a ilustração: alternar borboletas celestiais e laços carmesins"
         hidden
-      >
-        <span class="music-panorama-action-label" data-music-effect-label>
-          ✦ Soltar borboletas
-        </span>
-      </button>
+      ></button>
       <div class="music-panorama-fallback" aria-hidden="true">
         <img class="music-panorama-fallback-phrolova" src="/phrolova.jpg" alt="" loading="lazy" decoding="async" />
         <img class="music-panorama-fallback-hsin" src="/hsin.webp" alt="" loading="lazy" decoding="async" />
@@ -337,7 +328,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         settleShelf(
           hasPlaylists
             ? ''
-            : 'Last.fm indisponível por ora. Consulte o perfil abaixo.',
+            : 'Atividade recente indisponível no momento.',
         );
         return;
       }
@@ -353,7 +344,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       settleShelf(
         hasPlaylists
           ? ''
-          : 'Last.fm indisponível por ora. Consulte o perfil abaixo.',
+          : 'Atividade recente indisponível no momento.',
       );
     } finally {
       musicRequestPending = false;
@@ -397,92 +388,88 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
 
 
-  // Pequenas vinhetas acionadas por clique: nenhuma animação altera a arte.
+  // Cada clique alterna o recorte real de uma borboleta e o laço do bastonete.
+  // O botão ocupa a imagem e não apresenta controle visual, mas mantém suporte ao teclado.
   const panorama = shelf?.querySelector('[data-music-panorama]');
   const effectToggle = panorama?.querySelector('[data-music-effect-toggle]');
   const effectLayer = panorama?.querySelector('[data-music-effects]');
-  const effectLabel = panorama?.querySelector('[data-music-effect-label]');
-
-  if (panorama && effectToggle && effectLayer && effectLabel) {
+  if (panorama && effectToggle && effectLayer) {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const hoverPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-    let nextEffect = 'butterflies';
-
-    const butterflySVG = `<svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
-      <path class="music-wing music-wing--left" d="M40 43 C17 11 2 24 12 42 C18 53 30 51 39 46 C18 51 20 68 33 60 C40 56 41 49 40 43Z" />
-      <path class="music-wing music-wing--right" d="M40 43 C63 11 78 24 68 42 C62 53 50 51 41 46 C62 51 60 68 47 60 C40 56 39 49 40 43Z" />
-      <path class="music-butterfly-body" d="M40 39 Q43 45 40 55 Q37 45 40 39Z" />
-      <path class="music-butterfly-antennae" d="M40 40 Q33 29 30 31 M40 40 Q47 29 50 31" />
-    </svg>`;
-    const ribbonSVG = `<svg viewBox="0 0 160 160" aria-hidden="true" focusable="false">
-      <path class="music-ribbon-shade" d="M21 106 C57 4 116 159 151 31" />
-      <path class="music-ribbon-highlight" d="M21 106 C57 4 116 159 151 31" />
-      <path class="music-ribbon-thread" d="M25 120 C82 29 110 155 143 66" />
-    </svg>`;
-    const vectors = {
-      butterflies: [
-        [-96, -55, -22], [-55, -132, 24], [12, -113, -18],
-        [75, -93, 26], [114, -31, 16], [-11, -63, -14],
-      ],
-      ribbons: [
-        [-115, -59, -35], [66, -127, 33], [115, -17, 58],
-      ],
-    };
-
+    let nextEffect = 'butterfly';
     effectToggle.hidden = false;
 
-    if (hoverPointer.matches && !reducedMotion.matches) {
+    if (hoverPointer.matches) {
       effectToggle.addEventListener('pointermove', (event) => {
-        const rect = panorama.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width * 100;
-        const y = (event.clientY - rect.top) / rect.height * 100;
-        panorama.style.setProperty('--music-glint-x', `${x}%`);
-        panorama.style.setProperty('--music-glint-y', `${y}%`);
+        const bounds = panorama.getBoundingClientRect();
+        panorama.style.setProperty('--music-glint-x', ((event.clientX - bounds.left) / bounds.width * 100) + '%');
+        panorama.style.setProperty('--music-glint-y', ((event.clientY - bounds.top) / bounds.height * 100) + '%');
       }, { passive: true });
     }
 
+    const sprites = {
+      butterfly: '/assets/shorekeeper-butterfly.webp',
+      ribbon: '/assets/phrolova-baton-bow.webp',
+    };
+    Object.values(sprites).forEach((src) => {
+      const preload = new Image();
+      preload.src = src;
+    });
+
     effectToggle.addEventListener('click', (event) => {
       const effect = nextEffect;
-      nextEffect = effect === 'butterflies' ? 'ribbons' : 'butterflies';
-      panorama.dataset.lastEffect = effect;
-      effectLabel.textContent = nextEffect === 'butterflies'
-        ? '✦ Soltar borboletas'
-        : '✦ Soltar fitas carmesins';
-      effectToggle.setAttribute('aria-label', nextEffect === 'butterflies'
-        ? 'Soltar borboletas celestiais na ilustração'
-        : 'Soltar fitas carmesins na ilustração');
-
-      const quietMode = reducedMotion.matches
+      nextEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
+      const quiet = reducedMotion.matches
         || document.documentElement.dataset.seriousMode === 'true'
         || document.documentElement.dataset.legacyMode === 'true';
+      if (quiet) return;
 
-      if (quietMode) return;
-
-      const rect = panorama.getBoundingClientRect();
+      const bounds = panorama.getBoundingClientRect();
       const keyboard = event.detail === 0;
-      const x = keyboard ? 50 : Math.min(92, Math.max(8,
-        (event.clientX - rect.left) / rect.width * 100));
-      const y = keyboard ? 53 : Math.min(88, Math.max(12,
-        (event.clientY - rect.top) / rect.height * 100));
+      const originX = keyboard ? 50 : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
+      const originY = keyboard ? 52 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
+      const count = effect === 'butterfly' ? 4 : 3;
 
-      vectors[effect].forEach(([dx, dy, rotation], index) => {
+      for (let i = 0; i < count; i += 1) {
         const particle = document.createElement('span');
-        particle.className = `music-effect-particle music-effect-particle--${effect}`;
-        particle.style.setProperty('--fx-x', `${x}%`);
-        particle.style.setProperty('--fx-y', `${y}%`);
-        particle.style.setProperty('--fx-dx', `${dx}px`);
-        particle.style.setProperty('--fx-dy', `${dy}px`);
-        particle.style.setProperty('--fx-rotate', `${rotation}deg`);
-        particle.style.setProperty('--fx-delay', `${index * 65}ms`);
-        particle.innerHTML = effect === 'butterflies' ? butterflySVG : ribbonSVG;
+        particle.className = 'music-effect-particle music-effect-particle--' + effect;
+        particle.style.setProperty('--fx-x', originX + '%');
+        particle.style.setProperty('--fx-y', originY + '%');
+        particle.style.setProperty('--fx-dx', ((i - (count - 1) / 2) * 46) + 'px');
+        particle.style.setProperty('--fx-dy', (-60 - (i % 3) * 28) + 'px');
+        particle.style.setProperty('--fx-mid-x', ((i - (count - 1) / 2) * 25) + 'px');
+        particle.style.setProperty('--fx-mid-y', (-30 - (i % 3) * 14) + 'px');
+        particle.style.setProperty('--fx-rotate', ((i - 1) * 24) + 'deg');
+        particle.style.setProperty('--fx-delay', (i * 100) + 'ms');
+
+        if (effect === 'butterfly') {
+          const sprite = document.createElement('img');
+          sprite.className = 'music-butterfly-sprite';
+          sprite.src = sprites.butterfly;
+          sprite.alt = '';
+          sprite.width = 231;
+          sprite.height = 143;
+          particle.appendChild(sprite);
+        } else {
+          for (const section of ['left', 'right', 'knot']) {
+            const piece = document.createElement('span');
+            piece.className = 'music-bow-piece music-bow-piece--' + section;
+            const sprite = document.createElement('img');
+            sprite.src = sprites.ribbon;
+            sprite.alt = '';
+            sprite.width = 133;
+            sprite.height = 125;
+            piece.appendChild(sprite);
+            particle.appendChild(piece);
+          }
+        }
+
         effectLayer.appendChild(particle);
-        // A animação das asas também emite animationend (com bubbling).
-        // Remover apenas quando terminar o movimento do próprio particle.
-        particle.addEventListener('animationend', (event) => {
-          if (event.target === particle) particle.remove();
+        particle.addEventListener('animationend', (e) => {
+          if (e.target === particle) particle.remove();
         });
         window.setTimeout(() => particle.remove(), 2100);
-      });
+      }
     });
   }
 
