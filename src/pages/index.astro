@@ -7,6 +7,7 @@ import HeroMicroInteractions from '../components/HeroMicroInteractions.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import MotionImage from '../components/MotionImage.astro';
 import SophiaAnimation from '../components/SophiaAnimation.astro';
+import MarioNameTiles from '../components/MarioNameTiles.astro';
 import { PROFILE, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
 
@@ -136,10 +137,7 @@ const background = [
           </div>
 
           <div class="name-brick-plate">
-            <span
-              class="gold-block"
-              aria-hidden="true"
-            ></span>
+            <MarioNameTiles />
 
             <h1
               id="hero-title"
