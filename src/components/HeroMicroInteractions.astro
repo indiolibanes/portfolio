@@ -27,7 +27,7 @@
     width: clamp(55px, 6.5vw, 91px);
     aspect-ratio: 231 / 143;
     transform-origin: 50% 50%;
-    animation: about-butterfly-flight 1450ms cubic-bezier(.18,.61,.33,1) both;
+    animation: about-butterfly-flight 2400ms cubic-bezier(.18,.61,.33,1) both;
   }
   #sobre .hero-ornament-particle--butterfly img {
     display: block;
@@ -36,7 +36,7 @@
     object-fit: contain;
     transform-origin: 50% 50%;
     filter: drop-shadow(0 5px 9px rgba(54,83,166,.26));
-    animation: about-butterfly-flutter 150ms ease-in-out 0ms 9 alternate;
+    animation: about-butterfly-flutter 180ms ease-in-out 0ms 13 alternate;
   }
   @keyframes about-butterfly-flight {
     0% {
@@ -67,14 +67,14 @@
   #sobre .hero-ornament-particle--ribbon {
     width: clamp(82px,9vw,118px);
     aspect-ratio: 133 / 125;
-    animation: about-ribbon-vanish 1150ms ease-out both;
+    animation: about-ribbon-vanish 1180ms ease-out both;
   }
   #sobre .hero-ornament-ribbon-piece {
     position: absolute;
     inset: 0;
     display: block;
     transform-origin: center;
-    animation: about-ribbon-unwind 1100ms cubic-bezier(.22,.59,.26,1) both;
+    animation: about-ribbon-unwind 1800ms cubic-bezier(.22,.59,.26,1) both;
   }
   #sobre .hero-ornament-ribbon-piece img {
     display: block;
@@ -84,18 +84,18 @@
     filter: drop-shadow(0 5px 7px rgba(100,19,60,.25));
   }
   #sobre .hero-ornament-ribbon-piece--left {
-    --ribbon-x: -57px;
+    --ribbon-x: -107px;
     --ribbon-y: -33px;
     --ribbon-angle: -65deg;
   }
   #sobre .hero-ornament-ribbon-piece--right {
-    --ribbon-x: 62px;
+    --ribbon-x: 112px;
     --ribbon-y: -24px;
     --ribbon-angle: 78deg;
   }
   #sobre .hero-ornament-ribbon-piece--knot {
     --ribbon-x: 5px;
-    --ribbon-y: -82px;
+    --ribbon-y: -142px;
     --ribbon-angle: 31deg;
   }
   #sobre .hero-ornament-ribbon-piece--left img { clip-path: inset(0 50% 0 0); }
@@ -138,6 +138,7 @@
       ribbon: '/assets/phrolova-baton-bow.webp',
     };
     let previous: Ornament | null = null;
+    const active = new Set<Ornament>();
 
     const disabled = () =>
       !hoverCapable.matches ||
@@ -173,7 +174,9 @@
 
     function animate(ornament: Ornament) {
       const source = ornament === 'butterfly' ? shorekeeper : phrolova;
-      if (!source || !layer) return;
+      if (!source || !layer || active.has(ornament)) return;
+      active.add(ornament);
+      source.classList.add('is-releasing');
       const sourceRect = source.getBoundingClientRect();
       const heroRect = hero!.getBoundingClientRect();
       const x = sourceRect.left + sourceRect.width * (ornament === 'butterfly' ? .52 : .50) - heroRect.left;
@@ -196,7 +199,11 @@
 
       layer.appendChild(particle);
       particle.addEventListener('animationend', (event) => {
-        if (event.target === particle) particle.remove();
+        if (event.target === particle) {
+          particle.remove();
+          source.classList.remove('is-releasing');
+          active.delete(ornament);
+        }
       });
     }
 
@@ -211,7 +218,15 @@
       if (next) animate(next);
     }, { passive: true });
     hero.addEventListener('pointerleave', () => { previous = null; });
-    // No scroll, page-wide cursor sprites, or click listeners: the two effects
-    // are confined to hovering their respective artworks in the About section.
+    hero.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse' || reducedMotion.matches || document.documentElement.dataset.seriousMode === 'true' || document.documentElement.dataset.legacyMode === 'true') return;
+      if ((event.target as Element).closest('a,button')) return;
+      const next = zoneAt(event.clientX, event.clientY);
+      if (next) animate(next);
+    }, { passive: true });
+    const clear = () => { layer.replaceChildren(); active.clear(); shorekeeper?.classList.remove('is-releasing'); phrolova?.classList.remove('is-releasing'); previous = null; };
+    reducedMotion.addEventListener('change', clear);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clear(); });
+    // Scoped to the About artwork: hover on desktop, touch on noninteractive areas.
   }
 </script>

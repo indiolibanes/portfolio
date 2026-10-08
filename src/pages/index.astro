@@ -116,7 +116,7 @@ const background = [
         </p>
 
         <div class="identity-cluster">
-          <div class="hero-cover-art" aria-hidden="true">
+          <div class="hero-cover-art" data-decorative-motion aria-hidden="true">
             <img
               src="/dark-side-prism.jpg"
               alt=""
@@ -125,6 +125,12 @@ const background = [
               loading="eager"
               decoding="async"
             />
+            <svg class="prism-spectrum" viewBox="0 0 1200 750" preserveAspectRatio="none" aria-hidden="true">
+              <polygon points="675,283 1200,379 1200,507 731,367" fill="#000" />
+              {['#ef284b','#ff9636','#fff34e','#78cd57','#22bce8','#a061cf'].map((color, i) => (
+                <path class="prism-ray" style={`--ray:${i};stroke:${color}`} d={`M ${686+i*7} ${296+i*13} L 1200 ${389+i*20}`} />
+              ))}
+            </svg>
           </div>
 
           <div class="name-brick-plate">
@@ -182,6 +188,7 @@ const background = [
         </div>
       </div>
 
+      <div class="hero-ornaments" aria-hidden="true">
       <div
         class="phrolova-underlay"
         aria-hidden="true"
@@ -240,6 +247,8 @@ const background = [
       </div>
 
       <HeroMicroInteractions />
+
+      </div>
 
       <aside
         class="hero-note"
@@ -979,15 +988,15 @@ const background = [
         class="closing-marks"
         aria-hidden="true"
       >
-        <img
-          class="closing-emil-triforce"
-          src="/emil-triforce.webp"
-          alt=""
-          width="1000"
-          height="591"
-          loading="lazy"
-          decoding="async"
-        />
+        <div class="closing-relics" data-decorative-motion>
+          <div class="closing-emil"><img src="/emil-triforce.webp" alt="" width="1000" height="591" loading="lazy" /></div>
+          <svg class="closing-triforce" viewBox="0 0 220 200" aria-hidden="true">
+            <path style="--facet:0" d="M110 12 160 98H60Z" />
+            <path style="--facet:1" d="M58 102 108 188H8Z" />
+            <path style="--facet:2" d="M162 102 212 188H112Z" />
+          </svg>
+          <span class="closing-orbit"></span>
+        </div>
       </div>
     </section>
 
