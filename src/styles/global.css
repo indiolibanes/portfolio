@@ -7374,3 +7374,18 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .music-heading--stage .music-character--shorekeeper img{filter:saturate(1.12) drop-shadow(0 14px 26px rgba(38,95,199,.5))}
 .music-heading--stage .music-heading-copy,.music-heading--stage .listening-note{isolation:isolate}
 @media(max-width:720px){.music-heading--stage .music-character{opacity:.25}.music-heading--stage .music-character img{object-fit:cover}}
+
+/* Music diptych: isolate the composition from earlier global overrides. */
+.music-shelf .music-heading--opposites{isolation:isolate;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.9fr) minmax(0,1fr);grid-template-rows:auto minmax(220px,auto);align-items:start;gap:1rem;min-height:clamp(570px,58vw,800px);overflow:hidden;border:1px solid rgba(158,129,93,.4);border-radius:18px;background:linear-gradient(90deg,rgba(58,13,21,.86),rgba(22,19,31,.95) 49%,rgba(9,29,54,.9));color:#f5ebdf;box-shadow:0 22px 65px rgba(10,9,17,.25)}
+.music-shelf .music-heading--opposites::before{content:"";position:absolute;inset:12px;z-index:0;pointer-events:none;border:1px solid rgba(201,169,117,.32);border-radius:9px}
+.music-shelf .music-heading--opposites .music-character{position:absolute!important;top:0!important;bottom:0!important;width:43%!important;height:100%!important;z-index:1!important;overflow:hidden;opacity:.9;pointer-events:none;transform:none!important}
+.music-shelf .music-heading--opposites .music-character--phrolova{left:0!important;right:auto!important}
+.music-shelf .music-heading--opposites .music-character--shorekeeper{right:0!important;left:auto!important}
+.music-shelf .music-heading--opposites .music-character img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 24px rgba(0,0,0,.5))}
+.music-shelf .music-heading--opposites .music-heading-copy{position:relative;grid-column:1/-1;grid-row:1;z-index:5;max-width:60ch;margin:0 auto;padding:clamp(1.5rem,4vw,3rem) 1rem 0;text-align:center;color:inherit;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.music-shelf .music-heading--opposites .music-heading-copy *{color:inherit}
+.music-shelf .music-heading--opposites .music-sophia-stage--center{position:relative!important;grid-column:2;grid-row:2;z-index:6;align-self:start;justify-self:center;width:min(100%,360px);margin:0!important;transform:none!important}
+.music-shelf .music-heading--opposites .listening-note--moonlight{position:relative!important;grid-column:3;grid-row:2;z-index:7;justify-self:end;align-self:end;max-width:min(100%,320px);margin:0 clamp(.8rem,2vw,2rem) 2rem 0!important;transform:rotate(2deg);animation:moonlight-weight 8s ease-in-out infinite;box-shadow:8px 14px 35px rgba(0,0,0,.55)}
+@keyframes moonlight-weight{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-9px) rotate(.5deg)}}
+@media(max-width:800px){.music-shelf .music-heading--opposites{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;min-height:750px}.music-shelf .music-heading--opposites .music-character{width:52%!important;height:72%!important;opacity:.72}.music-shelf .music-heading--opposites .music-sophia-stage--center{grid-column:1/-1;grid-row:2;width:min(58vw,280px)}.music-shelf .music-heading--opposites .listening-note--moonlight{grid-column:1/-1;grid-row:3;justify-self:center;max-width:min(85%,350px);margin:0 0 1.5rem!important}}
+@media(prefers-reduced-motion:reduce){.music-shelf .music-heading--opposites .listening-note--moonlight{animation:none}}
