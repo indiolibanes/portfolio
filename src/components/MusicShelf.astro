@@ -13,24 +13,38 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   data-has-playlists={String(hasPlaylists)}
   aria-busy="true"
 >
-  <div class="music-heading">
-    <div>
+  <div class="music-heading music-heading--editorial">
+    <div class="music-heading-copy">
       <p class="eyebrow music-source-label">
         05 / Música
         <span>Last.fm · atividade recente</span>
       </p>
-
-      <h2 id="music-title">
-        O que anda tocando.
-      </h2>
+      <h2 id="music-title">O que anda tocando.</h2>
+      <p class="music-heading-description">
+        Uma pequena janela para as audições registradas no Last.fm,
+        independentemente do player usado.
+      </p>
     </div>
 
-    <SophiaAnimation variant="music" />
+    <div class="music-sophia-stage">
+      <SophiaAnimation variant="music" />
+    </div>
 
-    <p>
-      Uma pequena janela para as audições registradas no Last.fm,
-      independentemente do player usado.
-    </p>
+    <aside class="listening-note" aria-label="Nota de escuta">
+      <div class="listening-note-top">
+        <span>Notas de escuta</span>
+        <span>001 / Arquivo sonoro</span>
+      </div>
+      <div class="listening-note-glyph" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p class="listening-note-quote">Entre frequências, lembranças e descobertas.</p>
+      <p class="listening-note-body">
+        Nem toda música pede uma explicação. Algumas permanecem como marcas de um instante;
+        outras, como perguntas que vale a pena revisitar.
+      </p>
+      <p class="listening-note-footer">Caderno de escuta <span aria-hidden="true">↗</span> Last.fm</p>
+    </aside>
   </div>
 
   <div class="music-grid">
