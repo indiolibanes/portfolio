@@ -76,7 +76,7 @@
           1 0 0 0 0
           0 1 0 0 0
           0 0 1 0 0
-          1.10 -.20 -1.00 .75 .25
+          1.10 -.20 -1.00 1 0
         "/>
       </filter>
       <filter id="about-butterfly-only" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
@@ -117,8 +117,18 @@
     transform: none;
   }
 
-  #sobre .hero-ornaments .phrolova-underlay {
+  /* Freeze both source pictures even where old global :hover rules animate them. */
+  #sobre .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay),
+  #sobre:hover .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay) {
+    transition: none !important;
+  }
+  #sobre .hero-ornaments .phrolova-underlay,
+  #sobre:hover .hero-ornaments .phrolova-underlay {
     transform: translateY(-50%) rotate(7deg);
+  }
+  #sobre .hero-ornaments .shorekeeper-underlay,
+  #sobre:hover .hero-ornaments .shorekeeper-underlay {
+    transform: translateY(-50%) rotate(-2deg);
   }
 
   /* The full staff changes into ribbon loops and stays on the screen.
