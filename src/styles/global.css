@@ -7243,3 +7243,9 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .listening-note-score span:nth-child(2n){animation-delay:-1.2s}
 @keyframes sonata-float{from{transform:translateY(8px) rotate(-12deg)}to{transform:translateY(-8px) rotate(12deg)}}
 @media(prefers-reduced-motion:reduce){.listening-note-score span{animation:none}}
+
+.listening-note--moonlight{transition:transform .35s ease,box-shadow .35s ease}
+.listening-note--moonlight:hover{transform:rotate(-1deg) translateY(-4px);box-shadow:7px 12px 22px rgba(83,56,32,.22)}
+.listening-note-typewriter{animation:sonata-reveal 4s steps(50,end) both}
+@keyframes sonata-reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@media(prefers-reduced-motion:reduce){.listening-note-typewriter{animation:none}.listening-note--moonlight{transition:none}}
