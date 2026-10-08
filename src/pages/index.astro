@@ -12,6 +12,7 @@ const background = [
     text: 'Curso intensivo complementar concluído com méritos, com prática em pesquisa, experiência do usuário, arquitetura de informação e construção de interfaces.',
     mark: '/assets/percurso-awari.svg',
     markAlt: 'Awari',
+    projectUrl: 'https://www.behance.net/gallery/119235467/My-Debut-UX-Project',
   },
   {
     meta: 'Formação técnica · SENAI',
@@ -877,16 +878,21 @@ const background = [
               {String(index + 1).padStart(2, '0')}
             </span>
 
-            <div>
-              <p class="background-meta">{item.meta}</p>
-
-              <h3>
-                {item.title}
-              </h3>
-
-              <p>
-                {item.text}
-              </p>
+            <div class="background-entry">
+              <img class="background-mark" src={item.mark} alt={item.markAlt} width="64" height="64" loading="lazy" decoding="async" />
+              <div class="background-entry-copy">
+                <p class="background-meta">{item.meta}</p>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                {item.projectUrl && (
+                  <div class="background-case-study">
+                    <span class="background-case-study__label">Estudo de caso · projeto de estreia</span>
+                    <strong>Astrophysics Application</strong>
+                    <p>Projeto conceitual de aplicativo educativo de astrofísica: pesquisa exploratória, personas, sketches, wireframes e protótipo de alta fidelidade com elementos de gamificação.</p>
+                    <a href={item.projectUrl} target="_blank" rel="noopener noreferrer" aria-label="Ver estudo de caso Astrophysics Application no Behance (abre em nova aba)">Ver projeto no Behance <span aria-hidden="true">↗</span></a>
+                  </div>
+                )}
+              </div>
             </div>
           </li>
         ))}
