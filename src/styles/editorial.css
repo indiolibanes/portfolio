@@ -105,3 +105,19 @@ html:not([data-serious-mode='true']) .lab > .lab-project-card { margin-top: 0; }
   .github-heading .github-gif-strip { gap: .7rem; }
   .github-heading h2 { font-size: 2.25rem; }
 }
+
+/* Audit: stable affordances, touch targets, and motion fallbacks. */
+.motion-picture { display: contents; }
+[data-decorative-motion]:not([data-motion-playing='true']),
+[data-decorative-motion]:not([data-motion-playing='true']) * { animation-play-state: paused !important; }
+article.lab-project-card { cursor: default; }
+.lab-project-description { max-width: 60ch; }
+.work-index a[aria-current='true'] { text-decoration: underline; text-underline-offset: 4px; font-weight: 800; }
+.nav-links a, .social-links a { min-height: 44px; min-width: 44px; }
+.music-profile-fallback { margin: .8rem 0 0; font-size: .8rem; }
+.music-profile-fallback a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.music-listening-panel .music-grid { min-height: 180px; }
+@media (prefers-reduced-motion: reduce) {
+  .sophia-animation, .sophia-animation__frame { animation: none !important; transform: none !important; background-position: 0 0 !important; }
+  a.lab-project-card:hover, a.lab-project-card:hover .lab-project-cover-frame { transform: none !important; }
+}
