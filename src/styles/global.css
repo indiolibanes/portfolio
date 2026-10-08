@@ -7296,3 +7296,10 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
   .hero .phrolova-underlay{top:auto;right:-25px;bottom:150px;width:min(74vw,360px)}
   .hero .shorekeeper-underlay{left:6px;bottom:8px;width:min(43vw,195px)}
 }
+
+/* Final hero ornaments: bring the baton and butterfly into the margins. */
+.hero .phrolova-underlay{top:27%;right:0;width:clamp(420px,47vw,640px);z-index:2;pointer-events:none}
+.hero .shorekeeper-underlay{left:clamp(4px,1vw,18px);bottom:clamp(0px,1vw,14px);width:clamp(300px,36vw,460px);z-index:2;pointer-events:none}
+.hero .hero-intro,.hero .hero-statement,.hero .hero-note{position:relative;z-index:4}
+@media(max-width:920px){.hero .phrolova-underlay{top:auto;right:-14px;bottom:155px;width:min(62vw,490px)}.hero .shorekeeper-underlay{left:0;bottom:0;width:min(45vw,320px)}}
+@media(max-width:720px){.hero .phrolova-underlay{top:auto;right:-12px;bottom:160px;width:min(77vw,380px)}.hero .shorekeeper-underlay{left:0;bottom:0;width:min(47vw,220px)}}
