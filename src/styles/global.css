@@ -7310,3 +7310,7 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .hero .hero-intro,.hero .hero-statement,.hero .hero-note{z-index:4}
 @media(max-width:920px){.hero .phrolova-underlay{top:10%;right:-8%;bottom:auto;width:min(65vw,550px);transform:rotate(5deg)}}
 @media(max-width:720px){.hero .phrolova-underlay{top:14%;right:-10%;bottom:auto;width:min(85vw,440px);transform:rotate(5deg)}}
+
+/* Phrolova baton: 35% stronger local contrast, copy stays above artwork */
+.hero .phrolova-underlay svg{filter:contrast(1.35) saturate(1.12) drop-shadow(0 12px 22px rgba(105,22,58,.35))}
+.hero .hero-intro,.hero .hero-statement,.hero .hero-note{position:relative;z-index:4}
