@@ -4,14 +4,51 @@
     const visible = new Set();
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => {
-      // Only two decorative loops run at once, and only inside the viewport.
-      const active = document.hidden || preference.matches ? [] : [...visible].slice(0, 2);
+      const canPlay =
+        !document.hidden &&
+        !preference.matches;
+
+      const visibleElements = [...visible];
+
+      // Bastidores is intentionally a motion tableau: when the section is
+      // visible, all of its animated assets may play together. Outside that
+      // section we keep the previous two-loop cap for performance.
+      const bastidores = canPlay
+        ? visibleElements.filter((element) =>
+            element.closest('#bastidores'),
+          )
+        : [];
+
+      const elsewhere = canPlay
+        ? visibleElements
+            .filter((element) =>
+              !element.closest('#bastidores'),
+            )
+            .slice(0, 2)
+        : [];
+
+      const active =
+        new Set([
+          ...bastidores,
+          ...elsewhere,
+        ]);
+
       elements.forEach((element) => {
-        const playing = active.includes(element);
+        const playing = active.has(element);
         element.dataset.motionPlaying = String(playing);
+
         if (element.dataset.motionSrc) {
-          const source = playing ? element.dataset.motionSrc : element.dataset.motionStill;
-          if (element.getAttribute('src') !== source) element.setAttribute('src', source);
+          const source =
+            playing
+              ? element.dataset.motionSrc
+              : element.dataset.motionStill;
+
+          if (
+            element.getAttribute('src') !==
+            source
+          ) {
+            element.setAttribute('src', source);
+          }
         }
       });
     };
