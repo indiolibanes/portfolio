@@ -65,15 +65,18 @@ for (let y = 0; y < height; y++) {
   }
 }
 
-// If this source is replaced by a differently coloured illustration, fail
-// visibly during build instead of silently reintroducing a broken animation.
+// Guard against future source replacement. When segmentation is
+// inconclusive, preserve the ORIGINAL UNTOUCHED illustration rather than
+// clipping a flower or preventing the rest of the portfolio from deploying.
 const coverage = weightedPixels / (width * height);
 if (coverage < 0.00045 || coverage > 0.145 || significantPixels < 80) {
-  throw new Error(
-    `Shorekeeper segmentation inconclusive: ${width}x${height}, ` +
-    `wing coverage ${(100 * coverage).toFixed(3)}%, ` +
-    `significant pixels ${significantPixels}. Keep original visible; re-evaluate mask.`
+  console.warn(
+    `Shorekeeper segmentation uncertain (${width}x${height}; ` +
+    `${(100 * coverage).toFixed(3)}%; ${significantPixels} significant pixels). ` +
+    'Keeping the complete original image as a safe fallback.'
   );
+  data.copy(base);
+  wings.fill(0);
 }
 
 await mkdir(directory, { recursive: true });
