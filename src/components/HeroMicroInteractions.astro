@@ -1,0 +1,193 @@
+<div class="hero-micro-effects" data-hero-micro-effects aria-hidden="true"></div>
+
+<style is:global>
+  /* Interactive ornaments are decorative: links and text keep pointer priority. */
+  .hero .hero-micro-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+    contain: layout style;
+  }
+  .hero-micro-particle {
+    position: absolute;
+    left: var(--micro-x);
+    top: var(--micro-y);
+    display: block;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-micro-particle--butterfly {
+    width: clamp(43px, 5.5vw, 76px);
+    aspect-ratio: 231 / 143;
+    animation: hero-butterfly-departure 1250ms cubic-bezier(.18,.62,.32,1) both;
+  }
+  .hero-micro-particle--butterfly img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform-origin: 50% 48%;
+    filter: drop-shadow(0 3px 7px rgba(70, 105, 195, .25));
+    animation: hero-butterfly-wingbeat 140ms ease-in-out 0ms 7 alternate;
+  }
+  .hero-micro-particle--ribbon {
+    width: clamp(64px, 7vw, 90px);
+    aspect-ratio: 133 / 125;
+    animation: hero-ribbon-resolve 1200ms ease-out both;
+  }
+  .hero-micro-ribbon-piece {
+    position: absolute;
+    inset: 0;
+    display: block;
+    animation: hero-ribbon-unravel 1050ms cubic-bezier(.2,.56,.22,1) both;
+  }
+  .hero-micro-ribbon-piece img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 5px rgba(125, 28, 63, .2));
+  }
+  .hero-micro-ribbon-piece--left { --piece-x: -55px; --piece-y: -26px; --piece-rotate: -72deg; }
+  .hero-micro-ribbon-piece--right { --piece-x: 58px; --piece-y: -35px; --piece-rotate: 84deg; }
+  .hero-micro-ribbon-piece--knot { --piece-x: 5px; --piece-y: -74px; --piece-rotate: 24deg; }
+  .hero-micro-ribbon-piece--left img { clip-path: inset(0 50% 0 0); }
+  .hero-micro-ribbon-piece--right img { clip-path: inset(0 0 0 50%); }
+  .hero-micro-ribbon-piece--knot img { clip-path: circle(29% at 50% 48%); }
+
+  @keyframes hero-butterfly-departure {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(-12deg) scale(.42); }
+    12% { opacity: .95; }
+    35% { opacity: 1; transform: translate(calc(-50% + var(--micro-sway)), -39px) rotate(9deg) scale(.8); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--micro-dx)), var(--micro-dy)) rotate(var(--micro-rotate)) scale(1.04); }
+  }
+  @keyframes hero-butterfly-wingbeat {
+    from { transform: perspective(160px) rotateY(-36deg) scaleX(.68); }
+    to { transform: perspective(160px) rotateY(28deg) scaleX(1); }
+  }
+  @keyframes hero-ribbon-resolve {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.6) rotate(-8deg); }
+    14% { opacity: 1; }
+    65% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -67%) scale(1.02) rotate(11deg); }
+  }
+  @keyframes hero-ribbon-unravel {
+    0%, 18% { transform: translate(0,0) rotate(0); }
+    100% { transform: translate(var(--piece-x), var(--piece-y)) rotate(var(--piece-rotate)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-micro-particle,
+    .hero-micro-particle *,
+    .hero-micro-ribbon-piece { animation: none !important; display: none !important; }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('#sobre');
+  const layer = hero?.querySelector<HTMLElement>('[data-hero-micro-effects]');
+
+  if (hero && layer) {
+    const butterflyArt = hero.querySelector<HTMLElement>('.shorekeeper-underlay');
+    const batonArt = hero.querySelector<HTMLElement>('.phrolova-underlay');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const artwork = {
+      butterfly: '/assets/shorekeeper-butterfly.webp',
+      ribbon: '/assets/phrolova-baton-bow.webp',
+    };
+    Object.values(artwork).forEach((src) => { const img = new Image(); img.src = src; });
+
+    type Effect = keyof typeof artwork;
+    let previousZone: Effect | null = null;
+    const lastPlayed: Record<Effect, number> = { butterfly: -Infinity, ribbon: -Infinity };
+
+    const motionDisabled = () =>
+      reducedMotion.matches ||
+      document.documentElement.dataset.seriousMode === 'true' ||
+      document.documentElement.dataset.legacyMode === 'true';
+
+    function hit(element: Element | null, x: number, y: number): boolean {
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+
+    function findZone(x: number, y: number): Effect | null {
+      // The ornaments intentionally have pointer-events:none, so we hit-test
+      // their rendered rectangles without intercepting content controls.
+      if (hit(batonArt, x, y)) return 'ribbon';
+      if (hit(butterflyArt, x, y)) return 'butterfly';
+      return null;
+    }
+
+    function makeSprite(className: string, src: string, width: number, height: number): HTMLImageElement {
+      const sprite = document.createElement('img');
+      sprite.className = className;
+      sprite.src = src;
+      sprite.alt = '';
+      sprite.width = width;
+      sprite.height = height;
+      sprite.draggable = false;
+      return sprite;
+    }
+
+    function play(effect: Effect, clientX: number, clientY: number, clicked: boolean) {
+      if (motionDisabled()) return;
+      const now = performance.now();
+      if (now - lastPlayed[effect] < (clicked ? 520 : 1650)) return;
+      lastPlayed[effect] = now;
+
+      const rect = hero!.getBoundingClientRect();
+      // Keep the miniature departures within the hero and away from the margins.
+      const x = Math.max(32, Math.min(rect.width - 32, clientX - rect.left));
+      const y = Math.max(36, Math.min(rect.height - 36, clientY - rect.top));
+
+      for (let i = 0, n = effect === 'butterfly' ? 2 : 1; i < n; i++) {
+        const particle = document.createElement('span');
+        particle.className = 'hero-micro-particle hero-micro-particle--' + effect;
+        particle.style.setProperty('--micro-x', (x + (i ? 14 : -8)) + 'px');
+        particle.style.setProperty('--micro-y', (y + (i ? 6 : 0)) + 'px');
+
+        if (effect === 'butterfly') {
+          particle.style.setProperty('--micro-sway', (i ? '18px' : '-12px'));
+          particle.style.setProperty('--micro-dx', (i ? '96px' : '-65px'));
+          particle.style.setProperty('--micro-dy', (i ? '-112px' : '-155px'));
+          particle.style.setProperty('--micro-rotate', (i ? '20deg' : '-24deg'));
+          particle.appendChild(makeSprite('hero-micro-butterfly', artwork.butterfly, 231, 143));
+        } else {
+          for (const pieceName of ['left', 'right', 'knot']) {
+            const piece = document.createElement('span');
+            piece.className = 'hero-micro-ribbon-piece hero-micro-ribbon-piece--' + pieceName;
+            piece.appendChild(makeSprite('', artwork.ribbon, 133, 125));
+            particle.appendChild(piece);
+          }
+        }
+
+        layer!.appendChild(particle);
+        particle.addEventListener('animationend', (event) => {
+          if (event.target === particle) particle.remove();
+        });
+        window.setTimeout(() => particle.remove(), 1500);
+      }
+    }
+
+    hero.addEventListener('pointermove', (event) => {
+      if (!finePointer.matches || event.pointerType === 'touch') return;
+      const zone = findZone(event.clientX, event.clientY);
+      if (zone !== previousZone) {
+        previousZone = zone;
+        if (zone) play(zone, event.clientX, event.clientY, false);
+      }
+    }, { passive: true });
+
+    hero.addEventListener('pointerleave', () => { previousZone = null; });
+
+    hero.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      const zone = findZone(event.clientX, event.clientY);
+      if (zone) play(zone, event.clientX, event.clientY, true);
+    }, { passive: true });
+  }
+</script>
