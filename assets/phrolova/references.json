@@ -1,0 +1,135 @@
+{
+  "$schema": "phrolova-reference-set/v1",
+  "title": "Phrolova — Crimson Baton reference library",
+  "language": "pt-BR",
+  "status": "reference-index-only",
+  "indexed_on": "2026-10-08",
+  "purpose": "Reconstruct vector geometry for the About section without reusing invented ribbon paths.",
+  "project": {
+    "repo": "indiolibanes/portfolio",
+    "branch": "main",
+    "target": "src/components/HeroMicroInteractions.astro",
+    "scope": "#sobre",
+    "current_phrolova": "static (do not activate until approved)",
+    "shorekeeper": "already animated (do not change)"
+  },
+  "identity": {
+    "item": "Crimson Baton",
+    "is": "Quest item / orchestration utility imbued with Phrolova's Forte",
+    "must_not_confuse_with": "Lethean Elegy, a distinct signature Rectifier resembling a violin",
+    "confirmation": "https://wutheringwaves.fandom.com/wiki/Crimson_Baton",
+    "publisher": "Kuro Games / Wuthering Waves"
+  },
+  "local_assets": [
+    {
+      "id": "original",
+      "path": "public/phrolova-baton.webp",
+      "size": "448 x 448",
+      "role": "canonical original site appearance, hue, music notes and composition",
+      "status": "present in repository",
+      "note": "Original asset has decorative notes; never auto-trace them as part of the baton."
+    },
+    {
+      "id": "trace-board",
+      "path": "assets/phrolova/reference-board.svg",
+      "size": "1460 x 950",
+      "role": "standalone inspection sheet: whole silhouette, bloom zoom, rod zoom",
+      "status": "created",
+      "note": "Embeds only the image already present in the repository."
+    },
+    {
+      "id": "deprecated",
+      "path": "public/assets/phrolova-baton-bow.webp",
+      "role": "failed previous cutout",
+      "status": "do-not-use",
+      "note": "Low-resolution square crop with background contamination; not a trustworthy vectorization source."
+    }
+  ],
+  "external_references": [
+    {
+      "id": "item-ui-icon",
+      "kind": "game-asset-icon",
+      "role": "confirm canonical item identity, overall flower silhouette and red hue",
+      "priority": 1,
+      "page_url": "https://wuthering.gg/items/valuables",
+      "asset_url": "https://wuthering.gg/_ipx/q_70%26s_50x50/images/items/T_IconTask_Task_159_UI.png",
+      "access": "external link only",
+      "limitation": "verified 50 x 50 thumbnail; too small to serve as a master vector source"
+    },
+    {
+      "id": "official-sketch-archive",
+      "kind": "published-developer-sketches",
+      "role": "inspect character-sheet art, showcase sketches 1–6, and weapon menu",
+      "priority": 1.1,
+      "page_url": "https://wutheringwaves.fandom.com/wiki/Phrolova/Gallery",
+      "access": "external link only",
+      "note": "Individual drawings may show contextual details but not a standalone weapon orthographic; verify before tracing."
+    },
+    {
+      "id": "combat-showcase",
+      "kind": "official-video",
+      "role": "reference gameplay/animation timing and musical motion, not primary geometrical tracing",
+      "priority": 1.2,
+      "page_url": "https://www.youtube.com/watch?v=2peOFpq4Ths",
+      "access": "external link only"
+    },
+    {
+      "id": "prop-front-quarter",
+      "role": "silhouette, shaft attachment and outer corolla",
+      "url": "https://www.cosangas.com/media/product/321/image/2025/09/15/1ee784de2a25a84d37cf0ffc58bc7efe.jpg",
+      "kind": "cosplay-prop-photograph",
+      "source_page": "https://www.cosangas.com/products/wuthering-waves-phrolova-cosplay-accessory-prop",
+      "authority": "non-official reproduction; corroborate with game art",
+      "access": "external link only",
+      "permission": "Copyright held by the photographer/merchant; not copied or cleared for redistribution",
+      "priority": 2
+    },
+    {
+      "id": "prop-left-angle",
+      "role": "petal overlap and anthers, alternative side view",
+      "url": "https://www.cosangas.com/media/product/321/image/2025/09/15/9676635159abcd13ee3e3a13cc6d7e19.jpg",
+      "kind": "cosplay-prop-photograph",
+      "source_page": "https://www.cosangas.com/products/wuthering-waves-phrolova-cosplay-accessory-prop",
+      "authority": "non-official reproduction; corroborate with game art",
+      "access": "external link only",
+      "permission": "Copyright held by the photographer/merchant; not copied or cleared for redistribution",
+      "priority": 2.01
+    },
+    {
+      "id": "prop-back-angle",
+      "role": "rear corolla structure and gold rings on shaft",
+      "url": "https://www.cosangas.com/media/product/321/image/2025/09/15/f772fa246ece3c32603a2fac62edc0ba.jpg",
+      "kind": "cosplay-prop-photograph",
+      "source_page": "https://www.cosangas.com/products/wuthering-waves-phrolova-cosplay-accessory-prop",
+      "authority": "non-official reproduction; corroborate with game art",
+      "access": "external link only",
+      "permission": "Copyright held by the photographer/merchant; not copied or cleared for redistribution",
+      "priority": 2.02
+    },
+    {
+      "id": "prop-context-angle",
+      "role": "shaft width, junctions, length and dimensional scale",
+      "url": "https://www.cosangas.com/media/product/321/image/2025/09/15/6b77a4a3b9f1fc1e2ee9e2076ad47dec.jpg",
+      "kind": "cosplay-prop-photograph",
+      "source_page": "https://www.cosangas.com/products/wuthering-waves-phrolova-cosplay-accessory-prop",
+      "authority": "non-official reproduction; corroborate with game art",
+      "access": "external link only",
+      "permission": "Copyright held by the photographer/merchant; not copied or cleared for redistribution",
+      "priority": 2.03
+    }
+  ],
+  "license_policy": {
+    "internal_reference_only": true,
+    "redistribute_third_party_photos": false,
+    "auto_download_in_build": false,
+    "no_remote_images_on_portfolio": true,
+    "original_ownership": "Game art belongs to Kuro Games and contributors; product images belong to respective owners.",
+    "implementation_gate": "Do not copy external image data into production assets unless reuse rights or permission are confirmed. SVG should be new manually-authored paths traced with source attribution where needed."
+  },
+  "deliverables": {
+    "first": "assets/phrolova/crimson-baton-vector-draft.svg (not yet created)",
+    "second": "assets/phrolova/overlay-check.png (not yet created)",
+    "third": "assets/phrolova/morph-storyboard.svg (only after vector accuracy approved)",
+    "final": "src/components/HeroMicroInteractions.astro (ONLY after approved geometry and browser checks)"
+  }
+}
