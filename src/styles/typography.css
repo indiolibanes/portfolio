@@ -1,0 +1,314 @@
+/*
+ * Portfolio typography / v1
+ *
+ * Local font assets were uploaded at repository root (assets/fonts).
+ * Vite resolves these URLs at build time, emits hashed assets and retains
+ * the author's existing palettes, artwork, retro labels and cursor effects.
+ *
+ * Display      ITC Benguiat Bold     — editorial chapter headings
+ * Supporting   Bookman Bold          — project headings and callouts
+ * Signature    Heart Breaking Bad    — brief decorative Latin phrases only
+ * Reading      existing --font-ui    — paragraphs, navigation and metadata
+ * Archive      legacy Garamond SVG   — not a modern @font-face source
+ */
+
+@font-face {
+  font-family: "Portfolio Benguiat";
+  src: url("../../assets/fonts/itc-benguiat-bold.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Portfolio Bookman";
+  src: url("../../assets/fonts/Bookman Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Portfolio Hand";
+  /* Despite its .otf suffix, this asset uses TrueType outlines. */
+  src: url("../../assets/fonts/Heart Breaking Bad.otf") format("truetype");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  --font-chapter: "Portfolio Benguiat", Georgia, "Times New Roman", serif;
+  --font-subtitle: "Portfolio Bookman", Georgia, "Times New Roman", serif;
+  --font-signature: "Portfolio Hand", "Brush Script MT", cursive;
+  --type-measure: 68ch;
+}
+
+/* These refinements belong to the authorial website, not its 1998 mode. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) {
+  --type-display-tracking: -0.014em;
+}
+
+/* Titles are the display tier. Avoid affecting live music-track metadata. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement h2,
+    .lab-heading h2,
+    .method-intro h2,
+    .github-heading h2,
+    .background-title h2,
+    .music-heading-copy > h2,
+    .closing-copy > h2,
+    .sophia-hero h1,
+    .sophia-hero h2) {
+  font-family: var(--font-chapter);
+  font-weight: 700;
+  letter-spacing: var(--type-display-tracking);
+  line-height: 1.14;
+  text-wrap: balance;
+  font-kerning: normal;
+}
+
+/* The brick name is a separate identity element, not a chapter title. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .block-name {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  letter-spacing: -.044em;
+  line-height: 1;
+  text-wrap: nowrap;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.brand-copy strong, .note-big, .lab-project-book p,
+    .github-feature-copy h3, .background-entry-copy h3,
+    .method-steps h3, .playlist-grid h3,
+    .playlists-heading h3, .github-feature-owner strong) {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  letter-spacing: -.015em;
+  line-height: 1.22;
+}
+
+/* Uppercase project titles are intentionally less ornate to protect
+   DOCUMENTAÇÃO / ARQUITETURA from clipping in their narrow card columns. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.lab-project-card h3 {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  letter-spacing: -.033em;
+  line-height: 1.12;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+/* Small expressive signatures. Long prose is never set in display fonts. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.hero .hello span[lang='en'],
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.listening-note--moonlight .listening-note-footer cite {
+  font-family: var(--font-signature);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: .008em;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.hero .hello span[lang='en'] {
+  display: inline-block;
+  font-size: clamp(1.02rem, 1.45vw, 1.32rem);
+  line-height: 1.25;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.listening-note--moonlight .listening-note-footer cite {
+  font-size: 1.22em;
+  line-height: 1.25;
+}
+
+/* The literary excerpt needs a calm reading face, not a second headline. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.listening-note--moonlight .listening-note-quote {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -.008em;
+  line-height: 1.57;
+}
+
+/* Never trade comfortable reading for decorative novelty. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.hero-statement > p:not(.eyebrow),
+    .lab-note, .lab-project-description,
+    .method-lead, .method-disclosure,
+    .github-heading-copy > p:not(.eyebrow),
+    .background-entry-copy > p:not(.background-meta),
+    .closing-copy > p:not(.eyebrow)) {
+  font-family: var(--font-ui);
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.eyebrow, .project-label, .note-label,
+    .method-index, .lab-project-index, .lab-project-kicker) {
+  /* The pixel font retains its role as a small signpost, not body text. */
+  font-family: var(--font-retro);
+  letter-spacing: .06em;
+  line-height: 1.45;
+}
+
+/* Method: an editorial interlude using the same warm paper vocabulary.
+   This also gives the already published four-step markup a responsive layout. */
+html:not([data-legacy-mode='true']) .method-section {
+  display: grid;
+  gap: clamp(1.35rem, 2.7vw, 2.2rem);
+  min-width: 0;
+  padding: clamp(1.4rem, 3.9vw, 3.2rem);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 95% 6%, rgba(230,187,74,.14), transparent 44%),
+    linear-gradient(155deg, var(--surface), var(--surface-soft));
+  color: var(--ink);
+}
+
+html:not([data-legacy-mode='true']) .method-intro {
+  max-width: 74ch;
+}
+
+html:not([data-legacy-mode='true']) .method-intro h2 {
+  margin-block: .35rem 1rem;
+  font-size: clamp(2rem, 4.6vw, 4.4rem);
+}
+
+html:not([data-legacy-mode='true']) .method-lead {
+  margin: 0 0 .9rem;
+  max-width: 62ch;
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+}
+
+html:not([data-legacy-mode='true']) .method-disclosure {
+  max-width: var(--type-measure);
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .94rem;
+}
+
+html:not([data-legacy-mode='true']) .method-disclosure strong {
+  color: var(--ink);
+}
+
+html:not([data-legacy-mode='true']) .method-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(.65rem, 1.4vw, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+html:not([data-legacy-mode='true']) .method-steps li {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  padding: clamp(1rem, 1.7vw, 1.4rem);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--rose);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+html:not([data-legacy-mode='true']) .method-index {
+  color: var(--ink-soft);
+  font-family: var(--font-retro);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .055em;
+}
+
+html:not([data-legacy-mode='true']) .method-steps h3 {
+  font-size: clamp(1.15rem, 1.65vw, 1.55rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+html:not([data-legacy-mode='true']) .method-steps p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: .92rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+html:not([data-legacy-mode='true']) .method-closing {
+  margin: 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  font-size: clamp(1rem, 1.6vw, 1.28rem);
+  line-height: 1.42;
+  max-width: 65ch;
+}
+
+/* Serious/editorial mode: bookish hierarchy without expressive lettering.
+   Legacy/1998 keeps Arial, Times and Courier in legacy.css untouched. */
+html[data-serious-mode='true'] :is(.method-intro h2,
+    .method-steps h3, .method-closing,
+    .brand-copy strong, .background-entry-copy h3) {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+}
+
+html[data-serious-mode='true'] .method-section,
+html[data-serious-mode='true'] .method-steps li {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: none;
+}
+html[data-serious-mode='true'] .method-steps li { border-top-color: var(--ink-soft); }
+html[data-serious-mode='true'] .method-steps p,
+html[data-serious-mode='true'] .method-disclosure,
+html[data-serious-mode='true'] .method-index { color: var(--ink-soft); }
+
+/* Responsive type scale: editorial presence without narrow-column overflow. */
+@media (max-width: 1000px) {
+  html:not([data-legacy-mode='true']) .method-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  html:not([data-legacy-mode='true']) .method-section {
+    padding: 1.25rem;
+    border-radius: 18px;
+  }
+  html:not([data-legacy-mode='true']) .method-steps {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html:not([data-legacy-mode='true']) .method-steps li {
+    padding: 1rem;
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  .block-name {
+    font-size: clamp(2.55rem, 9vw, 4.25rem);
+    letter-spacing: -.055em;
+  }
+  html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+  :is(.hero-statement h2, .lab-heading h2, .github-heading h2,
+      .background-title h2, .music-heading-copy > h2,
+      .closing-copy > h2, .method-intro h2) {
+    line-height: 1.2;
+    letter-spacing: -.008em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Font swaps are instant, and no typography-only motion is introduced. */
+  html:not([data-legacy-mode='true']) .method-steps li {
+    transition: none;
+  }
+}
