@@ -1,0 +1,155 @@
+---
+/**
+ * A low-cost, deterministic "random" sky: every dot has its own phase,
+ * duration, brightness and size. No frame loop, timers or canvas required.
+ * Positions are stable across builds, avoiding layout changes on refresh.
+ */
+let seed = 0x5f3759df;
+const random = () => {
+  seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+  return seed / 4294967296;
+};
+
+const stars = Array.from({ length: 104 }, (_, index) => {
+  const quasar = index === 12 || index === 47 || index === 89;
+  const bright = !quasar && index % 17 === 0;
+  const temperature = random();
+  const hue = temperature > 0.87 ? '#ffcda2' : temperature < 0.20 ? '#a7dafa' : '#f4f0e9';
+  const x = (random() * 100).toFixed(2);
+  const y = (random() * 100).toFixed(2);
+  const size = (quasar ? 3.2 + random() * 1.2 : bright ? 2.15 + random() * 1.2 : .75 + random() * 1.55).toFixed(2);
+  const period = (quasar ? 15 + random() * 15 : 4.8 + random() * 12).toFixed(2);
+  const delay = (-random() * Number(period)).toFixed(2);
+  const dim = (quasar ? .025 : .05 + random() * .12).toFixed(2);
+  const peak = (quasar ? .65 + random() * .25 : bright ? .65 + random() * .22 : .3 + random() * .5).toFixed(2);
+  return {
+    kind: quasar ? 'quasar' : bright ? 'bright' : 'distant',
+    style: `--star-x:${x}%;--star-y:${y}%;--star-size:${size}px;--star-color:${hue};--star-duration:${period}s;--star-delay:${delay}s;--star-dim:${dim};--star-peak:${peak};`,
+  };
+});
+---
+
+<!-- Background-only layer: neither a new orbit nor part of the music effects. -->
+<div class="cosmic-starfield" data-cosmic-starfield aria-hidden="true">
+  <div class="cosmic-starfield__haze" aria-hidden="true"></div>
+  {stars.map((star) => (
+    <span class={`cosmic-starfield__star cosmic-starfield__star--${star.kind}`} style={star.style}></span>
+  ))}
+</div>
+
+<style>
+  .cosmic-starfield {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+    user-select: none;
+    contain: layout paint style;
+  }
+
+  /* Very distant galaxies: faint light contamination, not a second focal point. */
+  .cosmic-starfield__haze {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 18% 26% at 80% 34%, rgba(70, 95, 165, .12), transparent 90%),
+      radial-gradient(ellipse 14% 24% at 66% 78%, rgba(120, 58, 130, .10), transparent 90%),
+      radial-gradient(ellipse 20% 20% at 16% 12%, rgba(89, 78, 146, .055), transparent 90%);
+    opacity: .82;
+  }
+
+  .cosmic-starfield__star {
+    position: absolute;
+    left: var(--star-x);
+    top: var(--star-y);
+    display: block;
+    width: var(--star-size);
+    height: var(--star-size);
+    border-radius: 50%;
+    background: var(--star-color);
+    opacity: var(--star-dim);
+    box-shadow: 0 0 4px 1px color-mix(in srgb, var(--star-color) 28%, transparent);
+    transform: scale(.7);
+    animation: cosmic-star-twinkle var(--star-duration) ease-in-out var(--star-delay) infinite;
+    pointer-events: none;
+  }
+
+  .cosmic-starfield__star--bright {
+    box-shadow: 0 0 7px 1px color-mix(in srgb, var(--star-color) 40%, transparent);
+  }
+
+  /* Quasars/supernovae are rare, brief glints, deliberately low intensity. */
+  .cosmic-starfield__star--quasar {
+    box-shadow:
+      0 0 7px 2px color-mix(in srgb, var(--star-color) 55%, transparent),
+      0 0 17px 4px color-mix(in srgb, var(--star-color) 18%, transparent);
+    animation-name: cosmic-quasar-glint;
+  }
+
+  .cosmic-starfield__star--quasar::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    background:
+      linear-gradient(90deg, transparent 45%, var(--star-color) 50%, transparent 55%),
+      linear-gradient(0deg, transparent 45%, var(--star-color) 50%, transparent 55%);
+    opacity: .16;
+  }
+
+  @keyframes cosmic-star-twinkle {
+    0%, 13%, 100% { opacity: var(--star-dim); transform: scale(.65); }
+    28% { opacity: var(--star-peak); transform: scale(1.08); }
+    41%, 66% { opacity: calc(var(--star-dim) * 1.4); transform: scale(.8); }
+    76% { opacity: calc(var(--star-peak) * .72); transform: scale(.96); }
+  }
+
+  @keyframes cosmic-quasar-glint {
+    0%, 56%, 100% { opacity: var(--star-dim); transform: scale(.5); }
+    62% { opacity: .2; transform: scale(.7); }
+    68% { opacity: var(--star-peak); transform: scale(1.6); }
+    73% { opacity: .14; transform: scale(.75); }
+  }
+
+  /* Pause the sky when not visible, without affecting the Work orbital system. */
+  .cosmic-starfield[data-cosmic-visible='false'] .cosmic-starfield__star {
+    animation-play-state: paused;
+  }
+
+  :global(html[data-serious-mode='true']) .cosmic-starfield,
+  :global(html[data-legacy-mode='true']) .cosmic-starfield {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cosmic-starfield__star {
+      animation: none !important;
+      opacity: .28;
+      transform: none;
+    }
+    .cosmic-starfield__star--quasar { opacity: .2; }
+  }
+</style>
+
+<script>
+  const fields = document.querySelectorAll<HTMLElement>('[data-cosmic-starfield]');
+  const setVisibility = (field: HTMLElement, visible: boolean) => {
+    field.dataset.cosmicVisible = String(visible && !document.hidden);
+  };
+  if ('IntersectionObserver' in window) {
+    const visibleFields = new Set<HTMLElement>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        const field = target as HTMLElement;
+        if (isIntersecting) visibleFields.add(field);
+        else visibleFields.delete(field);
+        setVisibility(field, isIntersecting);
+      });
+    }, { threshold: 0.01 });
+    fields.forEach((field) => observer.observe(field));
+    document.addEventListener('visibilitychange', () => {
+      fields.forEach((field) => setVisibility(field, visibleFields.has(field)));
+    });
+  }
+</script>
