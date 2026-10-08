@@ -7,7 +7,8 @@
     position: absolute;
     inset: 0;
     z-index: 3; /* artwork above the paper, below hero copy (z-index: 4) */
-    overflow: hidden;
+    /* The sprite must be able to travel beyond the narrow ornament strip. */
+    overflow: visible;
     pointer-events: none;
     contain: layout style;
   }
@@ -67,7 +68,7 @@
   #sobre .hero-ornament-particle--ribbon {
     width: clamp(82px,9vw,118px);
     aspect-ratio: 133 / 125;
-    animation: about-ribbon-vanish 1180ms ease-out both;
+    animation: about-ribbon-vanish 1940ms ease-out both;
   }
   #sobre .hero-ornament-ribbon-piece {
     position: absolute;
@@ -140,11 +141,11 @@
     let previous: Ornament | null = null;
     const active = new Set<Ornament>();
 
-    const disabled = () =>
-      !hoverCapable.matches ||
+    const motionDisabled = () =>
       reducedMotion.matches ||
       document.documentElement.dataset.seriousMode === 'true' ||
       document.documentElement.dataset.legacyMode === 'true';
+    const disabled = () => !hoverCapable.matches || motionDisabled();
 
     function inside(element: HTMLElement | null, x: number, y: number) {
       if (!element) return false;
@@ -176,11 +177,12 @@
       const source = ornament === 'butterfly' ? shorekeeper : phrolova;
       if (!source || !layer || active.has(ornament)) return;
       active.add(ornament);
-      source.classList.add('is-releasing');
       const sourceRect = source.getBoundingClientRect();
-      const heroRect = hero!.getBoundingClientRect();
-      const x = sourceRect.left + sourceRect.width * (ornament === 'butterfly' ? .52 : .50) - heroRect.left;
-      const y = sourceRect.top + sourceRect.height * (ornament === 'butterfly' ? .42 : .50) - heroRect.top;
+      // .hero-micro-effects is positioned inside .hero-ornaments.
+      // Use its rectangle instead of the entire #sobre section.
+      const layerRect = layer.getBoundingClientRect();
+      const x = sourceRect.left + sourceRect.width * (ornament === 'butterfly' ? .52 : .50) - layerRect.left;
+      const y = sourceRect.top + sourceRect.height * (ornament === 'butterfly' ? .42 : .50) - layerRect.top;
       const particle = document.createElement('span');
       particle.className = 'hero-ornament-particle hero-ornament-particle--' + ornament;
       particle.style.setProperty('--ornament-x', x + 'px');
@@ -198,13 +200,16 @@
       }
 
       layer.appendChild(particle);
+      const finish = () => {
+        if (!particle.isConnected) return;
+        particle.remove();
+        active.delete(ornament);
+      };
       particle.addEventListener('animationend', (event) => {
-        if (event.target === particle) {
-          particle.remove();
-          source.classList.remove('is-releasing');
-          active.delete(ornament);
-        }
+        if (event.target === particle) finish();
       });
+      // Safety fallback if an animation is interrupted by browser lifecycle.
+      window.setTimeout(finish, ornament === 'butterfly' ? 2700 : 2300);
     }
 
     hero.addEventListener('pointermove', (event) => {
@@ -218,15 +223,26 @@
       if (next) animate(next);
     }, { passive: true });
     hero.addEventListener('pointerleave', () => { previous = null; });
+    // On mobile require an intentional tap; swiping to scroll must not animate.
+    let touchStart: { id: number; x: number; y: number; zone: Ornament } | null = null;
     hero.addEventListener('pointerdown', (event) => {
-      if (event.pointerType === 'mouse' || reducedMotion.matches || document.documentElement.dataset.seriousMode === 'true' || document.documentElement.dataset.legacyMode === 'true') return;
-      if ((event.target as Element).closest('a,button')) return;
-      const next = zoneAt(event.clientX, event.clientY);
-      if (next) animate(next);
+      touchStart = null;
+      if (event.pointerType === 'mouse' || motionDisabled()) return;
+      if ((event.target as Element).closest('a,button,input,select,textarea')) return;
+      const zone = zoneAt(event.clientX, event.clientY);
+      if (zone) touchStart = { id: event.pointerId, x: event.clientX, y: event.clientY, zone };
     }, { passive: true });
-    const clear = () => { layer.replaceChildren(); active.clear(); shorekeeper?.classList.remove('is-releasing'); phrolova?.classList.remove('is-releasing'); previous = null; };
+    hero.addEventListener('pointerup', (event) => {
+      const start = touchStart;
+      touchStart = null;
+      if (!start || start.id !== event.pointerId || motionDisabled()) return;
+      if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
+      if (zoneAt(event.clientX, event.clientY) === start.zone) animate(start.zone);
+    }, { passive: true });
+    hero.addEventListener('pointercancel', () => { touchStart = null; });
+    const clear = () => { layer.replaceChildren(); active.clear(); previous = null; touchStart = null; };
     reducedMotion.addEventListener('change', clear);
     document.addEventListener('visibilitychange', () => { if (document.hidden) clear(); });
-    // Scoped to the About artwork: hover on desktop, touch on noninteractive areas.
+    // Confined to #sobre; no event handlers or CSS changes in the Music shelf.
   }
 </script>
