@@ -1,0 +1,229 @@
+---
+/*
+ * Mario-inspired 8-bit brick and question blocks.
+ * Each of the twelve two-block columns turns around its vertical axis in a
+ * short staggered wave. The real h1 lives outside this decorative component.
+ */
+const columns = Array.from({ length: 12 }, (_, index) => ({
+  index,
+  front: [index % 5 === 2 ? 'question' : 'brick', index % 6 === 4 ? 'question' : 'brick'],
+  back: [index % 4 === 0 ? 'brick' : 'question', index % 4 === 2 ? 'brick' : 'question'],
+}));
+---
+
+<div class="mario-name-tiles" data-mario-name-visible="true" aria-hidden="true">
+  <svg class="mario-name-tiles__definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="mario-name-brick" viewBox="0 0 16 16">
+        <rect width="16" height="16" fill="#3c211c" />
+        <path fill="#b65c34" d="M1 1h14v6H1zM1 9h14v6H1z" />
+        <path fill="#da8950" d="M2 2h4v2H2zM9 2h5v2H9zM2 10h2v2H2zM7 10h5v2H7z" />
+        <path fill="#6f3526" d="M0 7h16v2H0zM7 0h2v8H7zM4 8h2v8H4zM12 8h2v8h-2z" />
+        <path fill="#e8a26b" d="M2 2h2v1H2zM10 10h2v1h-2z" />
+        <path fill="#833b29" d="M1 14h14v1H1z" />
+      </symbol>
+      <symbol id="mario-name-question" viewBox="0 0 16 16">
+        <rect width="16" height="16" fill="#4c2c1c" />
+        <path fill="#c17c24" d="M1 1h14v14H1z" />
+        <path fill="#f2b736" d="M2 2h12v12H2z" />
+        <path fill="#ffde72" d="M2 2h12v2H2zM2 4h2v9H2z" />
+        <path fill="#784219" d="M5 5V4h5v1h2v3h-2v2H8v2H6V9h2V8h2V6H7v2H5zM7 13h2v2H7z" />
+        <path fill="#fff2b0" d="M3 3h1v1H3zM12 3h1v1h-1z" />
+        <path fill="#814717" d="M3 12h1v1H3zM12 12h1v1h-1z" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <span class="mario-name-tiles__grid">
+    {columns.map((column) => (
+      <span class="mario-name-tiles__column" style={`--mario-column:${column.index}`}>
+        <span class="mario-name-tiles__face mario-name-tiles__face--front">
+          {column.front.map((kind) => (
+            <svg class="mario-name-tiles__tile" viewBox="0 0 16 16" aria-hidden="true" focusable="false" shape-rendering="crispEdges">
+              <use href={`#mario-name-${kind}`} />
+            </svg>
+          ))}
+        </span>
+        <span class="mario-name-tiles__face mario-name-tiles__face--back">
+          {column.back.map((kind) => (
+            <svg class="mario-name-tiles__tile" viewBox="0 0 16 16" aria-hidden="true" focusable="false" shape-rendering="crispEdges">
+              <use href={`#mario-name-${kind}`} />
+            </svg>
+          ))}
+        </span>
+      </span>
+    ))}
+  </span>
+
+  <!-- Corner accent replaces the former generic gold square. -->
+  <span class="mario-name-tiles__corner">
+    <svg viewBox="0 0 16 16" shape-rendering="crispEdges" focusable="false" aria-hidden="true">
+      <use href="#mario-name-question" />
+    </svg>
+  </span>
+</div>
+
+<style>
+  /* This is purely decorative: the actual name remains a single accessible h1. */
+  .mario-name-tiles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .mario-name-tiles__definitions {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .mario-name-tiles__grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    overflow: hidden;
+    border-radius: inherit;
+    perspective: 900px;
+    isolation: isolate;
+    background: #542a1e;
+  }
+
+  .mario-name-tiles__column {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    animation: mario-name-column-turn 11.8s ease-in-out infinite;
+    animation-delay: calc(var(--mario-column) * .22s);
+    will-change: transform;
+  }
+
+  .mario-name-tiles__face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .mario-name-tiles__face--back {
+    transform: rotateY(180deg);
+  }
+
+  .mario-name-tiles__tile {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  .mario-name-tiles__corner {
+    position: absolute;
+    z-index: 4;
+    top: -12px;
+    right: -11px;
+    width: clamp(25px, 3.2vw, 33px);
+    aspect-ratio: 1;
+    display: block;
+    filter: drop-shadow(3px 4px 0 rgba(62, 27, 14, .42));
+    transform: rotate(5deg);
+  }
+
+  .mario-name-tiles__corner svg { display: block; width: 100%; height: 100%; }
+
+  @keyframes mario-name-column-turn {
+    0%, 2% { transform: rotateY(0deg); }
+    9%, 12% { transform: rotateY(180deg); }
+    20%, 100% { transform: rotateY(360deg); }
+  }
+
+  /* Replace the prior smooth brick pattern only in authorial mode.
+     The serious and 1998 versions preserve their plain typographic mark. */
+  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate) {
+    position: relative;
+    isolation: isolate;
+    min-height: clamp(60px, 8.5vw, 96px);
+    border: 3px solid #543020;
+    border-radius: 3px;
+    background: #542a1e;
+    background-image: none;
+    box-shadow: inset 0 0 0 1px #e5ae6a88, 0 5px 0 #4a271b, 0 12px 22px #3f2c2330;
+    padding: clamp(.74rem, 1.55vw, 1rem) clamp(.65rem, 1.7vw, 1.12rem);
+  }
+
+  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::before) {
+    content: none;
+  }
+
+  /* The dark veil and outlined name remain stationary while tiles turn. */
+  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::after) {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, #22150f86, #291811ad 28% 72%, #22150f86);
+  }
+
+  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name) {
+    position: relative;
+    z-index: 2;
+    color: #fff6d8;
+    text-shadow:
+      2px 0 0 #321b13, -2px 0 0 #321b13,
+      0 2px 0 #321b13, 0 -2px 0 #321b13,
+      3px 3px 0 #5e3019, 5px 5px 0 #21120daa;
+  }
+
+  :global(html[data-serious-mode='true']) .mario-name-tiles,
+  :global(html[data-legacy-mode='true']) .mario-name-tiles { display: none; }
+
+  .mario-name-tiles[data-mario-name-visible='false'] .mario-name-tiles__column {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 640px) {
+    :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate) {
+      min-height: 58px;
+      padding-inline: .53rem;
+    }
+    .mario-name-tiles__corner {
+      width: 24px;
+      top: -9px;
+      right: -8px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mario-name-tiles__column { animation: none !important; will-change: auto; }
+  }
+</style>
+
+<script>
+  const marioPlates = document.querySelectorAll<HTMLElement>('.mario-name-tiles');
+  if ('IntersectionObserver' in window) {
+    const active = new Set<HTMLElement>();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        const plate = target as HTMLElement;
+        plate.dataset.marioNameVisible = String(isIntersecting && !document.hidden);
+        if (isIntersecting) active.add(plate);
+        else active.delete(plate);
+      });
+    }, { threshold: .01 });
+    marioPlates.forEach((plate) => observer.observe(plate));
+    document.addEventListener('visibilitychange', () => {
+      marioPlates.forEach((plate) => {
+        plate.dataset.marioNameVisible = String(!document.hidden && active.has(plate));
+      });
+    });
+  }
+</script>
