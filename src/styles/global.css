@@ -7364,3 +7364,13 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 @media(max-width:960px){.music-heading.music-heading--stage{min-height:0;grid-template-columns:repeat(2,minmax(0,1fr))}.music-grid--stage{margin-top:1rem}.music-heading--stage .listening-note--moonlight{max-width:100%}}
 @media(max-width:560px){.music-heading.music-heading--stage{grid-template-columns:1fr}.music-heading--stage .music-character{opacity:.22}.music-heading--stage .listening-note--moonlight{justify-self:stretch;transform:rotate(-1deg)}}
 @media(prefers-reduced-motion:reduce){.music-heading--stage .listening-note--moonlight:hover{transform:none}}
+
+/* Character artwork integrated using existing repository assets. */
+.music-heading--stage .music-character{overflow:hidden;display:flex;align-items:flex-end;justify-content:center;mask-image:linear-gradient(to bottom,#000 60%,transparent 100%)}
+.music-heading--stage .music-character img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 14px 26px rgba(0,0,0,.5))}
+.music-heading--stage .music-character--phrolova{left:9%;background:none}
+.music-heading--stage .music-character--phrolova img{filter:contrast(1.15) saturate(1.18) drop-shadow(0 14px 26px rgba(138,22,65,.55))}
+.music-heading--stage .music-character--shorekeeper{right:9%;background:none}
+.music-heading--stage .music-character--shorekeeper img{filter:saturate(1.12) drop-shadow(0 14px 26px rgba(38,95,199,.5))}
+.music-heading--stage .music-heading-copy,.music-heading--stage .listening-note{isolation:isolate}
+@media(max-width:720px){.music-heading--stage .music-character{opacity:.25}.music-heading--stage .music-character img{object-fit:cover}}
