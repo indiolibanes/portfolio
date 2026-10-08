@@ -1,125 +1,96 @@
-<!-- About-only illustration choreography.
-     Both effects operate on the original full-size artwork:
-     no detached thumbnail butterfly, no three chopped copies of the bow. -->
+<!-- Source-preserving ornaments exclusive to #sobre:
+     Shorekeeper: separate build-time alpha layers, fixed flower.
+     Phrolova: original blossom/rod remains recognizable while three ribbons unfold.
+     Never imports or changes the Music cursor effect system. -->
 <div class="phrolova-underlay" data-about-baton aria-hidden="true">
-  <svg class="about-baton-art" viewBox="0 0 448 448" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false">
+  <svg class="about-baton-art" viewBox="0 0 448 448" xmlns="http://www.w3.org/2000/svg" focusable="false">
     <defs>
-      <filter id="about-baton-black-key" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+      <filter id="about-baton-alpha" x="-15%" y="-15%" width="130%" height="130%"
+        color-interpolation-filters="sRGB">
         <feColorMatrix in="SourceGraphic" type="matrix" values="
           1 0 0 0 0
           0 1 0 0 0
           0 0 1 0 0
-          1.25 .25 .20 0 -.08
-        "/>
+          1.25 .25 .20 0 -.08"/>
       </filter>
-      <linearGradient id="about-ribbon-red" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#540d2d"/>
-        <stop offset=".23" stop-color="#bc235b"/>
-        <stop offset=".46" stop-color="#f26486"/>
-        <stop offset=".7" stop-color="#a31c48"/>
-        <stop offset="1" stop-color="#610e37"/>
+
+      <!-- A feathered mask keeps the recognisable flower head intact. -->
+      <radialGradient id="about-baton-blossom-gradient">
+        <stop offset="0%" stop-color="#fff"/>
+        <stop offset="60%" stop-color="#fff"/>
+        <stop offset="100%" stop-color="#000"/>
+      </radialGradient>
+      <mask id="about-baton-blossom-mask" maskUnits="userSpaceOnUse"
+        x="42" y="12" width="354" height="264">
+        <rect x="42" y="12" width="354" height="264" fill="#000"/>
+        <ellipse cx="215" cy="145" rx="150" ry="110"
+          fill="url(#about-baton-blossom-gradient)"/>
+      </mask>
+
+      <linearGradient id="about-velvet-one" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#6b123e"/>
+        <stop offset=".35" stop-color="#ef6791"/>
+        <stop offset=".55" stop-color="#b51d53"/>
+        <stop offset=".80" stop-color="#f08a9d"/>
+        <stop offset="1" stop-color="#611039"/>
       </linearGradient>
-      <linearGradient id="about-ribbon-wine" x1="0" y1="1" x2="1" y2="0">
-        <stop offset="0" stop-color="#440b2a"/>
-        <stop offset=".4" stop-color="#a82c64"/>
-        <stop offset=".7" stop-color="#d94c6d"/>
-        <stop offset="1" stop-color="#741038"/>
+      <linearGradient id="about-velvet-two" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#501337"/>
+        <stop offset=".30" stop-color="#ba265b"/>
+        <stop offset=".49" stop-color="#f6a0ac"/>
+        <stop offset=".74" stop-color="#b12560"/>
+        <stop offset="1" stop-color="#4b0b2c"/>
       </linearGradient>
     </defs>
-    <image class="about-baton-source" href="/phrolova-baton.webp"
-      x="0" y="0" width="448" height="448" preserveAspectRatio="xMidYMid meet"
-      filter="url(#about-baton-black-key)" />
 
-    <!-- Ribbons preserve a continuous silhouette: strokes unfold from the
-         blossom and the entire length of the staff, then remain visible. -->
-    <g class="about-baton-ribbons" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path class="about-baton-ribbon about-baton-ribbon--one" pathLength="100"
-        d="M210 155 C161 102 91 88 82 146 C68 204 187 210 203 147 C218 80 313 57 358 99 C417 154 331 224 257 195"
-        stroke="url(#about-ribbon-red)" stroke-width="14"/>
-      <path class="about-baton-ribbon about-baton-ribbon--two" pathLength="100"
-        d="M220 148 C284 62 355 50 380 100 C417 169 292 197 233 144 C176 97 134 153 144 198 C158 255 246 261 285 206"
-        stroke="url(#about-ribbon-wine)" stroke-width="11"/>
-      <path class="about-baton-ribbon about-baton-ribbon--three" pathLength="100"
-        d="M201 171 C144 181 89 235 115 271 C144 315 216 241 231 205 C259 143 343 211 331 260 C317 314 245 321 204 286"
-        stroke="url(#about-ribbon-red)" stroke-width="13"/>
-      <path class="about-baton-ribbon about-baton-ribbon--four" pathLength="100"
-        d="M187 185 C129 210 70 276 109 323 C146 367 223 303 210 262 C193 221 125 289 158 343 C185 387 261 360 274 318"
-        stroke="url(#about-ribbon-wine)" stroke-width="10"/>
-      <path class="about-baton-ribbon about-baton-ribbon--five" pathLength="100"
-        d="M202 174 C184 239 226 273 221 323 C216 391 157 410 147 360 C140 322 187 300 245 338 C283 364 323 365 344 332"
-        stroke="url(#about-ribbon-red)" stroke-width="15"/>
-      <path class="about-baton-ribbon about-baton-ribbon--six" pathLength="100"
-        d="M214 154 C192 112 211 66 258 56 C295 48 302 100 265 115 C229 129 229 57 195 63 C146 72 161 136 181 145"
-        stroke="url(#about-ribbon-wine)" stroke-width="8"/>
-      <!-- Fine glints read like ribbon folds, not detached particles. -->
-      <path class="about-baton-ribbon about-baton-ribbon--highlight" pathLength="100"
-        d="M210 155 C161 102 91 88 82 146 C68 204 187 210 203 147 C218 80 313 57 358 99 C417 154 331 224 257 195"
-        stroke="#ffb3bc" stroke-width="2.2"/>
-      <path class="about-baton-ribbon about-baton-ribbon--highlight" pathLength="100"
-        d="M202 174 C184 239 226 273 221 323 C216 391 157 410 147 360 C140 322 187 300 245 338 C283 364 323 365 344 332"
-        stroke="#ffb3bc" stroke-width="2.1"/>
+    <!-- The original Phrolova staff is never removed or displaced. -->
+    <image class="about-baton-source" href="/phrolova-baton.webp"
+      x="0" y="0" width="448" height="448"
+      filter="url(#about-baton-alpha)"/>
+    <image class="about-baton-blossom" href="/phrolova-baton.webp"
+      x="0" y="0" width="448" height="448"
+      filter="url(#about-baton-alpha)"
+      mask="url(#about-baton-blossom-mask)"/>
+
+    <!-- Three shaped silk ribbons unfurl out of the existing flower and staff.
+         No arbitrary web of intersecting loops or chopped bow thumbnails. -->
+    <g class="about-baton-silks" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path id="about-silk-left" class="about-baton-silk about-baton-silk--left"
+        pathLength="100"
+        d="M208 170 C172 184 126 209 111 251 C97 286 130 303 162 286 C203 264 187 230 153 252 C128 270 132 314 174 349"
+        stroke="url(#about-velvet-one)" stroke-width="12"/>
+      <path id="about-silk-right" class="about-baton-silk about-baton-silk--right"
+        pathLength="100"
+        d="M221 169 C258 185 299 208 307 247 C314 281 287 298 268 276 C244 250 274 228 302 257 C330 286 325 326 282 357"
+        stroke="url(#about-velvet-two)" stroke-width="10"/>
+      <path id="about-silk-lower" class="about-baton-silk about-baton-silk--lower"
+        pathLength="100"
+        d="M201 178 C181 227 198 259 216 289 C239 327 209 362 181 355 C156 349 170 316 196 328 C222 339 252 371 233 407"
+        stroke="url(#about-velvet-one)" stroke-width="9"/>
+      <use href="#about-silk-left" class="about-baton-glint" stroke="#ffd2d4" stroke-width="2.3"/>
+      <use href="#about-silk-right" class="about-baton-glint" stroke="#ffe1dc" stroke-width="1.8"/>
+      <use href="#about-silk-lower" class="about-baton-glint" stroke="#ffd2d4" stroke-width="1.6"/>
     </g>
   </svg>
 </div>
 
 <div class="shorekeeper-underlay" data-about-butterfly aria-hidden="true">
-  <!-- Two copies of the SAME full-sized source share its native coordinates.
-       The blue insect is lifted from those pixels; the remaining image/flower
-       does not move. There is no separately scaled 231×143 thumbnail. -->
-  <svg class="about-shorekeeper-art" viewBox="0 0 800 689"
-    xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" focusable="false">
-    <defs>
-      <!-- Cyan butterfly versus ivory flower: preserve bright neutral pixels
-           while separating saturated blue highlights from the original art. -->
-      <filter id="about-flower-only" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-        <feColorMatrix in="SourceGraphic" type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          3 1.3 -4 1 0
-        "/>
-      </filter>
-      <filter id="about-butterfly-only" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-        <feColorMatrix in="SourceGraphic" type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          -3 -1.3 4 .15 -.18
-        "/>
-      </filter>
-      <clipPath id="about-butterfly-region">
-        <ellipse cx="416" cy="288" rx="252" ry="192"/>
-      </clipPath>
-    </defs>
-    <image class="about-flower-fixed" href="/shorekeeper-black-shores.png"
-      x="0" y="0" width="800" height="689" preserveAspectRatio="xMidYMid meet"
-      filter="url(#about-flower-only)"/>
-    <g class="about-butterfly-flight">
-      <g class="about-butterfly-wings" clip-path="url(#about-butterfly-region)">
-        <image href="/shorekeeper-black-shores.png"
-          x="0" y="0" width="800" height="689" preserveAspectRatio="xMidYMid meet"
-          filter="url(#about-butterfly-only)"/>
-      </g>
-    </g>
-  </svg>
+  <div class="about-shorekeeper-layers">
+    <!-- Assets are generated from the ORIGINAL illustration using Sharp.
+         The base retains neutral/ivory flower pixels. The wings have the
+         identical dimensions and origin as the source: never a mini-butterfly. -->
+    <img class="about-shorekeeper-flower" src="/assets/about-shorekeeper-base.webp"
+      width="800" height="689" alt="" decoding="async"/>
+    <img class="about-shorekeeper-wings" src="/assets/about-shorekeeper-wings.webp"
+      width="800" height="689" alt="" decoding="async"/>
+  </div>
 </div>
 
 <style is:global>
-  /* Site-wide cursor effects in Music are not involved or referenced here. */
-  #sobre .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay) {
-    pointer-events: none;
-  }
-  #sobre .hero-ornaments :is(.about-baton-art, .about-shorekeeper-art) {
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    transform: none;
-  }
-
-  /* Freeze both source pictures even where old global :hover rules animate them. */
+  /* Strong scope: no other portfolio section or cursor effects are touched. */
   #sobre .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay),
   #sobre:hover .hero-ornaments :is(.phrolova-underlay, .shorekeeper-underlay) {
+    pointer-events: none;
     transition: none !important;
   }
   #sobre .hero-ornaments .phrolova-underlay,
@@ -131,146 +102,141 @@
     transform: translateY(-50%) rotate(-2deg);
   }
 
-  /* The full staff changes into ribbon loops and stays on the screen.
-     No opacity=0 ending, detached bow halves or particle fragmentation. */
+  #sobre .hero-ornaments .about-baton-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: none !important;
+  }
   #sobre .about-baton-source {
     opacity: 1;
-    transition: opacity 1100ms ease 270ms;
+    transition: opacity 1200ms cubic-bezier(.2,.6,.3,1);
   }
-  #sobre .about-baton-ribbons {
+  #sobre .about-baton-blossom {
     opacity: 0;
-    transition: opacity 340ms ease;
+    transition: opacity 350ms ease;
   }
-  #sobre .about-baton-ribbon {
+  #sobre .about-baton-silks {
+    opacity: 0;
+    filter: drop-shadow(0 3px 3px rgba(87,14,44,.24));
+    transition: opacity 420ms ease;
+  }
+  #sobre .about-baton-silk,
+  #sobre .about-baton-glint {
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
-    transition: stroke-dashoffset 1650ms cubic-bezier(.19,.65,.2,1);
+    transition: stroke-dashoffset 1580ms cubic-bezier(.2,.7,.27,1);
   }
-  #sobre .about-baton-ribbon--two { transition-delay: 110ms; }
-  #sobre .about-baton-ribbon--three { transition-delay: 205ms; }
-  #sobre .about-baton-ribbon--four { transition-delay: 290ms; }
-  #sobre .about-baton-ribbon--five { transition-delay: 360ms; }
-  #sobre .about-baton-ribbon--six { transition-delay: 155ms; }
-  #sobre .about-baton-ribbon--highlight { transition-delay: 430ms; }
+  #sobre .about-baton-silk--right,
+  #sobre .about-baton-glint:nth-of-type(2) { transition-delay: 160ms; }
+  #sobre .about-baton-silk--lower,
+  #sobre .about-baton-glint:nth-of-type(3) { transition-delay: 280ms; }
 
-  #sobre .phrolova-underlay.is-unraveling .about-baton-source {
-    opacity: .16;
-  }
-  #sobre .phrolova-underlay.is-unraveling .about-baton-ribbons {
-    opacity: 1;
-  }
-  #sobre .phrolova-underlay.is-unraveling .about-baton-ribbon {
+  #sobre .phrolova-underlay.is-unraveling .about-baton-source { opacity: .51; }
+  #sobre .phrolova-underlay.is-unraveling .about-baton-blossom,
+  #sobre .phrolova-underlay.is-unraveling .about-baton-silks { opacity: 1; }
+  #sobre .phrolova-underlay.is-unraveling :is(.about-baton-silk, .about-baton-glint) {
     stroke-dashoffset: 0;
   }
 
-  /* The butterfly has the full coordinates and scale of the source image.
-     Its flower/remaining source stays entirely outside the moving group. */
-  #sobre .about-flower-fixed {
+  #sobre .about-shorekeeper-layers {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 689;
+    overflow: visible;
+  }
+  #sobre .about-shorekeeper-layers img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-width: none;
+    pointer-events: none;
+  }
+  #sobre .about-shorekeeper-flower {
     transform: none !important;
-    opacity: 1;
+    filter: drop-shadow(0 8px 16px rgba(52,67,160,.22));
   }
-  #sobre .about-butterfly-flight {
-    transform-box: view-box;
-    transform-origin: 52% 42%;
+  #sobre .about-shorekeeper-wings {
+    transform-origin: 52% 40%;
+    will-change: transform;
+    filter: drop-shadow(0 1px 5px rgba(75,175,236,.2));
   }
-  #sobre .about-butterfly-wings {
-    transform-box: view-box;
-    transform-origin: 52% 42%;
+  #sobre .shorekeeper-underlay.is-in-flight .about-shorekeeper-wings {
+    animation: about-wings-takeoff 2550ms cubic-bezier(.23,.63,.23,1) both;
   }
-  #sobre .shorekeeper-underlay.is-in-flight .about-butterfly-flight {
-    animation: about-original-butterfly-takeoff 2700ms cubic-bezier(.26,.51,.2,1) both;
-  }
-  #sobre .shorekeeper-underlay.is-in-flight .about-butterfly-wings {
-    animation: about-original-butterfly-flutter 180ms ease-in-out 14 alternate;
-  }
-  @keyframes about-original-butterfly-takeoff {
-    0% { opacity: 1; transform: translate(0,0) rotate(0deg) scale(1); }
-    19% { opacity: 1; transform: translate(34px,-45px) rotate(5deg) scale(1.025); }
-    42% { opacity: 1; transform: translate(-43px,-108px) rotate(-11deg) scale(1.045); }
-    69% { opacity: .96; transform: translate(29px,-200px) rotate(12deg) scale(1.02); }
-    100% { opacity: .18; transform: translate(-220px,-325px) rotate(-17deg) scale(.94); }
-  }
-  @keyframes about-original-butterfly-flutter {
-    from { transform: perspective(700px) rotateY(-24deg) scaleX(.88); }
-    to { transform: perspective(700px) rotateY(20deg) scaleX(1.02); }
+  @keyframes about-wings-takeoff {
+    0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+    14% { transform: translate(8px,-11px) rotate(2deg) scale(1.02,.95); opacity: 1; }
+    30% { transform: translate(24px,-47px) rotate(7deg) scale(.96,1.03); opacity: 1; }
+    49% { transform: translate(-38px,-111px) rotate(-9deg) scale(1.04,.9); opacity: 1; }
+    70% { transform: translate(25px,-205px) rotate(10deg) scale(.95,1.02); opacity: 1; }
+    100% { transform: translate(-155px,-317px) rotate(-12deg) scale(.84,.97); opacity: .12; }
   }
 
-  html[data-legacy-mode='true'] #sobre .hero-ornaments,
-  html[data-serious-mode='true'] #sobre .hero-ornaments {
+  html[data-serious-mode='true'] #sobre .hero-ornaments,
+  html[data-legacy-mode='true'] #sobre .hero-ornaments {
     display: none;
   }
   @media (prefers-reduced-motion: reduce) {
     #sobre .about-baton-source,
-    #sobre .about-baton-ribbons,
-    #sobre .about-baton-ribbon { transition: none !important; }
-    #sobre .about-butterfly-flight,
-    #sobre .about-butterfly-wings { animation: none !important; }
+    #sobre .about-baton-blossom,
+    #sobre .about-baton-silks,
+    #sobre .about-baton-silk,
+    #sobre .about-baton-glint { transition: none !important; }
+    #sobre .about-shorekeeper-wings { animation: none !important; will-change: auto; }
     #sobre .phrolova-underlay.is-unraveling .about-baton-source { opacity: 1; }
-    #sobre .phrolova-underlay.is-unraveling .about-baton-ribbons { opacity: 0; }
+    #sobre .phrolova-underlay.is-unraveling :is(.about-baton-blossom,.about-baton-silks) {
+      opacity: 0;
+    }
   }
 </style>
 
 <script>
-  (() => {
-    const hero = document.querySelector<HTMLElement>('#sobre');
-    const shorekeeper = hero?.querySelector<HTMLElement>('[data-about-butterfly]');
-    const phrolova = hero?.querySelector<HTMLElement>('[data-about-baton]');
-    if (!hero || !shorekeeper || !phrolova) return;
+  const hero = document.querySelector<HTMLElement>('#sobre');
+  const shorekeeper = hero?.querySelector<HTMLElement>('[data-about-butterfly]');
+  const phrolova = hero?.querySelector<HTMLElement>('[data-about-baton]');
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (hero && shorekeeper && phrolova) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const disabled = () =>
-      reducedMotion.matches ||
+      reduced.matches ||
       document.documentElement.dataset.seriousMode === 'true' ||
       document.documentElement.dataset.legacyMode === 'true';
 
-    type Ornament = 'butterfly' | 'baton';
-    const zones: Record<Ornament, HTMLElement> = {
-      butterfly: shorekeeper,
-      baton: phrolova,
-    };
-    let active: Ornament | null = null;
+    type AboutOrnament = 'butterfly' | 'baton';
+    let active: AboutOrnament | null = null;
+    let touchStart: { id: number; x: number; y: number; zone: AboutOrnament } | null = null;
 
-    // Only the illustrated region can trigger the gesture; use ellipses so
-    // transparent corners of the source never hijack nearby buttons.
     const distance = (node: HTMLElement, x: number, y: number) => {
-      const r = node.getBoundingClientRect();
-      const dx = (x - (r.left + r.width * .5)) / (r.width * .46);
-      const dy = (y - (r.top + r.height * .5)) / (r.height * .48);
+      const rect = node.getBoundingClientRect();
+      const dx = (x - rect.left - rect.width * .5) / (rect.width * .46);
+      const dy = (y - rect.top - rect.height * .5) / (rect.height * .48);
       return dx * dx + dy * dy;
     };
-
-    const zoneAt = (x: number, y: number): Ornament | null => {
-      const butterflyDistance = distance(shorekeeper, x, y);
-      const batonDistance = distance(phrolova, x, y);
-      if (butterflyDistance > 1 && batonDistance > 1) return null;
-      return butterflyDistance <= batonDistance ? 'butterfly' : 'baton';
+    const zoneAt = (x: number, y: number): AboutOrnament | null => {
+      const wingDistance = distance(shorekeeper, x, y);
+      const staffDistance = distance(phrolova, x, y);
+      if (wingDistance > 1 && staffDistance > 1) return null;
+      return wingDistance <= staffDistance ? 'butterfly' : 'baton';
     };
-
-    function setActive(next: Ornament | null) {
+    const setActive = (next: AboutOrnament | null) => {
       if (active === next) return;
       active = next;
       shorekeeper.classList.toggle('is-in-flight', next === 'butterfly' && !disabled());
       phrolova.classList.toggle('is-unraveling', next === 'baton' && !disabled());
-    }
+    };
 
     hero.addEventListener('pointermove', (event) => {
-      if (event.pointerType !== 'mouse' || disabled()) {
-        setActive(null);
-        return;
-      }
+      if (event.pointerType !== 'mouse' || disabled()) return setActive(null);
       setActive(zoneAt(event.clientX, event.clientY));
     }, { passive: true });
     hero.addEventListener('pointerleave', () => setActive(null));
-    reducedMotion.addEventListener('change', () => {
-      if (disabled()) setActive(null);
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) setActive(null);
-    });
 
-    // A deliberate tap may trigger the same effect on touchscreens.
-    // Never trigger on pointerdown because touch scrolling also fires it.
-    let touchStart: { id: number; x: number; y: number; zone: Ornament } | null = null;
+    // Tap, not pointerdown: scrolling the page does not trigger artwork.
     hero.addEventListener('pointerdown', (event) => {
       touchStart = null;
       if (event.pointerType === 'mouse' || disabled()) return;
@@ -284,9 +250,12 @@
       if (!start || start.id !== event.pointerId || disabled()) return;
       if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
       if (zoneAt(event.clientX, event.clientY) !== start.zone) return;
-      const next = start.zone === active ? null : start.zone;
-      setActive(next);
+      setActive(active === start.zone ? null : start.zone);
     }, { passive: true });
     hero.addEventListener('pointercancel', () => { touchStart = null; });
-  })();
+    reduced.addEventListener('change', () => setActive(null));
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) setActive(null);
+    });
+  }
 </script>
