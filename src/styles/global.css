@@ -7237,3 +7237,9 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .listening-note--moonlight .listening-note-quote{border:0;padding:0;margin:0;font-family:Georgia,serif;font-size:clamp(1.06rem,1.5vw,1.38rem);font-weight:400;line-height:1.55;font-style:italic;letter-spacing:-.015em;max-width:33ch}
 .listening-note--moonlight .listening-note-footer{margin-top:auto;padding-top:.9rem;border-top:1px solid rgba(115,84,47,.25);font-size:.7rem;line-height:1.5;letter-spacing:.045em;text-transform:none;color:#745b42}
 @media(max-width:560px){.listening-note--moonlight{transform:none}.listening-note--moonlight .listening-note-quote{max-width:none}}
+
+.listening-note-score{display:flex;justify-content:space-around;align-items:center;min-height:48px;font-size:1.6rem;color:#86556a}
+.listening-note-score span{display:inline-block;animation:sonata-float 2.4s ease-in-out infinite alternate}
+.listening-note-score span:nth-child(2n){animation-delay:-1.2s}
+@keyframes sonata-float{from{transform:translateY(8px) rotate(-12deg)}to{transform:translateY(-8px) rotate(12deg)}}
+@media(prefers-reduced-motion:reduce){.listening-note-score span{animation:none}}
