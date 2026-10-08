@@ -2,6 +2,16 @@
 
 Status: **pesquisa / não implementado**. Em `#sobre`, Phrolova está **estática**; a animação da Shorekeeper permanece habilitada. Não reativar os antigos laços SVG.
 
+## Biblioteca de referência indexada
+
+As referências verificadas e a prancha visual foram preparadas em `assets/phrolova/`:
+
+- **`assets/phrolova/reference-board.svg`** — quadro local autocontido com arte original, close-up da inflorescência e detalhe da haste.
+- **`assets/phrolova/references.json`** — links de quatro fotografias angulares, ícone canônico do *Crimson Baton*, esboços e vídeo oficial, com fontes e ressalvas.
+- **`assets/phrolova/WORK-BRIEF.md`** — roteiro curto, restrito à reconstrução vetorial estática. **Ler este arquivo antes de abrir uma nova tarefa Work.**
+
+O *Crimson Baton* é um item de missão/orquestração; **não** é *Lethean Elegy*, o rectifier em formato de violino. Fotografias de props externos estão **somente indexadas por URL** e não foram redistribuídas. A animação da Shorekeeper e o código da Música não devem ser alterados na etapa de vetorização.
+
 ## Referências visuais
 
 1. **Reprodução física do bastonete contra fundo claro** — [Cosangas, Phrolova Flower Cosplay Prop](https://www.cosangas.com/products/wuthering-waves-phrolova-cosplay-accessory-prop). A fotografia de produto mostra claramente haste vermelha, anéis dourados, duas inflorescências e estames. **Melhor referência geométrica para traçado de pétalas e haste**, embora não substitua a identidade artística no jogo. Foto de terceiros: usar como referência, não incorporá-la ao site sem autorização.
