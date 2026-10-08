@@ -767,3 +767,215 @@ html[data-legacy-mode='true'] .music-loading {
   background: #ffffff;
   color: #000000;
 }
+
+
+/* --------------------------------------------------
+   2026 content sync — keep new sections readable in Legacy / 1998
+-------------------------------------------------- */
+
+html[data-legacy-mode='true'] .editorial-masthead {
+  display: block;
+  margin: 0 0 12px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #808080;
+  color: #000000;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-legacy-mode='true'] .editorial-masthead span + span::before {
+  content: " | ";
+}
+
+/* Percurso: recent institutional marks collapse back to text-first HTML. */
+html[data-legacy-mode='true'] .background-entry {
+  display: block !important;
+}
+
+html[data-legacy-mode='true'] .background-mark {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .background-meta,
+html[data-legacy-mode='true'] .background-case-study__label {
+  color: #333333 !important;
+  font-family: "Courier New", monospace !important;
+}
+
+html[data-legacy-mode='true'] .background-case-study {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid #808080;
+  border-radius: 0;
+  background: #f5f5f5;
+  box-shadow: none;
+}
+
+html[data-legacy-mode='true'] .background-case-study strong,
+html[data-legacy-mode='true'] .background-case-study p {
+  color: #000000 !important;
+}
+
+html[data-legacy-mode='true'] .background-case-study a {
+  color: #0000ee !important;
+  text-decoration: underline;
+}
+
+/* Music gallery: preserve the current information, remove the contemporary stage. */
+html[data-legacy-mode='true'] .music-shelf.music-shelf--gallery {
+  overflow: visible;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading.music-heading--gallery {
+  display: block !important;
+  min-height: 0 !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-heading-copy {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-heading-copy h2 {
+  margin: 0.5rem 0 !important;
+  color: #000000 !important;
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 2rem !important;
+  line-height: 1.2 !important;
+  text-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery :is(
+  .music-source-label,
+  .music-panel-label
+) {
+  color: #000000 !important;
+  font-family: "Courier New", monospace !important;
+  text-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-heading-description {
+  max-width: none !important;
+  margin: 0 0 14px !important;
+  color: #000000 !important;
+  font-size: 1rem !important;
+}
+
+html[data-legacy-mode='true'] .music-sophia-mini,
+html[data-legacy-mode='true'] .music-panorama,
+html[data-legacy-mode='true'] .music-panorama-action,
+html[data-legacy-mode='true'] .music-panorama-effects,
+html[data-legacy-mode='true'] .music-panorama-glint,
+html[data-legacy-mode='true'] .listening-note-score {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel,
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .listening-note--moonlight {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  margin: 12px 0 0 !important;
+  padding: 12px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel .music-grid--stage {
+  display: block !important;
+  min-height: 0 !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track-card {
+  display: block !important;
+  min-height: 0 !important;
+  padding: 10px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-artwork-shell {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery :is(
+  .recent-track-copy h3,
+  .recent-artist,
+  .recent-album,
+  .music-provenance
+) {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .music-profile-fallback a {
+  color: #0000ee !important;
+  text-decoration: underline;
+}
+
+html[data-legacy-mode='true'] .music-quote-assistive {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  white-space: normal !important;
+}
+
+html[data-legacy-mode='true'] .music-quote-typed {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .listening-note-quote,
+html[data-legacy-mode='true'] .listening-note-footer,
+html[data-legacy-mode='true'] .listening-note-top {
+  color: #000000 !important;
+}
+
+/* Contact: native-looking controls instead of the modern material buttons. */
+html[data-legacy-mode='true'] .closing-actions {
+  gap: 8px;
+}
+
+html[data-legacy-mode='true'] .closing-actions .button {
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 2px outset #efefef !important;
+  border-radius: 0 !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html[data-legacy-mode='true'] .closing-actions .button:active {
+  border-style: inset !important;
+}
+
+/* Make the latest audit affordances feel native to the historical mode. */
+html[data-legacy-mode='true'] :is(.nav-links a, .social-links a) {
+  min-width: 0;
+}
+
+html[data-legacy-mode='true'] .work-index a[aria-current='true'] {
+  font-weight: 700;
+  text-decoration: underline;
+}
