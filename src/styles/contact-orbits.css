@@ -7,3 +7,32 @@
 @media (min-width: 921px) { #contato { grid-template-columns: minmax(0,1fr) minmax(0,1fr); column-gap: clamp(1.5rem,3vw,3rem); } }
 @media (max-width: 920px) { #contato { grid-template-columns: minmax(0,1fr); } #contato .closing-marks--orbital { grid-column: 1; width: min(100%,480px); margin: .75rem auto 0; } }
 html[data-serious-mode='true'] #contato .closing-actions .button { color: #111; border-color: #555; background: #fff; }
+
+/* Cosmic observatory backdrop for the authorial mode only.
+   The Triforce orbits remain a separate, higher visual layer. The hue of
+   this nearly-black sky distinguishes Contact from the AMOLED Translation. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato {
+  background:
+    radial-gradient(ellipse 46% 60% at 76% 50%, rgba(28, 44, 87, .22), transparent 92%),
+    radial-gradient(ellipse 32% 40% at 9% 85%, rgba(78, 37, 80, .11), transparent 90%),
+    linear-gradient(125deg, #090c14 0%, #070a11 54%, #0b0e1a 100%);
+  border-color: rgba(210, 183, 125, .28);
+  box-shadow: 0 22px 60px rgba(9, 12, 28, .30), inset 0 1px 0 rgba(237, 208, 150, .07);
+}
+
+/* z-index order inside the isolated contact section:
+   0 stars, 2 Work's orbital scene, 5 title/body, 6 contact actions. */
+#contato .cosmic-starfield { z-index: 0; }
+#contato .closing-marks--orbital { z-index: 2; }
+#contato .closing-copy { z-index: 5; }
+#contato .closing-actions { z-index: 6; }
+
+/* On small screens, text comes before the orbital illustration without
+   losing the full-bleed sky. */
+@media (max-width: 680px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato {
+    background:
+      radial-gradient(ellipse 65% 42% at 60% 74%, rgba(30, 49, 91, .22), transparent 94%),
+      linear-gradient(160deg, #090c14, #070a11 60%, #0c1120);
+  }
+}
