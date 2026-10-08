@@ -12,8 +12,150 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .bloc
    fragments created by HeroMicroInteractions may unravel on hover. */
 #sobre .hero-statement { z-index: 4; }
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero-statement::before { background: #fffaf0f7; }
-.sophia-animation--lab .sophia-animation__frame { background-image: url('/images/sophia/lab-single-tail.webp'); background-size: contain; background-position: center; animation: lab-attention 4s ease-in-out infinite; transform-origin: 50% 88%; }
-@keyframes lab-attention { 0%,100% { transform: rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
+/* Sophia no laboratório: anota enquanto percorre o espaço procurando uma resposta.
+   O sprite de quatro poses fornece o gesto de escrita; o contêiner cuida da caminhada
+   lateral e da mudança de direção sem deformar os frames. */
+.sophia-animation--lab {
+  overflow: visible;
+
+  transform-origin:
+    50% 88%;
+
+  animation:
+    lab-search-walk
+    10.5s
+    ease-in-out
+    infinite;
+}
+
+.sophia-animation--lab .sophia-animation__frame {
+  background-image:
+    url('/images/sophia/lab-oriental.webp');
+
+  background-size:
+    400% 100%;
+
+  background-position:
+    0 0;
+
+  transform-origin:
+    50% 88%;
+
+  animation:
+    lab-write-notes
+    1.65s
+    steps(1, end)
+    infinite;
+}
+
+@keyframes lab-write-notes {
+  0%,
+  100% {
+    background-position:
+      0 0;
+
+    transform:
+      translateY(0)
+      rotate(-0.4deg);
+  }
+
+  25% {
+    background-position:
+      33.333% 0;
+
+    transform:
+      translateY(-2px)
+      rotate(0.5deg);
+  }
+
+  50% {
+    background-position:
+      66.667% 0;
+
+    transform:
+      translateY(0)
+      rotate(-0.2deg);
+  }
+
+  75% {
+    background-position:
+      100% 0;
+
+    transform:
+      translateY(-1px)
+      rotate(0.4deg);
+  }
+}
+
+@keyframes lab-search-walk {
+  0%,
+  8% {
+    transform:
+      translateX(-12%)
+      translateY(0)
+      scaleX(1);
+  }
+
+  18% {
+    transform:
+      translateX(-5%)
+      translateY(-3px)
+      scaleX(1);
+  }
+
+  29% {
+    transform:
+      translateX(4%)
+      translateY(0)
+      scaleX(1);
+  }
+
+  40%,
+  46% {
+    transform:
+      translateX(12%)
+      translateY(-2px)
+      scaleX(1);
+  }
+
+  48%,
+  54% {
+    transform:
+      translateX(12%)
+      translateY(0)
+      scaleX(-1);
+  }
+
+  64% {
+    transform:
+      translateX(5%)
+      translateY(-3px)
+      scaleX(-1);
+  }
+
+  75% {
+    transform:
+      translateX(-4%)
+      translateY(0)
+      scaleX(-1);
+  }
+
+  86%,
+  92% {
+    transform:
+      translateX(-12%)
+      translateY(-2px)
+      scaleX(-1);
+  }
+
+  94%,
+  100% {
+    transform:
+      translateX(-12%)
+      translateY(0)
+      scaleX(1);
+  }
+}
 /* Shared skeleton, five individual materials. Dark surfaces keep copy clear. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card { isolation: isolate; border: 1px solid #c3a27566; box-shadow: 0 16px 40px #30213918; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #traducao { background: radial-gradient(ellipse at 90% 25%,#cba96820,transparent 50%),repeating-linear-gradient(125deg,transparent 0 38px,#d0bb8710 39px 40px),#030303; }
@@ -40,7 +182,24 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .b
 @keyframes emil-greeting { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
 @keyframes triforce-light { 0%,60%,100% { fill: #dbad34; filter: brightness(1); } 24%,36% { fill: #fff0a2; filter: brightness(1.2) drop-shadow(0 0 7px #efc75a); } }
 html[data-serious-mode='true'] :is(.prism-spectrum,.closing-relics),html[data-legacy-mode='true'] :is(.prism-spectrum,.closing-relics) { display: none; }
-@media (prefers-reduced-motion: reduce) { #sobre .prism-ray,.sophia-animation--lab .sophia-animation__frame,.closing-emil,.closing-triforce path { animation: none!important; } }
+@media (prefers-reduced-motion: reduce) {
+  #sobre .prism-ray,
+  .sophia-animation--lab,
+  .sophia-animation--lab .sophia-animation__frame,
+  .closing-emil,
+  .closing-triforce path {
+    animation: none !important;
+  }
+
+  .sophia-animation--lab {
+    transform: none !important;
+  }
+
+  .sophia-animation--lab .sophia-animation__frame {
+    background-position: 0 0;
+    transform: none !important;
+  }
+}
 
 /* Give the source illustrations room of their own, away from text. */
 #sobre .hero-ornaments { position: relative; grid-column: 1 / -1; height: clamp(220px,23vw,300px); margin-top: -1rem; /* overflow stays visible for the butterfly's upward flight */ overflow: visible; }
