@@ -8,8 +8,8 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .bloc
 #sobre .prism-ray { fill: none; stroke-width: 21; stroke-dasharray: 620; stroke-dashoffset: 0; animation: prism-dispersion 7s ease-in-out infinite; animation-delay: calc(var(--ray) * .22s); }
 @keyframes prism-dispersion { 0%,8% { stroke-dashoffset: 620; opacity: .25; } 32%,75% { stroke-dashoffset: 0; opacity: 1; } 95%,100% { stroke-dashoffset: 0; opacity: .35; } }
 #sobre .phrolova-underlay, #sobre:hover .phrolova-underlay { transform: rotate(7deg); transition: none; right: 0; }
-/* Preserve the complete baton at full opacity; only the separate ribbon
-   fragments created by HeroMicroInteractions may unravel on hover. */
+/* HeroMicroInteractions owns the internal baton motion. This rule only
+   preserves the approved outer placement of the complete SVG composition. */
 #sobre .hero-statement { z-index: 4; }
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero-statement::before { background: #fffaf0f7; }
 /* Sophia no laboratório: anota enquanto percorre o espaço procurando uma resposta.

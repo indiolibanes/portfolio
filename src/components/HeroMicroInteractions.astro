@@ -1,44 +1,1035 @@
-<!-- Static #sobre artwork only: original Shorekeeper layers and editable Phrolova SVG. -->
+---
+import crimsonBatonSvg from '../../assets/phrolova/crimson-baton-vector-draft.svg?raw';
+---
+
+<!--
+  #sobre motion:
+  - Shorekeeper keeps the approved flower/butterfly geometry and animates only
+    the already-separated layers.
+  - Phrolova uses the approved editable Crimson Baton SVG so its real petal,
+    stamen, shaft and ornament groups can dissolve independently.
+-->
 <div class="phrolova-underlay" data-about-baton aria-hidden="true">
-  <img class="about-baton-art" src="/assets/phrolova/crimson-baton.svg" width="448" height="448" alt="" decoding="async" />
+  <div
+    class="about-baton-vector"
+    set:html={crimsonBatonSvg}
+  ></div>
 </div>
 
 <div class="shorekeeper-underlay" data-about-butterfly aria-hidden="true">
   <div class="about-shorekeeper-layers">
-    <img class="about-shorekeeper-flower" src="/assets/about/shorekeeper-flower.webp" width="1477" height="1065" alt="" decoding="async" />
-    <img class="about-shorekeeper-wings" src="/assets/about/shorekeeper-butterfly.webp" width="1477" height="1065" alt="" decoding="async" />
+    <div class="about-shorekeeper-flower-reactor">
+      <img
+        class="about-shorekeeper-flower"
+        src="/assets/about/shorekeeper-flower.webp"
+        width="1477"
+        height="1065"
+        alt=""
+        decoding="async"
+      />
+    </div>
+
+    <div class="about-shorekeeper-butterfly-flight">
+      <img
+        class="about-shorekeeper-wings"
+        src="/assets/about/shorekeeper-butterfly.webp"
+        width="1477"
+        height="1065"
+        alt=""
+        decoding="async"
+      />
+    </div>
   </div>
 </div>
 
+<script is:inline>
+  (() => {
+    const ornaments =
+      document.querySelector(
+        '#sobre .hero-ornaments',
+      );
+
+    if (!ornaments) return;
+
+    const reducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      );
+
+    const update = (visible = true) => {
+      const enabled =
+        visible &&
+        !document.hidden &&
+        !reducedMotion.matches &&
+        document.documentElement.dataset
+          .seriousMode !== 'true' &&
+        document.documentElement.dataset
+          .legacyMode !== 'true';
+
+      ornaments.dataset.ornamentsVisible =
+        String(enabled);
+    };
+
+    let visible = true;
+
+    if ('IntersectionObserver' in window) {
+      const observer =
+        new IntersectionObserver(
+          ([entry]) => {
+            visible =
+              Boolean(entry?.isIntersecting);
+            update(visible);
+          },
+          {
+            threshold: 0.12,
+          },
+        );
+
+      observer.observe(ornaments);
+    } else {
+      update(true);
+    }
+
+    reducedMotion.addEventListener(
+      'change',
+      () => update(visible),
+    );
+
+    document.addEventListener(
+      'visibilitychange',
+      () => update(visible),
+    );
+
+    const modeObserver =
+      new MutationObserver(
+        () => update(visible),
+      );
+
+    modeObserver.observe(
+      document.documentElement,
+      {
+        attributes: true,
+        attributeFilter: [
+          'data-serious-mode',
+          'data-legacy-mode',
+        ],
+      },
+    );
+  })();
+</script>
+
 <style is:global>
-  #sobre .hero-ornaments :is(.phrolova-underlay,.shorekeeper-underlay) {
+  #sobre .hero-ornaments
+  :is(
+    .phrolova-underlay,
+    .shorekeeper-underlay
+  ) {
     pointer-events: none;
     transition: none !important;
   }
-  #sobre .hero-ornaments .about-baton-art {
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    filter: none !important;
-  }
+
+  /* --------------------------------------------------
+     Shorekeeper
+     -------------------------------------------------- */
+
   #sobre .about-shorekeeper-layers {
     position: relative;
+
     width: 100%;
     aspect-ratio: 1477 / 1065;
+
+    overflow: visible;
   }
+
+  #sobre
+  :is(
+    .about-shorekeeper-flower-reactor,
+    .about-shorekeeper-butterfly-flight
+  ) {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 50% 50%;
+
+    will-change:
+      transform;
+  }
+
   #sobre .about-shorekeeper-layers img {
     position: absolute;
     inset: 0;
+
     display: block;
+
     width: 100%;
     height: 100%;
     max-width: none;
+
     object-fit: contain;
+
     pointer-events: none;
-    transform: none !important;
+
     filter: none !important;
   }
-  html[data-serious-mode='true'] #sobre .hero-ornaments,
-  html[data-legacy-mode='true'] #sobre .hero-ornaments { display: none; }
+
+  /*
+    The butterfly remains exactly on the approved static coordinates until
+    take-off. Its inner scale pulse is intentionally subtle: it reads as wing
+    pressure without creating a second sprite or shrinking the butterfly into
+    a residual particle.
+  */
+  #sobre
+  .about-shorekeeper-butterfly-flight {
+    animation:
+      shorekeeper-butterfly-flight
+      9.2s
+      cubic-bezier(
+        .42,
+        .02,
+        .2,
+        1
+      )
+      infinite;
+
+    transform-origin:
+      42% 58%;
+  }
+
+  #sobre
+  .about-shorekeeper-wings {
+    animation:
+      shorekeeper-wing-pressure
+      9.2s
+      ease-in-out
+      infinite;
+
+    transform-origin:
+      42% 54%;
+
+    will-change:
+      transform;
+  }
+
+  #sobre
+  .about-shorekeeper-flower-reactor {
+    animation:
+      shorekeeper-flower-recoil
+      9.2s
+      ease-in-out
+      infinite;
+
+    transform-origin:
+      72% 74%;
+  }
+
+  @keyframes
+  shorekeeper-butterfly-flight {
+    0%,
+    15%,
+    100% {
+      transform:
+        translate(0, 0)
+        rotate(0deg);
+    }
+
+    22% {
+      transform:
+        translate(4%, -6%)
+        rotate(2.5deg);
+    }
+
+    33% {
+      transform:
+        translate(12%, -18%)
+        rotate(7deg);
+    }
+
+    45% {
+      transform:
+        translate(19%, -31%)
+        rotate(4deg);
+    }
+
+    55% {
+      transform:
+        translate(11%, -37%)
+        rotate(-3deg);
+    }
+
+    66% {
+      transform:
+        translate(-3%, -27%)
+        rotate(-7deg);
+    }
+
+    77% {
+      transform:
+        translate(-5%, -15%)
+        rotate(-4deg);
+    }
+
+    88% {
+      transform:
+        translate(-1%, -4%)
+        rotate(-1deg);
+    }
+
+    94% {
+      transform:
+        translate(0, 0)
+        rotate(0deg);
+    }
+  }
+
+  @keyframes
+  shorekeeper-wing-pressure {
+    0%,
+    15%,
+    92%,
+    100% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    18% {
+      transform:
+        scaleX(.965)
+        scaleY(1.012);
+    }
+
+    21% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    24% {
+      transform:
+        scaleX(.955)
+        scaleY(1.016);
+    }
+
+    27% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    30% {
+      transform:
+        scaleX(.962)
+        scaleY(1.014);
+    }
+
+    33% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    36% {
+      transform:
+        scaleX(.952)
+        scaleY(1.018);
+    }
+
+    39% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    42% {
+      transform:
+        scaleX(.96)
+        scaleY(1.014);
+    }
+
+    45% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    48% {
+      transform:
+        scaleX(.955)
+        scaleY(1.016);
+    }
+
+    51% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    55% {
+      transform:
+        scaleX(.968)
+        scaleY(1.01);
+    }
+
+    59% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    65% {
+      transform:
+        scaleX(.972)
+        scaleY(1.008);
+    }
+
+    69% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    74% {
+      transform:
+        scaleX(.974)
+        scaleY(1.008);
+    }
+
+    78% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+
+    83% {
+      transform:
+        scaleX(.982)
+        scaleY(1.005);
+    }
+
+    87% {
+      transform:
+        scaleX(1)
+        scaleY(1);
+    }
+  }
+
+  @keyframes
+  shorekeeper-flower-recoil {
+    0%,
+    15%,
+    48%,
+    100% {
+      transform:
+        translateY(0)
+        rotate(0deg);
+    }
+
+    19% {
+      transform:
+        translateY(1px)
+        rotate(-1.15deg);
+    }
+
+    24% {
+      transform:
+        translateY(-1px)
+        rotate(.72deg);
+    }
+
+    29% {
+      transform:
+        translateY(.5px)
+        rotate(-.48deg);
+    }
+
+    35% {
+      transform:
+        translateY(0)
+        rotate(.22deg);
+    }
+
+    41% {
+      transform:
+        translateY(0)
+        rotate(-.1deg);
+    }
+  }
+
+  /* --------------------------------------------------
+     Phrolova / Crimson Baton
+     -------------------------------------------------- */
+
+  #sobre .about-baton-vector {
+    display: block;
+
+    width: 100%;
+
+    overflow: visible;
+  }
+
+  #sobre .about-baton-vector > svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    overflow: visible;
+
+    filter:
+      drop-shadow(
+        0 9px 14px
+        rgba(74, 8, 28, .12)
+      );
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back,
+    #staff,
+    #stamens,
+    #junction,
+    #ornaments
+  ) {
+    transform-box:
+      fill-box;
+
+    transform-origin:
+      center;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back
+  )
+  > [id^='petal-'] {
+    --petal-x: 22px;
+    --petal-y: -26px;
+    --petal-rotate: 26deg;
+
+    transform-box:
+      fill-box;
+
+    transform-origin:
+      center;
+
+    animation:
+      crimson-petal-unravel
+      10.8s
+      cubic-bezier(
+        .36,
+        0,
+        .22,
+        1
+      )
+      infinite;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back
+  )
+  > [id^='petal-']:nth-child(4n + 1) {
+    --petal-x: 28px;
+    --petal-y: -29px;
+    --petal-rotate: 34deg;
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back
+  )
+  > [id^='petal-']:nth-child(4n + 2) {
+    --petal-x: -24px;
+    --petal-y: -34px;
+    --petal-rotate: -38deg;
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back
+  )
+  > [id^='petal-']:nth-child(4n + 3) {
+    --petal-x: 34px;
+    --petal-y: 8px;
+    --petal-rotate: 46deg;
+  }
+
+  #sobre
+  .about-baton-vector
+  :is(
+    #petals-front,
+    #petals-back
+  )
+  > [id^='petal-']:nth-child(4n) {
+    --petal-x: -31px;
+    --petal-y: 14px;
+    --petal-rotate: -42deg;
+  }
+
+  #sobre
+  .about-baton-vector
+  #petals-back
+  > [id^='petal-'] {
+    animation-duration:
+      11.15s;
+
+    filter:
+      saturate(.94);
+  }
+
+  @keyframes
+  crimson-petal-unravel {
+    0%,
+    24%,
+    100% {
+      opacity: 1;
+
+      transform:
+        translate(0, 0)
+        rotate(0deg)
+        scale(1);
+
+      filter:
+        blur(0)
+        saturate(1);
+    }
+
+    34% {
+      opacity: .98;
+
+      transform:
+        translate(
+          calc(
+            var(--petal-x) * .16
+          ),
+          calc(
+            var(--petal-y) * .16
+          )
+        )
+        rotate(
+          calc(
+            var(--petal-rotate) * .18
+          )
+        )
+        scale(.995);
+    }
+
+    47% {
+      opacity: .82;
+
+      transform:
+        translate(
+          calc(
+            var(--petal-x) * .56
+          ),
+          calc(
+            var(--petal-y) * .56
+          )
+        )
+        rotate(
+          calc(
+            var(--petal-rotate) * .62
+          )
+        )
+        scale(.95);
+
+      filter:
+        blur(.12px)
+        saturate(1.04);
+    }
+
+    60% {
+      opacity: .08;
+
+      transform:
+        translate(
+          var(--petal-x),
+          var(--petal-y)
+        )
+        rotate(
+          var(--petal-rotate)
+        )
+        scale(.84);
+
+      filter:
+        blur(.55px)
+        saturate(.88);
+    }
+
+    68% {
+      opacity: 0;
+
+      transform:
+        translate(
+          calc(
+            var(--petal-x) * 1.08
+          ),
+          calc(
+            var(--petal-y) * 1.08
+          )
+        )
+        rotate(
+          calc(
+            var(--petal-rotate) * 1.12
+          )
+        )
+        scale(.8);
+    }
+
+    76% {
+      opacity: .06;
+
+      transform:
+        translate(
+          calc(
+            var(--petal-x) * .84
+          ),
+          calc(
+            var(--petal-y) * .84
+          )
+        )
+        rotate(
+          calc(
+            var(--petal-rotate) * .84
+          )
+        )
+        scale(.86);
+    }
+
+    89% {
+      opacity: .94;
+
+      transform:
+        translate(
+          calc(
+            var(--petal-x) * .08
+          ),
+          calc(
+            var(--petal-y) * .08
+          )
+        )
+        rotate(
+          calc(
+            var(--petal-rotate) * .08
+          )
+        )
+        scale(.99);
+
+      filter:
+        blur(0)
+        saturate(1);
+    }
+
+    95% {
+      opacity: 1;
+
+      transform:
+        translate(0, 0)
+        rotate(0deg)
+        scale(1);
+    }
+  }
+
+  #sobre
+  .about-baton-vector
+  #staff {
+    animation:
+      crimson-staff-dissolve
+      10.8s
+      ease-in-out
+      infinite;
+  }
+
+  #sobre
+  .about-baton-vector
+  #junction {
+    animation:
+      crimson-junction-dissolve
+      10.8s
+      ease-in-out
+      infinite;
+  }
+
+  #sobre
+  .about-baton-vector
+  #stamens {
+    animation:
+      crimson-stamen-release
+      10.8s
+      ease-in-out
+      infinite;
+  }
+
+  #sobre
+  .about-baton-vector
+  #ornaments {
+    animation:
+      crimson-music-breathe
+      10.8s
+      ease-in-out
+      infinite;
+  }
+
+  @keyframes
+  crimson-staff-dissolve {
+    0%,
+    37%,
+    100% {
+      opacity: 1;
+
+      transform:
+        translate(0, 0)
+        scale(1);
+
+      filter:
+        blur(0);
+    }
+
+    53% {
+      opacity: .82;
+
+      transform:
+        translate(1px, 3px)
+        scale(.985);
+    }
+
+    65% {
+      opacity: .13;
+
+      transform:
+        translate(4px, 12px)
+        scale(.95);
+
+      filter:
+        blur(.7px);
+    }
+
+    73% {
+      opacity: .05;
+
+      transform:
+        translate(4px, 13px)
+        scale(.94);
+
+      filter:
+        blur(.8px);
+    }
+
+    90% {
+      opacity: .94;
+
+      transform:
+        translate(0, 1px)
+        scale(.995);
+
+      filter:
+        blur(0);
+    }
+  }
+
+  @keyframes
+  crimson-junction-dissolve {
+    0%,
+    34%,
+    100% {
+      opacity: 1;
+
+      transform:
+        translate(0, 0)
+        rotate(0deg);
+    }
+
+    57% {
+      opacity: .44;
+
+      transform:
+        translate(4px, -5px)
+        rotate(8deg);
+    }
+
+    69% {
+      opacity: .06;
+
+      transform:
+        translate(7px, -10px)
+        rotate(13deg);
+    }
+
+    88% {
+      opacity: .9;
+
+      transform:
+        translate(1px, -1px)
+        rotate(1deg);
+    }
+  }
+
+  @keyframes
+  crimson-stamen-release {
+    0%,
+    30%,
+    100% {
+      opacity: 1;
+
+      transform:
+        translate(0, 0)
+        rotate(0deg);
+    }
+
+    48% {
+      opacity: .76;
+
+      transform:
+        translate(-4px, -5px)
+        rotate(-3deg);
+    }
+
+    63% {
+      opacity: .12;
+
+      transform:
+        translate(-11px, -14px)
+        rotate(-8deg);
+    }
+
+    73% {
+      opacity: .04;
+
+      transform:
+        translate(-12px, -16px)
+        rotate(-9deg);
+    }
+
+    90% {
+      opacity: .92;
+
+      transform:
+        translate(-1px, -1px)
+        rotate(-1deg);
+    }
+  }
+
+  @keyframes
+  crimson-music-breathe {
+    0%,
+    24%,
+    100% {
+      opacity: .88;
+
+      transform:
+        translate(0, 0)
+        scale(1);
+    }
+
+    48% {
+      opacity: .5;
+
+      transform:
+        translate(5px, -4px)
+        scale(1.025);
+    }
+
+    64% {
+      opacity: .18;
+
+      transform:
+        translate(10px, -8px)
+        scale(1.05);
+    }
+
+    76% {
+      opacity: .12;
+
+      transform:
+        translate(8px, -7px)
+        scale(1.04);
+    }
+
+    91% {
+      opacity: .8;
+
+      transform:
+        translate(1px, -1px)
+        scale(1.005);
+    }
+  }
+
+  /* Pause the decorative loops when #sobre is not visible. */
+  #sobre
+  .hero-ornaments:not(
+    [data-ornaments-visible='true']
+  )
+  :is(
+    .about-shorekeeper-butterfly-flight,
+    .about-shorekeeper-wings,
+    .about-shorekeeper-flower-reactor,
+    #petals-front > [id^='petal-'],
+    #petals-back > [id^='petal-'],
+    #staff,
+    #junction,
+    #stamens,
+    #ornaments
+  ) {
+    animation-play-state:
+      paused !important;
+  }
+
+  html[data-serious-mode='true']
+  #sobre .hero-ornaments,
+  html[data-legacy-mode='true']
+  #sobre .hero-ornaments {
+    display: none;
+  }
+
+  @media
+    (prefers-reduced-motion: reduce) {
+
+    #sobre
+    :is(
+      .about-shorekeeper-butterfly-flight,
+      .about-shorekeeper-wings,
+      .about-shorekeeper-flower-reactor,
+      #petals-front > [id^='petal-'],
+      #petals-back > [id^='petal-'],
+      #staff,
+      #junction,
+      #stamens,
+      #ornaments
+    ) {
+      animation:
+        none !important;
+
+      transform:
+        none !important;
+
+      opacity:
+        1 !important;
+
+      filter:
+        none !important;
+    }
+  }
 </style>
