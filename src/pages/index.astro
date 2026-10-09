@@ -7,6 +7,7 @@ import HeroMicroInteractions from '../components/HeroMicroInteractions.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import MotionImage from '../components/MotionImage.astro';
 import SophiaAnimation from '../components/SophiaAnimation.astro';
+import MethodPresenter from '../components/MethodPresenter.astro';
 import MarioNameTiles from '../components/MarioNameTiles.astro';
 import { PROFILE, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
@@ -706,11 +707,14 @@ const background = [
     </section>
 
     <section class="method-section section" id="metodo" aria-labelledby="method-title">
-      <div class="method-intro">
-        <p class="eyebrow">{sectionNumber('metodo')} / Método</p>
-        <h2 id="method-title">Da ideia à estrutura.</h2>
-        <p class="method-lead">Escrevo, planejo, organizo, testo e reviso. A tecnologia permite possibilidades de execução. No entanto, as decisões permanecem como sentença humana.</p>
-        <p class="method-disclosure"><strong><i>Autoria & IA</i>, sem mistificação.</strong> Concepção, curadoria, requisitos e avaliação são conduzidos por mim; a implementação técnica deste portfólio conta com <b>assistência</b> de inteligência artificial. Não necessariamente equivale a reivindicar domínio independente de <i>desenvolvimento front-end</i>.</p>
+      <div class="method-heading">
+        <div class="method-intro">
+          <p class="eyebrow">{sectionNumber('metodo')} / Método</p>
+          <h2 id="method-title">Da ideia à estrutura.</h2>
+          <p class="method-lead">Escrevo, planejo, organizo, testo e reviso. A tecnologia permite possibilidades de execução. No entanto, as decisões permanecem como sentença humana.</p>
+          <p class="method-disclosure"><strong><i>Autoria & IA</i>, sem mistificação.</strong> Concepção, curadoria, requisitos e avaliação são conduzidos por mim; a implementação técnica deste portfólio conta com <b>assistência</b> de inteligência artificial. Não necessariamente equivale a reivindicar domínio independente de <i>desenvolvimento front-end</i>.</p>
+        </div>
+        <MethodPresenter />
       </div>
       <ol class="method-steps" aria-label="Quatro etapas do processo">
         <li><span class="method-index">01 / Concepção</span><h3>Dar forma à ideia</h3><p>Objetivos, referências, linguagem, arquitetura da informação e critérios de sucesso.</p></li>
