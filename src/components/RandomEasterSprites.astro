@@ -1,0 +1,353 @@
+<div class="random-easter-layer" aria-hidden="true">
+  <img
+    class="random-easter-sprite"
+    data-random-easter-sprite
+    alt=""
+    decoding="async"
+  />
+</div>
+
+<script is:inline>
+  (() => {
+    const sprite =
+      document.querySelector(
+        '[data-random-easter-sprite]',
+      );
+
+    if (!sprite) return;
+
+    const assets = [
+      '/assets/easter/sk-easter-01.webp',
+      '/assets/easter/sk-easter-02.webp',
+      '/assets/easter/sk-easter-03.webp',
+      '/assets/easter/sk-easter-04.webp',
+      '/assets/easter/sk-easter-05.webp',
+    ];
+
+    const reducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      );
+
+    let scheduleTimer = 0;
+    let hideTimer = 0;
+    let cleanupTimer = 0;
+    let active = false;
+    let lastIndex = -1;
+    let firstAppearance = true;
+
+    const randomBetween = (min, max) =>
+      min + Math.random() * (max - min);
+
+    const randomInteger = (min, max) =>
+      Math.round(randomBetween(min, max));
+
+    const canAppear = () =>
+      !document.hidden &&
+      !reducedMotion.matches &&
+      document.documentElement.dataset
+        .seriousMode !== 'true';
+
+    const clearTimers = () => {
+      window.clearTimeout(scheduleTimer);
+      window.clearTimeout(hideTimer);
+      window.clearTimeout(cleanupTimer);
+
+      scheduleTimer = 0;
+      hideTimer = 0;
+      cleanupTimer = 0;
+    };
+
+    const hide = (reschedule = true) => {
+      window.clearTimeout(hideTimer);
+      hideTimer = 0;
+
+      sprite.dataset.visible = 'false';
+      active = false;
+
+      cleanupTimer = window.setTimeout(() => {
+        sprite.removeAttribute('src');
+        cleanupTimer = 0;
+
+        if (reschedule) {
+          schedule(false);
+        }
+      }, 220);
+    };
+
+    const chooseAsset = () => {
+      if (assets.length < 2) return 0;
+
+      let nextIndex = lastIndex;
+
+      while (nextIndex === lastIndex) {
+        nextIndex =
+          Math.floor(
+            Math.random() * assets.length,
+          );
+      }
+
+      lastIndex = nextIndex;
+      return nextIndex;
+    };
+
+    const placeSprite = () => {
+      const viewportWidth =
+        window.innerWidth;
+      const viewportHeight =
+        window.innerHeight;
+
+      const compact =
+        viewportWidth < 640;
+
+      const width = compact
+        ? randomInteger(88, 124)
+        : randomInteger(108, 166);
+
+      const margin =
+        compact ? 10 : 18;
+
+      const topSafe =
+        compact ? 72 : 86;
+
+      const maxLeft =
+        Math.max(
+          margin,
+          viewportWidth -
+            width -
+            margin,
+        );
+
+      const maxTop =
+        Math.max(
+          topSafe,
+          viewportHeight -
+            width -
+            margin,
+        );
+
+      sprite.style.width =
+        `${width}px`;
+
+      sprite.style.left =
+        `${randomInteger(
+          margin,
+          maxLeft,
+        )}px`;
+
+      sprite.style.top =
+        `${randomInteger(
+          topSafe,
+          maxTop,
+        )}px`;
+    };
+
+    const show = () => {
+      scheduleTimer = 0;
+
+      if (!canAppear() || active) {
+        schedule(false);
+        return;
+      }
+
+      active = true;
+      placeSprite();
+
+      const index = chooseAsset();
+      const source = assets[index];
+
+      sprite.dataset.visible = 'false';
+      sprite.removeAttribute('src');
+
+      requestAnimationFrame(() => {
+        if (!canAppear()) {
+          active = false;
+          schedule(false);
+          return;
+        }
+
+        sprite.src = source;
+
+        requestAnimationFrame(() => {
+          if (!canAppear()) {
+            hide(false);
+            return;
+          }
+
+          sprite.dataset.visible = 'true';
+
+          hideTimer =
+            window.setTimeout(
+              () => hide(true),
+              randomInteger(
+                1600,
+                2600,
+              ),
+            );
+        });
+      });
+    };
+
+    function schedule(initial = false) {
+      window.clearTimeout(scheduleTimer);
+
+      if (!canAppear()) return;
+
+      const delay = initial
+        ? randomInteger(
+            16000,
+            42000,
+          )
+        : randomInteger(
+            48000,
+            150000,
+          );
+
+      scheduleTimer =
+        window.setTimeout(
+          show,
+          delay,
+        );
+
+      firstAppearance = false;
+    }
+
+    const suspend = () => {
+      clearTimers();
+
+      if (active) {
+        hide(false);
+      } else {
+        sprite.dataset.visible = 'false';
+        sprite.removeAttribute('src');
+      }
+    };
+
+    const resume = () => {
+      if (
+        canAppear() &&
+        !active &&
+        !scheduleTimer
+      ) {
+        schedule(firstAppearance);
+      }
+    };
+
+    reducedMotion.addEventListener(
+      'change',
+      () => {
+        if (canAppear()) resume();
+        else suspend();
+      },
+    );
+
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        if (document.hidden) suspend();
+        else resume();
+      },
+    );
+
+    window.addEventListener(
+      'portfolio:serious-mode',
+      (event) => {
+        if (
+          event.detail?.enabled
+        ) {
+          suspend();
+        } else {
+          resume();
+        }
+      },
+    );
+
+    const seriousObserver =
+      new MutationObserver(() => {
+        if (canAppear()) resume();
+        else suspend();
+      });
+
+    seriousObserver.observe(
+      document.documentElement,
+      {
+        attributes: true,
+        attributeFilter: [
+          'data-serious-mode',
+        ],
+      },
+    );
+
+    schedule(true);
+  })();
+</script>
+
+<style is:global>
+  .random-easter-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 46;
+
+    overflow: hidden;
+
+    pointer-events: none;
+  }
+
+  .random-easter-sprite {
+    position: fixed;
+
+    width: 132px;
+    height: auto;
+
+    display: block;
+
+    opacity: 0;
+
+    transform:
+      translateY(7px)
+      scale(0.92);
+
+    transform-origin: center;
+
+    image-rendering: pixelated;
+
+    filter:
+      drop-shadow(
+        0 7px 10px
+        rgba(45, 35, 42, 0.18)
+      );
+
+    transition:
+      opacity 140ms ease,
+      transform 190ms ease;
+
+    will-change:
+      opacity,
+      transform;
+  }
+
+  .random-easter-sprite[
+    data-visible='true'
+  ] {
+    opacity: 0.98;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+  html[data-serious-mode='true']
+  .random-easter-layer {
+    display:
+      none !important;
+  }
+
+  @media
+    (prefers-reduced-motion: reduce) {
+
+    .random-easter-layer {
+      display:
+        none !important;
+    }
+  }
+</style>

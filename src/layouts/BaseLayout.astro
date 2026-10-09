@@ -4,6 +4,7 @@ import AtomCursor from '../components/AtomCursor.astro';
 import BaseHead from '../components/BaseHead.astro';
 import PortfolioFooter from '../components/PortfolioFooter.astro';
 import PortfolioHeader from '../components/PortfolioHeader.astro';
+import RandomEasterSprites from '../components/RandomEasterSprites.astro';
 import '../styles/global.css';
 import '../styles/editorial.css';
 import '../styles/serious.css';
@@ -35,6 +36,7 @@ const { title, description } = Astro.props;
     <PortfolioHeader />
     <slot />
     <PortfolioFooter />
+    <RandomEasterSprites />
     <DecorativeMotion />
   </body>
 </html>
