@@ -2,7 +2,7 @@
   class="method-presenter"
   data-decorative-motion
   role="img"
-  aria-label="Sophia de terninho apresenta um fluxograma com projetor e aponta para a avaliação: conceber, executar, avaliar e documentar."
+  aria-label="Sophia de terninho apresenta um fluxograma com projetor. O destaque percorre concepção, execução, avaliação e registro em sequência."
 >
   <svg class="method-presenter__projection" viewBox="0 0 500 360" aria-hidden="true" focusable="false">
     <defs>
@@ -19,17 +19,17 @@
     <rect x="14" y="26" width="282" height="200" rx="10" fill="#f2f5e7" stroke="#375441" stroke-width="3" />
     <path d="M20 28H290" stroke="#375441" stroke-width="7" stroke-linecap="round" />
     <text x="34" y="52" class="method-presenter__screen-title">DA IDEIA À ESTRUTURA</text>
-    <g fill="#dde9dc" stroke="#8aa28d" stroke-width="1.5">
-      <rect x="34" y="69" width="102" height="40" rx="7" />
-      <rect x="162" y="69" width="108" height="40" rx="7" />
-      <rect x="34" y="142" width="102" height="43" rx="7" />
+    <g class="method-presenter__nodes">
+      <rect class="method-presenter__node method-presenter__node--conception" x="34" y="69" width="102" height="40" rx="7" />
+      <rect class="method-presenter__node method-presenter__node--execution" x="162" y="69" width="108" height="40" rx="7" />
+      <rect class="method-presenter__node method-presenter__node--record" x="34" y="142" width="102" height="43" rx="7" />
+      <rect class="method-presenter__node method-presenter__node--evaluation" x="162" y="142" width="108" height="43" rx="7" />
     </g>
     <g fill="none" stroke="#426651" stroke-width="2" marker-end="url(#method-flow-arrow)">
       <path d="M140 89H157" />
       <path d="M216 113V137" />
       <path d="M157 164H141" />
     </g>
-    <rect class="method-presenter__focus" x="162" y="142" width="108" height="43" rx="7" fill="#f0cf78" stroke="#71521c" stroke-width="2.5" />
     <g class="method-presenter__node-label" text-anchor="middle">
       <text x="85" y="94">Concepção</text>
       <text x="216" y="94">Execução</text>
