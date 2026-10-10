@@ -1,8 +1,8 @@
 %PDF-1.4
-%ABCD ReportLab Generated PDF document (opensource)
+%CDAB ReportLab Generated PDF document (opensource)
 1 0 obj
 <<
-/F1 2 0 R /F2 3 0 R /F3 7 0 R
+/F1 2 0 R /F2 3 0 R /F3 12 0 R
 >>
 endobj
 2 0 obj
@@ -19,31 +19,66 @@ endobj
 <<
 /A <<
 /S /URI /Type /Action /URI (mailto:kaue@tuta.com)
->> /Border [ 0 0 0 ] /Rect [ 180.9531 729.8898 239.5534 740.8898 ] /Subtype /Link /Type /Annot
+>> /Border [ 0 0 0 ] /Rect [ 105.3656 742.1554 157.2988 751.0354 ] /Subtype /Link /Type /Annot
 >>
 endobj
 5 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (https://www.linkedin.com/in/alencarkaue/)
->> /Border [ 0 0 0 ] /Rect [ 430.3873 729.8898 461.9503 740.8898 ] /Subtype /Link /Type /Annot
+/S /URI /Type /Action /URI (https://wa.me/5547989105443)
+>> /Border [ 0 0 0 ] /Rect [ 163.4704 742.1554 218.1786 751.0354 ] /Subtype /Link /Type /Annot
 >>
 endobj
 6 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (https://kaue.pages.dev)
->> /Border [ 0 0 0 ] /Rect [ 526.5015 729.8898 555.2756 740.8898 ] /Subtype /Link /Type /Annot
+/S /URI /Type /Action /URI (https://www.linkedin.com/in/alencarkaue/)
+>> /Border [ 0 0 0 ] /Rect [ 224.3502 742.1554 252.3222 751.0354 ] /Subtype /Link /Type /Annot
 >>
 endobj
 7 0 obj
 <<
-/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+/A <<
+/S /URI /Type /Action /URI (https://kaue.pages.dev)
+>> /Border [ 0 0 0 ] /Rect [ 258.4938 742.1554 285.637 751.0354 ] /Subtype /Link /Type /Annot
 >>
 endobj
 8 0 obj
 <<
-/Annots [ 4 0 R 13 0 R 5 0 R 6 0 R ] /Contents 12 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 11 0 R /Resources <<
+/A <<
+/S /URI /Type /Action /URI (https://github.com/indiolibanes)
+>> /Border [ 0 0 0 ] /Rect [ 291.8086 742.1554 314.8374 751.0354 ] /Subtype /Link /Type /Annot
+>>
+endobj
+9 0 obj
+<<
+/A <<
+/S /URI /Type /Action /URI (https://kaue.pages.dev)
+>> /Border [ 0 0 0 ] /Rect [ 42.85039 508.1954 248.367 518.0354 ] /Subtype /Link /Type /Annot
+>>
+endobj
+10 0 obj
+<<
+/A <<
+/S /URI /Type /Action /URI (https://horologiarius.com)
+>> /Border [ 0 0 0 ] /Rect [ 42.85039 469.4454 256.5588 479.2854 ] /Subtype /Link /Type /Annot
+>>
+endobj
+11 0 obj
+<<
+/A <<
+/S /URI /Type /Action /URI (https://www.behance.net/gallery/119235467/My-Debut-UX-Project)
+>> /Border [ 0 0 0 ] /Rect [ 42.85039 439.9454 234.2302 449.7854 ] /Subtype /Link /Type /Annot
+>>
+endobj
+12 0 obj
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
+endobj
+13 0 obj
+<<
+/Annots [ 4 0 R 5 0 R 6 0 R 7 0 R 8 0 R 9 0 R 10 0 R 11 0 R ] /Contents 17 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 16 0 R /Resources <<
 /Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
 >> /Rotate 0 
   /Trans <<
@@ -51,294 +86,492 @@ endobj
 >> /Type /Page
 >>
 endobj
-9 0 obj
+14 0 obj
 <<
-/PageMode /UseNone /Pages 11 0 R /Type /Catalog
+/PageMode /UseNone /Pages 16 0 R /Type /Catalog
 >>
 endobj
-10 0 obj
+15 0 obj
 <<
-/Author (Kau\352 Alencar) /CreationDate (D:20000101000000+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
-  /Subject (Technical Writing, documenta\347\343o t\351cnica e arquitetura da informa\347\343o) /Title (Kau\352 Alencar - Curr\355culo) /Trapped /False
+/Author (Kau\352 Alencar) /CreationDate (D:20261010151954+00'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20261010151954+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (Technical Writing, documenta\347\343o, arquitetura da informa\347\343o e sistemas editoriais) /Title (Kau\352 Alencar - Curr\355culo) /Trapped /False
 >>
 endobj
-11 0 obj
+16 0 obj
 <<
-/Count 1 /Kids [ 8 0 R ] /Type /Pages
+/Count 1 /Kids [ 13 0 R ] /Type /Pages
 >>
 endobj
-12 0 obj
+17 0 obj
 <<
-/Length 9771
+/Length 11436
 >>
 stream
 1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
-1 .996078 .984314 rg
-n 0 0 595.2756 841.8898 re f*
-.137255 .360784 .411765 rg
-n 42 807.8898 511.2756 3 re f*
-.094118 .247059 .286275 rg
-BT /F2 23 Tf 27.6 TL ET
-BT 1 0 0 1 42 779.8898 Tm (Kau\352 Alencar) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 10.5 Tf 12.6 TL ET
-BT 1 0 0 1 42 757.8898 Tm (Technical Writing \267 Documenta\347\343o t\351cnica \267 Arquitetura da informa\347\343o) Tj T* ET
-.137255 .360784 .411765 RG
-1 .996078 .984314 rg
-1.15 w
-n
-51 732.8898 m
-51 735.0989 49.20914 736.8898 47 736.8898 c
-44.79086 736.8898 43 735.0989 43 732.8898 c
-43 730.6806 44.79086 728.8898 47 728.8898 c
-49.20914 728.8898 51 730.6806 51 732.8898 c
-S
-n
-48.15 732.8898 m
-48.15 733.5249 47.63513 734.0398 47 734.0398 c
-46.36487 734.0398 45.85 733.5249 45.85 732.8898 c
-45.85 732.2546 46.36487 731.7398 47 731.7398 c
-47.63513 731.7398 48.15 732.2546 48.15 732.8898 c
-f*
-n 47 728.8898 m 47 725.3898 l S
-.384314 .415686 .427451 rg
-BT /F1 8.35 Tf 10.02 TL ET
-BT 1 0 0 1 57 731.8898 Tm (Tr\352s Lagoas, MS) Tj T* ET
-
-.137255 .360784 .411765 RG
-1.05 w
-1 .996078 .984314 rg
-n 165.9531 727.8898 11 8 re S
-n 165.9531 735.8898 m 171.4531 731.8898 l S
-n 176.9531 735.8898 m 171.4531 731.8898 l S
-.384314 .415686 .427451 rg
-BT /F1 8.35 Tf 10.02 TL ET
-BT 1 0 0 1 180.9531 731.8898 Tm (kaue@tuta.com) Tj T* ET
-
-.137255 .360784 .411765 RG
-1.05 w
-n 291.1046 726.8898 7 11 re S
-n 293.1046 734.0898 m 296.1046 734.0898 l S
-n
-295.2046 727.6898 m
-295.2046 728.0212 294.9359 728.2898 294.6046 728.2898 c
-294.2732 728.2898 294.0046 728.0212 294.0046 727.6898 c
-294.0046 727.3584 294.2732 727.0898 294.6046 727.0898 c
-294.9359 727.0898 295.2046 727.3584 295.2046 727.6898 c
-f*
-.384314 .415686 .427451 rg
-BT /F1 8.35 Tf 10.02 TL ET
-BT 1 0 0 1 304.1046 731.8898 Tm ((47) 98910-5443) Tj T* ET
-
-.137255 .360784 .411765 RG
-1 w
-n 415.3873 726.8898 10 10 re S
-.137255 .360784 .411765 rg
-BT /F2 6.2 Tf 7.44 TL ET
-BT 1 0 0 1 417.2873 729.6898 Tm (in) Tj T* ET
-.384314 .415686 .427451 rg
-BT /F1 8.35 Tf 10.02 TL ET
-BT 1 0 0 1 430.3873 731.8898 Tm (LinkedIn) Tj T* ET
-
-.137255 .360784 .411765 RG
-1 w
-n
-521.5015 731.8898 m
-521.5015 734.6512 519.2629 736.8898 516.5015 736.8898 c
-513.7401 736.8898 511.5015 734.6512 511.5015 731.8898 c
-511.5015 729.1283 513.7401 726.8898 516.5015 726.8898 c
-519.2629 726.8898 521.5015 729.1283 521.5015 731.8898 c
-S
-n 512.5015 731.8898 m 520.5015 731.8898 l S
-n 516.5015 726.8898 m 516.5015 736.8898 l S
-.384314 .415686 .427451 rg
-BT /F1 8.35 Tf 10.02 TL ET
-BT 1 0 0 1 526.5015 731.8898 Tm (Portf\363lio) Tj T* ET
-.905882 .92549 .92549 RG
-.8 w
-n 42 713.8898 m 553.2756 713.8898 l S
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 695.8898 Tm (PERFIL PROFISSIONAL) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 690.8898 24 1.4 re f*
-.141176 .141176 .141176 rg
-BT /F1 8.7 Tf 10.44 TL ET
-BT 1 0 0 1 42 678.8898 Tm (Profissional com base em suporte de TI e rotinas administrativas, direcionado a documenta\347\343o t\351cnica, arquitetura da informa\347\343o e) Tj T* ET
-BT 1 0 0 1 42 667.6898 Tm (organiza\347\343o do conhecimento. Experi\352ncia com suporte a usu\341rios, sistemas acad\352micos e infraestrutura de TI, al\351m de projetos) Tj T* ET
-BT 1 0 0 1 42 656.4898 Tm (pr\363prios de documenta\347\343o, organiza\347\343o editorial, Markdown, Git e publica\347\343o web. Forma\347\343o complementar em UX refor\347a a) Tj T* ET
-BT 1 0 0 1 42 645.2898 Tm (orienta\347\343o \340 clareza, usabilidade e experi\352ncia de quem precisa encontrar e compreender informa\347\343o.) Tj T* ET
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 627.0898 Tm (COMPET\312NCIAS) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 622.0898 24 1.4 re f*
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 610.0898 Tm (Documenta\347\343o & escrita) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 599.0898 Tm (Technical Writing \267 Documenta\347\343o t\351cnica \267 Comunica\347\343o escrita \267) Tj T* ET
-BT 1 0 0 1 42 589.0898 Tm (Tradu\347\343o t\351cnica) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 575.0898 Tm (Ferramentas) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 564.0898 Tm (Markdown \267 Git \267 GitHub \267 Publica\347\343o web) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 307.6378 610.0898 Tm (Informa\347\343o & conte\372do) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 307.6378 599.0898 Tm (Arquitetura da informa\347\343o \267 Organiza\347\343o do conhecimento \267) Tj T* ET
-BT 1 0 0 1 307.6378 589.0898 Tm (Pesquisa e curadoria) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 307.6378 575.0898 Tm (Experi\352ncia do usu\341rio) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 307.6378 564.0898 Tm (UX \267 Usabilidade \267 Estrutura\347\343o de conte\372do) Tj T* ET
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 546.0898 Tm (EXPERI\312NCIA) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 541.0898 24 1.4 re f*
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 529.0898 Tm (P\343o Nosso Alimentos - Ind\372stria de panifica\347\343o) Tj T* ET
-.384314 .415686 .427451 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 482.5998 529.0898 Tm (jul. 2024 - nov. 2024) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F3 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 518.0898 Tm (Assistente administrativo) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 504.5898 Tm (Parthenon Servi\347os Terceirizados) Tj T* ET
-.384314 .415686 .427451 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 479.1366 504.5898 Tm (set. 2023 - mar. 2024) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F3 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 493.5898 Tm (Atendente) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 480.0898 Tm (Procuradoria da Rep\372blica em Rond\364nia) Tj T* ET
-.384314 .415686 .427451 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 482.163 480.0898 Tm (fev. 2020 - fev. 2022) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F3 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 469.0898 Tm (Estagi\341rio - suporte de TI | Porto Velho - RO) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 52 458.5898 Tm (Atendimento de chamados e suporte computacional; instala\347\343o, configura\347\343o e manuten\347\343o de equipamentos; prepara\347\343o de novas m\341quinas) Tj T* ET
-BT 1 0 0 1 52 448.8898 Tm (e registros; apoio a videoconfer\352ncia e infraestrutura de rede sob orienta\347\343o da CTIC.) Tj T* ET
-.094118 .247059 .286275 rg
-BT /F2 8.6 Tf 10.32 TL ET
-BT 1 0 0 1 42 436.1898 Tm (Centro Universit\341rio S\343o Lucas) Tj T* ET
-.384314 .415686 .427451 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 482.163 436.1898 Tm (fev. 2017 - jan. 2019) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F3 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 425.1898 Tm (Estagi\341rio | Porto Velho - RO) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 7.8 Tf 9.36 TL ET
-BT 1 0 0 1 52 414.6898 Tm (Suporte a alunos em sistemas acad\352micos, atendimento presencial e por telefone, apoio \340 rematr\355cula e grade semestral, uso do Blackboard e) Tj T* ET
-BT 1 0 0 1 52 404.9898 Tm (suporte a atividades acad\352micas e avaliativas.) Tj T* ET
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 390.2898 Tm (PROJETOS E PR\301TICA) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 385.2898 24 1.4 re f*
-.545098 .184314 .270588 rg
-n
-45.8 375.5898 m
-45.8 376.363 45.1732 376.9898 44.4 376.9898 c
-43.6268 376.9898 43 376.363 43 375.5898 c
-43 374.8166 43.6268 374.1898 44.4 374.1898 c
-45.1732 374.1898 45.8 374.8166 45.8 375.5898 c
-f*
-.141176 .141176 .141176 rg
-BT /F1 7.9 Tf 9.48 TL ET
-BT 1 0 0 1 52 373.2898 Tm (Projetos pr\363prios de documenta\347\343o e organiza\347\343o editorial: estrutura\347\343o de materiais complexos em formatos mais claros, leg\355veis e) Tj T* ET
-BT 1 0 0 1 52 363.4898 Tm (reutiliz\341veis.) Tj T* ET
-.545098 .184314 .270588 rg
-n
-45.8 353.9898 m
-45.8 354.763 45.1732 355.3898 44.4 355.3898 c
-43.6268 355.3898 43 354.763 43 353.9898 c
-43 353.2166 43.6268 352.5898 44.4 352.5898 c
-45.1732 352.5898 45.8 353.2166 45.8 353.9898 c
-f*
-.141176 .141176 .141176 rg
-BT /F1 7.9 Tf 9.48 TL ET
-BT 1 0 0 1 52 351.6898 Tm (Fluxos de publica\347\343o web com Markdown, Git/GitHub e tecnologias utilizadas como ferramentas de estrutura\347\343o da informa\347\343o.) Tj T* ET
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 339.8898 Tm (FORMA\307\303O) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 334.8898 24 1.4 re f*
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 322.8898 Tm (Universidade Federal de Mato Grosso do Sul \267 Bacharelado em Sistemas de Informa\347\343o - em andamento) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 8 Tf 9.6 TL ET
-BT 1 0 0 1 42 311.8898 Tm (SENAI Tr\352s Lagoas \267 T\351cnico em Automa\347\343o Industrial - conclus\343o prevista: nov. 2026) Tj T* ET
-.137255 .360784 .411765 rg
-BT /F2 9.3 Tf 11.16 TL ET
-BT 1 0 0 1 42 297.8898 Tm (IDIOMAS E FORMA\307\303O COMPLEMENTAR) Tj T* ET
-.545098 .184314 .270588 rg
-n 42 292.8898 24 1.4 re f*
-.141176 .141176 .141176 rg
-BT /F1 7.9 Tf 9.48 TL ET
-BT 1 0 0 1 42 280.8898 Tm (Idiomas: Portugu\352s nativo \267 Ingl\352s profissional \267 Espanhol com uso profissional limitado \267 Italiano b\341sico) Tj T* ET
-.141176 .141176 .141176 rg
-BT /F1 7.9 Tf 9.48 TL ET
-BT 1 0 0 1 42 271.0898 Tm (UX Design: cursos em fundamentos de UX, Gestalt, portf\363lio e experi\352ncia do usu\341rio.) Tj T* ET
-.905882 .92549 .92549 RG
-n 42 31 m 553.2756 31 l S
-.384314 .415686 .427451 rg
-BT /F1 6.7 Tf 8.04 TL ET
-BT 1 0 0 1 42 20 Tm (Curr\355culo profissional \267 atualizado em setembro de 2026) Tj T* ET
+q
+.141176 .372549 .411765 rg
+n 36.85039 813.5433 521.5748 6.23622 re f*
+.886275 .905882 .909804 RG
+.4 w
+n 36.85039 29.76378 m 558.4252 29.76378 l S
+.482353 .521569 .541176 rg
+BT /F1 6.4 Tf 7.68 TL ET
+BT 1 0 0 1 36.85039 18.99213 Tm (Curr\355culo profissional - atualizado em outubro de 2026 - portf\363lio com projetos e documenta\347\343o verific\341veis) Tj T* ET
+Q
+q
+1 0 0 1 42.85039 788.5354 cm
+Q
+q
+1 0 0 1 42.85039 765.5354 cm
+q
+.141176 .372549 .411765 rg
+BT 1 0 0 1 0 1 Tm /F2 22 Tf 23 TL (Kau\352 Alencar) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 753.0354 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.4 Tm /F1 10.1 Tf 11.5 TL (Technical Writing \267 Arquitetura da Informa\347\343o \267 Sistemas Editoriais) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 742.2354 cm
+q
+BT 1 0 0 1 0 1.4 Tm 8.8 TL /F1 7.4 Tf .372549 .407843 .423529 rg (Tr\352s Lagoas, MS \267 ) Tj .141176 .372549 .411765 rg (kaue@tuta.com) Tj .372549 .407843 .423529 rg ( \267 ) Tj .141176 .372549 .411765 rg (\(47\) 98910-5443) Tj .372549 .407843 .423529 rg ( \267 ) Tj .141176 .372549 .411765 rg (LinkedIn) Tj .372549 .407843 .423529 rg ( \267 ) Tj .141176 .372549 .411765 rg (Portf\363lio) Tj .372549 .407843 .423529 rg ( \267 ) Tj .141176 .372549 .411765 rg (GitHub) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 723.2354 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (PERFIL PROFISSIONAL) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 681.2354 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 33.65 Tm /F1 8.35 Tf 10.5 TL (Profissional com base t\351cnica em TI e automa\347\343o, direcionado a documenta\347\343o, escrita e organiza\347\343o da informa\347\343o. Transformo) Tj T* (conte\372do disperso em sistemas editoriais naveg\341veis, fluxos reproduz\355veis e documenta\347\343o de manuten\347\343o. Trabalho com Git/GitHub,) Tj T* (Markdown, Astro e Cloudflare Pages como meios de publica\347\343o; leio e reviso c\363digo e diffs, com implementa\347\343o t\351cnica assistida por IA) Tj T* (e avalia\347\343o humana expl\355cita.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 663.2354 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (COMPET\312NCIAS) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 584.8354 cm
+q
+.952941 .964706 .964706 rg
+n 0 78.4 521.5748 -78.4 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 7 45.2 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 18 cm
+q
+BT 1 0 0 1 0 1.15 Tm 9.2 TL /F2 8.05 Tf .141176 .372549 .411765 rg (Conte\372do & informa\347\343o) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 10.45 Tm /F1 7.55 Tf 9 TL (Technical Writing \267 documenta\347\343o t\351cnica \267 arquitetura da informa\347\343o \267) Tj T* (taxonomias \267 curadoria e recupera\347\343o do conhecimento) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 267.7874 45.2 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 18 cm
+q
+.141176 .372549 .411765 rg
+BT 1 0 0 1 0 1.15 Tm /F2 8.05 Tf 9.2 TL (Sistemas editoriais) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 10.45 Tm /F1 7.55 Tf 9 TL (Markdown \267 Obsidian \267 Git/GitHub \267 versionamento \267 runbooks \267 publica\347\343o) Tj T* (est\341tica \267 Astro \267 Cloudflare Pages) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 7 6 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 18 cm
+q
+BT 1 0 0 1 0 1.15 Tm 9.2 TL /F2 8.05 Tf .141176 .372549 .411765 rg (UX & qualidade) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 10.45 Tm /F1 7.55 Tf 9 TL (hierarquia de conte\372do \267 usabilidade \267 acessibilidade orientada por WCAG) Tj T* (\267 progressive enhancement \267 revis\343o responsiva) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 267.7874 6 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 18 cm
+q
+.141176 .372549 .411765 rg
+BT 1 0 0 1 0 1.15 Tm /F2 8.05 Tf 9.2 TL (Execu\347\343o assistida) Tj T* ET
+Q
+Q
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 10.45 Tm /F1 7.55 Tf 9 TL (defini\347\343o de requisitos e restri\347\365es \267 prototipagem com IA \267 leitura de) Tj T* (HTML/CSS/JS/Astro \267 revis\343o de diffs \267 valida\347\343o do resultado) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 J
+1 j
+.847059 .870588 .878431 RG
+.4 w
+n 0 78.4 m 521.5748 78.4 l S
+n 0 0 m 521.5748 0 l S
+n 0 0 m 0 78.4 l S
+n 521.5748 0 m 521.5748 78.4 l S
+n 0 39.2 m 521.5748 39.2 l S
+n 260.7874 0 m 260.7874 78.4 l S
+Q
+Q
+Q
+q
+1 0 0 1 42.85039 581.8354 cm
+Q
+q
+1 0 0 1 42.85039 565.8354 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (M\311TODO DE TRABALHO) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 545.8354 cm
+q
+BT 1 0 0 1 0 11.85 Tm 10 TL /F2 8.15 Tf .133333 .156863 .168627 rg (Concep\347\343o, curadoria, requisitos e avalia\347\343o s\343o conduzidos por mim.) Tj /F1 8.15 Tf ( Uso IA para prototipagem e implementa\347\343o assistida, com) Tj T* (restri\347\365es expl\355citas, leitura de c\363digo, revis\343o de diffs e valida\347\343o manual. N\343o me apresento como desenvolvedor front-end independente.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 536.0354 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 0 1.6 Tm /F1 7.4 Tf 9 TL (Fluxo recorrente: objetivo e crit\351rios -> estrutura -> execu\347\343o assistida -> teste/revis\343o -> documenta\347\343o e versionamento.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 534.0354 cm
+Q
+q
+1 0 0 1 42.85039 518.0354 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (PROJETOS SELECIONADOS) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 508.2354 cm
+q
+BT 1 0 0 1 0 1.6 Tm 9.8 TL /F2 8.2 Tf .133333 .156863 .168627 rg (Portf\363lio pessoal - sistema editorial e documenta\347\343o) Tj ( \267 ) Tj .372549 .407843 .423529 rg (2026) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 480.4854 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 10 20 Tm /F1 7.75 Tf 9.25 TL (Arquitetura de conte\372do e documenta\347\343o do fluxo Obsidian -> Git -> Astro -> Cloudflare Pages; revis\343o de acessibilidade/UX, progressive) Tj T* (enhancement, versionamento e recupera\347\343o. Implementa\347\343o front-end assistida por IA, com requisitos, revis\343o de diffs e valida\347\343o conduzidos) Tj T* (por mim.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 469.4854 cm
+q
+BT 1 0 0 1 0 1.6 Tm 9.8 TL /F2 8.2 Tf .133333 .156863 .168627 rg (Horologiarius - arquitetura da informa\347\343o e publica\347\343o) Tj ( \267 ) Tj .372549 .407843 .423529 rg (2026) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 450.9854 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 10 10.75 Tm /F1 7.75 Tf 9.25 TL -0.006775 Tw (Organiza\347\343o de ensaios, leituras, notas e ora\347\365es por fun\347\343o, assunto, estado editorial e metadados; taxonomia, navega\347\343o, URLs, SEO t\351cnico) Tj T* 0 Tw (e conte\372do multil\355ngue tratados como um sistema editorial reutiliz\341vel.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 439.9854 cm
+q
+BT 1 0 0 1 0 1.6 Tm 9.8 TL /F2 8.2 Tf .133333 .156863 .168627 rg (Astrophysics Application - estudo de caso de UX) Tj ( \267 ) Tj .372549 .407843 .423529 rg (2020-2021) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 430.7354 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 10 1.5 Tm /F1 7.75 Tf 9.25 TL (Projeto conceitual educativo com pesquisa explorat\363ria, personas, sketches, wireframes, prot\363tipo de alta fidelidade e gamifica\347\343o.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 413.5354 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (EXPERI\312NCIA) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 36.85039 403.0354 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.7 Tm /F2 8.3 Tf 10 TL (P\343o Nosso Alimentos - ind\372stria de panifica\347\343o) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396.3969 1 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 0 1.8 Tm /F1 7.2 Tf 9 TL 59.93875 0 Td (jul. 2024 - nov. 2024) Tj T* -59.93875 0 Td ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42.85039 394.0354 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 10 1.5 Tm /F3 7.5 Tf 9 TL (Assistente administrativo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 36.85039 383.2354 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.7 Tm /F2 8.3 Tf 10 TL (Parthenon Servi\347os Terceirizados) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396.3969 1 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 0 1.8 Tm /F1 7.2 Tf 9 TL 56.74195 0 Td (set. 2023 - mar. 2024) Tj T* -56.74195 0 Td ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42.85039 374.2354 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 10 1.5 Tm /F3 7.5 Tf 9 TL (Atendente) Tj T* ET
+Q
+Q
+q
+1 0 0 1 36.85039 363.4354 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.7 Tm /F2 8.3 Tf 10 TL (Procuradoria da Rep\372blica em Rond\364nia) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396.3969 1 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 0 1.8 Tm /F1 7.2 Tf 9 TL 59.53555 0 Td (fev. 2020 - fev. 2022) Tj T* -59.53555 0 Td ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42.85039 354.4354 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 10 1.5 Tm /F3 7.5 Tf 9 TL (Estagi\341rio - suporte de TI \267 Porto Velho/RO) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 335.6354 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 10 10.75 Tm /F1 7.75 Tf 9.25 TL (Atendimento de chamados; instala\347\343o, configura\347\343o e manuten\347\343o de equipamentos; prepara\347\343o de m\341quinas e registros; apoio a) Tj T* (videoconfer\352ncia e infraestrutura sob orienta\347\343o da CTIC.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 36.85039 324.1354 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 0 0 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.7 Tm /F2 8.3 Tf 10 TL (Centro Universit\341rio S\343o Lucas) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396.3969 1 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 0 1.8 Tm /F1 7.2 Tf 9 TL 59.53555 0 Td (fev. 2017 - jan. 2019) Tj T* -59.53555 0 Td ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42.85039 315.1354 cm
+q
+.372549 .407843 .423529 rg
+BT 1 0 0 1 10 1.5 Tm /F3 7.5 Tf 9 TL (Estagi\341rio \267 Porto Velho/RO) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 305.5854 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 10 1.5 Tm /F1 7.75 Tf 9.25 TL (Suporte a alunos em sistemas acad\352micos, atendimento presencial/telefone, rematr\355cula, grade semestral, Blackboard e rotinas acad\352micas.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 288.5854 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (FORMA\307\303O) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 279.3854 cm
+q
+BT 1 0 0 1 0 1.45 Tm 9.2 TL /F2 7.75 Tf .133333 .156863 .168627 rg (Universidade Federal de Mato Grosso do Sul \(UFMS\)) Tj /F1 7.75 Tf ( \267 Bacharelado em Sistemas de Informa\347\343o - em andamento) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 269.9854 cm
+q
+BT 1 0 0 1 0 1.45 Tm 9.2 TL /F2 7.75 Tf .133333 .156863 .168627 rg (SENAI Tr\352s Lagoas) Tj /F1 7.75 Tf ( \267 T\351cnico em Automa\347\343o Industrial - conclus\343o prevista: nov. 2026) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 260.5854 cm
+q
+BT 1 0 0 1 0 1.45 Tm 9.2 TL /F2 7.75 Tf .133333 .156863 .168627 rg (Awari) Tj /F1 7.75 Tf ( \267 UX Design - forma\347\343o intensiva conclu\355da com m\351ritos \(2020-2021\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42.85039 244.3854 cm
+.141176 .372549 .411765 rg
+BT /F2 9.4 Tf 11.28 TL ET
+BT 1 0 0 1 0 5 Tm (IDIOMAS) Tj T* ET
+.541176 .2 .278431 RG
+.75 w
+n 0 1 m 521.5748 1 l S
+Q
+q
+1 0 0 1 42.85039 235.1854 cm
+q
+.133333 .156863 .168627 rg
+BT 1 0 0 1 0 1.4 Tm /F1 7.8 Tf 9.2 TL (Portugu\352s nativo \267 Ingl\352s profissional \267 Espanhol com uso profissional limitado \267 Italiano b\341sico) Tj T* ET
+Q
+Q
  
 endstream
 endobj
-13 0 obj
-<<
-/A <<
-/S /URI /Type /Action /URI (https://wa.me/5547989105443)
->> /Border [ 0 0 0 ] /Rect [ 304.1046 729.8898 365.8361 740.8898 ] /Subtype /Link /Type /Annot
->>
-endobj
 xref
-0 14
+0 18
 0000000000 65535 f 
 0000000061 00000 n 
-0000000112 00000 n 
-0000000219 00000 n 
-0000000331 00000 n 
-0000000503 00000 n 
-0000000695 00000 n 
-0000000869 00000 n 
-0000000984 00000 n 
-0000001226 00000 n 
-0000001295 00000 n 
-0000001656 00000 n 
-0000001716 00000 n 
-0000011540 00000 n 
+0000000113 00000 n 
+0000000220 00000 n 
+0000000332 00000 n 
+0000000504 00000 n 
+0000000683 00000 n 
+0000000875 00000 n 
+0000001048 00000 n 
+0000001231 00000 n 
+0000001404 00000 n 
+0000001582 00000 n 
+0000001796 00000 n 
+0000001912 00000 n 
+0000002180 00000 n 
+0000002250 00000 n 
+0000002627 00000 n 
+0000002688 00000 n 
 trailer
 <<
 /ID 
-[<390CE340DB8438C2E68AD3E38D934CD1><390CE340DB8438C2E68AD3E38D934CD1>]
-/Info 10 0 R
-/Root 9 0 R
-/Size 14
+[<9817298c97646ac05e0758b178208ca3><9817298c97646ac05e0758b178208ca3>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 15 0 R
+/Root 14 0 R
+/Size 18
 >>
 startxref
-11720
+14177
 %%EOF
