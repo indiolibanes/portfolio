@@ -14,12 +14,27 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     </a>
 
     <div class="nav-links">
-      <a href="/#sobre" data-nav-section="sobre">Sobre</a>
-      <a href="/#lab" data-nav-section="lab">Laboratório</a>
-      <a href="/#bastidores" data-nav-section="bastidores">Bastidores</a>
-      <a href="/#percurso" data-nav-section="percurso">Percurso</a>
-      <a href="/#musica" data-nav-section="musica">Música</a>
-      <a class="nav-cta" href="/#contato" data-nav-section="contato">Contato</a>
+      <button
+        class="nav-menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-sections"
+        data-nav-menu-toggle
+        hidden
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"></path>
+        </svg>
+        <span>Menu</span>
+      </button>
+      <div class="nav-sections" id="nav-sections" data-nav-sections>
+        <a href="/#sobre" data-nav-section="sobre">Sobre</a>
+        <a href="/#lab" data-nav-section="lab">Laboratório</a>
+        <a href="/#bastidores" data-nav-section="bastidores">Bastidores</a>
+        <a href="/#percurso" data-nav-section="percurso">Percurso</a>
+        <a href="/#musica" data-nav-section="musica">Música</a>
+        <a class="nav-cta" href="/#contato" data-nav-section="contato">Contato</a>
+      </div>
       <SeriousModeToggle />
     </div>
   </nav>
@@ -85,3 +100,136 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     update();
   })();
 </script>
+
+<script is:inline>
+  // Compact navigation (<= 940 px). Without JavaScript the sections stay
+  // visible as a wrapping row; with it they collapse behind a disclosure.
+  (() => {
+    const button = document.querySelector('[data-nav-menu-toggle]');
+    const panel = document.querySelector('[data-nav-sections]');
+    if (!button || !panel) return;
+
+    document.documentElement.dataset.navJs = 'true';
+    button.hidden = false;
+
+    const compact = window.matchMedia('(max-width: 940px)');
+    const setOpen = (open, restoreFocus = false) => {
+      button.setAttribute('aria-expanded', String(open));
+      panel.dataset.open = String(open);
+      if (!open && restoreFocus) button.focus();
+    };
+
+    button.addEventListener('click', () => {
+      setOpen(button.getAttribute('aria-expanded') !== 'true');
+    });
+    panel.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && panel.dataset.open === 'true') setOpen(false, true);
+    });
+    document.addEventListener('click', (event) => {
+      if (panel.dataset.open !== 'true') return;
+      if (event.target instanceof Node && (panel.contains(event.target) || button.contains(event.target))) return;
+      setOpen(false);
+    });
+    compact.addEventListener('change', () => setOpen(false));
+  })();
+</script>
+
+<style is:global>
+  .site-header .nav-menu-toggle { display: none; }
+  .site-header .nav-sections { display: contents; }
+
+  @media (max-width: 940px) {
+    html:not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
+
+    html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .5rem .8rem;
+      border: 1px solid rgba(205, 188, 165, .92);
+      border-radius: var(--radius-full);
+      background: rgba(255, 250, 240, .76);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      font-size: .78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle[aria-expanded='true'] {
+      background: var(--surface-soft);
+    }
+
+    html[data-nav-js='true']:not([data-legacy-mode='true']) .site-header .nav-sections {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      z-index: 60;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: .15rem;
+      padding: .55rem;
+      border: 1px solid rgba(205, 188, 165, .92);
+      border-radius: 22px;
+      background: rgba(255, 250, 240, .98);
+      box-shadow: 0 14px 34px rgba(94, 72, 49, .16);
+    }
+
+    html[data-nav-js='true']:not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] {
+      display: flex;
+    }
+
+    /* No JavaScript: every destination stays reachable in a wrapping row. */
+    html:not([data-nav-js='true']):not([data-legacy-mode='true']) .site-header .nav-sections {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: .15rem;
+    }
+
+    html:not([data-legacy-mode='true']) .site-header .nav-sections a {
+      min-height: 44px;
+      display: flex !important;
+      align-items: center;
+      padding: .6rem 1rem;
+    }
+
+    html[data-nav-js='true']:not([data-legacy-mode='true']) .site-header .nav-sections a {
+      border-radius: 14px;
+    }
+
+    html[data-serious-mode='true'] .site-header .nav-menu-toggle:not([hidden]) {
+      border-color: var(--line);
+      background: var(--surface-soft);
+    }
+
+    html[data-serious-mode='true'][data-nav-js='true'] .site-header .nav-sections {
+      border-color: var(--line);
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    html:not([data-legacy-mode='true']) .site-header .nav-shell { gap: .5rem; }
+    html:not([data-legacy-mode='true']) .site-header .brand-copy { display: none; }
+    html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) { padding: .5rem .7rem; }
+  }
+
+  /* Legacy · 1998 keeps its inline link bar: no hamburger existed then. */
+  html[data-legacy-mode='true'] .site-header .nav-menu-toggle { display: none !important; }
+  html[data-legacy-mode='true'] .site-header .nav-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+    justify-content: flex-end;
+  }
+  html[data-legacy-mode='true'] .site-header .nav-sections a { display: inline-block !important; }
+</style>
