@@ -30,6 +30,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
       <div class="nav-sections" id="nav-sections" data-nav-sections>
         <a href="/#sobre" data-nav-section="sobre">Sobre</a>
         <a href="/#lab" data-nav-section="lab">Laboratório</a>
+        <a href="/#metodo" data-nav-section="metodo">Método</a>
         <a href="/#bastidores" data-nav-section="bastidores">Bastidores</a>
         <a href="/#percurso" data-nav-section="percurso">Percurso</a>
         <a href="/#musica" data-nav-section="musica">Música</a>
@@ -102,7 +103,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
 </script>
 
 <script is:inline>
-  // Compact navigation (<= 940 px). Without JavaScript the sections stay
+  // Compact navigation (<= 1100 px). Without JavaScript the sections stay
   // visible as a wrapping row; with it they collapse behind a disclosure.
   (() => {
     const button = document.querySelector('[data-nav-menu-toggle]');
@@ -112,7 +113,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     document.documentElement.dataset.navJs = 'true';
     button.hidden = false;
 
-    const compact = window.matchMedia('(max-width: 940px)');
+    const compact = window.matchMedia('(max-width: 1100px)');
     const setOpen = (open, restoreFocus = false) => {
       button.setAttribute('aria-expanded', String(open));
       panel.dataset.open = String(open);
@@ -141,7 +142,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
   .site-header .nav-menu-toggle { display: none; }
   .site-header .nav-sections { display: contents; }
 
-  @media (max-width: 940px) {
+  @media (max-width: 1100px) {
     html:not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
 
     html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
