@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          out="qa-results/run-${GITHUB_RUN_NUMBER}"
+          out="$GITHUB_WORKSPACE/qa-results/run-${GITHUB_RUN_NUMBER}"
           mkdir -p "$out"
           port=4400
           summary="$out/builds.txt"
@@ -87,7 +87,7 @@ jobs:
             fi
             (cd "$dir" && npx astro preview --host 127.0.0.1 --port "$port" > "$out/preview-$label.log" 2>&1 &)
             for i in $(seq 1 60); do curl -sf "http://127.0.0.1:$port/" > /dev/null && break; sleep 1; done
-            (cd "$RUNNER_TEMP/qa-tools" && node browser-audit.mjs "$label" "http://127.0.0.1:$port" "$GITHUB_WORKSPACE/$out/$label") \
+            (cd "$RUNNER_TEMP/qa-tools" && node browser-audit.mjs "$label" "http://127.0.0.1:$port" "$out/$label") > "$out/audit-$label.log" 2>&1 \
               && echo "$label BROWSER_AUDIT=PASS" >> "$summary" \
               || echo "$label BROWSER_AUDIT=FAIL" >> "$summary"
             port=$((port + 1))
