@@ -7224,7 +7224,7 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 @media(max-width:620px){
   .background-list li{grid-template-columns:2.25rem minmax(0,1fr);column-gap:.6rem}
   .background-entry{grid-template-columns:minmax(0,1fr);row-gap:.55rem;align-items:start}
-  .background-mark{height:40px;max-width:96px;margin-inline:0;object-position:left center}
+  .background-mark{height:40px;max-width:96px;margin-inline:0;justify-self:start;object-position:left center}
 }
 
 /* Music shelf: editorial listening-room composition */
