@@ -979,3 +979,115 @@ html[data-legacy-mode='true'] .work-index a[aria-current='true'] {
   font-weight: 700;
   text-decoration: underline;
 }
+
+/* --------------------------------------------------
+   Contrast and state corrections (audit 2026-10-12)
+   Text colours for this mode live in mode-tokens.css; only state and
+   control fixes remain here.
+-------------------------------------------------- */
+/* A [hidden] Last.fm card must stay hidden: legacy display rules beat the UA style. */
+html[data-legacy-mode='true'] .music-shelf [hidden],
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track-card[hidden] {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .music-status-profile {
+  background: transparent !important;
+  color: #0000ee !important;
+  text-decoration: underline;
+}
+
+/* Lab index links were 14px tall: give them a 24px target without
+   changing the inline “a | b | c” 1998 rhythm. */
+html[data-legacy-mode='true'] .work-index a {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
+}
+
+/* Classic dotted focus rectangle; the rose ring fell to ~1.9:1 on #c0c0c0. */
+html[data-legacy-mode='true'] :is(a, button, [tabindex]):focus-visible {
+  outline: 2px dotted #000000;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------
+   1998 completeness (audit 2026-10-12)
+   Sections added after the original Legacy mode still showed modern
+   surfaces: rounded green Método cards, the brick plate's column edges as
+   stray bars beside the name, and a dark rounded Last.fm notice.
+-------------------------------------------------- */
+html[data-legacy-mode='true'] .mario-name-tiles {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .method-section {
+  padding: 16px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .method-section :is(h2, h3, .method-lead, .method-closing, .method-disclosure, .method-disclosure strong, .method-steps p) {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+html[data-legacy-mode='true'] .method-section :is(.eyebrow, .method-index) {
+  color: #333333 !important;
+  font-family: "Courier New", monospace !important;
+}
+
+html[data-legacy-mode='true'] .method-presenter {
+  display: none !important;
+}
+
+html[data-legacy-mode='true'] .method-disclosure {
+  padding: 8px 10px !important;
+  border: 1px solid #808080 !important;
+  border-left: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffcc !important;
+}
+
+/* The four steps as one bordered table row of cells, as a 1998 page would. */
+html[data-legacy-mode='true'] .method-steps {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 0 !important;
+  margin: 12px 0 0 !important;
+  padding: 0 !important;
+  border: 2px outset #efefef;
+  background: #c0c0c0;
+  list-style: none;
+}
+
+html[data-legacy-mode='true'] .method-steps li {
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+html[data-legacy-mode='true'] .method-steps h3 {
+  margin: 4px 0 !important;
+  font-family: "Times New Roman", Times, serif !important;
+  font-size: 1.05rem !important;
+}
+
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel .music-loading {
+  padding: 8px 10px !important;
+  border: 1px solid #808080 !important;
+  border-radius: 0 !important;
+  background: #ffffcc !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}

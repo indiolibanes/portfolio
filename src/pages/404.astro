@@ -18,7 +18,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="sophia-404__actions">
           <a href="/">Voltar ao portfólio</a>
           <a href="/#lab">Ir ao Laboratório</a>
-          <a href="/sophia">Encontrar Sophia</a>
+          <a href="/sophia/">Encontrar Sophia</a>
         </div>
       </div>
 
@@ -57,4 +57,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="sophia-404__aside">Nem tudo que se perde deixa de existir. Às vezes, apenas saiu para orbitar.</p>
     </section>
   </main>
+
+  <script is:inline>
+    // Sophia jumps whenever an obstacle reaches her, at any screen width.
+    (() => {
+      const fox = document.querySelector('.sophia-pixel-fox');
+      const runner = document.querySelector('.sophia-runner');
+      const obstacles = [...document.querySelectorAll('.sophia-runner__obstacle')];
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!fox || !runner || !obstacles.length) return;
+
+      let frame = 0;
+      let visible = true;
+      const tick = () => {
+        frame = 0;
+        if (!visible || document.hidden || reduce.matches) return;
+        if (!fox.classList.contains('is-jumping')) {
+          const f = fox.getBoundingClientRect();
+          const lead = f.width * 0.55;
+          const near = obstacles.some((o) => {
+            const r = o.getBoundingClientRect();
+            return r.left < f.right + lead && r.right > f.left + f.width * 0.25;
+          });
+          if (near) fox.classList.add('is-jumping');
+        }
+        frame = requestAnimationFrame(tick);
+      };
+      fox.addEventListener('animationend', (event) => {
+        if (event.animationName === 'sophia-jump') fox.classList.remove('is-jumping');
+      });
+      const start = () => { if (!frame) frame = requestAnimationFrame(tick); };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => { visible = Boolean(entry?.isIntersecting); start(); }).observe(runner);
+      }
+      document.addEventListener('visibilitychange', start);
+      start();
+    })();
+  </script>
 </BaseLayout>
