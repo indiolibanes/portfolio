@@ -6911,6 +6911,17 @@ html[data-serious-mode='true']
   50% { transform: translateY(-3px); }
 }
 
+/* Jump (404): driven by the page script, separate from the running bob. */
+.sophia-pixel-fox.is-jumping {
+  animation: sophia-run 420ms steps(2, end) infinite, sophia-jump 620ms cubic-bezier(.3, .7, .4, 1) 1;
+}
+
+@keyframes sophia-jump {
+  0%, 100% { translate: 0 0; }
+  42% { translate: 0 -58px; }
+  58% { translate: 0 -54px; }
+}
+
 @keyframes sophia-obstacle {
   from { transform: translateX(0); }
   to { transform: translateX(-170vw); }

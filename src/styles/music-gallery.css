@@ -422,10 +422,10 @@
   will-change: transform, opacity;
 }
 .music-shelf .music-heading--gallery .music-effect-particle--butterfly {
-  width: clamp(38px, 6.5vw, 92px);
+  width: calc(clamp(34px, 6vw, 84px) * var(--fx-size, 1));
   aspect-ratio: 231 / 143;
-  filter: drop-shadow(0 0 10px rgba(70, 194, 255, .76));
-  animation: music-original-butterfly-flight 1300ms ease-out var(--fx-delay) both;
+  filter: drop-shadow(0 0 9px rgba(70, 194, 255, .72));
+  animation: music-butterfly-path var(--fx-life, 2600ms) cubic-bezier(.33, .1, .3, 1) var(--fx-delay) both;
 }
 .music-shelf .music-heading--gallery .music-butterfly-sprite {
   display: block;
@@ -433,69 +433,109 @@
   height: 100%;
   object-fit: contain;
   transform-origin: 50% 68%;
-  animation: music-original-butterfly-wings 190ms ease-in-out infinite alternate;
+  animation: music-original-butterfly-wings 160ms ease-in-out infinite alternate;
 }
 @keyframes music-original-butterfly-wings {
-  from { transform: perspective(180px) rotateY(-18deg) scaleX(.84) translateY(2px); }
-  to { transform: perspective(180px) rotateY(18deg) scaleX(1.02) translateY(-2px); }
+  from { transform: perspective(180px) rotateY(-26deg) scaleX(.78) translateY(2px); }
+  to { transform: perspective(180px) rotateY(20deg) scaleX(1.02) translateY(-2px); }
 }
-@keyframes music-original-butterfly-flight {
-  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-13deg) scale(.58); }
-  17% { opacity: 1; }
-  52% { opacity: .97; transform: translate(calc(-50% + var(--fx-mid-x)), calc(-50% + var(--fx-mid-y))) rotate(8deg) scale(1); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(1.16); }
+/* Four waypoints with alternating lean give the drift its flutter. */
+@keyframes music-butterfly-path {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-12deg) scale(.5); }
+  12% { opacity: 1; transform: translate(-50%, -50%) rotate(-4deg) scale(.86); }
+  38% { transform: translate(calc(-50% + var(--fx-a-x)), calc(-50% + var(--fx-a-y))) rotate(10deg) scale(1); }
+  66% { opacity: .96; transform: translate(calc(-50% + var(--fx-b-x)), calc(-50% + var(--fx-b-y))) rotate(-8deg) scale(.96); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(.78); }
 }
 .music-shelf .music-heading--gallery .music-effect-particle--ribbon {
-  width: clamp(48px, 7vw, 104px);
-  aspect-ratio: 133 / 125;
-  filter: drop-shadow(0 0 7px rgba(216, 47, 91, .68));
-  animation: music-original-ribbon-drift 1360ms ease-out var(--fx-delay) both;
+  width: clamp(60px, 10vw, 118px);
+  aspect-ratio: 120 / 150;
+  filter: drop-shadow(0 0 7px rgba(255, 70, 104, .5));
+  animation: music-ribbon-path 2700ms cubic-bezier(.4, .05, .3, 1) var(--fx-delay) both;
 }
-.music-shelf .music-heading--gallery .music-bow-piece {
-  position: absolute;
-  inset: 0;
-  display: block;
-  transform-origin: 50% 66%;
-  animation: music-original-bow-unravel 1160ms ease-in var(--fx-delay) both;
-}
-.music-shelf .music-heading--gallery .music-bow-piece img {
+.music-shelf .music-heading--gallery .music-bow {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.music-shelf .music-heading--gallery .music-bow-piece--left {
-  clip-path: polygon(0 0, 56% 0, 46% 100%, 0 100%);
-  --bow-shift-x: -33px;
-  --bow-shift-y: -17px;
-  --bow-angle: -58deg;
+.music-shelf .music-heading--gallery .music-bow-loop path { stroke: #c8183f; stroke-width: 9; }
+.music-shelf .music-heading--gallery .music-bow-loop .music-bow-shine { stroke: #ff8fa3; stroke-width: 2.2; opacity: .7; }
+.music-shelf .music-heading--gallery .music-bow-knot { fill: #9c0f2e; stroke: #ff6f86; stroke-width: 1.5; animation: music-bow-knot 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-tail { stroke: #d42a4b; stroke-width: 7; stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-tail 2700ms ease-out var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-tail--b { stroke: #ff5c74; animation-delay: calc(var(--fx-delay) + 90ms); }
+.music-shelf .music-heading--gallery .music-bow-loop { transform-box: view-box; transform-origin: 60px 45px; }
+.music-shelf .music-heading--gallery .music-bow-loop path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-loop-draw 2700ms ease-out var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-loop--left { animation: music-bow-untie-left 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-loop--right { animation: music-bow-untie-right 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+/* tie (0-20 %), hold, untie: loops swing out and slacken, knot drops, tails ripple */
+@keyframes music-bow-loop-draw {
+  0% { stroke-dashoffset: 100; }
+  20%, 46% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -70; }
 }
-.music-shelf .music-heading--gallery .music-bow-piece--right {
-  clip-path: polygon(49% 0, 100% 0, 100% 100%, 52% 100%);
-  --bow-shift-x: 32px;
-  --bow-shift-y: -21px;
-  --bow-angle: 61deg;
+@keyframes music-bow-untie-left {
+  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-22px, 18px) rotate(-48deg) scale(.86, 1.12); }
 }
-.music-shelf .music-heading--gallery .music-bow-piece--knot {
-  clip-path: polygon(32% 33%, 69% 33%, 74% 78%, 34% 89%);
-  --bow-shift-x: 0px;
-  --bow-shift-y: 26px;
-  --bow-angle: 18deg;
+@keyframes music-bow-untie-right {
+  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(22px, 14px) rotate(52deg) scale(.86, 1.12); }
 }
-@keyframes music-original-bow-unravel {
-  0%, 22% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
-  100% { opacity: 0; transform: translate(var(--bow-shift-x), var(--bow-shift-y)) rotate(var(--bow-angle)) scale(.66); }
+@keyframes music-bow-knot {
+  0%, 10% { opacity: 0; transform: translateY(0); }
+  18%, 46% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(34px); }
 }
-@keyframes music-original-ribbon-drift {
-  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-18deg) scale(.55); }
-  18%, 55% { opacity: 1; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(1.05); }
+@keyframes music-bow-tail {
+  0%, 12% { stroke-dashoffset: 100; opacity: 0; transform: translateX(0); }
+  18% { opacity: 1; }
+  44% { stroke-dashoffset: 0; opacity: 1; transform: translateX(-4px); }
+  64% { transform: translateX(4px); }
+  82% { transform: translateX(-3px) translateY(8px); opacity: .7; }
+  100% { stroke-dashoffset: 0; opacity: 0; transform: translateX(2px) translateY(18px); }
 }
+@keyframes music-ribbon-path {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(.4); }
+  12% { opacity: 1; transform: translate(-50%, -50%) rotate(4deg) scale(1.08); }
+  20%, 34% { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(.92); }
+}
+/* A small, quiet cue that the scene responds; gone after the first touch. */
+.music-shelf .music-heading--gallery .music-panorama-hint {
+  position: absolute;
+  right: .7rem;
+  bottom: .7rem;
+  z-index: 6;
+  padding: .32rem .62rem;
+  border: 1px solid rgba(157, 230, 255, .35);
+  border-radius: 999px;
+  background: rgba(10, 14, 32, .62);
+  color: #e6f6ff;
+  font-family: var(--font-ui);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  transition: opacity .5s ease;
+}
+.music-shelf .music-heading--gallery .music-panorama-hint__click { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .music-shelf .music-heading--gallery .music-panorama-hint__touch { display: none; }
+  .music-shelf .music-heading--gallery .music-panorama-hint__click { display: inline; }
+}
+.music-shelf .music-heading--gallery .music-panorama[data-effects-used='true'] .music-panorama-hint { opacity: 0; }
+.music-shelf .music-heading--gallery .music-panorama:has(.music-panorama-action[hidden]) .music-panorama-hint { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .music-shelf .music-heading--gallery .music-panorama-glint { display: none; }
   .music-shelf .music-heading--gallery .music-effect-particle,
   .music-shelf .music-heading--gallery .music-butterfly-sprite,
-  .music-shelf .music-heading--gallery .music-bow-piece { animation: none; }
+  .music-shelf .music-heading--gallery :is(.music-bow-loop, .music-bow-loop path, .music-bow-knot, .music-bow-tail) { animation: none; }
+  .music-shelf .music-heading--gallery .music-panorama-hint { display: none; }
 }
 
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery :is(.music-heading-copy, .music-panel-label) {

@@ -54,7 +54,7 @@ const bodies = [
   .triforce-system__core::before { content: ''; position: absolute; inset: -78%; border-radius: 50%; background: radial-gradient(ellipse,#ffe78370 0%,#f6d66a3b 36%,#e3b6431a 57%,transparent 72%); filter: blur(2px); animation: triforce-core-glow 6s ease-in-out infinite; }
   .triforce-system__core svg { display: block; position: relative; width: 100%; fill: #efd16c; stroke: #a9802b; stroke-width: 2.5; filter: drop-shadow(0 0 9px #ffe077cc) drop-shadow(0 0 23px #f5c6519c) drop-shadow(0 0 42px #e4a93655); }
   .triforce-system__orbit { position: absolute; width: var(--orbit-width); height: var(--orbit-height); left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(var(--tilt)); transform-origin: center; }
-  .triforce-system__track { position: absolute; inset: 0; border: 1px solid #edce8f22; border-radius: 50%; }
+  .triforce-system__track { position: absolute; inset: 0; border: 1px solid #edce8f33; border-radius: 50%; }
   .triforce-system__runner { position: absolute; inset: 0; width: 100%; height: 100%; offset-path: ellipse(50% 50% at 50% 50%); offset-anchor: center; offset-rotate: 0deg; offset-distance: var(--phase); animation: triforce-orbit var(--period) linear infinite; }
   .triforce-system__body { position: absolute; left: 50%; top: 50%; width: 7cqi; transform: translate(-50%,-50%) rotate(var(--counter)); }
   .triforce-system__body--emil { width: 13cqi; }
@@ -83,6 +83,20 @@ const bodies = [
   .triforce-system__pause[hidden] { display: none; }
   .triforce-system[data-orbits-paused='true'] .triforce-system__scene *, .triforce-system[data-orbits-paused='true'] .triforce-system__scene *::before { animation-play-state: paused !important; }
   .triforce-system__scene:not([data-motion-playing='true']) .triforce-system__core::before { animation-play-state: paused; }
+  /* Off-screen (or beyond DecorativeMotion's cap) the system holds still. */
+  .triforce-system__scene:not([data-motion-playing='true']) :is(.triforce-system__runner, .triforce-system__gesture) { animation-play-state: paused; }
+  /* On phones the planets would shrink to ~20 px; give them a legible size. */
+  @container (max-width: 420px) {
+    .triforce-system__body { width: 9cqi; }
+    .triforce-system__body--mushroom { width: 8cqi; }
+    .triforce-system__body--pokeball { width: 8.5cqi; }
+    .triforce-system__body--assassins-creed, .triforce-system__body--overwatch { width: 10cqi; }
+    .triforce-system__body--kingdom-hearts { width: 12cqi; }
+    .triforce-system__body--emil { width: 15cqi; }
+    .triforce-system__body--final-fantasy-vii { width: 26cqi; }
+    .triforce-system__body--wuthering-waves { width: 24cqi; }
+    .triforce-system__logo { max-height: 16cqi; }
+  }
   @keyframes triforce-orbit { from { offset-distance: var(--phase); } to { offset-distance: calc(var(--phase) + 100%); } }
   @keyframes triforce-core-glow { 0%,100% { opacity: .5; transform: scale(.94); } 50% { opacity: .92; transform: scale(1.045); } }
   @keyframes triforce-body-float { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(2px); } }

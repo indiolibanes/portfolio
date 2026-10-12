@@ -126,6 +126,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       </picture>
       <div class="music-panorama-glint" aria-hidden="true"></div>
       <div class="music-panorama-effects" data-music-effects aria-hidden="true"></div>
+      <span class="music-panorama-hint" aria-hidden="true"><span class="music-panorama-hint__touch">✦ Toque na cena</span><span class="music-panorama-hint__click">✦ Clique na cena</span></span>
       <button
         class="music-panorama-action"
         data-music-effect-toggle
@@ -424,65 +425,131 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
     const sprites = {
       butterfly: '/assets/shorekeeper-butterfly.webp',
-      ribbon: '/assets/phrolova-baton-bow.webp',
     };
     Object.values(sprites).forEach((src) => {
       const preload = new Image();
       preload.src = src;
     });
 
+    const rand = (min, max) => min + Math.random() * (max - min);
+    const scale = () => Math.min(1, Math.max(.55, panorama.getBoundingClientRect().width / 760));
+    const svgNS = 'http://www.w3.org/2000/svg';
+
+    const release = (particle, life) => {
+      effectLayer.appendChild(particle);
+      window.setTimeout(() => particle.remove(), life + 400);
+    };
+
+    // Shorekeeper's butterflies: each one flutters along its own wavering
+    // path, so a burst reads as a small flight rather than a single puff.
+    const spawnButterfly = (x, y, delay = 0) => {
+      const k = scale();
+      const particle = document.createElement('span');
+      const life = Math.round(rand(2300, 3100));
+      const dx = rand(-170, 170) * k;
+      const dy = -rand(95, 200) * k;
+      particle.className = 'music-effect-particle music-effect-particle--butterfly';
+      particle.style.setProperty('--fx-x', x + '%');
+      particle.style.setProperty('--fx-y', y + '%');
+      particle.style.setProperty('--fx-a-x', (dx * .28 + rand(-34, 34) * k) + 'px');
+      particle.style.setProperty('--fx-a-y', (dy * .3) + 'px');
+      particle.style.setProperty('--fx-b-x', (dx * .62 - rand(-40, 40) * k) + 'px');
+      particle.style.setProperty('--fx-b-y', (dy * .66) + 'px');
+      particle.style.setProperty('--fx-dx', dx + 'px');
+      particle.style.setProperty('--fx-dy', dy + 'px');
+      particle.style.setProperty('--fx-rotate', (dx > 0 ? 1 : -1) * rand(8, 22) + 'deg');
+      particle.style.setProperty('--fx-size', rand(.72, 1.12).toFixed(2));
+      particle.style.setProperty('--fx-life', life + 'ms');
+      particle.style.setProperty('--fx-delay', delay + 'ms');
+      const sprite = document.createElement('img');
+      sprite.className = 'music-butterfly-sprite';
+      sprite.src = sprites.butterfly;
+      sprite.alt = '';
+      sprite.width = 231;
+      sprite.height = 143;
+      sprite.style.animationDuration = Math.round(rand(130, 190)) + 'ms';
+      particle.appendChild(sprite);
+      release(particle, life + delay);
+    };
+
+    // Phrolova's bow, drawn as ribbon: both loops tie themselves, hold a
+    // beat, then untie — the loops swing away, the knot drops and two crimson
+    // tails ripple down and fade. (The old bitmap crop was a blurry petal
+    // cluster that read as a blob at this size.)
+    const bowMarkup = `
+      <path class="music-bow-tail" pathLength="100" d="M57 50C48 76 66 94 50 118S42 140 34 148" />
+      <path class="music-bow-tail music-bow-tail--b" pathLength="100" d="M63 50C74 76 56 96 72 118S82 140 90 148" />
+      <g class="music-bow-loop music-bow-loop--left"><path pathLength="100" d="M60 44C42 20 12 22 14 42C16 62 44 58 60 44" /><path class="music-bow-shine" pathLength="100" d="M56 40C42 26 22 28 20 40" /></g>
+      <g class="music-bow-loop music-bow-loop--right"><path pathLength="100" d="M60 44C78 20 108 22 106 42C104 62 76 58 60 44" /><path class="music-bow-shine" pathLength="100" d="M64 40C78 26 98 28 100 40" /></g>
+      <ellipse class="music-bow-knot" cx="60" cy="45" rx="7.5" ry="9" />`;
+
+    const spawnRibbon = (x, y, delay = 0) => {
+      const k = scale();
+      const particle = document.createElement('span');
+      const life = 2700;
+      particle.className = 'music-effect-particle music-effect-particle--ribbon';
+      particle.style.setProperty('--fx-x', x + '%');
+      particle.style.setProperty('--fx-y', y + '%');
+      particle.style.setProperty('--fx-dx', rand(-40, 40) * k + 'px');
+      particle.style.setProperty('--fx-dy', rand(40, 90) * k + 'px');
+      particle.style.setProperty('--fx-rotate', rand(-16, 16) + 'deg');
+      particle.style.setProperty('--fx-delay', delay + 'ms');
+      const bow = document.createElementNS(svgNS, 'svg');
+      bow.setAttribute('class', 'music-bow');
+      bow.setAttribute('viewBox', '0 0 120 150');
+      bow.setAttribute('aria-hidden', 'true');
+      bow.innerHTML = bowMarkup;
+      particle.appendChild(bow);
+      release(particle, life + delay);
+    };
+
+    const burst = (effect, x, y) => {
+      if (effect === 'butterfly') {
+        for (let i = 0; i < 5; i += 1) spawnButterfly(x + rand(-3, 3), y + rand(-3, 3), i * 90);
+      } else {
+        spawnRibbon(x, y, 0);
+        spawnRibbon(Math.min(88, x + 9), Math.max(14, y - 8), 220);
+      }
+    };
+
     effectToggle.addEventListener('click', (event) => {
       const effect = nextEffect;
       nextEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
       if (effectsQuiet()) return;
+      panorama.dataset.effectsUsed = 'true';
 
       const bounds = panorama.getBoundingClientRect();
       const keyboard = event.detail === 0;
-      const originX = keyboard ? 50 : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
-      const originY = keyboard ? 52 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
-      const count = effect === 'butterfly' ? 4 : 3;
-
-      for (let i = 0; i < count; i += 1) {
-        const particle = document.createElement('span');
-        particle.className = 'music-effect-particle music-effect-particle--' + effect;
-        particle.style.setProperty('--fx-x', originX + '%');
-        particle.style.setProperty('--fx-y', originY + '%');
-        particle.style.setProperty('--fx-dx', ((i - (count - 1) / 2) * 46) + 'px');
-        particle.style.setProperty('--fx-dy', (-60 - (i % 3) * 28) + 'px');
-        particle.style.setProperty('--fx-mid-x', ((i - (count - 1) / 2) * 25) + 'px');
-        particle.style.setProperty('--fx-mid-y', (-30 - (i % 3) * 14) + 'px');
-        particle.style.setProperty('--fx-rotate', ((i - 1) * 24) + 'deg');
-        particle.style.setProperty('--fx-delay', (i * 100) + 'ms');
-
-        if (effect === 'butterfly') {
-          const sprite = document.createElement('img');
-          sprite.className = 'music-butterfly-sprite';
-          sprite.src = sprites.butterfly;
-          sprite.alt = '';
-          sprite.width = 231;
-          sprite.height = 143;
-          particle.appendChild(sprite);
-        } else {
-          for (const section of ['left', 'right', 'knot']) {
-            const piece = document.createElement('span');
-            piece.className = 'music-bow-piece music-bow-piece--' + section;
-            const sprite = document.createElement('img');
-            sprite.src = sprites.ribbon;
-            sprite.alt = '';
-            sprite.width = 133;
-            sprite.height = 125;
-            piece.appendChild(sprite);
-            particle.appendChild(piece);
-          }
-        }
-
-        effectLayer.appendChild(particle);
-        particle.addEventListener('animationend', (e) => {
-          if (e.target === particle) particle.remove();
-        });
-        window.setTimeout(() => particle.remove(), 2100);
-      }
+      const originX = keyboard ? (effect === 'butterfly' ? 78 : 22) : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
+      const originY = keyboard ? 48 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
+      burst(effect, originX, originY);
     });
+
+    // Ambient life while the scene is on screen: now and then one butterfly
+    // leaves Shorekeeper's hand, and every third time a bow drifts from
+    // Phrolova's side. Nothing runs off-screen, in a hidden tab or when quiet.
+    let ambientTimer = 0;
+    let ambientCount = 0;
+    let sceneVisible = false;
+    const scheduleAmbient = () => {
+      window.clearTimeout(ambientTimer);
+      if (!sceneVisible || document.hidden || effectsQuiet()) return;
+      ambientTimer = window.setTimeout(() => {
+        ambientCount += 1;
+        if (ambientCount % 3 === 0) spawnRibbon(rand(14, 26), rand(42, 56));
+        else spawnButterfly(rand(72, 84), rand(36, 50));
+        scheduleAmbient();
+      }, rand(7000, 12000));
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        sceneVisible = Boolean(entry?.isIntersecting);
+        scheduleAmbient();
+      }, { threshold: .45 }).observe(panorama);
+    }
+    document.addEventListener('visibilitychange', scheduleAmbient);
+    window.addEventListener('portfolio:mode', scheduleAmbient);
+    reducedMotion.addEventListener('change', scheduleAmbient);
   }
 
   shelf?.setAttribute('aria-busy', 'true');
