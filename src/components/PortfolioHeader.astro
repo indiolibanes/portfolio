@@ -103,7 +103,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
 </script>
 
 <script is:inline>
-  // Compact navigation (<= 1100 px). Without JavaScript the sections stay
+  // Compact navigation (<= 1180 px). Without JavaScript the sections stay
   // visible as a wrapping row; with it they collapse behind a disclosure.
   (() => {
     const button = document.querySelector('[data-nav-menu-toggle]');
@@ -113,7 +113,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
     document.documentElement.dataset.navJs = 'true';
     button.hidden = false;
 
-    const compact = window.matchMedia('(max-width: 1100px)');
+    const compact = window.matchMedia('(max-width: 1180px)');
     const setOpen = (open, restoreFocus = false) => {
       button.setAttribute('aria-expanded', String(open));
       panel.dataset.open = String(open);
@@ -142,7 +142,7 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
   .site-header .nav-menu-toggle { display: none; }
   .site-header .nav-sections { display: contents; }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1180px) {
     html:not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
 
     html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
