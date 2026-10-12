@@ -448,71 +448,55 @@
   100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(.78); }
 }
 .music-shelf .music-heading--gallery .music-effect-particle--ribbon {
-  width: clamp(46px, 7vw, 100px);
-  aspect-ratio: 133 / 125;
-  filter: drop-shadow(0 0 7px rgba(216, 47, 91, .62));
-  animation: music-ribbon-path 2600ms cubic-bezier(.4, .05, .3, 1) var(--fx-delay) both;
+  width: clamp(60px, 10vw, 118px);
+  aspect-ratio: 120 / 150;
+  filter: drop-shadow(0 0 7px rgba(255, 70, 104, .5));
+  animation: music-ribbon-path 2700ms cubic-bezier(.4, .05, .3, 1) var(--fx-delay) both;
 }
-.music-shelf .music-heading--gallery .music-bow-piece {
-  position: absolute;
-  inset: 0;
-  display: block;
-  transform-origin: 50% 66%;
-  animation: music-original-bow-unravel 2600ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both;
-}
-.music-shelf .music-heading--gallery .music-bow-piece img {
+.music-shelf .music-heading--gallery .music-bow {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-}
-.music-shelf .music-heading--gallery .music-bow-piece--left {
-  clip-path: polygon(0 0, 56% 0, 46% 100%, 0 100%);
-  --bow-shift-x: -38px;
-  --bow-shift-y: 14px;
-  --bow-angle: -64deg;
-}
-.music-shelf .music-heading--gallery .music-bow-piece--right {
-  clip-path: polygon(49% 0, 100% 0, 100% 100%, 52% 100%);
-  --bow-shift-x: 36px;
-  --bow-shift-y: 10px;
-  --bow-angle: 68deg;
-}
-.music-shelf .music-heading--gallery .music-bow-piece--knot {
-  clip-path: polygon(32% 33%, 69% 33%, 74% 78%, 34% 89%);
-  --bow-shift-x: 0px;
-  --bow-shift-y: 46px;
-  --bow-angle: 22deg;
-}
-.music-shelf .music-heading--gallery .music-bow-tails {
-  position: absolute;
-  left: 0;
-  top: 18%;
-  width: 100%;
-  height: 128%;
   overflow: visible;
   fill: none;
-  stroke: #c61f45;
-  stroke-width: 6;
   stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.music-shelf .music-heading--gallery .music-bow-tails path {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: music-bow-tail 2600ms ease-out var(--fx-delay) both;
+.music-shelf .music-heading--gallery .music-bow-loop path { stroke: #c8183f; stroke-width: 9; }
+.music-shelf .music-heading--gallery .music-bow-loop .music-bow-shine { stroke: #ff8fa3; stroke-width: 2.2; opacity: .7; }
+.music-shelf .music-heading--gallery .music-bow-knot { fill: #9c0f2e; stroke: #ff6f86; stroke-width: 1.5; animation: music-bow-knot 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-tail { stroke: #d42a4b; stroke-width: 7; stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-tail 2700ms ease-out var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-tail--b { stroke: #ff5c74; animation-delay: calc(var(--fx-delay) + 90ms); }
+.music-shelf .music-heading--gallery .music-bow-loop { transform-box: view-box; transform-origin: 60px 45px; }
+.music-shelf .music-heading--gallery .music-bow-loop path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-loop-draw 2700ms ease-out var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-loop--left { animation: music-bow-untie-left 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+.music-shelf .music-heading--gallery .music-bow-loop--right { animation: music-bow-untie-right 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
+/* tie (0-20 %), hold, untie: loops swing out and slacken, knot drops, tails ripple */
+@keyframes music-bow-loop-draw {
+  0% { stroke-dashoffset: 100; }
+  20%, 46% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -70; }
 }
-.music-shelf .music-heading--gallery .music-bow-tails path + path { stroke: #e2405e; animation-delay: calc(var(--fx-delay) + 80ms); }
-/* pop in, hold, untie: loops swing away, the knot drops, tails ripple down */
-@keyframes music-original-bow-unravel {
-  0%, 34% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
-  100% { opacity: 0; transform: translate(var(--bow-shift-x), var(--bow-shift-y)) rotate(var(--bow-angle)) scale(.7); }
+@keyframes music-bow-untie-left {
+  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(-22px, 18px) rotate(-48deg) scale(.86, 1.12); }
+}
+@keyframes music-bow-untie-right {
+  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  100% { opacity: 0; transform: translate(22px, 14px) rotate(52deg) scale(.86, 1.12); }
+}
+@keyframes music-bow-knot {
+  0%, 10% { opacity: 0; transform: translateY(0); }
+  18%, 46% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(34px); }
 }
 @keyframes music-bow-tail {
-  0%, 30% { stroke-dashoffset: 100; opacity: 0; transform: translateX(0); }
-  36% { opacity: 1; }
-  64% { stroke-dashoffset: 0; opacity: .95; transform: translateX(-4px); }
-  82% { transform: translateX(5px); }
-  100% { stroke-dashoffset: 0; opacity: 0; transform: translateX(-3px) translateY(14px); }
+  0%, 12% { stroke-dashoffset: 100; opacity: 0; transform: translateX(0); }
+  18% { opacity: 1; }
+  44% { stroke-dashoffset: 0; opacity: 1; transform: translateX(-4px); }
+  64% { transform: translateX(4px); }
+  82% { transform: translateX(-3px) translateY(8px); opacity: .7; }
+  100% { stroke-dashoffset: 0; opacity: 0; transform: translateX(2px) translateY(18px); }
 }
 @keyframes music-ribbon-path {
   0% { opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(.4); }
@@ -550,8 +534,7 @@
   .music-shelf .music-heading--gallery .music-panorama-glint { display: none; }
   .music-shelf .music-heading--gallery .music-effect-particle,
   .music-shelf .music-heading--gallery .music-butterfly-sprite,
-  .music-shelf .music-heading--gallery .music-bow-piece,
-  .music-shelf .music-heading--gallery .music-bow-tails path { animation: none; }
+  .music-shelf .music-heading--gallery :is(.music-bow-loop, .music-bow-loop path, .music-bow-knot, .music-bow-tail) { animation: none; }
   .music-shelf .music-heading--gallery .music-panorama-hint { display: none; }
 }
 
