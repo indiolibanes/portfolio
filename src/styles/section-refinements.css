@@ -325,6 +325,34 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
     );
 }
 
+/* Sophia's lines on the project cards are epigraphs, not controls: set them
+   as quiet italic lines signed by her sigil instead of pill-shaped chips that
+   competed with the theme tags directly above them. */
+html:not([data-legacy-mode='true']) #lab .lab-sophia-presence {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: .78rem;
+  font-style: italic;
+  line-height: 1.45;
+  letter-spacing: .005em;
+  opacity: .88;
+}
+
+html:not([data-legacy-mode='true']) #lab .lab-sophia-presence__sigil {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  font-style: normal;
+}
+
+html[data-serious-mode='true'] #lab .lab-sophia-presence {
+  color: var(--ink-soft);
+  background: none;
+  opacity: 1;
+}
+
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 #lab .lab-project-book {
   margin-top:
