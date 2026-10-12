@@ -58,6 +58,19 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero
     infinite;
 }
 
+/* Sophia notices you: pointing at or focusing her guide makes her hop once.
+   `translate` keeps the hop independent from the walking transform. */
+.lab-companion:has(.lab-sophia-guide:is(:hover, :focus-visible)) .sophia-animation--lab {
+  animation: lab-search-walk 10.5s ease-in-out infinite, sophia-notice-hop 720ms cubic-bezier(.3, .7, .4, 1) 1;
+}
+@keyframes sophia-notice-hop {
+  0%, 100% { translate: 0 0; }
+  32% { translate: 0 -16px; }
+  52% { translate: 0 -11px; }
+  74% { translate: 0 0; }
+  86% { translate: 0 -3px; }
+}
+
 @keyframes lab-write-notes {
   0%,
   100% {
