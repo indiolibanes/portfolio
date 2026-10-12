@@ -1,0 +1,230 @@
+/*
+ * Editorial + Legacy 1998 — monochrome and minimal (2026-10-12).
+ *
+ * Both quiet modes are pure black on white. Three layers, in this order:
+ *   1. tokens: ink, surface and line collapse to #000 / #fff (+ one grey, #333);
+ *   2. a flat reset inside <body>: no shadow, radius, gradient, animation or
+ *      colour other than black on white;
+ *   3. a grayscale() filter on <html> as a safety net, so any colour that a
+ *      section still hard-codes (illustrations, SVG fills) renders as grey.
+ *
+ * Editorial = open page separated by hairline rules, no cards-as-boxes.
+ * Legacy    = same palette, boxed and underlined like a 1998 text page.
+ *
+ * Loaded after mode-tokens.css and before mobile.css. The authorial mode is
+ * untouched: every rule here is scoped to the two quiet modes.
+ *
+ * Exempt from the flat reset: the 404 Sophia panel (a dark scene by design;
+ * it still gets the grayscale net) and aria-hidden decoration.
+ */
+
+/* 1. Tokens ------------------------------------------------------------- */
+
+html[data-serious-mode='true'],
+html[data-legacy-mode='true'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-soft: #ffffff;
+  --surface-strong: #f2f2f2;
+  --ink: #000000;
+  --ink-soft: #333333;
+  --line: #000000;
+
+  --mode-heading: #000000;
+  --mode-ink: #000000;
+  --mode-ink-soft: #333333;
+  --mode-label: #333333;
+  --mode-link: #000000;
+  --mode-on-dark: #ffffff;
+  --mode-on-dark-soft: #d9d9d9;
+  --mode-on-dark-link: #ffffff;
+
+  background: #ffffff;
+  filter: grayscale(1);
+}
+
+html[data-serious-mode='true'] body,
+html[data-legacy-mode='true'] body {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* 2. Flat reset --------------------------------------------------------- */
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not(.sophia-404__panel, .sophia-404__panel *)),
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::before,
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::after {
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  transition: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not(.sophia-404__panel, .sophia-404__panel *)) {
+  color: #000000 !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: #000000 !important;
+}
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not(.sophia-404__panel, .sophia-404__panel *, [aria-hidden='true'], [aria-hidden='true'] *, img, picture, svg, svg *, canvas, video, iframe)) {
+  background-color: #ffffff !important;
+}
+
+/* Surfaces that were painted with gradients or tinted artwork. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.hero, .hero-intro, .hero-statement, .hero-note, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section, .portfolio-footer, .site-header, .nav-shell) {
+  background-image: none !important;
+}
+
+/* Secondary text: one grey, still 12:1 on white. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body :is(.eyebrow, .role, small, time, figcaption, .note-label, .hello, .github-overline, .project-label, .background-meta, .lab-project-meta, .editorial-masthead, .brand-copy small) {
+  color: #333333 !important;
+}
+
+/* Decoration that carries no information. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(
+  .ambient, .cosmic-starfield, .random-easter-layer, .atom-cursor,
+  .sophia-animation, .pixel-mushroom, .closing-emil-triforce, .triforce-system,
+  .github-gif-strip, .triforce-stage, .tape, .gold-block, .mario-name-tiles,
+  .phrolova-underlay, .shorekeeper-underlay, [class*='baton-ribbon']
+) {
+  display: none !important;
+}
+
+/* Grids that reserved a column for the hidden decoration. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.music-heading, .github-showcase .github-heading, .closing) {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .music-heading > * {
+  grid-column: 1 !important;
+  grid-row: auto !important;
+  text-align: left !important;
+}
+
+/* Links and focus ------------------------------------------------------- */
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) a:visited {
+  color: #000000 !important;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) :where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid #000000 !important;
+  outline-offset: 3px !important;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) ::selection {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Controls: outlined; hover/focus inverts. Primary action is filled. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body :is(button, .button, .nav-cta, .serious-toggle, .github-cta, .cv-download-button, .work-index a, .social-links a, .editorial-primary) {
+  border: 1px solid #000000 !important;
+  text-decoration: none;
+}
+html[data-serious-mode='true'] body .editorial-primary,
+html[data-serious-mode='true'] body .editorial-primary * {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body :is(button, .button, .nav-cta, .serious-toggle, .github-cta, .cv-download-button, .work-index a, .social-links a, .editorial-primary):is(:hover, :focus-visible),
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body :is(button, .button, .nav-cta, .serious-toggle, .github-cta, .cv-download-button, .work-index a, .social-links a, .editorial-primary):is(:hover, :focus-visible) * {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+html[data-serious-mode='true'] body .editorial-primary:is(:hover, :focus-visible),
+html[data-serious-mode='true'] body .editorial-primary:is(:hover, :focus-visible) * {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+html[data-legacy-mode='true'] body a:hover,
+html[data-legacy-mode='true'] body a:hover * {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+html[data-legacy-mode='true'] body a:focus-visible {
+  outline-offset: 2px !important;
+}
+
+/* Editorial: an open page divided by rules ------------------------------ */
+
+html[data-serious-mode='true'] .site-header {
+  background: #ffffff;
+}
+html[data-serious-mode='true'] .nav-shell {
+  width: min(var(--page), 100%);
+  border-width: 0 0 1px !important;
+  padding-inline: 0;
+}
+html[data-serious-mode='true'] .nav-links a {
+  text-decoration-line: none;
+}
+html[data-serious-mode='true'] .nav-links a:is(:hover, [aria-current]) {
+  text-decoration-line: underline;
+}
+html[data-serious-mode='true'] .brand-mark {
+  border: 1px solid #000000 !important;
+}
+
+html[data-serious-mode='true'] :is(.hero, .background, .music-shelf, .closing, .github-showcase, .lab) {
+  border-width: 1px 0 0 !important;
+  padding-inline: 0 !important;
+}
+html[data-serious-mode='true'] .hero {
+  border-top-width: 0 !important;
+}
+html[data-serious-mode='true'] :is(.lab-project-card, .github-feature, .hero-note, .recent-track-card, .playlist-card, .lab-sophia-guide) {
+  border: 1px solid #000000 !important;
+}
+html[data-serious-mode='true'] :is(.lab-project-status, .lab-project-tags span, .github-tags span, .music-source-label span) {
+  border: 1px solid #000000 !important;
+}
+html[data-serious-mode='true'] .portfolio-footer {
+  border-width: 1px 0 0 !important;
+}
+html[data-serious-mode='true'] .editorial-masthead {
+  border-bottom: 1px solid #000000;
+}
+html[data-serious-mode='true'] .block-name {
+  font-weight: 700;
+}
+
+/* Legacy 1998: flat black-and-white page, no bevels --------------------- */
+
+html[data-legacy-mode='true'] {
+  background: #ffffff;
+}
+html[data-legacy-mode='true'] .nav-shell {
+  border: 0 !important;
+  border-bottom: 1px solid #000000 !important;
+}
+html[data-legacy-mode='true'] :is(.brand-mark, .serious-toggle) {
+  border: 1px solid #000000 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+html[data-legacy-mode='true'] .nav-links a,
+html[data-legacy-mode='true'] .nav-links a:visited {
+  color: #000000 !important;
+}
+html[data-legacy-mode='true'] :is(.hero, .hero-note, .github-feature, .lab-project-card, .recent-track-card, .playlist-card, .lab-sophia-guide) {
+  border: 1px solid #000000 !important;
+  background: #ffffff !important;
+}
+html[data-legacy-mode='true'] .portfolio-footer {
+  border-width: 1px 0 0 !important;
+}
+
+/* Skip link keeps its own high-contrast pair. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .skip-link {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
