@@ -12,6 +12,7 @@ on:
       - 'qa/portfolio-browser-audit-*'
     paths:
       - 'qa/refs.txt'
+      - 'qa/fonts.txt'
       - 'qa/browser-audit.mjs'
       - '.github/workflows/portfolio-browser-qa.yml'
   workflow_dispatch:
@@ -48,6 +49,26 @@ jobs:
           npm init -y >/dev/null
           npm install --no-audit --no-fund playwright@1 axe-core@4
           npx playwright install --with-deps chromium
+
+      - name: Convert fonts to WOFF2 (when qa/fonts.txt lists any)
+        shell: bash
+        run: |
+          set -euo pipefail
+          [ -s qa/fonts.txt ] || exit 0
+          pip install --quiet fonttools brotli
+          out="$GITHUB_WORKSPACE/qa-results/fonts-${GITHUB_RUN_NUMBER}"
+          mkdir -p "$out" "$RUNNER_TEMP/fonts"
+          while read -r sha path; do
+            [ -z "${sha:-}" ] && continue
+            case "$sha" in \#*) continue;; esac
+            name=$(basename "$path"); base="${name%.*}"
+            git show "$sha:$path" > "$RUNNER_TEMP/fonts/$name"
+            pyftsubset "$RUNNER_TEMP/fonts/$name" \
+              --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2190-2199,U+2212,U+2215" \
+              --layout-features='*' --flavor=woff2 --output-file="$out/$base.woff2"
+            ls -la "$RUNNER_TEMP/fonts/$name" "$out/$base.woff2" >> "$out/sizes.txt"
+          done < qa/fonts.txt
+          cat "$out/sizes.txt"
 
       - name: Build, serve and audit each ref
         shell: bash

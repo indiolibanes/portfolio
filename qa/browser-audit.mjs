@@ -23,6 +23,7 @@ const VIEWPORTS = [
   { name: '430', width: 430, height: 932 },
   { name: '768', width: 768, height: 1024 },
   { name: '1024', width: 1024, height: 768 },
+  { name: '1200', width: 1200, height: 800 },
   { name: '1440', width: 1440, height: 900 },
   { name: '1920', width: 1920, height: 1080 },
 ];
