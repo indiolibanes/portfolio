@@ -20,6 +20,7 @@ const MODES = ['authorial', 'editorial', 'legacy'];
 const VIEWPORTS = [
   { name: '360', width: 360, height: 780 },
   { name: '390', width: 390, height: 844 },
+  { name: '430', width: 430, height: 932 },
   { name: '768', width: 768, height: 1024 },
   { name: '1024', width: 1024, height: 768 },
   { name: '1440', width: 1440, height: 900 },
@@ -30,7 +31,7 @@ const PAGES = [
   { name: 'sophia', path: '/sophia/' },
   { name: '404', path: '/qa-pagina-inexistente/' },
 ];
-const SECTION_WIDTHS = new Set(['390', '1440']);
+const SECTION_WIDTHS = new Set(['360', '390', '430', '1440']);
 const SECTION_WIDTHS_AUTHORIAL = new Set(['360', '390', '768', '1024', '1440', '1920']);
 const AXE_WIDTHS = new Set(['390', '1440']);
 
@@ -385,6 +386,72 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
       report.interactions[`nav-${mode}-${vp.name}`] = result;
       await context.close();
     }
+  }
+}
+
+{
+  // 6. Motion filmstrips (motion allowed): frames of every animated component.
+  const ONLY = process.env.QA_SKIP_MOTION ? [] : [VIEWPORTS[1], VIEWPORTS[5]];
+  report.motion = {};
+  const strip = async (page, selector, name, frames, every, before) => {
+    const loc = page.locator(selector).first();
+    if (!(await loc.count())) { report.motion[name] = 'missing'; return; }
+    await loc.scrollIntoViewIfNeeded().catch(() => {});
+    await page.waitForTimeout(300);
+    if (before) await before();
+    const boxes = [];
+    for (let i = 0; i < frames; i += 1) {
+      const box = await loc.boundingBox();
+      boxes.push(box ? `${Math.round(box.x)},${Math.round(box.y)},${Math.round(box.width)}x${Math.round(box.height)}` : 'none');
+      await loc.screenshot({ path: join(outDir, 'shots', `motion-${name}-${String(i).padStart(2, '0')}.jpg`), type: 'jpeg', quality: 68, animations: 'allow' }).catch(() => {});
+      await page.waitForTimeout(every);
+    }
+    report.motion[name] = boxes;
+  };
+  for (const vp of ONLY) {
+    const { context, page, log } = await newPage({ viewport: vp, reducedMotion: 'no-preference', music: 'playing' });
+    await page.goto(`${baseUrl}/?mode=authorial`, { waitUntil: 'load' });
+    await settle(page);
+    const w = vp.name;
+    await strip(page, '#sobre .hero-cover-art', `prism-${w}`, 10, 400);
+    await strip(page, '#sobre .hero-ornaments', `ornaments-${w}`, 20, 480);
+    await strip(page, '#sobre .name-brick-plate', `nameplate-${w}`, 6, 500);
+    await strip(page, '#lab .lab-companion', `sophia-lab-${w}`, 8, 260);
+    await strip(page, '#metodo .method-presenter', `sophia-method-${w}`, 8, 300);
+    await strip(page, '#bastidores .github-gif-strip', `bastidores-${w}`, 4, 400);
+    await strip(page, '#musica .music-panorama', `music-idle-${w}`, 6, 500);
+    const panoramaClick = (x, y) => async () => { const b = page.locator('[data-music-effect-toggle]'); if (await b.isVisible()) await b.click({ position: { x, y } }); };
+    await strip(page, '#musica .music-panorama', `music-butterflies-${w}`, 8, 230, panoramaClick(vp.width < 700 ? 120 : 420, vp.width < 700 ? 90 : 260));
+    await page.waitForTimeout(1500);
+    await strip(page, '#musica .music-panorama', `music-ribbons-${w}`, 8, 230, panoramaClick(vp.width < 700 ? 200 : 700, vp.width < 700 ? 110 : 300));
+    await strip(page, '#musica .listening-note', `music-note-${w}`, 4, 700);
+    await strip(page, '#contato .closing-marks', `orbit-${w}`, 10, 600);
+    report.motion[`log-${w}`] = { errors: log.pageErrors, console: log.console.filter((c) => !c.includes('503')) };
+    await context.close();
+    // Aemeath: fast-forward the random timer with a virtual clock.
+    const ctx2 = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, reducedMotion: 'no-preference', isMobile: vp.width < 768, hasTouch: vp.width < 1024 });
+    const p2 = await ctx2.newPage();
+    await p2.clock.install();
+    await p2.goto(`${baseUrl}/?mode=authorial`, { waitUntil: 'load' });
+    const seen = [];
+    for (let t = 0; t < 14; t += 1) {
+      await p2.clock.runFor(12000);
+      await p2.waitForTimeout(60);
+      const st = await p2.evaluate(() => { const s = document.querySelector('[data-random-easter-sprite]'); if (!s) return null; const r = s.getBoundingClientRect(); return { visible: s.dataset.visible, src: (s.getAttribute('src') || '').split('/').pop(), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width) }; });
+      if (st?.visible === 'true') {
+        seen.push(st);
+        if (seen.length <= 3) await p2.screenshot({ path: join(outDir, 'shots', `motion-aemeath-${w}-${seen.length}.jpg`), type: 'jpeg', quality: 68 });
+      }
+    }
+    report.motion[`aemeath-${w}`] = seen;
+    await ctx2.close();
+  }
+  // Sophia page + 404 runner.
+  for (const [path, sel, name] of [['/sophia/', '.sophia-orbit', 'sophia-page'], ['/qa-pagina-inexistente/', '.sophia-runner', 'sophia-404']]) {
+    const { context, page } = await newPage({ viewport: VIEWPORTS[1], reducedMotion: 'no-preference' });
+    await page.goto(`${baseUrl}${path}?mode=authorial`, { waitUntil: 'load' });
+    await strip(page, sel, `${name}-390`, 6, 350);
+    await context.close();
   }
 }
 
