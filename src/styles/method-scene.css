@@ -1,5 +1,5 @@
 /* Eucalyptus leaves: a quiet, environmental interlude for the method. */
-html:not([data-legacy-mode='true']) .method-section {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section {
   isolation: isolate;
 
   background:
@@ -41,8 +41,8 @@ html:not([data-legacy-mode='true']) .method-section {
       rgba(255, 255, 255, .08);
 }
 
-html:not([data-legacy-mode='true']) .method-section h2,
-html:not([data-legacy-mode='true']) .method-section h3 {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section h2,
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section h3 {
   color: #fff7e8;
 }
 
@@ -59,17 +59,17 @@ html:not([data-legacy-mode='true']) .method-section h3 {
   max-width: none;
 }
 
-html:not([data-legacy-mode='true']) .method-section .method-lead,
-html:not([data-legacy-mode='true']) .method-section .method-closing {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-lead,
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-closing {
   color: #f8f4e8;
 }
 
-html:not([data-legacy-mode='true']) .method-section .eyebrow,
-html:not([data-legacy-mode='true']) .method-section .method-index {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .eyebrow,
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-index {
   color: #fff0c9;
 }
 
-html:not([data-legacy-mode='true']) .method-section .method-disclosure {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-disclosure {
   color: #f3ead7;
 
   padding:
@@ -86,7 +86,13 @@ html:not([data-legacy-mode='true']) .method-section .method-disclosure {
     rgba(31, 58, 44, .22);
 }
 
-html:not([data-legacy-mode='true']) .method-section .method-steps li {
+/* The disclosure lead-in inherits --ink from typography.css; on the dark
+   eucalyptus scene it must stay light like the rest of the disclosure. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-disclosure strong {
+  color: #fff7e8;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-steps li {
   background:
     linear-gradient(
       145deg,
@@ -106,7 +112,7 @@ html:not([data-legacy-mode='true']) .method-section .method-steps li {
       rgba(255, 255, 255, .055);
 }
 
-html:not([data-legacy-mode='true']) .method-section .method-steps li:hover {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-steps li:hover {
   box-shadow:
     4px 9px 0
       rgba(22, 43, 32, .22),
@@ -114,7 +120,7 @@ html:not([data-legacy-mode='true']) .method-section .method-steps li:hover {
       rgba(255, 255, 255, .075);
 }
 
-html:not([data-legacy-mode='true']) .method-section .method-steps p {
+html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-section .method-steps p {
   color: #f3ead7;
 }
 
