@@ -100,7 +100,10 @@ html:not([data-serious-mode='true']) .lab > .lab-project-card { margin-top: 0; }
   .lab-heading { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
   .lab-companion { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: 1rem; }
   .lab-companion .sophia-animation { width: min(100%, 180px); }
-  .lab-companion .lab-sophia-guide { grid-template-columns: minmax(0, 1fr); }
+  /* Must out-rank the html:not(...) base rule; otherwise the hidden sigil and
+     arrow leave the copy in the 32 px first column (one word per line). */
+  html .lab-companion .lab-sophia-guide,
+  html:not([data-serious-mode='true']) .lab-companion .lab-sophia-guide { grid-template-columns: minmax(0, 1fr); }
   .lab-companion .lab-sophia-guide__sigil, .lab-companion .lab-sophia-guide > i { display: none; }
   .github-heading .github-gif-strip { gap: .7rem; }
   .github-heading h2 { font-size: 2.25rem; }
