@@ -1,0 +1,110 @@
+# Temporary browser-QA harness for the GUI/UX audit of 2026-10-12.
+# Runs ONLY on qa/portfolio-browser-audit-* branches. It builds each ref
+# listed in qa/refs.txt from source, serves it locally with `astro preview`,
+# and commits screenshots + a JSON report back to the same qa branch.
+# It does not deploy, does not touch main and holds no secrets.
+# Delete the qa branch once the audit is closed.
+name: Portfolio browser QA (temporary)
+
+on:
+  push:
+    branches:
+      - 'qa/portfolio-browser-audit-*'
+    paths:
+      - 'qa/refs.txt'
+      - 'qa/browser-audit.mjs'
+      - '.github/workflows/portfolio-browser-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-browser-qa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout qa branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install QA tools (outside the project)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/qa-tools"
+          cp qa/browser-audit.mjs "$RUNNER_TEMP/qa-tools/"
+          cd "$RUNNER_TEMP/qa-tools"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund playwright@1 axe-core@4
+          npx playwright install --with-deps chromium
+
+      - name: Build, serve and audit each ref
+        shell: bash
+        run: |
+          set -uo pipefail
+          out="qa-results/run-${GITHUB_RUN_NUMBER}"
+          mkdir -p "$out"
+          port=4400
+          summary="$out/builds.txt"
+          : > "$summary"
+          while read -r label ref; do
+            [ -z "${label:-}" ] && continue
+            case "$label" in \#*) continue;; esac
+            dir="$RUNNER_TEMP/build-$label"
+            echo "::group::$label ($ref)"
+            git worktree add --detach "$dir" "$ref"
+            sha=$(git -C "$dir" rev-parse HEAD)
+            if (cd "$dir" && npm install --no-audit --no-fund && npm run build) > "$out/build-$label.log" 2>&1; then
+              echo "$label $ref $sha BUILD=PASS" >> "$summary"
+            else
+              echo "$label $ref $sha BUILD=FAIL" >> "$summary"
+              tail -40 "$out/build-$label.log"
+              echo "::endgroup::"
+              continue
+            fi
+            if (cd "$dir" && node scripts/check-ux-contract.mjs) > "$out/check-ux-$label.log" 2>&1; then
+              echo "$label CHECK_UX=PASS" >> "$summary"
+            else
+              echo "$label CHECK_UX=FAIL" >> "$summary"
+            fi
+            if [ -f "$dir/scripts/test-music-state.mjs" ]; then
+              if (cd "$dir" && node scripts/test-music-state.mjs) > "$out/music-state-$label.log" 2>&1; then
+                echo "$label MUSIC_STATE=PASS" >> "$summary"
+              else
+                echo "$label MUSIC_STATE=FAIL" >> "$summary"
+              fi
+            fi
+            (cd "$dir" && npx astro preview --host 127.0.0.1 --port "$port" > "$out/preview-$label.log" 2>&1 &)
+            for i in $(seq 1 60); do curl -sf "http://127.0.0.1:$port/" > /dev/null && break; sleep 1; done
+            (cd "$RUNNER_TEMP/qa-tools" && node browser-audit.mjs "$label" "http://127.0.0.1:$port" "$GITHUB_WORKSPACE/$out/$label") \
+              && echo "$label BROWSER_AUDIT=PASS" >> "$summary" \
+              || echo "$label BROWSER_AUDIT=FAIL" >> "$summary"
+            port=$((port + 1))
+            echo "::endgroup::"
+          done < qa/refs.txt
+          cat "$summary"
+
+      - name: Commit results to the qa branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add qa-results
+          git commit -m "qa: browser audit results run ${GITHUB_RUN_NUMBER}" || exit 0
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1
