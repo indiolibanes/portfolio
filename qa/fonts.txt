@@ -1,4 +1,0 @@
-# sha path
-463a1a31a80f080223943153e65dfb480e8f549a assets/fonts/Bookman Bold.ttf
-463a1a31a80f080223943153e65dfb480e8f549a assets/fonts/itc-benguiat-bold.otf
-463a1a31a80f080223943153e65dfb480e8f549a assets/fonts/Heart Breaking Bad.otf
