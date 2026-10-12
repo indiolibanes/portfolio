@@ -93,7 +93,7 @@ const fragments = [
             type="button"
             data-fragment-index={index}
             class:list={['sophia-fragment-dot', { 'is-active': index === 0 }]}
-            aria-label={`Exibir fragmento ${index + 1}`}
+            aria-label={`Exibir fragmento ${String(index + 1).padStart(2, '0')}`}
             aria-controls="sophia-fragment-output"
             aria-pressed={index === 0 ? 'true' : 'false'}
             title={fragment}

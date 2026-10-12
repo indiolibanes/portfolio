@@ -404,7 +404,15 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const hoverPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
     let nextEffect = 'butterfly';
-    effectToggle.hidden = false;
+    const effectsQuiet = () => reducedMotion.matches
+      || document.documentElement.dataset.seriousMode === 'true'
+      || document.documentElement.dataset.legacyMode === 'true';
+    // Only expose the control when it can actually animate; otherwise it is a
+    // focusable button that does nothing (Editorial, Legacy, reduced motion).
+    const syncEffectToggle = () => { effectToggle.hidden = effectsQuiet(); };
+    syncEffectToggle();
+    window.addEventListener('portfolio:mode', syncEffectToggle);
+    reducedMotion.addEventListener('change', syncEffectToggle);
 
     if (hoverPointer.matches) {
       effectToggle.addEventListener('pointermove', (event) => {
@@ -426,10 +434,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     effectToggle.addEventListener('click', (event) => {
       const effect = nextEffect;
       nextEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
-      const quiet = reducedMotion.matches
-        || document.documentElement.dataset.seriousMode === 'true'
-        || document.documentElement.dataset.legacyMode === 'true';
-      if (quiet) return;
+      if (effectsQuiet()) return;
 
       const bounds = panorama.getBoundingClientRect();
       const keyboard = event.detail === 0;
