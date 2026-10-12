@@ -260,7 +260,7 @@ for (const pageDef of PAGES) {
         await page.addScriptTag({ content: axeSource });
         run.axe = await page.evaluate(async () => {
           const r = await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] }, resultTypes: ['violations', 'incomplete'] });
-          const slim = (list) => list.map((v) => ({ id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length, targets: v.nodes.slice(0, 6).map((n) => ({ target: n.target.join(' '), summary: (n.failureSummary || '').split('\n').slice(0, 3).join(' | ').slice(0, 220) })) }));
+          const slim = (list) => list.map((v) => ({ id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length, targets: v.nodes.slice(0, 40).map((n) => ({ target: n.target.join(' '), summary: (n.failureSummary || '').split('\n').slice(0, 3).join(' | ').slice(0, 220) })) }));
           return { violations: slim(r.violations), incompleteIds: r.incomplete.map((v) => `${v.id}(${v.nodes.length})`) };
         });
         run.focus = await focusAudit(page);

@@ -58,7 +58,7 @@ jobs:
           port=4400
           summary="$out/builds.txt"
           : > "$summary"
-          while read -r label ref; do
+          while read -r label ref extra; do
             [ -z "${label:-}" ] && continue
             case "$label" in \#*) continue;; esac
             dir="$RUNNER_TEMP/build-$label"
@@ -85,6 +85,7 @@ jobs:
                 echo "$label MUSIC_STATE=FAIL" >> "$summary"
               fi
             fi
+            if [ "${extra:-}" = "keepdist" ]; then mkdir -p "$out/$label" && cp -r "$dir/dist" "$out/$label/dist"; fi
             (cd "$dir" && npx astro preview --host 127.0.0.1 --port "$port" > "$out/preview-$label.log" 2>&1 &)
             for i in $(seq 1 60); do curl -sf "http://127.0.0.1:$port/" > /dev/null && break; sleep 1; done
             (cd "$RUNNER_TEMP/qa-tools" && node browser-audit.mjs "$label" "http://127.0.0.1:$port" "$out/$label") > "$out/audit-$label.log" 2>&1 \

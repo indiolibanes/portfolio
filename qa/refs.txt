@@ -1,2 +1,2 @@
-# label ref (SHA)
-baseline 61b6d81e0b0f94534137aac56fdf6e1ee9b38359
+# label ref (SHA) [keepdist]
+baseline 61b6d81e0b0f94534137aac56fdf6e1ee9b38359 keepdist
