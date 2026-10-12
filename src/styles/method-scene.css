@@ -145,8 +145,15 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   font: 700 11px sans-serif;
   letter-spacing: .75px;
 }
-.method-presenter__node-label { fill: #233c2b; font: 600 13px sans-serif; }
+.method-presenter__cycle-mark { fill: #7d977f; letter-spacing: 1.2px; }
+.method-presenter__node-label text { fill: #233c2b; font: 700 11.5px sans-serif; }
+.method-presenter__node-hint text { fill: #4d6b55; font: 500 8.5px sans-serif; }
+.method-presenter__badges circle { fill: #375441; }
+.method-presenter__badges text { fill: #f2f5e7; font: 700 9px sans-serif; }
 .method-presenter__screen-note { fill: #426651; font: 11px sans-serif; }
+.method-presenter__loop-mark { fill: #7d977f; font: 700 15px sans-serif; transform-box: fill-box; transform-origin: center; animation: method-loop-spin 20s linear infinite; }
+.method-presenter__link { stroke-dasharray: none; }
+.method-presenter__link--return { stroke-dasharray: 3 3; }
 .method-presenter__sophia {
   position: absolute;
   left: 50%;
@@ -269,6 +276,36 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   }
 }
 
+
+.method-presenter__link--1 { animation: method-link-1 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
+.method-presenter__link--2 { animation: method-link-2 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
+.method-presenter__link--3 { animation: method-link-3 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
+.method-presenter__link--4 { animation: method-link-4 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
+/* Connectors: link k lights up and its dashes march during the second half of phase k;
+   the return link (4) closes the cycle just before the loop restarts. */
+@keyframes method-link-1 {
+  0%, 12.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+  12.5%, 24.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
+  25%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+}
+@keyframes method-link-2 {
+  0%, 37.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+  37.5%, 49.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
+  50%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+}
+@keyframes method-link-3 {
+  0%, 62.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+  62.5%, 74.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
+  75%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
+}
+@keyframes method-link-4 {
+  0%, 87.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: 3 3; marker-end: url(#method-flow-arrow); }
+  87.5%, 99.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
+  100% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
+}
+@keyframes method-link-flow { to { stroke-dashoffset: -9; } }
+@keyframes method-loop-spin { 0%, 87.4% { transform: rotate(0); } 100% { transform: rotate(-360deg); } }
+
 /* Existing modes retain their typographic and monochrome identities. */
 html[data-serious-mode='true'] .method-section {
   background: var(--surface);
@@ -292,7 +329,9 @@ html[data-legacy-mode='true'] .method-section { background: #abc5b2; color: #142
     background-position: 0 0;
   }
 
-  .method-presenter__node {
+  .method-presenter__node,
+  .method-presenter__link,
+  .method-presenter__loop-mark {
     animation: none;
   }
 

@@ -22,46 +22,153 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .bloc
    preserves the approved outer placement of the complete SVG composition. */
 #sobre .hero-statement { z-index: 4; }
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero-statement::before { background: #fffaf0f7; }
-/* Sophia no laboratório: anota enquanto percorre o espaço procurando uma resposta.
-   O sprite de quatro poses fornece o gesto de escrita; o contêiner cuida da caminhada
-   lateral e da mudança de direção sem deformar os frames. */
+/* Sophia no laboratório (refeita em 2026-10-12): de jaleco branco, anotando no
+   caderno e andando de um lado a outro do espaço. Um ciclo de 12 s:
+     0–8 %   escreve (à direita)        8–40 %  anda para a esquerda
+    40–52 %  escreve (à esquerda)      52–54 %  vira
+    54–86 %  anda para a direita       86–98 %  escreve    98–100 % vira
+   Três camadas independentes, para cada gesto ter o seu tempo:
+     1. o contêiner anda e vira        (transform: translateX / scaleX);
+     2. o quadro troca de pose         (background-position, em degraus);
+     3. o quadro respira e dá passos   (translate + rotate, suave).
+   O sprite tem quatro poses: 1 olha o caderno, 2 caneta no papel, 3 inclina a
+   cabeça, 4 caneta ao queixo. Caminhando, alterna 3 e 1; parada, percorre as quatro. */
 .sophia-animation--lab {
+  --lab-cycle: 12s;
+  position: relative;
   overflow: visible;
+  transform-origin: 50% 90%;
+  animation: lab-search-walk var(--lab-cycle) linear infinite;
+}
 
-  transform-origin:
-    50% 88%;
-
-  animation:
-    lab-search-walk
-    10.5s
-    ease-in-out
-    infinite;
+/* Sombra no chão: acompanha o contêiner (anda e vira com ela). */
+.sophia-animation--lab::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 1%;
+  height: 5%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(8, 10, 24, .38), rgba(8, 10, 24, 0) 70%);
+  pointer-events: none;
 }
 
 .sophia-animation--lab .sophia-animation__frame {
-  background-image:
-    url('/images/sophia/lab-oriental.webp');
-
-  background-size:
-    400% 100%;
-
-  background-position:
-    0 0;
-
-  transform-origin:
-    50% 88%;
-
+  position: relative;
+  z-index: 1;
+  background-image: url('/images/sophia/lab-oriental.webp');
+  background-size: 400% 100%;
+  background-position: 0 0;
+  transform-origin: 50% 92%;
   animation:
-    lab-write-notes
-    1.65s
-    steps(1, end)
-    infinite;
+    lab-write-notes var(--lab-cycle) steps(1, end) infinite,
+    lab-step-bob var(--lab-cycle) ease-in-out infinite;
 }
 
-/* Sophia notices you: pointing at or focusing her guide makes her hop once.
-   `translate` keeps the hop independent from the walking transform. */
+@keyframes lab-search-walk {
+  0%, 8%   { transform: translateX(10%) scaleX(1); }
+  40%, 52% { transform: translateX(-10%) scaleX(1); }
+  54%, 86% { transform: translateX(-10%) scaleX(-1); }
+  98%      { transform: translateX(10%) scaleX(-1); }
+  100%     { transform: translateX(10%) scaleX(1); }
+}
+/* Andar é linear (ritmo constante); parar é o intervalo entre as chaves. */
+@keyframes lab-write-notes {
+  0% { background-position: 0 0; }
+  2% { background-position: 33.333333% 0; }
+  4% { background-position: 66.666667% 0; }
+  6% { background-position: 33.333333% 0; }
+  8% { background-position: 66.666667% 0; }
+  12% { background-position: 0 0; }
+  16% { background-position: 66.666667% 0; }
+  20% { background-position: 0 0; }
+  24% { background-position: 66.666667% 0; }
+  28% { background-position: 0 0; }
+  32% { background-position: 66.666667% 0; }
+  36% { background-position: 0 0; }
+  40% { background-position: 0 0; }
+  42% { background-position: 33.333333% 0; }
+  44% { background-position: 66.666667% 0; }
+  46% { background-position: 100% 0; }
+  48% { background-position: 66.666667% 0; }
+  50% { background-position: 33.333333% 0; }
+  52% { background-position: 0 0; }
+  54% { background-position: 66.666667% 0; }
+  58% { background-position: 0 0; }
+  62% { background-position: 66.666667% 0; }
+  66% { background-position: 0 0; }
+  70% { background-position: 66.666667% 0; }
+  74% { background-position: 0 0; }
+  78% { background-position: 66.666667% 0; }
+  82% { background-position: 0 0; }
+  86% { background-position: 0 0; }
+  88% { background-position: 33.333333% 0; }
+  90% { background-position: 66.666667% 0; }
+  92% { background-position: 100% 0; }
+  94% { background-position: 66.666667% 0; }
+  96% { background-position: 33.333333% 0; }
+  98% { background-position: 0 0; }
+  100% { background-position: 0 0; }
+}
+@keyframes lab-step-bob {
+  0% { translate: 0 0px; rotate: -0.5deg; }
+  2% { translate: 0 -1px; rotate: 0.6deg; }
+  4% { translate: 0 0px; rotate: -0.5deg; }
+  6% { translate: 0 -1px; rotate: 0.6deg; }
+  8% { translate: 0 0px; rotate: -1.6deg; }
+  10% { translate: 0 -6px; rotate: 1.6deg; }
+  12% { translate: 0 0px; rotate: -1.6deg; }
+  14% { translate: 0 -6px; rotate: 1.6deg; }
+  16% { translate: 0 0px; rotate: -1.6deg; }
+  18% { translate: 0 -6px; rotate: 1.6deg; }
+  20% { translate: 0 0px; rotate: -1.6deg; }
+  22% { translate: 0 -6px; rotate: 1.6deg; }
+  24% { translate: 0 0px; rotate: -1.6deg; }
+  26% { translate: 0 -6px; rotate: 1.6deg; }
+  28% { translate: 0 0px; rotate: -1.6deg; }
+  30% { translate: 0 -6px; rotate: 1.6deg; }
+  32% { translate: 0 0px; rotate: -1.6deg; }
+  34% { translate: 0 -6px; rotate: 1.6deg; }
+  36% { translate: 0 0px; rotate: -1.6deg; }
+  38% { translate: 0 -6px; rotate: 1.6deg; }
+  40% { translate: 0 0px; rotate: -0.5deg; }
+  42% { translate: 0 -1px; rotate: 0.6deg; }
+  44% { translate: 0 0px; rotate: -0.5deg; }
+  46% { translate: 0 -1px; rotate: 0.6deg; }
+  48% { translate: 0 0px; rotate: -0.5deg; }
+  50% { translate: 0 -1px; rotate: 0.6deg; }
+  52% { translate: 0 0px; rotate: -0.5deg; }
+  54% { translate: 0 0px; rotate: -1.6deg; }
+  56% { translate: 0 -6px; rotate: 1.6deg; }
+  58% { translate: 0 0px; rotate: -1.6deg; }
+  60% { translate: 0 -6px; rotate: 1.6deg; }
+  62% { translate: 0 0px; rotate: -1.6deg; }
+  64% { translate: 0 -6px; rotate: 1.6deg; }
+  66% { translate: 0 0px; rotate: -1.6deg; }
+  68% { translate: 0 -6px; rotate: 1.6deg; }
+  70% { translate: 0 0px; rotate: -1.6deg; }
+  72% { translate: 0 -6px; rotate: 1.6deg; }
+  74% { translate: 0 0px; rotate: -1.6deg; }
+  76% { translate: 0 -6px; rotate: 1.6deg; }
+  78% { translate: 0 0px; rotate: -1.6deg; }
+  80% { translate: 0 -6px; rotate: 1.6deg; }
+  82% { translate: 0 0px; rotate: -1.6deg; }
+  84% { translate: 0 -6px; rotate: 1.6deg; }
+  86% { translate: 0 0px; rotate: -0.5deg; }
+  88% { translate: 0 -1px; rotate: 0.6deg; }
+  90% { translate: 0 0px; rotate: -0.5deg; }
+  92% { translate: 0 -1px; rotate: 0.6deg; }
+  94% { translate: 0 0px; rotate: -0.5deg; }
+  96% { translate: 0 -1px; rotate: 0.6deg; }
+  98% { translate: 0 0px; rotate: -0.5deg; }
+  100% { translate: 0 0; rotate: -0.5deg; }
+}
+
+/* Sophia percebe você: ao apontar ou focar o guia, dá um pulinho.
+   `translate` do contêiner é independente do transform da caminhada. */
 .lab-companion:has(.lab-sophia-guide:is(:hover, :focus-visible)) .sophia-animation--lab {
-  animation: lab-search-walk 10.5s ease-in-out infinite, sophia-notice-hop 720ms cubic-bezier(.3, .7, .4, 1) 1;
+  animation: lab-search-walk var(--lab-cycle) linear infinite, sophia-notice-hop 720ms cubic-bezier(.3, .7, .4, 1) 1;
 }
 @keyframes sophia-notice-hop {
   0%, 100% { translate: 0 0; }
@@ -71,114 +178,6 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero
   86% { translate: 0 -3px; }
 }
 
-@keyframes lab-write-notes {
-  0%,
-  100% {
-    background-position:
-      0 0;
-
-    transform:
-      translateY(0)
-      rotate(-0.4deg);
-  }
-
-  25% {
-    background-position:
-      33.333% 0;
-
-    transform:
-      translateY(-2px)
-      rotate(0.5deg);
-  }
-
-  50% {
-    background-position:
-      66.667% 0;
-
-    transform:
-      translateY(0)
-      rotate(-0.2deg);
-  }
-
-  75% {
-    background-position:
-      100% 0;
-
-    transform:
-      translateY(-1px)
-      rotate(0.4deg);
-  }
-}
-
-@keyframes lab-search-walk {
-  0%,
-  8% {
-    transform:
-      translateX(-12%)
-      translateY(0)
-      scaleX(1);
-  }
-
-  18% {
-    transform:
-      translateX(-5%)
-      translateY(-3px)
-      scaleX(1);
-  }
-
-  29% {
-    transform:
-      translateX(4%)
-      translateY(0)
-      scaleX(1);
-  }
-
-  40%,
-  46% {
-    transform:
-      translateX(12%)
-      translateY(-2px)
-      scaleX(1);
-  }
-
-  48%,
-  54% {
-    transform:
-      translateX(12%)
-      translateY(0)
-      scaleX(-1);
-  }
-
-  64% {
-    transform:
-      translateX(5%)
-      translateY(-3px)
-      scaleX(-1);
-  }
-
-  75% {
-    transform:
-      translateX(-4%)
-      translateY(0)
-      scaleX(-1);
-  }
-
-  86%,
-  92% {
-    transform:
-      translateX(-12%)
-      translateY(-2px)
-      scaleX(-1);
-  }
-
-  94%,
-  100% {
-    transform:
-      translateX(-12%)
-      translateY(0)
-      scaleX(1);
-  }
-}
 /* Shared skeleton, five individual materials. Dark surfaces keep copy clear. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card { isolation: isolate; border: 1px solid #c3a27566; box-shadow: 0 16px 40px #30213918; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #traducao { background: radial-gradient(ellipse at 90% 25%,#cba96820,transparent 50%),repeating-linear-gradient(125deg,transparent 0 38px,#d0bb8710 39px 40px),#030303; }
@@ -222,6 +221,8 @@ html[data-serious-mode='true'] :is(.prism-spectrum,.closing-relics),html[data-le
   .sophia-animation--lab .sophia-animation__frame {
     background-position: 0 0;
     transform: none !important;
+    translate: none !important;
+    rotate: none !important;
   }
 }
 
@@ -409,43 +410,77 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
     );
 }
 
-/* Bastidores: the MotionImage <picture> is the grid item, so size the
-   wrapper rather than only the nested <img>. This keeps the four tiles
-   geometrically symmetric while preserving each animation in full. */
+/* Bastidores: four animations with four different shapes (498×256, 498×298,
+   320×180, 498×208). Two rows; inside a row every tile gets width ∝ its own
+   aspect ratio, so the tiles share one height and each animation fills its
+   frame edge to edge (no letterbox bars, no cropping beyond rounding).
+   --ar is width ÷ height of the source file. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-#bastidores .github-gif-strip > .motion-picture {
+#bastidores .github-heading .github-gif-strip {
+  --gif-gap: clamp(.7rem, 1.6vw, 1.1rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-items: stretch;
+  gap: var(--gif-gap);
   width: 100%;
-  min-width: 0;
-
-  display: block;
-
-  aspect-ratio:
-    16 / 10;
-
-  overflow: hidden;
-
-  border-radius:
-    14px;
-
-  background:
-    rgba(
-      32,
-      28,
-      25,
-      .08
-    );
+  max-width: none;
+  margin: 0;
+  overflow: visible;
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-#bastidores .github-gif-strip > .motion-picture > img {
+#bastidores .github-gif-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--gif-gap);
+  min-width: 0;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture {
+  flex: var(--ar, 1.6) 1 0;
+  min-width: 0;
+  aspect-ratio: var(--ar, 1.6);
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: #2a2420;
+
+  /* Moldura: filete escuro, passe-partout claro e sombra rígida, a mesma
+     linguagem dos cartões de papel do site. */
+  border: 2px solid #3a2f28;
+  border-radius: 10px;
+  outline: 1px solid rgba(58, 47, 40, .28);
+  outline-offset: 3px;
+  box-shadow: 4px 5px 0 rgba(58, 47, 40, .16);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture:has(> .github-gif-luna-desktop) { --ar: 1.9453; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture:has(> .github-gif-ikalgo)       { --ar: 1.6711; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture:has(> .github-gif-right)        { --ar: 1.7778; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture:has(> .github-gif-violet)       { --ar: 2.3942; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+#bastidores .github-gif-row > .motion-picture > img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-
+  max-width: none;
+  max-height: none;
+  margin: 0;
   display: block;
-
-  object-fit: contain;
-
-  border-radius: inherit;
+  object-fit: cover;
+  transform: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 @media (max-width: 640px) {

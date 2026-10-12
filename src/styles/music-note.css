@@ -1,0 +1,124 @@
+/*
+ * Moonlight Sonata post-it (refeito em 2026-10-12).
+ *
+ * Um post-it de verdade: papel amarelo-manteiga, tira adesiva no topo, canto
+ * inferior direito levemente descolado (a sombra curva é o descolado) e uma
+ * brisa que o faz respirar. Ao entrar na tela ele é colado: MusicShelf.astro
+ * soma .is-sticking uma única vez, junto com a digitação da citação.
+ *
+ * Sem JS ou com movimento reduzido ele aparece já colado, sem animação.
+ * Só o modo Autoral: Editorial e Legacy têm o seu próprio papel (mono-modes.css).
+ */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight {
+  --note-tilt: -1.6deg;
+  --note-paper: #fff2a8;
+  --note-paper-deep: #fde68a;
+
+  isolation: isolate;
+  padding-top: calc(clamp(1.2rem, 2.5vw, 2rem) + .55rem);
+  border: 0;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 1.55rem, rgba(150, 118, 40, .09) 1.55rem calc(1.55rem + 1px)),
+    linear-gradient(172deg, var(--note-paper) 0%, var(--note-paper-deep) 100%);
+  box-shadow:
+    0 1px 1px rgba(60, 40, 10, .22),
+    0 10px 18px -6px rgba(10, 6, 30, .55);
+  color: #45372e;
+  transform: rotate(var(--note-tilt));
+  transform-origin: 50% 0;
+  transition: transform .35s cubic-bezier(.3, .7, .4, 1), box-shadow .35s ease;
+}
+
+/* Tira adesiva: faixa mais clara e opaca no topo, com sombra suave abaixo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: auto;
+  height: 1.05rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .18));
+  border: 0;
+  border-radius: 2px 2px 0 0;
+  clip-path: none;
+  box-shadow: 0 2px 4px -1px rgba(120, 90, 20, .18);
+  pointer-events: none;
+}
+
+/* Canto descolado: sombra curva sob a borda inferior direita. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: 4%;
+  bottom: 6px;
+  width: 58%;
+  height: 22px;
+  background: transparent;
+  box-shadow: 8px 14px 14px rgba(8, 4, 24, .5);
+  transform: rotate(2.4deg);
+  transform-origin: 100% 100%;
+  pointer-events: none;
+  animation: post-it-breeze 7s ease-in-out infinite;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within) {
+  transform: rotate(-.6deg) translateY(-5px);
+  box-shadow:
+    0 1px 1px rgba(60, 40, 10, .22),
+    0 18px 26px -8px rgba(10, 6, 30, .6);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within)::after {
+  transform: rotate(3.6deg);
+}
+
+/* Brisa: o canto sobe e desce um pouco, só enquanto o bilhete está visível. */
+@keyframes post-it-breeze {
+  0%, 100% { transform: rotate(2.2deg); opacity: .9; }
+  50%      { transform: rotate(3.8deg); opacity: 1; }
+}
+
+/* Colagem: cai de cima, bate no papel e assenta. Roda uma vez. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight.is-sticking {
+  animation: post-it-stick 950ms cubic-bezier(.25, .8, .35, 1) 1 both;
+}
+@keyframes post-it-stick {
+  0%   { transform: translateY(-34px) rotate(-7deg) scale(1.06); opacity: 0;
+         box-shadow: 0 1px 1px rgba(60, 40, 10, .22), 0 36px 34px -10px rgba(10, 6, 30, .45); }
+  35%  { opacity: 1; }
+  62%  { transform: translateY(3px) rotate(.4deg) scale(.992); }
+  80%  { transform: translateY(-1px) rotate(-2.1deg) scale(1.002); }
+  100% { transform: translateY(0) rotate(var(--note-tilt)) scale(1); }
+}
+
+/* Fora da tela a brisa fica em pausa (mesma bandeira do restante do site). */
+.listening-note--moonlight:not(:has(.listening-note-score[data-motion-playing='true']))::after {
+  animation-play-state: paused;
+}
+
+@media (max-width: 560px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight {
+    --note-tilt: -.8deg;
+    transform: rotate(var(--note-tilt));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight::after,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight.is-sticking {
+    animation: none;
+    transition: none;
+  }
+}
