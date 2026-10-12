@@ -98,6 +98,7 @@
 
   html:not([data-legacy-mode='true']) .hero-actions :is(.editorial-text-link, .cv-download-button) {
     justify-self: center;
+    white-space: nowrap;
   }
 
   /* Contact: e-mail first and full width; WhatsApp and LinkedIn share a row. */
