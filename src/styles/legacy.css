@@ -997,7 +997,8 @@ html[data-legacy-mode='true'] .background-number {
 }
 
 /* A [hidden] Last.fm card must stay hidden: legacy display rules beat the UA style. */
-html[data-legacy-mode='true'] .music-shelf [hidden] {
+html[data-legacy-mode='true'] .music-shelf [hidden],
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track-card[hidden] {
   display: none !important;
 }
 
