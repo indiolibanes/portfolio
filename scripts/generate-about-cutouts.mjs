@@ -6,6 +6,12 @@ import sharp from 'sharp';
 import { readFile, mkdir } from 'node:fs/promises';
 
 const outputDir = 'public/assets/about';
+// The layers are composited at full source resolution (masks are drawn for
+// 1477x1065) and only the final files are scaled. The hero never shows the
+// canvas wider than 245 CSS px, so 740 px still covers a 3x display.
+// Uniform scaling keeps every percentage-based clip-path and origin intact.
+const OUTPUT_WIDTH = 740;
+const OUTPUT_WEBP = { nearLossless: true, quality: 60, effort: 6 };
 await mkdir(outputDir, { recursive: true });
 
 const source = await sharp('public/shorekeeper-black-shores.png')
@@ -51,11 +57,17 @@ for (let i = 0; i < sourcePixels.length; i += 4) {
 }
 
 await sharp(butterfly, { raw: { width, height, channels: 4 } })
-  .webp({ lossless: true })
+  .resize(OUTPUT_WIDTH)
+  .webp(OUTPUT_WEBP)
   .toFile(`${outputDir}/shorekeeper-butterfly.webp`);
 
 const flowerBase = await sharp(restoredFlower, { raw: { width, height, channels: 4 } }).png().toBuffer();
-await sharp(flowerBase)
+// Composite at full resolution first, then scale the finished flower.
+const flowerFull = await sharp(flowerBase)
   .composite([{ input: await sharp(originalFlower, { raw: { width, height, channels: 4 } }).png().toBuffer() }])
-  .webp({ lossless: true })
+  .png()
+  .toBuffer();
+await sharp(flowerFull)
+  .resize(OUTPUT_WIDTH)
+  .webp(OUTPUT_WEBP)
   .toFile(`${outputDir}/shorekeeper-flower.webp`);
