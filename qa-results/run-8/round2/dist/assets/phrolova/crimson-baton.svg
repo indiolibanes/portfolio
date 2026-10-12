@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 448 448" width="448" height="448" role="img" aria-labelledby="title description">
+  <title id="title">Crimson Baton da Phrolova — estudo vetorial estático</title>
+  <desc id="description">Traçado manual da ilustração public/phrolova-baton.webp. Haste, junção, coroas de pétalas recurvadas, estames e música são grupos independentes. Sem imagens raster, laços inventados ou animação. As superfícies encobertas permanecem simplificadas; fotografias indexadas indisponíveis nesta revisão.</desc>
+  <metadata>Draft 01, 2026-10-08. Source: indiolibanes/portfolio public/phrolova-baton.webp, blob fc2218dbd2fc53ec2559b40b8db7da65b8dc788f. Original game artwork: Kuro Games / Wuthering Waves. Manually authored Bezier paths, source coordinate system 448 x 448. Not Lethean Elegy. Geometry approval pending.</metadata>
+  <defs>
+    <linearGradient id="shaft-red" gradientUnits="userSpaceOnUse" x1="185" y1="310" x2="193" y2="312"><stop stop-color="#280714"/><stop offset=".35" stop-color="#67102c"/><stop offset=".58" stop-color="#911b38"/><stop offset="1" stop-color="#340815"/></linearGradient>
+    <linearGradient id="petal-crimson" x1=".18" y1=".05" x2=".78" y2=".96"><stop stop-color="#a7182e"/><stop offset=".24" stop-color="#f5404b"/><stop offset=".54" stop-color="#b91428"/><stop offset="1" stop-color="#400715"/></linearGradient>
+    <linearGradient id="petal-ruby" x1=".09" y1=".02" x2=".77" y2=".91"><stop stop-color="#d22b3b"/><stop offset=".28" stop-color="#f95057"/><stop offset=".52" stop-color="#c0192f"/><stop offset="1" stop-color="#590a1d"/></linearGradient>
+    <linearGradient id="petal-shadow" x1=".1" y1="0" x2=".82" y2="1"><stop stop-color="#99152b"/><stop offset=".5" stop-color="#5c0d1e"/><stop offset="1" stop-color="#240810"/></linearGradient>
+    <linearGradient id="petal-light" x1=".05" y1=".1" x2=".9" y2=".78"><stop stop-color="#ffb0b1"/><stop offset=".24" stop-color="#ff686e"/><stop offset=".6" stop-color="#e92c3b"/><stop offset="1" stop-color="#871426"/></linearGradient>
+    <linearGradient id="filament" gradientUnits="userSpaceOnUse" x1="124" y1="95" x2="225" y2="183"><stop stop-color="#801831"/><stop offset=".38" stop-color="#cdc9c6"/><stop offset=".7" stop-color="#827677"/><stop offset="1" stop-color="#72162a"/></linearGradient>
+    <linearGradient id="collar-metal" x1="0" y1="0" x2="1" y2=".6"><stop stop-color="#393c40"/><stop offset=".28" stop-color="#c5c3b5"/><stop offset=".58" stop-color="#797d78"/><stop offset="1" stop-color="#292c30"/></linearGradient>
+    <linearGradient id="music-pink" x1=".1" y1=".8" x2=".9" y2=".2"><stop stop-color="#84223d"/><stop offset=".45" stop-color="#f0819d"/><stop offset="1" stop-color="#a93f60"/></linearGradient>
+    <radialGradient id="music-aura"><stop stop-color="#8d1435" stop-opacity=".17"/><stop offset=".6" stop-color="#71102e" stop-opacity=".09"/><stop offset="1" stop-color="#5b0c25" stop-opacity="0"/></radialGradient>
+    <filter id="note-glow" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation=".9"/></filter>
+  </defs>
+
+  <!-- Editable physical rod, independent from the diagonal musical stave. -->
+  <g id="staff" inkscape:groupmode="layer" inkscape:label="01 · Haste" data-part="physical-shaft">
+    <path id="staff-body" d="M207.6 220.5C205.9 231.5 202.8 249.6 198.6 266.4L190.3 300.1L163.5 397.7L159.3 411.4L153.4 422.8L153.2 414.4L156.9 399L184.2 301.1L193.5 265.3L202.2 220.1Z" fill="url(#shaft-red)"/>
+    <path id="staff-edge" d="M205.9 223.3L195.4 265.7L187 301.2L159.3 399.8" fill="none" stroke="#bd2944" stroke-width=".65" opacity=".32"/>
+    <path id="staff-tip" d="M159.8 407.8L156.5 419.1L153.4 422.8L153.7 414.2L155.8 406.8Z" fill="#470917"/>
+  </g>
+
+  <g id="junction" inkscape:groupmode="layer" inkscape:label="05 · Junção e ferragens">
+    <!-- Only the visible neck/glints are resolved. The source hides the coupling. -->
+    <path id="calyx" d="M207 199C214 202 220 206 226 207L224 212L217 212L211 208L209 204Z" fill="#382328" stroke="#513439" stroke-width=".55"/>
+    <path id="junction-glint" d="M208.7 201L211.7 202.7L213.3 206.4L211.3 208L209.1 205.7L209.8 203.4Z" fill="#96908b" opacity=".68"/>
+    <path id="junction-neck" d="M209 214L212 215L210 223L207 229L204.8 231L206 222Z" fill="#292022" stroke="#77706d" stroke-width=".65" opacity=".72"/>
+    <path id="tip-collar" d="M155.9 403L157.5 400.4L159.4 402L163.2 402.5L164.6 400.9L166.1 402.8L163.9 405.7L159.8 406.3L157 405.1Z" fill="url(#collar-metal)"/>
+  </g>
+
+  <!-- Long real filaments are drawn behind the corolla: petals occlude their origins. -->
+  <g id="stamens" inkscape:groupmode="layer" inkscape:label="02 · Estames" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g id="stamens-silver" stroke="url(#filament)" stroke-width="1.7">
+      <path id="stamen-left-low" d="M161 171C130 175 105 173 81 165C73 162 68 157 65 150L63 142"/>
+      <path id="stamen-left-outer" d="M168 170C143 163 122 152 114 141C107 132 106 122 109 116"/>
+      <path id="stamen-left-inner" d="M170 168C148 160 126 149 121 140C117 132 119 125 119 119"/>
+      <path id="stamen-upper-left" d="M186 147C172 128 151 115 146 105C142 98 144 91 145 87"/>
+      <path id="stamen-crown" d="M212 132C204 121 203 113 205 98C208 78 217 65 230 57"/>
+      <path id="stamen-upper-right" d="M277 160C296 139 310 130 304 105C301 92 298 85 292 81"/>
+    </g>
+    <g id="stamens-red" stroke="#8a1632" stroke-width="1.3">
+      <path id="stamen-left-red" d="M183 156C167 127 149 122 151 106L153 101"/>
+      <path id="stamen-centre-back" d="M203 136C187 124 171 114 171 98L171.5 81"/>
+      <path id="stamen-centre-straight" d="M210 141C195 118 191 107 190 93L190.5 81"/>
+      <path id="stamen-centre-short" d="M211 136C202 117 195 106 196 88"/>
+      <path id="stamen-right-low" d="M232 193C248 206 273 211 295 201C306 196 313 190 322 184"/>
+      <path id="stamen-right-outer" d="M233 190C256 199 286 194 305 179C318 168 321 155 321 141"/>
+      <path id="stamen-right-drooping" d="M231 194C253 215 288 234 324 245"/>
+      <path id="stamen-low-back" d="M211 212C229 230 262 244 295 247C308 248 319 246 328 241"/>
+    </g>
+    <g id="anthers" fill="#b93a52" stroke="none">
+      <path id="anther-01" d="M168.8 80.2L173.4 79.3L173.8 83.4L169.1 84.1Z"/>
+      <path id="anther-02" d="M188.5 81.5L192.8 80.4L192.5 85.2L189 85.7Z"/>
+      <path id="anther-03" d="M192.7 86.8L197.2 84.6L199.1 89.8L195.9 92.5L193.4 91.2Z"/>
+      <path id="anther-04" d="M228.9 57.1L231.7 55.7L230.8 59.2L228.1 60.6Z" fill="#8e4a5e"/>
+      <path id="anther-05" d="M289.8 80.1L292.5 80.2L294.3 83.9L292 84.8Z" fill="#954153"/>
+      <path id="anther-06" d="M106.9 115.8L111.2 114.9L110.6 120.1L107.5 120.4Z"/>
+    </g>
+  </g>
+
+  <g id="petals-back" inkscape:groupmode="layer" inkscape:label="03 · Coroa traseira" stroke="#460d1b" stroke-width=".65" stroke-linejoin="round">
+    <path id="petal-back-crown" d="M218 125C221 117 220 109 224 105L231 103L236 98C239 98 241 102 245 102L248 105C250 111 248 118 245 123L236 130L240 118C236 114 230 112 225 113L223 124Z" fill="url(#petal-shadow)"/>
+    <path id="petal-back-left-upright" d="M180 152C175 139 173 126 177 116C180 109 183 107 186 108C195 112 195 124 190 130C186 124 182 120 181 122L184 142L190 153Z" fill="url(#petal-shadow)"/>
+    <path id="petal-back-central-tip" d="M189 159L187 121C184 117 184 112 187 108L192 108L195 116L194 128L201 144L204 163Z" fill="url(#petal-crimson)"/>
+    <path id="petal-back-crown-link" d="M225 125C240 113 250 121 263 124L263 130C251 127 242 126 234 133L229 145Z" fill="#621020"/>
+    <path id="petal-back-right-hook" d="M248 159C253 145 259 132 270 129C278 126 282 126 286 130C291 137 290 146 290 150L285 156L281 142C276 139 269 140 263 146L258 165Z" fill="url(#petal-crimson)"/>
+    <path id="petal-back-far-right" d="M274 170C284 157 292 157 300 158C311 164 306 178 301 185L294 185L296 174C293 171 287 174 284 184L282 198L270 199Z" fill="url(#petal-shadow)"/>
+    <path id="petal-back-left-hook" d="M170 168C155 168 145 158 143 148C139 149 135 156 133 164C127 170 130 180 137 182L146 190L136 191C125 190 123 180 128 168C131 157 136 144 146 137L157 133L159 144L153 153L163 159Z" fill="url(#petal-crimson)"/>
+    <path id="petal-back-right-bottom" d="M228 202C249 197 269 198 283 192C289 191 294 195 290 203C283 217 261 222 245 218L227 213Z" fill="url(#petal-shadow)"/>
+  </g>
+
+  <g id="petals-front" inkscape:groupmode="layer" inkscape:label="04 · Pétalas dianteiras" stroke="#7f1226" stroke-width=".65" stroke-linejoin="round">
+    <g id="petal-front-upper-left">
+      <path d="M155 139C154 128 164 122 176 116L183 109L186 111C181 122 177 129 180 139L183 148L174 147C166 146 160 145 155 139Z" fill="url(#petal-light)"/>
+      <path d="M160 128L176 120L182 112C178 121 174 130 175 140L170 142L165 136Z" fill="#ff7178" opacity=".56" stroke="none"/>
+      <path d="M181 115C174 124 173 134 176 142" fill="none" stroke="#ffa0a0" stroke-width=".8"/>
+    </g>
+    <g id="petal-front-central-upright">
+      <path d="M190 163C185 145 187 126 188 117L192 120C195 129 195 133 198 143L202 136L206 144C204 153 205 167 211 177L202 178Z" fill="url(#petal-crimson)"/>
+      <path d="M190 127C190 146 193 161 201 173L199 157L194 139Z" fill="#e52b3b" stroke="none"/>
+    </g>
+    <g id="petal-front-upper-centre">
+      <path d="M207 175C203 164 202 145 207 129C211 117 215 115 222 115C227 117 227 124 227 129C218 125 215 131 216 141C215 152 217 164 217 175L213 181Z" fill="url(#petal-ruby)"/>
+      <path d="M209 164C207 149 212 132 216 124L222 121L225 125L219 128C215 138 214 151 211 169Z" fill="url(#petal-light)" stroke="none"/>
+      <path d="M223 117C220 117 216 121 216 124" fill="none" stroke="#ff9396" stroke-width="1.2"/>
+    </g>
+    <g id="petal-front-left-fold">
+      <path d="M148 163C151 146 158 145 167 146C181 148 191 156 199 168C187 165 178 161 169 162C159 163 153 164 148 163Z" fill="url(#petal-ruby)"/>
+      <path d="M153 153C162 147 174 152 186 159L180 161C172 157 160 157 153 160Z" fill="url(#petal-light)" stroke="none"/>
+      <path d="M156 164C165 159 179 161 190 167" fill="none" stroke="#68101f" stroke-width="1.7"/>
+    </g>
+    <g id="petal-front-left-return">
+      <path d="M163 157C152 153 143 157 141 167C139 175 143 181 149 182L156 178C149 177 147 173 150 169C153 166 159 165 166 167L176 172L181 176L173 164Z" fill="url(#petal-crimson)"/>
+      <path d="M145 166C144 173 146 178 151 179" fill="none" stroke="#f63345" stroke-width="1.1"/>
+    </g>
+    <g id="petal-front-lower-left">
+      <path d="M195 176C181 170 168 173 159 181C153 187 153 195 158 201L165 206C172 207 177 203 177 199C170 204 165 202 164 196C169 189 180 183 190 183L201 184Z" fill="url(#petal-ruby)"/>
+      <path d="M159 186C167 178 178 176 188 177L182 182L169 186L164 197L160 200C156 194 156 190 159 186Z" fill="url(#petal-light)" stroke="none"/>
+    </g>
+    <g id="petal-front-left-droop">
+      <path d="M209 178C201 175 194 184 192 196C191 209 193 227 199 235C204 236 208 232 209 226C204 230 201 226 200 218C199 204 204 194 211 188L218 181Z" fill="url(#petal-crimson)"/>
+      <path d="M204 180C197 186 195 198 196 211C197 219 199 225 201 227C199 215 200 199 207 188L214 183Z" fill="url(#petal-light)" stroke="none"/>
+      <path d="M194 196C193 211 196 225 199 230" fill="none" stroke="#92182a" stroke-width="1"/>
+    </g>
+    <g id="petal-front-upper-right">
+      <path d="M219 174C225 158 231 146 239 139C246 133 254 132 259 136C266 139 267 148 264 157L260 163C258 153 254 148 249 149C239 154 232 166 228 177L222 184Z" fill="url(#petal-ruby)"/>
+      <path d="M228 158C234 145 247 136 255 137L259 142C252 142 244 147 239 153L232 161Z" fill="url(#petal-light)" stroke="none"/>
+      <path d="M250 148C254 147 257 150 260 156" fill="none" stroke="#ff6370" stroke-width="1.2"/>
+    </g>
+    <g id="petal-front-right-curl">
+      <path d="M258 183C269 180 280 163 278 154L274 146C278 143 282 140 286 141C292 147 292 162 287 178C283 191 273 204 261 205L248 199L252 193C267 199 275 180 274 170C270 177 266 183 258 186Z" fill="url(#petal-crimson)"/>
+      <path d="M278 150L283 147C288 153 287 168 283 180L278 188L273 192C281 178 281 163 278 150Z" fill="url(#petal-ruby)" stroke="none"/>
+      <path d="M282 149C286 156 285 169 282 176" fill="none" stroke="#ff7280" stroke-width="1"/>
+    </g>
+    <g id="petal-front-right-horizontal">
+      <path d="M222 176C234 164 249 163 260 171C269 178 272 188 268 195L261 200L252 199C258 195 264 192 262 187C257 179 243 177 234 181L226 185Z" fill="url(#petal-ruby)"/>
+      <path d="M230 172C243 165 255 170 260 176C250 173 239 175 234 179L224 181Z" fill="url(#petal-light)" stroke="none"/>
+      <path d="M247 166C241 164 239 167 240 169C243 172 248 172 250 169Z" fill="#8e1828"/>
+      <path d="M251 168L248 167L246 168" fill="none" stroke="#e97277" stroke-width=".75"/>
+    </g>
+    <g id="petal-front-centre-curled">
+      <path d="M212 181C218 175 224 177 228 183C235 193 237 202 245 204L251 202C247 209 240 211 233 207C226 201 227 192 220 188L217 193L215 202C211 198 208 189 212 181Z" fill="url(#petal-shadow)"/>
+      <path d="M217 180C222 179 226 184 229 190L233 200L228 198L223 188L220 185L216 189Z" fill="url(#petal-ruby)" stroke="none"/>
+    </g>
+    <g id="petal-front-lower-right-cup">
+      <path d="M218 207C225 213 240 216 250 211C257 207 261 204 267 204L272 207C268 218 254 225 243 226C231 227 222 222 218 217L216 211Z" fill="url(#petal-crimson)"/>
+      <path d="M219 210C230 219 247 219 258 213L266 207L265 213C254 224 234 224 223 216Z" fill="#e22c3e" stroke="none"/>
+      <path d="M224 216C235 222 248 222 258 217" fill="none" stroke="#f13a4d" stroke-width="1"/>
+    </g>
+    <path id="petal-front-lower-point" d="M248 215C258 217 267 211 270 203C274 199 279 199 279 201C278 208 273 216 263 221L252 229L252 220L245 220Z" fill="url(#petal-shadow)"/>
+    <path id="flower-core" d="M202 176C207 174 212 176 216 178L219 189L214 201L205 208L201 199L205 188L199 182Z" fill="#520c1b"/>
+    <path id="flower-core-rim" d="M200 179L207 178L211 182L217 183" fill="none" stroke="#f64550" stroke-width="1.3"/>
+  </g>
+
+
+
+  <!-- Source energy is not a physical ribbon; hide this whole layer to inspect the object. -->
+  <g id="ornaments" inkscape:groupmode="layer" inkscape:label="06 · Energia e música — separadas do bastonete" data-part="non-physical-ornament">
+    <g id="energy" fill="url(#music-aura)">
+      <ellipse cx="222" cy="235" rx="193" ry="51" transform="rotate(-22 222 235)"/>
+    </g>
+    <g id="music-staves" fill="none" stroke="url(#music-pink)" stroke-width="1.15" opacity=".68">
+      <path id="music-line-1" d="M322 180C287 215 222 250 141 275C83 293 49 298 44 290C37 279 70 251 132 221"/>
+      <path id="music-line-2" d="M331 185C287 226 219 260 140 283C79 300 44 304 40 292C35 278 71 252 131 224"/>
+      <path id="music-line-3" d="M342 190C289 237 219 270 139 291C80 307 39 308 37 294C35 279 73 254 133 228"/>
+      <path id="music-line-4" d="M350 196C292 246 221 279 139 298C81 312 38 311 38 299C38 283 73 261 134 232"/>
+      <path id="music-line-5" d="M359 201C296 255 222 288 141 304C81 316 37 313 39 301C41 286 78 263 137 236"/>
+      <path id="music-tail-1" d="M252 238C292 224 334 203 366 181" opacity=".46"/>
+      <path id="music-tail-2" d="M262 246C303 230 345 210 376 188" opacity=".34"/>
+    </g>
+    <g id="music-notes" fill="#e881a0" stroke="#f29eb4" stroke-width=".75" stroke-linecap="round" stroke-linejoin="round">
+      <g id="note-upper-left" transform="rotate(-24 147 226)">
+        <path d="M144 220L144 235M159 224L159 240" fill="none" stroke-width="1.6"/>
+        <path d="M144 219C151 219 156 220 160 223L160 226C154 223 149 222 144 222Z"/>
+        <ellipse cx="142" cy="235" rx="2.8" ry="2" transform="rotate(-18 142 235)"/>
+        <ellipse cx="157" cy="240" rx="3" ry="2" transform="rotate(-18 157 240)"/>
+      </g>
+      <path id="note-left-quaver" d="M89 244C95 244 103 245 108 248L104 254C100 251 97 248 91 247ZM102 249L107 264M104 263C108 261 111 262 110 265C109 267 103 269 102 267C101 265 102 264 104 263Z"/>
+      <path id="note-left-low" d="M65 270L80 287C84 283 86 281 89 281L86 285L82 288L87 294C90 295 93 294 94 292C94 290 92 289 89 290L79 277C75 273 70 271 65 270Z"/>
+      <path id="note-bottom-pair" d="M76 286C84 280 102 281 113 284L113 287C98 284 87 284 79 289ZM81 287L91 297M109 285L116 296M89 295C93 293 96 294 95 297C94 299 90 300 88 299C87 298 87 297 89 295ZM114 294C117 292 120 293 119 297C117 299 113 299 112 298C111 296 112 295 114 294Z"/>
+      <path id="note-bottom-right" d="M113 277C121 272 131 273 137 275L143 288C148 287 148 290 147 292C145 294 140 294 139 292C138 290 140 288 140 288L134 278C128 276 121 277 117 279Z"/>
+      <g id="note-centre-beamed" transform="rotate(-23 260 244)">
+        <path d="M247 222L247 258M272 222L272 254" fill="none" stroke-width="2.1"/>
+        <path d="M247 222H272V227H247ZM247 229H272V232H247Z"/>
+        <ellipse cx="244" cy="257" rx="4.3" ry="2.5" transform="rotate(-22 244 257)"/>
+        <ellipse cx="269" cy="253" rx="4.5" ry="2.6" transform="rotate(-22 269 253)"/>
+      </g>
+      <g id="note-right-beamed" transform="rotate(-31 363 181)">
+        <path d="M352 154H381V159H352ZM352 162H381V165H352Z"/>
+        <path d="M352 154V198M381 154V197" fill="none" stroke-width="2"/>
+        <ellipse cx="348" cy="198" rx="5" ry="3.1" transform="rotate(-15 348 198)"/>
+        <ellipse cx="377" cy="197" rx="4.4" ry="2.7" transform="rotate(-15 377 197)" opacity=".14"/>
+      </g>
+      <path id="treble-clef" d="M191 288C185 280 178 269 175 257C171 246 171 241 174 243C179 246 182 254 179 260C176 266 172 265 174 274C176 281 187 281 191 276C195 269 187 265 182 270C177 275 185 282 189 286C195 292 200 293 200 288C200 285 194 284 193 288" fill="none" stroke-width="2.25"/>
+    </g>
+    <g id="music-soft-glow" fill="none" stroke="#f477a3" stroke-width="2.4" opacity=".2" filter="url(#note-glow)">
+      <path d="M247 226L263 219L270 240M352 165L376 150L367 160M172 267C176 287 195 282 199 288"/>
+    </g>
+  </g>
+</svg>
