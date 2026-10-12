@@ -982,20 +982,9 @@ html[data-legacy-mode='true'] .work-index a[aria-current='true'] {
 
 /* --------------------------------------------------
    Contrast and state corrections (audit 2026-10-12)
-   Authorial light-on-dark colours leaked onto the white 1998 surfaces,
-   hiding the lab note, the whole Percurso history and the contact text.
+   Text colours for this mode live in mode-tokens.css; only state and
+   control fixes remain here.
 -------------------------------------------------- */
-html[data-legacy-mode='true'] .lab-note,
-html[data-legacy-mode='true'] .background-entry-copy p,
-html[data-legacy-mode='true'] .closing-copy > p:not(.eyebrow) {
-  color: #000000 !important;
-  text-shadow: none !important;
-}
-
-html[data-legacy-mode='true'] .background-number {
-  color: #333333 !important;
-}
-
 /* A [hidden] Last.fm card must stay hidden: legacy display rules beat the UA style. */
 html[data-legacy-mode='true'] .music-shelf [hidden],
 html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track-card[hidden] {
@@ -1022,15 +1011,3 @@ html[data-legacy-mode='true'] :is(a, button, [tabindex]):focus-visible {
   outline-offset: 2px;
 }
 
-/* 404: the dark Sophia panel keeps its night, but its text must be readable. */
-html[data-legacy-mode='true'] .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) {
-  color: #ffffff !important;
-}
-
-html[data-legacy-mode='true'] .sophia-404__actions a {
-  color: #99ccff !important;
-}
-
-html[data-legacy-mode='true'] .sophia-404__aside {
-  color: #c0c0c0 !important;
-}
