@@ -362,6 +362,32 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
   await context.close();
 }
 
+{
+  // 5. Compact navigation (if present): open, list destinations, Escape.
+  for (const vp of [VIEWPORTS[1], VIEWPORTS[2]]) {
+    for (const mode of MODES) {
+      const { context, page } = await newPage({ viewport: vp });
+      await page.goto(`${baseUrl}/?mode=${mode}`, { waitUntil: 'load' });
+      const toggle = page.locator('[data-nav-menu-toggle]');
+      const result = { hasToggle: await toggle.count() > 0 };
+      if (result.hasToggle && await toggle.isVisible()) {
+        await toggle.click();
+        await page.waitForTimeout(150);
+        result.expanded = await toggle.getAttribute('aria-expanded');
+        result.links = await page.evaluate(() => [...document.querySelectorAll('.nav-sections a')].map((a) => { const r = a.getBoundingClientRect(); return `${a.innerText.trim()} ${Math.round(r.width)}x${Math.round(r.height)} vis=${r.width > 0 && getComputedStyle(a).visibility !== 'hidden'}`; }));
+        await page.screenshot({ path: join(outDir, 'shots', `nav-open-${mode}-${vp.name}.jpg`), type: 'jpeg', quality: 72 });
+        await page.keyboard.press('Escape');
+        result.afterEscape = await page.evaluate(() => ({ expanded: document.querySelector('[data-nav-menu-toggle]').getAttribute('aria-expanded'), focus: document.activeElement?.dataset?.navMenuToggle !== undefined }));
+      } else {
+        result.links = await page.evaluate(() => [...document.querySelectorAll('.nav-links a')].map((a) => { const r = a.getBoundingClientRect(); return `${a.innerText.trim()} vis=${r.width > 0 && getComputedStyle(a).display !== 'none'}`; }));
+      }
+      result.scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+      report.interactions[`nav-${mode}-${vp.name}`] = result;
+      await context.close();
+    }
+  }
+}
+
 await browser.close();
 await writeFile(join(outDir, 'report.json'), JSON.stringify(report, null, 2));
 console.log(`QA ${label}: ${report.runs.length} runs written to ${outDir}`);
