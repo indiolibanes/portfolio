@@ -7218,6 +7218,15 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
 .background-mark{display:block;width:100%;height:54px;max-width:112px;margin-inline:auto;padding:0!important;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;object-fit:contain;object-position:center}
 @media(max-width:620px){.background-entry{grid-template-columns:minmax(68px,88px) minmax(0,1fr);gap:.65rem}.background-mark{height:46px;max-width:88px}}
 
+/* Percurso on phones: three side-by-side columns (number, wordmark, copy)
+   left ~110 px for the professional history, one word per line at 390 px.
+   Below 620 px the wordmark sits above the copy instead of beside it. */
+@media(max-width:620px){
+  .background-list li{grid-template-columns:2.25rem minmax(0,1fr);column-gap:.6rem}
+  .background-entry{grid-template-columns:minmax(0,1fr);row-gap:.55rem;align-items:start}
+  .background-mark{height:40px;max-width:96px;margin-inline:0;justify-self:start;object-position:left center}
+}
+
 /* Music shelf: editorial listening-room composition */
 .music-heading.music-heading--editorial{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,1.05fr) minmax(0,1fr);gap:clamp(1rem,2.5vw,2.5rem);align-items:center}
 .music-heading--editorial .music-heading-copy{align-self:start;min-width:0}
