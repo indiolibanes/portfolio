@@ -1,0 +1,35 @@
+PASS traducao: section exists
+PASS traducao: H3 heading exists
+PASS reflexao: section exists
+PASS reflexao: H3 heading exists
+PASS arquitetura: section exists
+PASS arquitetura: H3 heading exists
+PASS curadoria: section exists
+PASS curadoria: H3 heading exists
+PASS documentacao: section exists
+PASS documentacao: H3 heading exists
+PASS reflexao: short accessible name + new tab notice
+PASS arquitetura: short accessible name + new tab notice
+PASS documentacao: short accessible name + new tab notice
+PASS lab cards: 5 standardized statuses
+PASS music: static section anchor
+PASS music: no-JS fallback
+PASS music: error/fallback containers
+PASS music: playback state available
+PASS music: polling and visibility pause
+PASS music: only announce track change
+PASS nav: lab label aligned
+PASS nav: music static link
+PASS nav: scrollspy state
+PASS hero: actions follow manifesto
+PASS hero: download action
+PASS contact: LinkedIn action
+PASS contact: decorative glyph hidden
+PASS footer: Last.fm uses configured handle
+PASS sophia: named sigil control
+PASS sophia: accessible numbered controls
+PASS modes: preserve three-state control
+PASS motion: viewport and reduced preference
+PASS motion: two simultaneous loops
+PASS motion: static image fallback
+Static UX contract: 34/34 passed.
