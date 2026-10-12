@@ -108,14 +108,7 @@ html[data-serious-mode='true'] .lab-project-card.lab-project-card-documentation 
 html[data-serious-mode='true'] .github-feature-owner strong { color: var(--ink); }
 html[data-serious-mode='true'] .lab-project-card.lab-project-card-documentation :is(.lab-project-status, .lab-project-tags span) { background: var(--surface-soft); border-color: var(--line); color: var(--ink); }
 
-/* Contrast corrections (audit 2026-10-12). Authorial colours that were
-   designed for dark or tinted surfaces must not leak onto editorial white. */
+/* Surfaces only; text colours for the quiet modes live in mode-tokens.css. */
 html[data-serious-mode='true'] .lab-sophia-presence { opacity: 1; }
-html[data-serious-mode='true'] :is(.background-meta, .background-case-study__label) { color: var(--ink-soft) !important; }
 html[data-serious-mode='true'] .background-case-study { border-color: var(--line); }
-html[data-serious-mode='true'] .background-case-study strong { color: var(--ink); }
-html[data-serious-mode='true'] .background-case-study a { color: var(--ink); }
 html[data-serious-mode='true'] .sophia-404__panel { background: #1b1c1a; border-color: #1b1c1a; color: #f5f5f3; }
-html[data-serious-mode='true'] .sophia-404__panel :is(h1, .eyebrow) { color: #f5f5f3; }
-html[data-serious-mode='true'] .sophia-404__copy > p,
-html[data-serious-mode='true'] .sophia-404__aside { color: #c9ccc4; }

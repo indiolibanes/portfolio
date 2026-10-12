@@ -1,0 +1,83 @@
+/*
+ * Mode tokens for section text — phase 1 (audit 2026-10-12).
+ *
+ * Why: every section was first painted for the authorial mode, with literal
+ * colours for its own dark or tinted surface. Editorial and Legacy then
+ * patched those colours selector by selector, and each new section leaked
+ * (the whole Método was invisible in Editorial, the Percurso history in
+ * Legacy). Here each quiet mode declares its inks once, and the text roles
+ * that sit on mode-dependent surfaces read them.
+ *
+ * Adding a section: list its text roles under "Consumers" below.
+ * Surfaces stay in serious.css / legacy.css; authorial colours stay with
+ * their sections.
+ */
+
+html[data-serious-mode='true'] {
+  --mode-heading: var(--ink);
+  --mode-ink: var(--ink);
+  --mode-ink-soft: var(--ink-soft);
+  --mode-label: var(--ink-soft);
+  --mode-link: var(--ink);
+  --mode-on-dark: #f5f5f3;
+  --mode-on-dark-soft: #c9ccc4;
+  --mode-on-dark-link: #f5f5f3;
+}
+
+html[data-legacy-mode='true'] {
+  --mode-heading: #000000;
+  --mode-ink: #000000;
+  --mode-ink-soft: #000000;
+  --mode-label: #333333;
+  --mode-link: #0000ee;
+  --mode-on-dark: #ffffff;
+  --mode-on-dark-soft: #c0c0c0;
+  --mode-on-dark-link: #99ccff;
+}
+
+/* --------------------------------------------------
+   Consumers: text roles that sit on surfaces the quiet modes repaint.
+-------------------------------------------------- */
+
+/* Headings */
+html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+:is(.method-section :is(h2, h3), .background-entry-copy h3, .background-case-study strong, .closing h2) {
+  color: var(--mode-heading) !important;
+  text-shadow: none !important;
+}
+
+/* Body copy */
+html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+:is(.lab-note, .method-lead, .method-closing, .method-disclosure strong, .background-entry-copy p, .background-case-study p, .closing-copy > p:not(.eyebrow)) {
+  color: var(--mode-ink) !important;
+  text-shadow: none !important;
+}
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+:is(.method-disclosure, .method-steps p) {
+  color: var(--mode-ink-soft) !important;
+}
+
+/* Labels, dates, numbers */
+html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+:is(.method-section .eyebrow, .method-index, .background-meta, .background-case-study__label, .background-number) {
+  color: var(--mode-label) !important;
+}
+
+/* Links inside those sections */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .background-case-study a {
+  color: var(--mode-link) !important;
+}
+
+/* The 404 Sophia panel stays dark in every mode: its text uses on-dark inks. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) {
+  color: var(--mode-on-dark) !important;
+}
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .sophia-404__aside {
+  color: var(--mode-on-dark-soft) !important;
+}
+
+html[data-legacy-mode='true'] .sophia-404__actions a {
+  color: var(--mode-on-dark-link) !important;
+}
