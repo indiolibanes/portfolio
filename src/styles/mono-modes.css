@@ -76,7 +76,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not
 }
 
 /* Surfaces that were painted with gradients or tinted artwork. */
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.hero, .hero-intro, .hero-statement, .hero-note, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section, .portfolio-footer, .site-header, .nav-shell) {
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.hero, .hero-intro, .hero-statement, .hero-note, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section, .portfolio-footer, .site-header, .nav-shell, .listening-note, .lab-project-card) {
   background-image: none !important;
 }
 
@@ -93,6 +93,15 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(
   .phrolova-underlay, .shorekeeper-underlay, [class*='baton-ribbon']
 ) {
   display: none !important;
+}
+
+/* Post-it: flat paper in the quiet modes (no tilt, tape or curl). */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight {
+  transform: none !important;
+}
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight::before,
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight::after {
+  content: none !important;
 }
 
 /* Grids that reserved a column for the hidden decoration. */
@@ -173,7 +182,7 @@ html[data-serious-mode='true'] .brand-mark {
   border: 1px solid #000000 !important;
 }
 
-html[data-serious-mode='true'] :is(.hero, .background, .music-shelf, .closing, .github-showcase, .lab) {
+html[data-serious-mode='true'] :is(.hero, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section) {
   border-width: 1px 0 0 !important;
   padding-inline: 0 !important;
 }

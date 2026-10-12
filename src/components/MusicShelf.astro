@@ -374,6 +374,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       if (started || !entries.some((entry) => entry.isIntersecting)) return;
       started = true;
       observer.disconnect();
+      // O post-it é colado uma vez, junto com o início da digitação.
+      (sonataQuote.closest('.listening-note') || sonataQuote).classList.add('is-sticking');
 
       let position = 0;
       sonataQuote.textContent = '';

@@ -2,7 +2,7 @@
   class="method-presenter"
   data-decorative-motion
   role="img"
-  aria-label="Sophia de terninho apresenta um fluxograma com projetor. O destaque percorre concepção, execução, avaliação e registro em sequência."
+  aria-label="Sophia de terninho apresenta um fluxograma em ciclo com projetor: concepção, execução assistida, avaliação e documentação, e a documentação volta a orientar a concepção. O destaque percorre as quatro etapas em sequência."
 >
   <svg class="method-presenter__projection" viewBox="0 0 500 360" aria-hidden="true" focusable="false">
     <defs>
@@ -10,33 +10,56 @@
         <stop offset="0" stop-color="#f5edb5" stop-opacity=".24" />
         <stop offset="1" stop-color="#f5edb5" stop-opacity="0" />
       </linearGradient>
-      <marker id="method-flow-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-        <path d="M0 0 6 3 0 6Z" fill="#426651" />
+      <marker id="method-flow-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M0 .5 6.5 3.5 0 6.5Z" fill="#426651" />
+      </marker>
+      <marker id="method-flow-arrow-on" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M0 .5 6.5 3.5 0 6.5Z" fill="#1f5a45" />
       </marker>
     </defs>
     <path class="method-presenter__beam" d="M110 302 24 40 286 216Z" fill="url(#method-projector-light)" />
     <path d="M155 226V306M126 313l29-7 29 7" fill="none" stroke="#375441" stroke-width="5" stroke-linecap="round" />
     <rect x="14" y="26" width="282" height="200" rx="10" fill="#f2f5e7" stroke="#375441" stroke-width="3" />
     <path d="M20 28H290" stroke="#375441" stroke-width="7" stroke-linecap="round" />
-    <text x="34" y="52" class="method-presenter__screen-title">DA IDEIA À ESTRUTURA</text>
+    <text x="30" y="52" class="method-presenter__screen-title">DA IDEIA À ESTRUTURA</text>
+    <text x="280" y="52" class="method-presenter__screen-title method-presenter__cycle-mark" text-anchor="end">CICLO</text>
+
+    <!-- Conexões: A→B, B→C, C→D e a volta D→A que fecha o ciclo. -->
+    <g class="method-presenter__links" fill="none" stroke="#426651" stroke-width="2" stroke-linecap="round" marker-end="url(#method-flow-arrow)">
+      <path class="method-presenter__link method-presenter__link--1" d="M144 92H167" />
+      <path class="method-presenter__link method-presenter__link--2" d="M227 118V139" />
+      <path class="method-presenter__link method-presenter__link--3" d="M168 164H145" />
+      <path class="method-presenter__link method-presenter__link--4 method-presenter__link--return" d="M85 138V120" />
+    </g>
+    <text x="156" y="132" class="method-presenter__loop-mark" text-anchor="middle">↻</text>
+
+    <!-- Etapas: mesma ordem e nomes da lista abaixo da cena. -->
     <g class="method-presenter__nodes">
-      <rect class="method-presenter__node method-presenter__node--conception" x="34" y="69" width="102" height="40" rx="7" />
-      <rect class="method-presenter__node method-presenter__node--execution" x="162" y="69" width="108" height="40" rx="7" />
-      <rect class="method-presenter__node method-presenter__node--record" x="34" y="142" width="102" height="43" rx="7" />
-      <rect class="method-presenter__node method-presenter__node--evaluation" x="162" y="142" width="108" height="43" rx="7" />
+      <rect class="method-presenter__node method-presenter__node--conception" x="30" y="68" width="112" height="48" rx="8" />
+      <rect class="method-presenter__node method-presenter__node--execution" x="170" y="68" width="112" height="48" rx="8" />
+      <rect class="method-presenter__node method-presenter__node--evaluation" x="170" y="140" width="112" height="48" rx="8" />
+      <rect class="method-presenter__node method-presenter__node--record" x="30" y="140" width="112" height="48" rx="8" />
     </g>
-    <g fill="none" stroke="#426651" stroke-width="2" marker-end="url(#method-flow-arrow)">
-      <path d="M140 89H157" />
-      <path d="M216 113V137" />
-      <path d="M157 164H141" />
+    <g class="method-presenter__badges">
+      <circle cx="43" cy="81" r="7.5" /><text x="43" y="84.4" text-anchor="middle">1</text>
+      <circle cx="183" cy="81" r="7.5" /><text x="183" y="84.4" text-anchor="middle">2</text>
+      <circle cx="183" cy="153" r="7.5" /><text x="183" y="156.4" text-anchor="middle">3</text>
+      <circle cx="43" cy="153" r="7.5" /><text x="43" y="156.4" text-anchor="middle">4</text>
     </g>
-    <g class="method-presenter__node-label" text-anchor="middle">
-      <text x="85" y="94">Concepção</text>
-      <text x="216" y="94">Execução</text>
-      <text x="85" y="169">Registro</text>
-      <text x="216" y="169" font-weight="800">Avaliação</text>
+    <g class="method-presenter__node-label">
+      <text x="56" y="88">Concepção</text>
+      <text x="196" y="88">Execução</text>
+      <text x="196" y="160">Avaliação</text>
+      <text x="55" y="160" textLength="80" lengthAdjust="spacingAndGlyphs">Documentação</text>
     </g>
-    <text x="155" y="208" class="method-presenter__screen-note" text-anchor="middle">Revisar orienta o próximo passo.</text>
+    <g class="method-presenter__node-hint">
+      <text x="56" y="104">dar forma à ideia</text>
+      <text x="196" y="104">IA com restrições</text>
+      <text x="196" y="176">checar o resultado</text>
+      <text x="56" y="176">deixar um caminho</text>
+    </g>
+    <text x="155" y="212" class="method-presenter__screen-note" text-anchor="middle">Revisar orienta o próximo passo.</text>
+
     <g stroke="#375441" stroke-width="2">
       <path d="M45 325v9m42-9v9" stroke-linecap="round" />
       <rect x="26" y="290" width="83" height="35" rx="8" fill="#e0e8da" />
