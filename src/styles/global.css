@@ -2740,7 +2740,7 @@ html[data-serious-mode='true']
 .note-label {
   margin: 0;
 
-  color: #60745f;
+  color: #4c5e4a;
 }
 
 .note-big {
@@ -2766,7 +2766,7 @@ html[data-serious-mode='true']
   margin:
     0.55rem 0 0;
 
-  color: #5c705d;
+  color: #495b47;
 
   font-size: 0.88rem;
 }
@@ -6894,7 +6894,7 @@ html[data-serious-mode='true']
 
 .sophia-404__aside {
   margin: 1.2rem 0 0;
-  color: #777773;
+  color: #9a9a95;
   font-family: var(--font-retro);
   font-size: 0.76rem;
 }

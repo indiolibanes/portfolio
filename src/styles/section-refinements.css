@@ -414,3 +414,10 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
     padding-top: 0;
   }
 }
+
+/* 5W2H was set in near-black when the lab heading sat on paper; on the
+   current night-blue lab it disappeared (≈1.3:1). Reuse the lab eyebrow gold. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.lab-heading h2 b {
+  color: #f2d384;
+}
