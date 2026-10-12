@@ -445,3 +445,17 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .lab-heading h2 b {
   color: #f2d384;
 }
+
+/* Bastidores: at 1440 px the repository card set its title in an 11ch column
+   (seven lines) beside a half-width blackboard. A wider copy column and a
+   20ch measure bring it to three or four lines; Shannon's board stays whole. */
+@media (min-width: 701px) {
+  .github-feature-shannon {
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+  }
+
+  .github-feature-shannon .github-feature-copy h3 {
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+}
