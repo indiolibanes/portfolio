@@ -4,6 +4,7 @@ export const SITE = {
     'Portfólio pessoal de Kauê Alencar: documentação, organização da informação, escrita e publicação digital.',
   url: 'https://kaue.pages.dev',
   ogImage: '/og-portfolio.jpg?v=20261012b',
+  ogImageAlt: 'Sophia, raposa cósmica, de óculos redondos com reflexos brancos e pata erguida junto ao rosto, sob “não ironicamente”; cartão azul-noite estrelado com Kauê Alencar, Escrita, Documentação e Informação.',
 };
 
 export const PROFILE = {
