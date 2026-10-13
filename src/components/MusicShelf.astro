@@ -131,7 +131,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         class="music-panorama-action"
         data-music-effect-toggle
         type="button"
-        aria-label="Animar a ilustração: alternar borboletas celestiais e laços carmesins"
+        aria-label="Animar a ilustração: alternar borboletas celestiais e o bastonete carmesim que se desfaz em pétalas"
         hidden
       ></button>
       <figcaption id="music-panorama-caption" class="music-panorama-caption">
@@ -398,7 +398,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
 
 
-  // Cada clique alterna o recorte real de uma borboleta e o laço do bastonete.
+  // Cada clique alterna o recorte real de uma borboleta e o bastonete que se desfaz em pétalas.
   // O botão ocupa a imagem e não apresenta controle visual, mas mantém suporte ao teclado.
   const panorama = shelf?.querySelector('[data-music-panorama]');
   const effectToggle = panorama?.querySelector('[data-music-effect-toggle]');
@@ -469,54 +469,91 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       sprite.alt = '';
       sprite.width = 231;
       sprite.height = 143;
-      sprite.style.animationDuration = Math.round(rand(130, 190)) + 'ms';
+      // Uma rajada de três batidas e um planeio por ciclo; cada borboleta tem o seu compasso.
+      sprite.style.setProperty('--fx-beat', Math.round(rand(860, 1080)) + 'ms');
+      sprite.style.animationDelay = -Math.round(rand(0, 600)) + 'ms';
       particle.appendChild(sprite);
       release(particle, life + delay);
     };
 
-    // Phrolova's bow, drawn as ribbon: both loops tie themselves, hold a
-    // beat, then untie — the loops swing away, the knot drops and two crimson
-    // tails ripple down and fade. (The old bitmap crop was a blurry petal
-    // cluster that read as a blob at this size.)
-    const bowMarkup = `
-      <path class="music-bow-tail" pathLength="100" d="M57 50C48 76 66 94 50 118S42 140 34 148" />
-      <path class="music-bow-tail music-bow-tail--b" pathLength="100" d="M63 50C74 76 56 96 72 118S82 140 90 148" />
-      <g class="music-bow-loop music-bow-loop--left"><path pathLength="100" d="M60 44C42 20 12 22 14 42C16 62 44 58 60 44" /><path class="music-bow-shine" pathLength="100" d="M56 40C42 26 22 28 20 40" /></g>
-      <g class="music-bow-loop music-bow-loop--right"><path pathLength="100" d="M60 44C78 20 108 22 106 42C104 62 76 58 60 44" /><path class="music-bow-shine" pathLength="100" d="M64 40C78 26 98 28 100 40" /></g>
-      <ellipse class="music-bow-knot" cx="60" cy="45" rx="7.5" ry="9" />`;
+    // O bastonete carmesim da Phrolova (vetor aprovado em /assets/phrolova)
+    // aparece, flutua e se desfaz devagar: a flor é corroída do centro para
+    // fora enquanto solta pétalas de higanbana, uma a uma, que caem
+    // balançando. Dura cerca de nove segundos, de propósito.
+    const batonSrc = '/assets/phrolova/crimson-baton.svg';
+    const canErode = Boolean(window.CSS?.registerProperty);
+    const petalMarkup = '<path class="music-petal-body" d="M8 68C1 42 7 14 31 3C26 21 22 46 14 68C12 70 9 70 8 68Z" /><path class="music-petal-vein" d="M10 64C11 44 16 22 28 8" />';
 
-    const spawnRibbon = (x, y, delay = 0) => {
+    const spawnPetal = (x, y, ox, oy, delay, size) => {
       const k = scale();
       const particle = document.createElement('span');
-      const life = 2700;
-      particle.className = 'music-effect-particle music-effect-particle--ribbon';
+      const life = Math.round(rand(3600, 5400));
+      const dir = Math.random() < .5 ? -1 : 1;
+      particle.className = 'music-effect-particle music-effect-particle--petal';
       particle.style.setProperty('--fx-x', x + '%');
       particle.style.setProperty('--fx-y', y + '%');
-      particle.style.setProperty('--fx-dx', rand(-40, 40) * k + 'px');
-      particle.style.setProperty('--fx-dy', rand(40, 90) * k + 'px');
-      particle.style.setProperty('--fx-rotate', rand(-16, 16) + 'deg');
-      particle.style.setProperty('--fx-delay', delay + 'ms');
-      const bow = document.createElementNS(svgNS, 'svg');
-      bow.setAttribute('class', 'music-bow');
-      bow.setAttribute('viewBox', '0 0 120 150');
-      bow.setAttribute('aria-hidden', 'true');
-      bow.innerHTML = bowMarkup;
-      particle.appendChild(bow);
+      particle.style.setProperty('--ox', ox + 'px');
+      particle.style.setProperty('--oy', oy + 'px');
+      particle.style.setProperty('--r0', Math.round(rand(-70, 70)) + 'deg');
+      particle.style.setProperty('--sway', Math.round(dir * rand(26, 70) * k) + 'px');
+      particle.style.setProperty('--sway2', Math.round(-dir * rand(18, 52) * k) + 'px');
+      particle.style.setProperty('--fall', Math.round(rand(110, 210) * k) + 'px');
+      particle.style.setProperty('--turn', Math.round(dir * rand(140, 320)) + 'deg');
+      particle.style.setProperty('--fx-size', size.toFixed(2));
+      particle.style.setProperty('--fx-life', life + 'ms');
+      particle.style.setProperty('--fx-delay', Math.round(delay) + 'ms');
+      const petal = document.createElementNS(svgNS, 'svg');
+      petal.setAttribute('class', 'music-petal');
+      petal.setAttribute('viewBox', '0 0 40 72');
+      petal.setAttribute('aria-hidden', 'true');
+      petal.innerHTML = petalMarkup;
+      particle.appendChild(petal);
       release(particle, life + delay);
+    };
+
+    const spawnBaton = (x, y) => {
+      const k = scale();
+      const width = Math.round(Math.min(170, Math.max(96, panorama.getBoundingClientRect().width * .17)));
+      const life = 9000;
+      const particle = document.createElement('span');
+      particle.className = 'music-effect-particle music-effect-particle--baton' + (canErode ? ' has-erode' : '');
+      particle.style.setProperty('--fx-x', x + '%');
+      particle.style.setProperty('--fx-y', y + '%');
+      particle.style.setProperty('--fx-w', width + 'px');
+      particle.style.setProperty('--fx-life', life + 'ms');
+      particle.style.setProperty('--fx-tilt', rand(-5, 5).toFixed(1) + 'deg');
+      const art = document.createElement('img');
+      art.className = 'music-baton-sprite';
+      art.src = batonSrc;
+      art.alt = '';
+      art.width = 448;
+      art.height = 448;
+      particle.appendChild(art);
+      release(particle, life);
+
+      // Pétalas saem da coroa da flor (≈ 48 % × 33 % da arte), em ritmo lento,
+      // e algumas poucas das notas da pauta, mais embaixo.
+      const count = k < .7 ? 11 : 17;
+      for (let i = 0; i < count; i += 1) {
+        const fromStaff = i % 6 === 5;
+        const ox = fromStaff ? rand(-.36, -.04) * width : rand(-.26, .24) * width;
+        const oy = fromStaff ? rand(.02, .16) * width : rand(-.36, -.03) * width;
+        const delay = 700 + (i / count) * 4300 + rand(-120, 160);
+        spawnPetal(x, y, ox, oy, delay, rand(.7, 1.25));
+      }
     };
 
     const burst = (effect, x, y) => {
       if (effect === 'butterfly') {
         for (let i = 0; i < 5; i += 1) spawnButterfly(x + rand(-3, 3), y + rand(-3, 3), i * 90);
       } else {
-        spawnRibbon(x, y, 0);
-        spawnRibbon(Math.min(88, x + 9), Math.max(14, y - 8), 220);
+        spawnBaton(x, y);
       }
     };
 
     effectToggle.addEventListener('click', (event) => {
       const effect = nextEffect;
-      nextEffect = effect === 'butterfly' ? 'ribbon' : 'butterfly';
+      nextEffect = effect === 'butterfly' ? 'baton' : 'butterfly';
       if (effectsQuiet()) return;
       panorama.dataset.effectsUsed = 'true';
 
@@ -528,8 +565,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     });
 
     // Ambient life while the scene is on screen: now and then one butterfly
-    // leaves Shorekeeper's hand, and every third time a bow drifts from
-    // Phrolova's side. Nothing runs off-screen, in a hidden tab or when quiet.
+    // leaves Shorekeeper's hand, and every third time a baton dissolves
+    // into petals on Phrolova's side. Nothing runs off-screen, in a hidden tab or when quiet.
     let ambientTimer = 0;
     let ambientCount = 0;
     let sceneVisible = false;
@@ -538,7 +575,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       if (!sceneVisible || document.hidden || effectsQuiet()) return;
       ambientTimer = window.setTimeout(() => {
         ambientCount += 1;
-        if (ambientCount % 3 === 0) spawnRibbon(rand(14, 26), rand(42, 56));
+        if (ambientCount % 3 === 0) spawnBaton(rand(16, 26), rand(44, 56));
         else spawnButterfly(rand(72, 84), rand(36, 50));
         scheduleAmbient();
       }, rand(7000, 12000));
