@@ -21,6 +21,10 @@ const {
   title = 'Sophia',
   labelled = false,
 } = Astro.props;
+
+// The clip id is per instance so several sigils on one page never collide.
+const faceId = `sophia-sigil-face-${Math.random().toString(36).slice(2, 8)}`;
+const FACE = 'M60 38C43 38 28 46 20 62l12 3-8 9 15 1-2 10 13-1c3 6 6 11 10 15 4-4 7-9 10-15l13 1-2-10 15-1-8-9 12-3C92 46 77 38 60 38Z';
 ---
 
 <svg
@@ -34,6 +38,10 @@ const {
 
   <!-- seal ring -->
   <circle class="sophia-sigil__halo" cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.5 7" stroke-linecap="round" opacity=".5" />
+  <!-- a spark that circles the seal -->
+  <g class="sophia-sigil__orbit">
+    <path d="M60 -1 62.2 4.6 68 6.8 62.2 9 60 14.6 57.8 9 52 6.8 57.8 4.6Z" fill="var(--sigil-star, currentColor)" />
+  </g>
 
   <!-- ears: solid fur, paper-coloured inner -->
   <g class="sophia-sigil__ears" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
@@ -46,12 +54,18 @@ const {
   <!-- head: broad brow, ruffled cheeks, pointed chin -->
   <path
     class="sophia-sigil__face"
-    d="M60 38C43 38 28 46 20 62l12 3-8 9 15 1-2 10 13-1c3 6 6 11 10 15 4-4 7-9 10-15l13 1-2-10 15-1-8-9 12-3C92 46 77 38 60 38Z"
+    d={FACE}
     fill="var(--sigil-paper, #fffaf0)"
     stroke="currentColor"
     stroke-width="5"
     stroke-linejoin="round"
   />
+
+  <!-- light that glides over the fur now and then -->
+  <clipPath id={faceId}><path d={FACE} /></clipPath>
+  <g clip-path={`url(#${faceId})`} aria-hidden="true">
+    <rect class="sophia-sigil__shine" x="-30" y="30" width="16" height="84" fill="#f0be50" opacity="0" transform="skewX(-20)" />
+  </g>
 
   <!-- forehead star -->
   <path class="sophia-sigil__star" d="M60 39.5 61.6 43.9 66 45.5 61.6 47.1 60 51.5 58.4 47.1 54 45.5 58.4 43.9Z" fill="var(--sigil-star, currentColor)" />
@@ -69,23 +83,31 @@ const {
 </svg>
 
 <style is:global>
-  .sophia-sigil { --sigil-paper: var(--surface, #fffaf0); }
+  .sophia-sigil { --sigil-paper: var(--surface, #fffaf0); --sigil-glow: rgba(240, 190, 80, .75); animation: sophia-sigil-glow 4.8s ease-in-out infinite; }
   .sophia-orbit__sigil { --sigil-paper: #1d1b30; --sigil-star: #fff1b8; }
-  .sophia-sigil__ears path[fill='var(--sigil-paper, #fffaf0)'] { opacity: .9; }
-  .sophia-sigil__pupil {
-    animation: sophia-sigil-look 7s ease-in-out infinite;
-  }
-  .sophia-sigil__ear--r {
-    transform-box: fill-box;
-    transform-origin: 20% 90%;
-    animation: sophia-sigil-ear 9s ease-in-out infinite;
-  }
-  .sophia-sigil__star {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: sophia-sigil-twinkle 3.4s ease-in-out infinite;
-  }
 
+  .sophia-sigil__halo { transform-origin: 60px 60px; animation: sophia-sigil-spin 26s linear infinite; }
+  .sophia-sigil__orbit { transform-origin: 60px 60px; animation: sophia-sigil-spin 7s linear infinite; }
+  .sophia-sigil__shine { animation: sophia-sigil-shine 6.5s ease-in-out infinite; }
+  .sophia-sigil__pupil { animation: sophia-sigil-look 7s ease-in-out infinite; }
+  .sophia-sigil__ear--r { transform-box: fill-box; transform-origin: 20% 90%; animation: sophia-sigil-ear 9s ease-in-out infinite; }
+  .sophia-sigil__star { transform-box: fill-box; transform-origin: center; animation: sophia-sigil-twinkle 3.4s ease-in-out infinite; }
+
+  /* faster and brighter while the link it sits in is being pointed at */
+  a:hover .sophia-sigil, a:focus-visible .sophia-sigil, .sophia-orbit:hover .sophia-sigil { animation-duration: 1.8s; }
+  a:hover .sophia-sigil__orbit, a:focus-visible .sophia-sigil__orbit, .sophia-orbit:hover .sophia-sigil__orbit { animation-duration: 2.2s; }
+
+  @keyframes sophia-sigil-spin { to { transform: rotate(360deg); } }
+  @keyframes sophia-sigil-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+    50% { filter: drop-shadow(0 0 4px var(--sigil-glow)); }
+  }
+  @keyframes sophia-sigil-shine {
+    0%, 58% { transform: translateX(0) skewX(-20deg); opacity: 0; }
+    62% { opacity: .55; }
+    82% { transform: translateX(150px) skewX(-20deg); opacity: .5; }
+    86%, 100% { transform: translateX(160px) skewX(-20deg); opacity: 0; }
+  }
   @keyframes sophia-sigil-look {
     0%, 12%, 100% { transform: translate(0, 0); }
     20%, 38% { transform: translate(-3px, -.5px); }
@@ -105,8 +127,8 @@ const {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sophia-sigil__pupil, .sophia-sigil__ear--r, .sophia-sigil__star { animation: none; }
+    .sophia-sigil, .sophia-sigil * { animation: none !important; }
   }
-  html[data-serious-mode='true'] .sophia-sigil *,
-  html[data-legacy-mode='true'] .sophia-sigil * { animation: none; }
+  html[data-serious-mode='true'] .sophia-sigil, html[data-serious-mode='true'] .sophia-sigil *,
+  html[data-legacy-mode='true'] .sophia-sigil, html[data-legacy-mode='true'] .sophia-sigil * { animation: none !important; }
 </style>

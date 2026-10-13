@@ -1,4 +1,4 @@
-// Guard the "não ironicamente" share card and its metadata.
+// Guard the Sophia share card and its metadata.
 // Run before a build for source checks; pass --dist to inspect generated pages.
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
@@ -22,7 +22,7 @@ const expectedImage = new URL(imagePath, site).toString();
 assert.equal(new URL(site).protocol, 'https:');
 assert.match(imagePath, /^\/og-portfolio\.jpg\?v=[\w-]+$/);
 assert.match(alt, /Sophia/i);
-assert.match(alt, /não ironicamente/i);
+assert.ok(!/não ironicamente/i.test(alt), 'Caption was removed from the card; alt must not quote it');
 assert.match(alt, /óculos/i);
 assert.match(head, /property="og:site_name"/);
 assert.match(head, /property="og:image:alt"[\s\S]*?content=\{SITE\.ogImageAlt\}/);

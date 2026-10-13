@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the link-preview card ("não ironicamente" Sophia) and its animated twin.
+"""Build the link-preview card (Sophia (round glasses, raised finger)) and its animated twin.
 
     pip install pillow numpy scipy opencv-python-headless
     python3 scripts/build-og-card.py
@@ -152,7 +152,7 @@ def background(t=0.0):
     pts = [(rnd.randint(30, W - 30), rnd.randint(20, H - 20), rnd.random() * 6.28, rnd.choice((3, 4, 5, 7))) for _ in range(46)]
     for x, y, ph, s in pts:
         tw = .45 + .55 * (.5 + .5 * math.sin(ph + t * 6.283))
-        if (x < 620 and y < 440) or (x < 330 and y > 520) or (x > 560 and y > 120):   # keep text and Sophia clear
+        if (x < 620 and y < 420) or (x < 330 and y > 520) or (x > 560 and y > 120):   # keep text and Sophia clear
             continue
         c = (255, 214, 140, int(190 * tw))
         d.polygon([(x, y - s * 1.6), (x + s * .38, y - s * .38), (x + s * 1.6, y), (x + s * .38, y + s * .38),
@@ -166,18 +166,14 @@ def background(t=0.0):
 def text_layer():
     T = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(T)
-    cap = font(INTER.format('Medium'), 60)
-    for dx, dy, al in ((0, 5, 90),):
-        d.text((58 + dx, 40 + dy), 'não ironicamente', font=cap, fill=(0, 0, 20, al))
-    d.text((58, 40), 'não ironicamente', font=cap, fill=CAPTION + (255,))
-    d.line([(60, 150), (130, 150)], fill=(255, 214, 140, 200), width=2)
-    d.text((60, 178), 'Kauê Alencar', font=font('/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf', 50), fill=(255, 247, 232, 255))
-    sub = font(INTER.format('Regular'), 24)
+    d.text((60, 150), 'Kauê Alencar', font=font('/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf', 58), fill=(255, 247, 232, 255))
+    d.line([(62, 238), (150, 238)], fill=(255, 214, 140, 200), width=2)
+    sub = font(INTER.format('Regular'), 28)
     for i, line in enumerate(('Escrita', 'Documentação', 'Informação')):
-        y = 272 + i * 40
-        d.polygon([(66, y + 15), (72, y + 9), (78, y + 15), (72, y + 21)], fill=(255, 214, 140, 255))
-        d.text((92, y), line, font=sub, fill=(222, 228, 247, 255))
-    d.text((60, 560), 'kaue.pages.dev', font=font(INTER.format('Medium'), 22), fill=(255, 214, 140, 235))
+        y = 270 + i * 48
+        d.polygon([(66, y + 17), (73, y + 10), (80, y + 17), (73, y + 24)], fill=(255, 214, 140, 255))
+        d.text((96, y), line, font=sub, fill=(222, 228, 247, 255))
+    d.text((62, 560), 'kaue.pages.dev', font=font(INTER.format('Medium'), 22), fill=(255, 214, 140, 235))
     return T
 
 _HEAD = None
