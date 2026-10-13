@@ -1,4 +1,15 @@
 ---
+/*
+ * Sophia's sigil — the little seal that signs her lines ("Sophia procura…",
+ * "Sophia encontrou…") and heads the lab card and /sophia/.
+ *
+ * Redrawn 2026-10-13: a front-facing fox head you can still read at 18 px
+ * (solid ears and cheeks, not a thin outline), a four-point star on the
+ * forehead, and eyes that glance sideways now and then — she is looking for
+ * something. Colour comes from `currentColor`; the star takes --sigil-star
+ * when a context sets it. Motion is CSS only and stops under
+ * prefers-reduced-motion and in the Editorial / Legacy modes.
+ */
 interface Props {
   className?: string;
   title?: string;
@@ -20,45 +31,82 @@ const {
   aria-hidden={labelled ? undefined : 'true'}
 >
   {labelled && <title>{title}</title>}
-  <path
-    class="sophia-sigil__halo"
-    d="M60 10a50 50 0 1 1 0 100 50 50 0 0 1 0-100Z"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-dasharray="2 8"
-    opacity=".38"
-  />
-  <path
-    class="sophia-sigil__ears"
-    d="M27 42 34 17l20 16h12l20-16 7 25-10 14H37L27 42Z"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+
+  <!-- seal ring -->
+  <circle class="sophia-sigil__halo" cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.5 7" stroke-linecap="round" opacity=".5" />
+
+  <!-- ears: solid fur, paper-coloured inner -->
+  <g class="sophia-sigil__ears" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+    <path class="sophia-sigil__ear sophia-sigil__ear--l" d="M21 60 22 15 56 40Z" fill="currentColor" stroke-width="5" />
+    <path class="sophia-sigil__ear sophia-sigil__ear--r" d="M99 60 98 15 64 40Z" fill="currentColor" stroke-width="5" />
+    <path d="M28 46 28.6 27 44 38Z" fill="var(--sigil-paper, #fffaf0)" stroke="none" />
+    <path d="M92 46 91.4 27 76 38Z" fill="var(--sigil-paper, #fffaf0)" stroke="none" />
+  </g>
+
+  <!-- head: broad brow, ruffled cheeks, pointed chin -->
   <path
     class="sophia-sigil__face"
-    d="M38 53c2 23 12 34 22 34s20-11 22-34M46 61l7 2m21-2-7 2M55 73h10l-5 6-5-6Z"
-    fill="none"
+    d="M60 38C43 38 28 46 20 62l12 3-8 9 15 1-2 10 13-1c3 6 6 11 10 15 4-4 7-9 10-15l13 1-2-10 15-1-8-9 12-3C92 46 77 38 60 38Z"
+    fill="var(--sigil-paper, #fffaf0)"
     stroke="currentColor"
-    stroke-width="4"
-    stroke-linecap="round"
+    stroke-width="5"
     stroke-linejoin="round"
   />
-  <path
-    class="sophia-sigil__tail"
-    d="M84 78c15 1 21 12 17 22-4 9-17 12-30 5 10-1 17-5 18-11 1-5-2-10-5-16Z"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    class="sophia-sigil__star"
-    d="m60 20 2.3 5.7L68 28l-5.7 2.3L60 36l-2.3-5.7L52 28l5.7-2.3L60 20Z"
-    fill="currentColor"
-  />
+
+  <!-- forehead star -->
+  <path class="sophia-sigil__star" d="M60 39.5 61.6 43.9 66 45.5 61.6 47.1 60 51.5 58.4 47.1 54 45.5 58.4 43.9Z" fill="var(--sigil-star, currentColor)" />
+
+  <!-- eyes: slanted almonds, pupils that look around -->
+  <g class="sophia-sigil__eyes">
+    <path d="M32 60Q43 52 55 62Q43 69 32 60Z" fill="#fff" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round" />
+    <path d="M65 62Q77 52 88 60Q77 69 65 62Z" fill="#fff" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round" />
+    <circle class="sophia-sigil__pupil" cx="44.5" cy="60.8" r="3.5" fill="currentColor" />
+    <circle class="sophia-sigil__pupil" cx="75.5" cy="60.8" r="3.5" fill="currentColor" />
+  </g>
+
+  <!-- nose -->
+  <path d="M55.5 85h9L60 91.5Z" fill="currentColor" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" />
 </svg>
+
+<style is:global>
+  .sophia-sigil { --sigil-paper: var(--surface, #fffaf0); }
+  .sophia-orbit__sigil { --sigil-paper: #1d1b30; --sigil-star: #fff1b8; }
+  .sophia-sigil__ears path[fill='var(--sigil-paper, #fffaf0)'] { opacity: .9; }
+  .sophia-sigil__pupil {
+    animation: sophia-sigil-look 7s ease-in-out infinite;
+  }
+  .sophia-sigil__ear--r {
+    transform-box: fill-box;
+    transform-origin: 20% 90%;
+    animation: sophia-sigil-ear 9s ease-in-out infinite;
+  }
+  .sophia-sigil__star {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sophia-sigil-twinkle 3.4s ease-in-out infinite;
+  }
+
+  @keyframes sophia-sigil-look {
+    0%, 12%, 100% { transform: translate(0, 0); }
+    20%, 38% { transform: translate(-3px, -.5px); }
+    46%, 52% { transform: translate(0, 0); }
+    60%, 78% { transform: translate(3px, .5px); }
+    86% { transform: translate(0, 0); }
+  }
+  @keyframes sophia-sigil-ear {
+    0%, 82%, 100% { transform: rotate(0deg); }
+    86% { transform: rotate(6deg); }
+    90% { transform: rotate(-2deg); }
+    94% { transform: rotate(0deg); }
+  }
+  @keyframes sophia-sigil-twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .7; transform: scale(.86); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sophia-sigil__pupil, .sophia-sigil__ear--r, .sophia-sigil__star { animation: none; }
+  }
+  html[data-serious-mode='true'] .sophia-sigil *,
+  html[data-legacy-mode='true'] .sophia-sigil * { animation: none; }
+</style>

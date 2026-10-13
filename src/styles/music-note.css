@@ -1,124 +1,244 @@
 /*
- * Moonlight Sonata post-it (refeito em 2026-10-12).
+ * Moonlight Sonata post-it — redone 2026-10-13.
  *
- * Um post-it de verdade: papel amarelo-manteiga, tira adesiva no topo, canto
- * inferior direito levemente descolado (a sombra curva é o descolado) e uma
- * brisa que o faz respirar. Ao entrar na tela ele é colado: MusicShelf.astro
- * soma .is-sticking uma única vez, junto com a digitação da citação.
+ * A note pulled off a little pad and taped to the night: butter-yellow paper
+ * with faint ruling, two more sheets fanned out behind it (rose and sky), and a
+ * navy washi tape sprinkled with gold stars across the top. It hangs from the
+ * tape, so it sways a hair in the breeze; the loose bottom-right corner lifts
+ * with it. When the section scrolls into view MusicShelf.astro adds
+ * .is-sticking once: the note is slapped on (drops, bounces, settles), the tape
+ * glints, and a pen underline is drawn under the source after the quote has
+ * been typed. Hover lifts it.
  *
- * Sem JS ou com movimento reduzido ele aparece já colado, sem animação.
- * Só o modo Autoral: Editorial e Legacy têm o seu próprio papel (mono-modes.css).
+ * Without JS, or with reduced motion, it simply sits there, already stuck.
+ * Authorial mode only — Editorial and Legacy have their own flat paper
+ * (mono-modes.css) and never see the tape or the extra sheets.
  */
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+:is(.listening-note-tape, .listening-note-sheet, .listening-note-paper) { display: none !important; }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .listening-note--moonlight {
-  --note-tilt: -1.6deg;
-  --note-paper: #fff2a8;
-  --note-paper-deep: #fde68a;
+  --note-tilt: -2deg;
+  --note-paper: #fff0a0;
+  --note-paper-deep: #fddd6e;
+  --note-ink: #4a3626;
 
   isolation: isolate;
-  padding-top: calc(clamp(1.2rem, 2.5vw, 2rem) + .55rem);
+  overflow: visible;
+  padding-top: calc(clamp(.8rem, 1.2vw, 1rem) + .75rem);
   border: 0;
-  border-radius: 2px;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 1.55rem, rgba(150, 118, 40, .09) 1.55rem calc(1.55rem + 1px)),
-    linear-gradient(172deg, var(--note-paper) 0%, var(--note-paper-deep) 100%);
-  box-shadow:
-    0 1px 1px rgba(60, 40, 10, .22),
-    0 10px 18px -6px rgba(10, 6, 30, .55);
-  color: #45372e;
+  border-radius: 2px 2px 3px 14px;
+  background: none;
+  box-shadow: none;
+  color: var(--note-ink);
   transform: rotate(var(--note-tilt));
   transform-origin: 50% 0;
-  transition: transform .35s cubic-bezier(.3, .7, .4, 1), box-shadow .35s ease;
+  transition: transform .4s cubic-bezier(.3, .7, .4, 1), box-shadow .4s ease;
+  animation: post-it-sway 7.5s ease-in-out infinite;
 }
 
-/* Tira adesiva: faixa mais clara e opaca no topo, com sombra suave abaixo. */
+/* The paper itself (an element of its own so the pad sheets can sit under it) */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-paper {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 2px 2px 3px 14px / 2px 2px 3px 6px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 1.42rem, rgba(150, 110, 30, .1) 1.42rem calc(1.42rem + 1px)),
+    radial-gradient(130% 80% at 20% 0%, rgba(255, 255, 255, .45), transparent 60%),
+    linear-gradient(172deg, var(--note-paper) 0%, var(--note-paper-deep) 100%);
+  box-shadow:
+    0 1px 1px rgba(60, 40, 10, .25),
+    0 12px 20px -8px rgba(6, 4, 24, .6);
+}
+
+/* Washi tape ------------------------------------------------------------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-tape {
+  position: absolute;
+  z-index: 3;
+  top: -11px;
+  left: 50%;
+  width: 46%;
+  height: 22px;
+  margin-left: -23%;
+  transform: rotate(-2.5deg);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 38%, #f6d77e 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 52% 66%, #f6d77e 0 1.1px, transparent 1.5px),
+    radial-gradient(circle at 84% 34%, #f6d77e 0 1.5px, transparent 1.9px),
+    linear-gradient(180deg, rgba(60, 74, 150, .9), rgba(32, 40, 98, .92));
+  background-size: 34px 22px, 34px 22px, 34px 22px, auto;
+  box-shadow: 0 2px 4px rgba(20, 14, 40, .3);
+  clip-path: polygon(0 0, 3% 12%, 0 25%, 3% 38%, 0 50%, 3% 62%, 0 75%, 3% 88%, 0 100%, 100% 100%, 97% 88%, 100% 75%, 97% 62%, 100% 50%, 97% 38%, 100% 25%, 97% 12%, 100% 0);
+  pointer-events: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-tape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 38%, rgba(255, 255, 255, .55) 50%, transparent 62%);
+  transform: translateX(-130%);
+}
+
+/* The rest of the pad ---------------------------------------------------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-sheet {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  border-radius: 2px 2px 3px 12px;
+  box-shadow: 0 4px 10px -4px rgba(6, 4, 24, .55);
+  pointer-events: none;
+  transform-origin: 50% 0;
+  transition: transform .45s cubic-bezier(.3, .7, .4, 1);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-sheet--a { background: #f7b9c7; transform: rotate(3.6deg) translate(5px, 3px); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-sheet--b { background: #b6d7f7; transform: rotate(-3deg) translate(-4px, 4px); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within) .listening-note-sheet--a { transform: rotate(6deg) translate(8px, 4px); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within) .listening-note-sheet--b { transform: rotate(-5.5deg) translate(-7px, 5px); }
+
+/* Loose corner: curved shadow under the bottom-right edge, lifting. ------ */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .listening-note--moonlight::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto 0;
-  width: auto;
-  height: 1.05rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .18));
+  inset: auto 0 0 auto;
+  width: 30px;
+  height: 30px;
   border: 0;
-  border-radius: 2px 2px 0 0;
   clip-path: none;
-  box-shadow: 0 2px 4px -1px rgba(120, 90, 20, .18);
+  background: linear-gradient(315deg, rgba(120, 84, 14, .22) 0 40%, rgba(255, 255, 255, .5) 41% 52%, transparent 53%);
+  border-radius: 0 0 14px 0;
   pointer-events: none;
+  transform-origin: 100% 100%;
+  animation: post-it-corner 7.5s ease-in-out infinite;
 }
-
-/* Canto descolado: sombra curva sob a borda inferior direita. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .listening-note--moonlight::after {
   content: "";
   position: absolute;
-  z-index: -1;
-  right: 4%;
-  bottom: 6px;
-  width: 58%;
-  height: 22px;
+  z-index: -2;
+  right: 3%;
+  bottom: 5px;
+  width: 56%;
+  height: 20px;
   background: transparent;
-  box-shadow: 8px 14px 14px rgba(8, 4, 24, .5);
+  box-shadow: 8px 13px 13px rgba(8, 4, 24, .5);
   transform: rotate(2.4deg);
   transform-origin: 100% 100%;
   pointer-events: none;
-  animation: post-it-breeze 7s ease-in-out infinite;
+  animation: post-it-breeze 7.5s ease-in-out infinite;
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .listening-note--moonlight:is(:hover, :focus-within) {
-  transform: rotate(-.6deg) translateY(-5px);
-  box-shadow:
-    0 1px 1px rgba(60, 40, 10, .22),
-    0 18px 26px -8px rgba(10, 6, 30, .6);
+  transform: rotate(-.8deg) translateY(-5px);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.listening-note--moonlight:is(:hover, :focus-within)::after {
-  transform: rotate(3.6deg);
+.listening-note--moonlight:is(:hover, :focus-within) .listening-note-paper {
+  box-shadow: 0 1px 1px rgba(60, 40, 10, .25), 0 20px 28px -10px rgba(6, 4, 24, .65);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within)::after { transform: rotate(4deg); }
+
+/* Header row / source line ---------------------------------------------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-top { color: rgba(100, 70, 30, .7); }
+
+/* Pen underline under the source, drawn once after the quote is typed. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight .listening-note-footer cite {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M1 5C14 1 22 7 36 4s22 2 36-1 28 3 47 0' fill='none' stroke='%23b3173c' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+    left 100% / 0 6px no-repeat;
+  padding-bottom: 3px;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight.is-sticking .listening-note-footer cite {
+  animation: post-it-underline 1.3s cubic-bezier(.5, .1, .3, 1) 3.1s forwards;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight:is(:hover, :focus-within) .listening-note-footer cite {
+  background-size: 100% 6px;
 }
 
-/* Brisa: o canto sobe e desce um pouco, só enquanto o bilhete está visível. */
+/* Keyframes -------------------------------------------------------------- */
+@keyframes post-it-sway {
+  0%, 100% { rotate: -.55deg; }
+  50%      { rotate: .65deg; }
+}
 @keyframes post-it-breeze {
   0%, 100% { transform: rotate(2.2deg); opacity: .9; }
-  50%      { transform: rotate(3.8deg); opacity: 1; }
+  50%      { transform: rotate(4.2deg); opacity: 1; }
+}
+@keyframes post-it-corner {
+  0%, 100% { transform: scale(.9); }
+  50%      { transform: scale(1.25) rotate(-2deg); }
+}
+@keyframes post-it-underline { to { background-size: 100% 6px; } }
+@keyframes post-it-tape-glint {
+  0%, 35% { transform: translateX(-130%); }
+  70%, 100% { transform: translateX(130%); }
 }
 
-/* Colagem: cai de cima, bate no papel e assenta. Roda uma vez. */
+/* Slap: falls from above, hits, bounces, settles. Runs once. -------------- */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .listening-note--moonlight.is-sticking {
-  animation: post-it-stick 950ms cubic-bezier(.25, .8, .35, 1) 1 both;
+  animation:
+    post-it-stick 1000ms cubic-bezier(.25, .8, .35, 1) 1 both,
+    post-it-sway 7.5s ease-in-out 1s infinite;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+.listening-note--moonlight.is-sticking .listening-note-tape::after {
+  animation: post-it-tape-glint 1.6s ease-out .75s 1 both;
 }
 @keyframes post-it-stick {
-  0%   { transform: translateY(-34px) rotate(-7deg) scale(1.06); opacity: 0;
-         box-shadow: 0 1px 1px rgba(60, 40, 10, .22), 0 36px 34px -10px rgba(10, 6, 30, .45); }
-  35%  { opacity: 1; }
-  62%  { transform: translateY(3px) rotate(.4deg) scale(.992); }
-  80%  { transform: translateY(-1px) rotate(-2.1deg) scale(1.002); }
+  0%   { transform: translateY(-40px) rotate(-8deg) scale(1.08); opacity: 0; }
+  30%  { opacity: 1; }
+  58%  { transform: translateY(4px) rotate(.5deg) scale(.99); }
+  78%  { transform: translateY(-1.5px) rotate(-2.6deg) scale(1.003); }
   100% { transform: translateY(0) rotate(var(--note-tilt)) scale(1); }
 }
 
-/* Fora da tela a brisa fica em pausa (mesma bandeira do restante do site). */
+/* Paused when the section is off screen (same flag as the rest of the site). */
+.listening-note--moonlight:not(:has(.listening-note-score[data-motion-playing='true'])),
+.listening-note--moonlight:not(:has(.listening-note-score[data-motion-playing='true']))::before,
 .listening-note--moonlight:not(:has(.listening-note-score[data-motion-playing='true']))::after {
   animation-play-state: paused;
 }
 
 @media (max-width: 560px) {
   html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .listening-note--moonlight {
-    --note-tilt: -.8deg;
-    transform: rotate(var(--note-tilt));
-  }
+  .listening-note--moonlight { --note-tilt: -1deg; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
   .listening-note--moonlight,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight::before,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
   .listening-note--moonlight::after,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .listening-note--moonlight.is-sticking {
-    animation: none;
-    transition: none;
+  .listening-note--moonlight.is-sticking,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight .listening-note-tape::after,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight .listening-note-footer cite {
+    animation: none !important;
+    transition: none !important;
   }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+  .listening-note--moonlight .listening-note-footer cite { background-size: 100% 6px; }
 }
