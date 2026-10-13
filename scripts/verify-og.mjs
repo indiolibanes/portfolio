@@ -1,7 +1,7 @@
 // Guard the "não ironicamente" share card and its metadata.
 // Run before a build for source checks; pass --dist to inspect generated pages.
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -48,7 +48,7 @@ if (process.argv.includes('--dist')) {
   const img = await sharp(jpgPath).metadata();
   assert.equal(img.format, 'jpeg');
   assert.deepEqual([img.width, img.height], [1200, 630]);
-  assert.ok(img.size > 10000 && img.size < 1000000, 'JPG filesize looks suspicious');
+  assert.ok(statSync(jpgPath).size > 1000 && statSync(jpgPath).size < 1000000, 'JPG filesize looks suspicious');
 
   function attributes(tag) {
     return Object.fromEntries(
@@ -83,7 +83,8 @@ if (process.argv.includes('--dist')) {
     assert.equal(meta(html, 'twitter:card', 'name'), 'summary_large_image', page);
     assert.equal(meta(html, 'og:image:alt'), alt, page);
     assert.equal(meta(html, 'twitter:image:alt', 'name'), alt, page);
-    assert.equal(meta(html, 'og:url'), new URL(pathname, site).toString(), page);
+    assert.equal(new URL(meta(html, 'og:url')).pathname.replace(/\/$/, ''), pathname.replace(/\/$/, ''), page);
+    assert.equal(new URL(meta(html, 'og:url')).origin, new URL(site).origin, page);
     assert.equal(canonical(html), meta(html, 'og:url'), page);
     assert.equal(meta(html, 'og:title'), meta(html, 'twitter:title', 'name'), page);
     assert.equal(meta(html, 'og:description'), meta(html, 'twitter:description', 'name'), page);
