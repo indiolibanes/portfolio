@@ -4,22 +4,31 @@
   aria-hidden="true"
 >
   <svg viewBox="0 0 40 40" role="presentation">
-    <g class="atom-orbit atom-orbit-a">
-      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
-      <circle cx="35" cy="20" r="1.7"></circle>
+    <defs>
+      <radialGradient id="atom-halo-gradient">
+        <stop offset="0" stop-color="#ff8aa0" stop-opacity=".9"></stop>
+        <stop offset=".55" stop-color="#d6304f" stop-opacity=".28"></stop>
+        <stop offset="1" stop-color="#d6304f" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+
+    <circle class="atom-halo" data-atom-halo cx="20" cy="20" r="11" fill="url(#atom-halo-gradient)" opacity=".25"></circle>
+
+    <ellipse class="atom-orbit atom-orbit--a" cx="20" cy="20" rx="16" ry="5.6" transform="rotate(0 20 20)"></ellipse>
+    <ellipse class="atom-orbit atom-orbit--b" cx="20" cy="20" rx="16" ry="5.6" transform="rotate(60 20 20)"></ellipse>
+    <ellipse class="atom-orbit atom-orbit--c" cx="20" cy="20" rx="16" ry="5.6" transform="rotate(120 20 20)"></ellipse>
+
+    <g data-atom-nucleus>
+      <circle class="atom-neutron" r="2.2" cx="18.4" cy="21.6"></circle>
+      <circle class="atom-neutron" r="2.2" cx="22.2" cy="18.2"></circle>
+      <circle class="atom-proton" r="2.3" cx="21.8" cy="22"></circle>
+      <circle class="atom-proton" r="2.3" cx="18" cy="18.4"></circle>
+      <circle class="atom-proton" r="2.3" cx="20.2" cy="20"></circle>
     </g>
 
-    <g class="atom-orbit atom-orbit-b">
-      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
-      <circle cx="35" cy="20" r="1.7"></circle>
-    </g>
-
-    <g class="atom-orbit atom-orbit-c">
-      <ellipse cx="20" cy="20" rx="15" ry="5"></ellipse>
-      <circle cx="35" cy="20" r="1.7"></circle>
-    </g>
-
-    <circle class="atom-nucleus" cx="20" cy="20" r="3.2"></circle>
+    <g data-atom-electron="0"><circle class="atom-electron-glow atom-electron-glow--a" r="3.6"></circle><circle class="atom-electron atom-electron--a" r="1.9"></circle></g>
+    <g data-atom-electron="1"><circle class="atom-electron-glow atom-electron-glow--b" r="3.6"></circle><circle class="atom-electron atom-electron--b" r="1.9"></circle></g>
+    <g data-atom-electron="2"><circle class="atom-electron-glow atom-electron-glow--c" r="3.6"></circle><circle class="atom-electron atom-electron--c" r="1.9"></circle></g>
   </svg>
 </div>
 
@@ -64,6 +73,7 @@
       }
 
       cursor.dataset.visible = 'true';
+      wake();
     };
 
     const setInteractive = (event) => {
@@ -79,6 +89,90 @@
           ? 'true'
           : 'false';
     };
+
+
+    // --- Atom: electrons travel along tilted ellipses; the spin builds up the
+    // longer the pointer keeps moving (and while over links), and winds back
+    // down when it rests. Plain rAF, so the speed can change smoothly.
+    const electrons = [...cursor.querySelectorAll('[data-atom-electron]')];
+    const nucleons = [...cursor.querySelectorAll('[data-atom-nucleus] circle')];
+    const halo = cursor.querySelector('[data-atom-halo]');
+    const orbitTilt = [0, 60, 120].map((d) => (d * Math.PI) / 180);
+    const baseSpeed = [2.1, -1.65, 2.75];          // rad/s, one per orbit
+    const phase = [0, 2.1, 4.2];
+    const home = nucleons.map((n) => [
+      Number(n.getAttribute('cx')),
+      Number(n.getAttribute('cy')),
+    ]);
+    const MAX_AGE = 22;      // seconds of continuous use to reach full speed
+    const MAX_BOOST = 6;     // top speed = 1 + MAX_BOOST times the base
+    let age = 0;
+    let idle = 99;
+    let excite = 0;
+    let clock = 0;
+    let last = 0;
+    let running = false;
+
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000 || 0);
+      last = now;
+      idle += dt;
+      const active = cursor.dataset.visible === 'true' && idle < 1.4;
+      age = active
+        ? Math.min(MAX_AGE, age + dt)
+        : Math.max(0, age - dt * 2.4);
+      let target = age / MAX_AGE;
+      if (cursor.dataset.interactive === 'true') {
+        target = Math.min(1, target + 0.35);
+      }
+      excite += (target - excite) * Math.min(1, dt * 3);
+      const speed = 1 + excite * MAX_BOOST;
+      clock += dt * speed;
+
+      electrons.forEach((el, i) => {
+        phase[i] += dt * baseSpeed[i] * speed;
+        const a = 16 * Math.cos(phase[i]);
+        const b = 5.6 * Math.sin(phase[i]);
+        const x = 20 + a * Math.cos(orbitTilt[i]) - b * Math.sin(orbitTilt[i]);
+        const y = 20 + a * Math.sin(orbitTilt[i]) + b * Math.cos(orbitTilt[i]);
+        const depth = Math.sin(phase[i]);                 // >0 near the viewer
+        const k = 0.82 + 0.22 * depth + excite * 0.1;
+        el.setAttribute(
+          'transform',
+          `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${k.toFixed(2)})`,
+        );
+        el.style.opacity = (0.72 + 0.28 * (depth * 0.5 + 0.5)).toFixed(2);
+        el.firstElementChild.style.opacity = (0.16 + excite * 0.45).toFixed(2);
+      });
+
+      const wobble = 0.25 + excite * 0.65;
+      nucleons.forEach((n, i) => {
+        const [hx, hy] = home[i];
+        n.setAttribute('cx', (hx + Math.sin(clock * 3.1 + i * 1.7) * wobble).toFixed(2));
+        n.setAttribute('cy', (hy + Math.cos(clock * 2.6 + i * 2.3) * wobble).toFixed(2));
+      });
+      halo.setAttribute('opacity', (0.22 + excite * 0.7).toFixed(2));
+      halo.style.transform = `scale(${(0.9 + excite * 0.5).toFixed(2)})`;
+
+      const resting = cursor.dataset.visible !== 'true' && excite < 0.01;
+      if (resting || document.hidden) {
+        running = false;
+        return;
+      }
+      requestAnimationFrame(tick);
+    };
+
+    const wake = () => {
+      idle = 0;
+      if (!running) {
+        running = true;
+        last = performance.now();
+        requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && cursor.dataset.visible === 'true') wake();
+    });
 
     window.addEventListener(
       'pointermove',
@@ -148,69 +242,28 @@
     overflow: visible;
   }
 
+  .atom-halo { transform-origin: 20px 20px; }
+
   .atom-orbit {
-    transform-origin:
-      20px 20px;
-
     fill: none;
-
-    stroke:
-      rgba(20, 113, 132, 0.82);
-
-    stroke-width: 1.25;
-
-    animation:
-      atom-orbit-spin
-      2.7s
-      linear
-      infinite;
-  }
-
-  .atom-orbit circle {
-    fill:
-      #177f94;
-
-    stroke: none;
-  }
-
-  .atom-orbit-b {
-    transform:
-      rotate(60deg);
-
-    animation-duration:
-      3.4s;
-
-    animation-direction:
-      reverse;
-  }
-
-  .atom-orbit-c {
-    transform:
-      rotate(120deg);
-
-    animation-duration:
-      4.1s;
-  }
-
-  .atom-nucleus {
-    fill:
-      #a3263e;
-
-    stroke:
-      rgba(255, 255, 255, 0.86);
-
     stroke-width: 1;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
   }
+  .atom-orbit--a { stroke: rgba(24, 165, 196, .42); }
+  .atom-orbit--b { stroke: rgba(224, 168, 46, .46); }
+  .atom-orbit--c { stroke: rgba(122, 104, 224, .44); }
 
-  @keyframes atom-orbit-spin {
-    from {
-      rotate: 0deg;
-    }
+  .atom-electron--a { fill: #18a5c4; }
+  .atom-electron--b { fill: #e0a82e; }
+  .atom-electron--c { fill: #7a68e0; }
+  .atom-electron-glow { fill: currentColor; opacity: .28; }
+  .atom-electron-glow--a { color: #18a5c4; }
+  .atom-electron-glow--b { color: #e0a82e; }
+  .atom-electron-glow--c { color: #7a68e0; }
 
-    to {
-      rotate: 360deg;
-    }
-  }
+  .atom-proton { fill: #d6304f; stroke: rgba(255, 255, 255, .85); stroke-width: .55; }
+  .atom-neutron { fill: #8895b3; stroke: rgba(255, 255, 255, .8); stroke-width: .55; }
 
   @media
     (pointer: fine)
