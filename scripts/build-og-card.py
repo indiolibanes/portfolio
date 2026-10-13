@@ -138,29 +138,82 @@ def finger_layer(angle=0.0):
     return L.rotate(-ang, resample=Image.BICUBIC, center=(u(PIVOT[0]), u(PIVOT[1])))
 
 # ----------------------------------------------------------------- card
+def _sparkle(d, x, y, s, c):
+    d.polygon([(x, y - s * 1.6), (x + s * .38, y - s * .38), (x + s * 1.6, y), (x + s * .38, y + s * .38),
+               (x, y + s * 1.6), (x - s * .38, y + s * .38), (x - s * 1.6, y), (x - s * .38, y - s * .38)], fill=c)
+
+CONSTELLATIONS = [      # (points, lit?) — loose Orion / Cassiopeia-like shapes; kept off the text and behind Sophia
+    [(1010, 118), (1066, 84), (1120, 136), (1098, 204), (1152, 250)],
+    [(70, 54), (132, 92), (206, 60), (268, 104), (336, 70)],
+    [(470, 530), (520, 566), (590, 548), (648, 596)],
+]
+COMET_HEAD, COMET_DIR, COMET_LEN = (482, 470), (0.86, -0.51), 470     # head, unit vector toward the tail, tail length
+
+def comet_layer(t):
+    """A discreet comet: soft blue-white tail curving back toward the upper right, hidden behind Sophia."""
+    L = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    dx, dy = COMET_DIR
+    drift = 16 * math.sin(t * 2 * math.pi) if t else 0
+    hx, hy = COMET_HEAD[0] + dx * drift, COMET_HEAD[1] + dy * drift
+    dust = Image.new('RGBA', (W, H), (0, 0, 0, 0)); dd = ImageDraw.Draw(dust)
+    core = Image.new('RGBA', (W, H), (0, 0, 0, 0)); cd = ImageDraw.Draw(core)
+    n = 90
+    for i in range(n):
+        u = i / n
+        bend = 34 * u * u                                   # the tail curves a little
+        x = hx + dx * COMET_LEN * u - dy * bend * -1
+        y = hy + dy * COMET_LEN * u + dx * bend * -1
+        r = 17 * (1 - u) ** 1.2 + 2
+        dd.ellipse([x - r, y - r, x + r, y + r], fill=(120, 150, 255, int(34 * (1 - u) ** 1.5)))
+        r2 = 5.5 * (1 - u) ** 1.1 + .6
+        cd.ellipse([x - r2, y - r2, x + r2, y + r2], fill=(205, 225, 255, int(190 * (1 - u) ** 1.7)))
+    L.alpha_composite(dust.filter(ImageFilter.GaussianBlur(9)))
+    L.alpha_composite(core.filter(ImageFilter.GaussianBlur(1.6)))
+    halo = Image.new('RGBA', (W, H), (0, 0, 0, 0)); hd = ImageDraw.Draw(halo)
+    hd.ellipse([hx - 22, hy - 22, hx + 22, hy + 22], fill=(170, 200, 255, 120))
+    L.alpha_composite(halo.filter(ImageFilter.GaussianBlur(10)))
+    ImageDraw.Draw(L).ellipse([hx - 4.2, hy - 4.2, hx + 4.2, hy + 4.2], fill=(255, 252, 240, 255))
+    return L
+
 def background(t=0.0):
     ys = np.linspace(0, 1, H)[:, None]; xs = np.linspace(0, 1, W)[None, :]
     base = np.zeros((H, W, 3), np.float32)
-    for i, (a, b) in enumerate(zip((8, 11, 36), (22, 29, 74))):
+    for i, (a, b) in enumerate(zip((6, 8, 28), (20, 26, 66))):
         base[..., i] = a + (b - a) * (0.55 * ys + 0.45 * xs)
-    glow = np.exp(-(((xs - .72) / .34) ** 2 + ((ys - .52) / .62) ** 2))
-    for i, c in enumerate((70, 52, 30)):
-        base[..., i] += glow * c
+    blob = lambda cx, cy, rx, ry: np.exp(-(((xs - cx) / rx) ** 2 + ((ys - cy) / ry) ** 2))
+    for (cx, cy, rx, ry), col in (((.72, .52, .34, .62), (70, 52, 30)),      # warm moonlight behind Sophia
+                                  ((.12, .10, .30, .30), (46, 28, 96)),      # violet nebula, top left
+                                  ((.93, .94, .28, .30), (18, 52, 120)),     # blue nebula, bottom right
+                                  ((.50, .02, .28, .16), (96, 30, 70))):     # rose wisp across the top
+        g = blob(cx, cy, rx, ry)
+        for i, c in enumerate(col): base[..., i] += g * c
+    band = np.exp(-(((ys - (1 - xs * .95) - .02) / .09) ** 2))                  # a faint Milky Way diagonal
+    for i, c in enumerate((26, 30, 46)): base[..., i] += band * c
     img = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8)).convert('RGBA')
     d = ImageDraw.Draw(img)
-    rnd = random.Random(7)
-    pts = [(rnd.randint(30, W - 30), rnd.randint(20, H - 20), rnd.random() * 6.28, rnd.choice((3, 4, 5, 7))) for _ in range(46)]
-    for x, y, ph, s in pts:
+    rnd = random.Random(11)
+    def clear(x, y):          # text column, and the area Sophia covers
+        return not ((x < 470 and 130 < y < 430) or (x < 300 and y > 540) or (x > 575 and y > 130))
+    for _ in range(260):      # star dust, denser along the Milky Way
+        x = rnd.randint(4, W - 4)
+        y = rnd.randint(4, H - 4)
+        if rnd.random() < .5:
+            y = int(min(H - 4, max(4, (1 - x / W * .95) * H + rnd.gauss(0, 46))))
+        if not clear(x, y): continue
+        r = rnd.choice((.7, .9, 1.1, 1.4))
+        a = rnd.randint(70, 190)
+        d.ellipse([x - r, y - r, x + r, y + r], fill=(235, 235, 255, a))
+    for _ in range(64):       # twinkling sparkles
+        x, y, ph, sz = rnd.randint(30, W - 30), rnd.randint(20, H - 20), rnd.random() * 6.28, rnd.choice((3, 4, 5, 7))
         tw = .45 + .55 * (.5 + .5 * math.sin(ph + t * 6.283))
-        if (x < 620 and y < 420) or (x < 330 and y > 520) or (x > 560 and y > 120):   # keep text and Sophia clear
-            continue
-        c = (255, 214, 140, int(190 * tw))
-        d.polygon([(x, y - s * 1.6), (x + s * .38, y - s * .38), (x + s * 1.6, y), (x + s * .38, y + s * .38),
-                   (x, y + s * 1.6), (x - s * .38, y + s * .38), (x - s * 1.6, y), (x - s * .38, y - s * .38)], fill=c)
-    # a constellation like the one on her tail
-    cons = [(1010, 120), (1068, 84), (1120, 138), (1100, 206), (1150, 250)]
-    d.line(cons, fill=(255, 214, 140, 70), width=1)
-    for x, y in cons: d.ellipse([x - 3, y - 3, x + 3, y + 3], fill=(255, 214, 140, 210))
+        if clear(x, y): _sparkle(d, x, y, sz, (255, 214, 140, int(190 * tw)))
+    img.alpha_composite(comet_layer(t))
+    d = ImageDraw.Draw(img)
+    for pts in CONSTELLATIONS:
+        d.line(pts, fill=(255, 214, 140, 62), width=1)
+        for x, y in pts:
+            d.ellipse([x - 3, y - 3, x + 3, y + 3], fill=(255, 214, 140, 215))
+            d.ellipse([x - 7, y - 7, x + 7, y + 7], outline=(255, 214, 140, 60), width=1)
     return img
 
 def text_layer():
@@ -169,7 +222,7 @@ def text_layer():
     d.text((60, 150), 'Kauê Alencar', font=font('/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf', 58), fill=(255, 247, 232, 255))
     d.line([(62, 238), (150, 238)], fill=(255, 214, 140, 200), width=2)
     sub = font(INTER.format('Regular'), 28)
-    for i, line in enumerate(('Escrita', 'Documentação', 'Informação')):
+    for i, line in enumerate(('Technical Writing', 'Gestão da Informação', 'Storytelling')):
         y = 270 + i * 48
         d.polygon([(66, y + 17), (73, y + 10), (80, y + 17), (73, y + 24)], fill=(255, 214, 140, 255))
         d.text((96, y), line, font=sub, fill=(222, 228, 247, 255))

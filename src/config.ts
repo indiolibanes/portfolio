@@ -3,8 +3,8 @@ export const SITE = {
   description:
     'Portfólio pessoal de Kauê Alencar: documentação, organização da informação, escrita e publicação digital.',
   url: 'https://kaue.pages.dev',
-  ogImage: '/og-portfolio.jpg?v=20261013',
-  ogImageAlt: 'Sophia, raposa cósmica, de óculos redondos com reflexos brancos e pata erguida junto ao rosto, em close; cartão azul-noite estrelado com Kauê Alencar, Escrita, Documentação e Informação.',
+  ogImage: '/og-portfolio.jpg?v=20261013b',
+  ogImageAlt: 'Sophia, raposa cósmica, de óculos redondos com reflexos brancos e pata erguida junto ao rosto, em close, sobre um céu estrelado com constelações e um pequeno cometa; Kauê Alencar — Technical Writing, Gestão da Informação e Storytelling.',
 };
 
 export const PROFILE = {
