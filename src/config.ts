@@ -3,7 +3,7 @@ export const SITE = {
   description:
     'Portfólio pessoal de Kauê Alencar: documentação, organização da informação, escrita e publicação digital.',
   url: 'https://kaue.pages.dev',
-  ogImage: '/og-portfolio.jpg',
+  ogImage: '/og-portfolio.jpg?v=20261012',
 };
 
 export const PROFILE = {

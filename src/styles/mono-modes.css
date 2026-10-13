@@ -90,7 +90,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(
   .ambient, .cosmic-starfield, .random-easter-layer, .atom-cursor,
   .sophia-animation, .pixel-mushroom, .closing-emil-triforce, .triforce-system,
   .github-gif-strip, .triforce-stage, .tape, .gold-block, .mario-name-tiles,
-  .phrolova-underlay, .shorekeeper-underlay, [class*='baton-ribbon']
+  .phrolova-underlay, .shorekeeper-underlay, .baton-fall-petal
 ) {
   display: none !important;
 }

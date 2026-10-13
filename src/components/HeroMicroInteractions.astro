@@ -1,24 +1,22 @@
 ---
 import crimsonBatonSvgSource from '../../assets/phrolova/crimson-baton-vector-draft.svg?raw';
 
-// Motion-only layer: crimson ribbons that unfurl while the baton comes apart
-// and retract as it re-forms. Invisible at rest, so the approved static
-// geometry of the SVG is untouched. Coordinates use the SVG's 448 x 448 space.
-const batonRibbons = `
-  <g id="baton-ribbons" aria-hidden="true">
-    <defs>
-      <mask id="baton-ribbon-reveal-1" maskUnits="userSpaceOnUse" x="0" y="0" width="448" height="448"><path class="baton-ribbon-reveal baton-ribbon-reveal--1" pathLength="100" d="M214 158C246 128 284 140 306 114S352 66 392 78" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" /></mask>
-      <mask id="baton-ribbon-reveal-2" maskUnits="userSpaceOnUse" x="0" y="0" width="448" height="448"><path class="baton-ribbon-reveal baton-ribbon-reveal--2" pathLength="100" d="M204 166C168 140 132 158 108 132S70 86 34 104" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" /></mask>
-      <mask id="baton-ribbon-reveal-3" maskUnits="userSpaceOnUse" x="0" y="0" width="448" height="448"><path class="baton-ribbon-reveal baton-ribbon-reveal--3" pathLength="100" d="M218 176C246 206 290 210 316 246S352 302 396 296" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" /></mask>
-      <mask id="baton-ribbon-reveal-4" maskUnits="userSpaceOnUse" x="0" y="0" width="448" height="448"><path class="baton-ribbon-reveal baton-ribbon-reveal--4" pathLength="100" d="M202 182C184 220 146 236 128 276S96 326 58 322" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" /></mask>
-    </defs>
-    <g class="baton-ribbon baton-ribbon--1" mask="url(#baton-ribbon-reveal-1)"><path d="M214.0 158.0 L219.6 156.3 L224.9 154.8 L229.4 153.1 L233.0 150.1 L236.7 147.3 L240.4 144.6 L244.2 142.0 L248.6 141.1 L253.1 140.8 L257.5 140.6 L261.9 140.3 L266.2 140.0 L270.5 139.6 L274.7 139.0 L279.0 138.1 L283.1 137.0 L287.2 135.5 L291.2 133.6 L295.0 131.4 L298.5 128.7 L301.8 125.6 L304.8 122.1 L307.5 118.3 L309.7 114.3 L311.7 110.4 L314.8 107.5 L318.4 105.1 L322.0 102.7 L325.5 100.5 L328.9 98.4 L332.3 96.3 L335.6 94.4 L338.8 92.5 L341.9 90.6 L344.9 88.8 L348.0 87.0 L351.1 85.2 L354.3 83.5 L357.5 81.9 L361.0 80.4 L364.7 78.9 L368.6 77.4 L372.8 76.1 L377.3 76.2 L381.9 76.8 L386.8 77.4 L392.0 78.0 L392.0 78.0 L387.2 75.9 L382.3 74.5 L377.6 73.8 L372.9 73.2 L368.4 72.0 L363.8 71.0 L359.3 70.7 L354.8 70.9 L350.3 71.4 L346.0 72.4 L341.8 73.9 L337.8 75.7 L334.0 77.8 L330.4 80.4 L327.1 83.2 L324.0 86.3 L321.1 89.6 L318.4 93.0 L315.9 96.7 L313.6 100.4 L311.4 104.3 L308.8 107.8 L305.2 110.4 L301.7 112.9 L298.4 114.9 L295.1 116.6 L291.8 118.0 L288.6 119.3 L285.3 120.4 L281.9 121.6 L278.4 122.8 L274.8 124.0 L271.1 125.4 L267.3 126.8 L263.4 128.5 L259.4 130.2 L255.3 132.1 L251.2 134.2 L247.2 136.5 L243.0 138.5 L238.2 139.2 L233.4 140.3 L228.5 141.7 L223.6 143.7 L219.7 147.6 L216.6 152.5 L214.0 158.0Z" fill="#b3173c" /><path d="M214.0 158.0 L218.6 155.0 L223.1 152.4 L227.4 149.9 L231.5 147.3 L235.6 144.9 L239.7 142.8 L243.8 140.8 L248.1 139.5 L252.5 138.6 L256.8 137.7 L261.0 136.9 L265.2 136.1 L269.4 135.3 L273.5 134.4 L277.6 133.3 L281.5 132.2 L285.4 130.8 L289.1 129.2 L292.8 127.3 L296.3 125.1 L299.5 122.5 L302.6 119.7 L305.5 116.5 L308.1 113.0 L310.7 109.5 L313.7 106.4 L316.8 103.5 L319.9 100.7 L323.1 98.0 L326.3 95.4 L329.5 92.9 L332.7 90.6 L335.9 88.3 L339.2 86.3 L342.5 84.3 L345.9 82.5 L349.4 80.9 L352.9 79.4 L356.6 78.1 L360.4 77.1 L364.4 76.2 L368.5 75.5 L372.9 75.1 L377.4 75.4 L382.1 76.0 L386.9 76.9 L392.0 78.0 L392.0 78.0 L387.0 76.4 L382.2 75.3 L377.5 74.6 L372.9 74.2 L368.5 73.8 L364.1 73.7 L359.9 74.0 L355.7 74.6 L351.7 75.6 L347.7 76.8 L343.9 78.3 L340.2 80.1 L336.7 82.2 L333.3 84.5 L330.0 87.0 L326.8 89.7 L323.8 92.6 L320.8 95.6 L318.0 98.7 L315.2 102.0 L312.5 105.4 L309.8 108.7 L306.7 111.7 L303.7 114.8 L300.6 117.4 L297.4 119.7 L294.1 121.6 L290.7 123.4 L287.3 124.9 L283.7 126.3 L280.0 127.6 L276.2 128.8 L272.3 130.0 L268.4 131.2 L264.3 132.4 L260.2 133.7 L256.1 135.0 L251.9 136.5 L247.7 138.1 L243.4 139.7 L239.0 141.0 L234.5 142.7 L230.0 144.6 L225.6 146.9 L221.5 150.0 L217.6 153.8 L214.0 158.0Z" fill="#ff8d9c" opacity=".45" /></g>
-    <g class="baton-ribbon baton-ribbon--2" mask="url(#baton-ribbon-reveal-2)"><path d="M204.0 166.0 L200.0 162.0 L195.6 158.8 L190.9 156.6 L186.4 154.2 L182.0 151.9 L177.5 149.9 L173.0 148.1 L168.5 146.6 L164.1 145.4 L159.7 144.3 L155.4 143.4 L151.2 142.6 L147.1 141.9 L143.2 141.3 L139.3 140.8 L135.6 140.2 L132.0 139.6 L128.5 138.9 L125.1 138.0 L121.7 137.0 L118.3 135.6 L114.8 133.9 L111.4 131.8 L107.8 129.1 L104.8 125.9 L102.5 122.3 L100.2 118.7 L97.9 115.3 L95.6 112.0 L93.2 108.8 L90.8 105.9 L88.2 103.1 L85.4 100.5 L82.5 98.3 L79.4 96.2 L76.1 94.6 L72.7 93.3 L69.1 92.4 L65.3 91.9 L61.5 91.9 L57.7 92.3 L53.9 93.7 L50.1 95.5 L46.4 97.4 L42.5 99.5 L38.4 101.7 L34.0 104.0 L34.0 104.0 L38.6 102.1 L43.0 100.9 L47.2 100.4 L51.1 100.4 L54.7 101.1 L57.9 101.9 L60.8 102.5 L63.4 103.2 L65.9 104.1 L68.3 105.1 L70.6 106.3 L73.0 107.5 L75.4 108.9 L77.9 110.5 L80.6 112.2 L83.3 114.1 L86.2 116.1 L89.2 118.3 L92.3 120.6 L95.5 123.1 L98.8 125.6 L102.2 128.3 L105.1 131.6 L107.7 135.4 L110.7 139.0 L113.8 142.2 L117.3 145.0 L121.0 147.4 L124.8 149.4 L128.8 151.1 L132.9 152.4 L137.0 153.4 L141.2 154.2 L145.4 154.8 L149.7 155.1 L153.9 155.4 L158.2 155.6 L162.5 155.7 L166.9 155.9 L171.3 156.2 L175.7 156.6 L180.3 157.2 L185.0 158.0 L189.6 159.5 L194.0 161.7 L198.8 163.8 L204.0 166.0Z" fill="#8f1030" /><path d="M204.0 166.0 L199.6 162.6 L195.1 159.8 L190.4 157.5 L185.9 155.5 L181.4 153.7 L176.9 152.2 L172.4 150.9 L168.0 149.8 L163.6 148.9 L159.2 148.1 L154.9 147.5 L150.7 146.9 L146.6 146.3 L142.5 145.7 L138.6 145.1 L134.7 144.4 L130.9 143.5 L127.3 142.5 L123.7 141.2 L120.2 139.7 L116.8 137.9 L113.4 135.6 L110.1 133.0 L106.9 129.9 L103.9 126.7 L101.2 123.4 L98.6 120.2 L96.0 117.1 L93.4 114.1 L90.8 111.3 L88.2 108.7 L85.6 106.2 L82.9 103.9 L80.1 101.9 L77.2 100.1 L74.3 98.5 L71.2 97.3 L68.0 96.4 L64.7 95.8 L61.3 95.5 L57.8 95.6 L54.2 96.2 L50.5 97.2 L46.6 98.4 L42.7 100.0 L38.4 101.8 L34.0 104.0 L34.0 104.0 L38.5 102.0 L42.8 100.4 L46.9 99.4 L50.8 98.7 L54.4 98.5 L57.8 98.6 L61.0 98.9 L64.1 99.4 L67.0 100.1 L69.8 101.1 L72.5 102.3 L75.2 103.7 L77.8 105.3 L80.5 107.1 L83.2 109.1 L85.8 111.3 L88.6 113.6 L91.4 116.2 L94.2 118.8 L97.1 121.6 L100.1 124.5 L103.1 127.5 L106.0 130.7 L109.0 134.2 L112.1 137.3 L115.3 140.0 L118.8 142.3 L122.4 144.2 L126.1 145.8 L129.9 147.2 L133.8 148.3 L137.8 149.1 L141.9 149.8 L146.0 150.4 L150.2 150.9 L154.4 151.3 L158.7 151.7 L163.1 152.2 L167.4 152.8 L171.9 153.4 L176.3 154.3 L180.9 155.4 L185.4 156.7 L190.0 158.5 L194.6 160.7 L199.2 163.2 L204.0 166.0Z" fill="#ff8d9c" opacity=".45" /></g>
-    <g class="baton-ribbon baton-ribbon--3" mask="url(#baton-ribbon-reveal-3)"><path d="M218.0 176.0 L220.8 180.6 L223.6 185.3 L226.6 190.0 L230.6 193.6 L234.7 196.8 L239.0 199.8 L243.4 202.6 L247.9 205.2 L252.5 207.5 L257.2 209.7 L261.9 211.8 L266.6 213.8 L271.3 215.7 L276.0 217.6 L280.7 219.5 L285.4 221.6 L290.0 223.7 L294.3 226.5 L297.8 230.2 L301.2 234.1 L304.5 238.1 L307.5 242.3 L310.5 246.7 L313.3 251.4 L316.2 256.0 L319.0 260.3 L321.9 264.5 L324.7 268.4 L327.6 272.1 L330.6 275.5 L333.6 278.6 L336.8 281.5 L340.0 284.1 L343.3 286.5 L346.7 288.5 L350.2 290.2 L353.7 291.6 L356.8 293.7 L359.9 295.9 L363.4 297.9 L367.3 299.6 L371.5 300.4 L376.0 300.4 L380.7 300.0 L385.6 299.0 L390.7 297.7 L396.0 296.0 L396.0 296.0 L390.5 295.6 L385.4 294.9 L380.7 294.1 L376.5 293.3 L372.6 292.4 L369.0 291.8 L365.4 291.5 L361.9 291.0 L358.4 290.3 L355.2 289.0 L352.7 286.5 L350.4 283.9 L348.2 281.1 L346.0 278.2 L343.8 275.1 L341.6 271.9 L339.3 268.5 L336.9 265.0 L334.3 261.3 L331.6 257.5 L328.6 253.5 L325.4 249.4 L322.0 245.2 L318.2 240.8 L314.1 236.6 L309.8 232.9 L305.4 229.6 L300.8 226.6 L296.2 224.0 L292.0 220.8 L288.1 217.3 L284.0 214.0 L279.8 210.8 L275.5 207.8 L271.2 204.9 L266.8 202.2 L262.4 199.6 L258.1 197.1 L253.7 194.6 L249.3 192.2 L245.0 189.9 L240.7 187.5 L236.5 185.1 L232.3 182.6 L227.4 180.9 L222.5 178.8 L218.0 176.0Z" fill="#d42a4b" /><path d="M218.0 176.0 L221.4 180.0 L224.9 183.8 L228.5 187.5 L232.6 190.7 L236.8 193.7 L241.1 196.4 L245.4 199.1 L249.9 201.6 L254.4 204.0 L259.0 206.3 L263.6 208.5 L268.1 210.8 L272.7 213.0 L277.3 215.3 L281.8 217.6 L286.3 220.1 L290.7 222.7 L294.9 225.6 L298.8 229.0 L302.6 232.6 L306.3 236.4 L309.8 240.4 L313.1 244.7 L316.3 249.3 L319.3 253.7 L322.3 258.0 L325.2 262.1 L328.0 266.0 L330.8 269.7 L333.6 273.1 L336.3 276.3 L339.2 279.3 L342.0 282.1 L344.9 284.6 L347.9 286.9 L351.0 288.9 L354.2 290.7 L357.3 292.6 L360.6 294.3 L364.1 295.7 L367.8 296.9 L371.9 297.7 L376.2 298.0 L380.7 298.0 L385.5 297.6 L390.6 297.0 L396.0 296.0 L396.0 296.0 L390.5 296.3 L385.4 296.3 L380.7 296.1 L376.3 295.7 L372.2 295.1 L368.4 294.4 L364.7 293.7 L361.2 292.7 L357.9 291.5 L354.7 289.9 L351.8 287.8 L349.1 285.5 L346.5 282.9 L344.0 280.2 L341.4 277.3 L338.9 274.2 L336.4 270.9 L333.8 267.4 L331.1 263.7 L328.3 259.9 L325.3 255.8 L322.3 251.6 L319.0 247.3 L315.6 242.8 L311.9 238.6 L308.0 234.7 L304.0 231.1 L299.8 227.9 L295.5 224.8 L291.3 221.8 L287.1 218.7 L282.9 215.9 L278.5 213.1 L274.1 210.5 L269.6 207.9 L265.1 205.4 L260.7 203.0 L256.2 200.6 L251.7 198.2 L247.3 195.8 L243.0 193.3 L238.7 190.7 L234.5 188.0 L230.3 185.2 L226.1 182.4 L221.9 179.4 L218.0 176.0Z" fill="#ff8d9c" opacity=".45" /></g>
-    <g class="baton-ribbon baton-ribbon--4" mask="url(#baton-ribbon-reveal-4)"><path d="M202.0 182.0 L198.1 185.9 L194.4 189.7 L191.1 193.5 L188.7 197.8 L186.2 202.1 L183.5 206.3 L180.6 210.4 L176.9 213.7 L173.0 216.8 L169.0 219.9 L165.1 223.0 L161.2 226.1 L157.2 229.3 L153.4 232.7 L149.6 236.1 L145.8 239.7 L142.2 243.5 L138.8 247.5 L135.4 251.8 L132.3 256.2 L129.4 261.0 L126.8 265.9 L124.4 271.2 L122.4 276.5 L120.6 281.3 L118.8 285.9 L117.1 290.3 L115.4 294.3 L113.8 298.1 L112.0 301.7 L109.8 304.6 L107.1 306.9 L104.3 308.8 L101.6 310.4 L98.9 311.8 L96.2 312.9 L93.5 313.9 L90.8 314.6 L88.0 315.3 L85.1 315.8 L82.0 316.2 L78.8 317.2 L75.3 318.5 L71.5 319.7 L67.3 320.7 L62.8 321.5 L58.0 322.0 L58.0 322.0 L62.6 323.4 L67.1 324.7 L71.4 325.9 L75.6 327.0 L79.8 327.8 L83.8 327.9 L87.6 327.1 L91.1 325.9 L94.5 324.4 L97.7 322.7 L100.7 320.6 L103.4 318.3 L105.9 315.7 L108.2 312.9 L110.3 309.9 L112.3 306.7 L114.7 303.6 L117.6 300.6 L120.4 297.3 L123.2 293.6 L125.9 289.6 L128.6 285.3 L131.3 280.6 L133.9 275.8 L136.6 271.3 L139.3 267.0 L142.2 262.9 L145.1 258.9 L148.1 255.0 L151.1 251.2 L154.2 247.4 L157.4 243.6 L160.6 239.8 L163.8 236.0 L167.0 232.1 L170.3 228.2 L173.4 224.3 L176.6 220.3 L179.6 216.3 L182.6 212.2 L186.5 208.9 L190.2 205.3 L193.8 201.6 L197.3 197.7 L199.6 192.8 L201.1 187.5 L202.0 182.0Z" fill="#a01536" /><path d="M202.0 182.0 L199.1 186.5 L196.2 190.8 L193.2 194.9 L190.5 199.1 L187.5 203.2 L184.5 207.2 L181.3 211.0 L177.8 214.6 L174.2 218.0 L170.5 221.4 L166.9 224.8 L163.2 228.2 L159.5 231.6 L155.8 235.1 L152.2 238.6 L148.7 242.3 L145.3 246.1 L141.9 250.1 L138.7 254.2 L135.7 258.5 L132.8 263.0 L130.1 267.8 L127.7 272.7 L125.4 277.9 L123.3 282.7 L121.2 287.2 L119.2 291.4 L117.1 295.3 L115.0 299.0 L113.0 302.3 L110.7 305.3 L108.2 307.9 L105.7 310.2 L103.1 312.2 L100.4 314.0 L97.7 315.5 L95.0 316.9 L92.1 318.0 L89.1 318.9 L85.9 319.6 L82.6 320.2 L79.1 320.8 L75.4 321.4 L71.4 321.8 L67.2 322.1 L62.7 322.1 L58.0 322.0 L58.0 322.0 L62.7 322.7 L67.2 323.4 L71.4 323.8 L75.5 324.1 L79.4 324.2 L83.2 323.9 L86.7 323.2 L90.1 322.3 L93.3 321.1 L96.3 319.7 L99.2 318.0 L101.9 316.1 L104.5 313.9 L106.9 311.5 L109.2 308.9 L111.5 306.0 L113.8 303.0 L116.3 299.8 L118.7 296.3 L121.1 292.5 L123.5 288.4 L125.9 283.9 L128.3 279.2 L130.7 274.2 L133.2 269.5 L136.0 265.0 L138.8 260.6 L141.8 256.5 L144.9 252.5 L148.1 248.6 L151.4 244.8 L154.7 241.0 L158.1 237.4 L161.6 233.7 L165.0 230.1 L168.5 226.5 L171.9 222.8 L175.3 219.1 L178.7 215.4 L182.0 211.6 L185.4 208.0 L188.8 204.2 L192.1 200.3 L195.2 196.2 L197.8 191.8 L200.1 187.0 L202.0 182.0Z" fill="#ff8d9c" opacity=".45" /></g>
-    <path class="baton-ribbon-bow" pathLength="100" fill="none" stroke="#e0405a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M210 206C190 186 166 192 172 210C178 228 202 216 210 206C222 188 248 190 244 208C240 226 216 218 210 206" />
+// Motion-only layer: loose petals that drift down while the baton slowly comes
+// apart, then fade as it re-forms. Invisible at rest, so the approved static
+// geometry of the SVG is untouched. Coordinates use the SVG's 448 x 448 space
+// (flower crown near 214,158).
+const fall = [
+  [206,150,-34,150,-70,7.6,.00],[222,146,26,168,52,6.8,.07],[212,160,-12,190,-95,8.2,.13],
+  [230,156,46,142,80,7.2,.19],[200,162,-52,160,-60,6.6,.25],[218,152,8,210,110,8.6,.31],
+  [208,158,-28,176,40,7.0,.37],[226,162,34,196,-84,7.8,.43],[214,148,-4,160,66,6.4,.49],
+  [202,154,-44,200,-40,8.0,.55],[232,150,56,178,92,6.9,.61],[216,164,16,226,-72,8.4,.67],
+];
+const petalPath = 'M8 68C1 42 7 14 31 3C26 21 22 46 14 68C12 70 9 70 8 68Z';
+const batonPetals = `
+  <g id="baton-fall" aria-hidden="true">
+    ${fall.map(([x,y,dx,dy,rot,size,d],i)=>`<g class="baton-fall-petal" style="--fx:${dx}px;--fy:${dy}px;--fr:${rot}deg;--fd:${d};--fs:${(size*2.6/68).toFixed(3)}" transform="translate(${x} ${y})"><path d="${petalPath}" transform="scale(${(size*2.6/68).toFixed(3)}) translate(-14 -34) rotate(${(i*47)%360} 14 34)" fill="${i%3===0?'#e0405a':i%3===1?'#b3173c':'#ff8d9c'}" /></g>`).join('')}
   </g>`;
-const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}\n</svg>`);
+const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonPetals}</svg>`);
 ---
 
 <!--
@@ -361,82 +359,64 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
 
   @keyframes
   shorekeeper-wing-left {
-    0%,
-    15%,
-    92%,
-    100% {
-      transform:
-        rotateY(0deg)
-        rotateZ(0deg);
-    }
-
-    18%,
-    26%,
-    34%,
-    42%,
-    50%,
-    58%,
-    66%,
-    74%,
-    82% {
-      transform:
-        rotateY(38deg)
-        rotateZ(-1.2deg);
-    }
-
-    22%,
-    30%,
-    38%,
-    46%,
-    54%,
-    62%,
-    70%,
-    78%,
-    86% {
-      transform:
-        rotateY(-6deg)
-        rotateZ(.55deg);
-    }
+    0%, 14%, 93%, 100% { transform: rotateY(0deg) rotateZ(0deg) scaleX(1); }
+    17.0% { transform: rotateY(25deg) rotateZ(-0.77deg) scaleX(0.91); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    19.4% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    22.6% { transform: rotateY(32deg) rotateZ(-0.98deg) scaleX(0.89); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    25.0% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    28.2% { transform: rotateY(39deg) rotateZ(-1.19deg) scaleX(0.86); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    30.6% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    33.8% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    36.2% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    39.4% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    41.8% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    45.0% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    47.4% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    50.6% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    53.0% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    56.2% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    58.6% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    61.8% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    64.2% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    67.4% { transform: rotateY(46deg) rotateZ(-1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    69.8% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    73.0% { transform: rotateY(39deg) rotateZ(-1.19deg) scaleX(0.86); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    75.4% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    78.6% { transform: rotateY(32deg) rotateZ(-0.98deg) scaleX(0.89); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    81.0% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    84.2% { transform: rotateY(25deg) rotateZ(-0.77deg) scaleX(0.91); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    86.6% { transform: rotateY(-7deg) rotateZ(0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
   }
 
   @keyframes
   shorekeeper-wing-right {
-    0%,
-    15%,
-    92%,
-    100% {
-      transform:
-        rotateY(0deg)
-        rotateZ(0deg);
-    }
-
-    18%,
-    26%,
-    34%,
-    42%,
-    50%,
-    58%,
-    66%,
-    74%,
-    82% {
-      transform:
-        rotateY(-38deg)
-        rotateZ(1.2deg);
-    }
-
-    22%,
-    30%,
-    38%,
-    46%,
-    54%,
-    62%,
-    70%,
-    78%,
-    86% {
-      transform:
-        rotateY(6deg)
-        rotateZ(-.55deg);
-    }
+    0%, 14%, 93%, 100% { transform: rotateY(0deg) rotateZ(0deg) scaleX(1); }
+    17.0% { transform: rotateY(-25deg) rotateZ(0.77deg) scaleX(0.91); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    19.4% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    22.6% { transform: rotateY(-32deg) rotateZ(0.98deg) scaleX(0.89); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    25.0% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    28.2% { transform: rotateY(-39deg) rotateZ(1.19deg) scaleX(0.86); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    30.6% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    33.8% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    36.2% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    39.4% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    41.8% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    45.0% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    47.4% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    50.6% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    53.0% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    56.2% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    58.6% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    61.8% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    64.2% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    67.4% { transform: rotateY(-46deg) rotateZ(1.40deg) scaleX(0.84); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    69.8% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    73.0% { transform: rotateY(-39deg) rotateZ(1.19deg) scaleX(0.86); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    75.4% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    78.6% { transform: rotateY(-32deg) rotateZ(0.98deg) scaleX(0.89); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    81.0% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
+    84.2% { transform: rotateY(-25deg) rotateZ(0.77deg) scaleX(0.91); animation-timing-function: cubic-bezier(.5,0,.75,.4); }
+    86.6% { transform: rotateY(7deg) rotateZ(-0.70deg) scaleX(1.03); animation-timing-function: cubic-bezier(.3,.2,.5,1); }
   }
 
   @keyframes
@@ -520,7 +500,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
 
     animation:
       crimson-petal-unravel
-      10.8s
+      14s
       cubic-bezier(
         .36,
         0,
@@ -588,7 +568,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
   #petals-back
   > [id^='petal-'] {
     animation-duration:
-      11.15s;
+      14.4s;
 
     filter:
       saturate(.94);
@@ -747,62 +727,36 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
     }
   }
 
-  /* Ribbons: twisted crimson bands revealed from the crown while the petals
-     let go (34-60 %), held while the baton is undone, then drawn back as it
-     re-forms (70-88 %). The reveal is a stroke-dash mask over each band. */
-  #sobre .about-baton-vector .baton-ribbon {
+  /* Loose petals: they leave the crown while the baton slowly comes apart
+     (38-72 %), sway down and fade, and are gone before it re-forms. */
+  #sobre .about-baton-vector .baton-fall-petal {
     opacity: 0;
-    filter: drop-shadow(0 2px 3px rgba(74, 8, 28, .25));
-    animation: crimson-ribbon-fade 10.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: crimson-petal-fall 14s cubic-bezier(.3, .1, .4, 1) infinite;
+    animation-delay: calc(var(--fd) * 1.4s);
+    will-change: transform, opacity;
   }
-  #sobre .about-baton-vector .baton-ribbon-reveal {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    animation: crimson-ribbon-unfurl 10.8s cubic-bezier(.45, .05, .3, 1) infinite;
-  }
-  #sobre .about-baton-vector :is(.baton-ribbon--2, .baton-ribbon-reveal--2) { animation-delay: .18s; }
-  #sobre .about-baton-vector :is(.baton-ribbon--3, .baton-ribbon-reveal--3) { animation-delay: .32s; }
-  #sobre .about-baton-vector :is(.baton-ribbon--4, .baton-ribbon-reveal--4) { animation-delay: .46s; }
-  #sobre .about-baton-vector .baton-ribbon-bow {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    opacity: 0;
-    animation: crimson-bow-tie 10.8s ease-in-out infinite;
+
+  @keyframes crimson-petal-fall {
+    0%, 36% { opacity: 0; translate: 0 0; rotate: 0deg; }
+    42% { opacity: .95; }
+    55% { translate: calc(var(--fx) * .4) calc(var(--fy) * .3); rotate: calc(var(--fr) * .3); opacity: 1; }
+    70% { translate: calc(var(--fx) * -.1) calc(var(--fy) * .66); rotate: calc(var(--fr) * .7); opacity: .85; }
+    84% { translate: calc(var(--fx) * .7) var(--fy); rotate: var(--fr); opacity: 0; }
+    100% { opacity: 0; translate: 0 0; rotate: 0deg; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #sobre .about-baton-vector #baton-ribbons { display: none; }
+    #sobre .about-baton-vector #baton-fall { display: none; }
   }
-
-  @keyframes crimson-ribbon-unfurl {
-    0%, 32% { stroke-dashoffset: 100; }
-    57%, 68% { stroke-dashoffset: 0; }
-    88%, 100% { stroke-dashoffset: -100; }
-  }
-
-  @keyframes crimson-ribbon-fade {
-    0%, 32% { opacity: 0; transform: translate(0, 0); }
-    37% { opacity: .96; }
-    57% { opacity: 1; transform: translate(0, -3px); }
-    70% { opacity: .95; transform: translate(0, 2px); }
-    86% { opacity: .3; transform: translate(0, 0); }
-    90%, 100% { opacity: 0; transform: translate(0, 0); }
-  }
-
-  @keyframes crimson-bow-tie {
-    0%, 40% { stroke-dashoffset: 100; opacity: 0; }
-    54% { stroke-dashoffset: 0; opacity: 1; }
-    72% { stroke-dashoffset: 0; opacity: .9; }
-    84%, 100% { stroke-dashoffset: 100; opacity: 0; }
-  }
-
 
   #sobre
   .about-baton-vector
   #staff {
     animation:
       crimson-staff-dissolve
-      10.8s
+      14s
       ease-in-out
       infinite;
   }
@@ -812,7 +766,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
   #junction {
     animation:
       crimson-junction-dissolve
-      10.8s
+      14s
       ease-in-out
       infinite;
   }
@@ -822,7 +776,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
   #stamens {
     animation:
       crimson-stamen-release
-      10.8s
+      14s
       ease-in-out
       infinite;
   }
@@ -832,7 +786,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
   #ornaments {
     animation:
       crimson-music-breathe
-      10.8s
+      14s
       ease-in-out
       infinite;
   }
@@ -1053,9 +1007,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
     #junction,
     #stamens,
     #ornaments,
-    .baton-ribbon,
-    .baton-ribbon-reveal,
-    .baton-ribbon-bow
+    .baton-fall-petal
   ) {
     animation-play-state:
       paused !important;
@@ -1081,8 +1033,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonRibbons}
       #staff,
       #junction,
       #stamens,
-      #ornaments,
-      .baton-ribbon
+      #ornaments
     ) {
       animation:
         none !important;

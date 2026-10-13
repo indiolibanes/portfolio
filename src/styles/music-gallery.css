@@ -432,12 +432,28 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform-origin: 50% 68%;
-  animation: music-original-butterfly-wings 160ms ease-in-out infinite alternate;
+  /* O eixo das asas é a base do corpo: elas sobem e descem a partir dali. */
+  transform-origin: 52% 86%;
+  animation: music-butterfly-wing-beat var(--fx-beat, 940ms) linear infinite;
 }
-@keyframes music-original-butterfly-wings {
-  from { transform: perspective(180px) rotateY(-26deg) scaleX(.78) translateY(2px); }
-  to { transform: perspective(180px) rotateY(20deg) scaleX(1.02) translateY(-2px); }
+/* Bater de asas em rajada: três batidas (abre, sobe, desce rápido, reabre) e
+   um planeio com as asas semiabertas. A descida é mais rápida que a subida e o
+   leve cisalhamento alterna a cada batida, como uma borboleta real; o
+   deslocamento do voo continua em music-butterfly-path, intocado. */
+@keyframes music-butterfly-wing-beat {
+  0% { transform: perspective(170px) rotateX(2deg) skewX(2.5deg) scale(1,1); }
+  8% { transform: perspective(170px) rotateX(13deg) skewX(-2.5deg) scale(1.03,1.06) translateY(-3px); }
+  16.5% { transform: perspective(170px) rotateX(-36deg) skewX(2.5deg) scale(.97,.66) translateY(4px); }
+  22% { transform: perspective(170px) rotateX(2deg) skewX(-2.5deg) scale(1,1); }
+  30% { transform: perspective(170px) rotateX(13deg) skewX(2.5deg) scale(1.03,1.06) translateY(-3px); }
+  38.5% { transform: perspective(170px) rotateX(-36deg) skewX(-2.5deg) scale(.97,.66) translateY(4px); }
+  44% { transform: perspective(170px) rotateX(2deg) skewX(2.5deg) scale(1,1); }
+  52% { transform: perspective(170px) rotateX(13deg) skewX(-2.5deg) scale(1.03,1.06) translateY(-3px); }
+  60.5% { transform: perspective(170px) rotateX(-36deg) skewX(2.5deg) scale(.97,.66) translateY(4px); }
+  66% { transform: perspective(170px) rotateX(2deg) skewX(0deg) scale(1,1); }
+  78% { transform: perspective(170px) rotateX(6deg) skewX(0deg) scale(1.01,1.03) translateY(-2px); }
+  92% { transform: perspective(170px) rotateX(1deg) skewX(0deg) scale(1,.98) translateY(0); }
+  100% { transform: perspective(170px) rotateX(2deg) skewX(2.5deg) scale(1,1); }
 }
 /* Four waypoints with alternating lean give the drift its flutter. */
 @keyframes music-butterfly-path {
@@ -447,62 +463,67 @@
   66% { opacity: .96; transform: translate(calc(-50% + var(--fx-b-x)), calc(-50% + var(--fx-b-y))) rotate(-8deg) scale(.96); }
   100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(.78); }
 }
-.music-shelf .music-heading--gallery .music-effect-particle--ribbon {
-  width: clamp(60px, 10vw, 118px);
-  aspect-ratio: 120 / 150;
-  filter: drop-shadow(0 0 7px rgba(255, 70, 104, .5));
-  animation: music-ribbon-path 2700ms cubic-bezier(.4, .05, .3, 1) var(--fx-delay) both;
+@property --erode {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
 }
-.music-shelf .music-heading--gallery .music-bow {
+/* Bastonete que se desfaz: aparece, flutua e é corroído a partir da flor. */
+.music-shelf .music-heading--gallery .music-effect-particle--baton {
+  width: var(--fx-w, 130px);
+  aspect-ratio: 1;
+  filter: drop-shadow(0 0 10px rgba(255, 64, 96, .5));
+  animation: music-baton-life var(--fx-life, 9000ms) cubic-bezier(.4, .05, .3, 1) both;
+}
+.music-shelf .music-heading--gallery .music-baton-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 60%;
+}
+.music-shelf .music-heading--gallery .music-effect-particle--baton.has-erode .music-baton-sprite {
+  --erode: 0%;
+  -webkit-mask-image: radial-gradient(circle at 50% 33%, transparent var(--erode), #000 calc(var(--erode) + 16%));
+  mask-image: radial-gradient(circle at 50% 33%, transparent var(--erode), #000 calc(var(--erode) + 16%));
+  animation: music-baton-erode var(--fx-life, 9000ms) ease-in-out both;
+}
+@keyframes music-baton-life {
+  0%   { opacity: 0; transform: translate(-50%, -46%) rotate(calc(var(--fx-tilt, 0deg) - 6deg)) scale(.6); }
+  9%   { opacity: 1; transform: translate(-50%, -50%) rotate(var(--fx-tilt, 0deg)) scale(1); }
+  45%  { opacity: 1; transform: translate(-50%, -54%) rotate(calc(var(--fx-tilt, 0deg) + 2deg)) scale(1.02); }
+  82%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(-50%, -58%) rotate(calc(var(--fx-tilt, 0deg) - 1deg)) scale(1.03); }
+}
+/* O buraco cresce do centro da flor para fora e só no fim chega à haste. */
+@keyframes music-baton-erode {
+  0%, 16% { --erode: 0%; }
+  90%, 100% { --erode: 118%; }
+}
+/* Pétalas de higanbana: soltas uma a uma, caem balançando e giram devagar. */
+.music-shelf .music-heading--gallery .music-effect-particle--petal {
+  width: calc(clamp(9px, 1.4vw, 17px) * var(--fx-size, 1));
+  aspect-ratio: 40 / 72;
+  translate: var(--ox, 0) var(--oy, 0);
+  rotate: var(--r0, 0deg);
+  filter: drop-shadow(0 0 5px rgba(255, 60, 92, .45));
+  animation: music-petal-fall var(--fx-life, 4400ms) cubic-bezier(.35, .1, .35, 1) var(--fx-delay, 0ms) both;
+}
+.music-shelf .music-heading--gallery .music-petal {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
-.music-shelf .music-heading--gallery .music-bow-loop path { stroke: #c8183f; stroke-width: 9; }
-.music-shelf .music-heading--gallery .music-bow-loop .music-bow-shine { stroke: #ff8fa3; stroke-width: 2.2; opacity: .7; }
-.music-shelf .music-heading--gallery .music-bow-knot { fill: #9c0f2e; stroke: #ff6f86; stroke-width: 1.5; animation: music-bow-knot 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
-.music-shelf .music-heading--gallery .music-bow-tail { stroke: #d42a4b; stroke-width: 7; stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-tail 2700ms ease-out var(--fx-delay) both; }
-.music-shelf .music-heading--gallery .music-bow-tail--b { stroke: #ff5c74; animation-delay: calc(var(--fx-delay) + 90ms); }
-.music-shelf .music-heading--gallery .music-bow-loop { transform-box: view-box; transform-origin: 60px 45px; }
-.music-shelf .music-heading--gallery .music-bow-loop path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: music-bow-loop-draw 2700ms ease-out var(--fx-delay) both; }
-.music-shelf .music-heading--gallery .music-bow-loop--left { animation: music-bow-untie-left 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
-.music-shelf .music-heading--gallery .music-bow-loop--right { animation: music-bow-untie-right 2700ms cubic-bezier(.5, 0, .3, 1) var(--fx-delay) both; }
-/* tie (0-20 %), hold, untie: loops swing out and slacken, knot drops, tails ripple */
-@keyframes music-bow-loop-draw {
-  0% { stroke-dashoffset: 100; }
-  20%, 46% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -70; }
-}
-@keyframes music-bow-untie-left {
-  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate(-22px, 18px) rotate(-48deg) scale(.86, 1.12); }
-}
-@keyframes music-bow-untie-right {
-  0%, 44% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-  100% { opacity: 0; transform: translate(22px, 14px) rotate(52deg) scale(.86, 1.12); }
-}
-@keyframes music-bow-knot {
-  0%, 10% { opacity: 0; transform: translateY(0); }
-  18%, 46% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(34px); }
-}
-@keyframes music-bow-tail {
-  0%, 12% { stroke-dashoffset: 100; opacity: 0; transform: translateX(0); }
-  18% { opacity: 1; }
-  44% { stroke-dashoffset: 0; opacity: 1; transform: translateX(-4px); }
-  64% { transform: translateX(4px); }
-  82% { transform: translateX(-3px) translateY(8px); opacity: .7; }
-  100% { stroke-dashoffset: 0; opacity: 0; transform: translateX(2px) translateY(18px); }
-}
-@keyframes music-ribbon-path {
-  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(.4); }
-  12% { opacity: 1; transform: translate(-50%, -50%) rotate(4deg) scale(1.08); }
-  20%, 34% { opacity: 1; transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--fx-dx)), calc(-50% + var(--fx-dy))) rotate(var(--fx-rotate)) scale(.92); }
+.music-shelf .music-heading--gallery .music-petal-body { fill: #d71e3c; }
+.music-shelf .music-heading--gallery .music-petal-vein { fill: none; stroke: #ff8fa3; stroke-width: 1.6; stroke-linecap: round; opacity: .7; }
+.music-shelf .music-heading--gallery .music-effect-particle--petal:nth-of-type(3n) .music-petal-body { fill: #ef3f5a; }
+.music-shelf .music-heading--gallery .music-effect-particle--petal:nth-of-type(4n) .music-petal-body { fill: #a8122e; }
+@keyframes music-petal-fall {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.5); }
+  10%  { opacity: 1; transform: translate(calc(var(--sway) * .15), calc(var(--fall) * .06)) rotate(calc(var(--turn) * .08)) scale(1); }
+  38%  { transform: translate(var(--sway), calc(var(--fall) * .38)) perspective(110px) rotateX(48deg) rotate(calc(var(--turn) * .38)); }
+  68%  { opacity: .95; transform: translate(var(--sway2), calc(var(--fall) * .72)) perspective(110px) rotateX(-40deg) rotate(calc(var(--turn) * .72)); }
+  100% { opacity: 0; transform: translate(calc(var(--sway) * .4), var(--fall)) rotate(var(--turn)) scale(.85); }
 }
 /* A small, quiet cue that the scene responds; gone after the first touch. */
 .music-shelf .music-heading--gallery .music-panorama-hint {
@@ -534,7 +555,7 @@
   .music-shelf .music-heading--gallery .music-panorama-glint { display: none; }
   .music-shelf .music-heading--gallery .music-effect-particle,
   .music-shelf .music-heading--gallery .music-butterfly-sprite,
-  .music-shelf .music-heading--gallery :is(.music-bow-loop, .music-bow-loop path, .music-bow-knot, .music-bow-tail) { animation: none; }
+  .music-shelf .music-heading--gallery .music-baton-sprite { animation: none; }
   .music-shelf .music-heading--gallery .music-panorama-hint { display: none; }
 }
 
