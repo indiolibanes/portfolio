@@ -159,10 +159,10 @@ story += [
     project('Assistente para pessoas com deficiência visual - documentação de protótipo (SENAI)', 'SENAI',
             'Agente Xiaozhi em placa K10 para descrição de ambientes, leitura de documentos e identificação de '
             'objetos; protótipo funcional com diretrizes documentadas de interação, acessibilidade e segurança.'),
-    project('Aplicação da tecnologia NIR na medição em tempo real do número kappa - Projeto Integrador (SENAI)', 'SENAI · em andamento',
-            'PI sobre espectroscopia no infravermelho próximo (NIR) aplicada à medição em tempo real do número kappa '
-            '(grau de deslignificação da polpa celulósica). Responsável pela revisão e reescrita do relatório técnico '
-            'e pela apresentação do projeto, prevista para 30/11/2026.'),
+    project('PI: Aplicação da tecnologia NIR na medição do número kappa', '2026',
+            'Projeto integrador do SENAI (em andamento), em equipe: espectroscopia no infravermelho próximo (NIR) '
+            'para medir em tempo real o número kappa, indicador do grau de deslignificação da polpa celulósica. '
+            'Minha parte: revisão e reescrita do relatório técnico e apresentação prevista para o dia 30 de novembro.'),
     project('Astrophysics Application - estudo de caso de UX', '2020-2021',
             'Pesquisa exploratória, personas, sketches, wireframes, protótipo de alta fidelidade e gamificação em '
             'um projeto educativo.', 'https://www.behance.net/gallery/119235467/My-Debut-UX-Project'),

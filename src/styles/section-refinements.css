@@ -183,7 +183,9 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #traducao { background: radial-gradient(ellipse at 90% 25%,#cba96820,transparent 50%),repeating-linear-gradient(125deg,transparent 0 38px,#d0bb8710 39px 40px),#030303; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #reflexao { background: radial-gradient(circle at 82% 18%,#f3d8ff88 0 1px,transparent 2px) 0 0/79px 91px,radial-gradient(ellipse at 80% 70%,#795da188,transparent 58%),radial-gradient(ellipse at 30% 0%,#334677,transparent 70%),#121426; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #arquitetura { background: repeating-linear-gradient(0deg,#f2b3b308 0 1px,transparent 1px 6px),repeating-linear-gradient(90deg,#f2b3b308 0 1px,transparent 1px 6px),linear-gradient(120deg,#39131f,#763748); }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria { background: repeating-radial-gradient(ellipse at 105% 110%,transparent 0 22px,#ffebb817 23px 25px,transparent 26px 40px),linear-gradient(120deg,#a74717,#eeaa57); }
+/* PI NIR / kappa: pulp and wood. Fibres run across the card, growth rings bend
+   around a knot, and a faint infrared glow sits in the lower corner. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria { background: radial-gradient(ellipse at 6% 108%,#ff7a4a40,transparent 46%),radial-gradient(ellipse at 96% 4%,#7a4a2a55,transparent 40%),repeating-radial-gradient(ellipse at 74% 62%,transparent 0 14px,#4a2c1a22 15px 16px,transparent 17px 31px),repeating-linear-gradient(172deg,transparent 0 5px,#f4e3c410 6px 7px,transparent 9px 17px),repeating-linear-gradient(8deg,transparent 0 11px,#3a2214 12px 13px,transparent 14px 27px),linear-gradient(118deg,#d9c29a,#b08a5c 55%,#6e4a2e); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #documentacao { background: repeating-radial-gradient(ellipse at 85% -10%,transparent 0 29px,#eaffff40 31px 32px,transparent 35px 70px),linear-gradient(125deg,#a3e9de,#45b5c1 70%,#2996aa); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card::before { opacity: .15; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab :is(#traducao,#reflexao,#arquitetura) .lab-project-copy { color: #fff3dd; background: linear-gradient(90deg,#080b1699,#080b1644); }
@@ -522,3 +524,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
     text-wrap: balance;
   }
 }
+
+/* PI NIR card: the four stages sit in a 2x2 grid (reads left to right, top to bottom) so they never clip inside the system panel. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow { width: min(100%, 360px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow i { display: none; }
