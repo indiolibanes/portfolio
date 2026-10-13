@@ -71,6 +71,7 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="Portfólio de Kauê Alencar" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
@@ -80,7 +81,7 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <meta property="og:image:height" content="630" />
 <meta
   property="og:image:alt"
-  content="Kauê Alencar — Escrita, Documentação e Informação"
+  content={SITE.ogImageAlt}
 />
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -89,5 +90,5 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 <meta name="twitter:image" content={ogImageUrl} />
 <meta
   name="twitter:image:alt"
-  content="Kauê Alencar — Escrita, Documentação e Informação"
+  content={SITE.ogImageAlt}
 />

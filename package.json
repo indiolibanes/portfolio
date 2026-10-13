@@ -8,10 +8,11 @@
   },
   "scripts": {
     "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro dev",
-    "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build",
+    "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist",
     "preview": "astro preview",
     "astro": "astro",
-    "check:ux": "node scripts/check-ux-contract.mjs"
+    "check:ux": "node scripts/check-ux-contract.mjs",
+    "check:og": "node scripts/verify-og.mjs"
   },
   "dependencies": {
     "astro": "^7.3.1",
