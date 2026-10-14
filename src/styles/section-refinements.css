@@ -529,10 +529,10 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow { width: min(100%, 360px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow i { display: none; }
 
-/* Each stage has its own accent. The stages light up in sequence, 5 seconds each
-   (script in index.astro); a click jumps to a stage. The active stage is filled
-   with its accent and plays one short pulse. With reduced motion the cycle is off
-   and a click toggles the stage instead. */
+/* Each stage has its own accent. The stages light up in sequence every 5 seconds
+   (script in index.astro), with a stepped swap like Sophia's poses. Borders stay
+   transparent until a stage is lit; a click jumps to a stage. With reduced motion
+   the cycle is off and a click toggles the stage instead. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage {
   --stage-accent: var(--sun-soft);
   position: relative;
@@ -540,7 +540,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .
   display: grid;
   place-items: center;
   padding: 0.65rem 0.45rem;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid transparent;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.055);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -550,7 +550,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .
   line-height: 1.3;
   text-align: center;
   cursor: pointer;
-  transition: background-color 320ms ease, border-color 320ms ease, color 320ms ease;
+  /* Like Sophia's pose swap: the change is a step, not a fade. */
+  transition: none;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage[data-stage='revisao'] { --stage-accent: var(--mint-soft); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage[data-stage='reescrita'] { --stage-accent: var(--blue-soft); }
@@ -565,7 +566,6 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .
   border-radius: 50%;
   background: var(--stage-accent);
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage:hover:not(:disabled) { border-color: var(--stage-accent); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage:focus-visible { outline: 2px solid var(--stage-accent); outline-offset: 3px; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage:disabled { cursor: default; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage.is-active {
