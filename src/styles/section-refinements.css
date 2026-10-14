@@ -529,8 +529,10 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow { width: min(100%, 360px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-flow i { display: none; }
 
-/* Each stage is a toggle with its own accent. A click fills it with that accent
-   and plays one short pulse; a second click returns it to neutral. */
+/* Each stage has its own accent. The stages light up in sequence, 5 seconds each
+   (script in index.astro); a click jumps to a stage. The active stage is filled
+   with its accent and plays one short pulse. With reduced motion the cycle is off
+   and a click toggles the stage instead. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #curadoria .knowledge-stage {
   --stage-accent: var(--sun-soft);
   position: relative;

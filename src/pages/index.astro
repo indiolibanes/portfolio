@@ -572,7 +572,7 @@ const background = [
           <div
             class="knowledge-flow"
             role="group"
-            aria-label="Etapas do projeto. Selecione uma etapa para destacá-la."
+            aria-label="Etapas do projeto, destacadas em sequência a cada 5 segundos. Selecione uma etapa para destacá-la."
           >
             <button
               type="button"
@@ -991,22 +991,84 @@ const background = [
 
   </main>
 <script>
-  // NIR card: each stage is a toggle. A click fills it with its own accent
-  // colour and plays a short pulse; a second click returns it to neutral.
+  // NIR card: the four stages light up on their own, one at a time, each in
+  // its own accent colour for 5 seconds, then the next one takes over
+  // (Pesquisa -> Revisão -> Reescrita -> Apresentação -> Pesquisa...).
+  // Clicking a stage jumps to it and restarts its 5 seconds. The cycle pauses
+  // while the pointer or keyboard focus is inside the group, while the card is
+  // off screen or the tab is hidden, and never runs with reduced motion (there
+  // the stages stay neutral until clicked, as a plain toggle).
   // Buttons ship disabled so that, without JavaScript, nothing looks clickable.
-  const knowledgeStages = document.querySelectorAll<HTMLButtonElement>('.knowledge-stage');
-  knowledgeStages.forEach((stage) => {
-    stage.disabled = false;
-    stage.addEventListener('click', () => {
-      const active = stage.getAttribute('aria-pressed') !== 'true';
-      stage.setAttribute('aria-pressed', String(active));
-      stage.classList.toggle('is-active', active);
-      stage.classList.remove('is-pulsing');
-      void stage.offsetWidth;
-      stage.classList.add('is-pulsing');
+  const STAGE_HOLD_MS = 5000;
+  const knowledgeStages = Array.from(document.querySelectorAll<HTMLButtonElement>('.knowledge-stage'));
+  const knowledgeFlow = knowledgeStages[0]?.closest<HTMLElement>('.knowledge-flow');
+  if (knowledgeFlow) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let current = -1;
+    let timer: number | undefined;
+    let hovered = false;
+    let focused = false;
+    let onScreen = true;
+
+    const light = (index: number, pulse: boolean) => {
+      knowledgeStages.forEach((stage, i) => {
+        const active = i === index;
+        stage.setAttribute('aria-pressed', String(active));
+        stage.classList.toggle('is-active', active);
+        stage.classList.remove('is-pulsing');
+        if (active && pulse) {
+          void stage.offsetWidth;
+          stage.classList.add('is-pulsing');
+        }
+      });
+      current = index;
+    };
+
+    const stop = () => {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+    };
+
+    const start = () => {
+      stop();
+      if (reducedMotion.matches || hovered || focused || !onScreen || document.hidden) return;
+      timer = window.setInterval(() => light((current + 1) % knowledgeStages.length, true), STAGE_HOLD_MS);
+    };
+
+    knowledgeStages.forEach((stage, index) => {
+      stage.disabled = false;
+      stage.addEventListener('click', () => {
+        if (reducedMotion.matches && current === index) light(-1, false);
+        else light(index, true);
+        start();
+      });
+      stage.addEventListener('animationend', () => stage.classList.remove('is-pulsing'));
     });
-    stage.addEventListener('animationend', () => stage.classList.remove('is-pulsing'));
-  });
+
+    knowledgeFlow.addEventListener('pointerenter', () => { hovered = true; start(); });
+    knowledgeFlow.addEventListener('pointerleave', () => { hovered = false; start(); });
+    knowledgeFlow.addEventListener('focusin', () => { focused = true; start(); });
+    knowledgeFlow.addEventListener('focusout', () => { focused = false; start(); });
+    document.addEventListener('visibilitychange', start);
+    reducedMotion.addEventListener('change', () => {
+      if (reducedMotion.matches) {
+        stop();
+        light(-1, false);
+      } else {
+        light(0, false);
+        start();
+      }
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        onScreen = entries.some((entry) => entry.isIntersecting);
+        start();
+      }, { threshold: 0.2 }).observe(knowledgeFlow);
+    }
+
+    if (!reducedMotion.matches) light(0, false);
+    start();
+  }
 </script>
 
 </BaseLayout>

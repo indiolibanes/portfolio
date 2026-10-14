@@ -1,8 +1,10 @@
 ---
 /*
  * Mario-inspired 8-bit brick and question blocks.
- * Each of the twelve two-block columns turns around its vertical axis in a
- * short staggered wave. The real h1 lives outside this decorative component.
+ * Each of the twelve two-block columns hops and turns around its vertical axis
+ * in a quick staggered wave (front -> back -> front), and the corner question
+ * block bumps and pops a spinning coin. The real h1 lives outside this
+ * decorative component.
  */
 const columns = Array.from({ length: 12 }, (_, index) => ({
   index,
@@ -57,7 +59,15 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
 
   <!-- Corner accent replaces the former generic gold square. -->
   <span class="mario-name-tiles__corner">
-    <svg viewBox="0 0 16 16" shape-rendering="crispEdges" focusable="false" aria-hidden="true">
+    <span class="mario-name-tiles__coin">
+      <svg viewBox="0 0 8 12" shape-rendering="crispEdges" focusable="false" aria-hidden="true">
+        <path fill="#8a4f10" d="M2 0h4v1h1v1h1v8H7v1H6v1H2v-1H1v-1H0V2h1V1h1z" />
+        <path fill="#f6c437" d="M2 1h4v1h1v8H6v1H2v-1H1V2h1z" />
+        <path fill="#c9861a" d="M5 3h1v6H5z" />
+        <path fill="#fff0a0" d="M2 2h1v7H2z" />
+      </svg>
+    </span>
+    <svg class="mario-name-tiles__corner-block" viewBox="0 0 16 16" shape-rendering="crispEdges" focusable="false" aria-hidden="true">
       <use href="#mario-name-question" />
     </svg>
   </span>
@@ -99,8 +109,9 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
     height: 100%;
     transform-style: preserve-3d;
     backface-visibility: hidden;
-    animation: mario-name-column-turn 11.8s ease-in-out infinite;
-    animation-delay: calc(var(--mario-column) * .22s);
+    animation: mario-name-column-turn 5.4s infinite;
+    animation-delay: calc(var(--mario-column) * .13s);
+    transform-origin: 50% 100%;
     will-change: transform;
   }
 
@@ -135,14 +146,56 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
     display: block;
     filter: drop-shadow(3px 4px 0 rgba(62, 27, 14, .42));
     transform: rotate(5deg);
+    transform-origin: 50% 100%;
+    animation: mario-name-corner-bump 3.4s infinite;
   }
 
-  .mario-name-tiles__corner svg { display: block; width: 100%; height: 100%; }
+  .mario-name-tiles__corner-block { display: block; width: 100%; height: 100%; }
 
+  /* A coin pops out of the question block each time it is bumped. */
+  .mario-name-tiles__coin {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 4%;
+    width: 38%;
+    aspect-ratio: 2 / 3;
+    margin-left: -19%;
+    opacity: 0;
+    animation: mario-name-coin-pop 3.4s infinite;
+  }
+
+  .mario-name-tiles__coin svg { display: block; width: 100%; height: 100%; }
+
+  /* Hop up while turning to the back face, land with a squash, hold, then hop back. */
   @keyframes mario-name-column-turn {
-    0%, 2% { transform: rotateY(0deg); }
-    9%, 12% { transform: rotateY(180deg); }
-    20%, 100% { transform: rotateY(360deg); }
+    0%, 3%   { transform: translateY(0) rotateY(0deg) scaleY(1); animation-timing-function: cubic-bezier(.3, .6, .4, 1); }
+    7%       { transform: translateY(-7%) rotateY(110deg) scaleY(1.03); animation-timing-function: cubic-bezier(.5, 0, .7, .4); }
+    11%      { transform: translateY(0) rotateY(180deg) scaleY(.94); animation-timing-function: ease-out; }
+    14%, 38% { transform: translateY(0) rotateY(180deg) scaleY(1); animation-timing-function: cubic-bezier(.3, .6, .4, 1); }
+    42%      { transform: translateY(-7%) rotateY(290deg) scaleY(1.03); animation-timing-function: cubic-bezier(.5, 0, .7, .4); }
+    46%      { transform: translateY(0) rotateY(360deg) scaleY(.94); animation-timing-function: ease-out; }
+    49%, 100% { transform: translateY(0) rotateY(360deg) scaleY(1); }
+  }
+
+  /* The corner question block gets bumped: stretch up, squash down, settle. */
+  @keyframes mario-name-corner-bump {
+    0%, 14%, 100% { transform: rotate(5deg) translateY(0) scale(1, 1); }
+    20% { transform: rotate(5deg) translateY(-8px) scale(.92, 1.12); }
+    27% { transform: rotate(5deg) translateY(0) scale(1.1, .88); }
+    32% { transform: rotate(5deg) translateY(-2px) scale(.98, 1.04); }
+    38% { transform: rotate(5deg) translateY(0) scale(1, 1); }
+  }
+
+  /* The coin rises out of the block, spinning (scaleX), then drops back and fades. */
+  @keyframes mario-name-coin-pop {
+    0%, 17% { opacity: 0; transform: translateY(10px) scaleX(1); }
+    20% { opacity: 1; transform: translateY(-4px) scaleX(1); }
+    26% { opacity: 1; transform: translateY(-22px) scaleX(.15); }
+    32% { opacity: 1; transform: translateY(-30px) scaleX(1); }
+    38% { opacity: 1; transform: translateY(-24px) scaleX(.15); }
+    44% { opacity: 1; transform: translateY(-10px) scaleX(1); }
+    50%, 100% { opacity: 0; transform: translateY(4px) scaleX(1); }
   }
 
   /* Replace the prior smooth brick pattern only in authorial mode.
@@ -186,7 +239,7 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
   :global(html[data-serious-mode='true']) .mario-name-tiles,
   :global(html[data-legacy-mode='true']) .mario-name-tiles { display: none; }
 
-  .mario-name-tiles[data-mario-name-visible='false'] .mario-name-tiles__column {
+  .mario-name-tiles[data-mario-name-visible='false'] :is(.mario-name-tiles__column, .mario-name-tiles__corner, .mario-name-tiles__coin) {
     animation-play-state: paused;
   }
 
@@ -204,6 +257,8 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
 
   @media (prefers-reduced-motion: reduce) {
     .mario-name-tiles__column { animation: none !important; will-change: auto; }
+    .mario-name-tiles__corner { animation: none !important; }
+    .mario-name-tiles__coin { animation: none !important; display: none; }
   }
 </style>
 
