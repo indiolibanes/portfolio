@@ -568,32 +568,57 @@ const background = [
           </div>
         </div>
 
-        <div
-          class="lab-project-system lab-project-system-knowledge"
-          aria-hidden="true"
-        >
-          <div class="knowledge-flow">
-            <span>
+        <div class="lab-project-system lab-project-system-knowledge">
+          <div
+            class="knowledge-flow"
+            role="group"
+            aria-label="Etapas do projeto. Selecione uma etapa para destacá-la."
+          >
+            <button
+              type="button"
+              class="knowledge-stage"
+              data-stage="pesquisa"
+              aria-pressed="false"
+              disabled
+            >
               Pesquisa
-            </span>
+            </button>
 
-            <i>→</i>
+            <i aria-hidden="true">→</i>
 
-            <span>
+            <button
+              type="button"
+              class="knowledge-stage"
+              data-stage="revisao"
+              aria-pressed="false"
+              disabled
+            >
               Revisão
-            </span>
+            </button>
 
-            <i>→</i>
+            <i aria-hidden="true">→</i>
 
-            <span>
+            <button
+              type="button"
+              class="knowledge-stage"
+              data-stage="reescrita"
+              aria-pressed="false"
+              disabled
+            >
               Reescrita
-            </span>
+            </button>
 
-            <i>→</i>
+            <i aria-hidden="true">→</i>
 
-            <span>
+            <button
+              type="button"
+              class="knowledge-stage"
+              data-stage="apresentacao"
+              aria-pressed="false"
+              disabled
+            >
               Apresentação
-            </span>
+            </button>
           </div>
 
           <div class="knowledge-note">
@@ -965,4 +990,23 @@ const background = [
     </section>
 
   </main>
+<script>
+  // NIR card: each stage is a toggle. A click fills it with its own accent
+  // colour and plays a short pulse; a second click returns it to neutral.
+  // Buttons ship disabled so that, without JavaScript, nothing looks clickable.
+  const knowledgeStages = document.querySelectorAll<HTMLButtonElement>('.knowledge-stage');
+  knowledgeStages.forEach((stage) => {
+    stage.disabled = false;
+    stage.addEventListener('click', () => {
+      const active = stage.getAttribute('aria-pressed') !== 'true';
+      stage.setAttribute('aria-pressed', String(active));
+      stage.classList.toggle('is-active', active);
+      stage.classList.remove('is-pulsing');
+      void stage.offsetWidth;
+      stage.classList.add('is-pulsing');
+    });
+    stage.addEventListener('animationend', () => stage.classList.remove('is-pulsing'));
+  });
+</script>
+
 </BaseLayout>
