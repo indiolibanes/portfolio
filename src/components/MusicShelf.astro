@@ -129,6 +129,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         <img src="/assets/music-moonlit-terrace-v2.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async" />
       </picture>
       <div class="music-panorama-glint" aria-hidden="true"></div>
+      <div class="music-panorama-shimmer" aria-hidden="true"></div>
+      <div class="music-panorama-motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="music-panorama-effects" data-music-effects aria-hidden="true"></div>
       <span class="music-panorama-hint" aria-hidden="true"><span class="music-panorama-hint__touch">✦ Toque na cena</span><span class="music-panorama-hint__click">✦ Clique na cena</span></span>
       <button
@@ -421,13 +423,39 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     window.addEventListener('portfolio:mode', syncEffectToggle);
     reducedMotion.addEventListener('change', syncEffectToggle);
 
+    // Pointer: the moonlight glint follows the cursor and the whole painting
+    // leans a few pixels toward it (parallax). Off on touch and in quiet modes.
+    let parallaxFrame = 0;
     if (hoverPointer.matches) {
       effectToggle.addEventListener('pointermove', (event) => {
         const bounds = panorama.getBoundingClientRect();
-        panorama.style.setProperty('--music-glint-x', ((event.clientX - bounds.left) / bounds.width * 100) + '%');
-        panorama.style.setProperty('--music-glint-y', ((event.clientY - bounds.top) / bounds.height * 100) + '%');
+        const fx = (event.clientX - bounds.left) / bounds.width;
+        const fy = (event.clientY - bounds.top) / bounds.height;
+        panorama.style.setProperty('--music-glint-x', (fx * 100) + '%');
+        panorama.style.setProperty('--music-glint-y', (fy * 100) + '%');
+        if (!parallaxFrame && !effectsQuiet()) {
+          parallaxFrame = requestAnimationFrame(() => {
+            parallaxFrame = 0;
+            panorama.style.setProperty('--music-px', ((fx - .5) * -12).toFixed(2) + 'px');
+            panorama.style.setProperty('--music-py', ((fy - .5) * -8).toFixed(2) + 'px');
+          });
+        }
       }, { passive: true });
+      effectToggle.addEventListener('pointerleave', () => {
+        panorama.style.setProperty('--music-px', '0px');
+        panorama.style.setProperty('--music-py', '0px');
+      });
     }
+
+    // A ripple of moonlight where the reader clicks, shown before the effect bursts.
+    const ripple = (x, y) => {
+      const ring = document.createElement('span');
+      ring.className = 'music-ripple';
+      ring.style.setProperty('--rx', x + '%');
+      ring.style.setProperty('--ry', y + '%');
+      effectLayer.appendChild(ring);
+      window.setTimeout(() => ring.remove(), 1100);
+    };
 
     const sprites = {
       butterfly: '/assets/shorekeeper-butterfly.webp',
@@ -565,6 +593,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       const keyboard = event.detail === 0;
       const originX = keyboard ? (effect === 'butterfly' ? 78 : 22) : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
       const originY = keyboard ? 48 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
+      if (!keyboard) ripple(originX, originY);
       burst(effect, originX, originY);
     });
 
