@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:ux": "node scripts/check-ux-contract.mjs",
+    "check:api": "node scripts/test-music-api.mjs",
     "check:og": "node scripts/verify-og.mjs"
   },
   "dependencies": {

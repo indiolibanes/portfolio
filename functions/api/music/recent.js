@@ -1,9 +1,25 @@
 const LASTFM_ROOT = "https://ws.audioscrobbler.com/2.0/";
+const UPSTREAM_TIMEOUT_MS = 5000;
+const MAX_TEXT_LENGTH = 200;
+
+// Only https URLs reach the browser, where they become <img src> and <a href>.
+function httpsUrl(value) {
+  if (typeof value !== "string" || !value) return null;
+  try {
+    return new URL(value).protocol === "https:" ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function text(value) {
+  return typeof value === "string" ? value.slice(0, MAX_TEXT_LENGTH) : "";
+}
 
 function largestImage(images = []) {
   const candidates = Array.isArray(images) ? images : [];
   for (let i = candidates.length - 1; i >= 0; i -= 1) {
-    const url = candidates[i]?.["#text"];
+    const url = httpsUrl(candidates[i]?.["#text"]);
     if (url) return url;
   }
   return null;
@@ -18,11 +34,11 @@ function normalizeTrack(track) {
     : null;
 
   return {
-    name: track?.name ?? "",
-    artist: track?.artist?.["#text"] ?? track?.artist?.name ?? "",
-    album: track?.album?.["#text"] ?? "",
+    name: text(track?.name),
+    artist: text(track?.artist?.["#text"] ?? track?.artist?.name),
+    album: text(track?.album?.["#text"]),
     artwork: largestImage(track?.image),
-    url: track?.url ?? null,
+    url: httpsUrl(track?.url),
     nowPlaying,
     playedAt,
     mbid: track?.mbid || null,
@@ -65,7 +81,11 @@ export async function onRequestGet(context) {
     );
   }
 
-  const cacheRequest = new Request(context.request.url, {
+  // Key the edge cache on the path alone, so "?x=1" cannot bypass it and
+  // turn every visitor request into a Last.fm API call.
+  const cacheUrl = new URL(context.request.url);
+  cacheUrl.search = "";
+  const cacheRequest = new Request(cacheUrl.toString(), {
     method: "GET",
   });
 
@@ -86,16 +106,18 @@ export async function onRequestGet(context) {
         Accept: "application/json",
         "User-Agent": "Kaue-Alencar-Portfolio/1.0",
       },
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
 
     const data = await response.json();
 
     if (!response.ok || data?.error) {
+      // Last.fm's own error text can reveal account or key state; keep it
+      // out of a public response.
       return Response.json(
         {
           ok: false,
-          message: data?.message || "Last.fm request failed.",
-          error: data?.error ?? response.status,
+          message: "Last.fm request failed.",
         },
         {
           status: 502,
@@ -130,14 +152,11 @@ export async function onRequestGet(context) {
     context.waitUntil?.(putCached(cacheRequest, output.clone()));
 
     return output;
-  } catch (error) {
+  } catch {
     return Response.json(
       {
         ok: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unexpected Last.fm error.",
+        message: "Last.fm is unavailable.",
       },
       {
         status: 500,
