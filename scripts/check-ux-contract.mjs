@@ -88,5 +88,15 @@ check('modes: preserve three-state control',
 check('motion: viewport and reduced preference', motion.includes('IntersectionObserver') && motion.includes('prefers-reduced-motion: reduce'));
 check('motion: two simultaneous loops', motion.includes('.slice(0, 2)'));
 check('motion: static image fallback', image.includes('prefers-reduced-motion: reduce') && image.includes('data-motion-still'));
+const notFound = read('src/pages/404.astro');
+check('404: Tetris board is a keyboard-focusable application with a description',
+  notFound.includes('data-tetris-canvas') && notFound.includes('tabindex="0"') && notFound.includes('role="application"') && notFound.includes('aria-describedby="tetris-help"'));
+check('404: touch controls are real buttons with names',
+  (notFound.match(/<button type="button" data-tetris-act="[a-z]+"[^>]*aria-label="/g) || []).length === 6);
+check('404: status is a polite live region', notFound.includes('data-tetris-status role="status" aria-live="polite"'));
+check('404: pauses when hidden or off screen', notFound.includes('visibilitychange') && notFound.includes('IntersectionObserver'));
+check('404: respects reduced motion for the clear flash', notFound.includes('prefers-reduced-motion: reduce'));
+check('404: best score storage is guarded', /try \{ best = Number\(localStorage/.test(notFound) && /try \{ localStorage\.setItem/.test(notFound));
+check('404: old runner is gone', !notFound.includes('sophia-runner') && !read('src/styles/global.css').includes('sophia-runner'));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;

@@ -13,7 +13,8 @@
     "astro": "astro",
     "check:ux": "node scripts/check-ux-contract.mjs",
     "check:api": "node scripts/test-music-api.mjs",
-    "check:og": "node scripts/verify-og.mjs"
+    "check:og": "node scripts/verify-og.mjs",
+    "check:tetris": "node scripts/test-tetris.mjs"
   },
   "dependencies": {
     "astro": "^7.3.1",

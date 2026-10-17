@@ -448,8 +448,8 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
     report.motion[`aemeath-${w}`] = seen;
     await ctx2.close();
   }
-  // Sophia page + 404 runner.
-  for (const [path, sel, name] of [['/sophia/', '.sophia-orbit', 'sophia-page'], ['/qa-pagina-inexistente/', '.sophia-runner', 'sophia-404']]) {
+  // Sophia page + 404 Tetris.
+  for (const [path, sel, name] of [['/sophia/', '.sophia-orbit', 'sophia-page'], ['/qa-pagina-inexistente/', '.sophia-tetris', 'sophia-404']]) {
     const { context, page } = await newPage({ viewport: VIEWPORTS[1], reducedMotion: 'no-preference' });
     await page.goto(`${baseUrl}${path}?mode=authorial`, { waitUntil: 'load' });
     await strip(page, sel, `${name}-390`, 6, 350);
