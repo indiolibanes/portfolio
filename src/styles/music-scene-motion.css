@@ -12,7 +12,7 @@
  * 2026-10-17: retuned for the new artwork (v3) and extended with a sky layer
  * (moon breathing, twinkling stars, rising sky lanterns) and a glow layer
  * (stone lantern flicker, Phrolova's lily, Shorekeeper's butterflies, the
- * constellation on Sophia's tail). Coordinates are % of the 1264×848 art.
+ * constellation on Sophia's tail). Coordinates are % of the art (v4, 2528×1696).
  */
 
 /* Parallax: the painting and the light layers locked to it lean together
@@ -145,9 +145,9 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
 .music-shelf .music-heading--gallery .music-moonglow {
   position: absolute;
   left: 47.5%;
-  top: 14%;
-  width: 44%;
-  margin: -22% 0 0 -22%;
+  top: 17%;
+  width: 34%;
+  margin: -17% 0 0 -17%;
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 236, 170, .32) 0 32%, rgba(255, 220, 140, .13) 52%, transparent 70%);
@@ -175,14 +175,14 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
   animation: music-star-twinkle var(--sd, 5s) ease-in-out infinite;
   animation-delay: var(--sz, 0s);
 }
-.music-shelf .music-heading--gallery .music-star:nth-of-type(2) { --sx: 28%; --sy: 9%;  --sd: 4.6s; --sz: -1s; }
-.music-shelf .music-heading--gallery .music-star:nth-of-type(3) { --sx: 36%; --sy: 25%; --sd: 6.2s; --sz: -3s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(2) { --sx: 18%; --sy: 8%;  --sd: 4.6s; --sz: -1s; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(3) { --sx: 11%; --sy: 22%; --sd: 6.2s; --sz: -3s; --ss: 9px; }
 .music-shelf .music-heading--gallery .music-star:nth-of-type(4) { --sx: 66%; --sy: 12%; --sd: 5.4s; --sz: -2s; --ss: 14px; }
-.music-shelf .music-heading--gallery .music-star:nth-of-type(5) { --sx: 72%; --sy: 30%; --sd: 7s;   --sz: -4.5s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(5) { --sx: 74%; --sy: 22%; --sd: 7s;   --sz: -4.5s; --ss: 9px; }
 .music-shelf .music-heading--gallery .music-star:nth-of-type(6) { --sx: 84%; --sy: 6%;  --sd: 4.2s; --sz: -.5s; }
 .music-shelf .music-heading--gallery .music-star:nth-of-type(7) { --sx: 92%; --sy: 19%; --sd: 6.6s; --sz: -5s; --ss: 10px; }
-.music-shelf .music-heading--gallery .music-star:nth-of-type(8) { --sx: 14%; --sy: 31%; --sd: 5.8s; --sz: -2.5s; --ss: 9px; }
-.music-shelf .music-heading--gallery .music-star:nth-of-type(9) { --sx: 3%;  --sy: 37%; --sd: 6.4s; --sz: -3.5s; --ss: 10px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(8) { --sx: 4%; --sy: 36%; --sd: 5.8s; --sz: -2.5s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(9) { --sx: 30%; --sy: 4%; --sd: 6.4s; --sz: -3.5s; --ss: 10px; }
 @keyframes music-star-twinkle {
   0%, 100% { opacity: 0;  transform: scale(.4) rotate(0deg); }
   45%      { opacity: .95; transform: scale(1.1) rotate(45deg); }
@@ -230,7 +230,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
   opacity: 0;
 }
 .music-shelf .music-heading--gallery .music-glow--lantern {
-  --gx: 14.6%; --gy: 85.5%; --gs: 22%;
+  --gx: 14%; --gy: 80%; --gs: 22%;
   background: radial-gradient(circle, rgba(255, 190, 90, .55), rgba(255, 150, 50, .2) 40%, transparent 68%);
   animation: music-lantern-flicker 3.6s ease-in-out infinite;
 }
@@ -242,7 +242,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
   78% { opacity: .95; transform: scale(1.03); }
 }
 .music-shelf .music-heading--gallery .music-glow--lily {
-  --gx: 25.2%; --gy: 30%; --gs: 9%;
+  --gx: 26%; --gy: 30%; --gs: 9%;
   background: radial-gradient(circle, rgba(255, 90, 110, .7), rgba(255, 60, 90, .25) 45%, transparent 70%);
   animation: music-glow-pulse 3s ease-in-out infinite;
 }
@@ -251,10 +251,10 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
   background: radial-gradient(circle, rgba(140, 225, 255, .7), rgba(90, 190, 255, .24) 45%, transparent 70%);
   animation: music-glow-pulse 2.6s ease-in-out infinite;
 }
-.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(3) { --gx: 77.1%; --gy: 34.2%; animation-delay: -.4s; }
-.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(4) { --gx: 93.9%; --gy: 21.2%; animation-delay: -1.3s; animation-duration: 3.1s; }
-.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(5) { --gx: 96%;   --gy: 28.7%; animation-delay: -2s; }
-.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(6) { --gx: 95.3%; --gy: 67.5%; animation-delay: -.9s; animation-duration: 3.4s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(3) { --gx: 78%; --gy: 32%; animation-delay: -.4s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(4) { --gx: 93.5%; --gy: 21%; animation-delay: -1.3s; animation-duration: 3.1s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(5) { --gx: 79.5%; --gy: 48%; animation-delay: -2s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(6) { --gx: 94%; --gy: 66%; animation-delay: -.9s; animation-duration: 3.4s; }
 @keyframes music-glow-pulse {
   0%, 100% { opacity: .25; transform: scale(.8); }
   50%      { opacity: .95; transform: scale(1.15); }
@@ -264,7 +264,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true'])
   background: radial-gradient(circle, rgba(255, 228, 150, .95), rgba(255, 200, 100, .3) 45%, transparent 70%);
   animation: music-glow-pulse 3.8s ease-in-out infinite;
 }
-.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(7)  { --gx: 40.1%; --gy: 70.8%; animation-delay: -.6s; }
-.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(8)  { --gx: 42%;   --gy: 82.8%; animation-delay: -1.9s; }
-.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(9)  { --gx: 38.8%; --gy: 88.4%; animation-delay: -3s; }
-.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(10) { --gx: 49.5%; --gy: 77.2%; animation-delay: -1.2s; animation-duration: 4.4s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(7)  { --gx: 38%; --gy: 70%; animation-delay: -.6s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(8)  { --gx: 42%; --gy: 80%; animation-delay: -1.9s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(9)  { --gx: 40%; --gy: 90%; animation-delay: -3s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(10) { --gx: 48%; --gy: 76%; animation-delay: -1.2s; animation-duration: 4.4s; }
