@@ -1,0 +1,166 @@
+/*
+ * Pixel art da Sophia na 404 (sprites em src/sophia-art.ts e sophia-scene.ts).
+ * Cada sprite é um <g class="px-frame">; o CSS decide qual quadro aparece.
+ * Sem animação (prefers-reduced-motion, Legacy), vale o primeiro quadro.
+ * Fora da tela as animações pausam (data-paused, definido pelo script da página).
+ */
+
+.sophia-px {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* O Legacy esconde todo <svg> de <main>; a pixel art do painel escuro fica. */
+html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-px {
+  display: block !important;
+}
+
+.px-frame {
+  visibility: hidden;
+}
+
+/* ---------- Observadora: acima do tabuleiro ---------- */
+
+.sophia-observer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  margin-bottom: -3px; /* as patas pousam na borda do tabuleiro */
+  line-height: 0;
+}
+
+.sophia-px--observer {
+  width: 175px; /* 5 px de tela por pixel do desenho */
+  max-width: 100%;
+}
+
+.px-frame--rest {
+  visibility: visible;
+}
+
+/* ---------- Mascote ---------- */
+
+.sophia-mascot {
+  flex: 0 0 66px; /* 2 px de tela por pixel do desenho */
+  width: 66px;
+}
+
+.sophia-mascot[data-mood='calm'] .px-frame--calm,
+.sophia-mascot[data-mood='play'] .px-frame--play,
+.sophia-mascot[data-mood='cheer'] .px-frame--cheer,
+.sophia-mascot[data-mood='sleep'] .px-frame--sleep {
+  visibility: visible;
+}
+
+/* ---------- Cena do quarto ---------- */
+
+.sophia-scene {
+  margin: clamp(1.4rem, 3vw, 2.2rem) 0 0;
+  border: 1px solid #2a2a28;
+  background: #0d0d0d;
+  line-height: 0;
+}
+
+.px-cycle > .px-frame:first-child,
+.px-head--a {
+  visibility: visible;
+}
+
+/* ---------- Animações ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Ciclos uniformes: n quadros, um por fatia da duração --d. */
+  .px-cycle > .px-frame {
+    animation-duration: var(--d);
+    animation-timing-function: step-end;
+    animation-iteration-count: infinite;
+    animation-delay: calc(var(--d) * var(--o, 0));
+  }
+  .px-cycle[data-n='2'] > .px-frame { animation-name: px-n2; }
+  .px-cycle[data-n='3'] > .px-frame { animation-name: px-n3; }
+  .px-cycle[data-n='4'] > .px-frame { animation-name: px-n4; }
+
+  /* Observadora: 14 s. Olha o jogo, volta à inclinação, sorrisão, olha de novo. */
+  .sophia-observer .px-frame {
+    animation-duration: 14s;
+    animation-timing-function: step-end;
+    animation-iteration-count: infinite;
+  }
+  .sophia-observer .px-frame--rest { animation-name: obs-rest; }
+  .sophia-observer .px-frame--blink { animation-name: obs-blink; }
+  .sophia-observer .px-frame--down { animation-name: obs-down; }
+  .sophia-observer .px-frame--grin { animation-name: obs-grin; }
+
+  /* Cabeça da gamer: 9 s, sorri quase sempre, pisca e vibra com o jogo. */
+  .px-head .px-frame {
+    animation-duration: var(--d);
+    animation-timing-function: step-end;
+    animation-iteration-count: infinite;
+  }
+  .px-head--a { animation-name: head-a; }
+  .px-head--blink { animation-name: head-blink; }
+  .px-head--grin { animation-name: head-grin; }
+
+  [data-px-anim][data-paused='true'] .px-frame {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes px-n2 { 0% { visibility: visible; } 50%, 100% { visibility: hidden; } }
+@keyframes px-n3 { 0% { visibility: visible; } 33.34%, 100% { visibility: hidden; } }
+@keyframes px-n4 { 0% { visibility: visible; } 25%, 100% { visibility: hidden; } }
+
+/* rest: 0–10, 12–22, 48–60, 98–100 · blink: 10–12 · down: 22–48, 82–98 · grin: 60–82 */
+@keyframes obs-rest {
+  0% { visibility: visible; }
+  10% { visibility: hidden; }
+  12% { visibility: visible; }
+  22% { visibility: hidden; }
+  48% { visibility: visible; }
+  60% { visibility: hidden; }
+  98% { visibility: visible; }
+  100% { visibility: visible; }
+}
+@keyframes obs-blink {
+  0% { visibility: hidden; }
+  10% { visibility: visible; }
+  12%, 100% { visibility: hidden; }
+}
+@keyframes obs-down {
+  0%, 22% { visibility: hidden; }
+  22.01% { visibility: visible; }
+  48% { visibility: hidden; }
+  82% { visibility: visible; }
+  98%, 100% { visibility: hidden; }
+}
+@keyframes obs-grin {
+  0%, 60% { visibility: hidden; }
+  60.01% { visibility: visible; }
+  82%, 100% { visibility: hidden; }
+}
+
+/* head a: tudo menos 40–43, 62–74, 90–93 */
+@keyframes head-a {
+  0% { visibility: visible; }
+  40% { visibility: hidden; }
+  43% { visibility: visible; }
+  62% { visibility: hidden; }
+  74% { visibility: visible; }
+  90% { visibility: hidden; }
+  93%, 100% { visibility: visible; }
+}
+@keyframes head-blink {
+  0%, 40% { visibility: hidden; }
+  40.01% { visibility: visible; }
+  43% { visibility: hidden; }
+  90% { visibility: visible; }
+  93%, 100% { visibility: hidden; }
+}
+@keyframes head-grin {
+  0%, 62% { visibility: hidden; }
+  62.01% { visibility: visible; }
+  74%, 100% { visibility: hidden; }
+}

@@ -1,0 +1,12 @@
+---
+/** Desenha um sprite (ver src/sophia-pixel.ts) como <path> por cor. */
+import type { Pixels } from '../sophia-pixel';
+
+interface Props {
+  px: Pixels;
+}
+
+const { px } = Astro.props;
+---
+
+{px.paths().map(({ fill, d }) => <path fill={fill} d={d} />)}

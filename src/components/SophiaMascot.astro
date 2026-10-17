@@ -1,0 +1,21 @@
+---
+/** Avatar de Sophia ao lado da mensagem; o script do jogo troca `data-mood`. */
+import PixelPaths from './PixelPaths.astro';
+import { HEAD_H, HEAD_W, mascot, type Mood } from '../sophia-art';
+
+const moods: Mood[] = ['calm', 'play', 'cheer', 'sleep'];
+---
+
+<svg
+  class="sophia-px sophia-mascot"
+  data-tetris-mascot
+  data-mood="calm"
+  viewBox={`0 0 ${HEAD_W} ${HEAD_H}`}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+  focusable="false"
+>
+  {moods.map((mood) => (
+    <g class={`px-frame px-frame--${mood}`}><PixelPaths px={mascot(mood)} /></g>
+  ))}
+</svg>
