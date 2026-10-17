@@ -1,0 +1,152 @@
+/*
+ * Ilustrações vetoriais da Sophia na 404: retrato (topo) e sala gamer (base).
+ * O desenho vive em src/sophia-portrait.ts e src/sophia-lounge.ts; aqui só
+ * ficam o enquadramento e as animações. Sem animação (prefers-reduced-motion,
+ * Legacy e Editorial), valem as poses iniciais. Fora da tela as animações
+ * pausam (data-paused, definido pelo script da página).
+ */
+
+.sophia-art {
+  overflow: visible;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* O Legacy esconde todo <svg> de <main>; as ilustrações do painel escuro ficam. */
+html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art {
+  display: block !important;
+}
+
+/* ---------- Retrato: acima do tabuleiro ---------- */
+
+.sophia-portrait {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  margin-bottom: -4px; /* as patas pousam na borda do tabuleiro */
+  line-height: 0;
+}
+
+.sophia-art--portrait {
+  width: 100%;
+}
+
+/* Poses iniciais: cabeça inclinada, olhar de frente, boca calma. */
+.spo-head {
+  transform-origin: 210px 300px;
+  transform: rotate(8deg);
+}
+.slo-lid { transform: translateY(0); }
+.spo-lid { transform: translateY(0); }
+.spo-happy, .spo-blush, .spo-mouth-grin { opacity: 0; }
+
+/* ---------- Sala gamer: abaixo do bloco do jogo ---------- */
+
+.sophia-lounge {
+  margin: clamp(1.4rem, 3vw, 2.2rem) 0 0;
+  border: 1px solid #2a2a28;
+  background: #07080d;
+  line-height: 0;
+  overflow: hidden;
+}
+
+/* ---------- Animações ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Retrato, 14 s: olha o jogo → volta à inclinação → sorrisão → olha de novo. */
+  .spo-head { animation: spo-head 14s ease-in-out infinite; }
+  .spo-gaze { animation: spo-gaze 14s ease-in-out infinite; }
+  .spo-lid { animation: spo-lid 14s ease-in-out infinite; }
+  .spo-open { animation: spo-open 14s step-end infinite; }
+  .spo-happy { animation: spo-happy 14s step-end infinite; }
+  .spo-mouth-calm { animation: spo-mouth-calm 14s step-end infinite; }
+  .spo-mouth-grin { animation: spo-mouth-grin 14s step-end infinite; }
+  .spo-blush { animation: spo-blush 14s ease-in-out infinite; }
+  .spo-ear-l, .spo-ear-r { animation: spo-ear 14s ease-in-out infinite; }
+  .spo-ear-l { transform-origin: 150px 140px; }
+  .spo-ear-r { transform-origin: 270px 140px; animation-delay: .4s; }
+  .spo-tassel { transform-origin: 50% 0; transform-box: fill-box; animation: spo-tassel 5s ease-in-out infinite; }
+
+  /* Sala gamer */
+  .slo-tail { transform-box: fill-box; transform-origin: 100% 85%; animation: slo-tail 6s ease-in-out infinite alternate; }
+  .slo-head { transform-box: fill-box; transform-origin: 40% 100%; animation: slo-head 7s ease-in-out infinite; }
+  .slo-thumb { animation: slo-tap 2.6s steps(1) infinite; }
+  .slo-pad-led { animation: slo-pulse 1.4s ease-in-out infinite; }
+  .slo-tassel { transform-box: fill-box; transform-origin: 50% 0; animation: slo-sway 3.6s ease-in-out infinite; }
+  .slo-lid { animation: slo-blink 6.5s ease-in-out infinite; }
+  .slo-twinkle path, .slo-star { animation: slo-twinkle 2.8s ease-in-out infinite alternate; }
+  .slo-led-a { animation: slo-led-a 1.4s steps(1) infinite; }
+  .slo-led-b { animation: slo-led-b 2.3s steps(1) infinite; }
+  .slo-led-c { animation: slo-led-c .9s steps(1) infinite; }
+  .slo-scroll { animation: slo-scroll 16s linear infinite; }
+  .slo-eq { transform-box: fill-box; transform-origin: 50% 100%; animation: slo-eq 1s ease-in-out infinite alternate; }
+  .slo-rec { animation: slo-led-a 1.2s steps(1) infinite; }
+  .slo-needle { transform-box: fill-box; transform-origin: 50% 100%; animation: slo-needle 1.7s ease-in-out infinite alternate; }
+  .slo-steam path { animation: slo-steam 3.2s ease-in-out infinite; }
+  .slo-neon { animation: slo-neon 8s steps(1) infinite; }
+  .slo-motes circle { animation: slo-mote 9s ease-in-out infinite alternate; }
+  .slo-motes circle:nth-child(2) { animation-delay: -3s; }
+  .slo-motes circle:nth-child(3) { animation-delay: -6s; }
+
+  [data-art-anim][data-paused='true'] *,
+  [data-art-anim][data-paused='true'] {
+    animation-play-state: paused !important;
+  }
+}
+
+/* rest 0–22 · desce 22–26 · olha 26–44 · volta 44–48 · rest 48–60 · sorrisão 60–64…78–82 · olha 86–94 · volta 94–98 */
+@keyframes spo-head {
+  0%, 21% { transform: rotate(8deg); }
+  26%, 44% { transform: translateY(14px) rotate(0deg) scaleY(.94); }
+  49%, 59% { transform: rotate(8deg); }
+  63% { transform: rotate(9deg) scale(1.035); }
+  67% { transform: rotate(6deg) scale(1.04); }
+  72% { transform: rotate(10deg) scale(1.035); }
+  77% { transform: rotate(7deg) scale(1.04); }
+  83% { transform: rotate(8deg); }
+  87%, 93% { transform: translateY(14px) rotate(0deg) scaleY(.94); }
+  98%, 100% { transform: rotate(8deg); }
+}
+@keyframes spo-gaze {
+  0%, 21% { transform: translate(0, 0); }
+  26%, 44% { transform: translate(0, 10px); }
+  49%, 86% { transform: translate(0, 0); }
+  88%, 93% { transform: translate(0, 10px); }
+  98%, 100% { transform: translate(0, 0); }
+}
+/* pálpebra: 0 = aberta, 44 = fechada, 14 = meio fechada (olhando para baixo) */
+@keyframes spo-lid {
+  0%, 9.6% { transform: translateY(0); }
+  10.6% { transform: translateY(44px); }
+  11.6%, 21% { transform: translateY(0); }
+  26%, 44% { transform: translateY(13px); }
+  49%, 86% { transform: translateY(0); }
+  88%, 93% { transform: translateY(13px); }
+  98%, 100% { transform: translateY(0); }
+}
+@keyframes spo-open { 0%, 60% { opacity: 1; } 60.01%, 81% { opacity: 0; } 81.01%, 100% { opacity: 1; } }
+@keyframes spo-happy { 0%, 60% { opacity: 0; } 60.01%, 81% { opacity: 1; } 81.01%, 100% { opacity: 0; } }
+@keyframes spo-mouth-calm { 0%, 60% { opacity: 1; } 60.01%, 81% { opacity: 0; } 81.01%, 100% { opacity: 1; } }
+@keyframes spo-mouth-grin { 0%, 60% { opacity: 0; } 60.01%, 81% { opacity: 1; } 81.01%, 100% { opacity: 0; } }
+@keyframes spo-blush { 0%, 60% { opacity: 0; } 64%, 78% { opacity: .5; } 82%, 100% { opacity: 0; } }
+@keyframes spo-ear { 0%, 30%, 33%, 100% { transform: rotate(0deg); } 31.5% { transform: rotate(-4deg); } }
+@keyframes spo-tassel { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+
+@keyframes slo-tail { from { transform: rotate(-2.4deg); } to { transform: rotate(2.6deg); } }
+@keyframes slo-head { 0%, 100% { transform: translateY(0) rotate(0deg); } 40% { transform: translateY(-1.5px) rotate(-.8deg); } 70% { transform: translateY(.5px) rotate(.5deg); } }
+@keyframes slo-tap { 0%, 100% { transform: translate(0, 0); } 6% { transform: translate(1px, 2px); } 12% { transform: translate(0, 0); } 30% { transform: translate(-1px, 1.5px); } 36% { transform: translate(0, 0); } 62% { transform: translate(1.5px, 2px); } 68% { transform: translate(0, 0); } 71% { transform: translate(1px, 2px); } 77% { transform: translate(0, 0); } }
+@keyframes slo-pulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@keyframes slo-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes slo-blink { 0%, 93%, 100% { transform: translateY(0); } 95% { transform: translateY(46px); } 97% { transform: translateY(0); } }
+@keyframes slo-twinkle { from { opacity: .45; } to { opacity: 1; } }
+@keyframes slo-led-a { 0%, 100% { opacity: 1; } 22% { opacity: .2; } 38% { opacity: 1; } 71% { opacity: .2; } 85% { opacity: 1; } }
+@keyframes slo-led-b { 0%, 100% { opacity: 1; } 30% { opacity: .25; } 34% { opacity: 1; } 76% { opacity: .25; } }
+@keyframes slo-led-c { 0%, 100% { opacity: .2; } 25% { opacity: 1; } 50% { opacity: .2; } 62% { opacity: 1; } 80% { opacity: .2; } }
+@keyframes slo-scroll { from { transform: translateY(0); } to { transform: translateY(calc(var(--dy) * -1)); } }
+@keyframes slo-eq { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+@keyframes slo-needle { from { transform: rotate(-16deg); } to { transform: rotate(18deg); } }
+@keyframes slo-steam { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: .7; } 100% { opacity: 0; transform: translateY(-8px); } }
+@keyframes slo-neon { 0%, 100% { opacity: 1; } 41% { opacity: .55; } 42% { opacity: 1; } 43% { opacity: .4; } 44% { opacity: 1; } 78% { opacity: .7; } 79% { opacity: 1; } }
+@keyframes slo-mote { from { transform: translate(0, 0); } to { transform: translate(10px, -18px); } }

@@ -136,43 +136,6 @@ export function head(eyes: Eyes = 'fwd', mouth: Mouth = 'calm', tilt = 0): Pixel
   return px;
 }
 
-// ----------------------------------------------------------------- patas --
-
-/** Patas apoiadas na borda (o observador espia por cima do tabuleiro). */
-const PAW = [
-  '..gggg..',
-  '.gggggg.',
-  'ggmggmgg',
-];
-
-export function paws(): Pixels {
-  const px = new Pixels(HEAD_W, 3);
-  px.stamp(fromRows(PAW), 4, 0);
-  px.stamp(fromRows(PAW), 21, 0);
-  return px;
-}
-
-// ----------------------------------------------------------- observadora --
-
-export type ObserverPose = 'rest' | 'blink' | 'down' | 'grin';
-
-export const OBSERVER_W = HEAD_W + 2;
-export const OBSERVER_H = HEAD_H + 3;
-
-/**
- * Observadora: cabeça inclinada (pose inicial) → olha para baixo, cabeça
- * baixa → volta à inclinação → sorrisão → olha de novo.
- */
-export function observer(pose: ObserverPose): Pixels {
-  const out = new Pixels(OBSERVER_W, OBSERVER_H);
-  if (pose === 'down') out.stamp(head('down', 'calm', 0), 1, 2);
-  else if (pose === 'grin') out.stamp(head('happy', 'grin', 1), 1, 0);
-  else if (pose === 'blink') out.stamp(head('shut', 'calm', 1), 1, 0);
-  else out.stamp(head('fwd', 'calm', 1), 1, 0);
-  out.stamp(paws(), 1, HEAD_H);
-  return out;
-}
-
 // --------------------------------------------------------------- mascote --
 
 export type Mood = 'calm' | 'play' | 'cheer' | 'sleep';
