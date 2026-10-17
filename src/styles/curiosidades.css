@@ -1,0 +1,323 @@
+/*
+ * Curiosidades — /curiosidades/ and the teaser band on the home.
+ * Content lives in src/curiosities.ts. Surfaces and tokens come from the
+ * authorial palette; Editorial and Legacy text roles are listed under
+ * "Consumers" in mode-tokens.css. Nothing here animates except a hover
+ * transition that stops under prefers-reduced-motion.
+ */
+
+.curiosities-page {
+  width: min(var(--page), calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6rem) 0 5rem;
+}
+
+/* ---------- Hero ---------- */
+
+.curiosities-hero {
+  max-width: 46rem;
+}
+
+.curiosities-hero h1 {
+  margin: 0.2rem 0 1.2rem;
+  color: var(--ink);
+  font-size: clamp(3rem, 9vw, 6.2rem);
+  line-height: 0.92;
+}
+
+.curiosities-hero__lead {
+  max-width: 58ch;
+  margin: 0 0 1.1rem;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.36rem);
+  line-height: 1.7;
+}
+
+.curiosities-hero__meta {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-retro);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- List ---------- */
+
+.curiosities-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.4vw, 1.6rem);
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.curiosity {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+/* A thin accent rule on the top edge gives each theme its own colour. */
+.curiosity::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--accent, var(--sun));
+}
+
+.curiosity > article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  height: 100%;
+  padding: clamp(1.4rem, 3vw, 2rem);
+}
+
+.curiosity__head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.curiosity__index {
+  color: var(--ink-soft);
+  font-family: var(--font-retro);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.curiosity__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.curiosity__tag::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent, var(--sun));
+}
+
+.curiosity__title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.curiosity__text {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.curiosity__why {
+  margin: auto 0 0;
+  padding: 0.15rem 0 0.15rem 0.9rem;
+  border-left: 3px solid var(--accent, var(--sun));
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.curiosity__link {
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.curiosity__link:hover,
+.curiosity__link:focus-visible {
+  border-color: var(--ink-soft);
+  background: var(--sun-soft);
+}
+
+/* Wide card (last item): text on the left, the seal on the right. */
+.curiosity--wide {
+  grid-column: 1 / -1;
+  background: var(--surface-soft);
+}
+
+.curiosity--wide > article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(96px, 14vw, 168px);
+  grid-template-areas:
+    'head   sigil'
+    'title  sigil'
+    'text   sigil'
+    'why    sigil'
+    'link   sigil';
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.curiosity--wide .curiosity__head { grid-area: head; }
+.curiosity--wide .curiosity__title { grid-area: title; }
+.curiosity--wide .curiosity__text { grid-area: text; max-width: 62ch; }
+.curiosity--wide .curiosity__why { grid-area: why; max-width: 62ch; margin-top: 0.15rem; }
+.curiosity--wide .curiosity__link { grid-area: link; justify-self: start; margin-top: 0.4rem; }
+
+.curiosity__sigil {
+  grid-area: sigil;
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  color: var(--accent, var(--rose));
+  opacity: 0.9;
+}
+
+/* ---------- Header: current page ---------- */
+
+/* The scrollspy marks sections with aria-current="true"; a page link uses
+   "page", so mirror that look here instead of editing the shared rules. */
+.nav-links a[aria-current='page'] {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
+  background: #000080;
+  color: #ffffff;
+}
+
+/* Legacy · 1998 keeps its single-row link bar: with this eighth item the bar
+   (960 px wide) wraps onto a second row. There the page is reached from the
+   home band instead. Revisit if the Legacy header is ever widened. */
+html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'] {
+  display: none !important;
+}
+
+/* ---------- Return links ---------- */
+
+.curiosities-return {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 2rem 0 0;
+}
+
+.curiosities-return a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.curiosities-return a:hover,
+.curiosities-return a:focus-visible {
+  border-color: var(--ink-soft);
+  background: var(--sun-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .curiosity__link,
+  .curiosities-return a,
+  .curiosities-teaser__link {
+    transition: background-color 160ms ease, border-color 160ms ease;
+  }
+}
+
+@media (max-width: 860px) {
+  .curiosities-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Home teaser (between Percurso and Música, unnumbered) ---------- */
+
+.curiosities-teaser {
+  width: min(var(--page), calc(100% - 2rem));
+  margin: clamp(2rem, 5vw, 3.5rem) auto;
+  padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.3rem, 3.4vw, 2.2rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--sun-soft) 38%, var(--surface));
+}
+
+.curiosities-teaser__copy {
+  max-width: 54ch;
+}
+
+.curiosities-teaser__copy .eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.curiosities-teaser__title {
+  margin: 0 0 0.35rem;
+  color: var(--ink);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.curiosities-teaser__text {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.curiosities-teaser__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.curiosities-teaser__link:hover,
+.curiosities-teaser__link:focus-visible {
+  border-color: var(--ink-soft);
+  background: var(--sun-soft);
+}

@@ -139,3 +139,30 @@
     aspect-ratio: 3 / 2;
   }
 }
+
+@media (max-width: 640px) {
+  /* Curiosidades: single column, the closing card drops its seal and the
+     teaser action spans the width so the tap target stays easy to hit. */
+  .curiosities-page {
+    padding-top: 2.25rem;
+  }
+
+  .curiosity--wide > article {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .curiosity--wide .curiosity__sigil {
+    display: none;
+  }
+
+  .curiosities-teaser__link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .curiosities-return a {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
