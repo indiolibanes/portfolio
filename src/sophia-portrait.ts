@@ -99,7 +99,7 @@ function defs(): string {
 <linearGradient id="spo-lidshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1608" stop-opacity=".6"/><stop offset=".55" stop-color="#2a1608" stop-opacity="0"/></linearGradient>
 <linearGradient id="spo-paw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d3d8f"/><stop offset="1" stop-color="#121a4a"/></linearGradient>
 <linearGradient id="spo-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0505a"/><stop offset="1" stop-color="#b11626"/></linearGradient>
-<linearGradient id="spo-coat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8e2d6"/></linearGradient>
+<linearGradient id="spo-coat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3a92"/><stop offset="1" stop-color="#0f1647"/></linearGradient>
 <radialGradient id="spo-nose" cx="40%" cy="30%" r="70%"><stop offset="0" stop-color="#5b4650"/><stop offset="1" stop-color="#1c1216"/></radialGradient>
 <radialGradient id="spo-muzzle" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffefa"/><stop offset=".65" stop-color="#fffefa" stop-opacity=".9"/><stop offset="1" stop-color="#fffefa" stop-opacity="0"/></radialGradient>
 <radialGradient id="spo-gem" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffd0e0"/><stop offset="1" stop-color="#d23a72"/></radialGradient>
@@ -209,13 +209,15 @@ function body(): string {
 <path d="${poly(ruffOutline)}" fill="url(#spo-fur)"/>
 <path d="${locks(chest)}" fill="#fffaf0"/>
 <path d="M132 360L138 322Q160 306 188 304L210 338L232 304Q260 306 282 322L288 360Z" fill="url(#spo-coat)"/>
-<path d="M188 304L210 338L232 304" fill="none" stroke="url(#spo-gold)" stroke-width="2" stroke-linejoin="round"/>
-<path d="M146 352Q150 334 160 324M274 352Q270 334 260 324" fill="none" stroke="url(#spo-gold)" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
+<path d="M132 360L136 326Q142 316 156 312L176 306L168 332L162 360ZM288 360L284 326Q278 316 264 312L244 306L252 332L258 360Z" fill="url(#spo-red)"/>
+<path d="M136 326Q142 316 156 312L176 306L168 332M284 326Q278 316 264 312L244 306L252 332" fill="none" stroke="url(#spo-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M186 306Q192 316 198 308Q204 320 210 310Q216 320 222 308Q228 316 234 306L210 338Z" fill="#0c123a" stroke="url(#spo-gold)" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="${star4(176, 346, 6, 4, 0.2)}" fill="url(#spo-gold)"/><path d="${star4(244, 346, 6, 4, 0.2)}" fill="url(#spo-gold)"/><path d="${star4(210, 354, 5, 3.4, 0.2)}" fill="url(#spo-gold)"/>
 <path d="M210 326L192 318Q186 330 198 336ZM210 326L228 318Q234 330 222 336Z" fill="url(#spo-red)"/>
 <path d="M205 332L196 360L204 354L208 362L212 336ZM215 332L224 360L216 354L212 362L208 336Z" fill="url(#spo-red)"/>
 <circle cx="210" cy="327" r="4.4" fill="#b11626"/>
-<circle cx="210" cy="343" r="7" fill="url(#spo-gold)"/>
-<circle cx="210" cy="343" r="3.8" fill="url(#spo-gem)"/>
+<path transform="translate(207 343) rotate(8)" d="M0 -9A9 9 0 0 0 0 9A13 13 0 0 1 0 -9Z" fill="url(#spo-gold)"/>
+<circle cx="212" cy="343" r="3.6" fill="url(#spo-gem)"/>
 ${paw(112)}${paw(308)}
 </g>`;
 }

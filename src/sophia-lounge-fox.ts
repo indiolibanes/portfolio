@@ -6,18 +6,27 @@
  * Fiel à Sophia original: proporção "chibi" (cabeça grande, corpo pequeno),
  * focinho curto, orelhas enormes com a ponta azul-marinho e o miolo felpudo,
  * olho âmbar grande com delineador alado (por trás dos óculos 3D), estrela
- * dourada na testa, fitas vermelhas nas orelhas, jaleco branco com friso
- * dourado e laço vermelho, patas azul-marinho com estrelinhas e uma cauda
- * enorme, creme na base e azul-marinho na ponta, com a constelação dourada.
+ * dourada na testa, fitas vermelhas nas orelhas, patas azul-marinho com
+ * estrelinhas e uma cauda enorme, creme na base e azul-marinho na ponta, com a
+ * constelação dourada. O traje é lunar e lembra o da Hsin: corpete azul-noite
+ * de gola escalonada, sobretudo vermelho de mangas largas forradas de marfim,
+ * laço vermelho com broche de lua, estrelas douradas e saia longa com
+ * crescentes bordados. Cintura marcada e saia aberta deixam a silhueta feminina.
  */
 import { type LockSpec, type Pt, limb, locks, n1, poly, smooth, spline, star4, strands, tufts } from './sophia-draw.ts';
 
 const TORSO: Pt[] = [
-  [-52, -6], [-62, -50], [-56, -100], [-38, -146], [-8, -178], [26, -192], [56, -188], [76, -160],
-  [80, -120], [74, -84], [62, -48], [46, -20], [10, -2],
+  [-46, -6], [-52, -50], [-44, -96], [-36, -128], [-30, -160], [-8, -184], [26, -194], [56, -190],
+  [74, -166], [76, -140], [66, -112], [60, -90], [52, -50], [40, -20], [10, -2],
 ];
-const THIGH: Pt[] = [[-58, -24], [-50, -68], [-8, -92], [34, -82], [62, -46], [58, -12], [20, 0], [-30, 0]];
-const FOOT: Pt[] = [[34, -20], [78, -26], [112, -17], [124, -3], [100, 3], [40, 3]];
+/** Saia longa: do quadril até o chão, aberta à frente sobre as pernas. */
+const SKIRT: Pt[] = [
+  [-54, -104], [-2, -100], [50, -100], [66, -94], [88, -82], [106, -58], [112, -30], [108, -3],
+  [40, 4], [-40, 5], [-76, 2], [-80, -30], [-68, -72],
+];
+const FOOT: Pt[] = [[80, -20], [112, -24], [132, -16], [140, -4], [112, 3], [80, 3]];
+/** Capa vermelha do sobretudo, atrás das costas. */
+const CAPE: Pt[] = [[-22, -186], [-54, -160], [-74, -110], [-86, -50], [-72, -28], [-58, -62], [-44, -112], [-30, -150], [4, -190]];
 
 /** Cabeça de perfil (olha para +x): crânio redondo e focinho curto. */
 const HEAD: Pt[] = [
@@ -48,8 +57,8 @@ const CHEST: LockSpec[] = [
 const TAIL_CENTER: Pt[] = [[-46, -36], [-100, -30], [-160, -30], [-212, -62], [-246, -120], [-250, -186], [-222, -246], [-176, -272]];
 const TAIL_W = [34, 58, 80, 92, 92, 80, 52, 8];
 
-const ARM_NEAR_C: Pt[] = [[22, -152], [50, -130], [80, -112], [108, -101]];
-const ARM_FAR_C: Pt[] = [[42, -170], [72, -140], [100, -120], [134, -108]];
+const ARM_NEAR_C: Pt[] = [[22, -152], [50, -130], [78, -113], [104, -103]];
+const ARM_FAR_C: Pt[] = [[40, -168], [72, -140], [100, -122], [134, -110]];
 
 const EYE_C: Pt = [108, -262];
 
@@ -65,6 +74,10 @@ export function foxDefs(): string {
 <linearGradient id="slo-ear" gradientUnits="userSpaceOnUse" x1="0" y1="-456" x2="0" y2="-290"><stop offset="0" stop-color="#0c1340"/><stop offset=".34" stop-color="#1c2a7c"/><stop offset=".5" stop-color="#4a58a4"/><stop offset=".62" stop-color="#c9c8d6"/><stop offset=".76" stop-color="#efe6d4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
 <linearGradient id="slo-ear-far" gradientUnits="userSpaceOnUse" x1="0" y1="-456" x2="0" y2="-290"><stop offset="0" stop-color="#0a1038"/><stop offset=".5" stop-color="#18246a"/><stop offset=".76" stop-color="#4a5596"/><stop offset="1" stop-color="#8a8fa8"/></linearGradient>
 <linearGradient id="slo-ear-in" gradientUnits="userSpaceOnUse" x1="0" y1="-384" x2="0" y2="-296"><stop offset="0" stop-color="#e9ddd0"/><stop offset="1" stop-color="#f4dccf"/></linearGradient>
+<linearGradient id="slo-dress" gradientUnits="userSpaceOnUse" x1="-80" y1="0" x2="120" y2="0"><stop offset="0" stop-color="#0e1544"/><stop offset=".55" stop-color="#1e2a78"/><stop offset="1" stop-color="#3a4cb0"/></linearGradient>
+<linearGradient id="slo-cape" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="60" y2="0"><stop offset="0" stop-color="#6e0f1c"/><stop offset="1" stop-color="#b8212f"/></linearGradient>
+<linearGradient id="slo-lining" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff7e6"/><stop offset="1" stop-color="#d9d3ea"/></linearGradient>
+<radialGradient id="slo-gem" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#c8f4ff"/><stop offset=".55" stop-color="#3fb0ff"/><stop offset="1" stop-color="#1a3fa8"/></radialGradient>
 <linearGradient id="slo-navy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34459d"/><stop offset="1" stop-color="#121a4c"/></linearGradient>
 <linearGradient id="slo-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#f0b73e"/><stop offset="1" stop-color="#b9771d"/></linearGradient>
 <radialGradient id="slo-iris" cx="50%" cy="40%" r="64%"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".4" stop-color="#f7b83c"/><stop offset=".8" stop-color="#c9741a"/><stop offset="1" stop-color="#7a3c10"/></radialGradient>
@@ -77,7 +90,9 @@ export function foxDefs(): string {
 <radialGradient id="slo-nose" cx="40%" cy="30%" r="70%"><stop offset="0" stop-color="#5b4a56"/><stop offset="1" stop-color="#150e12"/></radialGradient>
 <filter id="slo-fblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".7"/></filter>
 <clipPath id="slo-eye-clip"><path d="${eyeClip}"/></clipPath>
-<clipPath id="slo-fox-clip"><path d="${poly(spline(TORSO, true, 5))}"/><path d="${poly(spline(THIGH, true, 5))}"/><path d="${smooth(HEAD)}"/><path d="${EAR_NEAR_D}"/><path d="${EAR_FAR_D}"/><path d="${poly(limb(ARM_NEAR_C, [44, 38, 30, 26]))}"/><path d="${poly(limb(TAIL_CENTER, TAIL_W))}"/></clipPath>`;
+<clipPath id="slo-fox-clip"><path d="${poly(spline(TORSO, true, 5))}"/><path d="${poly(spline(CAPE, true, 5))}"/><path d="${poly(limb(ARM_NEAR_C, [28, 32, 38, 40]))}"/></clipPath>
+<clipPath id="slo-head-clip"><path d="${smooth(HEAD)}"/><path d="${EAR_NEAR_D}"/><path d="${EAR_FAR_D}"/></clipPath>
+<clipPath id="slo-skirt-clip"><path d="${poly(spline(SKIRT, true, 5))}"/></clipPath>`;
 }
 
 /** Contorno felpudo: tufos com o mesmo preenchimento do corpo (sem halo). */
@@ -120,17 +135,22 @@ function eye(cx: number, cy: number): string {
 </g>
 <path d="M${cx - 26} ${cy - 4}C${cx - 14} ${cy - 28} ${cx + 14} ${cy - 30} ${cx + 24} ${cy + 6}" fill="none" stroke="#1b1210" stroke-width="4" stroke-linecap="round"/>
 <path d="M${cx - 20} ${cy - 17}Q${cx - 38} ${cy - 20} ${cx - 52} ${cy - 34}Q${cx - 46} ${cy - 14} ${cx - 30} ${cy - 2}Z" fill="#1b1210"/>
-<path d="M${cx + 24} ${cy + 6}C${cx + 12} ${cy + 22} ${cx - 8} ${cy + 22} ${cx - 22} ${cy + 6}" fill="none" stroke="#3b2a22" stroke-width="1.2" opacity=".7"/>`;
+<path d="M${cx + 24} ${cy + 6}C${cx + 12} ${cy + 22} ${cx - 8} ${cy + 22} ${cx - 22} ${cy + 6}" fill="none" stroke="#3b2a22" stroke-width="1.2" opacity=".7"/>
+<path d="M${cx - 24} ${cy - 6}L${cx - 36} ${cy - 3}M${cx - 18} ${cy - 15}L${cx - 28} ${cy - 14}M${cx + 6} ${cy - 25}L${cx + 9} ${cy - 31}M${cx + 16} ${cy - 21}L${cx + 21} ${cy - 26}" fill="none" stroke="#1b1210" stroke-width="2" stroke-linecap="round"/>`;
+}
+
+/** Lua crescente (abre para a direita), centro em (cx,cy), raio r, girada em `rot` graus. */
+function crescent(cx: number, cy: number, r: number, rot = 0): string {
+  return `<path transform="translate(${cx} ${cy}) rotate(${rot})" d="M0 ${-r}A${r} ${r} 0 0 0 0 ${r}A${n1(r * 1.45)} ${n1(r * 1.45)} 0 0 1 0 ${-r}Z" fill="url(#slo-gold)"/>`;
 }
 
 export function foxMarkup(): string {
   const torso = spline(TORSO, true, 5);
-  const thigh = spline(THIGH, true, 5);
+  const skirt = spline(SKIRT, true, 5);
+  const cape = spline(CAPE, true, 5);
   const foot = spline(FOOT, true, 4);
   const head = spline(HEAD, true, 4);
   const tailShape = limb(TAIL_CENTER, TAIL_W);
-  const armNear = limb(ARM_NEAR_C, [44, 38, 30, 26]);
-  const armFar = limb(ARM_FAR_C, [30, 26, 22, 20]);
 
   const tailTufts = tufts(tailShape, { seed: 71, len: [10, 22], width: [16, 24], gap: 7, bend: 9 });
   const tailTufts2 = tufts(tailShape, { seed: 72, len: [5, 10], width: [12, 18], gap: 5, bend: 5 });
@@ -155,6 +175,37 @@ export function foxMarkup(): string {
 <circle cx="28" cy="-290" r="8" fill="url(#slo-gold)"/><circle cx="28" cy="-290" r="4.6" fill="#d1263a"/><circle cx="26.6" cy="-291.6" r="1.4" fill="#ffb0b8"/>
 </g>`;
 
+  // escalonado da gola do corpete
+  const scallops = (() => {
+    const A: Pt = [-24, -178];
+    const B: Pt = [62, -194];
+    const n = 8;
+    let d = `M${A[0]} ${A[1]}`;
+    for (let i = 0; i < n; i += 1) {
+      const t0 = i / n;
+      const t1 = (i + 1) / n;
+      const x1 = A[0] + (B[0] - A[0]) * t1;
+      const y1 = A[1] + (B[1] - A[1]) * t1;
+      const cx = A[0] + (B[0] - A[0]) * ((t0 + t1) / 2);
+      const cy = A[1] + (B[1] - A[1]) * ((t0 + t1) / 2) - 8;
+      d += `Q${n1(cx)} ${n1(cy)} ${n1(x1)} ${n1(y1)}`;
+    }
+    return d + `L${B[0]} ${B[1] + 14}L${A[0]} ${A[1] + 14}Z`;
+  })();
+
+  // laço de fita vermelha com broche de lua no peito
+  const bow = `<g class="slo-tassel">
+<path d="M62 -170L54 -132L60 -138L64 -126L68 -168Z" fill="url(#slo-red)"/>
+<path d="M66 -170L76 -136L70 -141L68 -128L64 -168Z" fill="url(#slo-red)" opacity=".92"/>
+</g>
+<path d="M64 -172L46 -184Q40 -172 52 -166ZM64 -172L82 -184Q88 -172 76 -166Z" fill="url(#slo-red)"/>
+<circle cx="64" cy="-172" r="4.6" fill="#b11626"/>
+${crescent(62, -156, 9, 8)}
+<circle cx="66" cy="-156" r="4.4" fill="url(#slo-gem)"/>`;
+
+  const sleeveNear = limb(ARM_NEAR_C, [28, 32, 38, 40]);
+  const sleeveFar = limb(ARM_FAR_C, [22, 24, 28, 30]);
+
   return `${shadowUnder}
 <g class="slo-tail">
 <path d="${tailTufts}" fill="url(#slo-tail-back)"/>
@@ -165,47 +216,67 @@ export function foxMarkup(): string {
 <path d="${lines}" fill="none" stroke="#f3c75a" stroke-width="1.6" stroke-dasharray="1 4.5" stroke-linecap="round" opacity=".95"/>
 <g class="slo-twinkle">${stars.map((s, i) => `<path d="${star4(s[0], s[1], i % 2 ? 9 : 14, i % 2 ? 6 : 9, 0.18)}" fill="url(#slo-gold)" style="animation-delay:${i * 0.7}s"/>`).join('')}</g>
 </g>
-${furShape(torso, 'url(#slo-coat)', 51, { len: [3, 6], gap: 12, where: (p, n) => p[1] < -150 && n[1] < 0.4, flow: 40, from: [0, -120] })}
+<g class="slo-foot"><path d="${poly(foot)}" fill="url(#slo-navy)"/><path d="M112 -22L116 -4M126 -18L130 -4" stroke="#0a1038" stroke-width="1.4" opacity=".6"/><path d="M90 -14Q112 -22 132 -12" fill="none" stroke="#8fa0ee" stroke-width="1.6" opacity=".4" stroke-linecap="round"/><path d="${star4(112, -12, 7, 4.6, 0.2)}" fill="url(#slo-gold)"/></g>
+<g class="slo-upper">
+<g class="slo-cape"><path d="${poly(cape)}" fill="url(#slo-cape)"/><path d="M-30 -150Q-48 -110 -58 -62" fill="none" stroke="#fff7e6" stroke-width="2" opacity=".55" stroke-linecap="round"/><path d="${star4(-62, -92, 8, 5, 0.2)}" fill="url(#slo-gold)"/></g>
+<path d="${poly(sleeveFar)}" fill="#7a1522"/>
+${paw(138, -108, -10, 0.95, '#1a2566')}
+<path d="${poly(torso)}" fill="url(#slo-dress)"/>
+<path d="${scallops}" fill="#0c123a" stroke="url(#slo-gold)" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M-40 -150Q-22 -128 -30 -104M52 -150Q64 -128 56 -104" fill="none" stroke="#3a4cb0" stroke-width="1.6" opacity=".6" stroke-linecap="round"/>
+<path d="M-44 -108Q8 -96 62 -106" fill="none" stroke="url(#slo-red)" stroke-width="6" stroke-linecap="round"/>
+${[14, 32, 50].map((x) => `<path d="${star4(x, -104, 7, 5, 0.2)}" fill="url(#slo-gold)"/>`).join('')}
 <path d="${locks(chest, 3)}" fill="url(#slo-fur-back)"/>
 <path d="${locks(chest)}" fill="url(#slo-fur)"/>
-<path d="M-56 -118Q10 -104 76 -122" fill="none" stroke="url(#slo-red)" stroke-width="5" stroke-linecap="round"/>
-<g class="slo-tassel"><path d="M66 -122L56 -118L52 -84L58 -90L62 -80L68 -118Z" fill="url(#slo-red)"/><path d="M70 -122L78 -112L80 -78L74 -84L70 -76L66 -118Z" fill="url(#slo-red)" opacity=".92"/></g>
-<path d="M-6 -150Q10 -122 6 -100M52 -176Q60 -140 58 -112" fill="none" stroke="url(#slo-gold)" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
-<path d="${poly(thigh)}" fill="#050818" opacity=".28" transform="translate(-4 3)" filter="url(#slo-fblur)"/>
-${furShape(thigh, 'url(#slo-coat)', 52, { len: [3, 6], gap: 12, flow: 30, from: [-30, -60], where: () => false })}
-<path d="M-54 -20Q0 -8 56 -22" fill="none" stroke="url(#slo-gold)" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>
-<g class="slo-foot"><path d="${poly(foot)}" fill="url(#slo-navy)"/><path d="M86 -22L90 -4M102 -20L106 -4M70 -22L72 -4" stroke="#0a1038" stroke-width="1.4" opacity=".6"/><path d="M44 -14Q80 -22 112 -12" fill="none" stroke="#8fa0ee" stroke-width="1.6" opacity=".4" stroke-linecap="round"/><path d="${star4(62, -12, 7, 4.6, 0.2)}" fill="url(#slo-gold)"/></g>
-<path d="${poly(armFar)}" fill="url(#slo-fur-far)"/>
-${paw(138, -106, -10, 0.95, '#1a2566')}
-${controller()}
+${bow}
+<g clip-path="url(#slo-fox-clip)" pointer-events="none">
+<ellipse cx="-30" cy="-110" rx="30" ry="70" fill="#070a24" opacity=".3" filter="url(#slo-soft)"/>
+<ellipse cx="60" cy="-120" rx="14" ry="46" fill="#9fb4ff" opacity=".22" filter="url(#slo-soft)"/>
+<rect x="-120" y="-200" width="260" height="200" fill="url(#slo-rim)"/>
+</g>
+<g class="slo-padwrap">${controller()}</g>
 <g class="slo-arm">
-<path d="${poly(armNear)}" fill="#1c2254" opacity=".3" transform="translate(-3 6)" filter="url(#slo-fblur)"/>
-<path d="${poly(armNear)}" fill="url(#slo-coat)"/>
-<path d="M40 -150Q66 -128 92 -112" fill="none" stroke="#c3c7dc" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-<path d="${locks([[88, -118, 16, 22, 18, 0.1], [92, -106, 44, 20, 16, 0.1], [84, -126, -6, 20, 16, 0.1]], 0)}" fill="url(#slo-fur)"/>
-<path d="M90 -126Q100 -110 92 -94" fill="none" stroke="url(#slo-gold)" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+<path d="M84 -126L110 -116L116 -84L100 -80L84 -88Z" fill="#9b1727"/>
+<path d="M88 -118L108 -110L111 -90L100 -88L90 -94Z" fill="url(#slo-lining)"/>
+<path d="${poly(sleeveNear)}" fill="#1c2254" opacity=".3" transform="translate(-3 6)" filter="url(#slo-fblur)"/>
+<path d="${poly(sleeveNear)}" fill="url(#slo-red)"/>
+<path d="M36 -154Q64 -130 92 -114" fill="none" stroke="#ff8a93" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+<path d="M92 -124Q104 -108 96 -92" fill="none" stroke="url(#slo-lining)" stroke-width="6" stroke-linecap="round"/>
+<path d="M95 -125Q107 -108 99 -91" fill="none" stroke="url(#slo-gold)" stroke-width="1.2" stroke-linecap="round"/>
 ${paw(112, -96, -8, 1.15, 'url(#slo-navy)')}
 <path d="${star4(112, -96, 5, 3.4, 0.2)}" fill="url(#slo-gold)"/>
 <g class="slo-thumb">${paw(128, -108, -12, 0.55, '#3a4aa6')}</g>
 </g>
 <g transform="translate(60 -200) scale(1.14) translate(-60 200)"><g class="slo-head">
-<path d="${EAR_FAR_D}" fill="url(#slo-ear-far)"/>
+<g class="slo-ear-f"><path d="${EAR_FAR_D}" fill="url(#slo-ear-far)"/></g>
+<g class="slo-ear-n">
 <path d="${EAR_NEAR_D}" fill="url(#slo-ear)"/>
 <path d="${EAR_NEAR_IN_D}" fill="url(#slo-ear-in)"/>
 <path d="${locks(EAR_PLUMES, 3)}" fill="#efe2cb"/>
 <path d="${locks(EAR_PLUMES)}" fill="#fffbf3"/>
+</g>
 <path transform="translate(1.5 4)" d="${locks(CHEEK, 2)}${locks(CREST, 2)}" fill="url(#slo-fur-back)"/>
 <path d="${poly(head)}" fill="url(#slo-fur)"/>
 <path d="${headFlow}" fill="none" stroke="#fff" stroke-width=".9" stroke-linecap="round" opacity=".3"/>
 <path d="${locks(CHEEK)}${locks(CREST)}" fill="url(#slo-fur)"/>
+<g clip-path="url(#slo-head-clip)" pointer-events="none">
+<ellipse cx="96" cy="-336" rx="36" ry="14" fill="#fff" opacity=".35" filter="url(#slo-soft)"/>
+<ellipse cx="60" cy="-204" rx="60" ry="12" fill="#232a63" opacity=".32" filter="url(#slo-soft)"/>
+<ellipse cx="0" cy="-250" rx="14" ry="40" fill="#1c2254" opacity=".24" filter="url(#slo-soft)"/>
+<rect x="-30" y="-470" width="220" height="280" fill="url(#slo-rim)"/>
+<rect x="-30" y="-470" width="220" height="280" fill="url(#slo-rim-warm)"/>
+</g>
 <path d="${star4(88, -312, 24, 13, 0.16)}" fill="url(#slo-gold)" stroke="#fff3c0" stroke-width=".7"/>
 <path d="${star4(98, -344, 8, 5, 0.2)}" fill="url(#slo-gold)"/>
+${crescent(34, -328, 11, -28)}
+<path d="${star4(52, -336, 6, 4, 0.2)}" fill="url(#slo-gold)"/>
 <path d="M70 -296Q92 -306 124 -298" fill="none" stroke="#e1a02e" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+<ellipse cx="116" cy="-231" rx="15" ry="7" fill="#ff8fa6" opacity=".42" filter="url(#slo-fblur)"/>
 ${eye(EYE_C[0], EYE_C[1])}
 <path d="M126 -271L140 -273L144 -251L130 -247Z" fill="url(#slo-lens-r)" stroke="#0b0b10" stroke-width="2.4" stroke-linejoin="round"/>
 <path d="M148 -254Q157 -251 155 -243Q151 -237 144 -240L142 -249Z" fill="url(#slo-nose)"/>
 <path d="M147 -252Q152 -253 154 -249" fill="none" stroke="#9fe8ff" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
-<path d="M146 -238Q138 -228 126 -230" fill="none" stroke="#3a2420" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M146 -238Q138 -228 126 -230" fill="none" stroke="#c4566a" stroke-width="2" stroke-linecap="round"/>
 ${ribbons}
 <g class="slo-glasses">
 <path d="M78 -270L38 -272Q30 -272 26 -262" fill="none" stroke="#0b0b10" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -217,15 +288,18 @@ ${ribbons}
 <path d="M126 -250Q130 -246 128 -240" fill="none" stroke="#e8ffff" stroke-width="2" stroke-linecap="round" opacity=".5"/>
 </g>
 </g></g>
-<g clip-path="url(#slo-fox-clip)" pointer-events="none">
-<ellipse cx="92" cy="-200" rx="44" ry="13" fill="#232a63" opacity=".34" filter="url(#slo-soft)"/>
-<ellipse cx="56" cy="-126" rx="30" ry="12" fill="#232a63" opacity=".3" filter="url(#slo-soft)" transform="rotate(32 56 -126)"/>
-<ellipse cx="-4" cy="-98" rx="56" ry="9" fill="#232a63" opacity=".26" filter="url(#slo-soft)"/>
-<ellipse cx="24" cy="-12" rx="80" ry="16" fill="#1c2254" opacity=".38" filter="url(#slo-soft)"/>
-<ellipse cx="-50" cy="-48" rx="22" ry="34" fill="#1c2254" opacity=".36" filter="url(#slo-soft)"/>
-<ellipse cx="-30" cy="-170" rx="30" ry="60" fill="#1c2254" opacity=".2" filter="url(#slo-soft)"/>
-<ellipse cx="96" cy="-336" rx="36" ry="14" fill="#fff" opacity=".35" filter="url(#slo-soft)"/>
-<ellipse cx="74" cy="-168" rx="12" ry="40" fill="#fff" opacity=".3" filter="url(#slo-soft)"/>
 </g>
-<g clip-path="url(#slo-fox-clip)"><rect x="-300" y="-460" width="500" height="470" fill="url(#slo-rim)"/><rect x="-300" y="-460" width="500" height="470" fill="url(#slo-rim-warm)"/></g>`;
+<path d="${poly(skirt)}" fill="url(#slo-dress)"/>
+<path d="M44 -98L62 -96L84 -62L88 -4L52 3L34 -44Z" fill="url(#slo-lining)" opacity=".92"/>
+<path d="M-30 -100Q-46 -50 -58 2M-8 -98Q-20 -50 -24 4M20 -98Q12 -50 14 4" fill="none" stroke="#0a1038" stroke-width="2" opacity=".35" stroke-linecap="round"/>
+<path d="M44 -98L62 -96L84 -62L88 -4M34 -44L52 3" fill="none" stroke="url(#slo-gold)" stroke-width="1.4" stroke-linecap="round" opacity=".9"/>
+<path d="M-76 -4Q-20 8 40 4Q80 3 108 -3" fill="none" stroke="url(#slo-gold)" stroke-width="2.4" stroke-linecap="round"/>
+${crescent(-40, -52, 9, 20)}${crescent(-10, -30, 7, -10)}${crescent(70, -34, 7, 10)}
+<path d="${star4(-24, -70, 6, 4, 0.2)}" fill="url(#slo-gold)"/><path d="${star4(8, -62, 5, 3.4, 0.2)}" fill="url(#slo-gold)"/>
+<g class="slo-tassel"><path d="M56 -100L48 -98L40 -50L47 -56L51 -44L58 -98Z" fill="url(#slo-red)"/><path d="M60 -100L68 -90L72 -48L65 -54L61 -42L56 -96Z" fill="url(#slo-red)" opacity=".92"/></g>
+<g clip-path="url(#slo-skirt-clip)" pointer-events="none">
+<ellipse cx="24" cy="-6" rx="100" ry="14" fill="#070a24" opacity=".4" filter="url(#slo-soft)"/>
+<ellipse cx="-56" cy="-50" rx="22" ry="50" fill="#070a24" opacity=".35" filter="url(#slo-soft)"/>
+<rect x="-90" y="-110" width="220" height="120" fill="url(#slo-rim)"/>
+</g>`;
 }

@@ -13,8 +13,17 @@ const f = (p: Pt): string => `${n1(p[0])} ${n1(p[1])}`;
 
 class Wall {
   private m = homography(WALL_QUAD);
+  /** Transformação local opcional (ex.: monitor girado) aplicada antes da projeção da parede. */
+  private tf?: (x: number, y: number) => Pt;
+  constructor(tf?: (x: number, y: number) => Pt) {
+    this.tf = tf;
+  }
+  with(tf: (x: number, y: number) => Pt): Wall {
+    return new Wall(tf);
+  }
   p(x: number, y: number): Pt {
-    return this.m(x / LW, y / LH);
+    const [a, b] = this.tf ? this.tf(x, y) : [x, y];
+    return this.m(a / LW, b / LH);
   }
   d(x: number, y: number, w: number, h: number): string {
     return `M${f(this.p(x, y))}L${f(this.p(x + w, y))}L${f(this.p(x + w, y + h))}L${f(this.p(x, y + h))}Z`;
@@ -224,8 +233,27 @@ function screenContent(W: Wall, m: Mon, sx: number, sy: number, sw: number, sh: 
   return out.join('') + b.out();
 }
 
+/**
+ * Monitores virados para a Sophia (à esquerda) e vistos pela lateral: a largura
+ * fica bem comprimida (KAPPA) e a borda mais próxima de nós, a da direita, é mais
+ * alta que a de lá (GAMMA), o que dá a perspectiva de uma tela quase de perfil.
+ * Cada um gira em torno do próprio centro; os de cima giram pendurados no trilho.
+ */
+const KAPPA = 0.4;
+const GAMMA = 0.4;
+function turned(m: Mon): (x: number, y: number) => Pt {
+  const cx = m.x + m.w / 2;
+  const pivot = m.arm ? 62 : DESK_Y;
+  return (x, y) => {
+    const u = (x - cx) / m.w + 0.5;
+    const sc = 1 + GAMMA * (u - 0.5);
+    return [cx + (x - cx) * KAPPA, pivot + (y - pivot) * sc];
+  };
+}
+
 /** Um monitor: brilho, suporte, moldura e tela. Devolve [brilho, corpo]. */
-function monitor(W: Wall, m: Mon, idx: number): [string, string] {
+function monitor(Wall0: Wall, m: Mon, idx: number): [string, string] {
+  const W = Wall0.with(turned(m));
   const glow = `<path d="${W.d(m.x - 8, m.y - 8, m.w + 16, m.h + 16)}" fill="${m.tint}" opacity=".55"/>`;
   const inset = 3;
   const sx = m.x + inset;
@@ -236,7 +264,12 @@ function monitor(W: Wall, m: Mon, idx: number): [string, string] {
     ? `<path d="${W.d(m.x + m.w / 2 - 2.5, 62, 5, m.y - 62)}" fill="#12141c"/><path d="${W.d(m.x + m.w / 2 - 9, m.y + m.h - 1, 18, 4)}" fill="#0b0c12"/>`
     : `<path d="${W.d(m.x + m.w / 2 - 3, m.y + m.h, 6, DESK_Y - (m.y + m.h))}" fill="#14161e"/><path d="${W.ell(m.x + m.w / 2, DESK_Y - 1.5, Math.min(26, m.w * 0.3), 3.2)}" fill="#0d0e14"/>`;
   const clip = `slo-scr-${idx}`;
+  const pt = W.p(m.x + m.w, m.y);
+  const pb = W.p(m.x + m.w, m.y + m.h);
+  const tk = Math.max(5, (pb[1] - pt[1]) * 0.13);
+  const slab = `<path d="M${f(pt)}L${n1(pt[0] + tk)} ${n1(pt[1] + tk * 0.35)}L${n1(pb[0] + tk)} ${n1(pb[1] - tk * 0.35)}L${f(pb)}Z" fill="#05060a" stroke="#2c3042" stroke-width=".7"/>`;
   const body = `${stand}
+${slab}
 <path d="${W.d(m.x, m.y, m.w, m.h)}" fill="#08090e" stroke="#2c3042" stroke-width=".9"/>
 <clipPath id="${clip}"><path d="${W.d(sx, sy, sw, sh)}"/></clipPath>
 <g clip-path="url(#${clip})" class="slo-screen">${screenContent(W, m, sx, sy, sw, sh)}<path d="${W.pl([[sx, sy], [sx + sw * 0.7, sy], [sx, sy + sh * 0.9]])}" fill="url(#slo-gloss)"/></g>
