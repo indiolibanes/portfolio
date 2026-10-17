@@ -209,10 +209,9 @@ export function floorDetails(): string {
 <ellipse cx="820" cy="418" rx="90" ry="12" fill="#ff4fa8" opacity=".16" filter="url(#slo-soft)"/>
 <ellipse cx="930" cy="426" rx="80" ry="11" fill="#6a8bff" opacity=".18" filter="url(#slo-soft)"/>
 <ellipse cx="1040" cy="408" rx="64" ry="9" fill="#36e0ff" opacity=".16" filter="url(#slo-soft)"/>
-<path d="M1112 372Q1100 408 1010 412T820 404" fill="none" stroke="#06070b" stroke-width="5" stroke-linecap="round"/>
-<path d="M1118 372Q1112 420 1040 430T880 428" fill="none" stroke="#1b1f2c" stroke-width="3" stroke-linecap="round"/>
-<path d="M1124 372Q1130 430 1070 446T900 452" fill="none" stroke="#c0262f" stroke-width="2" stroke-linecap="round" opacity=".9"/>
-<g><path d="M700 444H820V458H700Z" fill="#14161e"/><path d="M700 444H820" stroke="#2c3042" stroke-width="1.2"/><circle cx="716" cy="451" r="2.4" fill="#ff8a1f" class="slo-led slo-led-b"/><path d="M730 449h8v4h-8zM744 449h8v4h-8zM758 449h8v4h-8z" fill="#05060a"/></g>
+<path d="M1112 372Q1100 408 1040 412T950 404" fill="none" stroke="#06070b" stroke-width="5" stroke-linecap="round"/>
+<path d="M1118 372Q1112 420 1050 430T960 424" fill="none" stroke="#1b1f2c" stroke-width="3" stroke-linecap="round"/>
+<path d="M1124 372Q1130 430 1080 440T968 440" fill="none" stroke="#c0262f" stroke-width="2" stroke-linecap="round" opacity=".9"/>
 </g>`;
 }
 

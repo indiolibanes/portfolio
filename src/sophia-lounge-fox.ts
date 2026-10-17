@@ -24,7 +24,7 @@ const SKIRT: Pt[] = [
   [-54, -104], [-2, -100], [50, -100], [66, -94], [88, -82], [106, -58], [112, -30], [108, -3],
   [40, 4], [-40, 5], [-76, 2], [-80, -30], [-68, -72],
 ];
-const FOOT: Pt[] = [[80, -20], [112, -24], [132, -16], [140, -4], [112, 3], [80, 3]];
+const FOOT: Pt[] = [[78, -24], [112, -32], [142, -24], [156, -8], [150, 4], [112, 5], [78, 4]];
 /** Capa vermelha do sobretudo, atrás das costas. */
 const CAPE: Pt[] = [[-22, -186], [-54, -160], [-74, -110], [-86, -50], [-72, -28], [-58, -62], [-44, -112], [-30, -150], [4, -190]];
 
@@ -34,19 +34,27 @@ const HEAD: Pt[] = [
   [138, -230], [120, -216], [96, -204], [62, -198], [30, -204], [8, -224], [-6, -256], [-4, -282],
 ];
 
-/** Orelhas (Bézier, pontas afiadas). */
-const EAR_NEAR_D = 'M16 -292C0 -330 -8 -400 -2 -456C40 -426 78 -376 100 -318C104 -304 102 -296 98 -292Z';
-const EAR_NEAR_IN_D = 'M30 -296C22 -326 18 -352 20 -384C46 -366 70 -340 84 -308C80 -300 60 -294 30 -296Z';
-const EAR_FAR_D = 'M62 -304C58 -352 70 -412 100 -452C116 -412 128 -352 122 -308Z';
+/** Escala as coordenadas absolutas de um caminho (só M, C e Z) em torno de (cx, cy). */
+function scaleD(d: string, k: number, cx: number, cy: number, sx = 1): string {
+  return d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_m, x: string, y: string) => `${n1(cx + (Number(x) - cx) * k * sx)} ${n1(cy + (Number(y) - cy) * k)}`);
+}
+
+/** Orelhas (Bézier, pontas afiadas): menores e mais cheias que antes, como na original. */
+const EAR_K = 0.82;
+const EAR_NEAR_D = scaleD('M16 -292C0 -330 -8 -400 -2 -456C40 -426 78 -376 100 -318C104 -304 102 -296 98 -292Z', EAR_K, 54, -292, 1.45);
+const EAR_NEAR_IN_D = scaleD('M30 -296C22 -326 18 -352 20 -384C46 -366 70 -340 84 -308C80 -300 60 -294 30 -296Z', EAR_K, 54, -292, 1.45);
+const EAR_FAR_D = scaleD('M62 -304C58 -352 70 -412 100 -452C116 -412 128 -352 122 -308Z', EAR_K, 92, -304, 1.4);
 const EAR_PLUMES: LockSpec[] = [
   [82, -306, -104, 28, 22, 0.1], [66, -330, -108, 30, 20, 0.1], [50, -352, -110, 28, 17, 0.08],
   [30, -300, -96, 24, 18, -0.1], [26, -330, -94, 24, 16, -0.06],
   [54, -314, -102, 34, 20, 0.08],
 ];
-const CHEEK: LockSpec[] = [
+const CHEEK_BASE: LockSpec[] = [
   [6, -240, 168, 30, 20, 0.12], [16, -222, 148, 32, 20, 0.12], [36, -206, 126, 30, 20, 0.1], [64, -199, 106, 26, 18, 0.08],
   [-2, -264, 190, 28, 20, 0.1], [4, -288, 204, 26, 18, 0.1],
 ];
+/** Bochechas mais felpudas, como na original. */
+const CHEEK: LockSpec[] = CHEEK_BASE.map(([x, y, a, l, w, c]) => [x, y, a, Math.round(l * 1.18), Math.round(w * 1.12), c]);
 const CREST: LockSpec[] = [
   [44, -330, -118, 28, 16, 0.15], [64, -338, -96, 30, 16, 0.06], [86, -338, -76, 28, 16, -0.06], [108, -326, -54, 24, 14, -0.12],
 ];
@@ -54,8 +62,8 @@ const CHEST: LockSpec[] = [
   [64, -196, 64, 34, 22, 0.1], [74, -176, 72, 32, 20, 0.08], [56, -206, 40, 26, 16, 0.1], [-6, -170, 190, 26, 18, 0.1],
 ];
 
-const TAIL_CENTER: Pt[] = [[-46, -36], [-100, -30], [-160, -30], [-212, -62], [-246, -120], [-250, -186], [-222, -246], [-176, -272]];
-const TAIL_W = [34, 58, 80, 92, 92, 80, 52, 8];
+const TAIL_CENTER: Pt[] = [[-46, -36], [-100, -32], [-152, -48], [-192, -96], [-208, -158], [-194, -212], [-158, -242], [-118, -240]];
+const TAIL_W = [44, 88, 128, 150, 150, 132, 94, 8];
 
 const ARM_NEAR_C: Pt[] = [[22, -152], [50, -130], [78, -113], [104, -103]];
 const ARM_FAR_C: Pt[] = [[40, -168], [72, -140], [100, -122], [134, -110]];
@@ -69,11 +77,11 @@ export function foxDefs(): string {
 <linearGradient id="slo-fur-far" gradientUnits="userSpaceOnUse" x1="-60" y1="0" x2="150" y2="0"><stop offset="0" stop-color="#8a7f6e"/><stop offset="1" stop-color="#c4b8a2"/></linearGradient>
 <linearGradient id="slo-fur-back" gradientUnits="userSpaceOnUse" x1="-60" y1="0" x2="150" y2="0"><stop offset="0" stop-color="#a99b84"/><stop offset="1" stop-color="#dfd2b8"/></linearGradient>
 <linearGradient id="slo-coat" gradientUnits="userSpaceOnUse" x1="-60" y1="0" x2="100" y2="0"><stop offset="0" stop-color="#a9afc6"/><stop offset=".5" stop-color="#e9e8ee"/><stop offset="1" stop-color="#ffffff"/></linearGradient>
-<linearGradient id="slo-tail" gradientUnits="userSpaceOnUse" x1="-70" y1="-20" x2="-262" y2="-200"><stop offset="0" stop-color="#d8cdb6"/><stop offset=".3" stop-color="#e6dcc6"/><stop offset=".5" stop-color="#8a90bd"/><stop offset=".62" stop-color="#2a3886"/><stop offset="1" stop-color="#111a50"/></linearGradient>
+<linearGradient id="slo-tail" gradientUnits="userSpaceOnUse" x1="-70" y1="-20" x2="-262" y2="-200"><stop offset="0" stop-color="#d8cdb6"/><stop offset=".34" stop-color="#f1e8d4"/><stop offset=".48" stop-color="#8a90bd"/><stop offset=".6" stop-color="#2a3886"/><stop offset="1" stop-color="#111a50"/></linearGradient>
 <linearGradient id="slo-tail-back" gradientUnits="userSpaceOnUse" x1="-70" y1="-20" x2="-262" y2="-200"><stop offset="0" stop-color="#a99d86"/><stop offset=".3" stop-color="#b3a78f"/><stop offset=".5" stop-color="#555e9c"/><stop offset=".64" stop-color="#18246a"/><stop offset="1" stop-color="#0b1140"/></linearGradient>
-<linearGradient id="slo-ear" gradientUnits="userSpaceOnUse" x1="0" y1="-456" x2="0" y2="-290"><stop offset="0" stop-color="#0c1340"/><stop offset=".34" stop-color="#1c2a7c"/><stop offset=".5" stop-color="#4a58a4"/><stop offset=".62" stop-color="#c9c8d6"/><stop offset=".76" stop-color="#efe6d4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
-<linearGradient id="slo-ear-far" gradientUnits="userSpaceOnUse" x1="0" y1="-456" x2="0" y2="-290"><stop offset="0" stop-color="#0a1038"/><stop offset=".5" stop-color="#18246a"/><stop offset=".76" stop-color="#4a5596"/><stop offset="1" stop-color="#8a8fa8"/></linearGradient>
-<linearGradient id="slo-ear-in" gradientUnits="userSpaceOnUse" x1="0" y1="-384" x2="0" y2="-296"><stop offset="0" stop-color="#e9ddd0"/><stop offset="1" stop-color="#f4dccf"/></linearGradient>
+<linearGradient id="slo-ear" gradientUnits="userSpaceOnUse" x1="0" y1="-420" x2="0" y2="-290"><stop offset="0" stop-color="#0c1340"/><stop offset=".34" stop-color="#1c2a7c"/><stop offset=".5" stop-color="#4a58a4"/><stop offset=".62" stop-color="#c9c8d6"/><stop offset=".76" stop-color="#efe6d4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
+<linearGradient id="slo-ear-far" gradientUnits="userSpaceOnUse" x1="0" y1="-420" x2="0" y2="-290"><stop offset="0" stop-color="#0a1038"/><stop offset=".5" stop-color="#18246a"/><stop offset=".76" stop-color="#4a5596"/><stop offset="1" stop-color="#8a8fa8"/></linearGradient>
+<linearGradient id="slo-ear-in" gradientUnits="userSpaceOnUse" x1="0" y1="-366" x2="0" y2="-296"><stop offset="0" stop-color="#e9ddd0"/><stop offset="1" stop-color="#f4dccf"/></linearGradient>
 <linearGradient id="slo-dress" gradientUnits="userSpaceOnUse" x1="-80" y1="0" x2="120" y2="0"><stop offset="0" stop-color="#0e1544"/><stop offset=".55" stop-color="#1e2a78"/><stop offset="1" stop-color="#3a4cb0"/></linearGradient>
 <linearGradient id="slo-cape" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="60" y2="0"><stop offset="0" stop-color="#6e0f1c"/><stop offset="1" stop-color="#b8212f"/></linearGradient>
 <linearGradient id="slo-lining" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff7e6"/><stop offset="1" stop-color="#d9d3ea"/></linearGradient>
@@ -152,15 +160,15 @@ export function foxMarkup(): string {
   const head = spline(HEAD, true, 4);
   const tailShape = limb(TAIL_CENTER, TAIL_W);
 
-  const tailTufts = tufts(tailShape, { seed: 71, len: [10, 22], width: [16, 24], gap: 7, bend: 9 });
+  const tailTufts = tufts(tailShape, { seed: 71, len: [11, 22], width: [16, 24], gap: 8, bend: 9 });
   const tailTufts2 = tufts(tailShape, { seed: 72, len: [5, 10], width: [12, 18], gap: 5, bend: 5 });
   const tailFlow = strands(tailShape, { seed: 73, count: 170, from: [-46, -36], len: [14, 30], jitter: 0.2 });
 
   // constelação dourada na parte azul da cauda
-  const stars: Pt[] = [[-196, -78], [-232, -104], [-236, -150], [-214, -196], [-182, -214], [-198, -138]];
+  const stars: Pt[] = [[-188, -62], [-232, -100], [-244, -156], [-226, -204], [-190, -226], [-206, -140]];
   const lines = `M${stars.map((p) => `${p[0]} ${p[1]}`).join('L')}`;
   // a ponta da cauda se enrola em espiral
-  const curl = 'M-176 -272C-206 -270 -228 -250 -226 -226C-224 -206 -202 -198 -190 -210C-180 -220 -186 -234 -198 -232';
+  const curl = 'M-146 -254C-176 -262 -196 -244 -192 -222C-188 -206 -168 -204 -160 -216C-154 -226 -162 -236 -172 -232';
 
   const headFlow = strands(head, { seed: 94, count: 70, from: [110, -262], len: [8, 16], jitter: 0.22 });
   const chest = [...CHEST];
@@ -200,8 +208,9 @@ export function foxMarkup(): string {
 </g>
 <path d="M64 -172L46 -184Q40 -172 52 -166ZM64 -172L82 -184Q88 -172 76 -166Z" fill="url(#slo-red)"/>
 <circle cx="64" cy="-172" r="4.6" fill="#b11626"/>
-${crescent(62, -156, 9, 8)}
-<circle cx="66" cy="-156" r="4.4" fill="url(#slo-gem)"/>`;
+<path d="M62 -166Q52 -154 62 -144Q72 -154 62 -166Z" fill="url(#slo-gem)" stroke="url(#slo-gold)" stroke-width="1.4"/>
+<path d="M62 -142Q55 -134 62 -126Q69 -134 62 -142Z" fill="url(#slo-red)" stroke="url(#slo-gold)" stroke-width="1.2"/>
+<path d="M58 -158Q60 -162 63 -162" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>`;
 
   const sleeveNear = limb(ARM_NEAR_C, [28, 32, 38, 40]);
   const sleeveFar = limb(ARM_FAR_C, [22, 24, 28, 30]);
@@ -216,7 +225,7 @@ ${crescent(62, -156, 9, 8)}
 <path d="${lines}" fill="none" stroke="#f3c75a" stroke-width="1.6" stroke-dasharray="1 4.5" stroke-linecap="round" opacity=".95"/>
 <g class="slo-twinkle">${stars.map((s, i) => `<path d="${star4(s[0], s[1], i % 2 ? 9 : 14, i % 2 ? 6 : 9, 0.18)}" fill="url(#slo-gold)" style="animation-delay:${i * 0.7}s"/>`).join('')}</g>
 </g>
-<g class="slo-foot"><path d="${poly(foot)}" fill="url(#slo-navy)"/><path d="M112 -22L116 -4M126 -18L130 -4" stroke="#0a1038" stroke-width="1.4" opacity=".6"/><path d="M90 -14Q112 -22 132 -12" fill="none" stroke="#8fa0ee" stroke-width="1.6" opacity=".4" stroke-linecap="round"/><path d="${star4(112, -12, 7, 4.6, 0.2)}" fill="url(#slo-gold)"/></g>
+<g class="slo-foot"><path d="${poly(foot)}" fill="url(#slo-navy)"/><path d="M112 -22L116 -4M126 -18L130 -4" stroke="#0a1038" stroke-width="1.4" opacity=".6"/><path d="M90 -14Q112 -22 132 -12" fill="none" stroke="#8fa0ee" stroke-width="1.6" opacity=".4" stroke-linecap="round"/><path d="${star4(118, -14, 8, 5.2, 0.2)}" fill="url(#slo-gold)"/></g>
 <g class="slo-upper">
 <g class="slo-cape"><path d="${poly(cape)}" fill="url(#slo-cape)"/><path d="M-30 -150Q-48 -110 -58 -62" fill="none" stroke="#fff7e6" stroke-width="2" opacity=".55" stroke-linecap="round"/><path d="${star4(-62, -92, 8, 5, 0.2)}" fill="url(#slo-gold)"/></g>
 <path d="${poly(sleeveFar)}" fill="#7a1522"/>
@@ -243,7 +252,8 @@ ${bow}
 <path d="M36 -154Q64 -130 92 -114" fill="none" stroke="#ff8a93" stroke-width="2" stroke-linecap="round" opacity=".45"/>
 <path d="M92 -124Q104 -108 96 -92" fill="none" stroke="url(#slo-lining)" stroke-width="6" stroke-linecap="round"/>
 <path d="M95 -125Q107 -108 99 -91" fill="none" stroke="url(#slo-gold)" stroke-width="1.2" stroke-linecap="round"/>
-${paw(112, -96, -8, 1.15, 'url(#slo-navy)')}
+<path d="${locks([[100, -112, -70, 16, 10, 0.1], [104, -98, 70, 16, 10, 0.1], [98, -104, 180, 14, 10, 0.1]])}" fill="url(#slo-fur)"/>
+${paw(114, -96, -8, 1.2, 'url(#slo-navy)')}
 <path d="${star4(112, -96, 5, 3.4, 0.2)}" fill="url(#slo-gold)"/>
 <g class="slo-thumb">${paw(128, -108, -12, 0.55, '#3a4aa6')}</g>
 </g>

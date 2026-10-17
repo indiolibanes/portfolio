@@ -126,7 +126,7 @@ check('404: the detective sits above the title, is decorative and is observed fo
   notFound.includes('<SophiaDetective />') && notFound.indexOf('<SophiaDetective />') < notFound.indexOf('<h1') && detectiveSrc.includes('aria-hidden="true"') && detectiveSrc.includes('data-art-anim'));
 check('404: detective walk cycle only runs without reduced motion (static pose otherwise)',
   /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.sdt-walker \{ animation: sdt-walk/.test(illustrationCss) && /\.sdt-walker \{ transform: translate\(260px/.test(illustrationCss));
-check('404: lounge fox wears the lunar dress and monitors face her in profile',
-  /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /turned\(/.test(read('src/sophia-lounge-wall.ts')) && /slo-upper/.test(illustrationCss));
+check('404: lounge fox wears the lunar dress and a giant CRT TV faces her in profile (no screen content)',
+  /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /slo-upper/.test(illustrationCss) && /tvMarkup/.test(read('src/sophia-lounge.ts')) && !/screenContent|MONITORS/.test(read('src/sophia-lounge-wall.ts')));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;
