@@ -98,13 +98,19 @@ check('404: pauses when hidden or off screen', notFound.includes('visibilitychan
 check('404: respects reduced motion for the clear flash', notFound.includes('prefers-reduced-motion: reduce'));
 check('404: best score storage is guarded', /try \{ best = Number\(localStorage/.test(notFound) && /try \{ localStorage\.setItem/.test(notFound));
 check('404: old runner is gone', !notFound.includes('sophia-runner') && !read('src/styles/global.css').includes('sophia-runner'));
-const pixelSceneSrc = read('src/components/SophiaGamer.astro');
-check('404: Sophia pixel art is wired in (observer, mascot, gamer scene)',
-  ['SophiaObserver', 'SophiaMascot', 'SophiaGamer'].every((n) => notFound.includes(`<${n} />`)) && !notFound.includes('tetris-fox'));
-check('404: decorative pixel art is hidden from assistive tech, the scene has one label',
-  read('src/components/SophiaObserver.astro').includes('aria-hidden="true"') && read('src/components/SophiaMascot.astro').includes('aria-hidden="true"') && /role="img"\s+aria-label=/.test(pixelSceneSrc));
-check('404: pixel animation is off for reduced motion and paused off screen',
-  /@media \(prefers-reduced-motion: no-preference\)/.test(read('src/styles/sophia-pixel.css')) && read('src/styles/sophia-pixel.css').includes("[data-paused='true']") && notFound.includes('[data-px-anim]'));
+const portraitSrc = read('src/components/SophiaPortrait.astro');
+const loungeSrc = read('src/components/SophiaLounge.astro');
+const mascotSrc = read('src/components/SophiaMascot.astro');
+const illustrationCss = read('src/styles/sophia-illustration.css');
+check('404: portrait, mascot and lounge are wired in',
+  ['SophiaPortrait', 'SophiaMascot', 'SophiaLounge'].every((n) => notFound.includes(`<${n} />`)) && !/SophiaObserver|SophiaGamer|tetris-fox/.test(notFound));
+check('404: only the mascot is pixel art; portrait and lounge are vector illustrations',
+  mascotSrc.includes('crispEdges') && !read('src/sophia-portrait.ts').includes('crispEdges') && !read('src/sophia-lounge.ts').includes('crispEdges'));
+check('404: decorative art is hidden from assistive tech, the lounge has one label',
+  portraitSrc.includes('aria-hidden="true"') && mascotSrc.includes('aria-hidden="true"') && /role="img"\s+aria-label=/.test(loungeSrc));
+check('404: illustration animation is off for reduced motion and paused off screen',
+  /@media \(prefers-reduced-motion: no-preference\)/.test(illustrationCss) && illustrationCss.includes("[data-paused='true']") && notFound.includes('[data-art-anim]'));
+check('404: illustrations stay visible in Legacy', illustrationCss.includes("html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art"));
 check('404: pixel palette stays monochrome', !/#[0-9a-f]{6}/i.test(read('src/sophia-pixel.ts').replace(/'#(?:f3f3f0|ffffff|b4b4ae|77776f|0d0d0d)'/gi, '')));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;
