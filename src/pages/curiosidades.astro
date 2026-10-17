@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SophiaSigil from '../components/SophiaSigil.astro';
+import { CURIOSITIES, CURIOSITIES_UPDATED } from '../curiosities';
+
+const updatedLabel = new Intl.DateTimeFormat('pt-BR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${CURIOSITIES_UPDATED}T00:00:00Z`));
+---
+
+<BaseLayout
+  title="Curiosidades — Portfólio de Kauê Alencar"
+  description="Pequenas curiosidades que não cabem em um currículo, mas ajudam a entender o tom deste portfólio: música, jogos, línguas, escrita e método."
+>
+  <main id="conteudo" class="curiosities-page">
+    <header class="curiosities-hero">
+      <p class="eyebrow">Fora do currículo</p>
+      <h1 id="curiosities-title">Curiosidades</h1>
+      <p class="curiosities-hero__lead">
+        Algumas coisas que não cabem em uma linha de currículo, mas explicam o tom deste portfólio.
+        A lista é pequena de propósito e cresce aos poucos.
+      </p>
+      <p class="curiosities-hero__meta">
+        Em construção · última adição em <time datetime={CURIOSITIES_UPDATED}>{updatedLabel}</time>
+      </p>
+    </header>
+
+    <ul class="curiosities-list" aria-labelledby="curiosities-title">
+      {CURIOSITIES.map((item, index) => (
+        <li
+          class:list={['curiosity', { 'curiosity--wide': item.wide }]}
+          style={`--accent: var(--${item.accent})`}
+        >
+          <article aria-labelledby={`curiosity-${item.id}`}>
+            <div class="curiosity__head">
+              <span class="curiosity__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <span class="curiosity__tag">{item.tag}</span>
+            </div>
+
+            <h2 id={`curiosity-${item.id}`} class="curiosity__title">{item.title}</h2>
+            <p class="curiosity__text">{item.text}</p>
+            <p class="curiosity__why">{item.why}</p>
+
+            {item.link && (
+              <a
+                class="curiosity__link"
+                href={item.link.href}
+                target={item.link.external ? '_blank' : undefined}
+                rel={item.link.external ? 'noopener noreferrer' : undefined}
+                aria-label={item.link.external ? `${item.link.label} (abre em nova aba)` : undefined}
+              >
+                {item.link.label} <span aria-hidden="true">{item.link.external ? '↗' : '→'}</span>
+              </a>
+            )}
+
+            {item.wide && (
+              <SophiaSigil className="curiosity__sigil" />
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <nav class="curiosities-return" aria-label="Atalhos">
+      <a href="/">Voltar ao portfólio</a>
+      <a href="/#contato">Ir para o contato</a>
+    </nav>
+  </main>
+</BaseLayout>

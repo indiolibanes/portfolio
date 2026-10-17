@@ -70,7 +70,7 @@ if (process.argv.includes('--dist')) {
     }
     return null;
   }
-  for (const [page, pathname] of [['index.html', '/'], ['sophia/index.html', '/sophia/']]) {
+  for (const [page, pathname] of [['index.html', '/'], ['sophia/index.html', '/sophia/'], ['curiosidades/index.html', '/curiosidades/']]) {
     const html = readFileSync(join(distPath, page), 'utf8');
     assert.equal(meta(html, 'og:type'), 'website', page);
     assert.equal(meta(html, 'og:locale'), 'pt_BR', page);

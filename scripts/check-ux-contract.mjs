@@ -69,6 +69,20 @@ check('contact: decorative glyph hidden', home.includes('<span aria-hidden="true
 check('footer: Last.fm uses configured handle', footer.includes('SOCIALS.lastfmHandle') && config.includes("lastfmHandle: '@kauealencar123'"));
 check('sophia: named sigil control', sophia.includes('aria-describedby="sophia-orbit-help"'));
 check('sophia: accessible numbered controls', sophia.includes('aria-label={\x60Exibir fragmento'));
+const curiosities = read('src/pages/curiosidades.astro');
+const curiositiesData = read('src/curiosities.ts');
+const sitemap = read('public/sitemap.xml');
+check('curiosidades: page has one H1 and a labelled list',
+  (curiosities.match(/<h1\b/g) || []).length === 1 && curiosities.includes('aria-labelledby="curiosities-title"'));
+check('curiosidades: every item has a heading and a reason',
+  curiosities.includes('class="curiosity__title"') && curiosities.includes('class="curiosity__why"'));
+check('curiosidades: external links open safely and announce the new tab',
+  curiosities.includes("rel={item.link.external ? 'noopener noreferrer' : undefined}") &&
+  curiosities.includes('(abre em nova aba)'));
+check('curiosidades: content kept in one data file', curiositiesData.includes('export const CURIOSITIES'));
+check('curiosidades: header link', header.includes('href="/curiosidades/"'));
+check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
+check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));
 check('modes: preserve three-state control',
   modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Modo atual: ') && modes.includes('Mudar para '));
 check('motion: viewport and reduced preference', motion.includes('IntersectionObserver') && motion.includes('prefers-reduced-motion: reduce'));
