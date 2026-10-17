@@ -1,0 +1,287 @@
+/*
+ * Sophia's Tetris — the 404 game. Loaded only by src/pages/404.astro.
+ * The panel stays dark in every mode (mono-modes.css exempts .sophia-404__panel),
+ * so these colours do not depend on the mode tokens. The piece colours live in
+ * the page script, which switches to greys in Editorial and Legacy.
+ */
+
+.sophia-404__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .sophia-404__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+    align-items: center;
+  }
+
+  .sophia-404__layout .sophia-404__copy h1 {
+    font-size: clamp(2.2rem, 4.4vw, 3.8rem);
+  }
+}
+
+.sophia-tetris {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: center;
+  width: 100%;
+  font-family: var(--font-retro);
+  color: #f3f3f0;
+}
+
+/* ---------- Board ---------- */
+
+.tetris-board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.9rem;
+  width: 100%;
+}
+
+.tetris-frame {
+  position: relative;
+  flex: 0 0 min(100%, 230px);
+  /* The canvas starts at its 300 px default; without this it props the frame open. */
+  min-width: 0;
+  max-width: 100%;
+  border: 3px solid #f3f3f0;
+  background: #0a0a0a;
+  line-height: 0;
+}
+
+.tetris-canvas {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  touch-action: manipulation;
+}
+
+.tetris-canvas:focus-visible {
+  outline: 3px solid #e6bb4a;
+  outline-offset: 3px;
+}
+
+.tetris-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: rgba(10, 10, 10, 0.86);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tetris-overlay[hidden] {
+  display: none;
+}
+
+.tetris-overlay__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tetris-overlay__text {
+  max-width: 24ch;
+  margin: 0;
+  color: #b8b8b1;
+  font-size: 0.8rem;
+}
+
+.tetris-start {
+  min-height: 44px;
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #f3f3f0;
+  border-radius: 0;
+  background: #f3f3f0;
+  color: #0d0d0d;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tetris-start:hover,
+.tetris-start:focus-visible {
+  background: #e6bb4a;
+  border-color: #e6bb4a;
+}
+
+/* ---------- Side panel ---------- */
+
+.tetris-side {
+  flex: 1 1 92px;
+  min-width: 92px;
+  max-width: 130px;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tetris-next {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.tetris-label,
+.tetris-stats dt {
+  color: #b8b8b1;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tetris-next canvas {
+  width: 64px;
+  height: 64px;
+  border: 1px solid #343434;
+  background: #0a0a0a;
+}
+
+.tetris-stats {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.tetris-stats div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.tetris-stats dd {
+  margin: 0;
+  color: #f3f3f0;
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Touch pad ---------- */
+
+.tetris-pad {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.4rem;
+  width: min(100%, 360px);
+}
+
+.tetris-pad button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 0;
+  border: 1px solid #3a3a38;
+  border-radius: 0;
+  background: #151515;
+  color: #f3f3f0;
+  font-family: inherit;
+  font-size: 1.15rem;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}
+
+.tetris-pad button:hover {
+  background: #232321;
+}
+
+.tetris-pad button:active {
+  background: #f3f3f0;
+  color: #0d0d0d;
+}
+
+.tetris-pad button:focus-visible {
+  outline: 3px solid #e6bb4a;
+  outline-offset: 2px;
+}
+
+.tetris-help {
+  max-width: 44ch;
+  margin: 0;
+  color: #b8b8b1;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tetris-help {
+    display: none;
+  }
+}
+
+/* ---------- Sophia ---------- */
+
+.tetris-sophia {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: min(100%, 360px);
+  min-height: 3rem;
+}
+
+.tetris-fox {
+  flex: 0 0 56px;
+  width: 56px;
+  color: #f3f3f0;
+}
+
+.tetris-fox.is-happy {
+  animation: tetris-fox-hop 420ms steps(3, end) 1;
+}
+
+@keyframes tetris-fox-hop {
+  40% { translate: 0 -8px; }
+}
+
+.tetris-status {
+  margin: 0;
+  color: #d8d8d2;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* Legacy draws a black dotted focus ring: invisible on this dark panel. */
+html[data-legacy-mode='true'] .sophia-404__panel :is(a, button, [tabindex]):focus-visible {
+  outline-color: #ffffff;
+}
+
+@media (max-width: 420px) {
+  .tetris-pad {
+    gap: 0.3rem;
+  }
+
+  .tetris-side {
+    max-width: none;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    width: 100%;
+  }
+
+  .tetris-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tetris-fox.is-happy {
+    animation: none;
+  }
+}

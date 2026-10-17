@@ -6816,82 +6816,6 @@ html[data-serious-mode='true']
   color: #0d0d0d;
 }
 
-.sophia-runner {
-  margin: clamp(2rem, 5vw, 4rem) 0 1rem;
-  border-top: 1px solid #2f2f2d;
-  border-bottom: 1px solid #2f2f2d;
-  background:
-    linear-gradient(90deg, transparent 0 49%, rgba(255,255,255,.025) 50% 51%, transparent 52%);
-  font-family: var(--font-retro);
-}
-
-.sophia-runner__sky {
-  height: 5rem;
-  position: relative;
-  overflow: hidden;
-  color: #777773;
-}
-
-.sophia-runner__sky span {
-  position: absolute;
-  animation: sophia-sky-drift 10s linear infinite;
-}
-
-.sophia-runner__sky span:nth-child(1) { top: 1rem; left: 24%; }
-.sophia-runner__sky span:nth-child(2) { top: 2rem; left: 58%; animation-delay: -4s; }
-.sophia-runner__sky span:nth-child(3) { top: .7rem; left: 83%; animation-delay: -7s; }
-
-.sophia-runner__track {
-  position: relative;
-  height: 8rem;
-  overflow: hidden;
-  border-top: 3px solid #f3f3f0;
-}
-
-.sophia-pixel-fox {
-  position: absolute;
-  z-index: 2;
-  left: 8%;
-  bottom: 3px;
-  width: 112px;
-  color: #f3f3f0;
-  --sophia-pixel-eye: #0d0d0d;
-  animation: sophia-run 420ms steps(2, end) infinite;
-}
-
-.sophia-runner__obstacle {
-  position: absolute;
-  bottom: 0;
-  color: #f3f3f0;
-  animation: sophia-obstacle 5.5s linear infinite;
-}
-
-.sophia-runner__obstacle--book {
-  width: 28px;
-  height: 34px;
-  left: 112%;
-  border: 3px solid currentColor;
-  box-shadow: inset 6px 0 0 #0d0d0d, inset 9px 0 0 currentColor;
-}
-
-.sophia-runner__obstacle--star {
-  left: 150%;
-  bottom: 24px;
-  font-size: 2rem;
-  animation-delay: -2.5s;
-}
-
-.sophia-runner__obstacle--block {
-  left: 185%;
-  width: 34px;
-  height: 34px;
-  border: 3px solid currentColor;
-  background:
-    linear-gradient(45deg, transparent 45%, currentColor 46% 54%, transparent 55%),
-    linear-gradient(-45deg, transparent 45%, currentColor 46% 54%, transparent 55%);
-  animation-delay: -4.1s;
-}
-
 .sophia-404__aside {
   margin: 1.2rem 0 0;
   color: #9a9a95;
@@ -6905,31 +6829,6 @@ html[data-serious-mode='true']
 
 @keyframes sophia-star-pulse {
   50% { transform: scale(1.35) rotate(18deg); opacity: 0.48; }
-}
-
-@keyframes sophia-run {
-  50% { transform: translateY(-3px); }
-}
-
-/* Jump (404): driven by the page script, separate from the running bob. */
-.sophia-pixel-fox.is-jumping {
-  animation: sophia-run 420ms steps(2, end) infinite, sophia-jump 620ms cubic-bezier(.3, .7, .4, 1) 1;
-}
-
-@keyframes sophia-jump {
-  0%, 100% { translate: 0 0; }
-  42% { translate: 0 -58px; }
-  58% { translate: 0 -54px; }
-}
-
-@keyframes sophia-obstacle {
-  from { transform: translateX(0); }
-  to { transform: translateX(-170vw); }
-}
-
-@keyframes sophia-sky-drift {
-  from { transform: translateX(18vw); }
-  to { transform: translateX(-105vw); }
 }
 
 @media (max-width: 760px) {
@@ -6967,25 +6866,13 @@ html[data-serious-mode='true']
   .sophia-fragments__heading p:last-child {
     text-align: left;
   }
-
-  .sophia-pixel-fox {
-    left: 2%;
-    width: 90px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sophia-orbit::after,
-  .sophia-orbit > span,
-  .sophia-pixel-fox,
-  .sophia-runner__obstacle,
-  .sophia-runner__sky span {
+  .sophia-orbit > span {
     animation: none !important;
   }
-
-  .sophia-runner__obstacle--book { left: 54%; }
-  .sophia-runner__obstacle--star { left: 70%; }
-  .sophia-runner__obstacle--block { left: 84%; }
 }
 
 /* Sophia remains part of the sober editorial mode. */
