@@ -42,7 +42,7 @@
 .music-shelf .music-heading--gallery .music-panorama {
   grid-area: scene;
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 1264 / 848;
   min-height: 0;
   border-radius: 12px;
   border-color: #e4ce9e66;
@@ -210,3 +210,14 @@ html[data-legacy-mode='true'] .music-shelf .music-source-label span {
 /* Legacy hides inline images globally; retain this scene like its old CSS background. */
 html[data-legacy-mode='true'] .music-shelf .music-scene-art img { display: block !important; }
 html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card { grid-template-columns: minmax(0, 1fr); }
+/* New artwork (v3): Shorekeeper's face sits at ~28% of the height, so on the wide
+   layout the paper is kept short enough to stay in the Milky Way above her veil. */
+@media (min-width: 1200px) {
+  .music-shelf .music-heading--gallery .listening-note--moonlight {
+    width: 30%;
+    margin: .4rem .9rem 0 0;
+    padding: .5rem .8rem .55rem;
+  }
+  .music-shelf .music-heading--gallery .listening-note-quote { min-height: 4.2em; margin: .3rem 0; font-size: .8rem; line-height: 1.38; }
+  .music-shelf .music-heading--gallery .listening-note-footer { font-size: .55rem; }
+}

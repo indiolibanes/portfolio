@@ -125,9 +125,20 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
     <figure class="music-panorama" aria-labelledby="music-panorama-caption" data-music-panorama>
       <picture class="music-scene-art">
-        <source type="image/avif" srcset="/assets/music-moonlit-terrace-v2.avif" />
-        <img src="/assets/music-moonlit-terrace-v2.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async" />
+        <source type="image/avif" srcset="/assets/music-moonlit-terrace-v3.avif" />
+        <img src="/assets/music-moonlit-terrace-v3.webp" alt="" width="1264" height="848" loading="lazy" decoding="async" />
       </picture>
+      <div class="music-panorama-sky" aria-hidden="true">
+        <span class="music-moonglow"></span>
+        <span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span>
+        <span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span>
+      </div>
+      <div class="music-panorama-glows" aria-hidden="true">
+        <span class="music-glow music-glow--lantern"></span>
+        <span class="music-glow music-glow--lily"></span>
+        <span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span>
+        <span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span>
+      </div>
       <div class="music-panorama-glint" aria-hidden="true"></div>
       <div class="music-panorama-shimmer" aria-hidden="true"></div>
       <div class="music-panorama-motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
@@ -141,7 +152,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         hidden
       ></button>
       <figcaption id="music-panorama-caption" class="music-panorama-caption">
-        Em um terraço sobre um lago ao luar, Phrolova à esquerda e Shorekeeper à direita se contrapõem em carmesim e azul. Hsin e sua forma de raposa ocupam o centro sob a lua. Em primeiro plano, Sophia, de marfim, azul noturno e ouro, escuta música e contempla a paisagem com um livro aberto, ao lado de uma pequena raposa branca com detalhes vermelhos.
+        Em um terraço de pedra sobre um lago ao luar, sob uma lua dourada, a Via Láctea e lanternas flutuantes, Phrolova à esquerda e Shorekeeper à direita se contrapõem em carmesim e azul. Hsin, apoiada na balaustrada, e sua forma de raposa ocupam o centro. Em primeiro plano, Sophia, de marfim, azul noturno e ouro, escuta música com fones de ouvido e apoia o livro aberto na grade, com uma pequena raposa branca de detalhes vermelhos a seu lado.
       </figcaption>
     </figure>
   </div>
@@ -591,8 +602,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
       const bounds = panorama.getBoundingClientRect();
       const keyboard = event.detail === 0;
-      const originX = keyboard ? (effect === 'butterfly' ? 78 : 22) : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
-      const originY = keyboard ? 48 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
+      const originX = keyboard ? (effect === 'butterfly' ? 77 : 25) : Math.min(90, Math.max(10, (event.clientX - bounds.left) / bounds.width * 100));
+      const originY = keyboard ? 36 : Math.min(87, Math.max(13, (event.clientY - bounds.top) / bounds.height * 100));
       if (!keyboard) ripple(originX, originY);
       burst(effect, originX, originY);
     });
@@ -608,8 +619,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       if (!sceneVisible || document.hidden || effectsQuiet()) return;
       ambientTimer = window.setTimeout(() => {
         ambientCount += 1;
-        if (ambientCount % 3 === 0) spawnBaton(rand(16, 26), rand(44, 56));
-        else spawnButterfly(rand(72, 84), rand(36, 50));
+        if (ambientCount % 3 === 0) spawnBaton(rand(21, 27), rand(34, 42));
+        else spawnButterfly(rand(74, 80), rand(31, 39));
         scheduleAmbient();
       }, rand(7000, 12000));
     };

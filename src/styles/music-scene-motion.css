@@ -8,10 +8,18 @@
  *      (--music-px / --music-py, set in MusicShelf.astro);
  *   4. ripple: a ring of light where the reader clicks.
  * Authorial mode only. Quiet modes, reduced motion and touch get the still image.
+ *
+ * 2026-10-17: retuned for the new artwork (v3) and extended with a sky layer
+ * (moon breathing, twinkling stars, rising sky lanterns) and a glow layer
+ * (stone lantern flicker, Phrolova's lily, Shorekeeper's butterflies, the
+ * constellation on Sophia's tail). Coordinates are % of the 1264×848 art.
  */
 
+/* Parallax: the painting and the light layers locked to it lean together
+   (the old ::after target was display:none, so it never moved). */
+.music-shelf .music-heading--gallery .music-panorama { container-type: inline-size; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-panorama::after {
+.music-shelf .music-heading--gallery :is(.music-scene-art, .music-panorama-sky, .music-panorama-glows) {
   transform: translate3d(var(--music-px, 0px), var(--music-py, 0px), 0) scale(1.024);
   transition: transform .6s cubic-bezier(.2, .7, .2, 1);
 }
@@ -19,7 +27,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .music-shelf .music-heading--gallery .music-panorama-shimmer {
   position: absolute;
   z-index: 3;
-  inset: 52% 14% 6% 14%;
+  inset: 41% 4% 38% 2%;
   pointer-events: none;
   opacity: 0;
   background:
@@ -107,22 +115,156 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .music-shelf .music-heading--gallery .music-panorama-shimmer,
-  .music-shelf .music-heading--gallery .music-panorama-motes span,
-  .music-shelf .music-heading--gallery .music-ripple {
+  .music-shelf .music-heading--gallery :is(.music-panorama-shimmer, .music-panorama-motes span, .music-ripple, .music-panorama-sky *, .music-panorama-glows *) {
     animation: none !important;
   }
-  .music-shelf .music-heading--gallery .music-panorama-motes,
-  .music-shelf .music-heading--gallery .music-panorama-shimmer,
-  .music-shelf .music-heading--gallery .music-ripple { display: none; }
-  .music-shelf .music-heading--gallery .music-panorama::after { transform: none !important; transition: none; }
+  .music-shelf .music-heading--gallery :is(.music-panorama-motes, .music-panorama-shimmer, .music-ripple, .music-panorama-sky, .music-panorama-glows) { display: none; }
+  .music-shelf .music-heading--gallery :is(.music-scene-art, .music-panorama-sky, .music-panorama-glows) { transform: none !important; transition: none; }
 }
 
 html:is([data-serious-mode='true'], [data-legacy-mode='true'])
-.music-shelf .music-heading--gallery :is(.music-panorama-shimmer, .music-panorama-motes, .music-ripple) {
+.music-shelf .music-heading--gallery :is(.music-panorama-shimmer, .music-panorama-motes, .music-ripple, .music-panorama-sky, .music-panorama-glows) {
   display: none !important;
 }
 
 @media (hover: none) {
-  .music-shelf .music-heading--gallery .music-panorama::after { transform: none; }
+  .music-shelf .music-heading--gallery :is(.music-scene-art, .music-panorama-sky, .music-panorama-glows) { transform: none; }
 }
+
+/* ---------- Sky layer: moon, stars, rising lanterns ---------- */
+.music-shelf .music-heading--gallery .music-panorama-sky,
+.music-shelf .music-heading--gallery .music-panorama-glows {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.music-shelf .music-heading--gallery .music-panorama-glows { z-index: 3; }
+
+.music-shelf .music-heading--gallery .music-moonglow {
+  position: absolute;
+  left: 47.5%;
+  top: 14%;
+  width: 44%;
+  margin: -22% 0 0 -22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 236, 170, .32) 0 32%, rgba(255, 220, 140, .13) 52%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: .8;
+  animation: music-moon-breathe 8s ease-in-out infinite alternate;
+}
+@keyframes music-moon-breathe {
+  0%   { opacity: .45; transform: scale(.96); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+.music-shelf .music-heading--gallery .music-star {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: var(--ss, 12px);
+  height: var(--ss, 12px);
+  margin: calc(var(--ss, 12px) / -2) 0 0 calc(var(--ss, 12px) / -2);
+  background:
+    linear-gradient(90deg, transparent 36%, #fff 47% 53%, transparent 64%),
+    linear-gradient(0deg, transparent 36%, #fff 47% 53%, transparent 64%);
+  filter: drop-shadow(0 0 3px rgba(255, 244, 214, .9));
+  opacity: 0;
+  animation: music-star-twinkle var(--sd, 5s) ease-in-out infinite;
+  animation-delay: var(--sz, 0s);
+}
+.music-shelf .music-heading--gallery .music-star:nth-of-type(2) { --sx: 28%; --sy: 9%;  --sd: 4.6s; --sz: -1s; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(3) { --sx: 36%; --sy: 25%; --sd: 6.2s; --sz: -3s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(4) { --sx: 66%; --sy: 12%; --sd: 5.4s; --sz: -2s; --ss: 14px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(5) { --sx: 72%; --sy: 30%; --sd: 7s;   --sz: -4.5s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(6) { --sx: 84%; --sy: 6%;  --sd: 4.2s; --sz: -.5s; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(7) { --sx: 92%; --sy: 19%; --sd: 6.6s; --sz: -5s; --ss: 10px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(8) { --sx: 14%; --sy: 31%; --sd: 5.8s; --sz: -2.5s; --ss: 9px; }
+.music-shelf .music-heading--gallery .music-star:nth-of-type(9) { --sx: 3%;  --sy: 37%; --sd: 6.4s; --sz: -3.5s; --ss: 10px; }
+@keyframes music-star-twinkle {
+  0%, 100% { opacity: 0;  transform: scale(.4) rotate(0deg); }
+  45%      { opacity: .95; transform: scale(1.1) rotate(45deg); }
+  60%      { opacity: .7;  transform: scale(.9) rotate(60deg); }
+}
+
+.music-shelf .music-heading--gallery .music-sky-lantern {
+  position: absolute;
+  left: var(--lx);
+  top: 46%;
+  width: var(--ls, 14px);
+  height: calc(var(--ls, 14px) * 1.25);
+  border-radius: 24% 24% 32% 32% / 18% 18% 34% 34%;
+  background: linear-gradient(180deg, #ffe0a0, #ffa24f 68%, #e1722e);
+  box-shadow: 0 0 12px 5px rgba(255, 170, 80, .42);
+  opacity: 0;
+  animation: music-lantern-rise var(--ld, 28s) linear infinite;
+  animation-delay: var(--lz, 0s);
+}
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(10) { --lx: 7%;  --ls: 13px; --ld: 30s; --lz: -4s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(11) { --lx: 19%; --ls: 17px; --ld: 36s; --lz: -19s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(12) { --lx: 33%; --ls: 12px; --ld: 27s; --lz: -11s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(13) { --lx: 63%; --ls: 15px; --ld: 33s; --lz: -24s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(14) { --lx: 76%; --ls: 12px; --ld: 29s; --lz: -8s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(15) { --lx: 88%; --ls: 18px; --ld: 38s; --lz: -30s; }
+.music-shelf .music-heading--gallery .music-sky-lantern:nth-of-type(16) { --lx: 53%; --ls: 11px; --ld: 26s; --lz: -15s; }
+@keyframes music-lantern-rise {
+  0%   { transform: translate3d(0, 0, 0);               opacity: 0; }
+  10%  { opacity: .85; }
+  30%  { transform: translate3d(1.3cqw, -10cqw, 0); }
+  60%  { transform: translate3d(-1cqw, -21cqw, 0); opacity: .85; }
+  100% { transform: translate3d(1.5cqw, -34cqw, 0);     opacity: 0; }
+}
+
+/* ---------- Glow layer: warm and cool light that lives in the painting ---------- */
+.music-shelf .music-heading--gallery .music-glow {
+  position: absolute;
+  left: var(--gx);
+  top: var(--gy);
+  width: var(--gs);
+  margin: calc(var(--gs) / -2) 0 0 calc(var(--gs) / -2);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.music-shelf .music-heading--gallery .music-glow--lantern {
+  --gx: 14.6%; --gy: 85.5%; --gs: 22%;
+  background: radial-gradient(circle, rgba(255, 190, 90, .55), rgba(255, 150, 50, .2) 40%, transparent 68%);
+  animation: music-lantern-flicker 3.6s ease-in-out infinite;
+}
+@keyframes music-lantern-flicker {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  18% { opacity: .55; transform: scale(.96); }
+  34% { opacity: 1;   transform: scale(1.04); }
+  57% { opacity: .62; transform: scale(.97); }
+  78% { opacity: .95; transform: scale(1.03); }
+}
+.music-shelf .music-heading--gallery .music-glow--lily {
+  --gx: 25.2%; --gy: 30%; --gs: 9%;
+  background: radial-gradient(circle, rgba(255, 90, 110, .7), rgba(255, 60, 90, .25) 45%, transparent 70%);
+  animation: music-glow-pulse 3s ease-in-out infinite;
+}
+.music-shelf .music-heading--gallery .music-glow--wing {
+  --gs: 6%;
+  background: radial-gradient(circle, rgba(140, 225, 255, .7), rgba(90, 190, 255, .24) 45%, transparent 70%);
+  animation: music-glow-pulse 2.6s ease-in-out infinite;
+}
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(3) { --gx: 77.1%; --gy: 34.2%; animation-delay: -.4s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(4) { --gx: 93.9%; --gy: 21.2%; animation-delay: -1.3s; animation-duration: 3.1s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(5) { --gx: 96%;   --gy: 28.7%; animation-delay: -2s; }
+.music-shelf .music-heading--gallery .music-glow--wing:nth-of-type(6) { --gx: 95.3%; --gy: 67.5%; animation-delay: -.9s; animation-duration: 3.4s; }
+@keyframes music-glow-pulse {
+  0%, 100% { opacity: .25; transform: scale(.8); }
+  50%      { opacity: .95; transform: scale(1.15); }
+}
+.music-shelf .music-heading--gallery .music-glow--tail {
+  --gs: 3.4%;
+  background: radial-gradient(circle, rgba(255, 228, 150, .95), rgba(255, 200, 100, .3) 45%, transparent 70%);
+  animation: music-glow-pulse 3.8s ease-in-out infinite;
+}
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(7)  { --gx: 40.1%; --gy: 70.8%; animation-delay: -.6s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(8)  { --gx: 42%;   --gy: 82.8%; animation-delay: -1.9s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(9)  { --gx: 38.8%; --gy: 88.4%; animation-delay: -3s; }
+.music-shelf .music-heading--gallery .music-glow--tail:nth-of-type(10) { --gx: 49.5%; --gy: 77.2%; animation-delay: -1.2s; animation-duration: 4.4s; }
