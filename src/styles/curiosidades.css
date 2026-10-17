@@ -267,15 +267,37 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
 .curiosities-teaser {
   width: min(var(--page), calc(100% - 2rem));
   margin: clamp(2rem, 5vw, 3.5rem) auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--sun-soft) 38%, var(--surface));
+}
+
+.curiosities-teaser__body {
   padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.3rem, 3.4vw, 2.2rem);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
-  border: 1px dashed var(--line);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--sun-soft) 38%, var(--surface));
+}
+
+/* Cena: primavera na Alemanha medieval, com a Sophia correndo. */
+.curiosities-teaser__scene {
+  height: clamp(170px, 24vw, 280px);
+  line-height: 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.spring-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+html[data-legacy-mode='true'] .curiosities-teaser__scene {
+  display: none;
 }
 
 .curiosities-teaser__copy {
@@ -321,3 +343,39 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
   border-color: var(--ink-soft);
   background: var(--sun-soft);
 }
+
+/* Sophia correndo: ciclo de passos de 0,36 s; o caminho todo leva 12 s. */
+@media (prefers-reduced-motion: no-preference) {
+  .spr-runner { animation: spr-run 12s linear infinite; }
+  .spr-bob { animation: spr-bob .36s ease-in-out infinite alternate; }
+  .spr-leg-a, .spr-leg-b, .spr-arm-a, .spr-arm-b, .spr-head, .spr-tail, .spr-ribbon, .spr-cape, .spr-ear-a, .spr-ear-b { animation-duration: .36s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-direction: alternate; }
+  .spr-leg-a { transform-origin: -6px -24px; animation-name: spr-leg; }
+  .spr-leg-b { transform-origin: 8px -24px; animation-name: spr-leg; animation-direction: alternate-reverse; }
+  .spr-arm-a { transform-origin: 0 -52px; animation-name: spr-arm; }
+  .spr-arm-b { transform-origin: 0 -52px; animation-name: spr-arm; animation-direction: alternate-reverse; }
+  .spr-head { transform-origin: 2px -70px; animation-name: spr-head; }
+  .spr-tail { transform-origin: -10px -34px; animation-name: spr-tail; }
+  .spr-ribbon { transform-origin: -20px -98px; animation-name: spr-flutter; animation-duration: .3s; }
+  .spr-cape { transform-origin: -8px -54px; animation-name: spr-flutter; }
+  .spr-ear-a, .spr-ear-b { transform-origin: 0 -100px; animation-name: spr-flutter; animation-duration: .27s; }
+  .spr-speed { animation: spr-speed .36s ease-in-out infinite alternate; }
+  .spr-cloud-a { animation: spr-cloud-a 34s ease-in-out infinite alternate; }
+  .spr-cloud-b { animation: spr-cloud-b 42s ease-in-out infinite alternate; }
+  .spr-petal { animation: spr-petal 9s linear infinite; }
+  .spr-flag { transform-box: fill-box; transform-origin: 0 50%; animation: spr-flag .9s ease-in-out infinite alternate; }
+
+  .curiosities-teaser__scene[data-paused='true'] * { animation-play-state: paused; }
+}
+
+@keyframes spr-run { from { transform: translate(-130px, 282px) scale(1.15); } to { transform: translate(1330px, 282px) scale(1.15); } }
+@keyframes spr-bob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+@keyframes spr-leg { from { transform: rotate(-46deg); } to { transform: rotate(46deg); } }
+@keyframes spr-arm { from { transform: rotate(-22deg); } to { transform: rotate(26deg); } }
+@keyframes spr-head { from { transform: rotate(-3deg); } to { transform: rotate(5deg); } }
+@keyframes spr-tail { from { transform: rotate(-9deg); } to { transform: rotate(11deg); } }
+@keyframes spr-flutter { from { transform: rotate(-9deg); } to { transform: rotate(11deg); } }
+@keyframes spr-speed { from { opacity: .2; transform: translateX(6px); } to { opacity: .9; transform: translateX(-4px); } }
+@keyframes spr-cloud-a { from { transform: translateX(-24px); } to { transform: translateX(34px); } }
+@keyframes spr-cloud-b { from { transform: translateX(30px); } to { transform: translateX(-40px); } }
+@keyframes spr-petal { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(90px, 340px) rotate(420deg); } }
+@keyframes spr-flag { from { transform: scaleX(1); } to { transform: scaleX(.7); } }

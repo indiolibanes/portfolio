@@ -1,0 +1,18 @@
+---
+/** Primavera na Alemanha medieval com a Sophia correndo (estilo chibi da Frieren). Decorativa. */
+import { springMarkup } from '../sophia-spring';
+
+const svg = springMarkup();
+---
+
+<div class="curiosities-teaser__scene" data-spring-anim aria-hidden="true"><Fragment set:html={svg} /></div>
+
+<script>
+  // Pausa a corrida e as pétalas quando a cena sai da tela.
+  const scene = document.querySelector<HTMLElement>('[data-spring-anim]');
+  if (scene && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { (entry.target as HTMLElement).dataset.paused = String(!entry.isIntersecting); });
+    }).observe(scene);
+  }
+</script>

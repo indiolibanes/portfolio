@@ -128,5 +128,11 @@ check('404: detective walk cycle only runs without reduced motion (static pose o
   /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.sdt-walker \{ animation: sdt-walk/.test(illustrationCss) && /\.sdt-walker \{ transform: translate\(260px/.test(illustrationCss));
 check('404: lounge fox wears the lunar dress and a giant CRT TV faces her in profile (no screen content)',
   /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /slo-upper/.test(illustrationCss) && /tvMarkup/.test(read('src/sophia-lounge.ts')) && !/screenContent|MONITORS/.test(read('src/sophia-lounge-wall.ts')));
+const springSrc = read('src/components/SophiaSpring.astro');
+const curioCss = read('src/styles/curiosidades.css');
+check('home: curiosities teaser has a decorative spring scene that pauses off screen and hides in Legacy',
+  read('src/pages/index.astro').includes('<SophiaSpring />') && springSrc.includes('aria-hidden="true"') && springSrc.includes('IntersectionObserver') && curioCss.includes("[data-paused='true']") && curioCss.includes("html[data-legacy-mode='true'] .curiosities-teaser__scene"));
+check('home: spring run animation only runs without reduced motion',
+  /@media \(prefers-reduced-motion: no-preference\)\s*\{\s*\.spr-runner \{ animation: spr-run/.test(curioCss));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;
