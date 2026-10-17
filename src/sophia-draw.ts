@@ -175,6 +175,36 @@ export function strands(shape: Pt[], o: StrandOptions): string {
   return parts.join('');
 }
 
+/** Mecha de pelo: folha curva, base larga e ponta fina. `ang` em graus (0 = +x, 90 = para baixo). */
+export type LockSpec = [x: number, y: number, ang: number, len: number, w: number, curl?: number];
+
+export function lock(x: number, y: number, ang: number, len: number, w: number, curl = 0.15): string {
+  const a = (ang * Math.PI) / 180;
+  const dx = Math.cos(a);
+  const dy = Math.sin(a);
+  const nx = -dy;
+  const ny = dx;
+  const k = curl * len;
+  const P = (px: number, py: number) => `${n1(px)} ${n1(py)}`;
+  const tipX = x + dx * len + nx * k;
+  const tipY = y + dy * len + ny * k;
+  return (
+    `M${P(x - (nx * w) / 2, y - (ny * w) / 2)}` +
+    `Q${P(x - nx * w * 0.7 + dx * len * 0.55 + nx * k * 0.3, y - ny * w * 0.7 + dy * len * 0.55 + ny * k * 0.3)} ${P(tipX, tipY)}` +
+    `Q${P(x + nx * w * 0.7 + dx * len * 0.5 + nx * k * 0.9, y + ny * w * 0.7 + dy * len * 0.5 + ny * k * 0.9)} ${P(x + (nx * w) / 2, y + (ny * w) / 2)}Z`
+  );
+}
+
+/** Várias mechas num `d` só; `grow` engorda cada uma (para a camada de sombra por trás). */
+export function locks(list: LockSpec[], grow = 0): string {
+  return list.map(([x, y, a, l, w, c]) => lock(x, y, a, l + grow, w + grow, c)).join('');
+}
+
+/** Espelha mechas no eixo vertical x = axis. */
+export function mirrorLocks(list: LockSpec[], axis: number): LockSpec[] {
+  return list.map(([x, y, a, l, w, c]) => [2 * axis - x, y, 180 - a, l, w, -(c ?? 0.15)] as LockSpec);
+}
+
 /** Estrela de quatro pontas côncava (a marca de Sophia). */
 export function star4(cx: number, cy: number, rv: number, rh: number, pinch = 0.2): string {
   const q = (a: number, b: number) => `${n1(a)} ${n1(b)}`;

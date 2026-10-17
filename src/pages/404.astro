@@ -17,7 +17,7 @@ import '../styles/sophia-illustration.css';
       <div class="sophia-404__layout">
         <div class="sophia-404__copy">
         <p class="eyebrow">erro 404</p>
-        <h1 id="missing-title">Esta página foi de WaybackMachine / WikiLeaks.</h1>
+        <h1 id="missing-title">Esta página foi de archive.org / WikiLeaks.</h1>
         <p>
           Sophia tentou o seu melhor, mas parece que essa página virou <i>horcrux</i>.
         </p>
@@ -29,7 +29,7 @@ import '../styles/sophia-illustration.css';
         </div>
       </div>
 
-        <div class="sophia-tetris" data-tetris data-state="idle" role="group" aria-labelledby="tetris-title">
+        <div class="sophia-tetris" data-tetris data-state="idle" data-input="kb" role="group" aria-labelledby="tetris-title">
           <h2 id="tetris-title" class="sr-only">Tetris da Sophia</h2>
 
           <div class="tetris-board">
@@ -72,15 +72,17 @@ import '../styles/sophia-illustration.css';
 
           <div class="tetris-pad" data-tetris-pad role="group" aria-label="Controles de toque">
             <button type="button" data-tetris-act="left" aria-label="Mover para a esquerda"><span aria-hidden="true">←</span></button>
-            <button type="button" data-tetris-act="rotate" aria-label="Girar a peça"><span aria-hidden="true">↻</span></button>
-            <button type="button" data-tetris-act="right" aria-label="Mover para a direita"><span aria-hidden="true">→</span></button>
             <button type="button" data-tetris-act="soft" aria-label="Descer mais rápido"><span aria-hidden="true">↓</span></button>
+            <button type="button" data-tetris-act="right" aria-label="Mover para a direita"><span aria-hidden="true">→</span></button>
+            <button type="button" data-tetris-act="rotate" aria-label="Girar a peça"><span aria-hidden="true">↻</span></button>
             <button type="button" data-tetris-act="hard" aria-label="Derrubar a peça"><span aria-hidden="true">⤓</span></button>
             <button type="button" data-tetris-act="pause" data-tetris-pause aria-label="Pausar"><span aria-hidden="true">❙❙</span></button>
           </div>
 
           <p class="tetris-help" id="tetris-help">
-            Teclado: setas movem, ↑ ou X giram, Z gira ao contrário, espaço derruba, P pausa.
+            <span class="tetris-help__kb">Teclado: setas (ou WASD) movem, ↑ ou X giram, Z gira ao contrário, espaço derruba, P pausa.</span>
+            <span class="tetris-help__touch">Toque: arraste no tabuleiro para mover, deslize para baixo para descer, deslize rápido para derrubar, toque para girar.</span>
+            <span class="tetris-help__pad">Controle: direcionais movem, A gira, B gira ao contrário, X ou RB derruba, Start pausa.</span>
           </p>
 
           <div class="tetris-sophia">
@@ -320,6 +322,7 @@ import '../styles/sophia-illustration.css';
       let cellPx = 16;
       let best = 0;
       let visible = true;
+      let lastInput = 'kb';
 
       try { best = Number(localStorage.getItem('sophia-tetris-best')) || 0; } catch {}
       out.best.textContent = String(best);
@@ -332,7 +335,7 @@ import '../styles/sophia-illustration.css';
       const setState = (next) => {
         state = next;
         root.dataset.state = next;
-        if (next !== 'playing') { clearTimeout(cheerTimer); cheerTimer = 0; }
+        if (next !== 'playing') { clearTimeout(cheerTimer); cheerTimer = 0; holdStopAll(); }
         showMood();
       };
       const hud = () => {
@@ -445,6 +448,7 @@ import '../styles/sophia-illustration.css';
         acc = 0;
         if (n) {
           cheer();
+          haptic(30 + n * 20, 0.3 + n * 0.12);
           say(g.level > prev ? `${MESSAGES[n]} Nível ${g.level}: o arquivo acelera.` : MESSAGES[n]);
         }
         hud();
@@ -468,6 +472,7 @@ import '../styles/sophia-illustration.css';
         }
         hud();
         render();
+        haptic(160, 0.7);
         const text = 'O arquivo transbordou. Sophia recolhe os fragmentos.';
         say(`${text} ${g.score} pontos.`);
         showOverlay('Fim de jogo', `${text} ${g.score} pontos.`, 'Jogar de novo');
@@ -514,12 +519,18 @@ import '../styles/sophia-illustration.css';
         run();
       }
 
-      function pause(auto = false) {
+      const PAUSE_TEXT = {
+        user: 'Sophia espera com os fragmentos.',
+        away: 'O jogo parou enquanto você esteve fora.',
+        pad: 'O controle foi desconectado. Reconecte-o ou siga pelo toque e pelo teclado.',
+      };
+
+      function pause(why = 'user') {
         if (state !== 'playing') return;
         setState('paused');
         if (raf) { cancelAnimationFrame(raf); raf = 0; }
         pauseButton.setAttribute('aria-label', 'Continuar');
-        showOverlay('Pausado', auto ? 'O jogo parou enquanto você esteve fora.' : 'Sophia espera com os fragmentos.', 'Continuar');
+        showOverlay('Pausado', PAUSE_TEXT[why] || PAUSE_TEXT.user, 'Continuar');
       }
 
       function resume() {
@@ -531,86 +542,263 @@ import '../styles/sophia-illustration.css';
         run();
       }
 
+      // Devolve true quando a ação teve efeito (os gestos usam isso para não acumular movimento contra a parede).
       function perform(action) {
         if (action === 'pause') {
           if (state === 'playing') pause();
           else if (state === 'paused') resume();
-          return;
+          return true;
         }
-        if (state !== 'playing' || !g || g.clearing) return;
-        if (action === 'left') Tetris.move(g, -1);
-        else if (action === 'right') Tetris.move(g, 1);
-        else if (action === 'rotate') Tetris.rotate(g, 1);
-        else if (action === 'rotateBack') Tetris.rotate(g, -1);
-        else if (action === 'soft') { if (Tetris.softDrop(g)) { acc = 0; hud(); } }
+        if (state !== 'playing' || !g || g.clearing) return false;
+        let ok = true;
+        if (action === 'left') ok = Tetris.move(g, -1);
+        else if (action === 'right') ok = Tetris.move(g, 1);
+        else if (action === 'rotate') ok = Tetris.rotate(g, 1);
+        else if (action === 'rotateBack') ok = Tetris.rotate(g, -1);
+        else if (action === 'soft') { ok = Tetris.softDrop(g); if (ok) { acc = 0; hud(); } }
         else if (action === 'hard') {
           Tetris.hardDrop(g);
           afterLock();
-          if (g.over) { endGame(); return; }
+          haptic(14, 0.25);
+          if (g.over) { endGame(); return true; }
         }
         render();
+        return ok;
       }
 
       // ---------- Input ----------
+      // Teclado (setas e WASD), controle (Gamepad API) e toque (botões e gestos no tabuleiro).
+      const setInput = (kind) => {
+        lastInput = kind;
+        if (root.dataset.input !== kind) root.dataset.input = kind;
+      };
+      setInput(window.matchMedia('(pointer: coarse)').matches ? 'touch' : 'kb');
+
+      const readPads = () => (navigator.getGamepads
+        ? Array.from(navigator.getGamepads()).filter((pad) => pad && pad.connected)
+        : []);
+
+      // Vibração curta: celular/tablet no toque, motores do controle quando é ele que está em uso.
+      function haptic(ms, strength = 0.4) {
+        if (reduce.matches) return;
+        try {
+          if (lastInput === 'touch') navigator.vibrate?.(ms);
+          if (lastInput === 'pad') {
+            readPads().forEach((pad) => pad.vibrationActuator?.playEffect?.('dual-rumble', {
+              duration: ms, strongMagnitude: strength, weakMagnitude: strength * 0.6,
+            }));
+          }
+        } catch {}
+      }
+
+      // Repetição ao segurar (atraso, intervalo), por origem: cada tecla, dedo ou botão do controle tem a sua.
+      const REPEAT = { left: [170, 55], right: [170, 55], soft: [90, 45] };
+      const holds = new Map();
+      function holdStop(key) {
+        const h = holds.get(key);
+        if (!h) return;
+        clearTimeout(h.delay);
+        clearInterval(h.timer);
+        holds.delete(key);
+      }
+      const holdStopAll = () => { Array.from(holds.keys()).forEach(holdStop); };
+      function holdStart(key, action) {
+        holdStop(key);
+        const cfg = REPEAT[action];
+        if (!cfg) return;
+        const h = { delay: 0, timer: 0 };
+        h.delay = setTimeout(() => { h.timer = setInterval(() => perform(action), cfg[1]); }, cfg[0]);
+        holds.set(key, h);
+      }
+
+      // --- Teclado ---
       const KEYS = {
         ArrowLeft: 'left', ArrowRight: 'right', ArrowDown: 'soft', ArrowUp: 'rotate',
+        a: 'left', A: 'left', d: 'right', D: 'right', s: 'soft', S: 'soft', w: 'rotate', W: 'rotate',
         x: 'rotate', X: 'rotate', z: 'rotateBack', Z: 'rotateBack',
         ' ': 'hard', p: 'pause', P: 'pause', Escape: 'pause',
       };
-      const REPEATABLE = new Set(['left', 'right', 'soft']);
+      const isTyping = (el) => el instanceof Element && Boolean(el.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]'));
 
-      canvas.addEventListener('keydown', (event) => {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
+      document.addEventListener('keydown', (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) return;
+        const onCanvas = event.target === canvas;
         if (event.key === 'Enter') {
+          if (!onCanvas) return;
           event.preventDefault();
+          setInput('kb');
           if (state === 'idle' || state === 'over') start();
           else if (state === 'paused') resume();
           return;
         }
         const action = KEYS[event.key];
         if (!action) return;
+        // Fora do tabuleiro as teclas só valem durante a partida (setas continuam rolando a página nas outras horas).
+        if (!onCanvas) {
+          if (isTyping(event.target)) return;
+          if (!(state === 'playing' || (state === 'paused' && action === 'pause'))) return;
+          if (event.key === ' ' && event.target instanceof Element && event.target.closest('button, a, summary')) return;
+        }
         if (action === 'pause' && state === 'idle') return;
         event.preventDefault();
-        if (event.repeat && !REPEATABLE.has(action)) return;
+        setInput('kb');
+        if (event.repeat) return; // a repetição é nossa (REPEAT), com ritmo igual em qualquer teclado
         perform(action);
+        if (REPEAT[action] && state === 'playing') holdStart('key:' + event.code, action);
       });
+      document.addEventListener('keyup', (event) => holdStop('key:' + event.code));
+      window.addEventListener('blur', holdStopAll);
 
       startButton.addEventListener('click', () => {
         if (state === 'paused') resume();
         else start();
       });
 
-      let holdDelay = 0;
-      let holdRepeat = 0;
-      const stopHold = () => {
-        clearTimeout(holdDelay);
-        clearInterval(holdRepeat);
-        holdDelay = 0;
-        holdRepeat = 0;
-      };
-
+      // --- Botões na tela ---
       pad.addEventListener('pointerdown', (event) => {
         const button = event.target.closest('[data-tetris-act]');
         if (!button) return;
         event.preventDefault();
+        if (event.pointerType !== 'mouse') setInput('touch');
         const action = button.dataset.tetrisAct;
         button.setPointerCapture?.(event.pointerId);
         perform(action);
-        stopHold();
-        if (REPEATABLE.has(action)) {
-          holdDelay = setTimeout(() => {
-            holdRepeat = setInterval(() => perform(action), action === 'soft' ? 55 : 90);
-          }, 200);
-        }
+        holdStart('ptr:' + event.pointerId, action);
       });
-      ['pointerup', 'pointercancel'].forEach((name) => pad.addEventListener(name, stopHold));
-      window.addEventListener('blur', stopHold);
+      ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((name) => {
+        pad.addEventListener(name, (event) => holdStop('ptr:' + event.pointerId));
+      });
       pad.addEventListener('contextmenu', (event) => event.preventDefault());
       // Keyboard activation of a pad button arrives as a click with no pointer (detail 0).
       pad.addEventListener('click', (event) => {
         const button = event.target.closest('[data-tetris-act]');
         if (button && event.detail === 0) perform(button.dataset.tetrisAct);
       });
+
+      // --- Gestos no tabuleiro (celular e tablet) ---
+      // Arrastar move a peça uma coluna por célula; arrastar para baixo desce; deslize rápido derruba; toque gira.
+      let gesture = null;
+      const cellCss = () => (canvas.getBoundingClientRect().width || 200) / Tetris.COLS;
+
+      canvas.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse' || state !== 'playing' || gesture) return;
+        event.preventDefault();
+        setInput('touch');
+        canvas.setPointerCapture?.(event.pointerId);
+        gesture = {
+          id: event.pointerId, x0: event.clientX, y0: event.clientY, ax: event.clientX, ay: event.clientY,
+          t0: event.timeStamp, axis: null, samples: [[event.timeStamp, event.clientY]],
+        };
+      });
+
+      canvas.addEventListener('pointermove', (event) => {
+        if (!gesture || event.pointerId !== gesture.id || state !== 'playing') return;
+        event.preventDefault();
+        const cell = cellCss();
+        const dx = event.clientX - gesture.x0;
+        const dy = event.clientY - gesture.y0;
+        if (!gesture.axis && Math.hypot(dx, dy) > cell * 0.5) gesture.axis = Math.abs(dy) > Math.abs(dx) * 1.2 ? 'v' : 'h';
+        gesture.samples.push([event.timeStamp, event.clientY]);
+        if (gesture.samples.length > 6) gesture.samples.shift();
+        if (gesture.axis === 'h') {
+          while (event.clientX - gesture.ax >= cell * 0.85) {
+            gesture.ax += cell;
+            if (!perform('right')) { gesture.ax = event.clientX; break; }
+          }
+          while (gesture.ax - event.clientX >= cell * 0.85) {
+            gesture.ax -= cell;
+            if (!perform('left')) { gesture.ax = event.clientX; break; }
+          }
+        } else if (gesture.axis === 'v') {
+          while (event.clientY - gesture.ay >= cell * 0.9) {
+            gesture.ay += cell * 0.9;
+            if (!perform('soft')) { gesture.ay = event.clientY; break; }
+          }
+        }
+      });
+
+      const endGesture = (event) => {
+        if (!gesture || event.pointerId !== gesture.id) return;
+        const gs = gesture;
+        gesture = null;
+        if (event.type === 'pointercancel' || state !== 'playing') return;
+        const cell = cellCss();
+        const dt = event.timeStamp - gs.t0;
+        const dx = event.clientX - gs.x0;
+        const dy = event.clientY - gs.y0;
+        if (!gs.axis && dt < 350 && Math.hypot(dx, dy) < cell * 0.5) {
+          perform('rotate');
+          return;
+        }
+        if (gs.axis === 'v') {
+          const first = gs.samples[0];
+          const span = Math.max(1, event.timeStamp - first[0]);
+          const speed = (event.clientY - first[1]) / span; // px por ms, nos últimos instantes
+          if (dy > cell * 1.5 && speed > 0.9) perform('hard');
+        }
+      };
+      ['pointerup', 'pointercancel'].forEach((name) => canvas.addEventListener(name, endGesture));
+      canvas.addEventListener('contextmenu', (event) => event.preventDefault());
+
+      // --- Controle (Gamepad API) ---
+      // Mapeamento padrão: direcionais e analógico esquerdo movem; A/↑ giram; B gira ao contrário;
+      // X, Y, RB e RT derrubam; Start/Select pausam (e começam a partida).
+      const PAD_BUTTONS = [
+        [0, 'rotate'], [1, 'rotateBack'], [2, 'hard'], [3, 'hard'], [5, 'hard'], [7, 'hard'],
+        [8, 'start'], [9, 'start'], [12, 'rotate'], [13, 'soft'], [14, 'left'], [15, 'right'],
+      ];
+      let padRaf = 0;
+      let padHeld = new Set();
+
+      function onPadPress(action) {
+        setInput('pad');
+        if (state === 'idle' || state === 'over') {
+          if (visible && (action === 'start' || action === 'rotate' || action === 'hard')) start();
+          return;
+        }
+        if (state === 'paused') {
+          if (action === 'start' || action === 'rotate') resume();
+          return;
+        }
+        if (action === 'start') { pause(); return; }
+        perform(action);
+        holdStart('pad:' + action, action);
+      }
+
+      function pollPads() {
+        padRaf = 0;
+        const pads = readPads();
+        const now = new Set();
+        pads.forEach((pad) => {
+          PAD_BUTTONS.forEach(([index, action]) => { if (pad.buttons[index]?.pressed) now.add(action); });
+          const x = pad.axes[0] || 0;
+          const y = pad.axes[1] || 0;
+          if (x < -0.5) now.add('left');
+          if (x > 0.5) now.add('right');
+          if (y > 0.6) now.add('soft');
+          if (y < -0.7) now.add('rotate');
+        });
+        padHeld.forEach((action) => { if (!now.has(action)) holdStop('pad:' + action); });
+        now.forEach((action) => { if (!padHeld.has(action)) onPadPress(action); });
+        padHeld = now;
+        if (pads.length && !document.hidden) padRaf = requestAnimationFrame(pollPads);
+        else { holdStopAll(); padHeld = new Set(); }
+      }
+      function wakePads() {
+        if (!padRaf && !document.hidden && readPads().length) padRaf = requestAnimationFrame(pollPads);
+      }
+      window.addEventListener('gamepadconnected', () => {
+        say('Controle conectado. Direcionais movem, A gira, Start pausa.');
+        wakePads();
+      });
+      window.addEventListener('gamepaddisconnected', () => {
+        if (!readPads().length) {
+          if (state === 'playing') pause('pad');
+          if (root.dataset.input === 'pad') setInput(window.matchMedia('(pointer: coarse)').matches ? 'touch' : 'kb');
+          say('Controle desconectado.');
+        }
+      });
+      wakePads();
 
       // ---------- Lifecycle ----------
       // A pixel art animada só roda enquanto está à vista.
@@ -620,11 +808,14 @@ import '../styles/sophia-illustration.css';
         });
         document.querySelectorAll('[data-art-anim]').forEach((el) => art.observe(el));
       }
-      document.addEventListener('visibilitychange', () => { if (document.hidden) pause(true); });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) pause('away');
+        else wakePads();
+      });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(([entry]) => {
           visible = Boolean(entry?.isIntersecting);
-          if (!visible) pause(true);
+          if (!visible) pause('away');
         }).observe(frame);
       }
       if ('ResizeObserver' in window) new ResizeObserver(resize).observe(frame);
