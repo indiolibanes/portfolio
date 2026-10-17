@@ -30,6 +30,7 @@ const VIEWPORTS = [
 const PAGES = [
   { name: 'home', path: '/' },
   { name: 'sophia', path: '/sophia/' },
+  { name: 'curiosidades', path: '/curiosidades/' },
   { name: '404', path: '/qa-pagina-inexistente/' },
 ];
 const SECTION_WIDTHS = new Set(['360', '390', '430', '1440']);
