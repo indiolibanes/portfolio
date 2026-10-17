@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SophiaDetective from '../components/SophiaDetective.astro';
 import SophiaLounge from '../components/SophiaLounge.astro';
 import SophiaMascot from '../components/SophiaMascot.astro';
 import SophiaPortrait from '../components/SophiaPortrait.astro';
@@ -16,6 +17,7 @@ import '../styles/sophia-illustration.css';
     <section class="sophia-404__panel" aria-labelledby="missing-title">
       <div class="sophia-404__layout">
         <div class="sophia-404__copy">
+        <SophiaDetective />
         <p class="eyebrow">erro 404</p>
         <h1 id="missing-title">Esta página foi de archive.org / WikiLeaks.</h1>
         <p>

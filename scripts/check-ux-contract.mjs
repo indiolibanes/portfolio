@@ -121,5 +121,12 @@ check('404: gamepad input pauses on disconnect and never starts the game off scr
   notFound.includes("pause('pad')") && /if \(visible && \(action === 'start'/.test(notFound));
 check('404: touch gestures do not scroll the page while playing, and help follows the input in use',
   /data-state='playing'\] \.tetris-canvas \{[^}]*touch-action: none/.test(tetrisCss) && notFound.includes('tetris-help__touch') && notFound.includes('tetris-help__pad') && tetrisCss.includes("[data-input='pad'] .tetris-help__pad"));
+const detectiveSrc = read('src/components/SophiaDetective.astro');
+check('404: the detective sits above the title, is decorative and is observed for pausing',
+  notFound.includes('<SophiaDetective />') && notFound.indexOf('<SophiaDetective />') < notFound.indexOf('<h1') && detectiveSrc.includes('aria-hidden="true"') && detectiveSrc.includes('data-art-anim'));
+check('404: detective walk cycle only runs without reduced motion (static pose otherwise)',
+  /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.sdt-walker \{ animation: sdt-walk/.test(illustrationCss) && /\.sdt-walker \{ transform: translate\(260px/.test(illustrationCss));
+check('404: lounge fox wears the lunar dress and monitors face her in profile',
+  /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /turned\(/.test(read('src/sophia-lounge-wall.ts')) && /slo-upper/.test(illustrationCss));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;
