@@ -1,0 +1,57 @@
+---
+/**
+ * Sophia jogando num quarto escuro: óculos 3D, controle nas patas e vários
+ * monitores. Decorativa. As telas, a cauda, a cabeça e o controle são camadas
+ * de quadros que o CSS alterna (sophia-pixel.css).
+ */
+import PixelPaths from './PixelPaths.astro';
+import { SCENE_H, SCENE_W, sceneBackdrop, sceneLayers, sceneStatic, type Layer } from '../sophia-scene';
+
+const layers = sceneLayers();
+const under = layers.filter((l) => l.z === 'under');
+const over = layers.filter((l) => l.z === 'over');
+
+// Deslocamento negativo que põe o quadro i na sua fatia do ciclo.
+const offset = (layer: Layer, i: number) => (i === 0 ? 0 : -((layer.frames.length - i) / layer.frames.length));
+const HEAD_CLASSES = ['a', 'blink', 'grin'];
+---
+
+<figure
+  class="sophia-scene"
+  data-px-anim
+  role="img"
+  aria-label="Sophia, de óculos 3D, joga videogame num quarto escuro cercada de monitores."
+>
+  <svg
+    class="sophia-px sophia-px--scene"
+    viewBox={`0 0 ${SCENE_W} ${SCENE_H}`}
+    shape-rendering="crispEdges"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <PixelPaths px={sceneBackdrop()} />
+    {under.map((layer) => (
+      <g class="px-cycle" style={`--d:${layer.seconds}s`} data-n={layer.frames.length}>
+        {layer.frames.map((frame, i) => (
+          <g class="px-frame" style={`--o:${offset(layer, i)}`}><PixelPaths px={frame} /></g>
+        ))}
+      </g>
+    ))}
+    <PixelPaths px={sceneStatic()} />
+    {over.map((layer) =>
+      layer.timeline === 'head' ? (
+        <g class="px-head" style={`--d:${layer.seconds}s`}>
+          {layer.frames.map((frame, i) => (
+            <g class={`px-frame px-head--${HEAD_CLASSES[i]}`}><PixelPaths px={frame} /></g>
+          ))}
+        </g>
+      ) : (
+        <g class="px-cycle" style={`--d:${layer.seconds}s`} data-n={layer.frames.length}>
+          {layer.frames.map((frame, i) => (
+            <g class="px-frame" style={`--o:${offset(layer, i)}`}><PixelPaths px={frame} /></g>
+          ))}
+        </g>
+      ),
+    )}
+  </svg>
+</figure>

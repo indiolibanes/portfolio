@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SophiaGamer from '../components/SophiaGamer.astro';
+import SophiaMascot from '../components/SophiaMascot.astro';
+import SophiaObserver from '../components/SophiaObserver.astro';
 import '../styles/sophia-tetris.css';
+import '../styles/sophia-pixel.css';
 ---
 
 <BaseLayout
@@ -28,22 +32,25 @@ import '../styles/sophia-tetris.css';
           <h2 id="tetris-title" class="sr-only">Tetris da Sophia</h2>
 
           <div class="tetris-board">
-            <div class="tetris-frame" data-tetris-frame>
-              <canvas
-                class="tetris-canvas"
-                data-tetris-canvas
-                tabindex="0"
-                role="application"
-                aria-label="Tabuleiro do Tetris da Sophia"
-                aria-describedby="tetris-help"
-              ></canvas>
+            <div class="tetris-playfield">
+              <SophiaObserver />
+              <div class="tetris-frame" data-tetris-frame>
+                <canvas
+                  class="tetris-canvas"
+                  data-tetris-canvas
+                  tabindex="0"
+                  role="application"
+                  aria-label="Tabuleiro do Tetris da Sophia"
+                  aria-describedby="tetris-help"
+                ></canvas>
 
-              <div class="tetris-overlay" data-tetris-overlay>
-                <p class="tetris-overlay__title" data-tetris-overlay-title>Tetris da Sophia</p>
-                <p class="tetris-overlay__text" data-tetris-overlay-text>
-                  Reúna os fragmentos em linhas completas.
-                </p>
-                <button class="tetris-start" type="button" data-tetris-start>Jogar</button>
+                <div class="tetris-overlay" data-tetris-overlay>
+                  <p class="tetris-overlay__title" data-tetris-overlay-title>Tetris da Sophia</p>
+                  <p class="tetris-overlay__text" data-tetris-overlay-text>
+                    Reúna os fragmentos em linhas completas.
+                  </p>
+                  <button class="tetris-start" type="button" data-tetris-start>Jogar</button>
+                </div>
               </div>
             </div>
 
@@ -76,31 +83,15 @@ import '../styles/sophia-tetris.css';
           </p>
 
           <div class="tetris-sophia">
-            <svg class="tetris-fox" data-tetris-fox viewBox="0 0 32 24" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
-              <g fill="currentColor">
-                <rect x="7" y="3" width="3" height="3"/>
-                <rect x="17" y="3" width="3" height="3"/>
-                <rect x="9" y="5" width="10" height="2"/>
-                <rect x="6" y="7" width="16" height="6"/>
-                <rect x="8" y="13" width="12" height="4"/>
-                <rect x="5" y="14" width="4" height="2"/>
-                <rect x="20" y="11" width="5" height="3"/>
-                <rect x="24" y="9" width="4" height="3"/>
-                <rect x="27" y="7" width="3" height="3"/>
-                <rect x="9" y="17" width="3" height="4"/>
-                <rect x="17" y="17" width="3" height="4"/>
-                <rect x="5" y="21" width="8" height="2"/>
-                <rect x="16" y="21" width="7" height="2"/>
-              </g>
-              <rect x="10" y="9" width="2" height="2" fill="#0d0d0d"/>
-              <rect x="17" y="9" width="2" height="2" fill="#0d0d0d"/>
-            </svg>
+            <SophiaMascot />
             <p class="tetris-status" data-tetris-status role="status" aria-live="polite">
               Sophia espera pelos fragmentos.
             </p>
           </div>
         </div>
       </div>
+
+      <SophiaGamer />
 
       <p class="sophia-404__aside">Nem tudo que se perde deixa necessariamente de existir. Às vezes, apenas foi parar no <i>cinturão de Kuiper</i>.</p>
     </section>
@@ -288,7 +279,7 @@ import '../styles/sophia-tetris.css';
       const pauseButton = root.querySelector('[data-tetris-pause]');
       const pad = root.querySelector('[data-tetris-pad]');
       const status = root.querySelector('[data-tetris-status]');
-      const fox = root.querySelector('[data-tetris-fox]');
+      const mascot = root.querySelector('[data-tetris-mascot]');
       const out = {
         score: root.querySelector('[data-tetris-score]'),
         lines: root.querySelector('[data-tetris-lines]'),
@@ -333,7 +324,16 @@ import '../styles/sophia-tetris.css';
       out.best.textContent = String(best);
 
       const say = (text) => { status.textContent = text; };
-      const setState = (next) => { state = next; root.dataset.state = next; };
+      // Humor do mascote: acompanha o estado do jogo; uma linha feita vira "cheer" por um instante.
+      const MOODS = { idle: 'calm', playing: 'play', paused: 'sleep', over: 'sleep' };
+      let cheerTimer = 0;
+      const showMood = () => { if (mascot) mascot.dataset.mood = cheerTimer ? 'cheer' : MOODS[state]; };
+      const setState = (next) => {
+        state = next;
+        root.dataset.state = next;
+        if (next !== 'playing') { clearTimeout(cheerTimer); cheerTimer = 0; }
+        showMood();
+      };
       const hud = () => {
         out.score.textContent = String(g ? g.score : 0);
         out.lines.textContent = String(g ? g.lines : 0);
@@ -432,11 +432,10 @@ import '../styles/sophia-tetris.css';
       }
 
       // ---------- Flow ----------
-      function happy() {
-        if (reduce.matches) return;
-        fox.classList.remove('is-happy');
-        void fox.getBoundingClientRect();
-        fox.classList.add('is-happy');
+      function cheer() {
+        clearTimeout(cheerTimer);
+        cheerTimer = setTimeout(() => { cheerTimer = 0; showMood(); }, 1200);
+        showMood();
       }
 
       function afterClear() {
@@ -444,7 +443,7 @@ import '../styles/sophia-tetris.css';
         const n = Tetris.finishClear(g);
         acc = 0;
         if (n) {
-          happy();
+          cheer();
           say(g.level > prev ? `${MESSAGES[n]} Nível ${g.level}: o arquivo acelera.` : MESSAGES[n]);
         }
         hud();
@@ -613,6 +612,13 @@ import '../styles/sophia-tetris.css';
       });
 
       // ---------- Lifecycle ----------
+      // A pixel art animada só roda enquanto está à vista.
+      if ('IntersectionObserver' in window) {
+        const art = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => { entry.target.dataset.paused = String(!entry.isIntersecting); });
+        });
+        document.querySelectorAll('[data-px-anim]').forEach((el) => art.observe(el));
+      }
       document.addEventListener('visibilitychange', () => { if (document.hidden) pause(true); });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(([entry]) => {
