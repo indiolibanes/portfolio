@@ -45,22 +45,10 @@ export const STAR = [
   '.......K.......',
 ];
 
-/** Aro redondo do óculos, 8×8; o interior (6×6) é preenchido com a lente. */
-const RING = [
-  '..KKKK..',
-  '.K....K.',
-  'K......K',
-  'K......K',
-  'K......K',
-  'K......K',
-  '.K....K.',
-  '..KKKK..',
-];
-
 export const HEAD_W = 33;
 export const HEAD_H = 27;
 
-/** Olhos dentro da lente esquerda; a direita é o espelho. Colunas 8..11. */
+/** Olho esquerdo; o direito é o espelho. Colunas 8..11. */
 const EYE_ROWS = {
   fwd: ['.KK.', 'KwKK', 'KKKK', '.KK.'],
   down: ['.KK.', 'KKKK', 'KwKK', '.KK.'],
@@ -71,7 +59,7 @@ const EYE_ROWS = {
 export type Eyes = keyof typeof EYE_ROWS;
 export type Mouth = 'calm' | 'smile' | 'grin';
 
-/** Silhueta de pelagem (orelhas, rosto), sem estrela nem óculos. */
+/** Silhueta de pelagem (orelhas, rosto), sem estrela. */
 export function furFor(tilt: number): Pixels {
   const px = fromRows(mirror(HEAD_HALF));
   // sombras suaves: parte interna das orelhas
@@ -80,23 +68,13 @@ export function furFor(tilt: number): Pixels {
     px.set(HEAD_W - 1 - x, y, TONE.g);
   }
   const shaded = shadeUnderside(px);
-  // Inclinação: só orelhas e testa deslizam para o lado, em faixas. Óculos e
+  // Inclinação: só orelhas e testa deslizam para o lado, em faixas. Olhos e
   // boca ficam no lugar, então nada se parte nem fica torto.
   return tilt ? shaded.shearRows((y) => (y <= 8 ? 2 * tilt : y <= 12 ? tilt : 0)) : shaded;
 }
 
-function glasses(px: Pixels, eyes: Eyes): void {
-  const ring = fromRows(RING);
-  for (const left of [6, 19]) {
-    px.rect(left + 1, 14, 6, 6, TONE.g); // lente
-    px.set(left, 14, null).set(left + 7, 14, null);
-    px.stamp(ring, left, 13);
-    // reflexo branco na lente
-    px.set(left + 2, 14, TONE.w).set(left + 1, 15, TONE.w);
-  }
-  px.rect(14, 15, 5, 1, TONE.K); // ponte
-  px.rect(3, 15, 3, 1, TONE.K).rect(27, 15, 3, 1, TONE.K); // hastes
-
+/** Olhos grandes com um traço alado no canto de fora (a Sophia original não usa óculos). */
+function drawEyes(px: Pixels, eyes: Eyes): void {
   const rows = EYE_ROWS[eyes];
   const top = eyes === 'down' ? 16 : 15;
   for (const [x0, flip] of [[8, false], [21, true]] as const) {
@@ -108,6 +86,7 @@ function glasses(px: Pixels, eyes: Eyes): void {
         px.set(x0 + xi, top + j, fill);
       });
     });
+    if (eyes !== 'shut') px.set(flip ? x0 + 4 : x0 - 1, top, TONE.K);
   }
 }
 
@@ -131,7 +110,7 @@ function snout(px: Pixels, mouth: Mouth): void {
 export function head(eyes: Eyes = 'fwd', mouth: Mouth = 'calm', tilt = 0): Pixels {
   const px = furFor(tilt);
   px.stamp(fromRows(STAR), 9 + tilt, 9);
-  glasses(px, eyes);
+  drawEyes(px, eyes);
   snout(px, mouth);
   return px;
 }

@@ -67,7 +67,16 @@
   max-width: 100%;
   margin: 0 auto;
   image-rendering: pixelated;
-  touch-action: manipulation;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Durante a partida o tabuleiro recebe os gestos (arrastar, deslizar, tocar): o dedo não rola a página. */
+.sophia-tetris[data-state='playing'] .tetris-canvas {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .tetris-canvas:focus-visible {
@@ -181,28 +190,40 @@
 
 /* ---------- Touch pad ---------- */
 
+/* Direcionais à esquerda, ações à direita: o mesmo desenho de um controle, para os polegares. */
 .tetris-pad {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 0.7rem repeat(3, minmax(0, 1fr));
   gap: 0.4rem;
-  width: min(100%, 360px);
+  width: min(100%, 380px);
 }
+
+.tetris-pad button:nth-child(4) { grid-column: 5; }
+.tetris-pad button:nth-child(5) { grid-column: 6; }
+.tetris-pad button:nth-child(6) { grid-column: 7; }
 
 .tetris-pad button {
   min-width: 0;
-  min-height: 48px;
+  min-height: 52px;
   padding: 0;
   border: 1px solid #3a3a38;
   border-radius: 0;
   background: #151515;
   color: #f3f3f0;
   font-family: inherit;
-  font-size: 1.15rem;
-  touch-action: manipulation;
+  font-size: 1.2rem;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
+}
+
+/* Girar é a ação mais usada: ganha destaque. */
+.tetris-pad button[data-tetris-act='rotate'] {
+  border-color: #e6bb4a;
+  color: #e6bb4a;
 }
 
 .tetris-pad button:hover {
@@ -219,6 +240,12 @@
   outline-offset: 2px;
 }
 
+/* No toque os botões crescem: alvo confortável para o polegar. */
+.sophia-tetris[data-input='touch'] .tetris-pad button {
+  min-height: 60px;
+  font-size: 1.35rem;
+}
+
 .tetris-help {
   max-width: 44ch;
   margin: 0;
@@ -228,10 +255,14 @@
   text-align: center;
 }
 
-@media (hover: none) and (pointer: coarse) {
-  .tetris-help {
-    display: none;
-  }
+/* A dica mostra só a entrada que está em uso (teclado, toque ou controle). */
+.tetris-help span {
+  display: none;
+}
+.sophia-tetris[data-input='kb'] .tetris-help__kb,
+.sophia-tetris[data-input='touch'] .tetris-help__touch,
+.sophia-tetris[data-input='pad'] .tetris-help__pad {
+  display: inline;
 }
 
 /* ---------- Sophia ---------- */
@@ -259,6 +290,7 @@ html[data-legacy-mode='true'] .sophia-404__panel :is(a, button, [tabindex]):focu
 @media (max-width: 420px) {
   .tetris-pad {
     gap: 0.3rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 0.5rem repeat(3, minmax(0, 1fr));
   }
 
   .tetris-side {
