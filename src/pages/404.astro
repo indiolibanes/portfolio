@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SophiaGamer from '../components/SophiaGamer.astro';
+import SophiaLounge from '../components/SophiaLounge.astro';
 import SophiaMascot from '../components/SophiaMascot.astro';
-import SophiaObserver from '../components/SophiaObserver.astro';
+import SophiaPortrait from '../components/SophiaPortrait.astro';
 import '../styles/sophia-tetris.css';
 import '../styles/sophia-pixel.css';
+import '../styles/sophia-illustration.css';
 ---
 
 <BaseLayout
@@ -33,7 +34,7 @@ import '../styles/sophia-pixel.css';
 
           <div class="tetris-board">
             <div class="tetris-playfield">
-              <SophiaObserver />
+              <SophiaPortrait />
               <div class="tetris-frame" data-tetris-frame>
                 <canvas
                   class="tetris-canvas"
@@ -91,7 +92,7 @@ import '../styles/sophia-pixel.css';
         </div>
       </div>
 
-      <SophiaGamer />
+      <SophiaLounge />
 
       <p class="sophia-404__aside">Nem tudo que se perde deixa necessariamente de existir. Às vezes, apenas foi parar no <i>cinturão de Kuiper</i>.</p>
     </section>
@@ -617,7 +618,7 @@ import '../styles/sophia-pixel.css';
         const art = new IntersectionObserver((entries) => {
           entries.forEach((entry) => { entry.target.dataset.paused = String(!entry.isIntersecting); });
         });
-        document.querySelectorAll('[data-px-anim]').forEach((el) => art.observe(el));
+        document.querySelectorAll('[data-art-anim]').forEach((el) => art.observe(el));
       }
       document.addEventListener('visibilitychange', () => { if (document.hidden) pause(true); });
       if ('IntersectionObserver' in window) {
