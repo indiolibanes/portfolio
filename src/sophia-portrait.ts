@@ -1,227 +1,257 @@
 /**
  * Retrato da Sophia para o topo do jogo: ilustração vetorial (não pixel art).
  *
- * Traços fiéis à Sophia do site: raposa branca, pontas das orelhas azul-marinho,
- * olhos âmbar, estrela dourada na testa, tassels vermelhos e óculos redondos
- * com reflexos brancos. A animação é de "marionete": uma cabeça só, e o CSS
- * (sophia-illustration.css) inclina, baixa o olhar, fecha as pálpebras e troca
- * a boca. Ver `.spo-*` lá.
+ * Fiel à Sophia original: raposa de pelagem marfim, orelhas enormes com as
+ * pontas azul-marinho e o miolo felpudo, olhos âmbar grandes com delineador
+ * alado, sobrancelhas douradas, estrela dourada na testa, focinho pequeno,
+ * fitas vermelhas presas por enfeites dourados nas orelhas e laço vermelho com
+ * broche no pescoço. Sem óculos. A animação é de "marionete": uma cabeça só, e
+ * o CSS (sophia-illustration.css) inclina, baixa o olhar, fecha as pálpebras e
+ * troca a boca. Ver `.spo-*` lá.
  */
-import { type Pt, n1, poly, smooth, spline, star4, strands, tufts } from './sophia-draw.ts';
+import { type LockSpec, type Pt, locks, mirrorLocks, n1, poly, smooth, spline, star4, strands } from './sophia-draw.ts';
 
 export const PORTRAIT_W = 420;
-export const PORTRAIT_H = 392;
-const Y0 = -36; // folga em cima: a inclinação leva as pontas das orelhas para fora do quadro
+export const PORTRAIT_H = 440;
+const Y0 = -80; // folga em cima: as orelhas são altas e a inclinação as leva para fora do quadro
 
 const CX = PORTRAIT_W / 2;
 const mx = (p: Pt): Pt => [PORTRAIT_W - p[0], p[1]];
 const mirrorList = (pts: Pt[]): Pt[] => pts.map(mx);
 
-/** Metade direita do contorno da cabeça, do topo ao queixo. */
+/** Metade direita do contorno da cabeça, do topo ao queixo (chibi: cabeça larga, queixo pequeno). */
 const HEAD_R: Pt[] = [
-  [210, 92], [246, 95], [278, 108], [300, 130], [318, 152], [340, 170], [337, 184], [322, 192],
-  [342, 207], [331, 223], [313, 233], [298, 256], [268, 282], [236, 296],
+  [210, 82], [256, 84], [296, 98], [326, 124], [342, 156], [348, 190], [342, 226], [322, 262], [288, 292], [248, 310],
 ];
-const HEAD: Pt[] = [...HEAD_R, [210, 300], ...mirrorList(HEAD_R).slice(1).reverse()];
-
-/** Orelha esquerda (ponta em cima) e a região interna clara. */
-const EAR_L: Pt[] = [
-  [110, 150], [92, 112], [74, 62], [62, 6], [66, -26], [104, -2], [142, 34], [172, 74], [190, 118], [172, 152], [130, 158],
-];
-const EAR_L_INNER: Pt[] = [[108, 132], [95, 102], [89, 72], [92, 46], [116, 52], [142, 70], [162, 96], [173, 124], [140, 144]];
-const EAR_R = mirrorList(EAR_L);
-const EAR_R_INNER = mirrorList(EAR_L_INNER);
+const HEAD: Pt[] = [...HEAD_R, [210, 314], ...mirrorList(HEAD_R).slice(1).reverse()];
 
 const RUFF: Pt[] = [
-  [96, 356], [108, 320], [140, 290], [180, 280], [240, 280], [280, 290], [312, 320], [324, 356],
+  [86, 362], [96, 326], [128, 300], [176, 292], [244, 292], [292, 300], [324, 326], [334, 362],
+];
+
+/** Orelha esquerda: casca (azul → creme) e miolo felpudo. A direita é o espelho. */
+const EAR_L_D =
+  'M122 154C100 124 80 70 68 16C62-8 60-28 60-50C106-34 148 0 176 44C198 80 210 110 210 142C194 158 152 162 122 154Z';
+const EAR_L_IN_D =
+  'M126 142C112 120 104 100 100 78C98 66 100 58 104 52C132 66 154 80 170 98C184 114 192 126 194 142C176 150 148 152 126 140Z';
+/** Espelha um caminho só com comandos absolutos (M, C, Z). */
+function mirrorPath(d: string): string {
+  const tokens = d.match(/[MCZ]|-?\d+(?:\.\d+)?/g) ?? [];
+  const out: string[] = [];
+  let i = 0;
+  while (i < tokens.length) {
+    const t = tokens[i];
+    if (/[MCZ]/.test(t)) {
+      out.push(t);
+      i += 1;
+    } else {
+      out.push(`${n1(PORTRAIT_W - Number(t))} ${tokens[i + 1]}`);
+      i += 2;
+    }
+  }
+  return out.join(' ');
+}
+
+/** Plumas de pelo do miolo da orelha esquerda (apontam para a ponta). */
+const EAR_PLUMES: LockSpec[] = [
+  [186, 134, -110, 30, 16, 0.1], [176, 114, -114, 32, 16, 0.1], [162, 98, -118, 32, 15, 0.08], [146, 82, -120, 30, 14, 0.06], [128, 66, -122, 28, 12, 0.05],
+  [104, 122, -104, 26, 14, -0.1], [100, 100, -100, 28, 14, -0.08], [100, 80, -98, 26, 12, -0.05], [104, 62, -96, 22, 10, 0],
+  [140, 118, -112, 36, 16, 0.1], [122, 96, -108, 34, 14, 0.08],
+];
+
+/** Mechas das bochechas (lado esquerdo; o direito é espelhado). */
+const CHEEK_L: LockSpec[] = [
+  [104, 146, 200, 30, 20, -0.12], [96, 166, 188, 36, 22, -0.1], [90, 188, 176, 40, 24, -0.1], [88, 210, 162, 40, 24, -0.1],
+  [94, 232, 148, 38, 24, -0.1], [106, 252, 134, 36, 22, -0.1], [126, 272, 120, 30, 20, -0.1],
+  [112, 178, 182, 28, 16, -0.1], [108, 222, 150, 28, 16, -0.1],
+];
+/** Topete entre as orelhas. */
+const CREST: LockSpec[] = [
+  [176, 100, -140, 30, 16, 0.2], [194, 92, -115, 34, 16, 0.15], [212, 88, -95, 34, 17, 0.05], [230, 92, -70, 32, 16, -0.1],
+  [246, 100, -48, 28, 16, -0.2], [204, 96, -105, 26, 12, 0.1],
+];
+/** Pelagem do peito/pescoço. */
+const CHEST: LockSpec[] = [
+  [128, 312, 215, 32, 16, -0.1],
 ];
 
 const EYES = [
-  { cx: 150, dir: -1 },
-  { cx: 270, dir: 1 },
+  { cx: 154, dir: -1 },
+  { cx: 266, dir: 1 },
 ] as const;
-const EYE_Y = 180;
+const EYE_Y = 198;
 
-function eyeOutline(cx: number, dir: number): string {
-  const X = (ox: number) => n1(cx + dir * ox);
-  const y = EYE_Y;
-  return `M${X(31)} ${y + 3}Q${X(6)} ${y - 36} ${X(-32)} ${y - 5}Q${X(-4)} ${y + 31} ${X(31)} ${y + 3}Z`;
+/** Olho amendoado: `ox` cresce para fora (para a orelha), `oy` para baixo. Canto externo mais alto. */
+function eyePath(cx: number, dir: number): string {
+  const P = (ox: number, oy: number) => `${n1(cx + dir * ox)} ${n1(EYE_Y + oy)}`;
+  return `M${P(-30, 6)}C${P(-22, -22)} ${P(14, -38)} ${P(34, -8)}C${P(22, 18)} ${P(-14, 30)} ${P(-30, 6)}Z`;
 }
 
 function defs(): string {
   return `<defs>
-<radialGradient id="spo-glow" cx="50%" cy="46%" r="52%"><stop offset="0" stop-color="#6f86ff" stop-opacity=".34"/><stop offset=".55" stop-color="#2c3c9a" stop-opacity=".16"/><stop offset="1" stop-color="#101845" stop-opacity="0"/></radialGradient>
-<radialGradient id="spo-fur" cx="50%" cy="34%" r="74%"><stop offset="0" stop-color="#fffefb"/><stop offset=".55" stop-color="#f7f0e4"/><stop offset="1" stop-color="#dccfba"/></radialGradient>
-<linearGradient id="spo-fur-back" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe6d6"/><stop offset="1" stop-color="#cdbfa8"/></linearGradient>
-<linearGradient id="spo-ear" gradientUnits="userSpaceOnUse" x1="0" y1="-26" x2="0" y2="150"><stop offset="0" stop-color="#0e1642"/><stop offset=".34" stop-color="#1c2a78"/><stop offset=".5" stop-color="#3f4f9c"/><stop offset=".62" stop-color="#c3c7de"/><stop offset=".74" stop-color="#f7f2e8"/><stop offset="1" stop-color="#fffdf8"/></linearGradient>
-<linearGradient id="spo-ear-in" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset=".55" stop-color="#f8e6da"/><stop offset="1" stop-color="#e9bfb0"/></linearGradient>
+<radialGradient id="spo-glow" cx="50%" cy="46%" r="52%"><stop offset="0" stop-color="#6f86ff" stop-opacity=".30"/><stop offset=".55" stop-color="#2c3c9a" stop-opacity=".14"/><stop offset="1" stop-color="#101845" stop-opacity="0"/></radialGradient>
+<radialGradient id="spo-fur" cx="50%" cy="38%" r="72%"><stop offset="0" stop-color="#fffefb"/><stop offset=".6" stop-color="#fcf4e4"/><stop offset="1" stop-color="#eddcbb"/></radialGradient>
+<linearGradient id="spo-fur-back" gradientUnits="userSpaceOnUse" x1="0" y1="80" x2="0" y2="320"><stop offset="0" stop-color="#f3e7cd"/><stop offset="1" stop-color="#dcc9a4"/></linearGradient>
+<linearGradient id="spo-ear" gradientUnits="userSpaceOnUse" x1="0" y1="-50" x2="0" y2="160"><stop offset="0" stop-color="#0a1038"/><stop offset=".3" stop-color="#18246c"/><stop offset=".44" stop-color="#2d3b8c"/><stop offset=".56" stop-color="#9aa0c8"/><stop offset=".66" stop-color="#f3ebdb"/><stop offset=".78" stop-color="#fffaf0"/><stop offset="1" stop-color="#fffdf8"/></linearGradient>
+<linearGradient id="spo-ear-in" gradientUnits="userSpaceOnUse" x1="0" y1="10" x2="0" y2="150"><stop offset="0" stop-color="#f6e6d8"/><stop offset=".5" stop-color="#fff5e8"/><stop offset="1" stop-color="#fdeadb"/></linearGradient>
 <linearGradient id="spo-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#f0b73e"/><stop offset="1" stop-color="#b9771d"/></linearGradient>
-<radialGradient id="spo-iris" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#ffe28a"/><stop offset=".38" stop-color="#f6b33a"/><stop offset=".78" stop-color="#c4701c"/><stop offset="1" stop-color="#6e3510"/></radialGradient>
-<linearGradient id="spo-lidshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1608" stop-opacity=".62"/><stop offset=".5" stop-color="#2a1608" stop-opacity="0"/></linearGradient>
-<radialGradient id="spo-lens" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"/><stop offset="1" stop-color="#9fb4ff" stop-opacity=".07"/></radialGradient>
+<radialGradient id="spo-iris" cx="50%" cy="40%" r="64%"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".4" stop-color="#f7b83c"/><stop offset=".8" stop-color="#c9741a"/><stop offset="1" stop-color="#7a3c10"/></radialGradient>
+<linearGradient id="spo-lidshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1608" stop-opacity=".6"/><stop offset=".55" stop-color="#2a1608" stop-opacity="0"/></linearGradient>
 <linearGradient id="spo-paw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d3d8f"/><stop offset="1" stop-color="#121a4a"/></linearGradient>
-<linearGradient id="spo-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ee4a55"/><stop offset="1" stop-color="#a31322"/></linearGradient>
+<linearGradient id="spo-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0505a"/><stop offset="1" stop-color="#b11626"/></linearGradient>
+<linearGradient id="spo-coat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8e2d6"/></linearGradient>
 <radialGradient id="spo-nose" cx="40%" cy="30%" r="70%"><stop offset="0" stop-color="#5b4650"/><stop offset="1" stop-color="#1c1216"/></radialGradient>
+<radialGradient id="spo-muzzle" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffefa"/><stop offset=".65" stop-color="#fffefa" stop-opacity=".9"/><stop offset="1" stop-color="#fffefa" stop-opacity="0"/></radialGradient>
+<radialGradient id="spo-gem" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffd0e0"/><stop offset="1" stop-color="#d23a72"/></radialGradient>
 <filter id="spo-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
-<filter id="spo-blur1" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".7"/></filter>
 <filter id="spo-blur2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
-<clipPath id="spo-ruff-clip"><path d="${poly(RUFF)}"/></clipPath>
 <clipPath id="spo-head-clip"><path d="${smooth(HEAD)}"/></clipPath>
-${EYES.map((e, i) => `<clipPath id="spo-eye-clip-${i}"><path d="${eyeOutline(e.cx, e.dir)}"/></clipPath>`).join('')}
+${EYES.map((e, i) => `<clipPath id="spo-eye-clip-${i}"><path d="${eyePath(e.cx, e.dir)}"/></clipPath>`).join('')}
 </defs>`;
 }
 
-function ear(pts: Pt[], inner: Pt[], seed: number, side: 'l' | 'r'): string {
-  const outline = spline(pts, true, 5);
-  const innerOutline = spline(inner, true, 5);
-  const back = tufts(outline, { seed, len: [6, 13], width: [8, 13], gap: 6, bend: 5, where: (_p, n) => (side === 'l' ? n[0] < 0.55 : n[0] > -0.55) });
-  const fluff = tufts(innerOutline, { seed: seed + 1, len: [7, 15], width: [6, 10], gap: 5, bend: 4, lean: side === 'l' ? 0.35 : -0.35 });
-  const flow = strands(spline(inner, true, 5), { seed: seed + 2, count: 26, from: side === 'l' ? [150, 156] : [270, 156], len: [8, 16], jitter: 0.25 });
+function ear(side: 'l' | 'r'): string {
+  const l = side === 'l';
+  const shell = l ? EAR_L_D : mirrorPath(EAR_L_D);
+  const cavity = l ? EAR_L_IN_D : mirrorPath(EAR_L_IN_D);
+  const plumes = l ? EAR_PLUMES : mirrorLocks(EAR_PLUMES, CX);
+  const spots: Pt[] = [[72, 4], [80, 40], [88, 70]];
+  const sparkle = (l ? spots : mirrorList(spots)).map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r=".9" fill="#aab4ee"/>`).join('');
   return `<g class="spo-ear spo-ear-${side}">
-<path d="${back}" fill="url(#spo-ear)"/>
-<path d="${smooth(pts)}" fill="url(#spo-ear)"/>
-<path d="${smooth(inner)}" fill="url(#spo-ear-in)"/>
-<path d="${flow}" fill="none" stroke="#e8c9b9" stroke-width=".9" stroke-linecap="round" opacity=".7"/>
-<path d="${fluff}" fill="#fffbf2"/>
+<path d="${shell}" fill="url(#spo-ear)"/>
+${sparkle}
+<path d="${cavity}" fill="url(#spo-ear-in)"/>
+<path d="${locks(plumes, 4)}" fill="#efe2cb"/>
+<path d="${locks(plumes)}" fill="#fffbf3"/>
 </g>`;
 }
 
-function tassel(x: number, y: number, flip: 1 | -1): string {
-  const X = (dx: number) => n1(x + flip * dx);
+/** Enfeite dourado na base da orelha com o grampo vermelho e as fitas que balançam. */
+function ornament(side: 'l' | 'r'): string {
+  const l = side === 'l';
+  const ax = l ? 110 : PORTRAIT_W - 110;
+  const s = l ? 1 : -1;
+  const X = (dx: number) => n1(ax + s * dx);
   return `<g class="spo-tassel">
-<circle cx="${n1(x)}" cy="${n1(y)}" r="7.5" fill="none" stroke="url(#spo-gold)" stroke-width="3"/>
-<path d="M${X(-1)} ${y + 7}L${X(-1)} ${y + 22}" stroke="url(#spo-gold)" stroke-width="2.4" stroke-linecap="round"/>
-<path d="M${X(-5)} ${y + 22}h10l2 6h-14z" fill="url(#spo-gold)"/>
-<path d="M${X(-6)} ${y + 28}Q${X(-9)} ${y + 46} ${X(-8)} ${y + 58}L${X(-3)} ${y + 56}L${X(-1)} ${y + 60}L${X(2)} ${y + 56}L${X(6)} ${y + 59}Q${X(8)} ${y + 44} ${X(6)} ${y + 28}Z" fill="url(#spo-red)"/>
-<path d="M${X(-2)} ${y + 31}L${X(-3)} ${y + 54}M${X(2)} ${y + 31}L${X(2)} ${y + 55}" stroke="#7d0e1a" stroke-width=".8" opacity=".5"/>
+<path d="M${X(-4)} 154C${X(-8)} 196 ${X(-14)} 222 ${X(-22)} 252L${X(-12)} 243L${X(-10)} 258C${X(-2)} 222 ${X(2)} 192 ${X(4)} 154Z" fill="url(#spo-red)"/>
+<path d="M${X(2)} 154C${X(6)} 178 ${X(6)} 198 ${X(2)} 220L${X(8)} 213L${X(12)} 224C${X(14)} 200 ${X(14)} 176 ${X(10)} 154Z" fill="url(#spo-red)" opacity=".92"/>
+<path d="M${X(-1)} 156C${X(-4)} 190 ${X(-8)} 214 ${X(-14)} 238" fill="none" stroke="#7d0e1a" stroke-width=".8" opacity=".4"/>
+<path d="M${X(-12)} 130C${X(-18)} 122 ${X(-8)} 112 ${X(-2)} 118C${X(2)} 122 ${X(0)} 128 ${X(-4)} 128" fill="none" stroke="url(#spo-gold)" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M${X(-14)} 146C${X(-8)} 156 ${X(4)} 156 ${X(10)} 146" fill="none" stroke="url(#spo-gold)" stroke-width="2" stroke-linecap="round"/>
+<circle cx="${X(-2)}" cy="144" r="8" fill="url(#spo-gold)"/>
+<circle cx="${X(-2)}" cy="144" r="4.6" fill="#d1263a"/>
+<circle cx="${X(-3.4)}" cy="142.4" r="1.4" fill="#ffb0b8"/>
 </g>`;
 }
 
 function eye(i: number, cx: number, dir: number): string {
   const y = EYE_Y;
   const X = (ox: number) => n1(cx + dir * ox);
-  return `<g class="spo-eye">
+  const upper = `M${X(-30)} ${y + 6}C${X(-22)} ${y - 22} ${X(14)} ${y - 38} ${X(34)} ${y - 8}`;
+  const wing = `M${X(18)} ${y - 24}Q${X(44)} ${y - 22} ${X(62)} ${y - 36}Q${X(54)} ${y - 14} ${X(38)} ${y - 3}L${X(30)} ${y - 8}Z`;
+  return `<g class="spo-eye" transform="translate(${cx} ${y}) scale(1.16) translate(${-cx} ${-y})">
 <g class="spo-open">
 <g clip-path="url(#spo-eye-clip-${i})">
-<rect x="${cx - 42}" y="${y - 42}" width="84" height="84" fill="#2a1608"/>
+<rect x="${cx - 46}" y="${y - 46}" width="92" height="84" fill="#fff4dc"/>
 <g class="spo-gaze">
-<circle cx="${n1(cx + dir * -1)}" cy="${y + 1}" r="20" fill="url(#spo-iris)"/>
-<circle cx="${n1(cx + dir * -1)}" cy="${y + 1}" r="9.5" fill="#150b06"/>
-<path d="M${n1(cx + dir * -1)} ${y - 19}a20 20 0 0 1 0 40" fill="none" stroke="#7a3b0e" stroke-width="1.4" opacity=".55"/>
-<circle cx="${n1(cx + dir * 5)}" cy="${y - 6}" r="4.6" fill="#fff"/>
-<circle cx="${n1(cx + dir * -7)}" cy="${y + 8}" r="2.2" fill="#fff" opacity=".85"/>
+<circle cx="${n1(cx + dir * -1)}" cy="${y - 1}" r="22" fill="url(#spo-iris)"/>
+<circle cx="${n1(cx + dir * -1)}" cy="${y - 1}" r="22" fill="none" stroke="#6e3510" stroke-width="2" opacity=".7"/>
+<circle cx="${n1(cx + dir * -1)}" cy="${y - 1}" r="10.5" fill="#150b06"/>
+<circle cx="${n1(cx + dir * 6)}" cy="${y - 8}" r="5.2" fill="#fff"/>
+<circle cx="${n1(cx + dir * -8)}" cy="${y + 9}" r="2.4" fill="#fff" opacity=".85"/>
+<circle cx="${n1(cx + dir * 12)}" cy="${y + 8}" r="1.1" fill="#fff6c8"/>
+<circle cx="${n1(cx + dir * -14)}" cy="${y - 6}" r="1" fill="#fff6c8"/>
+<circle cx="${n1(cx + dir * 4)}" cy="${y + 15}" r="1" fill="#fff6c8"/>
 </g>
-<rect x="${cx - 42}" y="${y - 42}" width="84" height="40" fill="url(#spo-lidshade)"/>
-<g class="spo-lid"><rect x="${cx - 44}" y="${y - 112}" width="88" height="72" fill="url(#spo-fur)"/><path d="M${cx - 44} ${y - 40}H${cx + 44}" stroke="#1b1210" stroke-width="3.4"/></g>
+<rect x="${cx - 46}" y="${y - 46}" width="92" height="42" fill="url(#spo-lidshade)"/>
+<g class="spo-lid"><rect x="${cx - 48}" y="${y - 122}" width="96" height="84" fill="url(#spo-fur)"/><path d="M${cx - 48} ${y - 38}H${cx + 48}" stroke="#1b1210" stroke-width="3.4"/></g>
 </g>
-<path d="M${X(31)} ${y + 3}Q${X(6)} ${y - 36} ${X(-32)} ${y - 5}" fill="none" stroke="#1b1210" stroke-width="4" stroke-linecap="round"/>
-<path d="M${X(31)} ${y + 3}L${X(45)} ${y - 9}L${X(27)} ${y - 6}Z" fill="#1b1210"/>
-<path d="M${X(-32)} ${y - 5}Q${X(-4)} ${y + 31} ${X(31)} ${y + 3}" fill="none" stroke="#3b2a22" stroke-width="1.6" opacity=".7"/>
+<path d="${upper}" fill="none" stroke="#1b1210" stroke-width="5.4" stroke-linecap="round"/>
+<path d="${wing}" fill="#1b1210"/>
+<path d="M${X(-30)} ${y + 6}C${X(-14)} ${y + 30} ${X(10)} ${y + 24} ${X(24)} ${y + 8}" fill="none" stroke="#3b2a22" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>
+<path d="M${X(-30)} ${y + 6}L${X(-38)} ${y + 12}" stroke="#1b1210" stroke-width="2" stroke-linecap="round"/>
 </g>
-<path class="spo-happy" d="M${X(27)} ${y + 8}Q${X(0)} ${y - 26} ${X(-27)} ${y + 8}" fill="none" stroke="#1b1210" stroke-width="5.4" stroke-linecap="round"/>
-</g>`;
-}
-
-function glasses(): string {
-  const lens = EYES.map((e) => {
-    const cx = e.cx;
-    const cy = EYE_Y + 2;
-    const flip = e.dir;
-    const gx = (dx: number) => n1(cx + flip * dx);
-    return `<g class="spo-lens">
-<circle cx="${cx}" cy="${cy}" r="40" fill="url(#spo-lens)"/>
-<circle cx="${cx}" cy="${cy}" r="40" fill="none" stroke="#1b1a24" stroke-width="4.4"/>
-<circle cx="${cx}" cy="${cy}" r="37.2" fill="none" stroke="#d9ac4a" stroke-width="1" opacity=".85"/>
-<path d="M${gx(-26)} ${cy - 18}Q${gx(-12)} ${cy - 32} ${gx(4)} ${cy - 35}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".78"/>
-<path d="M${gx(-31)} ${cy - 6}Q${gx(-30)} ${cy - 12} ${gx(-28)} ${cy - 15}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-<path d="M${gx(20)} ${cy + 27}Q${gx(28)} ${cy + 20} ${gx(32)} ${cy + 10}" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".35"/>
-<path d="M${gx(40)} ${cy - 6}L${gx(70)} ${cy - 12}" stroke="#1b1a24" stroke-width="3.6" stroke-linecap="round"/>
-</g>`;
-  }).join('');
-  return `${lens}<path d="M188 176Q210 160 232 176" fill="none" stroke="#1b1a24" stroke-width="4.4" stroke-linecap="round"/>`;
+<path class="spo-happy" d="M${X(30)} ${y + 6}Q${X(2)} ${y - 30} ${X(-28)} ${y + 8}M${X(30)} ${y + 6}L${X(50)} ${y - 8}" fill="none" stroke="#1b1210" stroke-width="5.4" stroke-linecap="round"/>
+</g>
+<path d="M${X(-22)} ${y - 50}Q${X(-2)} ${y - 62} ${X(26)} ${y - 56}" fill="none" stroke="#e1a02e" stroke-width="3.4" stroke-linecap="round"/>`;
 }
 
 function face(): string {
   return `
-<ellipse cx="${CX}" cy="238" rx="50" ry="38" fill="#fffdf7" opacity=".9"/>
-<path d="M${CX - 14} 214Q${CX} 208 ${CX + 14} 214Q${CX + 13} 226 ${CX} 234Q${CX - 13} 226 ${CX - 14} 214Z" fill="url(#spo-nose)"/>
-<ellipse cx="${CX - 4}" cy="215" rx="5" ry="2" fill="#fff" opacity=".55"/>
-<path d="M${CX} 234V246" stroke="#3a2420" stroke-width="2.4" stroke-linecap="round"/>
-<g class="spo-mouth spo-mouth-calm" fill="none" stroke="#3a2420" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M${CX} 246Q${CX - 8} 258 ${CX - 22} 250"/><path d="M${CX} 246Q${CX + 8} 258 ${CX + 22} 250"/></g>
+<ellipse cx="${CX}" cy="252" rx="58" ry="44" fill="url(#spo-muzzle)"/>
+<path d="M${CX - 8} 240Q${CX} 235 ${CX + 8} 240Q${CX + 7} 249 ${CX} 253Q${CX - 7} 249 ${CX - 8} 240Z" fill="url(#spo-nose)"/>
+<ellipse cx="${CX - 2.4}" cy="239.6" rx="2.6" ry="1.1" fill="#fff" opacity=".55"/>
+<path d="M${CX} 253V259" stroke="#3a2420" stroke-width="1.8" stroke-linecap="round"/>
+<g class="spo-mouth spo-mouth-calm" fill="none" stroke="#3a2420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M${CX} 259Q${CX - 5} 266 ${CX - 14} 261"/><path d="M${CX} 259Q${CX + 5} 266 ${CX + 14} 261"/></g>
 <g class="spo-mouth spo-mouth-grin">
-<path d="M${CX - 34} 244Q${CX} 252 ${CX + 34} 244Q${CX + 30} 288 ${CX} 290Q${CX - 30} 288 ${CX - 34} 244Z" fill="#4a1620"/>
-<clipPath id="spo-mouth-clip"><path d="M${CX - 34} 244Q${CX} 252 ${CX + 34} 244Q${CX + 30} 288 ${CX} 290Q${CX - 30} 288 ${CX - 34} 244Z"/></clipPath>
-<g clip-path="url(#spo-mouth-clip)"><ellipse cx="${CX}" cy="290" rx="24" ry="17" fill="#e8798b"/><path d="M${CX} 276V290" stroke="#c4566a" stroke-width="1.6"/></g>
-<path d="M${CX - 22} 247L${CX - 17} 259L${CX - 11} 249Z M${CX + 22} 247L${CX + 17} 259L${CX + 11} 249Z" fill="#fff"/>
-<path d="M${CX - 34} 244Q${CX} 252 ${CX + 34} 244" fill="none" stroke="#2a0f14" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M${CX - 28} 257Q${CX} 264 ${CX + 28} 257Q${CX + 25} 292 ${CX} 294Q${CX - 25} 292 ${CX - 28} 257Z" fill="#4a1620"/>
+<clipPath id="spo-mouth-clip"><path d="M${CX - 28} 257Q${CX} 264 ${CX + 28} 257Q${CX + 25} 292 ${CX} 294Q${CX - 25} 292 ${CX - 28} 257Z"/></clipPath>
+<g clip-path="url(#spo-mouth-clip)"><ellipse cx="${CX}" cy="294" rx="20" ry="14" fill="#e8798b"/><path d="M${CX} 282V294" stroke="#c4566a" stroke-width="1.4"/></g>
+<path d="M${CX - 18} 260L${CX - 14} 270L${CX - 9} 262Z M${CX + 18} 260L${CX + 14} 270L${CX + 9} 262Z" fill="#fff"/>
+<path d="M${CX - 28} 257Q${CX} 264 ${CX + 28} 257" fill="none" stroke="#2a0f14" stroke-width="2.2" stroke-linecap="round"/>
 </g>
-<g class="spo-whiskers" stroke="#fffdf7" stroke-width="1.2" stroke-linecap="round" opacity=".8" fill="none">
-<path d="M${CX - 40} 236Q${CX - 78} 226 ${CX - 108} 232M${CX - 40} 242Q${CX - 80} 242 ${CX - 110} 252M${CX + 40} 236Q${CX + 78} 226 ${CX + 108} 232M${CX + 40} 242Q${CX + 80} 242 ${CX + 110} 252"/>
-</g>
-<ellipse class="spo-blush" cx="${CX - 82}" cy="236" rx="20" ry="10" fill="#ff9aa8"/>
-<ellipse class="spo-blush" cx="${CX + 82}" cy="236" rx="20" ry="10" fill="#ff9aa8"/>`;
+<ellipse class="spo-blush" cx="${CX - 78}" cy="248" rx="20" ry="10" fill="#ff9aa8"/>
+<ellipse class="spo-blush" cx="${CX + 78}" cy="248" rx="20" ry="10" fill="#ff9aa8"/>`;
+}
+
+/** Corpo: gola felpuda, jaleco branco com friso dourado, laço vermelho com broche e luvas azul-marinho. */
+function body(): string {
+  const ruffOutline = spline(RUFF, true, 5);
+    const chest = [...CHEST, ...mirrorLocks(CHEST, CX)];
+  const paw = (x: number) => `<g class="spo-paw">
+<path d="M${x - 28} 360V346Q${x - 28} 322 ${x} 322Q${x + 28} 322 ${x + 28} 346V360Z" fill="url(#spo-paw)"/>
+<path d="M${x - 9} 342V360M${x + 9} 342V360" stroke="#0c1236" stroke-width="1.5" opacity=".55"/>
+<path d="M${x - 20} 334Q${x - 8} 326 ${x + 4} 328" fill="none" stroke="#7c8cd6" stroke-width="2" stroke-linecap="round" opacity=".45"/>
+<path d="${star4(x, 340, 6, 4, 0.2)}" fill="url(#spo-gold)"/>
+</g>`;
+  return `<g class="spo-body">
+<path transform="translate(1 3)" d="${locks(chest, 2)}" fill="#e6d6b6"/>
+<path d="${poly(ruffOutline)}" fill="url(#spo-fur)"/>
+<path d="${locks(chest)}" fill="#fffaf0"/>
+<path d="M132 360L138 322Q160 306 188 304L210 338L232 304Q260 306 282 322L288 360Z" fill="url(#spo-coat)"/>
+<path d="M188 304L210 338L232 304" fill="none" stroke="url(#spo-gold)" stroke-width="2" stroke-linejoin="round"/>
+<path d="M146 352Q150 334 160 324M274 352Q270 334 260 324" fill="none" stroke="url(#spo-gold)" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
+<path d="M210 326L192 318Q186 330 198 336ZM210 326L228 318Q234 330 222 336Z" fill="url(#spo-red)"/>
+<path d="M205 332L196 360L204 354L208 362L212 336ZM215 332L224 360L216 354L212 362L208 336Z" fill="url(#spo-red)"/>
+<circle cx="210" cy="327" r="4.4" fill="#b11626"/>
+<circle cx="210" cy="343" r="7" fill="url(#spo-gold)"/>
+<circle cx="210" cy="343" r="3.8" fill="url(#spo-gem)"/>
+${paw(112)}${paw(308)}
+</g>`;
 }
 
 export function portraitMarkup(): string {
   const headOutline = spline(HEAD, true, 5);
-  const ruffOutline = spline(RUFF, true, 5);
-
-  const cheekRuff = tufts(headOutline, {
-    seed: 21, len: [12, 26], width: [14, 22], gap: 6, bend: 8,
-    where: (p) => p[1] > 150 && p[1] < 240 && (p[0] < 128 || p[0] > 292),
-  });
-  const headBack = tufts(headOutline, { seed: 22, len: [8, 16], width: [12, 18], gap: 5, bend: 6 });
-  const headFront = tufts(headOutline, { seed: 23, len: [5, 9], width: [10, 15], gap: 5, bend: 4, lean: 0.1 });
-  const ruffTufts = tufts(ruffOutline, { seed: 24, len: [12, 26], width: [12, 20], gap: 8, bend: 8, where: (p) => p[1] < 340 });
-  const flowDark = strands(headOutline, { seed: 31, count: 170, from: [CX, 215], len: [9, 20], jitter: 0.22 });
-  const flowLight = strands(headOutline, { seed: 32, count: 120, from: [CX, 205], len: [8, 16], jitter: 0.22 });
-  const ruffFlow = strands(ruffOutline, { seed: 33, count: 90, from: [CX, 250], len: [10, 22], jitter: 0.3 });
-  const crest = tufts(
-    spline([[186, 100], [198, 84], [210, 78], [222, 84], [234, 100]], false, 4).concat([[222, 112], [198, 112]]),
-    { seed: 25, len: [8, 15], width: [7, 11], gap: 5, bend: 5, lean: 0 },
-  );
-  // pequenos "pelinhos" no focinho, para não ficar liso
-  const muzzleFlow = strands(spline([[168, 214], [210, 206], [252, 214], [262, 246], [210, 274], [158, 246]], true, 5), {
-    seed: 34, count: 40, from: [CX, 224], len: [5, 10], jitter: 0.3,
-  });
-
-  const paw = (x: number) => `<g class="spo-paw">
-<path d="M${x - 30} 356V346Q${x - 30} 322 ${x} 322Q${x + 30} 322 ${x + 30} 346V356Z" fill="url(#spo-paw)"/>
-<path d="M${x - 10} 340V356M${x + 10} 340V356" stroke="#0c1236" stroke-width="1.6" opacity=".55"/>
-<path d="M${x - 22} 332Q${x - 8} 324 ${x + 4} 326" fill="none" stroke="#7c8cd6" stroke-width="2" stroke-linecap="round" opacity=".45"/>
-</g>`;
+  const cheek = [...CHEEK_L, ...mirrorLocks(CHEEK_L, CX)];
+  const flowDark = strands(headOutline, { seed: 31, count: 70, from: [CX, 230], len: [9, 18], jitter: 0.22 });
+  const flowLight = strands(headOutline, { seed: 32, count: 50, from: [CX, 220], len: [8, 14], jitter: 0.22 });
 
   return `<svg class="sophia-art sophia-art--portrait" viewBox="0 ${Y0} ${PORTRAIT_W} ${PORTRAIT_H}" aria-hidden="true" focusable="false">
 ${defs()}
-<ellipse cx="${CX}" cy="176" rx="200" ry="176" fill="url(#spo-glow)"/>
-<g class="spo-body">
-<path d="${ruffTufts}" fill="#e6dac6"/>
-<path d="${poly(ruffOutline)}" fill="url(#spo-fur)"/>
-<g clip-path="url(#spo-ruff-clip)"><path d="${ruffFlow}" fill="none" stroke="#cdbea6" stroke-width="1" stroke-linecap="round" opacity=".5"/></g>
-${paw(118)}${paw(302)}
-</g>
+<ellipse cx="${CX}" cy="150" rx="210" ry="200" fill="url(#spo-glow)"/>
+${body()}
 <g class="spo-head">
-${ear(EAR_L, EAR_L_INNER, 41, 'l')}${ear(EAR_R, EAR_R_INNER, 51, 'r')}
-${tassel(104, 146, 1)}${tassel(316, 146, -1)}
-<path d="${cheekRuff}${headBack}" fill="url(#spo-fur-back)" filter="url(#spo-blur1)"/>
+${ear('l')}${ear('r')}
+<path transform="translate(1.5 4)" d="${locks(cheek, 2)}${locks(CREST, 2)}" fill="url(#spo-fur-back)"/>
 <path d="${smooth(HEAD)}" fill="url(#spo-fur)"/>
 <g clip-path="url(#spo-head-clip)">
-<ellipse cx="${CX}" cy="304" rx="120" ry="44" fill="#a98e72" opacity=".26" filter="url(#spo-soft)"/>
-<ellipse cx="${CX}" cy="104" rx="70" ry="22" fill="#fff" opacity=".6" filter="url(#spo-soft)"/>
-<ellipse cx="86" cy="206" rx="30" ry="46" fill="#b9a68d" opacity=".25" filter="url(#spo-soft)"/>
-<ellipse cx="334" cy="206" rx="30" ry="46" fill="#b9a68d" opacity=".25" filter="url(#spo-soft)"/>
-<path d="${flowDark}" fill="none" stroke="#c9b79e" stroke-width=".9" stroke-linecap="round" opacity=".5"/>
+<ellipse cx="${CX}" cy="312" rx="120" ry="40" fill="#a98e72" opacity=".26" filter="url(#spo-soft)"/>
+<ellipse cx="${CX}" cy="92" rx="70" ry="22" fill="#fff" opacity=".7" filter="url(#spo-soft)"/>
+<ellipse cx="84" cy="220" rx="30" ry="50" fill="#b9a68d" opacity=".24" filter="url(#spo-soft)"/>
+<ellipse cx="336" cy="220" rx="30" ry="50" fill="#b9a68d" opacity=".24" filter="url(#spo-soft)"/>
+<ellipse cx="${EYES[0].cx}" cy="${EYE_Y + 16}" rx="40" ry="20" fill="#f0b45a" opacity=".2" filter="url(#spo-soft)"/>
+<ellipse cx="${EYES[1].cx}" cy="${EYE_Y + 16}" rx="40" ry="20" fill="#f0b45a" opacity=".2" filter="url(#spo-soft)"/>
+<path d="${flowDark}" fill="none" stroke="#c9b79e" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
 <path d="${flowLight}" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity=".85"/>
 </g>
-<path d="${headFront}" fill="url(#spo-fur)"/>
-<path d="${crest}" fill="#fffdf8"/>
-<path d="${star4(CX, 128, 24, 15, 0.16)}" fill="url(#spo-gold)" stroke="#fff3c0" stroke-width=".8"/>
-<path d="${star4(CX, 128, 30, 20, 0.14)}" fill="#ffd36a" opacity=".35" filter="url(#spo-blur2)"/>
-<path d="M138 132Q148 126 164 128M282 132Q272 126 256 128" fill="none" stroke="#e1a02e" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>
-<path d="${muzzleFlow}" fill="none" stroke="#e4d8c4" stroke-width=".8" stroke-linecap="round" opacity=".6"/>
+<path d="${locks(cheek)}${locks(CREST)}" fill="#fffbf1"/>
+<path d="${star4(CX, 124, 30, 17, 0.16)}" fill="url(#spo-gold)" stroke="#fff3c0" stroke-width=".8"/>
+<path d="${star4(CX, 124, 36, 23, 0.14)}" fill="#ffd36a" opacity=".3" filter="url(#spo-blur2)"/>
+<path d="${star4(CX + 5, 84, 10, 6, 0.2)}" fill="url(#spo-gold)"/>
+<path d="${star4(CX - 2, 160, 9, 5.4, 0.2)}" fill="url(#spo-gold)"/>
 ${face()}
 ${EYES.map((e, i) => eye(i, e.cx, e.dir)).join('')}
-${glasses()}
+${ornament('l')}${ornament('r')}
 </g>
 </svg>`;
 }

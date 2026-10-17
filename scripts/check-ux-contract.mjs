@@ -112,5 +112,14 @@ check('404: illustration animation is off for reduced motion and paused off scre
   /@media \(prefers-reduced-motion: no-preference\)/.test(illustrationCss) && illustrationCss.includes("[data-paused='true']") && notFound.includes('[data-art-anim]'));
 check('404: illustrations stay visible in Legacy', illustrationCss.includes("html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art"));
 check('404: pixel palette stays monochrome', !/#[0-9a-f]{6}/i.test(read('src/sophia-pixel.ts').replace(/'#(?:f3f3f0|ffffff|b4b4ae|77776f|0d0d0d)'/gi, '')));
+const tetrisCss = read('src/styles/sophia-tetris.css');
+check('404: Sophia is faithful to the original (no glasses in the portrait; 3D glasses stay in the lounge)',
+  !/glasses|spo-lens/.test(read('src/sophia-portrait.ts').replace(/sem óculos|Sem óculos/g, '')) && read('src/sophia-lounge-fox.ts').includes('slo-glasses'));
+check('404: game takes keyboard (arrows and WASD), gamepad and touch gestures',
+  /ArrowLeft/.test(notFound) && /w: 'rotate'/.test(notFound) && notFound.includes('navigator.getGamepads') && notFound.includes('gamepadconnected') && /canvas\.addEventListener\('pointerdown'/.test(notFound));
+check('404: gamepad input pauses on disconnect and never starts the game off screen',
+  notFound.includes("pause('pad')") && /if \(visible && \(action === 'start'/.test(notFound));
+check('404: touch gestures do not scroll the page while playing, and help follows the input in use',
+  /data-state='playing'\] \.tetris-canvas \{[^}]*touch-action: none/.test(tetrisCss) && notFound.includes('tetris-help__touch') && notFound.includes('tetris-help__pad') && tetrisCss.includes("[data-input='pad'] .tetris-help__pad"));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;

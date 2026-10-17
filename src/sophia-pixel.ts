@@ -10,7 +10,7 @@
  *   w branco puro     K tinta (olhos, nariz, estrela)   . vazio
  *
  * Marcas de Sophia que os sprites carregam: orelhas altas de ponta escura,
- * tufos nas bochechas, estrela de quatro pontas na testa, óculos redondos e a
+ * tufos nas bochechas, estrela de quatro pontas na testa, olhos alados e a
  * cauda grande de ponta escura.
  */
 
