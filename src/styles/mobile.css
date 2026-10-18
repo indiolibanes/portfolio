@@ -156,9 +156,14 @@
     display: none;
   }
 
-  .curiosities-teaser__link {
-    width: 100%;
-    justify-content: center;
+  .curiosities-teaser {
+    min-height: 30rem;
+    align-items: flex-start;
+  }
+
+  .curiosities-teaser__copy {
+    max-width: none;
+    padding: 1.3rem 1.2rem;
   }
 
   .curiosities-return a {

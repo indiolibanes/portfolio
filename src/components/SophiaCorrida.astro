@@ -1,0 +1,21 @@
+---
+/**
+ * Cenário e corredora da faixa de curiosidades da home: Sophia corre da esquerda
+ * para a direita por uma praça de cidade medieval alemã. Puramente decorativo
+ * (aria-hidden); o movimento obedece a DecorativeMotion e a prefers-reduced-motion.
+ */
+import { townMarkup } from '../sophia-town.ts';
+import { runnerMarkup } from '../sophia-runner.ts';
+import '../styles/sophia-corrida.css';
+
+const town = townMarkup();
+const runner = runnerMarkup();
+---
+
+<div class="corrida" data-decorative-motion aria-hidden="true">
+  <div class="corrida__scene"><Fragment set:html={town} /></div>
+  <div class="corrida__track">
+    <div class="corrida__runner"><Fragment set:html={runner} /></div>
+  </div>
+  <div class="corrida__veil"></div>
+</div>

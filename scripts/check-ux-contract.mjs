@@ -128,5 +128,15 @@ check('404: detective walk cycle only runs without reduced motion (static pose o
   /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.sdt-walker \{ animation: sdt-walk/.test(illustrationCss) && /\.sdt-walker \{ transform: translate\(260px/.test(illustrationCss));
 check('404: lounge fox wears the lunar dress and monitors face her in profile',
   /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /turned\(/.test(read('src/sophia-lounge-wall.ts')) && /slo-upper/.test(illustrationCss));
+const corridaSrc = read('src/components/SophiaCorrida.astro');
+const corridaCss = read('src/styles/sophia-corrida.css');
+check('curiosidades: the home banner runs Sophia through a medieval German town, decorative and paused off screen',
+  home.includes('<SophiaCorrida />') && corridaSrc.includes('aria-hidden="true"') && corridaSrc.includes('data-decorative-motion') && !/role="img"/.test(corridaSrc));
+check('curiosidades: banner copy stays legible on a translucent veil, runner goes left to right',
+  corridaCss.includes('.corrida__veil') && /corrida-run \{[^}]*translateX\(-/.test(corridaCss.replace(/\n/g, ' ')) && /to \{[^}]*translateX\(100cqw\)|100% \{[^}]*translateX\(100cqw\)/.test(corridaCss.replace(/\n/g, ' ')));
+check('curiosidades: run cycle only animates without reduced motion (static mid-stride pose otherwise)',
+  /@media \(prefers-reduced-motion: no-preference\)[\s\S]*animation: corrida-run/.test(corridaCss) && /\.corrida__runner \{[^}]*transform: translateX\(62cqw\)/.test(corridaCss.replace(/\n/g, ' ')) && corridaCss.includes('.srun-lean { transform-origin: 190px 450px; transform: rotate(6deg); }'));
+check('curiosidades: banner collapses to text in Legacy and keeps no white boxes over the scene in mono modes',
+  read('src/styles/legacy.css').includes('.curiosities-teaser .corrida { display: none') && read('src/styles/mono-modes.css').includes('.curiosities-teaser__copy'));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;
