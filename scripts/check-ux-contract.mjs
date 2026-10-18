@@ -128,5 +128,27 @@ check('404: detective walk cycle only runs without reduced motion (static pose o
   /@media \(prefers-reduced-motion: no-preference\)[\s\S]*\.sdt-walker \{ animation: sdt-walk/.test(illustrationCss) && /\.sdt-walker \{ transform: translate\(260px/.test(illustrationCss));
 check('404: lounge fox wears the lunar dress and a giant CRT TV faces her in profile (no screen content)',
   /slo-dress/.test(read('src/sophia-lounge-fox.ts')) && /crescent/.test(read('src/sophia-lounge-fox.ts')) && /slo-upper/.test(illustrationCss) && /tvMarkup/.test(read('src/sophia-lounge.ts')) && !/screenContent|MONITORS/.test(read('src/sophia-lounge-wall.ts')));
+const corridaSrc = read('src/components/SophiaCorrida.astro');
+const corridaCss = read('src/styles/sophia-corrida.css').replace(/\n/g, ' ');
+check('curiosidades: the home band runs Sophia through a medieval German town, decorative and paused off screen',
+  home.includes('<SophiaCorrida />') && corridaSrc.includes('aria-hidden="true"') && corridaSrc.includes('data-decorative-motion') && !/role="img"/.test(corridaSrc));
+check('curiosidades: banner copy stays legible on a translucent veil; runner travels left to right',
+  corridaCss.includes('.corrida__veil') && /corrida-run \{/.test(corridaCss) && /100cqw/.test(corridaCss));
+check('curiosidades: run cycle only animates without reduced motion (static mid-stride pose otherwise)',
+  /@media \(prefers-reduced-motion: no-preference\)[^}]*\{[^]*?animation: corrida-run/.test(corridaCss) && corridaCss.includes('.srun-lean { transform-origin: 190px 450px; transform: rotate(6deg); }'));
+check('curiosidades: banner collapses to text in Legacy and keeps no white boxes over the scene in mono modes',
+  read('src/styles/legacy.css').includes(".curiosities-teaser .corrida { display: none") && read('src/styles/mono-modes.css').includes('.curiosities-teaser__copy'));
+const typewriterSrc = read('src/scripts/typewriter.ts');
+const typographySrc = read('src/styles/typography.css');
+const curiosidadesPage = read('src/pages/curiosidades.astro');
+const layoutSrc = read('src/layouts/BaseLayout.astro');
+check('curiosidades: typewriter is wired in the layout and only runs on marked titles and text',
+  layoutSrc.includes("import '../scripts/typewriter.ts'") && home.includes('class="curiosities-teaser__title" data-typewriter') && home.includes('class="curiosities-teaser__text" data-typewriter') && curiosidadesPage.includes('data-typewriter'));
+check('curiosidades: typewriter respects reduced motion, keeps the full text for screen readers and hides the typed copy',
+  typewriterSrc.includes("matchMedia('(prefers-reduced-motion: reduce)')") && typewriterSrc.includes("if (reduce.matches) return;") && typewriterSrc.includes('tw-sr') && typewriterSrc.includes("setAttribute('aria-hidden', 'true')"));
+check('curiosidades: display titles use the Benguiat chapter face and brick ink in the authorial mode',
+  /curiosities-teaser__title[\s\S]*--font-chapter[\s\S]*--brick-dark/.test(typographySrc.replace(/\n/g, ' ')) && typographySrc.includes('.curiosity__title'));
+check('curiosidades: the home band is shorter than the scene art needs and keeps copy within half its width',
+  read('src/styles/curiosidades.css').includes('min-height: clamp(19rem, 30vw, 23rem)') && read('src/styles/curiosidades.css').includes('max-width: min(24rem, 50%)'));
 console.log('Static UX contract: ' + (checks - failures) + '/' + checks + ' passed.');
 if (failures) process.exitCode = 1;

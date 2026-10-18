@@ -82,6 +82,34 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
   font-kerning: normal;
 }
 
+/* Curiosidades (home band and /curiosidades/): the chapter title in Benguiat,
+   item titles in Bookman, the lead in the reading family instead of Georgia.
+   Titles take the brick ink so they read as headings, not as body text. */
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+:is(.curiosities-hero h1, .curiosities-teaser__title) {
+  font-family: var(--font-chapter);
+  font-weight: 700;
+  letter-spacing: var(--type-display-tracking);
+  line-height: 1.02;
+  color: var(--brick-dark);
+  text-wrap: balance;
+  font-kerning: normal;
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.curiosity__title {
+  font-family: var(--font-subtitle);
+  font-weight: 700;
+  letter-spacing: -.015em;
+  line-height: 1.18;
+  color: var(--brick-dark);
+}
+
+html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
+.curiosities-hero__lead {
+  font-family: var(--font-ui);
+}
+
 /* The brick name is a separate identity element, not a chapter title. */
 html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .block-name {
   font-family: var(--font-subtitle);

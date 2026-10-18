@@ -19,18 +19,16 @@
 }
 
 .curiosities-hero h1 {
-  margin: 0.2rem 0 1.2rem;
+  margin: 0.2rem 0 1rem;
   color: var(--ink);
-  font-size: clamp(3rem, 9vw, 6.2rem);
-  line-height: 0.92;
+  font-size: clamp(2.8rem, 7vw, 5rem);
 }
 
 .curiosities-hero__lead {
   max-width: 58ch;
   margin: 0 0 1.1rem;
   color: var(--ink-soft);
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2vw, 1.36rem);
+  font-size: clamp(1.02rem, 1.6vw, 1.16rem);
   line-height: 1.7;
 }
 
@@ -118,10 +116,8 @@
 
 .curiosity__title {
   margin: 0;
-  color: var(--ink);
-  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  color: var(--brick-dark);
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
 }
 
 .curiosity__text {
@@ -269,7 +265,7 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
   isolation: isolate;
   overflow: hidden;
   width: min(var(--page), calc(100% - 2rem));
-  min-height: clamp(26rem, 42vw, 31.5rem);
+  min-height: clamp(19rem, 30vw, 23rem);
   margin: clamp(2rem, 5vw, 3.5rem) auto;
   display: flex;
   align-items: center;
@@ -281,8 +277,8 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
 .curiosities-teaser__copy {
   position: relative;
   z-index: 3;
-  max-width: min(27rem, 46%);
-  padding: clamp(1.3rem, 3.4vw, 2.6rem);
+  max-width: min(24rem, 50%);
+  padding: clamp(1.1rem, 2.6vw, 1.8rem);
 }
 
 .curiosities-teaser__copy .eyebrow {
@@ -290,18 +286,44 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
 }
 
 .curiosities-teaser__title {
-  margin: 0 0 0.45rem;
-  color: var(--ink);
-  font-size: clamp(1.7rem, 3.6vw, 2.7rem);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.55rem, 2.6vw, 2.1rem);
 }
 
 .curiosities-teaser__text {
-  margin: 0 0 1.2rem;
+  margin: 0 0 1rem;
   color: var(--ink-soft);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.6;
+}
+
+/* ---------- Typewriter (src/scripts/typewriter.ts) ---------- */
+
+.tw { display: grid; }
+.tw > * { grid-area: 1 / 1; }
+.tw-ghost { visibility: hidden; }
+.tw-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.tw-typed { white-space: normal; }
+.tw-caret {
+  display: inline-block;
+  width: 0.07em;
+  height: 0.9em;
+  margin-left: 0.06em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  animation: tw-caret 0.9s steps(1, end) infinite;
+}
+.tw-done .tw-caret { display: none; }
+
+@keyframes tw-caret {
+  50% { opacity: 0; }
 }
 
 .curiosities-teaser__link {

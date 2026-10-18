@@ -157,13 +157,13 @@
   }
 
   .curiosities-teaser {
-    min-height: 30rem;
+    min-height: 23rem;
     align-items: flex-start;
   }
 
   .curiosities-teaser__copy {
     max-width: none;
-    padding: 1.3rem 1.2rem;
+    padding: 1.1rem 1.1rem;
   }
 
   .curiosities-return a {
