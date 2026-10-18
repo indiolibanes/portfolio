@@ -35,6 +35,17 @@
   font-display: swap;
 }
 
+/* Latin Modern Mono (GUST Font License, see assets/fonts/Latin-Modern-LICENSE.txt):
+   a Computer Modern typewriter face for the curiosidades subtitles. Self-hosted,
+   so no request goes to Google and the CSP stays unchanged. */
+@font-face {
+  font-family: "Portfolio Typewriter";
+  src: url("../../assets/fonts/Latin-Modern-Mono-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Portfolio Hand";
   /* Despite its .otf suffix, this asset uses TrueType outlines. */
@@ -55,6 +66,7 @@
   --font-chapter: "Portfolio Benguiat", Georgia, "Times New Roman", serif;
   --font-subtitle: "Portfolio Bookman", Georgia, "Times New Roman", serif;
   --font-signature: "Portfolio Hand", "Brush Script MT", cursive;
+  --font-typewriter: "Portfolio Typewriter", ui-monospace, "Courier New", monospace;
   --type-measure: 68ch;
 }
 
@@ -105,9 +117,13 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
   color: var(--brick-dark);
 }
 
+/* Subtitles of the curiosidades band take the typewriter face, the same
+   family the typing animation reveals them with. */
 html:not([data-legacy-mode='true']):not([data-serious-mode='true'])
-.curiosities-hero__lead {
-  font-family: var(--font-ui);
+:is(.curiosities-hero__lead, .curiosities-teaser__text) {
+  font-family: var(--font-typewriter);
+  letter-spacing: 0;
+  word-spacing: 0.04em;
 }
 
 /* The brick name is a separate identity element, not a chapter title. */
