@@ -75,6 +75,12 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true']) body *:where(:not
   background-color: #ffffff !important;
 }
 
+/* The curiosities banner copy sits on the scene's veil, not on a solid white box. */
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body .curiosities-teaser__copy :is(.eyebrow, .curiosities-teaser__title, .curiosities-teaser__text),
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) body .curiosities-teaser__copy {
+  background-color: transparent !important;
+}
+
 /* Surfaces that were painted with gradients or tinted artwork. */
 html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.hero, .hero-intro, .hero-statement, .hero-note, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section, .portfolio-footer, .site-header, .nav-shell, .listening-note, .lab-project-card) {
   background-image: none !important;

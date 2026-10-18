@@ -1,0 +1,143 @@
+/*
+ * Faixa de curiosidades da home: Sophia corre numa cidade medieval alemã.
+ * O desenho vive em src/sophia-runner.ts (corredora) e src/sophia-town.ts
+ * (cenário); aqui ficam o enquadramento e a animação. O ciclo de corrida
+ * (--stride) copia o gif da Frieren: cabeça que balança, corpo que quica,
+ * braços jogados para trás, capa batendo e o rabo chicoteando em 7 quadros.
+ * Sem movimento (prefers-reduced-motion) ou fora da tela, vale a pose parada.
+ */
+
+/* ---------- A corredora ---------- */
+
+.srun { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Sempre de olhos fechados de alegria e boca aberta, como no gif. */
+.srun .spo-open, .srun .spo-mouth-calm { display: none; }
+.srun .spo-happy, .srun .spo-mouth-grin { opacity: 1; }
+
+/* Pose parada: meio de uma passada. */
+.srun-lean { transform-origin: 190px 450px; transform: rotate(6deg); }
+.srun-head { transform-origin: 210px 300px; transform: rotate(7deg); }
+.srun-tail { transform: rotate(24deg); }
+.srun-arm-a { transform: rotate(-26deg); }
+.srun-arm-b { transform: rotate(40deg); }
+.srun-leg-a { transform: rotate(-26deg); }
+.srun-leg-b { transform: rotate(24deg); }
+.srun-leg-b .srun-shin { transform: rotate(36deg); }
+.srun .spo-tassel { transform: rotate(16deg); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .corrida { --stride: .48s; }
+
+  .srun-bob { transform-origin: 190px 452px; animation: srun-bob calc(var(--stride) / 2) ease-in-out infinite; }
+  .srun-shadow { transform-box: fill-box; transform-origin: 50% 50%; animation: srun-shadow calc(var(--stride) / 2) ease-in-out infinite; }
+  .srun-head { animation: srun-head var(--stride) ease-in-out infinite; }
+  .srun-tail { animation: srun-tail var(--stride) steps(1, end) infinite; }
+  .srun-arm-a { animation: srun-arm var(--stride) ease-in-out infinite; }
+  .srun-arm-b { animation: srun-arm var(--stride) ease-in-out calc(var(--stride) / -2) infinite; }
+  .srun-leg-a { animation: srun-leg var(--stride) ease-in-out infinite; }
+  .srun-leg-b { animation: srun-leg var(--stride) ease-in-out calc(var(--stride) / -2) infinite; }
+  .srun-leg-a .srun-shin { animation: srun-shin var(--stride) ease-in-out infinite; }
+  .srun-leg-b .srun-shin { animation: srun-shin var(--stride) ease-in-out calc(var(--stride) / -2) infinite; }
+  .srun-skirt { animation: srun-skirt calc(var(--stride) / 2) ease-in-out infinite; }
+  .srun-cape-l { animation: srun-cape var(--stride) ease-in-out infinite; }
+  .srun-cape-r { animation: srun-cape var(--stride) ease-in-out calc(var(--stride) / -4) infinite; }
+  .srun .spo-ear-l { transform-origin: 130px 150px; animation: srun-ear var(--stride) ease-in-out infinite; }
+  .srun .spo-ear-r { transform-origin: 290px 150px; animation: srun-ear var(--stride) ease-in-out calc(var(--stride) / -3) infinite; }
+  .srun .spo-tassel { transform-origin: 50% 0; transform-box: fill-box; animation: srun-tassel var(--stride) ease-in-out infinite; }
+}
+
+@keyframes srun-bob {
+  0%, 100% { transform: translateY(0) scale(1.03, .96); }
+  50% { transform: translateY(-18px) scale(.98, 1.03); }
+}
+@keyframes srun-shadow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.78); opacity: .6; } }
+/* A cabeça do gif rola de um lado a outro e fica um passo atrasada em relação ao corpo. */
+@keyframes srun-head {
+  0% { transform: rotate(-6deg) translateY(2px); }
+  28% { transform: rotate(10deg) translateY(-3px); }
+  56% { transform: rotate(4deg) translateY(2px); }
+  80% { transform: rotate(-9deg) translateY(-2px); }
+  100% { transform: rotate(-6deg) translateY(2px); }
+}
+/* O rabo de cavalo do gif, quadro a quadro: reto, reto, caído, subindo, alto, alto enrolado, alto. */
+@keyframes srun-tail {
+  0% { transform: rotate(4deg); }
+  14.28% { transform: rotate(0deg) scale(1.02, .98); }
+  28.57% { transform: rotate(-16deg); }
+  42.85% { transform: rotate(10deg); }
+  57.14% { transform: rotate(26deg); }
+  71.43% { transform: rotate(44deg) scale(.94, 1.05); }
+  85.71% { transform: rotate(36deg) scale(.96, 1.03); }
+  100% { transform: rotate(4deg); }
+}
+@keyframes srun-arm { 0%, 100% { transform: rotate(34deg); } 50% { transform: rotate(-30deg); } }
+@keyframes srun-leg { 0%, 100% { transform: rotate(-36deg); } 50% { transform: rotate(32deg); } }
+@keyframes srun-shin {
+  0%, 100% { transform: rotate(-10deg); }
+  25% { transform: rotate(-4deg); }
+  50% { transform: rotate(18deg); }
+  70% { transform: rotate(72deg); }
+  90% { transform: rotate(28deg); }
+}
+@keyframes srun-skirt { 0%, 100% { transform: scale(1.02, .96); } 50% { transform: scale(.97, 1.05) rotate(-2deg); } }
+@keyframes srun-cape { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(12deg); } }
+@keyframes srun-ear { 0%, 100% { transform: rotate(3deg); } 35% { transform: rotate(-9deg); } 70% { transform: rotate(8deg); } }
+@keyframes srun-tassel { 0%, 100% { transform: rotate(8deg); } 50% { transform: rotate(26deg); } }
+
+/* ---------- Palco: cenário, pista, véu ---------- */
+
+.corrida { position: absolute; inset: 0; z-index: 0; container-type: size; pointer-events: none; }
+.corrida__scene, .corrida__track, .corrida__veil { position: absolute; inset: 0; }
+.corrida__scene { z-index: 0; }
+.corrida__scene svg { display: block; width: 100%; height: 100%; }
+
+/* Pés da Sophia no calçamento (y ≈ 90% do cenário). */
+.corrida__track { overflow: hidden; z-index: 2; }
+.corrida__runner {
+  position: absolute;
+  left: 0;
+  bottom: 3.5%;
+  height: 74%;
+  z-index: 2;
+  aspect-ratio: 416 / 470;
+  transform: translateX(62cqw);
+}
+
+/* Véu translúcido à esquerda: deixa título e texto legíveis sem esconder a cena. */
+.corrida__veil {
+  z-index: 1;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--surface) 94%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 88%, transparent) 30%,
+    color-mix(in srgb, var(--surface) 52%, transparent) 48%,
+    color-mix(in srgb, var(--surface) 0%, transparent) 66%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Da esquerda para a direita, saindo da névoa do véu e atravessando a praça. */
+  .corrida__runner { animation: corrida-run 12s linear infinite; }
+}
+
+/* Ela emerge da névoa do véu: só ganha cor plena depois de passar do texto. */
+@keyframes corrida-run {
+  0% { transform: translateX(-60cqh); opacity: 0; }
+  30% { opacity: .5; }
+  44% { opacity: 1; }
+  100% { transform: translateX(100cqw); opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .corrida__runner { height: 50%; bottom: 3%; }
+  .corrida__veil {
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--surface) 95%, transparent) 0%,
+      color-mix(in srgb, var(--surface) 90%, transparent) 38%,
+      color-mix(in srgb, var(--surface) 40%, transparent) 58%,
+      color-mix(in srgb, var(--surface) 0%, transparent) 74%);
+  }
+  .corrida__runner { transform: translateX(34cqw); }
+  @media (prefers-reduced-motion: no-preference) {
+    .corrida__runner { animation-name: corrida-run; }
+  }
+}

@@ -9,6 +9,7 @@ import MotionImage from '../components/MotionImage.astro';
 import SophiaAnimation from '../components/SophiaAnimation.astro';
 import MethodPresenter from '../components/MethodPresenter.astro';
 import MarioNameTiles from '../components/MarioNameTiles.astro';
+import SophiaCorrida from '../components/SophiaCorrida.astro';
 import { PROFILE, SOCIALS } from '../config';
 import { sectionNumber } from '../section-order';
 
@@ -933,16 +934,17 @@ const background = [
     </section>
 
     <aside class="curiosities-teaser" aria-labelledby="curiosities-teaser-title">
+      <SophiaCorrida />
       <div class="curiosities-teaser__copy">
         <p class="eyebrow">Fora do currículo</p>
         <h2 id="curiosities-teaser-title" class="curiosities-teaser__title">Curiosidades</h2>
         <p class="curiosities-teaser__text">
           Um prisma, alguns tijolos, uma tradução ainda inacabada e outras coisas que não cabem em um currículo.
         </p>
+        <a class="curiosities-teaser__link" href="/curiosidades/">
+          Ver curiosidades <span aria-hidden="true">→</span>
+        </a>
       </div>
-      <a class="curiosities-teaser__link" href="/curiosidades/">
-        Ver curiosidades <span aria-hidden="true">→</span>
-      </a>
     </aside>
 
     <MusicShelf />

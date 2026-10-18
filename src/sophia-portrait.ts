@@ -222,17 +222,16 @@ ${paw(112)}${paw(308)}
 </g>`;
 }
 
-export function portraitMarkup(): string {
+/** Defs do retrato (ids `spo-*`); quem usa a cabeça em outra cena precisa incluí-las uma vez. */
+export const portraitDefs = defs;
+
+/** A cabeça (orelhas, rosto, olhos, enfeites). `cls` é a classe do grupo animável. */
+export function headMarkup(cls = 'spo-head'): string {
   const headOutline = spline(HEAD, true, 5);
   const cheek = [...CHEEK_L, ...mirrorLocks(CHEEK_L, CX)];
   const flowDark = strands(headOutline, { seed: 31, count: 70, from: [CX, 230], len: [9, 18], jitter: 0.22 });
   const flowLight = strands(headOutline, { seed: 32, count: 50, from: [CX, 220], len: [8, 14], jitter: 0.22 });
-
-  return `<svg class="sophia-art sophia-art--portrait" viewBox="0 ${Y0} ${PORTRAIT_W} ${PORTRAIT_H}" aria-hidden="true" focusable="false">
-${defs()}
-<ellipse cx="${CX}" cy="150" rx="210" ry="200" fill="url(#spo-glow)"/>
-${body()}
-<g class="spo-head">
+  return `<g class="${cls}">
 ${ear('l')}${ear('r')}
 <path transform="translate(1.5 4)" d="${locks(cheek, 2)}${locks(CREST, 2)}" fill="url(#spo-fur-back)"/>
 <path d="${smooth(HEAD)}" fill="url(#spo-fur)"/>
@@ -254,6 +253,15 @@ ${ear('l')}${ear('r')}
 ${face()}
 ${EYES.map((e, i) => eye(i, e.cx, e.dir)).join('')}
 ${ornament('l')}${ornament('r')}
-</g>
+</g>`;
+}
+
+export function portraitMarkup(): string {
+  return `<svg class="sophia-art sophia-art--portrait" viewBox="0 ${Y0} ${PORTRAIT_W} ${PORTRAIT_H}" aria-hidden="true" focusable="false">
+${defs()}
+<ellipse cx="${CX}" cy="150" rx="210" ry="200" fill="url(#spo-glow)"/>
+${body()}
+${headMarkup('spo-head')}
+
 </svg>`;
 }

@@ -265,21 +265,24 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
 /* ---------- Home teaser (between Percurso and Música, unnumbered) ---------- */
 
 .curiosities-teaser {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: min(var(--page), calc(100% - 2rem));
+  min-height: clamp(26rem, 42vw, 31.5rem);
   margin: clamp(2rem, 5vw, 3.5rem) auto;
-  padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.3rem, 3.4vw, 2.2rem);
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  border: 1px dashed var(--line);
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--sun-soft) 38%, var(--surface));
 }
 
 .curiosities-teaser__copy {
-  max-width: 54ch;
+  position: relative;
+  z-index: 3;
+  max-width: min(27rem, 46%);
+  padding: clamp(1.3rem, 3.4vw, 2.6rem);
 }
 
 .curiosities-teaser__copy .eyebrow {
@@ -287,17 +290,17 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
 }
 
 .curiosities-teaser__title {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.45rem;
   color: var(--ink);
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
 }
 
 .curiosities-teaser__text {
-  margin: 0;
+  margin: 0 0 1.2rem;
   color: var(--ink-soft);
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.6;
 }
 
