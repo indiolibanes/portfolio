@@ -1,29 +1,20 @@
 /**
- * A parede do outro lado da sala: mesa com vários monitores, prateleira,
- * poster e um rack cheio de equipamentos. Tudo é desenhado num plano local de
- * 600×360 e projetado em perspectiva (homografia) sobre a parede da direita.
+ * A parede do outro lado da sala: faixa de LED, prateleira, poster e um rack
+ * cheio de equipamentos (a TV de tubo fica na frente, em sophia-lounge-tv.ts).
+ * Tudo é desenhado num plano local de 600×360 e projetado em perspectiva
+ * (homografia) sobre a parede da direita.
  */
 import { type Pt, homography, n1, rng } from './sophia-draw.ts';
 import { WALL_QUAD } from './sophia-lounge-room.ts';
 
 const LW = 600;
 const LH = 360;
-const DESK_Y = 262;
 const f = (p: Pt): string => `${n1(p[0])} ${n1(p[1])}`;
 
 class Wall {
   private m = homography(WALL_QUAD);
-  /** Transformação local opcional (ex.: monitor girado) aplicada antes da projeção da parede. */
-  private tf?: (x: number, y: number) => Pt;
-  constructor(tf?: (x: number, y: number) => Pt) {
-    this.tf = tf;
-  }
-  with(tf: (x: number, y: number) => Pt): Wall {
-    return new Wall(tf);
-  }
   p(x: number, y: number): Pt {
-    const [a, b] = this.tf ? this.tf(x, y) : [x, y];
-    return this.m(a / LW, b / LH);
+    return this.m(x / LW, y / LH);
   }
   d(x: number, y: number, w: number, h: number): string {
     return `M${f(this.p(x, y))}L${f(this.p(x + w, y))}L${f(this.p(x + w, y + h))}L${f(this.p(x, y + h))}Z`;
@@ -63,218 +54,10 @@ class Batch {
 
 export function wallDefs(): string {
   return `
-<linearGradient id="slo-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a0a3d"/><stop offset=".5" stop-color="#7a1f8f"/><stop offset=".85" stop-color="#ff4f8b"/><stop offset="1" stop-color="#ffb36b"/></linearGradient>
-<linearGradient id="slo-sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff08a"/><stop offset="1" stop-color="#ff5f9a"/></linearGradient>
-<linearGradient id="slo-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0b4a"/><stop offset="1" stop-color="#0c0420"/></linearGradient>
-<linearGradient id="slo-gfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#36e0ff" stop-opacity=".45"/><stop offset="1" stop-color="#36e0ff" stop-opacity="0"/></linearGradient>
 <linearGradient id="slo-gloss" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <linearGradient id="slo-unit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2e3b"/><stop offset=".15" stop-color="#1b1e28"/><stop offset="1" stop-color="#0f1118"/></linearGradient>
 <linearGradient id="slo-deskwood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a4328"/><stop offset="1" stop-color="#2e1b10"/></linearGradient>
 <linearGradient id="slo-rgb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3fb4"/><stop offset=".33" stop-color="#ffd23f"/><stop offset=".66" stop-color="#36e0ff"/><stop offset="1" stop-color="#8a5bff"/></linearGradient>`;
-}
-
-interface Mon {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  kind: 'game' | 'code' | 'graph' | 'chat' | 'cams' | 'dash' | 'spectrum';
-  tint: string;
-  arm?: boolean;
-  seed: number;
-}
-
-const MONITORS: Mon[] = [
-  { x: 20, y: 150, w: 46, h: 100, kind: 'chat', tint: '#4d7cff', seed: 1 },
-  { x: 78, y: 176, w: 162, h: 74, kind: 'game', tint: '#ff4fa8', seed: 2 },
-  { x: 252, y: 186, w: 100, h: 64, kind: 'code', tint: '#6a8bff', seed: 3 },
-  { x: 364, y: 200, w: 64, h: 50, kind: 'graph', tint: '#36e0ff', seed: 4 },
-  { x: 40, y: 84, w: 100, h: 56, kind: 'cams', tint: '#6bd0ff', arm: true, seed: 5 },
-  { x: 152, y: 74, w: 116, h: 66, kind: 'dash', tint: '#7a8bff', arm: true, seed: 6 },
-  { x: 280, y: 84, w: 100, h: 56, kind: 'spectrum', tint: '#ff7ad9', arm: true, seed: 7 },
-];
-
-function screenContent(W: Wall, m: Mon, sx: number, sy: number, sw: number, sh: number): string {
-  const r = rng(m.seed * 101);
-  const out: string[] = [];
-  const b = new Batch();
-  switch (m.kind) {
-    case 'game': {
-      const hy = sy + sh * 0.58;
-      const cx = sx + sw * 0.5;
-      out.push(`<path d="${W.d(sx, sy, sw, sh * 0.58)}" fill="url(#slo-sky)"/>`);
-      out.push(`<path d="${W.ell(cx, sy + sh * 0.5, sh * 0.2, sh * 0.2, 18)}" fill="url(#slo-sun)"/>`);
-      const mt: Pt[] = [[sx, hy], [sx, hy - sh * 0.1], [sx + sw * 0.12, hy - sh * 0.2], [sx + sw * 0.22, hy - sh * 0.08], [sx + sw * 0.3, hy - sh * 0.16], [sx + sw * 0.38, hy], [sx + sw * 0.62, hy], [sx + sw * 0.7, hy - sh * 0.14], [sx + sw * 0.8, hy - sh * 0.26], [sx + sw * 0.92, hy - sh * 0.1], [sx + sw, hy - sh * 0.18], [sx + sw, hy]];
-      out.push(`<path d="${W.pl(mt)}" fill="#240a45"/>`);
-      out.push(`<path d="${W.d(sx, hy, sw, sh * 0.42)}" fill="url(#slo-ground)"/>`);
-      const lines: string[] = [];
-      for (let i = -7; i <= 7; i += 1) lines.push(`M${f(W.p(cx + i * sw * 0.018, hy))}L${f(W.p(cx + i * sw * 0.13, sy + sh))}`);
-      for (const t of [0.07, 0.16, 0.3, 0.5, 0.78]) lines.push(`M${f(W.p(sx, hy + t * sh * 0.42))}L${f(W.p(sx + sw, hy + t * sh * 0.42))}`);
-      out.push(`<path d="${lines.join('')}" stroke="#ff4fd8" stroke-width=".9" fill="none" opacity=".85"/>`);
-      out.push(`<path d="${W.pl([[cx - sw * 0.02, hy], [cx + sw * 0.02, hy], [cx + sw * 0.09, sy + sh], [cx - sw * 0.09, sy + sh]])}" fill="#0a0420" opacity=".8"/>`);
-      b.add('#ffe35a', W.d(cx - 1, hy + sh * 0.1, 2, sh * 0.05) + W.d(cx - 1.6, hy + sh * 0.22, 3.2, sh * 0.08));
-      // carro
-      out.push(`<path d="${W.pl([[cx - sw * 0.07, sy + sh * 0.9], [cx - sw * 0.055, sy + sh * 0.8], [cx + sw * 0.055, sy + sh * 0.8], [cx + sw * 0.07, sy + sh * 0.9]])}" fill="#161020"/>`);
-      b.add('#ff3b4a', W.d(cx - sw * 0.06, sy + sh * 0.85, sw * 0.03, sh * 0.03) + W.d(cx + sw * 0.03, sy + sh * 0.85, sw * 0.03, sh * 0.03));
-      // HUD
-      b.add('#36e0ff', W.d(sx + 4, sy + 4, sw * 0.22, 2.4));
-      b.add('#ffffff', W.d(sx + sw - 22, sy + 4, 16, 8));
-      b.add('#ff4fd8', W.d(sx + sw - 20, sy + 6, 4, 4));
-      break;
-    }
-    case 'code': {
-      const rows = Math.floor(sh / 5);
-      const pitch = sh / rows;
-      const cols = ['#7aa2f7', '#bb9af7', '#9ece6a', '#e0af68', '#c0caf5', '#f7768e', '#7dcfff'];
-      // duas cópias idênticas (mesma semente) para o rolo ser contínuo
-      const copy = (oy: number): string => {
-        const rr = rng(m.seed * 7);
-        const cb = new Batch();
-        for (let i = 0; i < rows; i += 1) {
-          const y = sy + 2 + i * pitch + oy;
-          cb.add('#4a5174', W.d(sx + 3, y, 5, 2.2));
-          let x = sx + 12 + Math.floor(rr() * 3) * 6;
-          const nt = 2 + Math.floor(rr() * 4);
-          for (let t = 0; t < nt; t += 1) {
-            const w = 4 + rr() * 16;
-            if (x + w > sx + sw - 3) break;
-            cb.add(cols[Math.floor(rr() * cols.length)], W.d(x, y, w, 2.2));
-            x += w + 3;
-          }
-        }
-        return cb.out();
-      };
-      out.push(`<path d="${W.d(sx, sy, sw, sh)}" fill="#0e1424"/>`);
-      out.push(`<path d="${W.d(sx, sy + sh * 0.4, sw, 5)}" fill="#1a2240"/>`);
-      out.push(`<g class="slo-scroll" style="--dy:${n1(W.sy(sx, sy, sh))}px">${copy(0)}${copy(sh)}</g>`);
-      break;
-    }
-    case 'graph': {
-      const g: string[] = [];
-      for (let i = 1; i < 5; i += 1) g.push(`M${f(W.p(sx, sy + (sh * i) / 5))}L${f(W.p(sx + sw, sy + (sh * i) / 5))}`);
-      for (let i = 1; i < 6; i += 1) g.push(`M${f(W.p(sx + (sw * i) / 6, sy))}L${f(W.p(sx + (sw * i) / 6, sy + sh))}`);
-      out.push(`<path d="${W.d(sx, sy, sw, sh)}" fill="#0b1220"/><path d="${g.join('')}" stroke="#1d3350" stroke-width=".7" fill="none"/>`);
-      const s1: Pt[] = [];
-      const s2: Pt[] = [];
-      for (let i = 0; i <= 20; i += 1) {
-        const t = i / 20;
-        s1.push([sx + 3 + t * (sw - 6), sy + sh * (0.5 - 0.28 * Math.sin(t * 7) * (0.6 + t * 0.6) - 0.08 * Math.sin(t * 19))]);
-        s2.push([sx + 3 + t * (sw - 6), sy + sh * (0.62 + 0.16 * Math.sin(t * 5 + 1))]);
-      }
-      out.push(`<path d="${W.pl([...s1, [sx + sw - 3, sy + sh - 3], [sx + 3, sy + sh - 3]])}" fill="url(#slo-gfill)"/>`);
-      out.push(`<path d="${W.pl(s1, false)}" stroke="#36e0ff" stroke-width="1.2" fill="none"/><path d="${W.pl(s2, false)}" stroke="#ff4fd8" stroke-width=".9" fill="none" opacity=".9"/>`);
-      b.add('#ffffff', W.ell(s1[14][0], s1[14][1], 1.8, 1.8, 8));
-      break;
-    }
-    case 'chat': {
-      out.push(`<path d="${W.d(sx, sy, sw, sh)}" fill="#0e1322"/><path d="${W.d(sx, sy, sw, 8)}" fill="#18203a"/>`);
-      let y = sy + 12;
-      let i = 0;
-      while (y < sy + sh - 14) {
-        const mine = i % 3 === 1;
-        const w = sw * (0.4 + r() * 0.32);
-        const h = 5 + r() * 6;
-        b.add(mine ? '#3a6bff' : '#2a3150', W.d(mine ? sx + sw - 4 - w : sx + 4, y, w, h));
-        if (!mine) b.add('#7dcfff', W.ell(sx + 3, y + h / 2, 1.6, 1.6, 6));
-        y += h + 4;
-        i += 1;
-      }
-      b.add('#1d2644', W.d(sx + 3, sy + sh - 9, sw - 6, 6));
-      break;
-    }
-    case 'cams': {
-      const tw = (sw - 6) / 2;
-      const th = (sh - 6) / 2;
-      const tints = ['#16324a', '#2a1d46', '#17382e', '#3a2a1a'];
-      for (let k = 0; k < 4; k += 1) {
-        const tx = sx + 2 + (k % 2) * (tw + 2);
-        const ty = sy + 2 + Math.floor(k / 2) * (th + 2);
-        b.add(tints[k], W.d(tx, ty, tw, th));
-        b.add('#0a0d14', W.ell(tx + tw * 0.5, ty + th * 0.42, th * 0.2, th * 0.2, 8) + W.ell(tx + tw * 0.5, ty + th + 2, tw * 0.3, th * 0.38, 10));
-        b.add('#d4dcff', W.d(tx + 2, ty + th - 3, tw * 0.3, 1.2));
-      }
-      out.push(`<path d="${W.ell(sx + 6, sy + 6, 1.8, 1.8, 6)}" fill="#ff3b4a" class="slo-rec"/>`);
-      break;
-    }
-    case 'dash': {
-      out.push(`<path d="${W.d(sx, sy, sw, sh)}" fill="#0c1124"/>`);
-      const cw = (sw - 8) / 3;
-      for (let k = 0; k < 3; k += 1) {
-        const tx = sx + 2 + k * (cw + 2);
-        b.add('#151d3a', W.d(tx, sy + 2, cw, sh * 0.26));
-        b.add(['#36e0ff', '#ff4fd8', '#ffd23f'][k], W.d(tx + 2, sy + 4, cw * 0.5, 2.2));
-        b.add('#c8d2ff', W.d(tx + 2, sy + 8, cw * 0.7, 3));
-      }
-      const ring: Pt[] = [];
-      for (let i = 0; i <= 16; i += 1) {
-        const a = -Math.PI / 2 + (i / 16) * Math.PI * 1.45;
-        ring.push([sx + sw * 0.22 + Math.cos(a) * sh * 0.2, sy + sh * 0.64 + Math.sin(a) * sh * 0.2]);
-      }
-      out.push(`<path d="${W.ell(sx + sw * 0.22, sy + sh * 0.64, sh * 0.2, sh * 0.2, 16)}" stroke="#1d2850" stroke-width="3" fill="none"/>`);
-      out.push(`<path d="${W.pl(ring, false)}" stroke="#36e0ff" stroke-width="3" fill="none"/>`);
-      for (let k = 0; k < 7; k += 1) {
-        const bh = sh * (0.12 + r() * 0.34);
-        b.add(k % 2 ? '#7a8bff' : '#a78bff', W.d(sx + sw * 0.46 + k * (sw * 0.075), sy + sh - 3 - bh, sw * 0.05, bh));
-      }
-      break;
-    }
-    case 'spectrum': {
-      out.push(`<path d="${W.d(sx, sy, sw, sh)}" fill="#0d0a1f"/>`);
-      const n = 18;
-      const bw = (sw - 8) / n;
-      for (let k = 0; k < n; k += 1) {
-        const bh = sh * (0.18 + 0.7 * Math.abs(Math.sin(k * 0.7 + 1)) * (0.5 + r() * 0.5));
-        const hue = ['#36e0ff', '#6a8bff', '#a78bff', '#ff4fd8', '#ffd23f'][Math.floor((k / n) * 5)];
-        out.push(`<path class="slo-eq" style="animation-delay:${n1(r() * 1.4)}s;animation-duration:${n1(0.7 + r() * 0.9)}s" fill="${hue}" d="${W.d(sx + 4 + k * bw, sy + sh - 3 - bh, bw * 0.7, bh)}"/>`);
-      }
-      break;
-    }
-  }
-  return out.join('') + b.out();
-}
-
-/**
- * Monitores virados para a Sophia (à esquerda) e vistos pela lateral: a largura
- * fica bem comprimida (KAPPA) e a borda mais próxima de nós, a da direita, é mais
- * alta que a de lá (GAMMA), o que dá a perspectiva de uma tela quase de perfil.
- * Cada um gira em torno do próprio centro; os de cima giram pendurados no trilho.
- */
-const KAPPA = 0.4;
-const GAMMA = 0.4;
-function turned(m: Mon): (x: number, y: number) => Pt {
-  const cx = m.x + m.w / 2;
-  const pivot = m.arm ? 62 : DESK_Y;
-  return (x, y) => {
-    const u = (x - cx) / m.w + 0.5;
-    const sc = 1 + GAMMA * (u - 0.5);
-    return [cx + (x - cx) * KAPPA, pivot + (y - pivot) * sc];
-  };
-}
-
-/** Um monitor: brilho, suporte, moldura e tela. Devolve [brilho, corpo]. */
-function monitor(Wall0: Wall, m: Mon, idx: number): [string, string] {
-  const W = Wall0.with(turned(m));
-  const glow = `<path d="${W.d(m.x - 8, m.y - 8, m.w + 16, m.h + 16)}" fill="${m.tint}" opacity=".55"/>`;
-  const inset = 3;
-  const sx = m.x + inset;
-  const sy = m.y + inset;
-  const sw = m.w - inset * 2;
-  const sh = m.h - inset * 2;
-  const stand = m.arm
-    ? `<path d="${W.d(m.x + m.w / 2 - 2.5, 62, 5, m.y - 62)}" fill="#12141c"/><path d="${W.d(m.x + m.w / 2 - 9, m.y + m.h - 1, 18, 4)}" fill="#0b0c12"/>`
-    : `<path d="${W.d(m.x + m.w / 2 - 3, m.y + m.h, 6, DESK_Y - (m.y + m.h))}" fill="#14161e"/><path d="${W.ell(m.x + m.w / 2, DESK_Y - 1.5, Math.min(26, m.w * 0.3), 3.2)}" fill="#0d0e14"/>`;
-  const clip = `slo-scr-${idx}`;
-  const pt = W.p(m.x + m.w, m.y);
-  const pb = W.p(m.x + m.w, m.y + m.h);
-  const tk = Math.max(5, (pb[1] - pt[1]) * 0.13);
-  const slab = `<path d="M${f(pt)}L${n1(pt[0] + tk)} ${n1(pt[1] + tk * 0.35)}L${n1(pb[0] + tk)} ${n1(pb[1] - tk * 0.35)}L${f(pb)}Z" fill="#05060a" stroke="#2c3042" stroke-width=".7"/>`;
-  const body = `${stand}
-${slab}
-<path d="${W.d(m.x, m.y, m.w, m.h)}" fill="#08090e" stroke="#2c3042" stroke-width=".9"/>
-<clipPath id="${clip}"><path d="${W.d(sx, sy, sw, sh)}"/></clipPath>
-<g clip-path="url(#${clip})" class="slo-screen">${screenContent(W, m, sx, sy, sw, sh)}<path d="${W.pl([[sx, sy], [sx + sw * 0.7, sy], [sx, sy + sh * 0.9]])}" fill="url(#slo-gloss)"/></g>
-<path d="${W.ell(m.x + m.w / 2, m.y + m.h - 1.5, 1, 1, 6)}" fill="#7dffb0" class="slo-led slo-led-b"/>`;
-  return [glow, body];
 }
 
 // ------------------------------------------------------------------ rack ---
@@ -454,15 +237,13 @@ function rack(W: Wall): string {
   return out.join('') + b.out() + cabs + down;
 }
 
-/** Mesa, prateleira, poster e acessórios. */
-function desk(W: Wall): string {
+/** Faixa de LED, prateleira com itens e poster. */
+function decor(W: Wall): string {
   const b = new Batch();
   const out: string[] = [];
   // faixas de LED
   out.push(`<path d="${W.d(14, 22, 424, 3)}" fill="url(#slo-led)" opacity=".95"/>`);
   out.push(`<path d="${W.d(14, 22, 424, 3)}" fill="url(#slo-led)" opacity=".6" filter="url(#slo-glow-s)"/>`);
-  // trilho de suporte dos monitores de cima
-  out.push(`<path d="${W.d(30, 58, 366, 5)}" fill="#12141c"/><path d="${W.d(30, 58, 366, 1)}" fill="#3a4056"/>`);
   // prateleira com itens
   out.push(`<path d="${W.d(14, 156, 300, 4)}" fill="url(#slo-deskwood)"/>`);
   const bookCols = ['#7a1f3a', '#1f3a7a', '#2f6a4a', '#8a6a1f', '#4a2a7a', '#7a3a1f'];
@@ -490,43 +271,13 @@ function desk(W: Wall): string {
   for (const [x, y] of cs) b.add('#ffe08a', W.ell(x, y, 1.8, 1.8, 6));
   b.add('#ffe08a', W.d(397, 143, 30, 1.2) + W.d(397, 146, 20, 1.2));
 
-  // mesa
-  out.push(`<path d="${W.d(10, DESK_Y, 424, 8)}" fill="url(#slo-deskwood)"/><path d="${W.d(10, DESK_Y, 424, 1.2)}" fill="#a0693f" opacity=".7"/>`);
-  out.push(`<path d="${W.d(18, DESK_Y + 8, 7, 90)}" fill="#12141c"/><path d="${W.d(419, DESK_Y + 8, 7, 90)}" fill="#12141c"/>`);
-  out.push(`<path d="${W.d(26, DESK_Y + 14, 392, 30)}" fill="#0a0b11"/>`);
-  out.push(`<path d="${W.d(26, DESK_Y + 9, 392, 3)}" fill="url(#slo-led)"/><path d="${W.d(26, DESK_Y + 9, 392, 3)}" fill="url(#slo-led)" opacity=".6" filter="url(#slo-glow-s)"/>`);
-  // torre do PC com vidro e ventoinhas RGB
-  out.push(`<path d="${W.d(300, 288, 54, 72)}" fill="#0a0c12" stroke="#2a2f40" stroke-width=".8"/><path d="${W.d(303, 291, 48, 66)}" fill="#0a0e1c"/>`);
-  for (let i = 0; i < 3; i += 1) {
-    out.push(`<path d="${W.ell(318, 302 + i * 20, 8, 8, 14)}" fill="#05060a" stroke="${['#36e0ff', '#ff4fd8', '#a78bff'][i]}" stroke-width="1.4"/>`);
-    out.push(`<path d="${W.ell(318, 302 + i * 20, 8, 8, 14)}" fill="none" stroke="${['#36e0ff', '#ff4fd8', '#a78bff'][i]}" stroke-width="3" opacity=".5" filter="url(#slo-glow-s)"/>`);
-  }
-  b.add('#ff4fd8', W.d(335, 296, 2, 56));
-  // caixa de som
-  out.push(`<path d="${W.d(60, 308, 48, 52)}" fill="#0c0e15" stroke="#262b3c" stroke-width=".8"/>`);
-  out.push(`<path d="${W.ell(84, 340, 14, 14, 16)}" fill="#05060a" stroke="#2a2f40" stroke-width="1.4"/><path d="${W.ell(84, 340, 5, 5, 10)}" fill="#1c2030"/><path d="${W.ell(84, 322, 5, 5, 10)}" fill="#05060a" stroke="#2a2f40" stroke-width="1"/>`);
-  // teclado, mouse, fone de ouvido
-  out.push(`<path d="${W.d(116, 255, 118, 6)}" fill="#0b0c12" stroke="#262b3c" stroke-width=".6"/><path d="${W.d(118, 260, 114, 1.2)}" fill="url(#slo-rgb)"/>`);
-  out.push(`<path d="${W.d(118, 256, 114, 1.2)}" fill="url(#slo-rgb)" opacity=".7" filter="url(#slo-glow-s)"/>`);
-  out.push(`<path d="${W.ell(258, 259, 6, 2.6, 10)}" fill="#0b0c12" stroke="#262b3c" stroke-width=".6"/>`);
-  out.push(`<path d="${W.q([396, 250], [396, 222], [420, 250])}" stroke="#14161e" stroke-width="3" fill="none" stroke-linecap="round"/>`);
-  out.push(`<path d="${W.d(392, 246, 8, 12)}" fill="#262b3c"/><path d="${W.d(416, 246, 8, 12)}" fill="#262b3c"/>`);
   return out.join('') + b.out();
 }
 
 export function wallMarkup(): string {
   const W = new Wall();
-  const glows: string[] = [];
-  const bodies: string[] = [];
-  MONITORS.forEach((m, i) => {
-    const [g, bd] = monitor(W, m, i);
-    glows.push(g);
-    bodies.push(bd);
-  });
   return `<g class="slo-wall">
-<g filter="url(#slo-glow)" opacity=".9">${glows.join('')}</g>
-${desk(W)}
-${bodies.join('')}
+${decor(W)}
 ${rack(W)}
 </g>`;
 }

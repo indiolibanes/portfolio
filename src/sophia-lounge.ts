@@ -6,13 +6,14 @@
  */
 import { foxDefs, foxMarkup } from './sophia-lounge-fox.ts';
 import { SCENE_H, SCENE_W, floorDetails, lightSpill, moonWindow, mug, neon, roomDefs, roomShell, rug, sofa } from './sophia-lounge-room.ts';
+import { consoleMarkup, tvDefs, tvGlow, tvMarkup, tvSpill } from './sophia-lounge-tv.ts';
 import { wallDefs, wallMarkup } from './sophia-lounge-wall.ts';
 
 export { SCENE_H, SCENE_W };
 
 export function loungeMarkup(): string {
   return `<svg class="sophia-art sophia-art--lounge" viewBox="0 0 ${SCENE_W} ${SCENE_H}" aria-hidden="true" focusable="false">
-<defs>${roomDefs()}${wallDefs()}${foxDefs()}</defs>
+<defs>${roomDefs()}${wallDefs()}${tvDefs()}${foxDefs()}</defs>
 ${roomShell()}
 ${moonWindow()}
 ${neon()}
@@ -20,8 +21,12 @@ ${wallMarkup()}
 ${sofa()}
 ${rug()}
 ${floorDetails()}
+${tvMarkup()}
+${tvGlow()}
 ${mug(604, 454)}
+${consoleMarkup()}
 <g class="slo-fox" transform="translate(336 444) scale(.8)">${foxMarkup()}</g>
+${tvSpill()}
 ${lightSpill()}
 </svg>`;
 }
