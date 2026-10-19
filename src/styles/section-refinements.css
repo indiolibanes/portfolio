@@ -590,3 +590,17 @@ html[data-serious-mode='true'] #curadoria .knowledge-stage:disabled { cursor: de
 html[data-serious-mode='true'] #curadoria .knowledge-stage::before { display: none; }
 html[data-serious-mode='true'] #curadoria .knowledge-stage.is-active { background: #000000; color: #ffffff; }
 html[data-serious-mode='true'] #curadoria .knowledge-stage:focus-visible { outline: 3px solid #000000; outline-offset: 3px; }
+
+/* PI NIR card: repository link in the footer. Inherits the card colour in every mode; keeps a visible focus ring. */
+#lab .lab-project-repo {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+}
+#lab .lab-project-repo:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
