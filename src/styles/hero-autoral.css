@@ -1,0 +1,276 @@
+/*
+ * Hero do modo Autoral (padrão) — sobriedade, 2026-10-20.
+ *
+ * Direção: página de papel, tipografia como identidade, pouca moldura.
+ * Inspiração: leitura visual de craft.do (texto dominante, respiro, poucos
+ * recipientes, botões retangulares, nenhuma sombra decorativa).
+ *
+ * Escopo: apenas #sobre no modo Autoral. Editorial (data-serious-mode) e
+ * Legacy (data-legacy-mode) não são tocados. A marcação não muda; as peças
+ * decorativas do hero ficam ocultas só neste modo (ver nota no fim).
+ *
+ * Carregado por último em BaseLayout para vencer as camadas anteriores.
+ */
+
+/* ---------- Superfície: sem cartão, sem sombra, sem gradiente ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre.hero {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+  padding: clamp(2.2rem, 4.5vw, 4rem) 0 clamp(2rem, 4vw, 3rem);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-intro {
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  justify-content: flex-start;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .identity-cluster {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* ---------- Identidade: greeting discreto, prisma sem moldura ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hello {
+  margin: 0 0 1.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-cover-art {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0 0 2rem;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: none;
+  background: #000;
+}
+
+/* Nome: tipografia direta, sem placa de tijolos. */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .mario-name-tiles {
+  display: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  justify-content: flex-start;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::before {
+  content: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4.8vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: normal;
+  color: var(--ink);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .role {
+  margin: 1rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ---------- Enunciado: texto dominante, sem painel ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement {
+  padding: 0;
+  align-self: start;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement::before {
+  content: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement .eyebrow {
+  margin: 0 0 1.1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: #823f36;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement h2 {
+  font-size: clamp(2.2rem, 3.9vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.032em;
+  color: var(--ink);
+  text-shadow: none;
+  text-wrap: balance;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement > p:not(.eyebrow) {
+  max-width: 60ch;
+  margin: 1.6rem 0 0;
+  font-size: 1.0625rem;
+  font-weight: 450;
+  line-height: 1.7;
+  color: #5a4c42;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-current {
+  max-width: 60ch;
+  margin: 1.5rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--sun);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ---------- Ações: retangulares, sem pílula ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-actions {
+  margin-top: 2rem;
+  gap: 0.75rem 1.5rem;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .editorial-primary {
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+  box-shadow: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-download-button {
+  min-height: 46px;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+/* ---------- Nota de resumo: faixa com filete, sem caixa girada ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note {
+  grid-column: 1 / -1;
+  position: static;
+  width: 100%;
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  padding: 1.4rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  transform: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 2fr);
+  column-gap: 2.5rem;
+  row-gap: 0.5rem;
+  align-items: baseline;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note .tape {
+  display: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note .note-label {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note .note-big {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note .note-small {
+  grid-column: 3;
+  grid-row: 1;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* ---------- Peças decorativas do hero (Phrolova, Shorekeeper) ----------
+ * Ocultas só no modo Autoral: flutuavam sobre o texto, com sombra e
+ * rotação, e eram a principal fonte de cara de template. Os arquivos
+ * continuam no projeto; voltam se a decisão for revista. */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .phrolova-underlay,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .shorekeeper-underlay {
+  display: none;
+}
+
+/* ---------- Telas médias e pequenas ---------- */
+
+@media (max-width: 920px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre.hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-intro {
+    max-width: none;
+    margin: 0;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.6rem;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note :is(.note-label, .note-big, .note-small) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre.hero {
+    padding-top: 1.5rem;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {
+    font-size: clamp(2.5rem, 13vw, 3.4rem);
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement h2 {
+    font-size: clamp(2rem, 8.6vw, 2.6rem);
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement > p:not(.eyebrow) {
+    font-size: 1rem;
+  }
+}
