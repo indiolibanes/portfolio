@@ -1,0 +1,159 @@
+/*
+ * Hierarquia tipográfica — Autoral e Legacy (2026-10-20).
+ *
+ * Papéis, do mais forte ao mais discreto:
+ *   1. Nome (h1)            Roguepunk, o único display "cyber" da home.
+ *   2. Enunciado (h2)       Benguiat (capítulo), como já era.
+ *   3. Títulos de projeto   Roguepunk, menor, em vinho.
+ *   4. Lead e subtítulos    Bookman (subtítulo do projeto).
+ *   5. Corpo e rótulos      Inter e a mono de apoio, com entrelinha de leitura.
+ *
+ * Autoral usa a família; Legacy, que é o modo 1998, mantém as fontes do
+ * sistema e só recebe a escala e a ordem dos papéis.
+ * Carregado por último em BaseLayout.
+ */
+
+@font-face {
+  font-family: "Portfolio Roguepunk";
+  src: url("../../assets/fonts/Roguepunk.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ---------- Autoral ---------- */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {
+  font-family: "Portfolio Roguepunk", Impact, "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 5.4vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement h2 {
+  font-family: var(--font-chapter, Georgia, serif);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria h3 {
+  font-family: "Portfolio Roguepunk", Impact, "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  color: #6e2a1e;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-lead {
+  font-family: var(--font-subtitle, Georgia, serif);
+  font-size: clamp(0.98rem, 1.5vw, 1.08rem);
+  line-height: 1.4;
+  color: #6e2a1e;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-book cite {
+  font-family: var(--font-subtitle, Georgia, serif);
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+/* ---------- Legacy: mesma ordem, fontes do sistema ---------- */
+
+html[data-legacy-mode='true'] #sobre .block-name {
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+html[data-legacy-mode='true'] #lab #curadoria h3 {
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+html[data-legacy-mode='true'] #lab #curadoria .lab-project-lead {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+html[data-legacy-mode='true'] #lab #curadoria .lab-project-description {
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* Legacy é estático: sem folhas, sem pulsações, sem desenho das linhas. */
+html[data-legacy-mode='true'] #lab #curadoria .pi-leaf-field { display: none; }
+html[data-legacy-mode='true'] #lab #curadoria .knowledge-stage { animation: none; }
+
+/* Legacy: o processo vira uma frase, pois o painel visual fica oculto neste modo. */
+.cellulose-legacy-text { display: none; }
+html[data-legacy-mode='true'] #lab #curadoria .cellulose-legacy-text { display: block; margin: 0 0 0.8rem; font-size: 0.92rem; line-height: 1.6; }
+
+
+/* ---------- Distribuição das fontes anexadas (v2) ----------
+ * Inter não é embutida: caía em Arial/Calibri. Em #sobre e #lab o corpo passa
+ * a usar a mono de apoio (Latin Modern Mono) e os títulos a Bookman; o que era
+ * Georgia/Times vira Bookman. Roguepunk: nome, título do PI, centro do mapa.
+ * Heart Breaking Bad segue só na assinatura; Pixelify só em rótulos. */
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) {
+  --font-display: "Portfolio Bookman", Georgia, serif;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) :is(#sobre, #lab #curadoria) {
+  --font-ui: "Portfolio Typewriter", ui-monospace, "Courier New", monospace;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.role, .hero-current, .hero-statement > p, .note-small, .note-label, .hello),
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.lab-project-description, .lab-project-features, .lab-project-footer, .lab-project-brand small, .cellulose-flow, .cellulose-flow-note, .knowledge-stage) {
+  font-family: "Portfolio Typewriter", ui-monospace, "Courier New", monospace;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.note-big, .editorial-primary, .cv-download-button),
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.lab-project-brand strong, .mm-title) {
+  font-family: "Portfolio Bookman", Georgia, serif;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.eyebrow, .lab-project-tags span),
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.eyebrow, .lab-project-tags span, .lab-project-meta, .cellulose-flow-title) {
+  font-family: var(--font-retro, "Pixelify Sans"), "Portfolio Typewriter", ui-monospace, monospace;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(button, a), html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(button, a) { font-family: inherit; }
+
+/* ---------- Legacy: troca Times/Arial/Courier pelas fontes anexadas ---------- */
+
+html[data-legacy-mode='true'] :is(#sobre, #lab #curadoria) :is(h1, h2, h3, h4, strong, .note-big, .lab-project-lead, cite) {
+  font-family: "Portfolio Bookman", Georgia, serif !important;
+}
+html[data-legacy-mode='true'] :is(#sobre, #lab #curadoria) :is(p, li, small, span, a, button, .role, .eyebrow, .hello) {
+  font-family: "Portfolio Typewriter", "Courier New", monospace !important;
+}
+html[data-legacy-mode='true'] #sobre .block-name {
+  font-family: "Portfolio Roguepunk", "Portfolio Bookman", Georgia, serif !important;
+  font-weight: 400;
+}
+html[data-legacy-mode='true'] #lab #curadoria h3 {
+  font-family: "Portfolio Roguepunk", "Portfolio Bookman", Georgia, serif !important;
+  font-weight: 400;
+}
+
+/* Legacy: mapa mental vira blocos de texto simples. */
+html[data-legacy-mode='true'] #lab #curadoria .pi-map { display: block; margin: 1rem 0 0; padding: 0; background: none; grid-column: 1 / -1; }
+html[data-legacy-mode='true'] #lab #curadoria .pi-map :is(.mm-arrow, .mm-splash, .mm-icon) { display: none; }
+html[data-legacy-mode='true'] #lab #curadoria .pi-map * { animation: none !important; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-brush { font-family: "Portfolio Roguepunk", Georgia, serif !important; font-size: 1.4rem; text-align: left; margin: 0 0 0.6rem; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-block { margin: 0 0 0.8rem; padding: 0; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-block::after { display: none; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-title { font-size: 1rem; margin: 0; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-block p { margin: 0.2rem 0 0; font-size: 0.9rem; line-height: 1.55; }
+html[data-legacy-mode='true'] #lab #curadoria .pi-mark { background: none; animation: none; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-title span::before { display: none; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .editorial-text-link { font-family: "Portfolio Typewriter", ui-monospace, "Courier New", monospace; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .sophiasigil, html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .sophiasigil, html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-brush { display: block; padding: 0 0.8rem; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-brush small { display: block; margin-top: 0.3rem; }
+html[data-legacy-mode='true'] #lab #curadoria .mm-block { padding: 0 0.8rem; }

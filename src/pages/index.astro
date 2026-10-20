@@ -515,6 +515,7 @@ const background = [
         class="lab-project-card lab-project-card-knowledge"
         aria-labelledby="knowledge-title"
       >
+        <div class="pi-leaf-field" aria-hidden="true"><span style="--x:4%;--s:22px;--t:15s;--delay:0s"></span><span style="--x:11%;--s:30px;--t:18s;--delay:-6s"></span><span style="--x:19%;--s:20px;--t:13s;--delay:-3s"></span><span style="--x:27%;--s:26px;--t:16s;--delay:-11s"></span><span style="--x:35%;--s:18px;--t:12s;--delay:-8s"></span><span style="--x:43%;--s:32px;--t:19s;--delay:-14s"></span><span style="--x:51%;--s:22px;--t:14s;--delay:-2s"></span><span style="--x:58%;--s:28px;--t:17s;--delay:-9s"></span><span style="--x:66%;--s:20px;--t:13s;--delay:-5s"></span><span style="--x:73%;--s:34px;--t:20s;--delay:-16s"></span><span style="--x:81%;--s:24px;--t:15s;--delay:-12s"></span><span style="--x:88%;--s:19px;--t:12s;--delay:-7s"></span><span style="--x:94%;--s:27px;--t:18s;--delay:-1s"></span><span style="--x:47%;--s:16px;--t:11s;--delay:-10s"></span></div>
         <div class="lab-project-copy">
           <div class="lab-project-meta">
             <span class="lab-project-index">
@@ -571,28 +572,18 @@ const background = [
           </div>
 
           <p class="lab-project-lead">
-            Um supervisório que lê a polpa celulósica com luz infravermelha e acompanha o ensaio do começo ao fim.
+            Um supervisório que lê a polpa celulósica com <mark class="pi-mark pi-mark-1">luz infravermelha</mark> e acompanha <mark class="pi-mark pi-mark-2">o ensaio do começo ao fim</mark>.
           </p>
 
           <p class="lab-project-description">
-            A bancada usa seis canais espectrais entre 610 e 860 nm (sensor GY-AS7263) para estimar o número kappa,
-            o indicador do grau de deslignificação da polpa. O programa já cuida do ensaio inteiro: calibração com
-            validade, intertravamentos de segurança, repetibilidade e laudo em PDF. O número kappa ainda é uma
-            estimativa demonstrativa, sem treino nem validação analítica, e não substitui medição certificada.
-            Minha parte é revisar e reescrever o relatório técnico e apresentar o projeto.
+            <strong>Minha parte:</strong> revisar e reescrever o relatório técnico e apresentar o projeto em <mark class="pi-mark pi-mark-3">30 de novembro</mark>.
           </p>
 
-          <ul class="lab-project-features" aria-label="Recursos já implementados">
-            <li>Ensaios automáticos com intertravamentos</li>
-            <li>Calibração de branco e escuro com validade</li>
-            <li>Repetibilidade em cinco aquisições</li>
-            <li>Histórico, CSV e laudo em PDF</li>
-          </ul>
-
+          <p class="cellulose-legacy-text">Processo simplificado: cavacos de madeira, cozimento kraft, lavagem da polpa, número kappa (medição NIR), branqueamento e secagem em folhas.</p>
           <div class="pi-stages"><div
             class="knowledge-flow"
             role="group"
-            aria-label="Etapas do projeto, destacadas em sequência a cada 5 segundos. Selecione uma etapa para destacá-la."
+            aria-label="Etapas do projeto. Selecione uma etapa para destacá-la."
           >
             <button
               type="button"
@@ -668,7 +659,7 @@ const background = [
 
         <div class="lab-project-system lab-project-system-process">
           <p class="cellulose-flow-title">Do cavaco à folha · processo kraft simplificado</p>
-          <ol class="cellulose-flow" aria-label="Fluxo simplificado do processo kraft, com o ponto em que o PI busca medir o número kappa">
+          <ol class="cellulose-flow" aria-label="Fluxograma simplificado do processo kraft, com o ponto em que o PI busca medir o número kappa">
             <li class="cf-step" style="--i:0"><span>Cavacos de madeira</span></li>
             <li class="cf-step" style="--i:1"><span>Cozimento kraft</span></li>
             <li class="cf-step" style="--i:2"><span>Lavagem da polpa</span></li>
@@ -676,7 +667,40 @@ const background = [
             <li class="cf-step" style="--i:4"><span>Branqueamento</span></li>
             <li class="cf-step" style="--i:5"><span>Secagem e folhas</span></li>
           </ol>
-          <p class="cellulose-flow-note">Fluxo simplificado, só para situar a medição. O PI busca medir o kappa neste ponto, em tempo real.</p>
+          <p class="cellulose-flow-note">Simplificado, só para situar a medição. O PI busca medir o kappa em tempo real no ponto destacado.</p>
+        </div>
+
+        <div class="pi-map">
+          <div class="mm-center">
+            <svg class="mm-splash" viewBox="0 0 220 150" aria-hidden="true"><path d="M30 78C22 52 48 22 82 26c18-14 52-12 66 6 26-2 52 18 44 44 14 18 6 44-20 50-12 20-48 26-66 12-26 10-56-2-60-24-18-8-22-26-16-36z"/><circle cx="196" cy="30" r="5"/><circle cx="16" cy="112" r="4"/><circle cx="206" cy="118" r="3"/></svg>
+            <p class="mm-brush">número<br>kappa<small>PI · SENAI Três Lagoas</small></p>
+          </div>
+
+          <svg class="mm-arrow mm-arrow-a" viewBox="0 0 84 70" aria-hidden="true"><path pathLength="100" d="M82 62 C 60 56, 30 40, 8 10 M8 10 L20 14 M8 10 L10 23"/></svg>
+          <svg class="mm-arrow mm-arrow-b" viewBox="0 0 84 70" aria-hidden="true"><path pathLength="100" d="M2 62 C 24 56, 54 40, 76 10 M76 10 L64 14 M76 10 L74 23"/></svg>
+          <svg class="mm-arrow mm-arrow-c" viewBox="0 0 84 70" aria-hidden="true"><path pathLength="100" d="M82 8 C 60 14, 30 30, 8 60 M8 60 L20 56 M8 60 L10 47"/></svg>
+          <svg class="mm-arrow mm-arrow-d" viewBox="0 0 84 70" aria-hidden="true"><path pathLength="100" d="M2 8 C 24 14, 54 30, 76 60 M76 60 L64 56 M76 60 L74 47"/></svg>
+
+          <div class="mm-block mm-a" style="--d:0s">
+            <svg class="mm-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="17" cy="17" r="9"/><path d="M24 24 L35 35"/></svg>
+            <h4 class="mm-title"><span>Para que serve?</span></h4>
+            <p>Estimar o número kappa, o indicador do grau de deslignificação da polpa celulósica, com leituras em tempo real.</p>
+          </div>
+          <div class="mm-block mm-b" style="--d:-9s">
+            <svg class="mm-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 33 V22 M14 33 V15 M21 33 V9 M28 33 V18 M35 33 V26"/></svg>
+            <h4 class="mm-title"><span>Como funciona?</span></h4>
+            <p>Seis canais espectrais entre 610 e 860 nm (sensor GY-AS7263) leem a polpa; o supervisório controla a bancada e acompanha o ensaio.</p>
+          </div>
+          <div class="mm-block mm-c" style="--d:-6s">
+            <svg class="mm-icon" viewBox="0 0 40 40" aria-hidden="true"><rect x="9" y="7" width="22" height="28" rx="3"/><path d="M14 17 L17 20 L24 13 M14 27 H26"/></svg>
+            <h4 class="mm-title"><span>O que já existe?</span></h4>
+            <p>Ensaios automáticos com intertravamentos, calibração de branco e escuro com validade, repetibilidade em cinco aquisições, histórico com CSV e laudo em PDF.</p>
+          </div>
+          <div class="mm-block mm-d" style="--d:-3s">
+            <svg class="mm-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6 L36 33 H4 Z M20 16 V25 M20 29 V30"/></svg>
+            <h4 class="mm-title"><span>Com cautela</span></h4>
+            <p>O kappa ainda é uma estimativa demonstrativa, por equações fixas, sem treino nem validação analítica. Não substitui medição certificada.</p>
+          </div>
         </div>
       </article>
       <script>
@@ -1100,7 +1124,7 @@ const background = [
     const start = () => {
       stop();
       if (reducedMotion.matches || hovered || focused || !onScreen || document.hidden) return;
-      timer = window.setInterval(() => light((current + 1) % knowledgeStages.length, true), STAGE_HOLD_MS);
+      // Stages are independent now: each one breathes on its own clock (CSS), no sequence.
     };
 
     knowledgeStages.forEach((stage, index) => {
