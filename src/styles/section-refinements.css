@@ -604,3 +604,10 @@ html[data-serious-mode='true'] #curadoria .knowledge-stage:focus-visible { outli
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* PI NIR card: SpectrumLab Pro brand block, shown above the title. The mark is the programme's own logo. */
+#curadoria .lab-project-brand { display: flex; align-items: center; gap: 0.9rem; margin: 0 0 1.1rem; }
+#curadoria .lab-project-brand img { width: 72px; height: 72px; flex: none; border-radius: 16px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
+#curadoria .lab-project-brand strong { display: block; font-size: 1.15rem; color: #fff3d6; letter-spacing: 0.01em; }
+#curadoria .lab-project-brand small { display: block; margin-top: 0.2rem; font-size: 0.88rem; line-height: 1.4; opacity: 0.92; }
+html[data-serious-mode='true'] #curadoria .lab-project-brand img { filter: grayscale(1); }
