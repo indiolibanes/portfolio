@@ -611,3 +611,57 @@ html[data-serious-mode='true'] #curadoria .knowledge-stage:focus-visible { outli
 #curadoria .lab-project-brand strong { display: block; font-size: 1.15rem; color: #fff3d6; letter-spacing: 0.01em; }
 #curadoria .lab-project-brand small { display: block; margin-top: 0.2rem; font-size: 0.88rem; line-height: 1.4; opacity: 0.92; }
 html[data-serious-mode='true'] #curadoria .lab-project-brand img { filter: grayscale(1); }
+
+/* PI NIR card (2026-10-20): recursos já implementados, lidos do README da v4.16.2, e links do rodapé. */
+#curadoria .lab-project-features { list-style: none; margin: 0 0 1.2rem; padding: 0.9rem 0 0; border-top: 1px solid rgba(32, 39, 32, 0.16); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem 1.25rem; font-size: 0.86rem; line-height: 1.4; }
+#curadoria .lab-project-features li { position: relative; padding-left: 0.95rem; }
+#curadoria .lab-project-features li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--mint); }
+#curadoria .lab-project-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
+@media (max-width: 600px) { #curadoria .lab-project-features { grid-template-columns: minmax(0, 1fr); } }
+
+/* PI NIR card (2026-10-20): layout próprio em coluna única, sobre textura de folha de eucalipto,
+   com o logo do SpectrumLab Pro (SSE) em destaque. Difere do card de Documentação. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria {
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  background: #e9efe2 url('/assets/textures/eucalipto-folha.svg') repeat;
+  background-size: 320px 320px;
+  border: 1px solid rgba(63, 90, 72, 0.22);
+  border-radius: 24px;
+  box-shadow: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-copy {
+  padding: clamp(1.5rem, 3.5vw, 2.6rem) clamp(1.5rem, 3.5vw, 2.6rem) 1.4rem;
+  background: none;
+  color: #1f2b22;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-system {
+  display: block;
+  padding: 1.3rem clamp(1.5rem, 3.5vw, 2.6rem) 1.6rem;
+  background: none;
+  border: 0;
+  border-top: 1px solid rgba(63, 90, 72, 0.2);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .knowledge-flow {
+  width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .knowledge-stage {
+  min-height: 64px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(63, 90, 72, 0.22);
+  color: #1f2b22;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .knowledge-note { margin-top: 0.9rem; color: #3f5a48; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .knowledge-note strong { color: #1f2b22; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-lead { margin: 0 0 0.6rem; font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.35; color: #1f2b22; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-brand { gap: 1.2rem; margin-bottom: 1.4rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-brand img { width: 112px; height: 112px; border-radius: 22px; box-shadow: 0 10px 24px rgba(31, 43, 34, 0.25); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-brand strong { font-size: 1.6rem; color: #1f2b22; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-brand small { color: #3f5a48; font-size: 0.95rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-features { border-top-color: rgba(63, 90, 72, 0.2); color: #1f2b22; }
+@media (max-width: 720px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .knowledge-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-brand img { width: 88px; height: 88px; }
+}

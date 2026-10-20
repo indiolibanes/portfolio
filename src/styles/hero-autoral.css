@@ -69,11 +69,25 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name
   border-radius: 0;
   background: none;
   box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
 }
 
+/* Bloco-pergunta discreto (referência ao Super Mario), acima do nome. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::before {
-  content: none;
+  content: '';
+  position: static;
+  inset: auto;
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 0.9rem;
+  border: 2px solid #6f3526;
+  border-radius: 3px;
+  background: #e8b84e;
+  box-shadow: inset -3px -3px 0 #c4882e;
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {
@@ -172,7 +186,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-d
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note {
   grid-column: 1 / -1;
-  position: static;
+  position: relative;
   width: 100%;
   margin: clamp(2.5rem, 5vw, 4rem) 0 0;
   padding: 1.4rem 0 0;
@@ -222,15 +236,53 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero
   color: var(--ink-soft);
 }
 
-/* ---------- Peças decorativas do hero (Phrolova, Shorekeeper) ----------
- * Ocultas só no modo Autoral: flutuavam sobre o texto, com sombra e
- * rotação, e eram a principal fonte de cara de template. Os arquivos
- * continuam no projeto; voltam se a decisão for revista. */
+/* ---------- Peças decorativas do hero (baton e borboleta) ----------
+ * Voltam como fundo: sobre todo o hero, em camada abaixo dos textos, com
+ * transparência. A animação continua a mesma (DecorativeMotion pausa
+ * fora da tela). */
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .phrolova-underlay,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .shorekeeper-underlay {
-  display: none;
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  height: auto;
+  margin: 0;
+  grid-column: auto;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments .phrolova-underlay,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre:hover .hero-ornaments .phrolova-underlay {
+  top: 10%;
+  right: 1%;
+  bottom: auto;
+  left: auto;
+  width: min(44%, 460px);
+  z-index: 1;
+  opacity: 0.22;
+  transform: rotate(6deg);
+  transition: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments .shorekeeper-underlay,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre:hover .hero-ornaments .shorekeeper-underlay {
+  top: auto;
+  left: 1%;
+  bottom: 16%;
+  right: auto;
+  width: min(34%, 360px);
+  z-index: 1;
+  opacity: 0.24;
+  transform: none;
+  transition: none;
+}
+
+/* Texto sempre acima das peças de fundo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-intro,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-note {
+  z-index: 2;
 }
 
 /* ---------- Telas médias e pequenas ---------- */
@@ -260,6 +312,22 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .shor
 @media (max-width: 600px) {
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre.hero {
     padding-top: 1.5rem;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments .phrolova-underlay,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre:hover .hero-ornaments .phrolova-underlay {
+    top: 4%;
+    right: -8%;
+    width: min(70vw, 300px);
+    opacity: 0.16;
+  }
+
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-ornaments .shorekeeper-underlay,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre:hover .hero-ornaments .shorekeeper-underlay {
+    left: -4%;
+    bottom: 20%;
+    width: min(42vw, 180px);
+    opacity: 0.18;
   }
 
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {

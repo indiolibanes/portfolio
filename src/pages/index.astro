@@ -547,7 +547,7 @@ const background = [
             />
             <span>
               <strong>SpectrumLab Pro</strong>
-              <small>Supervisório NIR · desenvolvido em parceria com Mateus Ferreira</small>
+              <small>Supervisório espectrométrico NIR · v4.16.2 · protótipo de Davi Baracat, Kauê Alencar e Mateus Ferreira</small>
             </span>
           </div>
 
@@ -570,30 +570,26 @@ const background = [
             </span>
           </div>
 
-          <p class="lab-project-description">
-            Estudo do uso da espectroscopia no infravermelho próximo (NIR) para medir
-            o número kappa — o grau de deslignificação da polpa celulósica — em tempo real.
-            Minha parte é revisar e reescrever o relatório técnico e apresentar o projeto,
-            prevista para o dia 30 de novembro.
+          <p class="lab-project-lead">
+            Um supervisório que lê a polpa celulósica com luz infravermelha e acompanha o ensaio do começo ao fim.
           </p>
 
-          <div class="lab-project-footer">
-            <span>
-              apresentação prevista para o dia 30 de novembro
-            </span>
-            <a
-              class="lab-project-repo"
-              href="https://github.com/yosemate/spectrum"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Repositório SpectrumLab Pro (yosemate/spectrum) ↗<span class="sr-only"> (abre em nova aba)</span>
-            </a>
-          </div>
-        </div>
+          <p class="lab-project-description">
+            A bancada usa seis canais espectrais entre 610 e 860 nm (sensor GY-AS7263) para estimar o número kappa,
+            o indicador do grau de deslignificação da polpa. O programa já cuida do ensaio inteiro: calibração com
+            validade, intertravamentos de segurança, repetibilidade e laudo em PDF. O número kappa ainda é uma
+            estimativa demonstrativa, sem treino nem validação analítica, e não substitui medição certificada.
+            Minha parte é revisar e reescrever o relatório técnico e apresentar o projeto.
+          </p>
 
-        <div class="lab-project-system lab-project-system-knowledge">
-          <div
+          <ul class="lab-project-features" aria-label="Recursos já implementados">
+            <li>Ensaios automáticos com intertravamentos</li>
+            <li>Calibração de branco e escuro com validade</li>
+            <li>Repetibilidade em cinco aquisições</li>
+            <li>Histórico, CSV e laudo em PDF</li>
+          </ul>
+
+          <div class="pi-stages"><div
             class="knowledge-flow"
             role="group"
             aria-label="Etapas do projeto, destacadas em sequência a cada 5 segundos. Selecione uma etapa para destacá-la."
@@ -643,19 +639,53 @@ const background = [
             >
               Apresentação
             </button>
-          </div>
+          </div></div>
 
-          <div class="knowledge-note">
-            <strong>
-              NIR
-            </strong>
-
-            <small>
-              número kappa · tempo real
-            </small>
+          <div class="lab-project-footer">
+            <span>
+              Versão 4.16.2 · build 1263 · 20/10/2026 · apresentação em 30 de novembro
+            </span>
+            <span class="lab-project-links">
+              <a
+                class="lab-project-repo"
+                href="https://github.com/yosemate/spectrum"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Repositório ↗<span class="sr-only"> (abre em nova aba)</span>
+              </a>
+              <a
+                class="lab-project-repo"
+                href="https://github.com/yosemate/spectrum/blob/main/SPECTRUM-LAB_PRO_Documentacao_Tecnica.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Documentação técnica (PDF) ↗<span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </span>
           </div>
         </div>
+
+        <div class="lab-project-system lab-project-system-process">
+          <p class="cellulose-flow-title">Do cavaco à folha · processo kraft simplificado</p>
+          <ol class="cellulose-flow" aria-label="Fluxo simplificado do processo kraft, com o ponto em que o PI busca medir o número kappa">
+            <li class="cf-step" style="--i:0"><span>Cavacos de madeira</span></li>
+            <li class="cf-step" style="--i:1"><span>Cozimento kraft</span></li>
+            <li class="cf-step" style="--i:2"><span>Lavagem da polpa</span></li>
+            <li class="cf-step is-measure" style="--i:3"><span>Número kappa <small>ponto da medição NIR</small></span></li>
+            <li class="cf-step" style="--i:4"><span>Branqueamento</span></li>
+            <li class="cf-step" style="--i:5"><span>Secagem e folhas</span></li>
+          </ol>
+          <p class="cellulose-flow-note">Fluxo simplificado, só para situar a medição. O PI busca medir o kappa neste ponto, em tempo real.</p>
+        </div>
       </article>
+      <script>
+        const piCard = document.getElementById('curadoria');
+        if (piCard) {
+          piCard.addEventListener('pointerenter', () => document.documentElement.setAttribute('data-fiber-cursor', 'true'));
+          piCard.addEventListener('pointerleave', () => document.documentElement.removeAttribute('data-fiber-cursor'));
+        }
+      </script>
 
       <a
         id="documentacao"
