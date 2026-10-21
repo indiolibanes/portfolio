@@ -55,7 +55,7 @@ const background = [
       id="sobre"
       aria-labelledby="hero-title"
     >
-      <div class="hero-intro">
+      <div class="hero-intro" data-reveal>
 
         <p class="hello">
           <span
@@ -121,7 +121,7 @@ const background = [
         </p>
 
         <div class="identity-cluster">
-          <div class="hero-cover-art" data-decorative-motion aria-hidden="true">
+          <div class="hero-cover-art" data-decorative-motion data-reveal="iris" aria-hidden="true">
             <img
               src="/dark-side-prism.jpg"
               alt=""
@@ -163,7 +163,7 @@ const background = [
         </div>
       </div>
 
-      <div class="hero-statement">
+      <div class="hero-statement" data-reveal>
         <p class="eyebrow">
           {sectionNumber('sobre')} / Sobre · Uma forma de pensar
         </p>
@@ -203,6 +203,7 @@ const background = [
 
       <aside
         class="hero-note"
+        data-reveal
         aria-label="Resumo profissional"
       >
         <span
@@ -229,7 +230,7 @@ const background = [
       id="lab"
       aria-labelledby="lab-title"
     >
-      <div class="lab-heading">
+      <div class="lab-heading" data-reveal>
         <div class="lab-heading-copy">
           <p class="eyebrow">{sectionNumber('lab')} / Laboratório</p>
           <div class="lab-title-with-sophia">
@@ -256,7 +257,7 @@ const background = [
         </div>
       </div>
 
-      <nav class="work-index" aria-label="Índice dos trabalhos">
+      <nav class="work-index" aria-label="Índice dos trabalhos" data-reveal>
         <a href="#traducao"><span>01</span> Tradução ↘</a>
         <a href="#reflexao"><span>02</span> Reflexão ↘</a>
         <a href="#arquitetura"><span>03</span> Arquitetura ↘</a>
@@ -267,6 +268,7 @@ const background = [
       <article
         id="traducao"
         class="lab-project-card"
+        data-reveal
         aria-labelledby="translation-title"
       >
         <div class="lab-project-copy">
@@ -339,6 +341,7 @@ const background = [
       <a
         id="reflexao"
         class="lab-project-card lab-project-card-essay"
+        data-reveal
         href="https://horologiarius.com/blog/essays/e-se-reflexoes-sobre-a-viagem-no-tempo-e-relacoes-interpessoais/"
         target="_blank"
         rel="noopener noreferrer"
@@ -420,6 +423,7 @@ const background = [
       <a
         id="arquitetura"
         class="lab-project-card lab-project-card-architecture"
+        data-reveal
         href="https://horologiarius.com/"
         target="_blank"
         rel="noopener noreferrer"
@@ -513,6 +517,7 @@ const background = [
       <article
         id="curadoria"
         class="lab-project-card lab-project-card-knowledge"
+        data-reveal
         aria-labelledby="knowledge-title"
       >
         <div class="pi-leaf-field" aria-hidden="true"><span style="--x:4%;--s:22px;--t:15s;--delay:0s"></span><span style="--x:11%;--s:30px;--t:18s;--delay:-6s"></span><span style="--x:19%;--s:20px;--t:13s;--delay:-3s"></span><span style="--x:27%;--s:26px;--t:16s;--delay:-11s"></span><span style="--x:35%;--s:18px;--t:12s;--delay:-8s"></span><span style="--x:43%;--s:32px;--t:19s;--delay:-14s"></span><span style="--x:51%;--s:22px;--t:14s;--delay:-2s"></span><span style="--x:58%;--s:28px;--t:17s;--delay:-9s"></span><span style="--x:66%;--s:20px;--t:13s;--delay:-5s"></span><span style="--x:73%;--s:34px;--t:20s;--delay:-16s"></span><span style="--x:81%;--s:24px;--t:15s;--delay:-12s"></span><span style="--x:88%;--s:19px;--t:12s;--delay:-7s"></span><span style="--x:94%;--s:27px;--t:18s;--delay:-1s"></span><span style="--x:47%;--s:16px;--t:11s;--delay:-10s"></span></div>
@@ -714,6 +719,7 @@ const background = [
       <a
         id="documentacao"
         class="lab-project-card lab-project-card-documentation"
+        data-reveal
         href="https://github.com/indiolibanes/portfolio/blob/main/docs/publishing-workflow.md"
         target="_blank"
         rel="noopener noreferrer"
@@ -818,7 +824,7 @@ const background = [
     </section>
 
     <section class="method-section section" id="metodo" aria-labelledby="method-title">
-      <div class="method-heading">
+      <div class="method-heading" data-reveal>
         <div class="method-intro">
           <p class="eyebrow">{sectionNumber('metodo')} / Método</p>
           <h2 id="method-title">Da ideia à estrutura.</h2>
@@ -828,12 +834,12 @@ const background = [
         <MethodPresenter />
       </div>
       <ol class="method-steps" aria-label="Quatro etapas do processo">
-        <li><span class="method-index">01 / Concepção</span><h3>Dar forma à ideia</h3><p>Objetivos, referências, linguagem, arquitetura da informação e critérios de sucesso.</p></li>
-        <li><span class="method-index">02 / Execução assistida</span><h3>Experimentar possibilidades</h3><p>Uso de IA para prototipagem e implementação, com instruções, restrições e revisões explícitas.</p></li>
-        <li><span class="method-index">03 / Avaliação</span><h3>Confrontar o resultado</h3><p>Revisão de hierarquia, legibilidade, comportamento, coerência e limitações do que foi produzido.</p></li>
-        <li><span class="method-index">04 / Documentação</span><h3>Deixar um caminho</h3><p>Registro de decisões e fluxos para facilitar manutenção, continuidade e transferência de conhecimento.</p></li>
+        <li data-reveal><span class="method-index">01 / Concepção</span><h3>Dar forma à ideia</h3><p>Objetivos, referências, linguagem, arquitetura da informação e critérios de sucesso.</p></li>
+        <li data-reveal><span class="method-index">02 / Execução assistida</span><h3>Experimentar possibilidades</h3><p>Uso de IA para prototipagem e implementação, com instruções, restrições e revisões explícitas.</p></li>
+        <li data-reveal><span class="method-index">03 / Avaliação</span><h3>Confrontar o resultado</h3><p>Revisão de hierarquia, legibilidade, comportamento, coerência e limitações do que foi produzido.</p></li>
+        <li data-reveal><span class="method-index">04 / Documentação</span><h3>Deixar um caminho</h3><p>Registro de decisões e fluxos para facilitar manutenção, continuidade e transferência de conhecimento.</p></li>
       </ol>
-      <p class="method-closing">A ferramenta auxilia na execução; a responsabilidade pelas escolhas permanece comigo.</p>
+      <p class="method-closing" data-reveal>A ferramenta auxilia na execução; a responsabilidade pelas escolhas permanece comigo.</p>
     </section>
 
     <section
@@ -842,7 +848,7 @@ const background = [
       aria-labelledby="projects-title"
     >
       <span id="projetos" class="anchor-alias" aria-hidden="true"></span>
-      <div class="section-heading github-heading">
+      <div class="section-heading github-heading" data-reveal>
         <div class="github-heading-copy">
           <p class="eyebrow">
             {sectionNumber('bastidores')} / Bastidores · GitHub
@@ -972,7 +978,7 @@ const background = [
       id="percurso"
       aria-labelledby="background-title"
     >
-      <div class="background-title">
+      <div class="background-title" data-reveal>
         <p class="eyebrow">
           {sectionNumber('percurso')} / Percurso
         </p>
@@ -984,7 +990,7 @@ const background = [
 
       <ol class="background-list">
         {background.map((item, index) => (
-          <li>
+          <li data-reveal>
             <span class="background-number">
               {String(index + 1).padStart(2, '0')}
             </span>
@@ -1032,7 +1038,7 @@ const background = [
       aria-labelledby="closing-title"
     >
       <CosmicStarfield />
-      <div class="closing-copy">
+      <div class="closing-copy" data-reveal>
         <p class="eyebrow">
           {sectionNumber('contato')} / Contato
         </p>
