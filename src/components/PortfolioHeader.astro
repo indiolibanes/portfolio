@@ -69,7 +69,7 @@ const NAV = [
       </div>
     </div>
     <a class="brand" href="/#top" aria-label={`${PROFILE.name}, início`}>
-      <span class="brand-mark" aria-hidden="true">K</span>
+      <span class="brand-mark" aria-hidden="true" data-brand-mark><svg viewBox="0 0 100 100" focusable="false"><text x="50" y="68" text-anchor="middle" font-size="56" font-weight="700" font-family="serif" fill="currentColor">K</text></svg></span>
       <span class="brand-copy">
         <strong>{PROFILE.name}</strong>
         <small>{PROFILE.tagline}</small>
@@ -314,7 +314,280 @@ const NAV = [
   })();
 </script>
 
+<script is:inline>
+  // Marca do cabeçalho: autorretrato em traço de mangá cru (nanquim áspero,
+  // linhas que tremem, assimetria), desenhado em ~3,4 s ao carregar e de novo ao
+  // passar o mouse. Depois do impacto as linhas "fervem" por um instante e
+  // assentam. Tudo é gerado aqui com uma semente fixa; o "K" fica de reserva.
+  (() => {
+    const mark = document.querySelector('[data-brand-mark]');
+    const svg = mark && mark.querySelector('svg');
+    if (!svg) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const prng = (seed) => {
+      let s = seed >>> 0;
+      return () => {
+        s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+        return s / 4294967296;
+      };
+    };
+
+    // Traços-base em coordenadas 0..100. g = grupo de animação, w = espessura.
+    const base = [];
+    const add = (g, pts, w) => base.push({ g, pts, w });
+    const curl = (rand, cx, cy, r0, turns) => {
+      const pts = [];
+      const a0 = rand() * Math.PI * 2;
+      const n = 22;
+      for (let i = 0; i <= n; i += 1) {
+        const t = i / n;
+        const a = a0 + t * Math.PI * 2 * turns;
+        const r = r0 * (1 - 0.55 * t);
+        pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a) * 0.9]);
+      }
+      return pts;
+    };
+
+    // Cabelo: cachos de espiral, mais densos no alto e nas laterais.
+    {
+      const rand = prng(7);
+      const spots = [];
+      // Dois anéis de cachos em volta da cabeça, de ponta a ponta.
+      for (let ring = 0; ring < 2; ring += 1) {
+        const count = ring === 0 ? 15 : 11;
+        for (let i = 0; i < count; i += 1) {
+          const a = Math.PI * (1.0 + ((i + rand() * 0.7) / count) * 1.0);
+          const k = ring === 0 ? 0.98 + rand() * 0.12 : 0.6 + rand() * 0.2;
+          const x = 50 + 34 * k * Math.cos(a);
+          const y = 44 + 29 * k * Math.sin(a);
+          if (y < 50) spots.push([x, y, 5.5 + rand() * 4.5]);
+        }
+      }
+      spots.forEach(([x, y, r]) => add('hair', curl(rand, x, y, r, 1.6 + rand() * 0.9), 1.5 + rand() * 1));
+      // Miolo escuro do cabelo: rabiscos curtos.
+      for (let i = 0; i < 14; i += 1) {
+        const x = 34 + rand() * 32;
+        const y = 22 + rand() * 18;
+        add('hair', [[x, y], [x + 4 + rand() * 4, y + 3 + rand() * 4], [x + 1, y + 6 + rand() * 3]], 1.4);
+      }
+    }
+    // Rosto: mandíbula em linhas quebradas, orelhas, sobrancelhas.
+    add('face', [[29, 43], [30.5, 58], [36, 72], [45, 81], [50, 82.5]], 2);
+    add('face', [[71, 42], [69.5, 59], [64, 73], [56, 81], [50, 82.5]], 2);
+    add('face', [[27.5, 47], [25.5, 52], [28, 57]], 1.4);
+    add('face', [[72.5, 46], [75, 51], [72, 56]], 1.4);
+    add('brow', [[29, 36.5], [37, 34.5], [46, 35.5]], 2.4);
+    add('brow', [[55, 35], [63, 33.5], [71, 36]], 2.6);
+    // Óculos grossos e retangulares, um pouco desalinhados.
+    add('glass', [[28, 41], [47.5, 40.2], [47.8, 55], [28.6, 55.6], [28, 41]], 3.8);
+    add('glass', [[52.5, 39.6], [72, 40.6], [71.4, 55.4], [52.2, 54.6], [52.5, 39.6]], 3.8);
+    add('glass', [[47.5, 44.5], [52.5, 44]], 3);
+    add('glass', [[28, 43], [23.5, 41.5]], 2.6);
+    add('glass', [[72, 43], [76.5, 42]], 2.6);
+    // Olhos sorridentes e reflexos.
+    add('eye', [[33, 50.5], [37.5, 46.8], [43, 50]], 2);
+    add('eye', [[57, 50], [62, 46.5], [67, 50.5]], 2);
+    // Nariz, bigode e sorriso de lado.
+    add('nose', [[50.5, 50.5], [48.5, 58], [52.5, 60]], 1.8);
+    add('mouth', [[37, 63.5], [44, 61.5], [50, 63], [56, 61.5], [63, 63.5]], 2.2);
+    add('mouth', [[41, 69.5], [48, 72.5], [56, 71.5], [62, 67]], 2.4);
+    add('mouth', [[62, 67], [64, 65.6]], 1.6);
+    // Barba: hachuras cerradas, mais densas no queixo.
+    {
+      const rand = prng(23);
+      for (let i = 0; i < 46; i += 1) {
+        const t = i / 45;
+        const x = 32 + t * 36;
+        const edge = 82 - 20 * Math.pow(Math.abs(t - 0.5) * 2, 1.7);
+        const y0 = 62 + rand() * 6 + (Math.abs(t - 0.5) < 0.18 ? 9 : 0);
+        const len = 5 + rand() * 7;
+        const y1 = Math.min(edge - 0.5, y0 + len);
+        if (y1 - y0 > 2) add('beard', [[x, y0], [x + rand() * 3 - 1.5, y1]], 1.2 + rand() * 0.7);
+      }
+    }
+    // Pescoço, gola, cordão e hachura da camiseta.
+    add('shirt', [[43, 82], [41.5, 91]], 1.8);
+    add('shirt', [[57, 82], [58.5, 91]], 1.8);
+    add('shirt', [[24, 100], [38, 93], [50, 96.5], [62, 93], [76, 100]], 2.2);
+    add('shirt', [[45, 93], [37, 101]], 1.1);
+    add('shirt', [[55, 93], [64, 101]], 1.1);
+    {
+      const rand = prng(41);
+      for (let i = 0; i < 12; i += 1) {
+        const x = 20 + rand() * 60;
+        add('shirt', [[x, 97 + rand() * 2], [x - 4 - rand() * 3, 102]], 1.3);
+      }
+    }
+    // Linhas cinéticas do impacto (aparecem no fim).
+    const burst = [];
+    {
+      const rand = prng(5);
+      for (let i = 0; i < 26; i += 1) {
+        const a = (i / 26) * Math.PI * 2 + rand() * 0.2;
+        const r0 = 46 + rand() * 3;
+        const r1 = 54 + rand() * 8;
+        burst.push([[50 + r0 * Math.cos(a), 50 + r0 * Math.sin(a)], [50 + r1 * Math.cos(a), 50 + r1 * Math.sin(a)]]);
+      }
+    }
+
+    // Uma versão tremida de um traço: segmentos curtos com ruído de mão.
+    const wobble = (pts, rand, amp) => {
+      let d = '';
+      let first = true;
+      for (let i = 0; i < pts.length - 1; i += 1) {
+        const [x0, y0] = pts[i];
+        const [x1, y1] = pts[i + 1];
+        const len = Math.hypot(x1 - x0, y1 - y0);
+        const steps = Math.max(1, Math.round(len / 4));
+        for (let k = first ? 0 : 1; k <= steps; k += 1) {
+          const t = k / steps;
+          const x = x0 + (x1 - x0) * t + (rand() - 0.5) * amp;
+          const y = y0 + (y1 - y0) * t + (rand() - 0.5) * amp;
+          d += (first ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+          first = false;
+        }
+      }
+      return d;
+    };
+
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    const make = (name, attrs, parent) => {
+      const el = document.createElementNS(NS, name);
+      Object.keys(attrs).forEach((k) => el.setAttribute(k, attrs[k]));
+      parent.appendChild(el);
+      return el;
+    };
+    const variants = [0, 1, 2].map((v) => {
+      const group = make('g', { 'data-variant': String(v) }, svg);
+      const rand = prng(1000 + v * 77);
+      const paths = base.map((s) => {
+        const amp = s.g === 'glass' ? 0.7 : 1.1;
+        const el = make('path', { d: wobble(s.pts, rand, amp), 'stroke-width': String(s.w), pathLength: '1', 'data-g': s.g }, group);
+        el.setAttribute('class', 'brand-ink');
+        return el;
+      });
+      if (v > 0) group.style.display = 'none';
+      return { group, paths };
+    });
+    const burstGroup = make('g', { 'data-burst': '' }, svg);
+    burstGroup.style.opacity = '0';
+    burst.forEach((pts, i) => {
+      const el = make('path', { d: wobble(pts, prng(300 + i), 0.8), 'stroke-width': String(1.2 + (i % 3) * 0.5) }, burstGroup);
+      el.setAttribute('class', 'brand-ink');
+    });
+
+    const TIMING = {
+      hair: [0, 1000, 260],
+      face: [900, 1300, 380],
+      brow: [1250, 1450, 200],
+      glass: [1400, 1900, 260],
+      eye: [1900, 2050, 150],
+      nose: [2000, 2100, 200],
+      mouth: [2100, 2400, 220],
+      beard: [2250, 2850, 130],
+      shirt: [2800, 3050, 220],
+    };
+    const groups = {};
+    variants[0].paths.forEach((p) => {
+      const g = p.getAttribute('data-g');
+      (groups[g] = groups[g] || []).push(p);
+    });
+
+    let running = [];
+    let boil = 0;
+    const stop = () => {
+      running.forEach((a) => a.cancel());
+      running = [];
+      clearInterval(boil);
+      variants.forEach((v, i) => {
+        v.group.style.display = i === 0 ? '' : 'none';
+      });
+      burstGroup.style.opacity = '0';
+      svg.style.transform = '';
+    };
+    const play = () => {
+      stop();
+      if (reduce.matches || document.documentElement.dataset.legacyMode === 'true') return;
+      Object.keys(groups).forEach((g) => {
+        const [from, to, dur] = TIMING[g];
+        const list = groups[g];
+        list.forEach((p, i) => {
+          const delay = from + ((to - from - dur) * i) / Math.max(1, list.length - 1);
+          running.push(
+            p.animate(
+              [
+                { strokeDashoffset: 1, opacity: 0 },
+                { strokeDashoffset: 1, opacity: 1, offset: 0.03 },
+                { strokeDashoffset: 0, opacity: 1 },
+              ],
+              { duration: dur, delay, easing: g === 'glass' ? 'cubic-bezier(0.2, 0.9, 0.1, 1)' : 'ease-out', fill: 'backwards' },
+            ),
+          );
+        });
+      });
+      // Impacto: o desenho dá um tranco e as linhas cinéticas estouram.
+      running.push(
+        svg.animate(
+          [
+            { transform: 'translate(0,0) scale(1)' },
+            { transform: 'translate(-2px,1px) scale(1.06)', offset: 0.2 },
+            { transform: 'translate(2px,-1px) scale(0.97)', offset: 0.45 },
+            { transform: 'translate(-1px,0) scale(1.02)', offset: 0.7 },
+            { transform: 'translate(0,0) scale(1)' },
+          ],
+          { duration: 360, delay: 3050, easing: 'steps(6, end)' },
+        ),
+        burstGroup.animate(
+          [{ opacity: 0, transform: 'scale(0.82)' }, { opacity: 1, transform: 'scale(1)', offset: 0.18 }, { opacity: 0, transform: 'scale(1.12)' }],
+          { duration: 520, delay: 3050, easing: 'ease-out', fill: 'backwards' },
+        ),
+      );
+      // Depois do impacto as linhas fervem em três quadros, como no mangá animado.
+      setTimeout(() => {
+        let n = 0;
+        boil = setInterval(() => {
+          n += 1;
+          const order = [1, 2, 0, 2, 1, 0];
+          const at = order[n % order.length];
+          variants.forEach((v, i) => {
+            v.group.style.display = i === at ? '' : 'none';
+          });
+          if (n > 9) {
+            clearInterval(boil);
+            variants.forEach((v, i) => {
+              v.group.style.display = i === 0 ? '' : 'none';
+            });
+          }
+        }, 120);
+      }, 3300);
+    };
+
+    play();
+    const link = mark.closest('a');
+    if (link) {
+      let cooling = false;
+      link.addEventListener('pointerenter', () => {
+        if (cooling) return;
+        cooling = true;
+        play();
+        setTimeout(() => {
+          cooling = false;
+        }, 4200);
+      });
+    }
+    window.addEventListener('portfolio:mode', () => {
+      if (document.documentElement.dataset.legacyMode === 'true') stop();
+    });
+  })();
+</script>
+
 <style is:global>
+  /* Marca em traço de mangá: o desenho é gerado por script; o K é a reserva. */
+  .brand-mark { overflow: hidden; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+  .brand-ink { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; }
   /* Normas correndo por dentro da gaveta do cabeçalho: letra preta, fundo atual. */
   .site-header .nav-shell { position: relative; isolation: isolate; }
   .nav-standards {
