@@ -4,10 +4,27 @@
   aria-label="Modo de leitura"
   data-mode-group
 >
-  <span class="serious-current" data-mode-current aria-hidden="true"></span>
-  <button class="serious-toggle" type="button" data-mode-option="authorial" aria-pressed="true" title="Autoral">Autoral</button>
-  <button class="serious-toggle" type="button" data-mode-option="editorial" aria-pressed="false" title="Editorial">Editorial</button>
-  <button class="serious-toggle" type="button" data-mode-option="legacy" aria-pressed="false" title="Legacy · 1998">Legacy</button>
+  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="authorial" aria-pressed="false" aria-label="Autoral" title="Autoral">
+    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 20C7 16 11 11 17 5c1.5-1.5 3.5-1.5 3.5-1.5S20.5 5.5 19 7c-6 6-11 10-15 13z M9 15l2-2"></path></svg>
+  </button>
+  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Editorial" title="Editorial">
+    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"></path></svg>
+  </button>
+  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Legacy · 1998" title="Legacy · 1998">
+    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 4.5h17v15h-17z M3.5 8.5h17 M6.5 6.5h.01"></path></svg>
+  </button>
+
+  <span class="serious-current" data-mode-current aria-hidden="true">
+    <svg class="serious-star" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 1.5l2.3 8.2 8.2 2.3-8.2 2.3L12 22.5l-2.3-8.2L1.5 12l8.2-2.3z"></path></svg>
+    <span class="serious-current__name" data-mode-name>Autoral</span>
+  </span>
+
+  <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">?</button>
+  <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
+    <p><strong>Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
+    <p><strong>Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
+    <p><strong>Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
+  </div>
 </div>
 
 <script is:inline>
@@ -59,14 +76,18 @@
     };
 
     const currentLabel = group.querySelector('[data-mode-current]');
+    const currentName = group.querySelector('[data-mode-name]');
+    const helpButton = group.querySelector('[data-mode-help]');
+    const helpPanel = group.querySelector('[data-mode-help-panel]');
 
     const render = (mode) => {
       // Só as duas alternativas aparecem, na ordem de ciclo a partir do atual.
-      const alternatives = orderFor(mode).slice(1);
-      alternatives.forEach((id) => {
-        const option = options.find((o) => o.dataset.modeOption === id);
-        if (option) group.appendChild(option);
-      });
+      // Ordem visual: alternativa · modo atual · alternativa · ajuda.
+      const [before, after] = orderFor(mode).slice(1).map((id) =>
+        options.find((o) => o.dataset.modeOption === id),
+      );
+      if (before && currentLabel) group.insertBefore(before, currentLabel);
+      if (after && helpButton) group.insertBefore(after, helpButton);
       options.forEach((option) => {
         const id = option.dataset.modeOption;
         const visible = id !== mode;
@@ -80,7 +101,7 @@
           option.classList.add('serious-toggle--enter');
         }
       });
-      if (currentLabel) currentLabel.textContent = names[mode];
+      if (currentName) currentName.textContent = names[mode];
     };
 
     const applyMode = (requestedMode, persist = true, updateUrl = true) => {
@@ -125,6 +146,17 @@
 
     applyMode(initialMode, false, false);
 
+    if (helpButton && helpPanel) {
+      const setHelp = (open) => {
+        helpPanel.hidden = !open;
+        helpButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+      };
+      helpButton.addEventListener('click', () => setHelp(helpPanel.hidden));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setHelp(false);
+      });
+    }
+
     options.forEach((option) => {
       option.addEventListener('click', () => {
         const id = option.dataset.modeOption;
@@ -137,6 +169,7 @@
 
 <style>
   .serious-control {
+    position: relative;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -155,12 +188,53 @@
     white-space: nowrap;
   }
 
-  .serious-current::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--sun);
+  .serious-star {
+    flex: 0 0 auto;
+    color: var(--sun);
+    filter: drop-shadow(0 0 6px rgba(212, 165, 72, 0.7));
+  }
+
+  .serious-toggle--icon {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+  }
+
+  .serious-help {
+    width: 44px;
+    min-height: 44px;
+    border: 1px solid rgba(205, 188, 165, 0.92);
+    border-radius: var(--radius-full);
+    background: rgba(255, 250, 240, 0.76);
+    color: var(--ink-soft);
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .serious-help-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 20;
+    width: min(20rem, 86vw);
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(205, 188, 165, 0.92);
+    border-radius: 12px;
+    background: #fffaf0;
+    color: var(--ink-soft);
+    box-shadow: 0 10px 30px rgba(94, 72, 49, 0.14);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .serious-help-panel p {
+    margin: 0 0 0.45rem;
+  }
+
+  .serious-help-panel p:last-child {
+    margin: 0;
   }
 
   .serious-toggle--enter {
