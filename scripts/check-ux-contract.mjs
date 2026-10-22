@@ -88,8 +88,12 @@ check('modes: preserve three-state control',
 check('modes: three fixed emblems (alpha, beta, gamma), one pressed at a time',
   ['authorial', 'editorial', 'legacy'].every((id) => modes.includes(`data-mode-node="${id}"`)) &&
   modes.includes("aria-pressed") && modes.includes("node.dataset.state = on ? 'active' : 'idle'") && !modes.includes('data-slot'));
-check('modes: the current mode has an identifier (pip and name) and stays a real focusable button',
-  modes.includes('data-mode-pip') && modes.includes('serious-tip') && modes.includes("button.setAttribute('aria-current', 'true')") && !modes.includes('tabIndex = -1'));
+check('modes: the current mode is named by a tag beside the emblems, which also opens the translucent legend',
+  modes.includes('data-mode-tag') && modes.includes('data-mode-tag-text') && modes.includes('backdrop-filter') && modes.includes("button.setAttribute('aria-current', 'true')") && !modes.includes('tabIndex = -1'));
+check('modes: each emblem has its own signature loop (alpha colour, beta pulsar, gamma quasar) and reduced motion skips them',
+  modes.includes('serious-beams') && modes.includes('serious-jets') && modes.includes('serious-flare') && modes.includes('if (loops.has(node) || reducedMotion.matches) return;'));
+check('modes: help button charges while held and disperses on release',
+  modes.includes('data-help-energy') && modes.includes("'pointerup'") && modes.includes('const release'));
 check('modes: transition uses Web Animations (flat modes zero CSS animation) and honours reduced motion',
   modes.includes('.animate(') && modes.includes("matchMedia('(prefers-reduced-motion: reduce)')") && modes.includes('reducedMotion.matches'));
 check('modes: pointer locked while the comet runs, and announced to screen readers',
