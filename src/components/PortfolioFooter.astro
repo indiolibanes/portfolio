@@ -5,22 +5,12 @@ const today = new Date();
 
 <footer class="portfolio-footer">
   <div class="footer-shell">
+    <canvas class="footer-math" aria-hidden="true" data-footer-math></canvas>
     <div>
       <p class="footer-mark">{PROFILE.name}</p>
       <p class="footer-copy">Documentação, organização da informação, escrita e publicação digital.</p>
-      <nav class="footer-nav" aria-label="Seções do portfólio">
-        <a href="/#sobre">Sobre</a>
-        <a href="/#lab">Laboratório</a>
-        <a href="/#percurso">Percurso</a>
-        <a href="/#metodo">Método</a>
-        <a href="/#bastidores">Bastidores</a>
-        <a href="/#musica">Música</a>
-        <a href="/curiosidades/">Curiosidades</a>
-        <a href="/#contato">Contato</a>
-      </nav>
       <p class="footer-legal">
         © {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.
-        {PROFILE.resumePdf && (<span class="footer-extra"> · <a class="footer-resume" href={PROFILE.resumePdf} target="_blank" rel="noopener noreferrer">Currículo (PDF)<span class="sr-only"> — abre em nova aba</span></a> · atualizado em outubro de 2026</span>)}
       </p>
     </div>
 
@@ -167,3 +157,279 @@ const today = new Date();
     </div>
   </div>
 </footer>
+
+<script is:inline>
+  // Gavetas translúcidas: cabeçalho, gaveta do menu, legenda dos modos e rodapé
+  // trocam de tonalidade e de opacidade devagar (--drawer-tint, registrada em
+  // gavetas.css). Cada gaveta tem a sua animação; a tinta não é herdada, então
+  // só a própria gaveta é reavaliada a cada quadro.
+  (() => {
+    const root = document.documentElement;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const PALETTES = {
+      authorial: [
+        'rgba(255, 250, 240, 0.72)',
+        'rgba(255, 228, 222, 0.62)',
+        'rgba(236, 228, 255, 0.66)',
+        'rgba(222, 246, 234, 0.6)',
+        'rgba(255, 242, 208, 0.78)',
+      ],
+      editorial: [
+        'rgba(255, 255, 255, 0.76)',
+        'rgba(236, 237, 242, 0.6)',
+        'rgba(246, 246, 246, 0.82)',
+        'rgba(226, 229, 236, 0.64)',
+      ],
+      legacy: ['rgba(255, 255, 255, 0.8)'],
+    };
+    const SELECTOR =
+      '.site-header .nav-shell, .site-header .nav-sections, .serious-help-panel, .portfolio-footer .footer-shell';
+    const canInterpolate = typeof CSS !== 'undefined' && 'registerProperty' in CSS;
+    let running = [];
+    const start = () => {
+      running.forEach((a) => a.cancel());
+      running = [];
+      const mode = root.dataset.portfolioMode || 'authorial';
+      const palette = PALETTES[mode] || PALETTES.authorial;
+      document.querySelectorAll(SELECTOR).forEach((el) => {
+        el.style.setProperty('--drawer-tint', palette[0]);
+        if (reduce.matches || !canInterpolate || palette.length < 2) return;
+        const frames = palette.concat([palette[0]]).map((c) => ({ '--drawer-tint': c }));
+        running.push(el.animate(frames, { duration: 16000, iterations: Infinity, easing: 'ease-in-out' }));
+      });
+    };
+    start();
+    window.addEventListener('portfolio:mode', start);
+  })();
+</script>
+
+<script is:inline>
+  // Rodapé: matemática em movimento — plano cartesiano, vetores, um cubo em
+  // perspectiva e funções trigonométricas. Decorativo; só anima à vista.
+  (() => {
+    const canvas = document.querySelector('[data-footer-math]');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let width = 0;
+    let height = 0;
+    let visible = false;
+    let raf = 0;
+    let last = 0;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const arrow = (x0, y0, x1, y1, head) => {
+      const a = Math.atan2(y1 - y0, x1 - x0);
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x1 - head * Math.cos(a - 0.4), y1 - head * Math.sin(a - 0.4));
+      ctx.lineTo(x1 - head * Math.cos(a + 0.4), y1 - head * Math.sin(a + 0.4));
+      ctx.closePath();
+      ctx.fill();
+    };
+
+    const CUBE = [];
+    for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) CUBE.push([x, y, z]);
+    const EDGES = [];
+    CUBE.forEach((a, i) =>
+      CUBE.forEach((b, j) => {
+        if (j > i && Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]) === 2) EDGES.push([i, j]);
+      }),
+    );
+    const project = (p, ax, ay, scale, cx, cy) => {
+      let [x, y, z] = p;
+      const cosY = Math.cos(ay);
+      const sinY = Math.sin(ay);
+      [x, z] = [x * cosY + z * sinY, -x * sinY + z * cosY];
+      const cosX = Math.cos(ax);
+      const sinX = Math.sin(ax);
+      [y, z] = [y * cosX - z * sinX, y * sinX + z * cosX];
+      const k = 3.2 / (3.2 + z * 0.55);
+      return [cx + x * scale * k, cy + y * scale * k, z];
+    };
+
+    const GLYPHS = ['∇×F', '∫', 'Σ', 'e^{iπ} = −1', 'det A', '⟨u, v⟩', 'ℝ³', 'dy/dx', 'a × b', 'λ', 'θ', '∮'];
+
+    const draw = (t) => {
+      const mode = document.documentElement.dataset.portfolioMode || 'authorial';
+      const ink = getComputedStyle(canvas).color;
+      const hue = (t * 18) % 360;
+      const accent = mode === 'authorial' ? 'hsl(' + hue + ' 75% 52%)' : ink;
+      const accent2 = mode === 'authorial' ? 'hsl(' + ((hue + 140) % 360) + ' 70% 50%)' : ink;
+      ctx.clearRect(0, 0, width, height);
+      ctx.lineWidth = 1;
+      ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
+
+      // Plano cartesiano: grade que desliza devagar.
+      const step = 26;
+      const ox = width * 0.56;
+      const oy = height * 0.56;
+      const drift = (t * 6) % step;
+      ctx.strokeStyle = ink;
+      ctx.globalAlpha = 0.07;
+      ctx.beginPath();
+      for (let x = ((ox + drift) % step) - step; x < width; x += step) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+      }
+      for (let y = ((oy + drift) % step) - step; y < height; y += step) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+      ctx.stroke();
+
+      // Eixos x, y e z (oblíquo) com setas.
+      ctx.globalAlpha = 0.4;
+      ctx.fillStyle = ink;
+      arrow(ox - width * 0.34, oy, ox + width * 0.4, oy, 6);
+      arrow(ox, oy + height * 0.46, ox, oy - height * 0.5, 6);
+      ctx.globalAlpha = 0.28;
+      arrow(ox - 46, oy + 40, ox + 66, oy - 58, 6);
+      ctx.globalAlpha = 0.5;
+      ctx.fillText('x', ox + width * 0.4 - 12, oy - 6);
+      ctx.fillText('y', ox + 7, oy - height * 0.5 + 12);
+      ctx.fillText('z', ox + 64, oy - 62);
+
+      // Círculo unitário, vetor girando, projeções e produto escalar.
+      const r = Math.min(height * 0.34, 62);
+      const ang = t * 1.1;
+      ctx.globalAlpha = 0.3;
+      ctx.beginPath();
+      ctx.arc(ox, oy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      const vx = ox + r * Math.cos(ang);
+      const vy = oy - r * Math.sin(ang);
+      ctx.strokeStyle = accent;
+      ctx.fillStyle = accent;
+      ctx.globalAlpha = 0.85;
+      ctx.lineWidth = 1.6;
+      arrow(ox, oy, vx, vy, 8);
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath();
+      ctx.moveTo(vx, vy);
+      ctx.lineTo(vx, oy);
+      ctx.moveTo(vx, vy);
+      ctx.lineTo(ox, vy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Segundo vetor, a 90°, e a soma pelo paralelogramo.
+      const wx = ox + r * 0.7 * Math.cos(ang + Math.PI / 2);
+      const wy = oy - r * 0.7 * Math.sin(ang + Math.PI / 2);
+      ctx.strokeStyle = accent2;
+      ctx.fillStyle = accent2;
+      ctx.globalAlpha = 0.8;
+      arrow(ox, oy, wx, wy, 7);
+      ctx.globalAlpha = 0.3;
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(vx, vy);
+      ctx.lineTo(vx + wx - ox, vy + wy - oy);
+      ctx.lineTo(wx, wy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 0.8;
+      arrow(ox, oy, vx + wx - ox, vy + wy - oy, 7);
+
+      // Seno e cosseno nascendo do vetor, à direita.
+      const cx0 = ox + r + 22;
+      const span = Math.max(60, width - cx0 - 20);
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      for (let i = 0; i <= span; i += 3) {
+        const u = (i / span) * Math.PI * 2.2;
+        const y = oy - r * Math.sin(ang - u);
+        if (i === 0) ctx.moveTo(cx0 + i, y);
+        else ctx.lineTo(cx0 + i, y);
+      }
+      ctx.stroke();
+      ctx.strokeStyle = accent2;
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      for (let i = 0; i <= span; i += 3) {
+        const u = (i / span) * Math.PI * 2.2;
+        const y = oy - r * Math.cos(ang - u) * 0.6;
+        if (i === 0) ctx.moveTo(cx0 + i, y);
+        else ctx.lineTo(cx0 + i, y);
+      }
+      ctx.stroke();
+
+      // Cubo em perspectiva, girando em dois eixos, à esquerda.
+      const bx = width * 0.2;
+      const by = height * 0.5;
+      const pts = CUBE.map((p) => project(p, t * 0.7, t * 0.9, Math.min(height * 0.24, 34), bx, by));
+      ctx.strokeStyle = ink;
+      ctx.fillStyle = ink;
+      ctx.globalAlpha = 0.42;
+      ctx.beginPath();
+      EDGES.forEach(([i, j]) => {
+        ctx.moveTo(pts[i][0], pts[i][1]);
+        ctx.lineTo(pts[j][0], pts[j][1]);
+      });
+      ctx.stroke();
+      ctx.globalAlpha = 0.7;
+      pts.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Símbolos que sobem devagar.
+      ctx.fillStyle = ink;
+      GLYPHS.forEach((g, i) => {
+        const period = 14 + (i % 4) * 3;
+        const phase = ((t + i * 2.3) % period) / period;
+        const gx = ((i * 97) % Math.max(60, width - 60)) + 14;
+        ctx.globalAlpha = Math.sin(phase * Math.PI) * 0.34;
+        ctx.fillText(g, gx, height - phase * (height + 20) + 10);
+      });
+      ctx.globalAlpha = 1;
+    };
+
+    const frame = (now) => {
+      raf = 0;
+      if (!visible || document.hidden) return;
+      if (now - last >= 33) {
+        last = now;
+        draw(now / 1000);
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    const kick = () => {
+      if (reduce.matches) {
+        draw(1.4);
+        return;
+      }
+      if (visible && !raf) raf = requestAnimationFrame(frame);
+    };
+
+    resize();
+    draw(1.4);
+    new ResizeObserver(() => {
+      resize();
+      draw(1.4);
+    }).observe(canvas);
+    new IntersectionObserver((entries) => {
+      visible = entries.some((e) => e.isIntersecting);
+      kick();
+    }).observe(canvas);
+    document.addEventListener('visibilitychange', kick);
+    window.addEventListener('portfolio:mode', () => draw(1.4));
+  })();
+</script>

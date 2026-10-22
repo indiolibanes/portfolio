@@ -56,12 +56,32 @@
         <stop offset="0" stop-color="#6a5cd6" stop-opacity="0.95"></stop>
         <stop offset="1" stop-color="#9b8cff" stop-opacity="0"></stop>
       </linearGradient>
-      <linearGradient id="serious-jet-up" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="-20">
-        <stop offset="0" stop-color="#2f9bff"></stop>
-        <stop offset="1" stop-color="#5fb4ff" stop-opacity="0"></stop>
+      <linearGradient id="serious-jet-up" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="-24">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.5" stop-color="#4aa8ff"></stop>
+        <stop offset="1" stop-color="#2f6bff" stop-opacity="0"></stop>
       </linearGradient>
-      <linearGradient id="serious-jet-down" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="84">
-        <stop offset="0" stop-color="#2f9bff"></stop>
+      <linearGradient id="serious-jet-down" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="88">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.5" stop-color="#4aa8ff"></stop>
+        <stop offset="1" stop-color="#2f6bff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-jet-glow-up" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="-24">
+        <stop offset="0" stop-color="#7fc4ff" stop-opacity="0.8"></stop>
+        <stop offset="1" stop-color="#3f7bff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-jet-glow-down" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="88">
+        <stop offset="0" stop-color="#7fc4ff" stop-opacity="0.8"></stop>
+        <stop offset="1" stop-color="#3f7bff" stop-opacity="0"></stop>
+      </linearGradient>
+      <radialGradient id="serious-blob">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.5" stop-color="#8ccaff" stop-opacity="0.9"></stop>
+        <stop offset="1" stop-color="#3f7bff" stop-opacity="0"></stop>
+      </radialGradient>
+      <linearGradient id="serious-flash" gradientUnits="userSpaceOnUse" x1="0" y1="-26" x2="0" y2="90">
+        <stop offset="0" stop-color="#5fb4ff" stop-opacity="0"></stop>
+        <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.95"></stop>
         <stop offset="1" stop-color="#5fb4ff" stop-opacity="0"></stop>
       </linearGradient>
       <linearGradient id="serious-flow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
@@ -73,23 +93,6 @@
         <stop offset="0" stop-color="#ffb347" stop-opacity="0"></stop>
         <stop offset="1" stop-color="#fff3c4"></stop>
       </linearGradient>
-      <radialGradient id="serious-energy">
-        <stop offset="0" stop-color="#ffffff"></stop>
-        <stop offset="0.35" stop-color="#ffd56b" stop-opacity="0.95"></stop>
-        <stop offset="1" stop-color="#ff7a3c" stop-opacity="0"></stop>
-      </radialGradient>
-      <radialGradient id="serious-energy-a">
-        <stop offset="0" stop-color="#ff6fa8" stop-opacity="0.95"></stop>
-        <stop offset="1" stop-color="#ff6fa8" stop-opacity="0"></stop>
-      </radialGradient>
-      <radialGradient id="serious-energy-b">
-        <stop offset="0" stop-color="#5cc3ff" stop-opacity="0.95"></stop>
-        <stop offset="1" stop-color="#5cc3ff" stop-opacity="0"></stop>
-      </radialGradient>
-      <radialGradient id="serious-energy-c">
-        <stop offset="0" stop-color="#a98bff" stop-opacity="0.95"></stop>
-        <stop offset="1" stop-color="#a98bff" stop-opacity="0"></stop>
-      </radialGradient>
     </defs>
   </svg>
 
@@ -133,7 +136,7 @@
     <span class="serious-node" data-mode-node="legacy" data-state="idle">
       <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Legacy">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-g)"></circle></g></g><g class="serious-fx serious-jets" data-part="jets"><g class="serious-jets__pulse"><polygon points="32,32 29,-20 35,-20" fill="url(#serious-jet-up)"></polygon><polygon points="32,32 29,84 35,84" fill="url(#serious-jet-down)"></polygon><line class="serious-jet__flow" x1="32" y1="26" x2="32" y2="-18"></line><line class="serious-jet__flow" x1="32" y1="38" x2="32" y2="82"></line></g></g><g class="serious-fx serious-xrays" data-part="xrays"><g class="serious-xrays__spin"><line class="serious-xr" x1="60.49" y1="31.12" x2="68.98" y2="30.86"></line><line class="serious-xr" x1="58.96" y1="41.25" x2="64.16" y2="43.04"></line><line class="serious-xr" x1="55.14" y1="48.64" x2="59.60" y2="51.85"></line><line class="serious-xr" x1="46.82" y1="56.34" x2="49.69" y2="61.04"></line><line class="serious-xr" x1="34.93" y1="60.35" x2="35.81" y2="68.80"></line><line class="serious-xr" x1="29.33" y1="60.37" x2="27.97" y2="74.81"></line><line class="serious-xr" x1="18.10" y1="56.88" x2="13.96" y2="64.30"></line><line class="serious-xr" x1="11.53" y1="51.83" x2="1.12" y2="61.92"></line><line class="serious-xr" x1="6.05" y1="43.78" x2="1.04" y2="46.05"></line><line class="serious-xr" x1="3.59" y1="29.78" x2="-1.90" y2="29.35"></line><line class="serious-xr" x1="5.35" y1="21.89" x2="-8.21" y2="16.75"></line><line class="serious-xr" x1="8.80" y1="15.45" x2="1.88" y2="10.52"></line><line class="serious-xr" x1="15.84" y1="8.52" x2="11.02" y2="1.52"></line><line class="serious-xr" x1="26.02" y1="4.13" x2="24.24" y2="-4.18"></line><line class="serious-xr" x1="37.15" y1="3.97" x2="39.23" y2="-7.34"></line><line class="serious-xr" x1="46.51" y1="7.47" x2="50.84" y2="0.15"></line><line class="serious-xr" x1="52.51" y1="12.21" x2="58.63" y2="6.31"></line><line class="serious-xr" x1="58.56" y1="21.66" x2="63.68" y2="19.66"></line></g></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-g)"></circle></g></g><g class="serious-fx serious-jets" data-part="jets"><g class="serious-jets__pulse"><polygon points="32,32 24,-24 40,-24" fill="url(#serious-jet-glow-up)"></polygon><polygon points="32,32 24,88 40,88" fill="url(#serious-jet-glow-down)"></polygon><polygon points="32,32 29.6,-24 34.4,-24" fill="url(#serious-jet-up)"></polygon><polygon points="32,32 29.6,88 34.4,88" fill="url(#serious-jet-down)"></polygon><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="-24"></line><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="88"></line><line class="serious-jet__flow" x1="32" y1="26" x2="32" y2="-22"></line><line class="serious-jet__flow" x1="32" y1="38" x2="32" y2="86"></line></g></g><g class="serious-fx serious-accretion" data-part="accretion"><ellipse class="serious-accretion__ring" cx="32" cy="32" rx="33" ry="5.5" fill="none"></ellipse></g><g class="serious-fx serious-gamma" data-part="gamma"><circle class="serious-gamma__blob serious-gamma__blob--u1" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d1" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><path class="serious-gamma__flash" d="M32 -26 36.5 32 32 90 27.5 32Z" fill="url(#serious-flash)"></path></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
           <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
           <circle class="serious-ornament serious-ornament--legacy" cx="32" cy="32" r="21" fill="none"></circle>
           <path class="serious-glyph" d="M37.54 28.47C35.4 31.66 33.66 33.97 32.24 35.38C32.24 37.16 31.8 39.14 30.95 41.28C30.02 43.75 28.97 45 27.88 45C27.03 45 26.62 44.51 26.62 43.5C26.62 42.37 27.15 40.84 28.2 38.86C29.13 37.12 30.02 35.82 30.87 34.98C30.99 33.68 30.67 31.58 29.94 28.67C29.53 26.93 28.93 25.4 28.16 24.06C27.31 22.61 26.54 21.88 25.78 21.92C24.6 22.04 23.71 22.85 23.19 24.35H22.66C22.62 24.06 22.62 23.82 22.62 23.54C22.62 20.67 23.59 19.17 25.57 19.01C27.96 18.81 29.86 21.84 31.27 28.18C31.92 31.14 32.24 32.91 32.24 33.52C35.27 29.8 37.21 26.16 37.98 22.57C38.31 21.11 38.47 20.3 38.51 20.18C38.79 19.41 39.28 19.05 39.96 19.05C40.89 19.05 41.38 19.45 41.38 20.3C41.38 21.88 40.08 24.63 37.54 28.47Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
@@ -152,17 +155,6 @@
     <span class="serious-tag__text" data-mode-tag-text>Autoral</span>
   </button>
 
-  <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">
-    <svg class="serious-help__energy" data-help-energy viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-      <g class="serious-help__swirl" data-help-swirl>
-        <circle cx="20" cy="9" r="11" fill="url(#serious-energy-a)"></circle>
-        <circle cx="30" cy="25" r="11" fill="url(#serious-energy-b)"></circle>
-        <circle cx="10" cy="25" r="11" fill="url(#serious-energy-c)"></circle>
-      </g>
-      <circle class="serious-help__core" data-help-core cx="20" cy="20" r="17" fill="url(#serious-energy)"></circle>
-    </svg>
-    <span class="serious-help__q" data-help-q>?</span>
-  </button>
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
     <p data-help-row="authorial"><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
     <p data-help-row="editorial"><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
@@ -237,7 +229,6 @@
     const status = group.querySelector('[data-mode-status]');
     const tag = group.querySelector('[data-mode-tag]');
     const tagText = group.querySelector('[data-mode-tag-text]');
-    const helpButton = group.querySelector('[data-mode-help]');
     const helpPanel = group.querySelector('[data-mode-help-panel]');
     const nodes = modes.map((id) =>
       group.querySelector('[data-mode-node="' + id + '"]'),
@@ -252,6 +243,78 @@
     const partsOf = (node) => Array.from(node.querySelectorAll('[data-part]'));
 
     let current = null;
+
+    // Etiqueta poliglota: de tempos em tempos ela percorre rapidamente outras
+    // línguas e sempre volta ao português. Um clique mostra outra língua por um
+    // momento e devolve ao português.
+    const LANGS = {
+      authorial: [['pt', 'Autoral'], ['en', 'Authorial'], ['it', "D'autore"], ['es', 'De autor'], ['fr', "D'auteur"], ['la', 'Auctoris']],
+      editorial: [['pt', 'Editorial'], ['en', 'Editorial'], ['it', 'Editoriale'], ['es', 'Editorial'], ['fr', 'Éditorial'], ['la', 'Editorialis']],
+      legacy: [['pt', 'Legacy'], ['en', 'Legacy'], ['it', 'Retaggio'], ['es', 'Legado'], ['fr', 'Héritage'], ['la', 'Hereditas']],
+    };
+    let tagTimers = [];
+    let tagClicks = 0;
+    const clearTagTimers = () => {
+      tagTimers.forEach(clearTimeout);
+      tagTimers = [];
+    };
+    const paintTag = (lang, text) => {
+      if (!tagText) return;
+      tagText.textContent = text;
+      if (lang === 'pt') tagText.removeAttribute('lang');
+      else tagText.setAttribute('lang', lang);
+    };
+    const flashTag = () => {
+      if (!tag || reducedMotion.matches) return;
+      tag.animate(
+        [
+          { boxShadow: '0 0 0 0 rgba(255,200,90,0)' },
+          { boxShadow: '0 0 16px 3px rgba(255,200,90,0.85)', offset: 0.35 },
+          { boxShadow: '0 0 0 0 rgba(255,200,90,0)' },
+        ],
+        { duration: 700, easing: 'ease-out' },
+      );
+    };
+    const homeTag = () => {
+      const pt = LANGS[current || 'authorial'][0];
+      paintTag(pt[0], pt[1]);
+    };
+    // Percorre as línguas depressa e pousa no português.
+    const scrambleTag = () => {
+      if (!tagText) return;
+      if (reducedMotion.matches || document.hidden) {
+        homeTag();
+        return;
+      }
+      clearTagTimers();
+      const list = LANGS[current || 'authorial'];
+      const seq = list.slice(1).concat([list[0]]);
+      seq.forEach((entry, k) => {
+        tagTimers.push(setTimeout(() => paintTag(entry[0], entry[1]), k * 95));
+      });
+      flashTag();
+    };
+    const showOtherLanguage = () => {
+      clearTagTimers();
+      const list = LANGS[current || 'authorial'];
+      const others = list.slice(1).filter((e, i, all) => e[1] !== list[0][1] || all.length === 1);
+      const entry = others[tagClicks % others.length] || list[1];
+      tagClicks += 1;
+      paintTag(entry[0], entry[1]);
+      flashTag();
+      tagTimers.push(setTimeout(scrambleTag, 2400));
+      if (reducedMotion.matches) {
+        tagTimers.push(setTimeout(homeTag, 2400));
+      }
+    };
+    let ambientTimer = 0;
+    const scheduleTagAmbient = () => {
+      clearTimeout(ambientTimer);
+      ambientTimer = setTimeout(() => {
+        scrambleTag();
+        scheduleTagAmbient();
+      }, 5200 + Math.random() * 3200);
+    };
 
     const syncUrl = (mode) => {
       try {
@@ -293,7 +356,8 @@
         link.dataset.lit = i === at || i + 1 === at ? 'true' : 'false';
       });
       stage.style.setProperty('--i', String(at));
-      if (tagText) tagText.textContent = names[mode];
+      clearTagTimers();
+      if (tagText) paintTag('pt', names[mode]);
       if (tag) {
         tag.setAttribute(
           'aria-label',
@@ -362,18 +426,14 @@
           // Pulsar: o par de jatos gira e pisca a cada varredura.
           q('.serious-beams__spin')?.animate(
             [{ transform: 'rotate(18deg)' }, { transform: 'rotate(378deg)' }],
-            { duration: 1700, iterations: Infinity },
-          ),
-          q('.serious-beams__pulse')?.animate(
-            [{ opacity: 1 }, { opacity: 0.3 }, { opacity: 1 }],
-            { duration: 850, iterations: Infinity, easing: 'ease-in-out' },
+            { duration: 340, iterations: Infinity },
           ),
           q('.serious-shock__ring')?.animate(
             [
               { transform: 'scale(0.62)', opacity: 0.85 },
               { transform: 'scale(1.55)', opacity: 0 },
             ],
-            { duration: 1700, iterations: Infinity, easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)' },
+            { duration: 680, iterations: Infinity, easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)' },
           ),
           q('.serious-halo__pulse')?.animate(
             [
@@ -381,7 +441,7 @@
               { transform: 'scale(1.08)', opacity: 1 },
               { transform: 'scale(0.88)', opacity: 0.65 },
             ],
-            { duration: 850, iterations: Infinity, easing: 'ease-in-out' },
+            { duration: 340, iterations: Infinity, easing: 'ease-in-out' },
           ),
           // Espaguetificação: a letra estica e afina até desfazer em fios.
           q('.serious-glyph')?.animate(
@@ -390,7 +450,7 @@
               { transform: 'scale(0.9, 1.12)', offset: 0.55 },
               { transform: 'scale(1, 1)' },
             ],
-            { duration: 1700, iterations: Infinity, easing: 'ease-in-out' },
+            { duration: 680, iterations: Infinity, easing: 'ease-in-out' },
           ),
         ];
         const ghosts = [
@@ -400,8 +460,8 @@
         ['1', '2'].forEach((n, k) => {
           out.push(
             q('.serious-ghost--' + n)?.animate(ghosts[k], {
-              duration: 1700,
-              delay: k * 850,
+              duration: 680,
+              delay: k * 340,
               iterations: Infinity,
               easing: 'ease-in',
             }),
@@ -410,20 +470,17 @@
         return out;
       },
       legacy: (q, all) => {
+        // Quasar: a energia é vertical. Os jatos oscilam, grumos de raios gama
+        // disparam pelos dois lados e um clarão em coluna explode de tempos em tempos.
         const out = [
-          // Quasar: os jatos oscilam e levam pulsos de energia para fora.
           q('.serious-jets__pulse')?.animate(
             [
-              { transform: 'scaleY(0.62)', opacity: 0.7 },
-              { transform: 'scaleY(1.08)', opacity: 1 },
-              { transform: 'scaleY(0.78)', opacity: 0.8 },
-              { transform: 'scaleY(1.02)', opacity: 1 },
+              { transform: 'scaleY(0.7)', opacity: 0.75 },
+              { transform: 'scaleY(1.12)', opacity: 1 },
+              { transform: 'scaleY(0.82)', opacity: 0.85 },
+              { transform: 'scaleY(1.06)', opacity: 1 },
             ],
-            { duration: 900, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' },
-          ),
-          q('.serious-xrays__spin')?.animate(
-            [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
-            { duration: 16000, iterations: Infinity },
+            { duration: 520, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' },
           ),
           q('.serious-halo__pulse')?.animate(
             [
@@ -431,25 +488,50 @@
               { transform: 'scale(1.12)', opacity: 1 },
               { transform: 'scale(0.86)', opacity: 0.6 },
             ],
-            { duration: 700, iterations: Infinity, easing: 'ease-in-out' },
+            { duration: 600, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+          q('.serious-accretion__ring')?.animate(
+            [
+              { transform: 'scaleX(0.82)', opacity: 0.5 },
+              { transform: 'scaleX(1.05)', opacity: 1 },
+              { transform: 'scaleX(0.82)', opacity: 0.5 },
+            ],
+            { duration: 900, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+          q('.serious-gamma__flash')?.animate(
+            [
+              { transform: 'scale(0.15, 0.25)', opacity: 0 },
+              { transform: 'scale(1, 1)', opacity: 0.9, offset: 0.22 },
+              { transform: 'scale(0.7, 1.12)', opacity: 0, offset: 1 },
+            ],
+            { duration: 1500, iterations: Infinity, easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)' },
           ),
         ];
         all('.serious-jet__flow').forEach((el) => {
           out.push(
             el.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -24 }], {
-              duration: 520,
+              duration: 300,
               iterations: Infinity,
             }),
           );
         });
-        all('.serious-xr').forEach((el, k) => {
+        // Grumos de gama: nascem no núcleo e correm até a ponta do jato.
+        const blobs = [
+          ['u1', -44, 0],
+          ['u2', -44, 380],
+          ['d1', 44, 190],
+          ['d2', 44, 570],
+        ];
+        blobs.forEach(([name, dy, delay]) => {
           out.push(
-            el.animate([{ opacity: 0.1 }, { opacity: 1 }, { opacity: 0.15 }], {
-              duration: 260 + ((k * 97) % 520),
-              delay: (k * 131) % 700,
-              iterations: Infinity,
-              easing: 'steps(3, end)',
-            }),
+            q('.serious-gamma__blob--' + name)?.animate(
+              [
+                { transform: 'translateY(0) scale(0.4)', opacity: 0 },
+                { transform: 'translateY(' + dy * 0.25 + 'px) scale(1.3)', opacity: 1, offset: 0.2 },
+                { transform: 'translateY(' + dy + 'px) scale(0.5)', opacity: 0 },
+              ],
+              { duration: 760, delay, iterations: Infinity, easing: 'cubic-bezier(0.3, 0, 0.7, 1)' },
+            ),
           );
         });
         return out;
@@ -678,6 +760,22 @@
           : 'authorial');
 
     applyMode(initialMode, { persist: false, updateUrl: false });
+    if (!reducedMotion.matches) scheduleTagAmbient();
+    if (!reducedMotion.matches && tag) {
+      // A etiqueta respira em ouro, sempre.
+      tag.animate(
+        [
+          { boxShadow: '0 0 4px 0 rgba(255,200,90,0.25)' },
+          { boxShadow: '0 0 14px 2px rgba(255,200,90,0.7)' },
+          { boxShadow: '0 0 4px 0 rgba(255,200,90,0.25)' },
+        ],
+        { duration: 2600, iterations: Infinity, easing: 'ease-in-out' },
+      );
+      tag.querySelector('.serious-tag__dot')?.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }, { transform: 'scale(1)' }],
+        { duration: 1300, iterations: Infinity, easing: 'ease-in-out' },
+      );
+    }
 
     if (helpPanel) {
       // O painel nasce alinhado à direita do controle; se isso o empurrar para
@@ -695,10 +793,15 @@
       };
       const setHelp = (open) => {
         helpPanel.hidden = !open;
-        [helpButton, tag].forEach((b) => b && b.setAttribute('aria-expanded', open ? 'true' : 'false'));
+        if (tag) tag.setAttribute('aria-expanded', open ? 'true' : 'false');
         if (open) keepPanelInView();
       };
-      [helpButton, tag].forEach((b) => b && b.addEventListener('click', () => setHelp(helpPanel.hidden)));
+      if (tag) {
+        tag.addEventListener('click', () => {
+          setHelp(helpPanel.hidden);
+          showOtherLanguage();
+        });
+      }
       window.addEventListener('resize', () => {
         if (!helpPanel.hidden) keepPanelInView();
       });
@@ -708,80 +811,6 @@
       document.addEventListener('pointerdown', (event) => {
         if (!helpPanel.hidden && !group.contains(event.target)) setHelp(false);
       });
-    }
-
-    // Botão "?": segurar enche-o de energia por dentro (sem sair do círculo);
-    // soltar faz a energia se dispersar e voltar ao ponto inicial.
-    if (helpButton) {
-      const energy = helpButton.querySelector('[data-help-energy]');
-      const swirl = helpButton.querySelector('[data-help-swirl]');
-      const core = helpButton.querySelector('[data-help-core]');
-      const q = helpButton.querySelector('[data-help-q]');
-      let charge = [];
-      let spin = null;
-      let held = false;
-      const stopCharge = () => {
-        charge.forEach((a) => a.cancel());
-        charge = [];
-        if (spin) spin.cancel();
-        spin = null;
-      };
-      const hold = () => {
-        if (held || reducedMotion.matches || !energy) return;
-        held = true;
-        stopCharge();
-        energy.getAnimations().forEach((a) => a.cancel());
-        const grow = { duration: 700, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'forwards' };
-        charge.push(
-          energy.animate([{ opacity: 0 }, { opacity: 1 }], grow),
-          core.animate(
-            [
-              { transform: 'scale(0.15)' },
-              { transform: 'scale(1)', offset: 0.7 },
-              { transform: 'scale(0.92)' },
-            ],
-            { ...grow, duration: 900 },
-          ),
-          q.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }], grow),
-        );
-        spin = swirl.animate(
-          [
-            { transform: 'rotate(0deg)', filter: 'hue-rotate(0deg)' },
-            { transform: 'rotate(360deg)', filter: 'hue-rotate(360deg)' },
-          ],
-          { duration: 1300, iterations: Infinity },
-        );
-        // Vibração suave do núcleo enquanto segura.
-        charge.push(
-          core.animate(
-            [{ opacity: 0.8 }, { opacity: 1 }, { opacity: 0.8 }],
-            { duration: 420, iterations: Infinity, easing: 'ease-in-out' },
-          ),
-        );
-      };
-      const release = () => {
-        if (!held) return;
-        held = false;
-        if (!energy) return;
-        const cs = getComputedStyle(energy);
-        const from = { opacity: cs.opacity, transform: cs.transform };
-        const qs = getComputedStyle(q).transform;
-        stopCharge();
-        // A energia se dispersa para fora do núcleo, ainda contida no botão, e some.
-        energy.animate(
-          [from, { opacity: 0, transform: 'scale(1.35)' }],
-          { duration: 800, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' },
-        );
-        q.animate([{ transform: qs }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
-      };
-      helpButton.addEventListener('pointerdown', hold);
-      ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach((type) =>
-        helpButton.addEventListener(type, release),
-      );
-      helpButton.addEventListener('keydown', (event) => {
-        if (!event.repeat && (event.key === 'Enter' || event.key === ' ')) hold();
-      });
-      helpButton.addEventListener('keyup', release);
     }
 
     nodes.forEach((node, i) => {
@@ -983,7 +1012,9 @@
   .serious-ghost,
   .serious-glyph,
   .serious-jets__pulse,
-  .serious-xrays__spin {
+  .serious-accretion__ring,
+  .serious-gamma__flash,
+  .serious-gamma__blob {
     transform-box: view-box;
     transform-origin: 32px 32px;
   }
@@ -1008,17 +1039,27 @@
     opacity: 0;
   }
 
-  .serious-xr {
-    stroke: #4aa8ff;
-    stroke-width: 1.1;
+  .serious-jet__core {
+    stroke: #ffffff;
+    stroke-width: 1.3;
     stroke-linecap: round;
   }
 
   .serious-jet__flow {
-    stroke: #e8f6ff;
-    stroke-width: 1.6;
+    stroke: #bfe6ff;
+    stroke-width: 2.2;
     stroke-linecap: round;
-    stroke-dasharray: 5 7;
+    stroke-dasharray: 4 8;
+  }
+
+  .serious-accretion__ring {
+    stroke: #9fd4ff;
+    stroke-width: 1.2;
+  }
+
+  .serious-gamma__blob,
+  .serious-gamma__flash {
+    opacity: 0;
   }
 
   .serious-ornament {
@@ -1114,57 +1155,13 @@
 
   .serious-tag__text {
     display: inline-block;
-    min-width: 4.4em;
+    min-width: 5.8em;
     text-align: left;
   }
 
-  .serious-tag:focus-visible,
-  .serious-help:focus-visible {
+  .serious-tag:focus-visible {
     outline: 2px solid var(--sun);
     outline-offset: 3px;
-  }
-
-  /* Botão "?": a energia nasce por dentro e fica contida no círculo. */
-  .serious-help {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    min-height: 40px;
-    padding: 0;
-    overflow: hidden;
-    border: 1px solid rgba(205, 188, 165, 0.92);
-    border-radius: 50%;
-    background: rgba(255, 250, 240, 0.76);
-    color: var(--ink-soft);
-    font-family: var(--font-ui);
-    font-size: 0.95rem;
-    font-weight: 800;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-
-  .serious-help__energy {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .serious-help__swirl,
-  .serious-help__core {
-    transform-box: view-box;
-    transform-origin: 20px 20px;
-  }
-
-  .serious-help__q {
-    position: relative;
-    display: block;
-    line-height: 1;
-    z-index: 1;
-    pointer-events: none;
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
   }
 
   /* Legenda em vidro translúcido. */
@@ -1222,12 +1219,6 @@
       order: 2;
       flex-basis: 100%;
       height: 0;
-    }
-
-    .serious-help {
-      width: 34px;
-      height: 34px;
-      min-height: 34px;
     }
 
     .serious-tag {
@@ -1290,19 +1281,8 @@
     background: #ffffff !important;
   }
 
-  /* Energia do "?": branca sobre preto quando o botão inverte; o círculo some. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help .serious-help__q {
-    text-shadow: none !important;
-    background: transparent !important;
-  }
-
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help.serious-help * {
-    background: transparent !important;
-  }
-
   /* Legenda translúcida também nos modos planos (mono-modes.css zera o blur). */
   :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel {
-    background: rgba(255, 255, 255, 0.78) !important;
     -webkit-backdrop-filter: blur(10px) !important;
     backdrop-filter: blur(10px) !important;
     border: 1px solid #000000 !important;
