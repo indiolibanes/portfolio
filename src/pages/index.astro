@@ -184,6 +184,10 @@ const METHOD_FLOWS = [
           {sectionNumber('sobre')} / Sobre · Uma forma de pensar
         </p>
 
+        <div class="hero-question">
+          <p>Como fazer um conhecimento espalhado poder ser encontrado e reaproveitado?</p>
+        </div>
+
         <h2>
           Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.
         </h2>
@@ -845,6 +849,50 @@ const METHOD_FLOWS = [
       </a>
     </section>
 
+    <section
+      class="background section"
+      id="percurso"
+      data-scene="zoom"
+      aria-labelledby="background-title"
+    >
+      <div class="background-title" data-reveal>
+        <p class="eyebrow">
+          {sectionNumber('percurso')} / Percurso
+        </p>
+
+        <h2 id="background-title">
+          Base técnica; vocação editorial.
+        </h2>
+      </div>
+
+      <ol class="background-list">
+        {background.map((item, index) => (
+          <li data-reveal>
+            <span class="background-number">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+
+            <div class="background-entry">
+              <img class="background-mark" src={item.mark} alt={item.markAlt} width="64" height="64" loading="lazy" decoding="async" />
+              <div class="background-entry-copy">
+                <p class="background-meta">{item.meta}</p>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                {item.projectUrl && (
+                  <div class="background-case-study">
+                    <span class="background-case-study__label">Estudo de caso · projeto de estreia</span>
+                    <strong>Astrophysics Application</strong>
+                    <p>Projeto conceitual de aplicativo educativo de astrofísica: pesquisa exploratória, personas, sketches, wireframes e protótipo de alta fidelidade com elementos de gamificação.</p>
+                    <a href={item.projectUrl} target="_blank" rel="noopener noreferrer" aria-label="Ver projeto no Behance: estudo de caso Astrophysics Application (abre em nova aba)">Ver projeto no Behance <span aria-hidden="true">↗</span></a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
     <section class="method-section section" id="metodo" data-scene="flipbook" aria-labelledby="method-title">
       <div class="method-heading" data-reveal>
         <div class="method-intro">
@@ -1126,50 +1174,6 @@ const METHOD_FLOWS = [
           />
         </div>
       </a>
-    </section>
-
-    <section
-      class="background section"
-      id="percurso"
-      data-scene="zoom"
-      aria-labelledby="background-title"
-    >
-      <div class="background-title" data-reveal>
-        <p class="eyebrow">
-          {sectionNumber('percurso')} / Percurso
-        </p>
-
-        <h2 id="background-title">
-          Base técnica; vocação editorial.
-        </h2>
-      </div>
-
-      <ol class="background-list">
-        {background.map((item, index) => (
-          <li data-reveal>
-            <span class="background-number">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-
-            <div class="background-entry">
-              <img class="background-mark" src={item.mark} alt={item.markAlt} width="64" height="64" loading="lazy" decoding="async" />
-              <div class="background-entry-copy">
-                <p class="background-meta">{item.meta}</p>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-                {item.projectUrl && (
-                  <div class="background-case-study">
-                    <span class="background-case-study__label">Estudo de caso · projeto de estreia</span>
-                    <strong>Astrophysics Application</strong>
-                    <p>Projeto conceitual de aplicativo educativo de astrofísica: pesquisa exploratória, personas, sketches, wireframes e protótipo de alta fidelidade com elementos de gamificação.</p>
-                    <a href={item.projectUrl} target="_blank" rel="noopener noreferrer" aria-label="Ver projeto no Behance: estudo de caso Astrophysics Application (abre em nova aba)">Ver projeto no Behance <span aria-hidden="true">↗</span></a>
-                  </div>
-                )}
-              </div>
-            </div>
-          </li>
-        ))}
-      </ol>
     </section>
 
     <aside class="curiosities-teaser" aria-labelledby="curiosities-teaser-title">
