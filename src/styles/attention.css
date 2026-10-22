@@ -64,45 +64,10 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
   color: #fff;
 }
 
-/* ---------- Alternador de modo ---------- */
-
-html:not([data-legacy-mode='true']) .site-header .serious-toggle {
-  position: relative;
-  font-weight: 700;
-}
-
-html:not([data-legacy-mode='true']) .site-header .serious-toggle .serious-icon {
-  animation: attn-wiggle 5s ease-in-out infinite;
-  transform-origin: 50% 60%;
-}
-
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-toggle:not([aria-current='true']) {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(#fff8e6, #fff8e6) padding-box,
-    conic-gradient(from var(--attn-angle), #e0a62e, #c0607e, #4f97bf, #8a6cc0, #6fae7c, #e0a62e) border-box;
-  animation: attn-spin 4.5s linear infinite;
-  box-shadow: 0 6px 18px -8px rgba(143, 90, 28, 0.55);
-}
-
-html[data-serious-mode='true'] .site-header .serious-toggle:not([aria-current='true']) {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    conic-gradient(from var(--attn-angle), #111 0 25%, #bbb 25% 50%, #111 50% 75%, #bbb 75% 100%) border-box;
-  animation: attn-spin 6s linear infinite;
-}
-
-html:not([data-legacy-mode='true']) .site-header .serious-toggle:not([aria-current='true']):hover {
-  transform: translateY(-1px) scale(1.04);
-}
-
 @media (prefers-reduced-motion: reduce) {
   html #sobre .cv-download-button,
   html #sobre .cv-download-button::after,
   html #sobre .cv-download-button > span[aria-hidden],
-  html .site-header .serious-toggle,
-  html .site-header .serious-toggle .serious-icon {
     animation: none !important;
   }
 }
