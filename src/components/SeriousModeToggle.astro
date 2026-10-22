@@ -1,54 +1,105 @@
 <div
   class="serious-control"
   role="group"
-  aria-label="Modo de leitura"
+  aria-label="Modo de leitura: Autoral"
   data-mode-group
 >
+  <svg class="serious-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="serious-gold" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff3c4"></stop>
+        <stop offset="0.5" stop-color="#f2c15a"></stop>
+        <stop offset="1" stop-color="#d08b1f"></stop>
+      </linearGradient>
+      <radialGradient id="serious-disc" cx="0.5" cy="0.32" r="0.8">
+        <stop offset="0" stop-color="#5b4430"></stop>
+        <stop offset="0.6" stop-color="#2a2018"></stop>
+        <stop offset="1" stop-color="#140e09"></stop>
+      </radialGradient>
+      <linearGradient id="serious-rainbow" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#e0a62e"></stop>
+        <stop offset="0.25" stop-color="#c0607e"></stop>
+        <stop offset="0.5" stop-color="#4f97bf"></stop>
+        <stop offset="0.75" stop-color="#8a6cc0"></stop>
+        <stop offset="1" stop-color="#6fae7c"></stop>
+      </linearGradient>
+      <radialGradient id="serious-halo">
+        <stop offset="0.45" stop-color="#ffc95a" stop-opacity="0.85"></stop>
+        <stop offset="1" stop-color="#ff9a3c" stop-opacity="0"></stop>
+      </radialGradient>
+      <linearGradient id="serious-needle" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#f2c15a" stop-opacity="0"></stop>
+        <stop offset="0.5" stop-color="#fff0b0"></stop>
+        <stop offset="1" stop-color="#f2c15a" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-trail" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#ffb347" stop-opacity="0"></stop>
+        <stop offset="1" stop-color="#fff3c4"></stop>
+      </linearGradient>
+    </defs>
+  </svg>
+
   <div class="serious-stage" data-mode-stage>
-    <span class="serious-node" data-mode-node="editorial" data-slot="left">
-      <span class="serious-identifier" data-node-ident aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="currentColor" d="M12 0C12.6 7.4 16.6 11.4 24 12C16.6 12.6 12.6 16.6 12 24C11.4 16.6 7.4 12.6 0 12C7.4 11.4 11.4 7.4 12 0Z"></path></svg>
-      </span>
-      <button class="serious-emblem" type="button" data-mode-option="editorial" aria-label="Mudar para Editorial" title="Mudar para Editorial">
-        <span class="serious-ring" data-node-ring aria-hidden="true"></span>
-        <span class="serious-disc" data-node-disc aria-hidden="true">
-          <svg class="serious-glyph" viewBox="0 0 24 24" width="22" height="22"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"></path></svg>
-        </span>
-      </button>
+    <span class="serious-link" data-mode-link="0" data-lit="true" aria-hidden="true">
+      <svg viewBox="0 0 30 16" width="100%" height="100%"><polygon class="serious-link__needle" points="0,8 15,6.3 30,8 15,9.7" fill="url(#serious-needle)"></polygon><path class="serious-link__star" d="M15 3.6 16.3 6.7 19.4 8 16.3 9.3 15 12.4 13.7 9.3 10.6 8 13.7 6.7Z" fill="#f6d27a"></path></svg>
     </span>
-
-    <span class="serious-node" data-mode-node="authorial" data-slot="center">
-      <span class="serious-identifier" data-node-ident aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="currentColor" d="M12 0C12.6 7.4 16.6 11.4 24 12C16.6 12.6 12.6 16.6 12 24C11.4 16.6 7.4 12.6 0 12C7.4 11.4 11.4 7.4 12 0Z"></path></svg>
-      </span>
-      <button class="serious-emblem" type="button" data-mode-option="authorial" aria-current="true" aria-disabled="true" tabindex="-1" aria-label="Autoral, modo atual" title="Modo atual: Autoral">
-        <span class="serious-ring" data-node-ring aria-hidden="true"></span>
-        <span class="serious-disc" data-node-disc aria-hidden="true">
-          <svg class="serious-glyph" viewBox="0 0 24 24" width="22" height="22"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 20C7 16 11 11 17 5c1.5-1.5 3.5-1.5 3.5-1.5S20.5 5.5 19 7c-6 6-11 10-15 13z M9 15l2-2"></path></svg>
-        </span>
-      </button>
+    <span class="serious-link" data-mode-link="1" data-lit="false" aria-hidden="true">
+      <svg viewBox="0 0 30 16" width="100%" height="100%"><polygon class="serious-link__needle" points="0,8 15,6.3 30,8 15,9.7" fill="url(#serious-needle)"></polygon><path class="serious-link__star" d="M15 3.6 16.3 6.7 19.4 8 16.3 9.3 15 12.4 13.7 9.3 10.6 8 13.7 6.7Z" fill="#f6d27a"></path></svg>
     </span>
-
-    <span class="serious-node" data-mode-node="legacy" data-slot="right">
-      <span class="serious-identifier" data-node-ident aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="currentColor" d="M12 0C12.6 7.4 16.6 11.4 24 12C16.6 12.6 12.6 16.6 12 24C11.4 16.6 7.4 12.6 0 12C7.4 11.4 11.4 7.4 12 0Z"></path></svg>
-      </span>
-      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-label="Mudar para Legacy · 1998" title="Mudar para Legacy · 1998">
-        <span class="serious-ring" data-node-ring aria-hidden="true"></span>
-        <span class="serious-disc" data-node-disc aria-hidden="true">
-          <svg class="serious-glyph" viewBox="0 0 24 24" width="22" height="22"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 4.5h17v15h-17z M3.5 8.5h17 M6.5 6.5h.01"></path></svg>
-        </span>
+    <span class="serious-node" data-mode-node="authorial" data-state="active">
+      <button class="serious-emblem" type="button" data-mode-option="authorial" aria-pressed="true" aria-label="Autoral, modo atual">
+        <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
+          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
+          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <g class="serious-ornament serious-ornament--dots"><circle cx="32" cy="10.8" r="1"></circle><circle cx="53.2" cy="32" r="1"></circle><circle cx="32" cy="53.2" r="1"></circle><circle cx="10.8" cy="32" r="1"></circle></g>
+          <path class="serious-glyph" data-part="glyph" d="M44 37.21C43.74 40.33 41.83 42.81 39.88 42.81C37.6 42.81 36.44 41.59 36.49 39.22C35.33 40.54 34.27 41.44 33.27 41.91C32.05 42.49 30.57 42.81 28.83 42.81C26.24 42.76 24.18 42.02 22.59 40.54C20.85 38.9 20 36.52 20 33.4C20 32.82 20.05 32.19 20.11 31.55C20.42 28.54 21.64 26.05 23.75 24.1C25.81 22.14 28.19 21.19 30.89 21.19C31.58 21.19 32.32 21.24 33 21.4C35.81 22.04 37.18 24.41 37.07 28.59L38.29 21.56H42.52L37.55 37.68C37.5 39.22 38.5 40.43 39.93 40.43C41.36 40.43 42.47 39.37 43.31 37.21C43.58 37.15 43.84 37.15 44 37.21ZM36.07 30.07C36.18 28.8 36.07 27.59 35.81 26.48C35.28 24.41 34.22 23.2 32.58 22.88C32.26 22.83 31.95 22.83 31.58 22.83C29.94 22.83 28.51 23.46 27.3 24.73C25.92 26.21 25.02 28.43 24.55 31.39C24.33 32.61 24.23 33.72 24.23 34.72C24.23 39.06 25.81 41.28 28.93 41.44C31.21 41.54 32.95 40.48 34.17 38.21C35.17 36.47 35.81 33.72 36.07 30.07Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+        </svg>
       </button>
+      <span class="serious-tip" aria-hidden="true">Autoral</span>
     </span>
-
+    <span class="serious-node" data-mode-node="editorial" data-state="idle">
+      <button class="serious-emblem" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Mudar para Editorial">
+        <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
+          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
+          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <circle class="serious-ornament serious-ornament--ring" cx="32" cy="32" r="21" fill="none" stroke-width="0.8"></circle>
+          <path class="serious-glyph" data-part="glyph" d="M39.19 23.38C39.22 24.79 38.7 25.97 37.62 26.99C36.6 27.96 35.47 28.43 34.23 28.43C34.87 28.51 35.61 28.95 36.49 29.78C37.68 30.91 38.26 32.2 38.26 33.69C38.26 34.21 38.17 34.77 38.03 35.34C37.62 36.75 36.77 37.74 35.47 38.35C34.56 38.79 33.49 39.01 32.3 39.01C31.94 39.01 31.61 38.98 31.37 38.95C30.18 38.76 29.08 38.1 28.06 36.91C26.87 42.29 26.27 44.96 26.24 44.93C26.24 45.02 25.77 45.02 24.81 44.96C24.81 45.02 25.08 43.83 25.66 41.41C26.3 38.73 26.79 36.53 27.15 34.85L29.33 24.38C30.07 20.85 31.7 19.06 34.23 19C35.25 18.97 36.19 19.2 37.07 19.66C38.45 20.41 39.16 21.65 39.19 23.38ZM37.1 23.55C37.13 23.38 37.13 23.22 37.13 23.05C37.13 21.98 36.77 21.18 36.05 20.66C35.53 20.27 34.89 20.08 34.12 20.08C33.24 20.08 32.47 20.6 31.83 21.62C31.34 22.39 30.95 23.36 30.7 24.51C30.4 25.75 29.63 29.36 28.36 35.37C29.05 36.69 30.37 37.77 31.48 37.85C32.33 37.93 33.1 37.77 33.82 37.41C34.78 36.89 35.44 36.03 35.83 34.85C36.02 34.27 36.11 33.66 36.11 33.06C36.11 31.18 35.09 29.53 33.46 28.87C32.94 29.12 32.39 29.25 31.86 29.25C30.95 29.25 30.51 28.92 30.54 28.29C30.57 27.74 30.98 27.46 31.78 27.46C32.5 27.46 33.07 27.66 33.54 28.01C34.78 27.6 35.66 26.99 36.22 26.25C36.68 25.59 36.99 24.68 37.1 23.55Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+        </svg>
+      </button>
+      <span class="serious-tip" aria-hidden="true">Editorial</span>
+    </span>
+    <span class="serious-node" data-mode-node="legacy" data-state="idle">
+      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Legacy · 1998">
+        <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
+          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
+          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <circle class="serious-ornament serious-ornament--ring serious-ornament--pixel" cx="32" cy="32" r="21" fill="none" stroke-width="1.1" stroke-dasharray="1.6 2.1"></circle>
+          <path class="serious-glyph" data-part="glyph" d="M37.54 28.47C35.4 31.66 33.66 33.97 32.24 35.38C32.24 37.16 31.8 39.14 30.95 41.28C30.02 43.75 28.97 45 27.88 45C27.03 45 26.62 44.51 26.62 43.5C26.62 42.37 27.15 40.84 28.2 38.86C29.13 37.12 30.02 35.82 30.87 34.98C30.99 33.68 30.67 31.58 29.94 28.67C29.53 26.93 28.93 25.4 28.16 24.06C27.31 22.61 26.54 21.88 25.78 21.92C24.6 22.04 23.71 22.85 23.19 24.35H22.66C22.62 24.06 22.62 23.82 22.62 23.54C22.62 20.67 23.59 19.17 25.57 19.01C27.96 18.81 29.86 21.84 31.27 28.18C31.92 31.14 32.24 32.91 32.24 33.52C35.27 29.8 37.21 26.16 37.98 22.57C38.31 21.11 38.47 20.3 38.51 20.18C38.79 19.41 39.28 19.05 39.96 19.05C40.89 19.05 41.38 19.45 41.38 20.3C41.38 21.88 40.08 24.63 37.54 28.47Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+        </svg>
+      </button>
+      <span class="serious-tip" aria-hidden="true">Legacy · 1998</span>
+    </span>
+    <span class="serious-pip" aria-hidden="true" data-mode-pip></span>
     <span class="serious-burst" aria-hidden="true" data-mode-burst></span>
+    <span class="serious-comet" aria-hidden="true" data-mode-comet>
+      <svg viewBox="0 0 88 20" width="100%" height="100%"><polygon points="0,10 72,6.2 72,13.8" fill="url(#serious-trail)"></polygon><path d="M80 1.5 82.5 7.5 88.5 10 82.5 12.5 80 18.5 77.5 12.5 71.5 10 77.5 7.5Z" fill="#fff6d0"></path></svg>
+    </span>
   </div>
 
   <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">?</button>
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
-    <p><strong>Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
-    <p><strong>Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
-    <p><strong>Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
+    <p><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
+    <p><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
+    <p><strong>γ · Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
   </div>
 
   <span class="sr-only" role="status" aria-live="polite" data-mode-status></span>
@@ -59,7 +110,7 @@
     const key = 'portfolio-mode-v2';
     const oldKey = 'portfolio-mode';
     const legacyKey = 'portfolio-serious-mode';
-    // Ordem de ciclo: cada modo "vem depois" do anterior.
+    // Ordem fixa dos emblemas, da esquerda para a direita: α · β · γ.
     const modes = ['authorial', 'editorial', 'legacy'];
     const names = {
       authorial: 'Autoral',
@@ -72,69 +123,68 @@
       legacy: '#ffffff',
     };
 
-    // Cada modo tem a sua personalidade de movimento. As animações usam a Web
-    // Animations API: o Editorial e o Legacy zeram animation e transition do CSS
-    // (mono-modes.css), e este controle precisa continuar mostrando a mudança.
+    // Cada modo tem a sua personalidade de movimento. Tudo usa a Web Animations
+    // API: o Editorial e o Legacy zeram animation e transition do CSS
+    // (mono-modes.css), e este controle precisa continuar mostrando a troca.
     const profiles = {
       authorial: {
-        duration: 680,
-        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-        spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-        fade: 'ease-out',
-        depth: true,
-        burst: true,
+        travel: 640,
+        travelEase: 'cubic-bezier(0.5, 0, 0.2, 1)',
+        igniteAt: 0.7,
+        ignite: 560,
+        igniteEase: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        out: 360,
+        outEase: 'ease-out',
+        flare: true,
       },
       editorial: {
-        duration: 300,
-        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        spring: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        fade: 'linear',
-        depth: false,
-        burst: false,
+        travel: 260,
+        travelEase: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        igniteAt: 0.6,
+        ignite: 220,
+        igniteEase: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        out: 200,
+        outEase: 'linear',
+        flare: false,
       },
       legacy: {
-        duration: 360,
-        easing: 'steps(6, end)',
-        spring: 'steps(6, end)',
-        fade: 'steps(6, end)',
-        depth: false,
-        burst: false,
+        travel: 360,
+        travelEase: 'steps(6, end)',
+        igniteAt: 0.6,
+        ignite: 240,
+        igniteEase: 'steps(4, end)',
+        out: 240,
+        outEase: 'steps(4, end)',
+        flare: false,
       },
     };
-
-    // O modo vigente fica maior e radiante; os outros dois recuam.
-    const SCALE_CURRENT = 1.2;
-    const SCALE_OTHER = 0.8;
-    const scaleFor = (slot) => (slot === 'center' ? SCALE_CURRENT : SCALE_OTHER);
 
     const group = document.querySelector('[data-mode-group]');
     if (!group) return;
     const stage = group.querySelector('[data-mode-stage]');
+    const pip = group.querySelector('[data-mode-pip]');
     const burst = group.querySelector('[data-mode-burst]');
+    const comet = group.querySelector('[data-mode-comet]');
     const status = group.querySelector('[data-mode-status]');
     const helpButton = group.querySelector('[data-mode-help]');
     const helpPanel = group.querySelector('[data-mode-help-panel]');
-    const nodes = Array.from(group.querySelectorAll('[data-mode-node]'));
+    const nodes = modes.map((id) =>
+      group.querySelector('[data-mode-node="' + id + '"]'),
+    );
+    const links = Array.from(group.querySelectorAll('[data-mode-link]'));
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    const normalizeMode = (mode) =>
-      modes.includes(mode) ? mode : 'authorial';
-    const nodeFor = (id) => nodes.find((n) => n.dataset.modeNode === id);
+    const PARTS = ['art', 'halo', 'rays', 'ring', 'sparks'];
+    const normalizeMode = (mode) => (modes.includes(mode) ? mode : 'authorial');
+    const nodeFor = (id) => nodes[modes.indexOf(id)];
     const buttonFor = (node) => node.querySelector('[data-mode-option]');
-    const identFor = (node) => node.querySelector('[data-node-ident]');
-    const ringFor = (node) => node.querySelector('[data-node-ring]');
-    const discFor = (node) => node.querySelector('[data-node-disc]');
     const px = (value) => value + 'px';
+    const partsOf = (node) =>
+      PARTS.map((p) => node.querySelector('[data-part="' + p + '"]')).concat(
+        node.querySelector('.serious-tip'),
+      );
 
-    // Ao redor do modo atual: o próximo do ciclo à esquerda, o anterior à direita.
-    const slotsFor = (mode) => {
-      const i = modes.indexOf(normalizeMode(mode));
-      return {
-        left: modes[(i + 1) % modes.length],
-        center: modes[i],
-        right: modes[(i + 2) % modes.length],
-      };
-    };
+    let current = null;
 
     const syncUrl = (mode) => {
       try {
@@ -153,53 +203,56 @@
       } catch {}
     };
 
-    // Posiciona os nós, atualiza os nomes acessíveis e mantém a ordem do DOM
-    // igual à ordem visual (e, portanto, à ordem do foco).
-    const layout = (mode) => {
-      const slots = slotsFor(mode);
-      ['left', 'center', 'right'].forEach((slot) => {
-        const id = slots[slot];
-        const node = nodeFor(id);
+    // Estado final de cada emblema (CSS faz o resto): aceso ou apagado.
+    const setState = (mode) => {
+      const at = modes.indexOf(mode);
+      nodes.forEach((node, i) => {
+        const id = modes[i];
         const button = buttonFor(node);
-        node.dataset.slot = slot;
-        stage.appendChild(node);
-        if (slot === 'center') {
+        const on = id === mode;
+        node.dataset.state = on ? 'active' : 'idle';
+        button.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (on) {
           button.setAttribute('aria-current', 'true');
-          button.setAttribute('aria-disabled', 'true');
-          button.tabIndex = -1;
           button.setAttribute('aria-label', names[id] + ', modo atual');
           button.title = 'Modo atual: ' + names[id];
         } else {
           button.removeAttribute('aria-current');
-          button.removeAttribute('aria-disabled');
-          button.removeAttribute('tabindex');
           button.setAttribute('aria-label', 'Mudar para ' + names[id]);
           button.title = 'Mudar para ' + names[id];
         }
       });
+      links.forEach((link, i) => {
+        link.dataset.lit = i === at || i + 1 === at ? 'true' : 'false';
+      });
+      stage.style.setProperty('--i', String(at));
+      group.dataset.portfolioModeCurrent = mode;
+      group.setAttribute('aria-label', 'Modo de leitura: ' + names[mode]);
     };
 
-    const snapshot = () =>
-      new Map(
-        nodes.map((node) => [
-          node,
-          { slot: node.dataset.slot, left: node.offsetLeft },
-        ]),
-      );
+    const read = (el) => {
+      const s = getComputedStyle(el);
+      return { opacity: s.opacity, transform: s.transform, filter: s.filter };
+    };
+
+    // Fotografia do que está aceso/apagado agora, antes da troca.
+    const snapshot = () => ({
+      parts: nodes.map((node) => partsOf(node).map(read)),
+      links: links.map((l) => ({ opacity: getComputedStyle(l).opacity })),
+      pip: getComputedStyle(pip).left,
+      centers: nodes.map((n) => n.offsetLeft + n.offsetWidth / 2),
+    });
 
     let running = [];
     let runId = 0;
     let unlockTimer = 0;
-
-    const clearOrbit = () =>
-      nodes.forEach((node) => node.removeAttribute('data-orbit'));
 
     const unlockPointer = () => {
       clearTimeout(unlockTimer);
       delete stage.dataset.animating;
     };
 
-    // Termina qualquer transição em curso: o estado final já está no CSS.
+    // Termina qualquer troca em curso: o estado final já está no CSS.
     const settle = () => {
       running.forEach((animation) => {
         try {
@@ -207,122 +260,115 @@
         } catch {}
       });
       running = [];
-      clearOrbit();
       unlockPointer();
     };
 
-    // Rotação em três posições. Quem vai do centro para um lado encolhe; quem vai
-    // de um lado para o centro cresce e ganha brilho; o terceiro dá a volta por
-    // trás. Os dois que andam lado a lado usam a mesma curva e duração, então
-    // andam em comboio, sem sobrepor.
-    const play = (before, mode) => {
-      const profile = profiles[mode];
-      const duration = profile.duration;
-      const fade = { duration, easing: profile.fade };
+    const differs = (a, b) =>
+      a.opacity !== b.opacity || a.transform !== b.transform || a.filter !== b.filter;
+
+    const morph = (el, from, to, options, mid) => {
+      if (!differs(from, to)) return;
+      const frames = mid ? [from, mid, to] : [from, to];
+      running.push(el.animate(frames, { fill: 'backwards', ...options }));
+    };
+
+    // Troca de ênfase: o cometa corre pelo trilho, quem estava aceso apaga na
+    // saída, quem foi escolhido acende na chegada e o losango acompanha.
+    const play = (before, prev, mode) => {
+      const p = profiles[mode];
       const id = ++runId;
-      // Enquanto os nós passam, o ponteiro parado não pode acender o hover de
-      // quem está por baixo dele; libera quando o movimento já assentou.
+      const fromAt = modes.indexOf(prev);
+      const toAt = modes.indexOf(mode);
+      const delay = p.travel * p.igniteAt;
       stage.dataset.animating = 'true';
-      unlockTimer = setTimeout(unlockPointer, duration * 0.6);
+      unlockTimer = setTimeout(unlockPointer, p.travel * 0.8);
 
-      nodes.forEach((node) => {
-        const from = before.get(node);
-        const to = { slot: node.dataset.slot, left: node.offsetLeft };
-        if (from.slot === to.slot) return;
-        const orbit = from.slot !== 'center' && to.slot !== 'center';
-        const emblem = buttonFor(node);
-        const ident = identFor(node);
-        const ring = ringFor(node);
-        const disc = discFor(node);
-
-        if (orbit && profile.depth) {
-          // Autoral: a volta é uma órbita, o nó recua em profundidade por trás.
-          const swing = 'cubic-bezier(0.45, 0, 0.55, 1)';
-          const mid = (from.left + to.left) / 2;
-          running.push(
-            node.animate(
-              [
-                { left: px(from.left), transform: 'translateY(0)', opacity: 1, easing: swing },
-                { left: px(mid), transform: 'translateY(-6px)', opacity: 0.45, easing: swing },
-                { left: px(to.left), transform: 'translateY(0)', opacity: 1 },
-              ],
-              { duration, easing: 'linear' },
-            ),
-          );
-        } else if (orbit) {
-          // Editorial e Legacy: o nó some enquanto cruza por trás e reaparece do
-          // outro lado, assim não sobra uma fatia dele no vão entre os outros dois.
-          running.push(
-            node.animate(
-              [
-                { left: px(from.left), opacity: 1 },
-                { opacity: 0, offset: 0.15 },
-                { opacity: 0, offset: 0.85 },
-                { left: px(to.left), opacity: 1 },
-              ],
-              { duration, easing: profile.easing },
-            ),
-          );
-        } else {
-          running.push(
-            node.animate(
-              [{ left: px(from.left) }, { left: px(to.left) }],
-              { duration, easing: profile.easing },
-            ),
-          );
-        }
-        if (orbit) node.dataset.orbit = 'true';
-
-        // Escala do emblema: cresce ou encolhe com a posição.
-        if (scaleFor(from.slot) !== scaleFor(to.slot)) {
-          running.push(
-            emblem.animate(
-              [
-                { transform: 'scale(' + scaleFor(from.slot) + ')' },
-                { transform: 'scale(' + scaleFor(to.slot) + ')' },
-              ],
-              { duration, easing: profile.easing },
-            ),
-          );
-        }
-
-        if (to.slot === 'center') {
-          // Acende: o anel e a estrela aparecem, o disco ganha brilho.
-          running.push(
-            ring.animate([{ opacity: 0 }, { opacity: 1 }], fade),
-            ident.animate(
-              [{ transform: 'scale(0.2)' }, { transform: 'scale(1)' }],
-              { duration, easing: profile.spring },
-            ),
-          );
-          if (profile.burst) {
-            running.push(
-              disc.animate(
-                [
-                  { filter: 'brightness(0.55) saturate(0.4)' },
-                  { filter: 'brightness(1.3) saturate(1.2)' },
-                ],
-                { duration, easing: profile.easing },
-              ),
-            );
+      nodes.forEach((node, i) => {
+        const els = partsOf(node);
+        const isOld = i === fromAt;
+        const isNew = i === toAt;
+        els.forEach((el, k) => {
+          const from = before.parts[i][k];
+          const to = read(el);
+          if (isNew) {
+            const mid =
+              p.flare && el.dataset.part === 'art'
+                ? { ...to, transform: 'scale(1.3)', opacity: '1' }
+                : null;
+            morph(el, from, to, { duration: p.ignite, delay, easing: p.igniteEase }, mid);
+          } else if (isOld) {
+            morph(el, from, to, { duration: p.out, easing: p.outEase });
           }
-        } else if (from.slot === 'center') {
-          // Apaga: o anel e a estrela somem mais depressa que o movimento.
-          running.push(
-            ring.animate([{ opacity: 1 }, { opacity: 0 }], { duration: duration * 0.5, easing: profile.fade }),
-            ident.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.2)' }], { duration: duration * 0.5, easing: profile.fade }),
-          );
-        }
+        });
       });
 
-      if (profile.burst && burst) {
+      links.forEach((link, i) => {
+        const to = { opacity: getComputedStyle(link).opacity };
+        if (to.opacity === before.links[i].opacity) return;
+        const lighting = Number(to.opacity) > Number(before.links[i].opacity);
+        running.push(
+          link.animate([before.links[i], to], {
+            duration: lighting ? p.travel * 0.5 : p.out,
+            delay: lighting ? p.travel * 0.25 : 0,
+            easing: p.outEase,
+            fill: 'backwards',
+          }),
+        );
+      });
+
+      const pipTo = getComputedStyle(pip).left;
+      if (pipTo !== before.pip) {
+        running.push(
+          pip.animate([{ left: before.pip }, { left: pipTo }], {
+            duration: p.travel,
+            easing: p.travelEase,
+          }),
+        );
+      }
+      if (p.flare) {
+        running.push(
+          pip.animate(
+            [
+              { transform: 'rotate(45deg) scale(1)' },
+              { transform: 'rotate(45deg) scale(1.9)', offset: 0.75 },
+              { transform: 'rotate(45deg) scale(1)' },
+            ],
+            { duration: p.travel + p.ignite * 0.5, easing: 'ease-out' },
+          ),
+        );
+      }
+
+      if (comet) {
+        const dir = toAt > fromAt ? 1 : -1;
+        const head = 80;
+        const x = (center) => (dir > 0 ? center - head : center + head);
+        const a = x(before.centers[fromAt]);
+        const b = x(before.centers[toAt]);
+        const flip = dir > 0 ? 'scaleX(1)' : 'scaleX(-1)';
+        running.push(
+          comet.animate(
+            [
+              { transform: 'translateX(' + px(a) + ') ' + flip, opacity: 0 },
+              { transform: 'translateX(' + px(a + (b - a) * 0.12) + ') ' + flip, opacity: 1, offset: 0.12 },
+              { transform: 'translateX(' + px(a + (b - a) * 0.88) + ') ' + flip, opacity: 1, offset: 0.88 },
+              { transform: 'translateX(' + px(b) + ') ' + flip, opacity: 0 },
+            ],
+            { duration: p.travel, easing: p.travelEase },
+          ),
+        );
+      }
+
+      if (p.flare && burst) {
+        const target = nodes[toAt];
+        burst.style.left = px(target.offsetLeft);
         running.push(
           burst.animate(
             [
-              { opacity: 0.9, transform: 'scale(0.9)' },
-              { opacity: 0, transform: 'scale(1.9)' },
+              { opacity: 0, transform: 'scale(0.8)' },
+              { opacity: 0.9, transform: 'scale(0.9)', offset: 0.01 },
+              { opacity: 0, transform: 'scale(2.1)' },
             ],
-            { duration: duration + 120, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+            { duration: p.ignite + 160, delay, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'backwards' },
           ),
         );
       }
@@ -330,16 +376,8 @@
       Promise.all(running.map((a) => a.finished.catch(() => {}))).then(() => {
         if (id !== runId) return;
         running = [];
-        clearOrbit();
         unlockPointer();
       });
-    };
-
-    const render = (mode, animate) => {
-      settle();
-      const before = animate ? snapshot() : null;
-      layout(mode);
-      if (before && !reducedMotion.matches) play(before, mode);
     };
 
     const applyMode = (
@@ -347,6 +385,7 @@
       { persist = true, updateUrl = true, animate = false, announce = false } = {},
     ) => {
       const mode = normalizeMode(requestedMode);
+      const prev = current;
 
       document.documentElement.dataset.portfolioMode = mode;
       document.documentElement.dataset.seriousMode =
@@ -354,9 +393,12 @@
       document.documentElement.dataset.legacyMode =
         mode === 'legacy' ? 'true' : 'false';
 
-      group.dataset.portfolioModeCurrent = mode;
-      group.setAttribute('aria-label', 'Modo de leitura: ' + names[mode]);
-      render(mode, animate);
+      settle();
+      const shouldPlay = animate && prev && prev !== mode && !reducedMotion.matches;
+      const before = shouldPlay ? snapshot() : null;
+      setState(mode);
+      current = mode;
+      if (before) play(before, prev, mode);
 
       const themeColor = document.querySelector('meta[name="theme-color"]');
       if (themeColor) themeColor.setAttribute('content', themeColors[mode]);
@@ -416,17 +458,21 @@
       });
     }
 
-    nodes.forEach((node) => {
+    nodes.forEach((node, i) => {
       const button = buttonFor(node);
       button.addEventListener('click', () => {
-        if (button.getAttribute('aria-current') === 'true') return;
-        const slot = node.dataset.slot;
-        const hadFocus = document.activeElement === button;
-        applyMode(node.dataset.modeNode, { animate: true, announce: true });
-        if (hadFocus) {
-          // O foco acompanha a posição: Enter de novo segue no mesmo sentido.
-          const next = nodes.find((n) => n.dataset.slot === slot);
-          if (next) buttonFor(next).focus({ preventScroll: true });
+        const id = modes[i];
+        if (id === current) return;
+        applyMode(id, { animate: true, announce: true });
+      });
+      // Setas movem o foco entre os emblemas sem trocar o modo.
+      button.addEventListener('keydown', (event) => {
+        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        const next = nodes[i + step];
+        if (next) {
+          event.preventDefault();
+          buttonFor(next).focus();
         }
       });
     });
@@ -439,49 +485,66 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
-  /* Trilha de três posições, de largura fixa e simétrica: lado · centro · lado. */
+  .serious-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* Trilha fixa de três emblemas: α · β · γ, sempre nesta ordem. */
   .serious-stage {
-    --serious-side: 52px;
-    --serious-pitch: 70px;
+    --side: 56px;
+    --pitch: 92px;
+    --i: 0;
     position: relative;
     flex: 0 0 auto;
-    width: calc(var(--serious-side) * 3 + 36px);
-    height: var(--serious-side);
+    width: calc(var(--pitch) * 2 + var(--side));
+    height: calc(var(--side) + 26px);
   }
 
   .serious-node {
     position: absolute;
     top: 0;
-    z-index: 1;
-    width: var(--serious-side);
-    height: var(--serious-side);
+    z-index: 2;
+    width: var(--side);
+    height: var(--side);
   }
 
-  .serious-node[data-slot='left'] {
-    left: 0;
-  }
-
-  .serious-node[data-slot='center'] {
-    left: var(--serious-pitch);
-  }
-
-  .serious-node[data-slot='right'] {
-    left: calc(var(--serious-pitch) * 2);
-  }
-
-  /* Quem dá a volta passa por trás dos outros dois. */
-  .serious-node[data-orbit] {
-    z-index: 0;
-  }
+  .serious-node[data-mode-node='authorial'] { left: 0; }
+  .serious-node[data-mode-node='editorial'] { left: var(--pitch); }
+  .serious-node[data-mode-node='legacy'] { left: calc(var(--pitch) * 2); }
 
   .serious-stage[data-animating] .serious-emblem {
     pointer-events: none;
   }
 
-  /* Emblema: sem chrome de botão, só o disco, o anel e o glifo. */
+  /* Trilho entre emblemas: um fio de luz que acende ao lado do modo vigente. */
+  .serious-link {
+    position: absolute;
+    top: calc(var(--side) / 2 - 8px);
+    width: calc(var(--pitch) - var(--side) - 8px);
+    height: 16px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.28;
+  }
+
+  .serious-link[data-mode-link='0'] { left: calc(var(--side) + 4px); }
+  .serious-link[data-mode-link='1'] { left: calc(var(--pitch) + var(--side) + 4px); }
+
+  .serious-link[data-lit='true'] {
+    opacity: 1;
+  }
+
+  .serious-link svg {
+    display: block;
+    overflow: visible;
+  }
+
   .serious-emblem {
     position: relative;
     display: block;
@@ -498,122 +561,205 @@
     color: inherit;
     font: inherit;
     cursor: pointer;
+    overflow: visible;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .serious-node[data-slot='left'] .serious-emblem,
-  .serious-node[data-slot='right'] .serious-emblem {
-    transform: scale(0.8);
-    opacity: 0.5;
-    filter: saturate(0.3) brightness(0.85);
-  }
-
-  .serious-node[data-slot='center'] .serious-emblem {
-    transform: scale(1.2);
+  .serious-node[data-state='active'] .serious-emblem {
     cursor: default;
-  }
-
-  .serious-node[data-slot='left'] .serious-emblem:hover,
-  .serious-node[data-slot='right'] .serious-emblem:hover {
-    opacity: 0.85;
-    filter: saturate(0.8) brightness(1);
   }
 
   .serious-emblem:focus-visible {
     outline: 2px solid var(--sun);
-    outline-offset: 4px;
+    outline-offset: 5px;
+  }
+
+  .serious-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Apagado: neutro e recuado. Aceso: maior, dourado e com todas as camadas. */
+  .serious-art[data-part='art'] {
+    transform: scale(0.9);
+    opacity: 0.62;
+    filter: saturate(0.2) brightness(0.85);
+  }
+
+  .serious-node[data-state='active'] .serious-art {
+    transform: scale(1.12);
+    opacity: 1;
+    filter: saturate(1) brightness(1);
+  }
+
+  .serious-node[data-state='idle'] .serious-emblem:hover .serious-art,
+  .serious-node[data-state='idle'] .serious-emblem:focus-visible .serious-art {
+    opacity: 0.95;
+    filter: saturate(0.7) brightness(1);
+  }
+
+  .serious-halo,
+  .serious-rays,
+  .serious-ring,
+  .serious-sparks {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+  }
+
+  .serious-halo { opacity: 0; transform: scale(0.6); }
+  .serious-rays { opacity: 0; transform: scale(0.75); }
+  .serious-ring { opacity: 0.4; transform: scale(1); }
+  .serious-sparks { opacity: 0; transform: scale(0.5); }
+
+  .serious-node[data-state='active'] .serious-halo { opacity: 1; transform: scale(1.5); }
+  .serious-node[data-state='active'] .serious-rays { opacity: 1; transform: scale(1); }
+  .serious-node[data-state='active'] .serious-ring { opacity: 1; }
+  .serious-node[data-state='active'] .serious-sparks { opacity: 1; transform: scale(1); }
+
+  .serious-rays line {
+    stroke: #ffd77a;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+
+  .serious-ornament {
+    stroke: rgba(255, 216, 130, 0.5);
+    fill: rgba(255, 216, 130, 0.7);
+  }
+
+  .serious-ornament--ring {
+    fill: none;
+  }
+
+  .serious-spark {
+    fill: #fff3c4;
   }
 
   .serious-disc {
+    stroke: rgba(255, 220, 140, 0.35);
+    stroke-width: 1;
+  }
+
+  .serious-node[data-state='active'] .serious-disc {
+    stroke: #ffe39a;
+    stroke-width: 1.4;
+  }
+
+  /* Movimento contínuo do modo vigente (CSS; o modo Autoral é o único que o permite). */
+  .serious-node[data-state='active'] .serious-rays__spin,
+  .serious-node[data-state='active'] .serious-ring__spin {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+    animation: serious-spin 14s linear infinite;
+  }
+
+  .serious-node[data-state='active'] .serious-ring__spin {
+    animation-duration: 6s;
+  }
+
+  .serious-node[data-state='active'] .serious-halo__pulse {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+    animation: serious-pulse 2.6s ease-in-out infinite;
+  }
+
+  .serious-node[data-state='active'] .serious-spark {
+    animation: serious-twinkle 2.2s ease-in-out infinite;
+  }
+
+  .serious-sparks g:nth-child(2) .serious-spark { animation-delay: 0.7s; }
+  .serious-sparks g:nth-child(3) .serious-spark { animation-delay: 1.4s; }
+
+  @keyframes serious-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes serious-pulse {
+    0%, 100% { transform: scale(0.92); opacity: 0.75; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+
+  @keyframes serious-twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .serious-node[data-state='active'] .serious-rays__spin,
+    .serious-node[data-state='active'] .serious-ring__spin,
+    .serious-node[data-state='active'] .serious-halo__pulse,
+    .serious-node[data-state='active'] .serious-spark {
+      animation: none;
+    }
+  }
+
+  /* Identificador do modo vigente: losango dourado sob o emblema + nome. */
+  .serious-pip {
     position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: #c9b48a;
-    background: radial-gradient(circle at 50% 30%, #4a3a26 0%, #1c150d 62%, #0d0905 100%);
-    box-shadow: inset 0 0 0 1px rgba(255, 236, 190, 0.16);
-  }
-
-  .serious-node[data-slot='center'] .serious-disc {
-    color: #fff8e1;
-    background: radial-gradient(circle at 50% 26%, #fff1bf 0%, #f0b43c 34%, #8f4e1a 78%, #2a1608 100%);
-    box-shadow:
-      0 0 0 1px rgba(255, 236, 170, 0.75),
-      0 0 16px 3px rgba(255, 190, 80, 0.6),
-      0 0 40px 8px rgba(255, 140, 70, 0.28);
-  }
-
-  .serious-glyph {
-    flex: 0 0 auto;
-  }
-
-  .serious-node[data-slot='center'] .serious-glyph {
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.85));
-  }
-
-  /* Anel de gradiente girando, herdado dos botões: só no modo vigente. Usa a
-     mesma técnica de borda com gradiente de attention.css (sem máscara). */
-  .serious-ring {
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    opacity: 0;
-    background:
-      linear-gradient(transparent, transparent) padding-box,
-      conic-gradient(from 0deg, #e0a62e, #c0607e, #4f97bf, #8a6cc0, #6fae7c, #e0a62e) border-box;
+    top: calc(var(--side) + 7px);
+    left: calc(var(--i) * var(--pitch) + var(--side) / 2);
+    width: 9px;
+    height: 9px;
+    margin-left: -4.5px;
+    background: linear-gradient(135deg, #fff3c4, #d89a2b);
+    box-shadow: 0 0 8px 1px rgba(255, 190, 80, 0.8);
+    transform: rotate(45deg);
+    z-index: 3;
     pointer-events: none;
   }
 
-  .serious-node[data-slot='center'] .serious-ring {
-    opacity: 1;
-    animation: serious-spin 6s linear infinite;
-  }
-
-  /* Identificador do modo vigente: uma estrela de quatro pontas atrás do emblema. */
-  .serious-identifier {
+  .serious-tip {
     position: absolute;
+    top: calc(var(--side) + 14px);
     left: 50%;
-    top: 50%;
-    width: 104px;
-    height: 104px;
-    margin: -52px 0 0 -52px;
+    transform: translateX(-50%);
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    color: var(--ink-soft);
     opacity: 0;
-    color: var(--sun);
     pointer-events: none;
-    z-index: -1;
   }
 
-  .serious-node[data-slot='center'] .serious-identifier {
-    opacity: 0.9;
-    transform: none;
-    animation: serious-spin 22s linear infinite;
+  .serious-node[data-state='active'] .serious-tip {
+    opacity: 1;
+    color: var(--ink);
+  }
+
+  @media (hover: hover) {
+    .serious-node[data-state='idle']:hover .serious-tip {
+      opacity: 0.8;
+    }
   }
 
   .serious-burst {
     position: absolute;
     top: 0;
-    left: var(--serious-pitch);
-    width: var(--serious-side);
-    height: var(--serious-side);
+    left: 0;
+    width: var(--side);
+    height: var(--side);
     border: 2px solid var(--sun);
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
+    z-index: 3;
   }
 
-  @keyframes serious-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .serious-node[data-slot='center'] .serious-ring,
-    .serious-node[data-slot='center'] .serious-identifier {
-      animation: none;
-    }
+  .serious-comet {
+    position: absolute;
+    top: calc(var(--side) / 2 - 10px);
+    left: 0;
+    width: 88px;
+    height: 20px;
+    opacity: 0;
+    transform-origin: 0 50%;
+    pointer-events: none;
+    z-index: 4;
   }
 
   .serious-help {
@@ -629,6 +775,7 @@
     font-size: 0.95rem;
     font-weight: 800;
     cursor: pointer;
+    align-self: flex-start;
   }
 
   .serious-help-panel {
@@ -655,65 +802,85 @@
     margin: 0;
   }
 
-  /* Modos planos (Editorial e Legacy): o CSS global de mono-modes.css zera
-     fundos, bordas, sombras e raios com !important. Estas regras são mais
-     específicas e explícitas, para que o emblema siga desenhado nesses modos. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-emblem {
+  @media (max-width: 560px) {
+    .serious-control {
+      gap: 0.4rem;
+    }
+
+    .serious-stage {
+      --side: 42px;
+      --pitch: 64px;
+      height: calc(var(--side) + 24px);
+    }
+
+    .serious-help {
+      width: 34px;
+      height: 34px;
+      min-height: 34px;
+    }
+  }
+
+  /* Modos planos (Editorial e Legacy): mono-modes.css zera fundos, bordas,
+     sombras, filtros e animações com !important. Aqui o emblema segue
+     desenhado em preto e branco, sem depender de filtro nem de animação CSS:
+     o recuado fica mais claro (opacidade) e o vigente ganha raios e anel. */
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem,
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:hover,
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
     background: transparent !important;
+    color: inherit !important;
     border: 0 !important;
     border-radius: 50% !important;
     box-shadow: none !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-disc {
-    box-sizing: border-box;
-    border-radius: 50% !important;
-    color: #000000 !important;
-    background: #ffffff !important;
-    border: 2px solid #000000 !important;
+  /* mono-modes.css pinta de preto todo descendente de botão em hover/foco. */
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:is(:hover, :focus-visible) *,
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem * {
+    background: transparent !important;
     box-shadow: none !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-slot='center'] .serious-disc {
-    color: #ffffff !important;
-    background: #000000 !important;
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
+    outline: 2px solid #000000 !important;
+    outline-offset: 4px;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-slot='center'] .serious-ring {
-    display: none;
-  }
-
-  /* O glifo herda a cor do disco; mono-modes.css força color no próprio SVG. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-glyph,
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-glyph * {
-    color: inherit !important;
-    stroke: currentColor;
-  }
-
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-identifier path {
-    fill: currentColor;
-  }
-
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-identifier {
-    color: #000000;
-  }
-
-  /* Legacy: discos cinza de janela de 1998; o vigente afunda e fica azul. */
-  :global(html[data-legacy-mode='true']) .serious-disc {
-    border: 2px outset #efefef !important;
-    border-radius: 0 !important;
-    background: #c0c0c0 !important;
-  }
-
-  :global(html[data-legacy-mode='true']) .serious-node[data-slot='center'] .serious-disc {
-    border-style: inset !important;
-    background: #000080 !important;
-    color: #ffffff !important;
-  }
-
-  :global(html[data-legacy-mode='true']) .serious-node[data-slot='left'] .serious-emblem,
-  :global(html[data-legacy-mode='true']) .serious-node[data-slot='right'] .serious-emblem {
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-art[data-part='art'] {
+    opacity: 0.5;
     filter: none;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-state='active'] .serious-art[data-part='art'] {
     opacity: 1;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-state='idle'] .serious-emblem:hover .serious-art[data-part='art'] {
+    opacity: 0.85;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-pip {
+    background: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tip {
+    background: transparent !important;
+    color: #000000 !important;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-burst {
+    display: none !important;
+  }
+
+  /* Legacy: traço de pixel, sem suavização. */
+  :global(html[data-legacy-mode='true']) .serious-art {
+    shape-rendering: crispEdges;
+  }
+
+  :global(html[data-legacy-mode='true']) .serious-pip {
+    border-radius: 0 !important;
+    transform: none;
   }
 </style>

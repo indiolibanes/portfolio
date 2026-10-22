@@ -294,21 +294,23 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
   await page.goto(`${baseUrl}/`, { waitUntil: 'load' });
   const cycle = [];
   for (let i = 0; i < 4; i += 1) {
-    // Molécula: alternativa · modo atual · alternativa (ordem visual = ordem do DOM).
+    // Três emblemas fixos (α · β · γ); o vigente fica aceso (aria-pressed).
     cycle.push(await page.evaluate(() => ({
       mode: document.documentElement.dataset.portfolioMode,
       label: document.querySelector('[data-mode-group]')?.getAttribute('aria-label'),
-      order: Array.from(document.querySelectorAll('[data-mode-node]')).map((n) => `${n.dataset.slot}:${n.dataset.modeNode}`),
+      order: Array.from(document.querySelectorAll('[data-mode-node]')).map((n) => `${n.dataset.state}:${n.dataset.modeNode}`),
       focusable: Array.from(document.querySelectorAll('[data-mode-option]')).filter((o) => o.tabIndex >= 0).length,
-      current: document.querySelectorAll('[data-mode-option][aria-current="true"]').length,
+      current: document.querySelectorAll('[data-mode-option][aria-pressed="true"]').length,
       url: location.search,
     })));
-    // Clica na alternativa da esquerda (o próximo modo do ciclo).
+    // Clica no próximo emblema do ciclo (α → β → γ → α).
     await page.evaluate(() => {
-      document.querySelector('[data-mode-node][data-slot="left"] [data-mode-option]')?.click();
+      const order = ['authorial', 'editorial', 'legacy'];
+      const next = order[(order.indexOf(document.documentElement.dataset.portfolioMode) + 1) % order.length];
+      document.querySelector(`[data-mode-option="${next}"]`)?.click();
     });
-    // A rotação dura até ~620 ms (Autoral); espera terminar antes de ler o estado.
-    await page.waitForTimeout(800);
+    // A troca dura até ~1 s (Autoral: cometa + ignição); espera terminar.
+    await page.waitForTimeout(1200);
   }
   report.interactions.modeCycle = cycle;
   await page.reload({ waitUntil: 'load' });
