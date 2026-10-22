@@ -18,10 +18,8 @@
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-scene] { position: relative; isolation: isolate; }
 .scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; border-radius: inherit; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .lab-project-card[data-scene] > :is(.lab-project-copy, .lab-project-cover, .lab-project-system) { position: relative; z-index: 1; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) section[data-scene] > :not(.scene-canvas):not(.anchor-alias) { position: relative; z-index: 1; }
-html[data-serious-mode='true'] .scene-canvas, html[data-legacy-mode='true'] .scene-canvas,
-html[data-serious-mode='true'] .shannon-layer, html[data-legacy-mode='true'] .shannon-layer,
-html[data-serious-mode='true'] .shannon-fx, html[data-legacy-mode='true'] .shannon-fx { display: none !important; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) section[data-scene] > :not(.scene-canvas):not(.anchor-alias):not(.cosmic-starfield) { position: relative; z-index: 1; }
+html[data-serious-mode='true'] .scene-canvas, html[data-legacy-mode='true'] .scene-canvas { display: none !important; }
 
 /* Tradução, Reflexão e Arquitetura: o véu do texto fica mais leve para a cena aparecer. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab :is(#traducao, #reflexao, #arquitetura) .lab-project-copy { background: linear-gradient(90deg, #080b1670, #080b1622); }
@@ -36,34 +34,38 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #docume
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .lab-project-system { background: transparent; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .documentation-note { color: #7dffb0; }
 
-/* ---------- Percurso: as entradas deixam o zoom aparecer um pouco ---------- */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list > li { background: #fff9eede; }
 
-/* ---------- Shannon: o retrato ganha vida (camadas sobre a fotografia) ---------- */
-.shannon-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: url('/claude-shannon-blackboard.webp') center / 100% 100% no-repeat;
-  will-change: transform;
-}
-.shannon-body {
-  transform-origin: 15% 100%;
-  -webkit-mask-image: radial-gradient(ellipse 26% 50% at 26% 58%, #000 58%, transparent 100%);
-  mask-image: radial-gradient(ellipse 26% 50% at 26% 58%, #000 58%, transparent 100%);
-}
-.shannon-head {
-  transform-origin: 27% 33%;
-  -webkit-mask-image: radial-gradient(ellipse 13% 15% at 24% 21%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 13% 15% at 24% 21%, #000 55%, transparent 100%);
-}
-.shannon-hand {
-  transform-origin: 36% 61%;
-  -webkit-mask-image: radial-gradient(ellipse 9% 7% at 44% 58%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 9% 7% at 44% 58%, #000 55%, transparent 100%);
-}
-.shannon-fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
-@media (prefers-reduced-motion: reduce) {
-  .shannon-layer, .shannon-fx { display: none; }
-}
+/* ---------- Método: cada quadrante ganha a sua cor; as páginas folheadas aparecem por trás ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li { border-width: 1px; box-shadow: 3px 4px 0 #0f1f1655, inset 0 1px 0 #ffffff14; backdrop-filter: blur(6px) brightness(.62) saturate(1.2); -webkit-backdrop-filter: blur(6px) brightness(.62) saturate(1.2); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) { background: linear-gradient(145deg, #86601e99, #523a10a6); border-color: #e9c574aa; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) { background: linear-gradient(145deg, #1f6a9699, #123e5ca6); border-color: #7fc8eeaa; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) { background: linear-gradient(145deg, #94405c99, #5a2233a6); border-color: #f0a0b8aa; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) { background: linear-gradient(145deg, #6a47a299, #3d285fa6); border-color: #c4a8f5aa; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) .method-index { color: #ffdf94; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) .method-index { color: #a9e0ff; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) .method-index { color: #ffc6d5; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) .method-index { color: #e0d0ff; }
+
+/* ---------- Bastidores: noite neural, sem o fundo jeans; o cartão vira vidro ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores { background: radial-gradient(ellipse at 18% 20%, #1d3a5a66, transparent 55%), radial-gradient(ellipse at 86% 82%, #3a2a5a55, transparent 55%), linear-gradient(160deg, #0a1420, #0d1a2a 55%, #0a1620); border-color: #6f9fc055; box-shadow: 0 22px 60px #05101d55, inset 0 1px 0 #ffffff14; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores .github-heading h2 { color: #f6ecd8; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores .github-heading .eyebrow { color: #f0c878; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores .github-heading-copy > p:not(.eyebrow) { color: #d9d2c2; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores .github-feature { background: linear-gradient(135deg, #0b1b2cb8, #0a1624a0); border-color: #f0c87866; box-shadow: 0 14px 40px #04101c66, inset 0 1px 0 #ffffff12; backdrop-filter: blur(1.5px); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores .github-feature-copy { background: transparent; }
+
+/* ---------- Percurso: tinta da meia-noite (sem o roxo); as entradas viram vidro escuro ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso { background: radial-gradient(ellipse at 0 0, #1b2f5a66, transparent 52%), radial-gradient(ellipse at 100% 100%, #2a1f4a44, transparent 50%), linear-gradient(150deg, #090d1c, #0c1226 55%, #0a0f1e); border: 1px solid #5b78b044; box-shadow: 0 20px 55px #04081c55, inset 0 1px 0 #ffffff12; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-title :is(h2, .eyebrow) { color: #f4ead2; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-title .eyebrow { color: #e9c574; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list { border-left-color: #e9c57488; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list > li { background: linear-gradient(135deg, #0b1230c4, #101a3cb0); border: 1px solid #8fa6dc44; box-shadow: 0 10px 28px #02061a55, inset 0 1px 0 #ffffff10; backdrop-filter: blur(2px); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list :is(h3, p, strong) { color: #f1ead8; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list :is(.background-number, .background-case-study__label, a) { color: #f0c878; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-meta { color: #a9c0f2 !important; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-mark { background: #fff9ee; border-radius: 12px; padding: 4px; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-case-study { background: #ffffff0d; border-color: #8fa6dc44; }
+
+/* ---------- Contato: o céu agora é um canvas; o campo de estrelas em CSS sai de cena ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .cosmic-starfield { display: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-intro :is(h2, .method-lead, .eyebrow) { text-shadow: 0 1px 12px #1b3024cc, 0 0 3px #1b302499; }
