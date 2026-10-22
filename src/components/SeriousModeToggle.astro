@@ -4,6 +4,7 @@
   aria-label="Modo de leitura"
   data-mode-group
 >
+  <span class="serious-current" data-mode-current aria-hidden="true"></span>
   <button class="serious-toggle" type="button" data-mode-option="authorial" aria-pressed="true" title="Autoral">Autoral</button>
   <button class="serious-toggle" type="button" data-mode-option="editorial" aria-pressed="false" title="Editorial">Editorial</button>
   <button class="serious-toggle" type="button" data-mode-option="legacy" aria-pressed="false" title="Legacy · 1998">Legacy</button>
@@ -11,8 +12,9 @@
 
 <script is:inline>
   (() => {
-    const key = 'portfolio-mode';
-    const oldKey = 'portfolio-serious-mode';
+    const key = 'portfolio-mode-v2';
+    const oldKey = 'portfolio-mode';
+    const legacyKey = 'portfolio-serious-mode';
     // Ordem de ciclo: cada modo "vem depois" do anterior.
     const modes = ['authorial', 'editorial', 'legacy'];
     const names = {
@@ -56,21 +58,29 @@
       } catch {}
     };
 
+    const currentLabel = group.querySelector('[data-mode-current]');
+
     const render = (mode) => {
-      const order = orderFor(mode);
-      order.forEach((id) => {
+      // Só as duas alternativas aparecem, na ordem de ciclo a partir do atual.
+      const alternatives = orderFor(mode).slice(1);
+      alternatives.forEach((id) => {
         const option = options.find((o) => o.dataset.modeOption === id);
         if (option) group.appendChild(option);
       });
       options.forEach((option) => {
         const id = option.dataset.modeOption;
-        const active = id === mode;
-        option.setAttribute('aria-pressed', active ? 'true' : 'false');
-        option.dataset.active = active ? 'true' : 'false';
-        option.title = active
-          ? 'Modo atual: ' + names[id]
-          : 'Mudar para ' + names[id];
+        const visible = id !== mode;
+        option.hidden = !visible;
+        option.setAttribute('aria-pressed', 'false');
+        option.dataset.active = 'false';
+        option.title = 'Mudar para ' + names[id];
+        if (visible) {
+          option.classList.remove('serious-toggle--enter');
+          void option.offsetWidth; // reinicia a animação de entrada
+          option.classList.add('serious-toggle--enter');
+        }
       });
+      if (currentLabel) currentLabel.textContent = names[mode];
     };
 
     const applyMode = (requestedMode, persist = true, updateUrl = true) => {
@@ -93,6 +103,7 @@
         try {
           localStorage.setItem(key, mode);
           localStorage.removeItem(oldKey);
+          localStorage.removeItem(legacyKey);
         } catch {}
       }
 
@@ -130,6 +141,47 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.35rem;
+  }
+
+  .serious-current {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 0 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .serious-current::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sun);
+  }
+
+  .serious-toggle--enter {
+    animation: serious-enter 260ms ease both;
+  }
+
+  @keyframes serious-enter {
+    from {
+      opacity: 0;
+      transform: translateX(-10px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .serious-toggle--enter {
+      animation: none;
+    }
   }
 
   .serious-toggle[data-active='true'] {

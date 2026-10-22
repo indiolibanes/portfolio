@@ -84,7 +84,7 @@ check('curiosidades: header link', header.includes('href="/curiosidades/"'));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));
 check('modes: preserve three-state control',
-  modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Modo atual: ') && modes.includes('Mudar para '));
+  modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Mudar para ') && modes.includes('serious-toggle--enter') && modes.includes('hidden = !visible'));
 check('motion: viewport and reduced preference', motion.includes('IntersectionObserver') && motion.includes('prefers-reduced-motion: reduce'));
 check('motion: two simultaneous loops', motion.includes('.slice(0, 2)'));
 check('motion: static image fallback', image.includes('prefers-reduced-motion: reduce') && image.includes('data-motion-still'));
