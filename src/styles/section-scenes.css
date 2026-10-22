@@ -1,0 +1,69 @@
+/*
+ * Cenas animadas de fundo (2026-10-21) — o motor está em /scripts/scenes.js.
+ * Só no modo Autoral; Editorial e Legacy escondem tudo. Movimento reduzido: o script desenha um quadro
+ * estático e não anima.
+ */
+
+/* ---------- Moonlight Sonata: sem animação (pedido) ---------- */
+.listening-note--moonlight,
+.music-shelf .music-heading--opposites .listening-note--moonlight,
+.music-heading--stage .listening-note--moonlight,
+.listening-note-score span,
+.listening-note-typewriter { animation: none !important; }
+.listening-note-typewriter { clip-path: none !important; }
+.music-shelf .music-heading--opposites .listening-note--moonlight { transform: rotate(2deg); }
+.listening-note-score span { transform: none !important; }
+
+/* ---------- Tela de cada cena ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-scene] { position: relative; isolation: isolate; }
+.scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; border-radius: inherit; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .lab-project-card[data-scene] > :is(.lab-project-copy, .lab-project-cover, .lab-project-system) { position: relative; z-index: 1; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) section[data-scene] > :not(.scene-canvas):not(.anchor-alias) { position: relative; z-index: 1; }
+html[data-serious-mode='true'] .scene-canvas, html[data-legacy-mode='true'] .scene-canvas,
+html[data-serious-mode='true'] .shannon-layer, html[data-legacy-mode='true'] .shannon-layer,
+html[data-serious-mode='true'] .shannon-fx, html[data-legacy-mode='true'] .shannon-fx { display: none !important; }
+
+/* Tradução, Reflexão e Arquitetura: o véu do texto fica mais leve para a cena aparecer. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab :is(#traducao, #reflexao, #arquitetura) .lab-project-copy { background: linear-gradient(90deg, #080b1670, #080b1622); }
+
+/* ---------- Documentação: o card vira terminal verde ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao { background: #020b06; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .lab-project-copy { color: #c9f7da; background: linear-gradient(90deg, #010a0599, #010a0526); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao :is(h3, .lab-project-description, .lab-project-book, .lab-project-book span, .lab-project-kicker, .lab-sophia-presence, .lab-project-footer) { color: #c9f7da; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao :is(.lab-project-book p, .lab-project-book cite, .lab-project-index) { color: #7dffb0; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao :is(h3) { color: #e8fff0; text-shadow: 0 0 18px rgba(25, 211, 111, 0.5); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao :is(.lab-project-status, .lab-project-tags span) { color: #7dffb0; background: rgba(10, 60, 32, 0.55); border-color: rgba(25, 211, 111, 0.5); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .lab-project-system { background: transparent; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .documentation-note { color: #7dffb0; }
+
+/* ---------- Percurso: as entradas deixam o zoom aparecer um pouco ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .background-list > li { background: #fff9eede; }
+
+/* ---------- Shannon: o retrato ganha vida (camadas sobre a fotografia) ---------- */
+.shannon-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: url('/claude-shannon-blackboard.webp') center / 100% 100% no-repeat;
+  will-change: transform;
+}
+.shannon-body {
+  transform-origin: 15% 100%;
+  -webkit-mask-image: radial-gradient(ellipse 26% 50% at 26% 58%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 26% 50% at 26% 58%, #000 58%, transparent 100%);
+}
+.shannon-head {
+  transform-origin: 27% 33%;
+  -webkit-mask-image: radial-gradient(ellipse 13% 15% at 24% 21%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 13% 15% at 24% 21%, #000 55%, transparent 100%);
+}
+.shannon-hand {
+  transform-origin: 36% 61%;
+  -webkit-mask-image: radial-gradient(ellipse 9% 7% at 44% 58%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 9% 7% at 44% 58%, #000 55%, transparent 100%);
+}
+.shannon-fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .shannon-layer, .shannon-fx { display: none; }
+}
