@@ -1,36 +1,19 @@
-<div class="serious-control">
-  <button
-    class="serious-toggle"
-    type="button"
-    data-serious-toggle
-    aria-label="Modo atual: Autoral. Mudar para Editorial"
-    title="Autoral → Editorial"
-  >
-    <svg
-      class="serious-icon"
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      aria-hidden="true"
-    >
-      <path
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"
-      ></path>
-    </svg>
-
-    <span data-serious-label>Autoral → Editorial</span>
-  </button>
+<div
+  class="serious-control"
+  role="group"
+  aria-label="Modo de leitura"
+  data-mode-group
+>
+  <button class="serious-toggle" type="button" data-mode-option="authorial" aria-pressed="true" title="Autoral">Autoral</button>
+  <button class="serious-toggle" type="button" data-mode-option="editorial" aria-pressed="false" title="Editorial">Editorial</button>
+  <button class="serious-toggle" type="button" data-mode-option="legacy" aria-pressed="false" title="Legacy · 1998">Legacy</button>
 </div>
 
 <script is:inline>
   (() => {
     const key = 'portfolio-mode';
     const oldKey = 'portfolio-serious-mode';
+    // Ordem de ciclo: cada modo "vem depois" do anterior.
     const modes = ['authorial', 'editorial', 'legacy'];
     const names = {
       authorial: 'Autoral',
@@ -43,31 +26,28 @@
       legacy: '#ffffff',
     };
 
-    const button = document.querySelector('[data-serious-toggle]');
-    const label = document.querySelector('[data-serious-label]');
-
-    if (!button) return;
+    const group = document.querySelector('[data-mode-group]');
+    if (!group) return;
+    const options = Array.from(group.querySelectorAll('[data-mode-option]'));
 
     const normalizeMode = (mode) =>
       modes.includes(mode) ? mode : 'authorial';
 
-    const nextMode = (mode) => {
-      const currentIndex = modes.indexOf(normalizeMode(mode));
-      return modes[(currentIndex + 1) % modes.length];
+    // Molécula: o modo atual primeiro, depois os demais na ordem de ciclo.
+    const orderFor = (mode) => {
+      const i = modes.indexOf(normalizeMode(mode));
+      return [0, 1, 2].map((k) => modes[(i + k) % modes.length]);
     };
 
     const syncUrl = (mode) => {
       try {
         const url = new URL(window.location.href);
-
         url.searchParams.delete('serious');
-
         if (mode === 'authorial') {
           url.searchParams.delete('mode');
         } else {
           url.searchParams.set('mode', mode);
         }
-
         history.replaceState(
           history.state,
           '',
@@ -76,13 +56,25 @@
       } catch {}
     };
 
-    const applyMode = (
-      requestedMode,
-      persist = true,
-      updateUrl = true,
-    ) => {
+    const render = (mode) => {
+      const order = orderFor(mode);
+      order.forEach((id) => {
+        const option = options.find((o) => o.dataset.modeOption === id);
+        if (option) group.appendChild(option);
+      });
+      options.forEach((option) => {
+        const id = option.dataset.modeOption;
+        const active = id === mode;
+        option.setAttribute('aria-pressed', active ? 'true' : 'false');
+        option.dataset.active = active ? 'true' : 'false';
+        option.title = active
+          ? 'Modo atual: ' + names[id]
+          : 'Mudar para ' + names[id];
+      });
+    };
+
+    const applyMode = (requestedMode, persist = true, updateUrl = true) => {
       const mode = normalizeMode(requestedMode);
-      const next = nextMode(mode);
 
       document.documentElement.dataset.portfolioMode = mode;
       document.documentElement.dataset.seriousMode =
@@ -90,30 +82,12 @@
       document.documentElement.dataset.legacyMode =
         mode === 'legacy' ? 'true' : 'false';
 
-      button.dataset.portfolioModeCurrent = mode;
-      button.setAttribute(
-        'aria-label',
-        'Modo atual: ' + names[mode] + '. Mudar para ' + names[next],
-      );
-      button.setAttribute(
-        'title',
-        names[mode] + ' → ' + names[next],
-      );
+      group.dataset.portfolioModeCurrent = mode;
+      group.setAttribute('aria-label', 'Modo de leitura: ' + names[mode]);
+      render(mode);
 
-      if (label) {
-        label.textContent = names[mode] + ' → ' + names[next];
-      }
-
-      const themeColor = document.querySelector(
-        'meta[name="theme-color"]',
-      );
-
-      if (themeColor) {
-        themeColor.setAttribute(
-          'content',
-          themeColors[mode],
-        );
-      }
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) themeColor.setAttribute('content', themeColors[mode]);
 
       if (persist) {
         try {
@@ -122,43 +96,30 @@
         } catch {}
       }
 
-      if (updateUrl) {
-        syncUrl(mode);
-      }
+      if (updateUrl) syncUrl(mode);
 
+      window.dispatchEvent(new CustomEvent('portfolio:mode', { detail: { mode } }));
       window.dispatchEvent(
-        new CustomEvent(
-          'portfolio:mode',
-          { detail: { mode } },
-        ),
-      );
-
-      window.dispatchEvent(
-        new CustomEvent(
-          'portfolio:serious-mode',
-          { detail: { enabled: mode === 'editorial' } },
-        ),
+        new CustomEvent('portfolio:serious-mode', { detail: { enabled: mode === 'editorial' } }),
       );
     };
 
     const initialMode =
       document.documentElement.dataset.portfolioMode ||
-      (
-        document.documentElement.dataset.seriousMode === 'true'
-          ? 'editorial'
-          : document.documentElement.dataset.legacyMode === 'true'
-            ? 'legacy'
-            : 'authorial'
-      );
+      (document.documentElement.dataset.seriousMode === 'true'
+        ? 'editorial'
+        : document.documentElement.dataset.legacyMode === 'true'
+          ? 'legacy'
+          : 'authorial');
 
     applyMode(initialMode, false, false);
 
-    button.addEventListener('click', () => {
-      const current =
-        document.documentElement.dataset.portfolioMode ||
-        'authorial';
-
-      applyMode(nextMode(current));
+    options.forEach((option) => {
+      option.addEventListener('click', () => {
+        const id = option.dataset.modeOption;
+        if (id === normalizeMode(document.documentElement.dataset.portfolioMode)) return;
+        applyMode(id);
+      });
     });
   })();
 </script>
@@ -167,6 +128,27 @@
   .serious-control {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .serious-toggle[data-active='true'] {
+    border-color: var(--sun);
+    box-shadow: inset 0 -2px 0 var(--sun);
+    color: var(--ink);
+    font-weight: 800;
+  }
+
+  :global(html[data-serious-mode='true']) .serious-toggle[data-active='true'] {
+    background: #000000;
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  :global(html[data-legacy-mode='true']) .serious-toggle[data-active='true'] {
+    border-style: inset;
+    box-shadow: none;
+    font-weight: 400;
   }
 
   .serious-toggle {
