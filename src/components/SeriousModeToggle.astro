@@ -23,83 +23,150 @@
         <stop offset="0.75" stop-color="#8a6cc0"></stop>
         <stop offset="1" stop-color="#6fae7c"></stop>
       </linearGradient>
+      <linearGradient id="serious-rainbow-us" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
+        <stop offset="0" stop-color="#ffd15a"></stop>
+        <stop offset="0.3" stop-color="#ff6fa8"></stop>
+        <stop offset="0.55" stop-color="#5cc3ff"></stop>
+        <stop offset="0.8" stop-color="#a98bff"></stop>
+        <stop offset="1" stop-color="#7be3a0"></stop>
+      </linearGradient>
       <radialGradient id="serious-halo">
         <stop offset="0.45" stop-color="#ffc95a" stop-opacity="0.85"></stop>
         <stop offset="1" stop-color="#ff9a3c" stop-opacity="0"></stop>
       </radialGradient>
-      <linearGradient id="serious-needle" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#f2c15a" stop-opacity="0"></stop>
-        <stop offset="0.5" stop-color="#fff0b0"></stop>
-        <stop offset="1" stop-color="#f2c15a" stop-opacity="0"></stop>
+      <radialGradient id="serious-halo-b">
+        <stop offset="0.45" stop-color="#cfc2ff" stop-opacity="0.8"></stop>
+        <stop offset="1" stop-color="#8f86d8" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="serious-halo-g">
+        <stop offset="0.45" stop-color="#bfe9ff" stop-opacity="0.85"></stop>
+        <stop offset="1" stop-color="#5fb4ff" stop-opacity="0"></stop>
+      </radialGradient>
+      <linearGradient id="serious-flare" gradientUnits="userSpaceOnUse" x1="-34" y1="0" x2="32" y2="0">
+        <stop offset="0" stop-color="#ff6fa8" stop-opacity="0"></stop>
+        <stop offset="0.35" stop-color="#5cc3ff" stop-opacity="0.8"></stop>
+        <stop offset="0.7" stop-color="#ffd15a"></stop>
+        <stop offset="1" stop-color="#fff6d0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-beam-up" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="-16">
+        <stop offset="0" stop-color="#6a5cd6" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#9b8cff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-beam-down" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="80">
+        <stop offset="0" stop-color="#6a5cd6" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#9b8cff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-jet-up" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="-20">
+        <stop offset="0" stop-color="#2f9bff"></stop>
+        <stop offset="1" stop-color="#5fb4ff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-jet-down" gradientUnits="userSpaceOnUse" x1="0" y1="32" x2="0" y2="84">
+        <stop offset="0" stop-color="#2f9bff"></stop>
+        <stop offset="1" stop-color="#5fb4ff" stop-opacity="0"></stop>
+      </linearGradient>
+      <linearGradient id="serious-flow" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
+        <stop offset="0" stop-color="#ffd15a" stop-opacity="0.15"></stop>
+        <stop offset="0.5" stop-color="#fff3c4"></stop>
+        <stop offset="1" stop-color="#ffd15a" stop-opacity="0.15"></stop>
       </linearGradient>
       <linearGradient id="serious-trail" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0" stop-color="#ffb347" stop-opacity="0"></stop>
         <stop offset="1" stop-color="#fff3c4"></stop>
       </linearGradient>
+      <radialGradient id="serious-energy">
+        <stop offset="0" stop-color="#ffffff"></stop>
+        <stop offset="0.35" stop-color="#ffd56b" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#ff7a3c" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="serious-energy-a">
+        <stop offset="0" stop-color="#ff6fa8" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#ff6fa8" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="serious-energy-b">
+        <stop offset="0" stop-color="#5cc3ff" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#5cc3ff" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="serious-energy-c">
+        <stop offset="0" stop-color="#a98bff" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#a98bff" stop-opacity="0"></stop>
+      </radialGradient>
     </defs>
   </svg>
 
   <div class="serious-stage" data-mode-stage>
     <span class="serious-link" data-mode-link="0" data-lit="true" aria-hidden="true">
-      <svg viewBox="0 0 30 16" width="100%" height="100%"><polygon class="serious-link__needle" points="0,8 15,6.3 30,8 15,9.7" fill="url(#serious-needle)"></polygon><path class="serious-link__star" d="M15 3.6 16.3 6.7 19.4 8 16.3 9.3 15 12.4 13.7 9.3 10.6 8 13.7 6.7Z" fill="#f6d27a"></path></svg>
+      <svg viewBox="0 0 100 16" preserveAspectRatio="none" width="100%" height="100%">
+        <path class="serious-link__base" d="M0 8 L100 8"></path>
+        <path class="serious-link__flow" data-flow="a" d="M0.00 8.00 L2.08 8.14 L4.17 8.51 L6.25 8.99 L8.33 9.42 L10.42 9.63 L12.50 9.49 L14.58 8.93 L16.67 8.00 L18.75 6.83 L20.83 5.63 L22.92 4.65 L25.00 4.11 L27.08 4.18 L29.17 4.91 L31.25 6.25 L33.33 8.00 L35.42 9.89 L37.50 11.59 L39.58 12.81 L41.67 13.31 L43.75 12.98 L45.83 11.86 L47.92 10.10 L50.00 8.00 L52.08 5.90 L54.17 4.14 L56.25 3.02 L58.33 2.69 L60.42 3.19 L62.50 4.41 L64.58 6.11 L66.67 8.00 L68.75 9.75 L70.83 11.09 L72.92 11.82 L75.00 11.89 L77.08 11.35 L79.17 10.37 L81.25 9.17 L83.33 8.00 L85.42 7.07 L87.50 6.51 L89.58 6.37 L91.67 6.58 L93.75 7.01 L95.83 7.49 L97.92 7.86 L100.00 8.00"></path>
+        <path class="serious-link__flow serious-link__flow--b" data-flow="b" d="M0.00 8.00 L2.08 7.86 L4.17 7.49 L6.25 7.01 L8.33 6.58 L10.42 6.37 L12.50 6.51 L14.58 7.07 L16.67 8.00 L18.75 9.17 L20.83 10.37 L22.92 11.35 L25.00 11.89 L27.08 11.82 L29.17 11.09 L31.25 9.75 L33.33 8.00 L35.42 6.11 L37.50 4.41 L39.58 3.19 L41.67 2.69 L43.75 3.02 L45.83 4.14 L47.92 5.90 L50.00 8.00 L52.08 10.10 L54.17 11.86 L56.25 12.98 L58.33 13.31 L60.42 12.81 L62.50 11.59 L64.58 9.89 L66.67 8.00 L68.75 6.25 L70.83 4.91 L72.92 4.18 L75.00 4.11 L77.08 4.65 L79.17 5.63 L81.25 6.83 L83.33 8.00 L85.42 8.93 L87.50 9.49 L89.58 9.63 L91.67 9.42 L93.75 8.99 L95.83 8.51 L97.92 8.14 L100.00 8.00"></path>
+      </svg>
     </span>
     <span class="serious-link" data-mode-link="1" data-lit="false" aria-hidden="true">
-      <svg viewBox="0 0 30 16" width="100%" height="100%"><polygon class="serious-link__needle" points="0,8 15,6.3 30,8 15,9.7" fill="url(#serious-needle)"></polygon><path class="serious-link__star" d="M15 3.6 16.3 6.7 19.4 8 16.3 9.3 15 12.4 13.7 9.3 10.6 8 13.7 6.7Z" fill="#f6d27a"></path></svg>
+      <svg viewBox="0 0 100 16" preserveAspectRatio="none" width="100%" height="100%">
+        <path class="serious-link__base" d="M0 8 L100 8"></path>
+        <path class="serious-link__flow" data-flow="a" d="M0.00 8.00 L2.08 8.14 L4.17 8.51 L6.25 8.99 L8.33 9.42 L10.42 9.63 L12.50 9.49 L14.58 8.93 L16.67 8.00 L18.75 6.83 L20.83 5.63 L22.92 4.65 L25.00 4.11 L27.08 4.18 L29.17 4.91 L31.25 6.25 L33.33 8.00 L35.42 9.89 L37.50 11.59 L39.58 12.81 L41.67 13.31 L43.75 12.98 L45.83 11.86 L47.92 10.10 L50.00 8.00 L52.08 5.90 L54.17 4.14 L56.25 3.02 L58.33 2.69 L60.42 3.19 L62.50 4.41 L64.58 6.11 L66.67 8.00 L68.75 9.75 L70.83 11.09 L72.92 11.82 L75.00 11.89 L77.08 11.35 L79.17 10.37 L81.25 9.17 L83.33 8.00 L85.42 7.07 L87.50 6.51 L89.58 6.37 L91.67 6.58 L93.75 7.01 L95.83 7.49 L97.92 7.86 L100.00 8.00"></path>
+        <path class="serious-link__flow serious-link__flow--b" data-flow="b" d="M0.00 8.00 L2.08 7.86 L4.17 7.49 L6.25 7.01 L8.33 6.58 L10.42 6.37 L12.50 6.51 L14.58 7.07 L16.67 8.00 L18.75 9.17 L20.83 10.37 L22.92 11.35 L25.00 11.89 L27.08 11.82 L29.17 11.09 L31.25 9.75 L33.33 8.00 L35.42 6.11 L37.50 4.41 L39.58 3.19 L41.67 2.69 L43.75 3.02 L45.83 4.14 L47.92 5.90 L50.00 8.00 L52.08 10.10 L54.17 11.86 L56.25 12.98 L58.33 13.31 L60.42 12.81 L62.50 11.59 L64.58 9.89 L66.67 8.00 L68.75 6.25 L70.83 4.91 L72.92 4.18 L75.00 4.11 L77.08 4.65 L79.17 5.63 L81.25 6.83 L83.33 8.00 L85.42 8.93 L87.50 9.49 L89.58 9.63 L91.67 9.42 L93.75 8.99 L95.83 8.51 L97.92 8.14 L100.00 8.00"></path>
+      </svg>
     </span>
     <span class="serious-node" data-mode-node="authorial" data-state="active">
       <button class="serious-emblem" type="button" data-mode-option="authorial" aria-pressed="true" aria-label="Autoral, modo atual">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
-          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
-          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
-          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
-          <g class="serious-ornament serious-ornament--dots"><circle cx="32" cy="10.8" r="1"></circle><circle cx="53.2" cy="32" r="1"></circle><circle cx="32" cy="53.2" r="1"></circle><circle cx="10.8" cy="32" r="1"></circle></g>
-          <path class="serious-glyph" data-part="glyph" d="M44 37.21C43.74 40.33 41.83 42.81 39.88 42.81C37.6 42.81 36.44 41.59 36.49 39.22C35.33 40.54 34.27 41.44 33.27 41.91C32.05 42.49 30.57 42.81 28.83 42.81C26.24 42.76 24.18 42.02 22.59 40.54C20.85 38.9 20 36.52 20 33.4C20 32.82 20.05 32.19 20.11 31.55C20.42 28.54 21.64 26.05 23.75 24.1C25.81 22.14 28.19 21.19 30.89 21.19C31.58 21.19 32.32 21.24 33 21.4C35.81 22.04 37.18 24.41 37.07 28.59L38.29 21.56H42.52L37.55 37.68C37.5 39.22 38.5 40.43 39.93 40.43C41.36 40.43 42.47 39.37 43.31 37.21C43.58 37.15 43.84 37.15 44 37.21ZM36.07 30.07C36.18 28.8 36.07 27.59 35.81 26.48C35.28 24.41 34.22 23.2 32.58 22.88C32.26 22.83 31.95 22.83 31.58 22.83C29.94 22.83 28.51 23.46 27.3 24.73C25.92 26.21 25.02 28.43 24.55 31.39C24.33 32.61 24.23 33.72 24.23 34.72C24.23 39.06 25.81 41.28 28.93 41.44C31.21 41.54 32.95 40.48 34.17 38.21C35.17 36.47 35.81 33.72 36.07 30.07Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
-          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+          <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g><g class="serious-fx serious-flare" data-part="flare"><g class="serious-flare__pulse"><polygon points="32,29.5 -34,31.4 -34,32.6 32,34.5" fill="url(#serious-flare)"></polygon><polygon points="32,30.6 -18,29.4 -18,34.6 32,33.4" fill="url(#serious-flare)" opacity="0.55"></polygon><path d="M-30 32 -26 27 -22 32 -26 37Z" fill="#fff6d0"></path><path d="M-16 32 -13.6 29.4 -11 32 -13.6 34.6Z" fill="#ffd1f0"></path></g></g><g class="serious-fx serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="70.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.88" y2="49.25"></line><line x1="46.75" y1="57.55" x2="51.00" y2="64.91"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.50"></line><line x1="17.25" y1="57.55" x2="13.00" y2="64.91"></line><line x1="6.45" y1="46.75" x2="2.12" y2="49.25"></line><line x1="2.50" y1="32.00" x2="-6.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.12" y2="14.75"></line><line x1="17.25" y1="6.45" x2="13.00" y2="-0.91"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.50"></line><line x1="46.75" y1="6.45" x2="51.00" y2="-0.91"></line><line x1="57.55" y1="17.25" x2="61.88" y2="14.75"></line></g></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <circle class="serious-ornament serious-ornament--authorial" cx="32" cy="32" r="21" fill="none"></circle>
+          <path class="serious-glyph" d="M44 37.21C43.74 40.33 41.83 42.81 39.88 42.81C37.6 42.81 36.44 41.59 36.49 39.22C35.33 40.54 34.27 41.44 33.27 41.91C32.05 42.49 30.57 42.81 28.83 42.81C26.24 42.76 24.18 42.02 22.59 40.54C20.85 38.9 20 36.52 20 33.4C20 32.82 20.05 32.19 20.11 31.55C20.42 28.54 21.64 26.05 23.75 24.1C25.81 22.14 28.19 21.19 30.89 21.19C31.58 21.19 32.32 21.24 33 21.4C35.81 22.04 37.18 24.41 37.07 28.59L38.29 21.56H42.52L37.55 37.68C37.5 39.22 38.5 40.43 39.93 40.43C41.36 40.43 42.47 39.37 43.31 37.21C43.58 37.15 43.84 37.15 44 37.21ZM36.07 30.07C36.18 28.8 36.07 27.59 35.81 26.48C35.28 24.41 34.22 23.2 32.58 22.88C32.26 22.83 31.95 22.83 31.58 22.83C29.94 22.83 28.51 23.46 27.3 24.73C25.92 26.21 25.02 28.43 24.55 31.39C24.33 32.61 24.23 33.72 24.23 34.72C24.23 39.06 25.81 41.28 28.93 41.44C31.21 41.54 32.95 40.48 34.17 38.21C35.17 36.47 35.81 33.72 36.07 30.07Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          <g class="serious-fx serious-sparks" data-part="sparks"><g transform="translate(9 13)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 16)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(53 56)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(6 50)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
         </svg>
       </button>
-      <span class="serious-tip" aria-hidden="true">Autoral</span>
     </span>
     <span class="serious-node" data-mode-node="editorial" data-state="idle">
       <button class="serious-emblem" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Mudar para Editorial">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
-          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
-          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
-          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
-          <circle class="serious-ornament serious-ornament--ring" cx="32" cy="32" r="21" fill="none" stroke-width="0.8"></circle>
-          <path class="serious-glyph" data-part="glyph" d="M39.19 23.38C39.22 24.79 38.7 25.97 37.62 26.99C36.6 27.96 35.47 28.43 34.23 28.43C34.87 28.51 35.61 28.95 36.49 29.78C37.68 30.91 38.26 32.2 38.26 33.69C38.26 34.21 38.17 34.77 38.03 35.34C37.62 36.75 36.77 37.74 35.47 38.35C34.56 38.79 33.49 39.01 32.3 39.01C31.94 39.01 31.61 38.98 31.37 38.95C30.18 38.76 29.08 38.1 28.06 36.91C26.87 42.29 26.27 44.96 26.24 44.93C26.24 45.02 25.77 45.02 24.81 44.96C24.81 45.02 25.08 43.83 25.66 41.41C26.3 38.73 26.79 36.53 27.15 34.85L29.33 24.38C30.07 20.85 31.7 19.06 34.23 19C35.25 18.97 36.19 19.2 37.07 19.66C38.45 20.41 39.16 21.65 39.19 23.38ZM37.1 23.55C37.13 23.38 37.13 23.22 37.13 23.05C37.13 21.98 36.77 21.18 36.05 20.66C35.53 20.27 34.89 20.08 34.12 20.08C33.24 20.08 32.47 20.6 31.83 21.62C31.34 22.39 30.95 23.36 30.7 24.51C30.4 25.75 29.63 29.36 28.36 35.37C29.05 36.69 30.37 37.77 31.48 37.85C32.33 37.93 33.1 37.77 33.82 37.41C34.78 36.89 35.44 36.03 35.83 34.85C36.02 34.27 36.11 33.66 36.11 33.06C36.11 31.18 35.09 29.53 33.46 28.87C32.94 29.12 32.39 29.25 31.86 29.25C30.95 29.25 30.51 28.92 30.54 28.29C30.57 27.74 30.98 27.46 31.78 27.46C32.5 27.46 33.07 27.66 33.54 28.01C34.78 27.6 35.66 26.99 36.22 26.25C36.68 25.59 36.99 24.68 37.1 23.55Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
-          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+          <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-b)"></circle></g></g><g class="serious-fx serious-beams" data-part="beams"><g class="serious-beams__spin"><g class="serious-beams__pulse"><polygon points="32,32 23,-16 41,-16" fill="url(#serious-beam-up)"></polygon><polygon points="32,32 23,80 41,80" fill="url(#serious-beam-down)"></polygon></g></g></g><g class="serious-fx serious-shock" data-part="shock"><circle class="serious-shock__ring" cx="32" cy="32" r="28" fill="none" stroke-width="1.4"></circle></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <circle class="serious-ornament serious-ornament--editorial" cx="32" cy="32" r="21" fill="none"></circle>
+          <path class="serious-glyph" d="M39.19 23.38C39.22 24.79 38.7 25.97 37.62 26.99C36.6 27.96 35.47 28.43 34.23 28.43C34.87 28.51 35.61 28.95 36.49 29.78C37.68 30.91 38.26 32.2 38.26 33.69C38.26 34.21 38.17 34.77 38.03 35.34C37.62 36.75 36.77 37.74 35.47 38.35C34.56 38.79 33.49 39.01 32.3 39.01C31.94 39.01 31.61 38.98 31.37 38.95C30.18 38.76 29.08 38.1 28.06 36.91C26.87 42.29 26.27 44.96 26.24 44.93C26.24 45.02 25.77 45.02 24.81 44.96C24.81 45.02 25.08 43.83 25.66 41.41C26.3 38.73 26.79 36.53 27.15 34.85L29.33 24.38C30.07 20.85 31.7 19.06 34.23 19C35.25 18.97 36.19 19.2 37.07 19.66C38.45 20.41 39.16 21.65 39.19 23.38ZM37.1 23.55C37.13 23.38 37.13 23.22 37.13 23.05C37.13 21.98 36.77 21.18 36.05 20.66C35.53 20.27 34.89 20.08 34.12 20.08C33.24 20.08 32.47 20.6 31.83 21.62C31.34 22.39 30.95 23.36 30.7 24.51C30.4 25.75 29.63 29.36 28.36 35.37C29.05 36.69 30.37 37.77 31.48 37.85C32.33 37.93 33.1 37.77 33.82 37.41C34.78 36.89 35.44 36.03 35.83 34.85C36.02 34.27 36.11 33.66 36.11 33.06C36.11 31.18 35.09 29.53 33.46 28.87C32.94 29.12 32.39 29.25 31.86 29.25C30.95 29.25 30.51 28.92 30.54 28.29C30.57 27.74 30.98 27.46 31.78 27.46C32.5 27.46 33.07 27.66 33.54 28.01C34.78 27.6 35.66 26.99 36.22 26.25C36.68 25.59 36.99 24.68 37.1 23.55Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          <g class="serious-fx serious-ghosts" data-part="ghosts"><path class="serious-ghost serious-ghost--1" d="M39.19 23.38C39.22 24.79 38.7 25.97 37.62 26.99C36.6 27.96 35.47 28.43 34.23 28.43C34.87 28.51 35.61 28.95 36.49 29.78C37.68 30.91 38.26 32.2 38.26 33.69C38.26 34.21 38.17 34.77 38.03 35.34C37.62 36.75 36.77 37.74 35.47 38.35C34.56 38.79 33.49 39.01 32.3 39.01C31.94 39.01 31.61 38.98 31.37 38.95C30.18 38.76 29.08 38.1 28.06 36.91C26.87 42.29 26.27 44.96 26.24 44.93C26.24 45.02 25.77 45.02 24.81 44.96C24.81 45.02 25.08 43.83 25.66 41.41C26.3 38.73 26.79 36.53 27.15 34.85L29.33 24.38C30.07 20.85 31.7 19.06 34.23 19C35.25 18.97 36.19 19.2 37.07 19.66C38.45 20.41 39.16 21.65 39.19 23.38ZM37.1 23.55C37.13 23.38 37.13 23.22 37.13 23.05C37.13 21.98 36.77 21.18 36.05 20.66C35.53 20.27 34.89 20.08 34.12 20.08C33.24 20.08 32.47 20.6 31.83 21.62C31.34 22.39 30.95 23.36 30.7 24.51C30.4 25.75 29.63 29.36 28.36 35.37C29.05 36.69 30.37 37.77 31.48 37.85C32.33 37.93 33.1 37.77 33.82 37.41C34.78 36.89 35.44 36.03 35.83 34.85C36.02 34.27 36.11 33.66 36.11 33.06C36.11 31.18 35.09 29.53 33.46 28.87C32.94 29.12 32.39 29.25 31.86 29.25C30.95 29.25 30.51 28.92 30.54 28.29C30.57 27.74 30.98 27.46 31.78 27.46C32.5 27.46 33.07 27.66 33.54 28.01C34.78 27.6 35.66 26.99 36.22 26.25C36.68 25.59 36.99 24.68 37.1 23.55Z" fill="url(#serious-gold)"></path><path class="serious-ghost serious-ghost--2" d="M39.19 23.38C39.22 24.79 38.7 25.97 37.62 26.99C36.6 27.96 35.47 28.43 34.23 28.43C34.87 28.51 35.61 28.95 36.49 29.78C37.68 30.91 38.26 32.2 38.26 33.69C38.26 34.21 38.17 34.77 38.03 35.34C37.62 36.75 36.77 37.74 35.47 38.35C34.56 38.79 33.49 39.01 32.3 39.01C31.94 39.01 31.61 38.98 31.37 38.95C30.18 38.76 29.08 38.1 28.06 36.91C26.87 42.29 26.27 44.96 26.24 44.93C26.24 45.02 25.77 45.02 24.81 44.96C24.81 45.02 25.08 43.83 25.66 41.41C26.3 38.73 26.79 36.53 27.15 34.85L29.33 24.38C30.07 20.85 31.7 19.06 34.23 19C35.25 18.97 36.19 19.2 37.07 19.66C38.45 20.41 39.16 21.65 39.19 23.38ZM37.1 23.55C37.13 23.38 37.13 23.22 37.13 23.05C37.13 21.98 36.77 21.18 36.05 20.66C35.53 20.27 34.89 20.08 34.12 20.08C33.24 20.08 32.47 20.6 31.83 21.62C31.34 22.39 30.95 23.36 30.7 24.51C30.4 25.75 29.63 29.36 28.36 35.37C29.05 36.69 30.37 37.77 31.48 37.85C32.33 37.93 33.1 37.77 33.82 37.41C34.78 36.89 35.44 36.03 35.83 34.85C36.02 34.27 36.11 33.66 36.11 33.06C36.11 31.18 35.09 29.53 33.46 28.87C32.94 29.12 32.39 29.25 31.86 29.25C30.95 29.25 30.51 28.92 30.54 28.29C30.57 27.74 30.98 27.46 31.78 27.46C32.5 27.46 33.07 27.66 33.54 28.01C34.78 27.6 35.66 26.99 36.22 26.25C36.68 25.59 36.99 24.68 37.1 23.55Z" fill="url(#serious-gold)"></path></g>
         </svg>
       </button>
-      <span class="serious-tip" aria-hidden="true">Editorial</span>
     </span>
     <span class="serious-node" data-mode-node="legacy" data-state="idle">
-      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Legacy · 1998">
+      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Legacy">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <g class="serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo)"></circle></g></g>
-          <g class="serious-rays" data-part="rays"><g class="serious-rays__spin"><line x1="61.50" y1="32.00" x2="69.00" y2="32.00"></line><line x1="57.55" y1="46.75" x2="61.44" y2="49.00"></line><line x1="46.75" y1="57.55" x2="50.50" y2="64.04"></line><line x1="32.00" y1="61.50" x2="32.00" y2="66.00"></line><line x1="17.25" y1="57.55" x2="13.50" y2="64.04"></line><line x1="6.45" y1="46.75" x2="2.56" y2="49.00"></line><line x1="2.50" y1="32.00" x2="-5.00" y2="32.00"></line><line x1="6.45" y1="17.25" x2="2.56" y2="15.00"></line><line x1="17.25" y1="6.45" x2="13.50" y2="-0.04"></line><line x1="32.00" y1="2.50" x2="32.00" y2="-2.00"></line><line x1="46.75" y1="6.45" x2="50.50" y2="-0.04"></line><line x1="57.55" y1="17.25" x2="61.44" y2="15.00"></line></g></g>
-          <g class="serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
-          <circle class="serious-disc" data-part="disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
-          <circle class="serious-ornament serious-ornament--ring serious-ornament--pixel" cx="32" cy="32" r="21" fill="none" stroke-width="1.1" stroke-dasharray="1.6 2.1"></circle>
-          <path class="serious-glyph" data-part="glyph" d="M37.54 28.47C35.4 31.66 33.66 33.97 32.24 35.38C32.24 37.16 31.8 39.14 30.95 41.28C30.02 43.75 28.97 45 27.88 45C27.03 45 26.62 44.51 26.62 43.5C26.62 42.37 27.15 40.84 28.2 38.86C29.13 37.12 30.02 35.82 30.87 34.98C30.99 33.68 30.67 31.58 29.94 28.67C29.53 26.93 28.93 25.4 28.16 24.06C27.31 22.61 26.54 21.88 25.78 21.92C24.6 22.04 23.71 22.85 23.19 24.35H22.66C22.62 24.06 22.62 23.82 22.62 23.54C22.62 20.67 23.59 19.17 25.57 19.01C27.96 18.81 29.86 21.84 31.27 28.18C31.92 31.14 32.24 32.91 32.24 33.52C35.27 29.8 37.21 26.16 37.98 22.57C38.31 21.11 38.47 20.3 38.51 20.18C38.79 19.41 39.28 19.05 39.96 19.05C40.89 19.05 41.38 19.45 41.38 20.3C41.38 21.88 40.08 24.63 37.54 28.47Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
-          <g class="serious-sparks" data-part="sparks"><g transform="translate(8 14)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(57 17)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g><g transform="translate(52 55)"><path class="serious-spark" d="M0-4 1.1-1.1 4 0 1.1 1.1 0 4-1.1 1.1-4 0-1.1-1.1Z"></path></g></g>
+          <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-g)"></circle></g></g><g class="serious-fx serious-jets" data-part="jets"><g class="serious-jets__pulse"><polygon points="32,32 29,-20 35,-20" fill="url(#serious-jet-up)"></polygon><polygon points="32,32 29,84 35,84" fill="url(#serious-jet-down)"></polygon><line class="serious-jet__flow" x1="32" y1="26" x2="32" y2="-18"></line><line class="serious-jet__flow" x1="32" y1="38" x2="32" y2="82"></line></g></g><g class="serious-fx serious-xrays" data-part="xrays"><g class="serious-xrays__spin"><line class="serious-xr" x1="60.49" y1="31.12" x2="68.98" y2="30.86"></line><line class="serious-xr" x1="58.96" y1="41.25" x2="64.16" y2="43.04"></line><line class="serious-xr" x1="55.14" y1="48.64" x2="59.60" y2="51.85"></line><line class="serious-xr" x1="46.82" y1="56.34" x2="49.69" y2="61.04"></line><line class="serious-xr" x1="34.93" y1="60.35" x2="35.81" y2="68.80"></line><line class="serious-xr" x1="29.33" y1="60.37" x2="27.97" y2="74.81"></line><line class="serious-xr" x1="18.10" y1="56.88" x2="13.96" y2="64.30"></line><line class="serious-xr" x1="11.53" y1="51.83" x2="1.12" y2="61.92"></line><line class="serious-xr" x1="6.05" y1="43.78" x2="1.04" y2="46.05"></line><line class="serious-xr" x1="3.59" y1="29.78" x2="-1.90" y2="29.35"></line><line class="serious-xr" x1="5.35" y1="21.89" x2="-8.21" y2="16.75"></line><line class="serious-xr" x1="8.80" y1="15.45" x2="1.88" y2="10.52"></line><line class="serious-xr" x1="15.84" y1="8.52" x2="11.02" y2="1.52"></line><line class="serious-xr" x1="26.02" y1="4.13" x2="24.24" y2="-4.18"></line><line class="serious-xr" x1="37.15" y1="3.97" x2="39.23" y2="-7.34"></line><line class="serious-xr" x1="46.51" y1="7.47" x2="50.84" y2="0.15"></line><line class="serious-xr" x1="52.51" y1="12.21" x2="58.63" y2="6.31"></line><line class="serious-xr" x1="58.56" y1="21.66" x2="63.68" y2="19.66"></line></g></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
+          <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
+          <circle class="serious-ornament serious-ornament--legacy" cx="32" cy="32" r="21" fill="none"></circle>
+          <path class="serious-glyph" d="M37.54 28.47C35.4 31.66 33.66 33.97 32.24 35.38C32.24 37.16 31.8 39.14 30.95 41.28C30.02 43.75 28.97 45 27.88 45C27.03 45 26.62 44.51 26.62 43.5C26.62 42.37 27.15 40.84 28.2 38.86C29.13 37.12 30.02 35.82 30.87 34.98C30.99 33.68 30.67 31.58 29.94 28.67C29.53 26.93 28.93 25.4 28.16 24.06C27.31 22.61 26.54 21.88 25.78 21.92C24.6 22.04 23.71 22.85 23.19 24.35H22.66C22.62 24.06 22.62 23.82 22.62 23.54C22.62 20.67 23.59 19.17 25.57 19.01C27.96 18.81 29.86 21.84 31.27 28.18C31.92 31.14 32.24 32.91 32.24 33.52C35.27 29.8 37.21 26.16 37.98 22.57C38.31 21.11 38.47 20.3 38.51 20.18C38.79 19.41 39.28 19.05 39.96 19.05C40.89 19.05 41.38 19.45 41.38 20.3C41.38 21.88 40.08 24.63 37.54 28.47Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
+          
         </svg>
       </button>
-      <span class="serious-tip" aria-hidden="true">Legacy · 1998</span>
     </span>
-    <span class="serious-pip" aria-hidden="true" data-mode-pip></span>
     <span class="serious-burst" aria-hidden="true" data-mode-burst></span>
     <span class="serious-comet" aria-hidden="true" data-mode-comet>
       <svg viewBox="0 0 88 20" width="100%" height="100%"><polygon points="0,10 72,6.2 72,13.8" fill="url(#serious-trail)"></polygon><path d="M80 1.5 82.5 7.5 88.5 10 82.5 12.5 80 18.5 77.5 12.5 71.5 10 77.5 7.5Z" fill="#fff6d0"></path></svg>
     </span>
   </div>
 
-  <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">?</button>
+  <button class="serious-tag" type="button" data-mode-tag aria-expanded="false" aria-controls="serious-help-panel" aria-label="Modo de leitura atual: Autoral. Abrir legenda dos modos" title="Legenda dos modos de leitura">
+    <span class="serious-tag__dot" aria-hidden="true"></span>
+    <span class="serious-tag__text" data-mode-tag-text>Autoral</span>
+  </button>
+
+  <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">
+    <svg class="serious-help__energy" data-help-energy viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+      <g class="serious-help__swirl" data-help-swirl>
+        <circle cx="20" cy="9" r="11" fill="url(#serious-energy-a)"></circle>
+        <circle cx="30" cy="25" r="11" fill="url(#serious-energy-b)"></circle>
+        <circle cx="10" cy="25" r="11" fill="url(#serious-energy-c)"></circle>
+      </g>
+      <circle class="serious-help__core" data-help-core cx="20" cy="20" r="17" fill="url(#serious-energy)"></circle>
+    </svg>
+    <span class="serious-help__q" data-help-q>?</span>
+  </button>
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
-    <p><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
-    <p><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
-    <p><strong>γ · Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
+    <p data-help-row="authorial"><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
+    <p data-help-row="editorial"><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
+    <p data-help-row="legacy"><strong>γ · Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
   </div>
 
   <span class="sr-only" role="status" aria-live="polite" data-mode-status></span>
@@ -115,7 +182,7 @@
     const names = {
       authorial: 'Autoral',
       editorial: 'Editorial',
-      legacy: 'Legacy · 1998',
+      legacy: 'Legacy',
     };
     const themeColors = {
       authorial: '#f6efdc',
@@ -128,7 +195,7 @@
     // (mono-modes.css), e este controle precisa continuar mostrando a troca.
     const profiles = {
       authorial: {
-        travel: 640,
+        travel: 720,
         travelEase: 'cubic-bezier(0.5, 0, 0.2, 1)',
         igniteAt: 0.7,
         ignite: 560,
@@ -136,6 +203,7 @@
         out: 360,
         outEase: 'ease-out',
         flare: true,
+        tag: true,
       },
       editorial: {
         travel: 260,
@@ -146,6 +214,7 @@
         out: 200,
         outEase: 'linear',
         flare: false,
+        tag: true,
       },
       legacy: {
         travel: 360,
@@ -156,16 +225,18 @@
         out: 240,
         outEase: 'steps(4, end)',
         flare: false,
+        tag: true,
       },
     };
 
     const group = document.querySelector('[data-mode-group]');
     if (!group) return;
     const stage = group.querySelector('[data-mode-stage]');
-    const pip = group.querySelector('[data-mode-pip]');
     const burst = group.querySelector('[data-mode-burst]');
     const comet = group.querySelector('[data-mode-comet]');
     const status = group.querySelector('[data-mode-status]');
+    const tag = group.querySelector('[data-mode-tag]');
+    const tagText = group.querySelector('[data-mode-tag-text]');
     const helpButton = group.querySelector('[data-mode-help]');
     const helpPanel = group.querySelector('[data-mode-help-panel]');
     const nodes = modes.map((id) =>
@@ -174,15 +245,11 @@
     const links = Array.from(group.querySelectorAll('[data-mode-link]'));
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    const PARTS = ['art', 'halo', 'rays', 'ring', 'sparks'];
     const normalizeMode = (mode) => (modes.includes(mode) ? mode : 'authorial');
     const nodeFor = (id) => nodes[modes.indexOf(id)];
     const buttonFor = (node) => node.querySelector('[data-mode-option]');
     const px = (value) => value + 'px';
-    const partsOf = (node) =>
-      PARTS.map((p) => node.querySelector('[data-part="' + p + '"]')).concat(
-        node.querySelector('.serious-tip'),
-      );
+    const partsOf = (node) => Array.from(node.querySelectorAll('[data-part]'));
 
     let current = null;
 
@@ -226,6 +293,16 @@
         link.dataset.lit = i === at || i + 1 === at ? 'true' : 'false';
       });
       stage.style.setProperty('--i', String(at));
+      if (tagText) tagText.textContent = names[mode];
+      if (tag) {
+        tag.setAttribute(
+          'aria-label',
+          'Modo de leitura atual: ' + names[mode] + '. Abrir legenda dos modos',
+        );
+      }
+      group.querySelectorAll('[data-help-row]').forEach((row) => {
+        row.dataset.current = row.dataset.helpRow === mode ? 'true' : 'false';
+      });
       group.dataset.portfolioModeCurrent = mode;
       group.setAttribute('aria-label', 'Modo de leitura: ' + names[mode]);
     };
@@ -239,9 +316,189 @@
     const snapshot = () => ({
       parts: nodes.map((node) => partsOf(node).map(read)),
       links: links.map((l) => ({ opacity: getComputedStyle(l).opacity })),
-      pip: getComputedStyle(pip).left,
       centers: nodes.map((n) => n.offsetLeft + n.offsetWidth / 2),
     });
+
+    // Vida contínua: cada letra tem a sua assinatura. Tudo em WAAPI, para seguir
+    // viva nos modos planos (mono-modes.css zera animation do CSS).
+    const loopsOf = {
+      authorial: (q) => {
+        const spin = (el, deg, ms) =>
+          el && el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(' + deg + 'deg)' }], { duration: ms, iterations: Infinity });
+        const out = [
+          spin(q('.serious-ring__spin'), 360, 5000),
+          spin(q('.serious-rays__spin'), -360, 11000),
+          q('.serious-halo__pulse')?.animate(
+            [
+              { transform: 'scale(0.9)', opacity: 0.7, filter: 'hue-rotate(0deg)' },
+              { transform: 'scale(1.1)', opacity: 1, filter: 'hue-rotate(180deg)' },
+              { transform: 'scale(0.9)', opacity: 0.7, filter: 'hue-rotate(360deg)' },
+            ],
+            { duration: 3600, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+          q('.serious-flare__pulse')?.animate(
+            [
+              { transform: 'scaleX(0.72)', opacity: 0.55, filter: 'hue-rotate(0deg)' },
+              { transform: 'scaleX(1.08)', opacity: 1, filter: 'hue-rotate(90deg)' },
+              { transform: 'scaleX(0.72)', opacity: 0.55, filter: 'hue-rotate(0deg)' },
+            ],
+            { duration: 2400, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+        ];
+        group.querySelectorAll('[data-mode-node="authorial"] .serious-spark').forEach((el, k) => {
+          out.push(
+            el.animate([{ opacity: 0.2, transform: 'scale(0.6)' }, { opacity: 1, transform: 'scale(1.25)' }, { opacity: 0.2, transform: 'scale(0.6)' }], {
+              duration: 1800,
+              delay: k * 450,
+              iterations: Infinity,
+              easing: 'ease-in-out',
+            }),
+          );
+        });
+        return out;
+      },
+      editorial: (q) => {
+        const out = [
+          // Pulsar: o par de jatos gira e pisca a cada varredura.
+          q('.serious-beams__spin')?.animate(
+            [{ transform: 'rotate(18deg)' }, { transform: 'rotate(378deg)' }],
+            { duration: 1700, iterations: Infinity },
+          ),
+          q('.serious-beams__pulse')?.animate(
+            [{ opacity: 1 }, { opacity: 0.3 }, { opacity: 1 }],
+            { duration: 850, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+          q('.serious-shock__ring')?.animate(
+            [
+              { transform: 'scale(0.62)', opacity: 0.85 },
+              { transform: 'scale(1.55)', opacity: 0 },
+            ],
+            { duration: 1700, iterations: Infinity, easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)' },
+          ),
+          q('.serious-halo__pulse')?.animate(
+            [
+              { transform: 'scale(0.88)', opacity: 0.65 },
+              { transform: 'scale(1.08)', opacity: 1 },
+              { transform: 'scale(0.88)', opacity: 0.65 },
+            ],
+            { duration: 850, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+          // Espaguetificação: a letra estica e afina até desfazer em fios.
+          q('.serious-glyph')?.animate(
+            [
+              { transform: 'scale(1, 1)' },
+              { transform: 'scale(0.9, 1.12)', offset: 0.55 },
+              { transform: 'scale(1, 1)' },
+            ],
+            { duration: 1700, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+        ];
+        const ghosts = [
+          [{ transform: 'scale(1, 1)', opacity: 0 }, { transform: 'scale(0.55, 1.9)', opacity: 0.85, offset: 0.55 }, { transform: 'scale(0.2, 2.8)', opacity: 0 }],
+          [{ transform: 'scale(1, 1)', opacity: 0 }, { transform: 'scale(1.25, 0.4)', opacity: 0.7, offset: 0.5 }, { transform: 'scale(1.6, 0.1)', opacity: 0 }],
+        ];
+        ['1', '2'].forEach((n, k) => {
+          out.push(
+            q('.serious-ghost--' + n)?.animate(ghosts[k], {
+              duration: 1700,
+              delay: k * 850,
+              iterations: Infinity,
+              easing: 'ease-in',
+            }),
+          );
+        });
+        return out;
+      },
+      legacy: (q, all) => {
+        const out = [
+          // Quasar: os jatos oscilam e levam pulsos de energia para fora.
+          q('.serious-jets__pulse')?.animate(
+            [
+              { transform: 'scaleY(0.62)', opacity: 0.7 },
+              { transform: 'scaleY(1.08)', opacity: 1 },
+              { transform: 'scaleY(0.78)', opacity: 0.8 },
+              { transform: 'scaleY(1.02)', opacity: 1 },
+            ],
+            { duration: 900, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' },
+          ),
+          q('.serious-xrays__spin')?.animate(
+            [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+            { duration: 16000, iterations: Infinity },
+          ),
+          q('.serious-halo__pulse')?.animate(
+            [
+              { transform: 'scale(0.86)', opacity: 0.6 },
+              { transform: 'scale(1.12)', opacity: 1 },
+              { transform: 'scale(0.86)', opacity: 0.6 },
+            ],
+            { duration: 700, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+        ];
+        all('.serious-jet__flow').forEach((el) => {
+          out.push(
+            el.animate([{ strokeDashoffset: 0 }, { strokeDashoffset: -24 }], {
+              duration: 520,
+              iterations: Infinity,
+            }),
+          );
+        });
+        all('.serious-xr').forEach((el, k) => {
+          out.push(
+            el.animate([{ opacity: 0.1 }, { opacity: 1 }, { opacity: 0.15 }], {
+              duration: 260 + ((k * 97) % 520),
+              delay: (k * 131) % 700,
+              iterations: Infinity,
+              easing: 'steps(3, end)',
+            }),
+          );
+        });
+        return out;
+      },
+    };
+    const loops = new Map();
+    const stopLoops = (node) => {
+      (loops.get(node) || []).forEach((a) => a.cancel());
+      loops.delete(node);
+    };
+    const startLoops = (node, mode) => {
+      if (loops.has(node) || reducedMotion.matches) return;
+      const q = (sel) => node.querySelector(sel);
+      const all = (sel) => Array.from(node.querySelectorAll(sel));
+      loops.set(node, loopsOf[mode](q, all).filter(Boolean));
+    };
+    const syncLoops = (mode, stopDelay) => {
+      nodes.forEach((node, i) => {
+        if (modes[i] === mode) {
+          startLoops(node, mode);
+        } else if (loops.has(node)) {
+          if (stopDelay) setTimeout(() => modes[i] !== current && stopLoops(node), stopDelay);
+          else stopLoops(node);
+        }
+      });
+    };
+
+    // Linha viva entre os emblemas: duas ondas trançadas que correm para longe
+    // do modo vigente; o trecho ligado a ele corre mais rápido e mais claro.
+    const linkLoops = links.map((link) =>
+      Array.from(link.querySelectorAll('[data-flow]')).map((path) => {
+        if (reducedMotion.matches) return null;
+        const b = path.dataset.flow === 'b';
+        return path.animate(
+          [{ strokeDashoffset: 0 }, { strokeDashoffset: b ? -26 : -34 }],
+          { duration: 1100, iterations: Infinity },
+        );
+      }),
+    );
+    const syncLinks = (at) => {
+      links.forEach((link, i) => {
+        // Vigente à esquerda do trecho: a energia corre para a direita; senão, para a esquerda.
+        const dir = at <= i ? 1 : -1;
+        const lit = i === at || i + 1 === at;
+        (linkLoops[i] || []).forEach((a) => {
+          if (a) a.updatePlaybackRate(dir * (lit ? 1.4 : 0.35));
+        });
+      });
+    };
 
     let running = [];
     let runId = 0;
@@ -316,24 +573,14 @@
         );
       });
 
-      const pipTo = getComputedStyle(pip).left;
-      if (pipTo !== before.pip) {
+      if (tagText && p.tag) {
         running.push(
-          pip.animate([{ left: before.pip }, { left: pipTo }], {
-            duration: p.travel,
-            easing: p.travelEase,
-          }),
-        );
-      }
-      if (p.flare) {
-        running.push(
-          pip.animate(
+          tagText.animate(
             [
-              { transform: 'rotate(45deg) scale(1)' },
-              { transform: 'rotate(45deg) scale(1.9)', offset: 0.75 },
-              { transform: 'rotate(45deg) scale(1)' },
+              { opacity: 0, transform: 'translateY(6px)', letterSpacing: '0.2em' },
+              { opacity: 1, transform: 'translateY(0)', letterSpacing: '0' },
             ],
-            { duration: p.travel + p.ignite * 0.5, easing: 'ease-out' },
+            { duration: p.ignite, delay: delay * 0.6, easing: p.igniteEase, fill: 'backwards' },
           ),
         );
       }
@@ -398,6 +645,8 @@
       const before = shouldPlay ? snapshot() : null;
       setState(mode);
       current = mode;
+      syncLoops(mode, before ? profiles[mode].out : 0);
+      syncLinks(modes.indexOf(mode));
       if (before) play(before, prev, mode);
 
       const themeColor = document.querySelector('meta[name="theme-color"]');
@@ -430,7 +679,7 @@
 
     applyMode(initialMode, { persist: false, updateUrl: false });
 
-    if (helpButton && helpPanel) {
+    if (helpPanel) {
       // O painel nasce alinhado à direita do controle; se isso o empurrar para
       // fora da janela (telas estreitas), desloca-o de volta para dentro.
       const keepPanelInView = () => {
@@ -446,16 +695,93 @@
       };
       const setHelp = (open) => {
         helpPanel.hidden = !open;
-        helpButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        [helpButton, tag].forEach((b) => b && b.setAttribute('aria-expanded', open ? 'true' : 'false'));
         if (open) keepPanelInView();
       };
-      helpButton.addEventListener('click', () => setHelp(helpPanel.hidden));
+      [helpButton, tag].forEach((b) => b && b.addEventListener('click', () => setHelp(helpPanel.hidden)));
       window.addEventListener('resize', () => {
         if (!helpPanel.hidden) keepPanelInView();
       });
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') setHelp(false);
       });
+      document.addEventListener('pointerdown', (event) => {
+        if (!helpPanel.hidden && !group.contains(event.target)) setHelp(false);
+      });
+    }
+
+    // Botão "?": segurar enche-o de energia por dentro (sem sair do círculo);
+    // soltar faz a energia se dispersar e voltar ao ponto inicial.
+    if (helpButton) {
+      const energy = helpButton.querySelector('[data-help-energy]');
+      const swirl = helpButton.querySelector('[data-help-swirl]');
+      const core = helpButton.querySelector('[data-help-core]');
+      const q = helpButton.querySelector('[data-help-q]');
+      let charge = [];
+      let spin = null;
+      let held = false;
+      const stopCharge = () => {
+        charge.forEach((a) => a.cancel());
+        charge = [];
+        if (spin) spin.cancel();
+        spin = null;
+      };
+      const hold = () => {
+        if (held || reducedMotion.matches || !energy) return;
+        held = true;
+        stopCharge();
+        energy.getAnimations().forEach((a) => a.cancel());
+        const grow = { duration: 700, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'forwards' };
+        charge.push(
+          energy.animate([{ opacity: 0 }, { opacity: 1 }], grow),
+          core.animate(
+            [
+              { transform: 'scale(0.15)' },
+              { transform: 'scale(1)', offset: 0.7 },
+              { transform: 'scale(0.92)' },
+            ],
+            { ...grow, duration: 900 },
+          ),
+          q.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }], grow),
+        );
+        spin = swirl.animate(
+          [
+            { transform: 'rotate(0deg)', filter: 'hue-rotate(0deg)' },
+            { transform: 'rotate(360deg)', filter: 'hue-rotate(360deg)' },
+          ],
+          { duration: 1300, iterations: Infinity },
+        );
+        // Vibração suave do núcleo enquanto segura.
+        charge.push(
+          core.animate(
+            [{ opacity: 0.8 }, { opacity: 1 }, { opacity: 0.8 }],
+            { duration: 420, iterations: Infinity, easing: 'ease-in-out' },
+          ),
+        );
+      };
+      const release = () => {
+        if (!held) return;
+        held = false;
+        if (!energy) return;
+        const cs = getComputedStyle(energy);
+        const from = { opacity: cs.opacity, transform: cs.transform };
+        const qs = getComputedStyle(q).transform;
+        stopCharge();
+        // A energia se dispersa para fora do núcleo, ainda contida no botão, e some.
+        energy.animate(
+          [from, { opacity: 0, transform: 'scale(1.35)' }],
+          { duration: 800, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' },
+        );
+        q.animate([{ transform: qs }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
+      };
+      helpButton.addEventListener('pointerdown', hold);
+      ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach((type) =>
+        helpButton.addEventListener(type, release),
+      );
+      helpButton.addEventListener('keydown', (event) => {
+        if (!event.repeat && (event.key === 'Enter' || event.key === ' ')) hold();
+      });
+      helpButton.addEventListener('keyup', release);
     }
 
     nodes.forEach((node, i) => {
@@ -484,8 +810,9 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
 
   .serious-defs {
@@ -495,15 +822,16 @@
     overflow: hidden;
   }
 
-  /* Trilha fixa de três emblemas: α · β · γ, sempre nesta ordem. */
+  /* Trilha fixa de três emblemas: α · β · γ, sempre nesta ordem. A margem à
+     esquerda dá espaço ao clarão do alfa, que se projeta para fora. */
   .serious-stage {
     --side: 56px;
-    --pitch: 92px;
-    --i: 0;
+    --pitch: 116px;
     position: relative;
     flex: 0 0 auto;
     width: calc(var(--pitch) * 2 + var(--side));
-    height: calc(var(--side) + 26px);
+    height: var(--side);
+    margin-left: 28px;
   }
 
   .serious-node {
@@ -522,7 +850,7 @@
     pointer-events: none;
   }
 
-  /* Trilho entre emblemas: um fio de luz que acende ao lado do modo vigente. */
+  /* Linha viva entre os emblemas: duas ondas trançadas que correm pelo trilho. */
   .serious-link {
     position: absolute;
     top: calc(var(--side) / 2 - 8px);
@@ -530,7 +858,7 @@
     height: 16px;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.28;
+    opacity: 0.42;
   }
 
   .serious-link[data-mode-link='0'] { left: calc(var(--side) + 4px); }
@@ -538,11 +866,34 @@
 
   .serious-link[data-lit='true'] {
     opacity: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 200, 90, 0.9));
   }
 
   .serious-link svg {
     display: block;
     overflow: visible;
+  }
+
+  .serious-link path {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .serious-link__base {
+    stroke: rgba(214, 170, 90, 0.55);
+    stroke-width: 1;
+  }
+
+  .serious-link__flow {
+    stroke: url(#serious-flow);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 8 14;
+  }
+
+  .serious-link__flow--b {
+    stroke-width: 1.4;
+    stroke-dasharray: 3 10;
   }
 
   .serious-emblem {
@@ -600,41 +951,93 @@
     filter: saturate(0.7) brightness(1);
   }
 
-  .serious-halo,
-  .serious-rays,
-  .serious-ring,
-  .serious-sparks {
+  .serious-fx {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  .serious-node[data-state='active'] .serious-fx {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .serious-node[data-state='active'] .serious-halo {
+    transform: scale(1.5);
+  }
+
+  .serious-ring { opacity: 0.4; transform: scale(1); }
+
+  .serious-flare { transform: scaleX(0.3); }
+  .serious-node[data-state='active'] .serious-flare { transform: scaleX(1); }
+
+  /* Origem de transformação no centro do emblema (viewBox 64x64) para tudo que
+     gira, pulsa ou estica; as animações contínuas ficam no JS (WAAPI). */
+  .serious-fx,
+  .serious-halo__pulse,
+  .serious-ring__spin,
+  .serious-rays__spin,
+  .serious-flare__pulse,
+  .serious-beams__spin,
+  .serious-beams__pulse,
+  .serious-shock__ring,
+  .serious-ghost,
+  .serious-glyph,
+  .serious-jets__pulse,
+  .serious-xrays__spin {
     transform-box: view-box;
     transform-origin: 32px 32px;
   }
 
-  .serious-halo { opacity: 0; transform: scale(0.6); }
-  .serious-rays { opacity: 0; transform: scale(0.75); }
-  .serious-ring { opacity: 0.4; transform: scale(1); }
-  .serious-sparks { opacity: 0; transform: scale(0.5); }
-
-  .serious-node[data-state='active'] .serious-halo { opacity: 1; transform: scale(1.5); }
-  .serious-node[data-state='active'] .serious-rays { opacity: 1; transform: scale(1); }
-  .serious-node[data-state='active'] .serious-ring { opacity: 1; }
-  .serious-node[data-state='active'] .serious-sparks { opacity: 1; transform: scale(1); }
+  .serious-spark {
+    transform-box: fill-box;
+    transform-origin: center;
+    fill: #fff3c4;
+  }
 
   .serious-rays line {
-    stroke: #ffd77a;
+    stroke: url(#serious-rainbow-us);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .serious-shock__ring {
+    stroke: #8f86d8;
+  }
+
+  .serious-ghost {
+    opacity: 0;
+  }
+
+  .serious-xr {
+    stroke: #4aa8ff;
+    stroke-width: 1.1;
+    stroke-linecap: round;
+  }
+
+  .serious-jet__flow {
+    stroke: #e8f6ff;
     stroke-width: 1.6;
     stroke-linecap: round;
+    stroke-dasharray: 5 7;
   }
 
   .serious-ornament {
     stroke: rgba(255, 216, 130, 0.5);
-    fill: rgba(255, 216, 130, 0.7);
   }
 
-  .serious-ornament--ring {
-    fill: none;
+  .serious-ornament--authorial {
+    stroke-width: 1;
+    stroke-dasharray: 0.1 10.5;
+    stroke-linecap: round;
   }
 
-  .serious-spark {
-    fill: #fff3c4;
+  .serious-ornament--editorial {
+    stroke-width: 0.8;
+  }
+
+  .serious-ornament--legacy {
+    stroke-width: 1.1;
+    stroke-dasharray: 1.6 2.1;
   }
 
   .serious-disc {
@@ -645,96 +1048,6 @@
   .serious-node[data-state='active'] .serious-disc {
     stroke: #ffe39a;
     stroke-width: 1.4;
-  }
-
-  /* Movimento contínuo do modo vigente (CSS; o modo Autoral é o único que o permite). */
-  .serious-node[data-state='active'] .serious-rays__spin,
-  .serious-node[data-state='active'] .serious-ring__spin {
-    transform-box: view-box;
-    transform-origin: 32px 32px;
-    animation: serious-spin 14s linear infinite;
-  }
-
-  .serious-node[data-state='active'] .serious-ring__spin {
-    animation-duration: 6s;
-  }
-
-  .serious-node[data-state='active'] .serious-halo__pulse {
-    transform-box: view-box;
-    transform-origin: 32px 32px;
-    animation: serious-pulse 2.6s ease-in-out infinite;
-  }
-
-  .serious-node[data-state='active'] .serious-spark {
-    animation: serious-twinkle 2.2s ease-in-out infinite;
-  }
-
-  .serious-sparks g:nth-child(2) .serious-spark { animation-delay: 0.7s; }
-  .serious-sparks g:nth-child(3) .serious-spark { animation-delay: 1.4s; }
-
-  @keyframes serious-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes serious-pulse {
-    0%, 100% { transform: scale(0.92); opacity: 0.75; }
-    50% { transform: scale(1.06); opacity: 1; }
-  }
-
-  @keyframes serious-twinkle {
-    0%, 100% { opacity: 0.25; }
-    50% { opacity: 1; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .serious-node[data-state='active'] .serious-rays__spin,
-    .serious-node[data-state='active'] .serious-ring__spin,
-    .serious-node[data-state='active'] .serious-halo__pulse,
-    .serious-node[data-state='active'] .serious-spark {
-      animation: none;
-    }
-  }
-
-  /* Identificador do modo vigente: losango dourado sob o emblema + nome. */
-  .serious-pip {
-    position: absolute;
-    top: calc(var(--side) + 7px);
-    left: calc(var(--i) * var(--pitch) + var(--side) / 2);
-    width: 9px;
-    height: 9px;
-    margin-left: -4.5px;
-    background: linear-gradient(135deg, #fff3c4, #d89a2b);
-    box-shadow: 0 0 8px 1px rgba(255, 190, 80, 0.8);
-    transform: rotate(45deg);
-    z-index: 3;
-    pointer-events: none;
-  }
-
-  .serious-tip {
-    position: absolute;
-    top: calc(var(--side) + 14px);
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--font-ui);
-    font-size: 0.68rem;
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    color: var(--ink-soft);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .serious-node[data-state='active'] .serious-tip {
-    opacity: 1;
-    color: var(--ink);
-  }
-
-  @media (hover: hover) {
-    .serious-node[data-state='idle']:hover .serious-tip {
-      opacity: 0.8;
-    }
   }
 
   .serious-burst {
@@ -762,11 +1075,63 @@
     z-index: 4;
   }
 
+  /* Etiqueta do modo vigente; clicar abre a legenda. */
+  .serious-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 36px;
+    padding: 0 0.95rem 0 0.75rem;
+    border: 1px solid rgba(205, 188, 165, 0.92);
+    border-radius: 999px;
+    background: rgba(255, 250, 240, 0.7);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+
+  .serious-tag__dot {
+    flex: 0 0 auto;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff3c4, #f2a93b 70%);
+    box-shadow: 0 0 8px 1px rgba(255, 190, 80, 0.85);
+  }
+
+  .serious-control[data-portfolio-mode-current='editorial'] .serious-tag__dot {
+    background: radial-gradient(circle at 35% 30%, #ffffff, #a99cf0 70%);
+    box-shadow: 0 0 8px 1px rgba(170, 150, 255, 0.85);
+  }
+
+  .serious-control[data-portfolio-mode-current='legacy'] .serious-tag__dot {
+    background: radial-gradient(circle at 35% 30%, #ffffff, #5fb4ff 70%);
+    box-shadow: 0 0 8px 1px rgba(95, 180, 255, 0.85);
+  }
+
+  .serious-tag__text {
+    display: inline-block;
+    min-width: 4.4em;
+    text-align: left;
+  }
+
+  .serious-tag:focus-visible,
+  .serious-help:focus-visible {
+    outline: 2px solid var(--sun);
+    outline-offset: 3px;
+  }
+
+  /* Botão "?": a energia nasce por dentro e fica contida no círculo. */
   .serious-help {
+    position: relative;
     width: 40px;
     height: 40px;
     min-height: 40px;
     padding: 0;
+    overflow: hidden;
     border: 1px solid rgba(205, 188, 165, 0.92);
     border-radius: 50%;
     background: rgba(255, 250, 240, 0.76);
@@ -775,9 +1140,34 @@
     font-size: 0.95rem;
     font-weight: 800;
     cursor: pointer;
-    align-self: flex-start;
+    touch-action: manipulation;
   }
 
+  .serious-help__energy {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .serious-help__swirl,
+  .serious-help__core {
+    transform-box: view-box;
+    transform-origin: 20px 20px;
+  }
+
+  .serious-help__q {
+    position: relative;
+    display: block;
+    line-height: 1;
+    z-index: 1;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  }
+
+  /* Legenda em vidro translúcido. */
   .serious-help-panel {
     position: absolute;
     top: calc(100% + 0.5rem);
@@ -785,21 +1175,33 @@
     z-index: 20;
     width: min(20rem, calc(100vw - 16px));
     padding: 0.9rem 1rem;
-    border: 1px solid rgba(205, 188, 165, 0.92);
+    border: 1px solid rgba(205, 188, 165, 0.7);
     border-radius: 12px;
-    background: #fffaf0;
-    color: var(--ink-soft);
-    box-shadow: 0 10px 30px rgba(94, 72, 49, 0.14);
+    background: rgba(255, 250, 240, 0.62);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    color: var(--ink);
+    box-shadow: 0 10px 30px rgba(94, 72, 49, 0.16);
     font-size: 0.86rem;
     line-height: 1.5;
   }
 
   .serious-help-panel p {
     margin: 0 0 0.45rem;
+    padding-left: 0.6rem;
+    border-left: 2px solid transparent;
   }
 
   .serious-help-panel p:last-child {
     margin: 0;
+  }
+
+  .serious-help-panel p[data-current='true'] {
+    border-left-color: #e0a62e;
+  }
+
+  .serious-control::after {
+    display: none;
   }
 
   @media (max-width: 560px) {
@@ -808,9 +1210,18 @@
     }
 
     .serious-stage {
-      --side: 42px;
-      --pitch: 64px;
-      height: calc(var(--side) + 24px);
+      --side: 40px;
+      --pitch: 58px;
+      margin-left: 10px;
+    }
+
+    /* Em telas estreitas a etiqueta desce para uma segunda linha, centralizada. */
+    .serious-control::after {
+      display: block;
+      content: '';
+      order: 2;
+      flex-basis: 100%;
+      height: 0;
     }
 
     .serious-help {
@@ -818,12 +1229,17 @@
       height: 34px;
       min-height: 34px;
     }
+
+    .serious-tag {
+      order: 3;
+      min-height: 30px;
+    }
   }
 
   /* Modos planos (Editorial e Legacy): mono-modes.css zera fundos, bordas,
-     sombras, filtros e animações com !important. Aqui o emblema segue
-     desenhado em preto e branco, sem depender de filtro nem de animação CSS:
-     o recuado fica mais claro (opacidade) e o vigente ganha raios e anel. */
+     sombras, filtros e animações CSS com !important. Os emblemas seguem
+     desenhados sem depender disso: sem filtro, só opacidade e transform, e as
+     animações contínuas rodam por WAAPI. */
   :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem,
   :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:hover,
   :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
@@ -859,28 +1275,46 @@
     opacity: 0.85;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-pip {
-    background: #000000 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-burst {
+    display: none !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tip {
+  /* Etiqueta: preto no branco, ponto sólido; hover inverte como os outros botões. */
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag .serious-tag__dot {
+    background: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 50% !important;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot {
+    background: #ffffff !important;
+  }
+
+  /* Energia do "?": branca sobre preto quando o botão inverte; o círculo some. */
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help .serious-help__q {
+    text-shadow: none !important;
     background: transparent !important;
+  }
+
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help.serious-help * {
+    background: transparent !important;
+  }
+
+  /* Legenda translúcida também nos modos planos (mono-modes.css zera o blur). */
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel {
+    background: rgba(255, 255, 255, 0.78) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid #000000 !important;
     color: #000000 !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-burst {
-    display: none !important;
+  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel * {
+    background: transparent !important;
   }
 
   /* Legacy: traço de pixel, sem suavização. */
   :global(html[data-legacy-mode='true']) .serious-art {
     shape-rendering: crispEdges;
-  }
-
-  :global(html[data-legacy-mode='true']) .serious-pip {
-    border-radius: 0 !important;
-    transform: none;
   }
 </style>
