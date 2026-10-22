@@ -1,23 +1,48 @@
 <div
   class="serious-control"
   role="group"
-  aria-label="Modo de leitura"
+  aria-label="Modo de leitura: Autoral"
   data-mode-group
 >
-  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="authorial" aria-pressed="false" aria-label="Autoral" title="Autoral">
-    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 20C7 16 11 11 17 5c1.5-1.5 3.5-1.5 3.5-1.5S20.5 5.5 19 7c-6 6-11 10-15 13z M9 15l2-2"></path></svg>
-  </button>
-  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Editorial" title="Editorial">
-    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"></path></svg>
-  </button>
-  <button class="serious-toggle serious-toggle--icon" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Legacy · 1998" title="Legacy · 1998">
-    <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 4.5h17v15h-17z M3.5 8.5h17 M6.5 6.5h.01"></path></svg>
-  </button>
+  <div class="serious-stage" data-mode-stage>
+    <span class="serious-burst" aria-hidden="true" data-mode-burst></span>
 
-  <span class="serious-current" data-mode-current aria-hidden="true">
-    <svg class="serious-star" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 1.5l2.3 8.2 8.2 2.3-8.2 2.3L12 22.5l-2.3-8.2L1.5 12l8.2-2.3z"></path></svg>
-    <span class="serious-current__name" data-mode-name>Autoral</span>
-  </span>
+    <span class="serious-node" data-mode-node="editorial" data-slot="left">
+      <button class="serious-toggle" type="button" data-mode-option="editorial" aria-label="Mudar para Editorial" title="Mudar para Editorial">
+        <span class="serious-node__icon" data-node-icon aria-hidden="true">
+          <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 3.75h7.2L18 7.55v12.7H7z M14 3.75v4h4 M9.5 11h6 M9.5 14h6 M9.5 17h4"></path></svg>
+        </span>
+        <span class="serious-node__label" data-node-label aria-hidden="true">
+          <svg class="serious-star" data-node-star viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 1.5l2.3 8.2 8.2 2.3-8.2 2.3L12 22.5l-2.3-8.2L1.5 12l8.2-2.3z"></path></svg>
+          <span data-node-name>Editorial</span>
+        </span>
+      </button>
+    </span>
+
+    <span class="serious-node" data-mode-node="authorial" data-slot="center">
+      <button class="serious-toggle" type="button" data-mode-option="authorial" aria-current="true" aria-disabled="true" tabindex="-1" aria-label="Autoral, modo atual" title="Modo atual: Autoral">
+        <span class="serious-node__icon" data-node-icon aria-hidden="true">
+          <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 20C7 16 11 11 17 5c1.5-1.5 3.5-1.5 3.5-1.5S20.5 5.5 19 7c-6 6-11 10-15 13z M9 15l2-2"></path></svg>
+        </span>
+        <span class="serious-node__label" data-node-label aria-hidden="true">
+          <svg class="serious-star" data-node-star viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 1.5l2.3 8.2 8.2 2.3-8.2 2.3L12 22.5l-2.3-8.2L1.5 12l8.2-2.3z"></path></svg>
+          <span data-node-name>Autoral</span>
+        </span>
+      </button>
+    </span>
+
+    <span class="serious-node" data-mode-node="legacy" data-slot="right">
+      <button class="serious-toggle" type="button" data-mode-option="legacy" aria-label="Mudar para Legacy · 1998" title="Mudar para Legacy · 1998">
+        <span class="serious-node__icon" data-node-icon aria-hidden="true">
+          <svg class="serious-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 4.5h17v15h-17z M3.5 8.5h17 M6.5 6.5h.01"></path></svg>
+        </span>
+        <span class="serious-node__label" data-node-label aria-hidden="true">
+          <svg class="serious-star" data-node-star viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 1.5l2.3 8.2 8.2 2.3-8.2 2.3L12 22.5l-2.3-8.2L1.5 12l8.2-2.3z"></path></svg>
+          <span data-node-name>Legacy · 1998</span>
+        </span>
+      </button>
+    </span>
+  </div>
 
   <button class="serious-help" type="button" data-mode-help aria-expanded="false" aria-controls="serious-help-panel" aria-label="Sobre os modos de leitura" title="Sobre os modos de leitura">?</button>
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
@@ -25,6 +50,8 @@
     <p><strong>Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
     <p><strong>Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
   </div>
+
+  <span class="sr-only" role="status" aria-live="polite" data-mode-status></span>
 </div>
 
 <script is:inline>
@@ -45,17 +72,61 @@
       legacy: '#ffffff',
     };
 
+    // Cada modo tem a sua personalidade de movimento. As animações usam a Web
+    // Animations API de propósito: o Editorial e o Legacy zeram animation e
+    // transition do CSS (mono-modes.css), e este controle precisa continuar
+    // mostrando a mudança nesses modos.
+    const profiles = {
+      authorial: {
+        duration: 620,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        fade: 'ease-out',
+        depth: true,
+        burst: true,
+      },
+      editorial: {
+        duration: 300,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        fade: 'linear',
+        depth: false,
+        burst: false,
+      },
+      legacy: {
+        duration: 360,
+        easing: 'steps(6, end)',
+        fade: 'steps(6, end)',
+        depth: false,
+        burst: false,
+      },
+    };
+
     const group = document.querySelector('[data-mode-group]');
     if (!group) return;
-    const options = Array.from(group.querySelectorAll('[data-mode-option]'));
+    const stage = group.querySelector('[data-mode-stage]');
+    const burst = group.querySelector('[data-mode-burst]');
+    const status = group.querySelector('[data-mode-status]');
+    const helpButton = group.querySelector('[data-mode-help]');
+    const helpPanel = group.querySelector('[data-mode-help-panel]');
+    const nodes = Array.from(group.querySelectorAll('[data-mode-node]'));
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const canAnimatePseudo =
+      typeof KeyframeEffect !== 'undefined' &&
+      'pseudoElement' in KeyframeEffect.prototype;
 
     const normalizeMode = (mode) =>
       modes.includes(mode) ? mode : 'authorial';
+    const nodeFor = (id) => nodes.find((n) => n.dataset.modeNode === id);
+    const buttonFor = (node) => node.querySelector('[data-mode-option]');
+    const px = (value) => value + 'px';
 
-    // Molécula: o modo atual primeiro, depois os demais na ordem de ciclo.
-    const orderFor = (mode) => {
+    // Ao redor do modo atual: o próximo do ciclo à esquerda, o anterior à direita.
+    const slotsFor = (mode) => {
       const i = modes.indexOf(normalizeMode(mode));
-      return [0, 1, 2].map((k) => modes[(i + k) % modes.length]);
+      return {
+        left: modes[(i + 1) % modes.length],
+        center: modes[i],
+        right: modes[(i + 2) % modes.length],
+      };
     };
 
     const syncUrl = (mode) => {
@@ -75,36 +146,220 @@
       } catch {}
     };
 
-    const currentLabel = group.querySelector('[data-mode-current]');
-    const currentName = group.querySelector('[data-mode-name]');
-    const helpButton = group.querySelector('[data-mode-help]');
-    const helpPanel = group.querySelector('[data-mode-help-panel]');
-
-    const render = (mode) => {
-      // Só as duas alternativas aparecem, na ordem de ciclo a partir do atual.
-      // Ordem visual: alternativa · modo atual · alternativa · ajuda.
-      const [before, after] = orderFor(mode).slice(1).map((id) =>
-        options.find((o) => o.dataset.modeOption === id),
-      );
-      if (before && currentLabel) group.insertBefore(before, currentLabel);
-      if (after && helpButton) group.insertBefore(after, helpButton);
-      options.forEach((option) => {
-        const id = option.dataset.modeOption;
-        const visible = id !== mode;
-        option.hidden = !visible;
-        option.setAttribute('aria-pressed', 'false');
-        option.dataset.active = 'false';
-        option.title = 'Mudar para ' + names[id];
-        if (visible) {
-          option.classList.remove('serious-toggle--enter');
-          void option.offsetWidth; // reinicia a animação de entrada
-          option.classList.add('serious-toggle--enter');
-        }
+    // A trilha tem largura fixa (simétrica) para a rotação não mexer no cabeçalho.
+    // O centro cabe o maior rótulo, medido na fonte do modo vigente.
+    const measureCenter = () => {
+      let widest = 0;
+      nodes.forEach((node) => {
+        const label = node.querySelector('[data-node-label]');
+        widest = Math.max(widest, label.getBoundingClientRect().width);
       });
-      if (currentName) currentName.textContent = names[mode];
+      if (widest > 0) {
+        stage.style.setProperty('--serious-center', px(Math.ceil(widest + 28)));
+      }
     };
 
-    const applyMode = (requestedMode, persist = true, updateUrl = true) => {
+    // Posiciona os nós, atualiza os nomes acessíveis e mantém a ordem do DOM
+    // igual à ordem visual (e, portanto, à ordem do foco).
+    const layout = (mode) => {
+      const slots = slotsFor(mode);
+      ['left', 'center', 'right'].forEach((slot) => {
+        const id = slots[slot];
+        const node = nodeFor(id);
+        const button = buttonFor(node);
+        node.dataset.slot = slot;
+        stage.appendChild(node);
+        if (slot === 'center') {
+          button.setAttribute('aria-current', 'true');
+          button.setAttribute('aria-disabled', 'true');
+          button.tabIndex = -1;
+          button.setAttribute('aria-label', names[id] + ', modo atual');
+          button.title = 'Modo atual: ' + names[id];
+        } else {
+          button.removeAttribute('aria-current');
+          button.removeAttribute('aria-disabled');
+          button.removeAttribute('tabindex');
+          button.setAttribute('aria-label', 'Mudar para ' + names[id]);
+          button.title = 'Mudar para ' + names[id];
+        }
+      });
+    };
+
+    const snapshot = () =>
+      new Map(
+        nodes.map((node) => [
+          node,
+          {
+            slot: node.dataset.slot,
+            left: node.offsetLeft,
+            width: node.offsetWidth,
+          },
+        ]),
+      );
+
+    let running = [];
+    let runId = 0;
+    let unlockTimer = 0;
+
+    const unlockPointer = () => {
+      clearTimeout(unlockTimer);
+      delete stage.dataset.animating;
+    };
+
+    const clearOrbit = () =>
+      nodes.forEach((node) => node.removeAttribute('data-orbit'));
+
+    // Termina qualquer transição em curso: o estado final já está no CSS.
+    const settle = () => {
+      running.forEach((animation) => {
+        try {
+          animation.finish();
+        } catch {}
+      });
+      running = [];
+      clearOrbit();
+      unlockPointer();
+    };
+
+    // Rotação em três posições. Quem vai do centro para um lado encolhe, quem vai
+    // de um lado para o centro se expande, e o terceiro dá a volta por trás.
+    // Os dois que se movem lado a lado usam a mesma curva e duração, então
+    // andam em comboio, sem sobrepor.
+    const play = (before, mode) => {
+      const profile = profiles[mode];
+      const duration = profile.duration;
+      const fade = { duration, easing: profile.fade };
+      const id = ++runId;
+      // Enquanto os nós passam, o ponteiro parado não pode acender o hover de
+      // quem está por baixo dele; libera quando o movimento já assentou.
+      stage.dataset.animating = 'true';
+      unlockTimer = setTimeout(unlockPointer, duration * 0.6);
+
+      nodes.forEach((node) => {
+        const from = before.get(node);
+        const to = {
+          slot: node.dataset.slot,
+          left: node.offsetLeft,
+          width: node.offsetWidth,
+        };
+        if (from.slot === to.slot) return;
+        const orbit = from.slot !== 'center' && to.slot !== 'center';
+        const icon = node.querySelector('[data-node-icon]');
+        const label = node.querySelector('[data-node-label]');
+        const star = node.querySelector('[data-node-star]');
+
+        if (orbit && profile.depth) {
+          // Autoral: a volta é uma órbita, o nó recua em profundidade por trás.
+          const swing = 'cubic-bezier(0.45, 0, 0.55, 1)';
+          running.push(
+            node.animate(
+              [
+                { left: px(from.left), transform: 'translateY(0) scale(1)', opacity: 1, easing: swing },
+                { left: px((from.left + to.left) / 2), transform: 'translateY(-4px) scale(0.72)', opacity: 0.4, easing: swing },
+                { left: px(to.left), transform: 'translateY(0) scale(1)', opacity: 1 },
+              ],
+              { duration, easing: 'linear' },
+            ),
+          );
+        } else if (orbit) {
+          // Editorial e Legacy: o nó some enquanto cruza por trás e reaparece do
+          // outro lado, assim não sobra uma fatia dele no vão entre os outros dois.
+          running.push(
+            node.animate(
+              [
+                { left: px(from.left), opacity: 1 },
+                { opacity: 0, offset: 0.15 },
+                { opacity: 0, offset: 0.85 },
+                { left: px(to.left), opacity: 1 },
+              ],
+              { duration, easing: profile.easing },
+            ),
+          );
+        } else {
+          running.push(
+            node.animate(
+              [
+                { left: px(from.left), width: px(from.width) },
+                { left: px(to.left), width: px(to.width) },
+              ],
+              { duration, easing: profile.easing },
+            ),
+          );
+        }
+        if (orbit) node.dataset.orbit = 'true';
+
+        if (to.slot === 'center') {
+          const dx = from.slot === 'left' ? -12 : 12;
+          const away = 'translateX(' + dx + 'px)';
+          running.push(
+            icon.animate([{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }], fade),
+            label.animate(
+              [
+                { opacity: 0, transform: away },
+                { opacity: 0, transform: away, offset: 0.3 },
+                { opacity: 1, transform: 'none' },
+              ],
+              fade,
+            ),
+          );
+          // A barra do indicador (Editorial) nasce junto com o rótulo. Só onde o
+          // navegador anima pseudo-elementos, para não apagar o botão inteiro.
+          if (canAnimatePseudo && mode === 'editorial') {
+            running.push(
+              buttonFor(node).animate(
+                [{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }],
+                { duration, easing: profile.fade, pseudoElement: '::after' },
+              ),
+            );
+          }
+          if (profile.burst && star) {
+            running.push(
+              star.animate(
+                [{ transform: 'rotate(-200deg) scale(0.3)' }, { transform: 'none' }],
+                { duration, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' },
+              ),
+            );
+          }
+        } else if (from.slot === 'center') {
+          running.push(
+            label.animate([{ opacity: 1 }, { opacity: 0, offset: 0.35 }, { opacity: 0 }], fade),
+            icon.animate([{ opacity: 0 }, { opacity: 0, offset: 0.3 }, { opacity: 1 }], fade),
+          );
+        }
+      });
+
+      if (profile.burst && burst) {
+        running.push(
+          burst.animate(
+            [
+              { opacity: 0.9, transform: 'scale(0.96, 0.9)' },
+              { opacity: 0, transform: 'scale(1.18, 1.5)' },
+            ],
+            { duration: duration + 120, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+          ),
+        );
+      }
+
+      Promise.all(running.map((a) => a.finished.catch(() => {}))).then(() => {
+        if (id !== runId) return;
+        running = [];
+        clearOrbit();
+        unlockPointer();
+      });
+    };
+
+    const render = (mode, animate) => {
+      settle();
+      const before = animate ? snapshot() : null;
+      layout(mode);
+      measureCenter();
+      if (before && !reducedMotion.matches) play(before, mode);
+    };
+
+    const applyMode = (
+      requestedMode,
+      { persist = true, updateUrl = true, animate = false, announce = false } = {},
+    ) => {
       const mode = normalizeMode(requestedMode);
 
       document.documentElement.dataset.portfolioMode = mode;
@@ -115,7 +370,7 @@
 
       group.dataset.portfolioModeCurrent = mode;
       group.setAttribute('aria-label', 'Modo de leitura: ' + names[mode]);
-      render(mode);
+      render(mode, animate);
 
       const themeColor = document.querySelector('meta[name="theme-color"]');
       if (themeColor) themeColor.setAttribute('content', themeColors[mode]);
@@ -129,6 +384,7 @@
       }
 
       if (updateUrl) syncUrl(mode);
+      if (announce && status) status.textContent = 'Modo de leitura: ' + names[mode];
 
       window.dispatchEvent(new CustomEvent('portfolio:mode', { detail: { mode } }));
       window.dispatchEvent(
@@ -144,24 +400,58 @@
           ? 'legacy'
           : 'authorial');
 
-    applyMode(initialMode, false, false);
+    applyMode(initialMode, { persist: false, updateUrl: false });
+
+    // As fontes e o breakpoint mudam a largura dos rótulos: mede de novo.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measureCenter);
+    }
+    let resizeFrame = 0;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(measureCenter);
+    });
 
     if (helpButton && helpPanel) {
+      // O painel nasce alinhado à direita do controle; se isso o empurrar para
+      // fora da janela (telas estreitas), desloca-o de volta para dentro.
+      const keepPanelInView = () => {
+        helpPanel.style.right = '0px';
+        const rect = helpPanel.getBoundingClientRect();
+        const margin = 8;
+        const viewport = document.documentElement.clientWidth;
+        if (rect.left < margin) {
+          helpPanel.style.right = px(rect.left - margin);
+        } else if (rect.right > viewport - margin) {
+          helpPanel.style.right = px(rect.right - (viewport - margin));
+        }
+      };
       const setHelp = (open) => {
         helpPanel.hidden = !open;
         helpButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) keepPanelInView();
       };
       helpButton.addEventListener('click', () => setHelp(helpPanel.hidden));
+      window.addEventListener('resize', () => {
+        if (!helpPanel.hidden) keepPanelInView();
+      });
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') setHelp(false);
       });
     }
 
-    options.forEach((option) => {
-      option.addEventListener('click', () => {
-        const id = option.dataset.modeOption;
-        if (id === normalizeMode(document.documentElement.dataset.portfolioMode)) return;
-        applyMode(id);
+    nodes.forEach((node) => {
+      const button = buttonFor(node);
+      button.addEventListener('click', () => {
+        if (button.getAttribute('aria-current') === 'true') return;
+        const slot = node.dataset.slot;
+        const hadFocus = document.activeElement === button;
+        applyMode(node.dataset.modeNode, { animate: true, announce: true });
+        if (hadFocus) {
+          // O foco acompanha a posição: Enter de novo segue no mesmo sentido.
+          const next = nodes.find((n) => n.dataset.slot === slot);
+          if (next) buttonFor(next).focus({ preventScroll: true });
+        }
       });
     });
   })();
@@ -176,16 +466,75 @@
     gap: 0.35rem;
   }
 
-  .serious-current {
+  /* Trilha de largura fixa e simétrica: lado · centro · lado. */
+  .serious-stage {
+    --serious-side: 44px;
+    --serious-gap: 6px;
+    --serious-center: 8.9rem;
+    position: relative;
+    flex: 0 0 auto;
+    width: calc(var(--serious-side) * 2 + var(--serious-gap) * 2 + var(--serious-center));
+    height: var(--serious-side);
+  }
+
+  .serious-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: var(--serious-side);
+    height: 100%;
+  }
+
+  .serious-node[data-slot='center'] {
+    left: calc(var(--serious-side) + var(--serious-gap));
+    width: var(--serious-center);
+  }
+
+  .serious-node[data-slot='right'] {
+    left: calc(var(--serious-side) + var(--serious-center) + var(--serious-gap) * 2);
+  }
+
+  /* Quem dá a volta passa por trás dos outros dois. */
+  .serious-node[data-orbit] {
+    z-index: 0;
+  }
+
+  .serious-stage[data-animating] .serious-toggle {
+    pointer-events: none;
+  }
+
+  .serious-node > .serious-toggle {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .serious-node__icon,
+  .serious-node__label {
+    grid-area: 1 / 1;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    min-height: 44px;
-    padding: 0 0.5rem;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--ink);
+    justify-content: center;
+  }
+
+  .serious-node__label {
+    gap: 0.38rem;
+    opacity: 0;
     white-space: nowrap;
+  }
+
+  .serious-node[data-slot='center'] .serious-node__icon {
+    opacity: 0;
+  }
+
+  .serious-node[data-slot='center'] .serious-node__label {
+    opacity: 1;
   }
 
   .serious-star {
@@ -194,10 +543,17 @@
     filter: drop-shadow(0 0 6px rgba(212, 165, 72, 0.7));
   }
 
-  .serious-toggle--icon {
-    width: 44px;
-    min-width: 44px;
-    padding: 0;
+  /* Pulso dourado no centro quando o modo muda (só no Autoral). */
+  .serious-burst {
+    position: absolute;
+    top: 0;
+    left: calc(var(--serious-side) + var(--serious-gap));
+    width: var(--serious-center);
+    height: 100%;
+    border: 2px solid var(--sun);
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .serious-help {
@@ -218,7 +574,7 @@
     top: calc(100% + 0.5rem);
     right: 0;
     z-index: 20;
-    width: min(20rem, 86vw);
+    width: min(20rem, calc(100vw - 16px));
     padding: 0.9rem 1rem;
     border: 1px solid rgba(205, 188, 165, 0.92);
     border-radius: 12px;
@@ -235,46 +591,6 @@
 
   .serious-help-panel p:last-child {
     margin: 0;
-  }
-
-  .serious-toggle--enter {
-    animation: serious-enter 260ms ease both;
-  }
-
-  @keyframes serious-enter {
-    from {
-      opacity: 0;
-      transform: translateX(-10px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .serious-toggle--enter {
-      animation: none;
-    }
-  }
-
-  .serious-toggle[data-active='true'] {
-    border-color: var(--sun);
-    box-shadow: inset 0 -2px 0 var(--sun);
-    color: var(--ink);
-    font-weight: 800;
-  }
-
-  :global(html[data-serious-mode='true']) .serious-toggle[data-active='true'] {
-    background: #000000;
-    color: #ffffff;
-    box-shadow: none;
-  }
-
-  :global(html[data-legacy-mode='true']) .serious-toggle[data-active='true'] {
-    border-style: inset;
-    box-shadow: none;
-    font-weight: 400;
   }
 
   .serious-toggle {
@@ -312,6 +628,20 @@
     flex: 0 0 auto;
   }
 
+  /* Indicador do modo vigente: o nó do centro. A estrela é o sinal que
+     sobrevive nos modos em tons de cinza. */
+  .serious-toggle[aria-current='true'],
+  .serious-toggle[aria-current='true']:hover {
+    transform: none;
+    border: 2px solid var(--sun);
+    background: linear-gradient(180deg, #fffaf0, #f7e6b8);
+    color: var(--ink);
+    box-shadow:
+      0 0 0 3px rgba(212, 165, 72, 0.2),
+      0 8px 20px -10px rgba(143, 90, 28, 0.6);
+    cursor: default;
+  }
+
   :global(html[data-serious-mode='true']) .serious-toggle {
     border-color: #000000;
     border-radius: 2px;
@@ -324,8 +654,21 @@
     background: #eeeeee;
   }
 
+  :global(html[data-serious-mode='true']) .serious-toggle[aria-current='true'] {
+    border-width: 2px;
+  }
+
+  :global(html[data-serious-mode='true']) .serious-toggle[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 4px;
+    height: 3px;
+    background: #000000;
+  }
+
   :global(html[data-legacy-mode='true']) .serious-toggle {
-    min-height: 44px;
     padding: 0.28rem 0.55rem;
     border: 2px outset #efefef;
     border-radius: 0;
@@ -348,16 +691,22 @@
     border-style: inset;
   }
 
+  /* Botão afundado: o modo atual no Legacy. */
+  :global(html[data-legacy-mode='true']) .serious-toggle[aria-current='true'] {
+    font-weight: 700;
+    box-shadow:
+      inset 1px 1px #000000,
+      inset -1px -1px #ffffff,
+      inset 2px 2px #808080,
+      inset -2px -2px #dfdfdf !important;
+  }
+
   @media (max-width: 720px) {
     .serious-toggle {
-      min-height: 44px;
-      padding: 0.48rem 0.64rem;
       font-size: 0.72rem;
     }
 
     :global(html[data-legacy-mode='true']) .serious-toggle {
-      min-height: 44px;
-      padding: 0.28rem 0.5rem;
       font-size: 0.72rem;
     }
   }

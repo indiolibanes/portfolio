@@ -84,7 +84,15 @@ check('curiosidades: header link', header.includes('href="/curiosidades/"'));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));
 check('modes: preserve three-state control',
-  modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Mudar para ') && modes.includes('serious-toggle--enter') && modes.includes('hidden = !visible'));
+  modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
+check('modes: alternatives flank the current mode (next on the left, previous on the right)',
+  modes.includes('left: modes[(i + 1) % modes.length]') && modes.includes('right: modes[(i + 2) % modes.length]'));
+check('modes: the current mode is an indicator, not a hidden button',
+  !modes.includes('hidden = !visible') && modes.includes("button.setAttribute('aria-current', 'true')") && modes.includes('button.tabIndex = -1'));
+check('modes: transition uses Web Animations (flat modes zero CSS animation) and honours reduced motion',
+  modes.includes('.animate(') && modes.includes("matchMedia('(prefers-reduced-motion: reduce)')") && modes.includes('reducedMotion.matches'));
+check('modes: pointer locked while nodes pass, and announced to screen readers',
+  modes.includes("stage.dataset.animating = 'true'") && modes.includes('data-mode-status') && modes.includes('aria-live="polite"'));
 check('motion: viewport and reduced preference', motion.includes('IntersectionObserver') && motion.includes('prefers-reduced-motion: reduce'));
 check('motion: two simultaneous loops', motion.includes('.slice(0, 2)'));
 check('motion: static image fallback', image.includes('prefers-reduced-motion: reduce') && image.includes('data-motion-still'));
