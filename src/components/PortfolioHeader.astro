@@ -5,26 +5,54 @@ import SeriousModeToggle from './SeriousModeToggle.astro';
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
 
 // Tabela periódica do menu: cada destino é escrito com símbolos de elementos (Sobre = S·O·B·Re).
-// cat: nm não metal · md semimetal · tm metal de transição · ae alcalino-terroso · ln lantanídeo · hl halogênio
-const EL: Record<string, [number, string, string]> = {
-  S: [16, 'Enxofre', 'nm'], O: [8, 'Oxigênio', 'nm'], B: [5, 'Boro', 'md'], Re: [75, 'Rênio', 'tm'],
-  La: [57, 'Lantânio', 'ln'], Ra: [88, 'Rádio', 'ae'], T: [1, 'Trítio', 'nm'], Mo: [42, 'Molibdênio', 'tm'],
-  Te: [52, 'Telúrio', 'md'], D: [1, 'Deutério', 'nm'], Ba: [56, 'Bário', 'ae'], Ti: [22, 'Titânio', 'tm'],
-  P: [15, 'Fósforo', 'nm'], Er: [68, 'Érbio', 'ln'], Cu: [29, 'Cobre', 'tm'], I: [53, 'Iodo', 'hl'],
-  Ca: [20, 'Cálcio', 'ae'], Ir: [77, 'Irídio', 'tm'], Co: [27, 'Cobalto', 'tm'], N: [7, 'Nitrogênio', 'nm'],
-  Ta: [73, 'Tântalo', 'tm'],
-};
-const tiles = (symbols: string[]) => symbols.map((sym) => ({ sym, z: EL[sym][0], name: EL[sym][1], cat: EL[sym][2] }));
+// As letras que não existem na tabela ficam soltas, ao lado dos azulejos, como no logotipo de Breaking Bad.
+const ELEMENTS = 'H:Hidrogênio,He:Hélio,Li:Lítio,Be:Berílio,B:Boro,C:Carbono,N:Nitrogênio,O:Oxigênio,F:Flúor,Ne:Neônio,Na:Sódio,Mg:Magnésio,Al:Alumínio,Si:Silício,P:Fósforo,S:Enxofre,Cl:Cloro,Ar:Argônio,K:Potássio,Ca:Cálcio,Sc:Escândio,Ti:Titânio,V:Vanádio,Cr:Cromo,Mn:Manganês,Fe:Ferro,Co:Cobalto,Ni:Níquel,Cu:Cobre,Zn:Zinco,Ga:Gálio,Ge:Germânio,As:Arsênio,Se:Selênio,Br:Bromo,Kr:Criptônio,Rb:Rubídio,Sr:Estrôncio,Y:Ítrio,Zr:Zircônio,Nb:Nióbio,Mo:Molibdênio,Tc:Tecnécio,Ru:Rutênio,Rh:Ródio,Pd:Paládio,Ag:Prata,Cd:Cádmio,In:Índio,Sn:Estanho,Sb:Antimônio,Te:Telúrio,I:Iodo,Xe:Xenônio,Cs:Césio,Ba:Bário,La:Lantânio,Ce:Cério,Pr:Praseodímio,Nd:Neodímio,Pm:Promécio,Sm:Samário,Eu:Európio,Gd:Gadolínio,Tb:Térbio,Dy:Disprósio,Ho:Hólmio,Er:Érbio,Tm:Túlio,Yb:Itérbio,Lu:Lutécio,Hf:Háfnio,Ta:Tântalo,W:Tungstênio,Re:Rênio,Os:Ósmio,Ir:Irídio,Pt:Platina,Au:Ouro,Hg:Mercúrio,Tl:Tálio,Pb:Chumbo,Bi:Bismuto,Po:Polônio,At:Astato,Rn:Radônio,Fr:Frâncio,Ra:Rádio,Ac:Actínio,Th:Tório,Pa:Protactínio,U:Urânio,Np:Netúnio,Pu:Plutônio,Am:Amerício,Cm:Cúrio,Bk:Berquélio,Cf:Califórnio,Es:Einstênio,Fm:Férmio,Md:Mendelévio,No:Nobélio,Lr:Laurêncio,Rf:Rutherfórdio,Db:Dúbnio,Sg:Seabórgio,Bh:Bóhrio,Hs:Hássio,Mt:Meitnério,Ds:Darmstádio,Rg:Roentgênio,Cn:Copernício,Nh:Nihônio,Fl:Fleróvio,Mc:Moscóvio,Lv:Livermório,Ts:Tenesso,Og:Oganessônio';
+const TABLE = new Map<string, { z: number; name: string; cat: string }>();
+const group = (sym: string, z: number) =>
+  ['H', 'C', 'N', 'O', 'P', 'S', 'Se'].includes(sym) ? 'nm'
+  : ['F', 'Cl', 'Br', 'I', 'At', 'Ts'].includes(sym) ? 'hl'
+  : ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn', 'Og'].includes(sym) ? 'ng'
+  : ['Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'].includes(sym) ? 'alk'
+  : ['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra'].includes(sym) ? 'ae'
+  : ['B', 'Si', 'Ge', 'As', 'Sb', 'Te'].includes(sym) ? 'md'
+  : z >= 57 && z <= 71 ? 'ln'
+  : z >= 89 && z <= 103 ? 'ac'
+  : ['Al', 'Ga', 'In', 'Sn', 'Tl', 'Pb', 'Bi', 'Po', 'Nh', 'Fl', 'Mc', 'Lv'].includes(sym) ? 'pt'
+  : 'tm';
+ELEMENTS.split(',').forEach((entry, idx) => {
+  const [sym, name] = entry.split(':');
+  TABLE.set(sym.toLowerCase(), { z: idx + 1, name, cat: group(sym, idx + 1) });
+});
+// Segmenta a palavra maximizando as letras cobertas por símbolos reais.
+type Seg = { sym: string; z: number; name: string; cat: string } | { ch: string };
+function spell(word: string): Seg[] {
+  const low = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const n = low.length;
+  const best: { score: number; segs: Seg[] }[] = Array.from({ length: n + 1 }, () => ({ score: -1, segs: [] }));
+  best[n] = { score: 0, segs: [] };
+  for (let i = n - 1; i >= 0; i -= 1) {
+    let pick = { score: best[i + 1].score, segs: [{ ch: word[i].toUpperCase() } as Seg, ...best[i + 1].segs] };
+    for (const len of [1, 2]) {
+      const key = low.slice(i, i + len);
+      const el = key.length === len ? TABLE.get(key) : undefined;
+      if (!el) continue;
+      const score = best[i + len].score + len;
+      if (score > pick.score) pick = { score, segs: [{ sym: key[0].toUpperCase() + key.slice(1), ...el } as Seg, ...best[i + len].segs] };
+    }
+    best[i] = pick;
+  }
+  return best[0].segs;
+}
 const NAV = [
-  { href: '/#sobre', id: 'sobre', label: 'Sobre', el: tiles(['S', 'O', 'B', 'Re']) },
-  { href: '/#lab', id: 'lab', label: 'Laboratório', el: tiles(['La', 'B', 'O', 'Ra', 'T', 'O']) },
-  { href: '/#metodo', id: 'metodo', label: 'Método', el: tiles(['Mo', 'Te', 'D', 'O']) },
-  { href: '/#bastidores', id: 'bastidores', label: 'Bastidores', el: tiles(['Ba', 'S', 'Ti', 'D', 'O', 'Re', 'S']) },
-  { href: '/#percurso', id: 'percurso', label: 'Percurso', el: tiles(['P', 'Er', 'Cu', 'S', 'O']) },
-  { href: '/#musica', id: 'musica', label: 'Música', el: tiles(['Mo', 'S', 'I', 'Ca']) },
-  { href: '/curiosidades/', id: '', label: 'Curiosidades', el: tiles(['Cu', 'Ir', 'O', 'S', 'I', 'D']) },
-  { href: '/#contato', id: 'contato', label: 'Contato', el: tiles(['Co', 'N', 'Ta', 'T', 'O']), cta: true },
-];
+  { href: '/#sobre', id: 'sobre', label: 'Sobre' },
+  { href: '/#lab', id: 'lab', label: 'Laboratório' },
+  { href: '/#metodo', id: 'metodo', label: 'Método' },
+  { href: '/#bastidores', id: 'bastidores', label: 'Bastidores' },
+  { href: '/#percurso', id: 'percurso', label: 'Percurso' },
+  { href: '/#musica', id: 'musica', label: 'Música' },
+  { href: '/curiosidades/', id: '', label: 'Curiosidades' },
+  { href: '/#contato', id: 'contato', label: 'Contato', cta: true },
+].map((item) => ({ ...item, segs: spell(item.label) }));
 ---
 
 <header class="site-header">
@@ -61,9 +89,9 @@ const NAV = [
           >
             <span class="nav-label">{item.label}</span>
             <span class="nav-elements" aria-hidden="true">
-              {item.el.map((e) => (
-                <span class="el" data-cat={e.cat}><i>{e.z}</i><b>{e.sym}</b><u>{e.name}</u></span>
-              ))}
+              {item.segs.map((e) => 'sym' in e
+                ? <span class="el" data-cat={e.cat}><i>{e.z}</i><b>{e.sym}</b><u>{e.name}</u></span>
+                : <span class="ch">{e.ch}</span>)}
             </span>
           </a>
         ))}
@@ -150,7 +178,7 @@ const NAV = [
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     let pulse = 0;
     const reveal = () => {
-      const tiles = [...panel.querySelectorAll('.el')];
+      const tiles = [...panel.querySelectorAll('.el, .ch')];
       tiles.forEach((el) => {
         el.style.setProperty('--fx', FX[(Math.random() * FX.length) | 0]);
         el.style.setProperty('--d', `${Math.round(Math.random() * 520)}ms`);
@@ -310,9 +338,9 @@ const NAV = [
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a[aria-current='page'] { background: #2b21180f; border-color: #2b211840; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a.nav-cta { background: transparent; color: #2b2118; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-label { font-family: var(--font-ui); font-size: .84rem; font-weight: 800; letter-spacing: .01em; }
-  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-elements { display: flex; flex-wrap: wrap; gap: 4px; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-elements { display: flex; flex-wrap: wrap; gap: 3px; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el {
-    position: relative; width: 50px; height: 58px; flex: 0 0 auto; display: block; text-align: center;
+    position: relative; width: 42px; height: 52px; flex: 0 0 auto; display: block; text-align: center;
     border: 1.5px solid #2b2118; border-radius: 6px; box-shadow: 2px 2px 0 #2b211833;
     background: var(--el-bg, #e7dcc0); color: #2b2118; transition: transform .25s cubic-bezier(.2,.8,.2,1.2), box-shadow .25s;
   }
@@ -325,6 +353,11 @@ const NAV = [
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ae'] { --el-bg: #f4e0a0; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ln'] { --el-bg: #e4c6ec; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='hl'] { --el-bg: #bfe0f2; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ng'] { --el-bg: #dccdf2; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='alk'] { --el-bg: #f6bfa8; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='pt'] { --el-bg: #d3d9df; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ac'] { --el-bg: #f2c0d8; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .ch { display: inline-flex; align-items: center; height: 52px; padding: 0 2px; font: 800 1.9rem/1 Georgia, 'Times New Roman', serif; color: #2b2118; animation: var(--fx, el-zoom) 560ms cubic-bezier(.2,.8,.2,1.1) var(--d, 0ms) both; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el { transform: translateY(-2px); box-shadow: 2px 4px 0 #2b211844; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el:nth-child(odd) { transform: translateY(-3px) rotate(-3deg); }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el:nth-child(even) { transform: translateY(-3px) rotate(3deg); }
@@ -344,6 +377,7 @@ const NAV = [
   @media (max-width: 560px) {
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a { grid-template-columns: 1fr; gap: .25rem; padding: .35rem .45rem; }
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el { width: 38px; height: 46px; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .ch { height: 46px; font-size: 1.6rem; }
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el b { inset: 12px 0 10px; font-size: 1.15rem; }
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el i { font-size: 7px; left: 4px; }
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el u { display: none; }

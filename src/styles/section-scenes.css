@@ -93,3 +93,42 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #percurso .b
 /* ---------- Contato: o céu agora é um canvas; o campo de estrelas em CSS sai de cena ---------- */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .cosmic-starfield { display: none; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-intro :is(h2, .method-lead, .eyebrow) { text-shadow: 0 1px 12px #1b3024cc, 0 0 3px #1b302499; }
+
+/* ---------- Footer: o modo Editorial fica sem navegação e sem currículo ---------- */
+html[data-serious-mode='true'] .footer-nav,
+html[data-serious-mode='true'] .footer-extra { display: none !important; }
+
+/* ---------- Método: link discreto para o estudo de caso + etapas como fluxogramas ---------- */
+.fl-defs, .method-flow { display: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage { position: relative; z-index: 2; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage-link {
+  position: absolute; right: 0; top: -1.1rem; display: inline-flex; gap: 0.4rem; align-items: baseline;
+  padding: 0.28rem 0.7rem; border-radius: 999px; background: rgba(255, 250, 236, 0.85); border: 1px dashed rgba(122, 82, 18, 0.5);
+  font: 700 0.72rem/1.2 'Portfolio Typewriter', ui-monospace, monospace; color: #6a4a12; text-decoration: none; letter-spacing: 0.02em;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1.2), background 0.25s, color 0.25s;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage-link span:first-child { font-family: 'Portfolio Script', cursive; font-size: 1rem; font-weight: 600; color: #b0392a; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage-link:hover,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage-link:focus-visible { transform: translateY(-2px) rotate(-1deg); background: #fff3c2; color: #2b2118; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow {
+  display: block; width: 100%; height: auto; margin-top: auto; padding-top: 1rem; overflow: visible;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li { display: flex; flex-direction: column; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow text {
+  font-family: 'Portfolio Script', 'Segoe Script', cursive; font-weight: 600; font-size: 16.5px; fill: #2b2118;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow text.fl-num { font-size: 12px; font-weight: 700; text-anchor: middle; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow text.fl-note { font-size: 13.5px; font-weight: 600; fill: #8a3b2a; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow .fl-arrow path { stroke-width: 1.6; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-flow .fl-loop { stroke-dasharray: 5 4; animation: fl-march 1.4s linear infinite; }
+
+@keyframes fl-march { to { stroke-dashoffset: -18; } }
+@keyframes fl-pop { 0% { opacity: 0; transform: scale(0.82); } 70% { transform: scale(1.04); } 100% { opacity: 1; transform: scale(1); } }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps li:not(.is-in) .fl-node { opacity: 0; }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps li.is-in .fl-node {
+  transform-box: fill-box; transform-origin: center; animation: fl-pop 0.55s cubic-bezier(0.2, 0.8, 0.2, 1.1) both; animation-delay: calc(0.35s + var(--i, 0) * 0.2s);
+}
+@media (prefers-reduced-motion: reduce) {
+  html #metodo .method-flow .fl-loop, html #metodo .method-steps li.is-in .fl-node { animation: none !important; opacity: 1 !important; }
+}

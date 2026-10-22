@@ -20,7 +20,7 @@ const today = new Date();
       </nav>
       <p class="footer-legal">
         © {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.
-        {PROFILE.resumePdf && (<> · <a class="footer-resume" href={PROFILE.resumePdf} target="_blank" rel="noopener noreferrer">Currículo (PDF)<span class="sr-only"> — abre em nova aba</span></a> · atualizado em outubro de 2026</>)}
+        {PROFILE.resumePdf && (<span class="footer-extra"> · <a class="footer-resume" href={PROFILE.resumePdf} target="_blank" rel="noopener noreferrer">Currículo (PDF)<span class="sr-only"> — abre em nova aba</span></a> · atualizado em outubro de 2026</span>)}
       </p>
     </div>
 
