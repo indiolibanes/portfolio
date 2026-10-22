@@ -1,0 +1,46 @@
+/* Gavetas translúcidas: cabeçalho, gaveta do menu, legenda dos modos e rodapé.
+   A tinta (tonalidade e opacidade) vem de --drawer-tint, animada por JS
+   (PortfolioFooter.astro). Não é herdada: só a própria gaveta é reavaliada. */
+@property --drawer-tint {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(255, 250, 240, 0.72);
+}
+
+html:not([data-legacy-mode='true']) :is(.site-header .nav-shell, .portfolio-footer .footer-shell, .site-header .nav-sections, .serious-help-panel) {
+  background: var(--drawer-tint, rgba(255, 250, 240, 0.72)) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+  backdrop-filter: blur(16px) saturate(125%) !important;
+}
+
+/* Legacy mantém o cabeçalho e o rodapé de janela opaca; só a legenda é vidro. */
+html[data-legacy-mode='true'] .serious-help-panel {
+  background: rgba(255, 255, 255, 0.8) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Rodapé: o canvas de matemática vive por dentro da gaveta. */
+.portfolio-footer .footer-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.footer-math {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  color: #2b2118;
+  pointer-events: none;
+}
+
+html:is([data-serious-mode='true'], [data-legacy-mode='true']) .footer-math {
+  color: #000;
+}
+
+html[data-legacy-mode='true'] .footer-math {
+  display: none;
+}

@@ -43,6 +43,9 @@ function spell(word: string): Seg[] {
   }
   return best[0].segs;
 }
+// Normas e padrões que correm por dentro da gaveta do cabeçalho (decorativo).
+const STANDARDS_A = ['ISO 9001', 'NBR 6023', 'ISO 690', 'ISA-88', 'ISO 8601', 'NBR 10520', 'IEC 61131-3', 'ISO 15489', 'NBR 14724', 'ISO/IEC 27001', 'NBR 6022', 'ISA-95', 'ISO 26324', 'NBR 6024', 'ISO 14001', 'IEEE 830', 'NBR 6027', 'ISO 31000', 'ISO 302', 'NBR 6028'];
+const STANDARDS_B = ['ISA-5.1', 'ISO 19650', 'NBR 15287', 'IEC 62443', 'ISO 2108', 'NBR 5410', 'ISO/IEC 25010', 'ISA-101', 'TAPPI T 236', 'ISO 15836', 'NR-10', 'ISO/IEC/IEEE 82079-1', 'NBR ISO 9001', 'ISA-18.2', 'ISO 12207', 'NR-12', 'ABNT NBR 6034', 'ISO 3166', 'IEC 60617', 'ISO 80000'];
 const NAV = [
   { href: '/#sobre', id: 'sobre', label: 'Sobre' },
   { href: '/#lab', id: 'lab', label: 'Laboratório' },
@@ -57,6 +60,14 @@ const NAV = [
 
 <header class="site-header">
   <nav class="nav-shell" aria-label="Navegação principal">
+    <div class="nav-standards" aria-hidden="true" data-nav-standards>
+      <div class="nav-standards__row" data-standards-row="a">
+        {[0, 1].map(() => STANDARDS_A.map((t) => <span>{t}</span>))}
+      </div>
+      <div class="nav-standards__row" data-standards-row="b">
+        {[0, 1].map(() => STANDARDS_B.map((t) => <span>{t}</span>))}
+      </div>
+    </div>
     <a class="brand" href="/#top" aria-label={`${PROFILE.name}, início`}>
       <span class="brand-mark" aria-hidden="true">K</span>
       <span class="brand-copy">
@@ -74,6 +85,23 @@ const NAV = [
         data-nav-menu-toggle
         hidden
       >
+        <svg class="nav-plasma" data-nav-plasma viewBox="0 0 80 44" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <defs>
+            <radialGradient id="nav-plasma-a"><stop offset="0" stop-color="#ff6fa8"></stop><stop offset="0.55" stop-color="#ff6fa8" stop-opacity="0.7"></stop><stop offset="1" stop-color="#ff6fa8" stop-opacity="0"></stop></radialGradient>
+            <radialGradient id="nav-plasma-b"><stop offset="0" stop-color="#ffd15a"></stop><stop offset="0.55" stop-color="#ffd15a" stop-opacity="0.7"></stop><stop offset="1" stop-color="#ffd15a" stop-opacity="0"></stop></radialGradient>
+            <radialGradient id="nav-plasma-c"><stop offset="0" stop-color="#5cc3ff"></stop><stop offset="0.55" stop-color="#5cc3ff" stop-opacity="0.7"></stop><stop offset="1" stop-color="#5cc3ff" stop-opacity="0"></stop></radialGradient>
+            <radialGradient id="nav-plasma-d"><stop offset="0" stop-color="#a98bff"></stop><stop offset="0.55" stop-color="#a98bff" stop-opacity="0.7"></stop><stop offset="1" stop-color="#a98bff" stop-opacity="0"></stop></radialGradient>
+            <radialGradient id="nav-plasma-e"><stop offset="0" stop-color="#7be3a0"></stop><stop offset="0.55" stop-color="#7be3a0" stop-opacity="0.7"></stop><stop offset="1" stop-color="#7be3a0" stop-opacity="0"></stop></radialGradient>
+          </defs>
+          <g class="nav-plasma__blobs">
+            <circle cx="16" cy="12" r="17" fill="url(#nav-plasma-a)"></circle>
+            <circle cx="40" cy="30" r="18" fill="url(#nav-plasma-b)"></circle>
+            <circle cx="64" cy="14" r="17" fill="url(#nav-plasma-c)"></circle>
+            <circle cx="26" cy="34" r="16" fill="url(#nav-plasma-d)"></circle>
+            <circle cx="54" cy="22" r="15" fill="url(#nav-plasma-e)"></circle>
+            <circle cx="40" cy="10" r="14" fill="url(#nav-plasma-a)"></circle>
+          </g>
+        </svg>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"></path>
         </svg>
@@ -173,6 +201,72 @@ const NAV = [
     document.documentElement.dataset.navJs = 'true';
     button.hidden = false;
 
+    // Plasma do botão Menu: gás condensado, frenético e contido no botão. Mais
+    // intenso ao passar, segurar ou abrir; ao soltar, a energia se dispersa e
+    // volta ao ponto inicial.
+    (() => {
+      const plasma = button.querySelector('[data-nav-plasma]');
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!plasma || still.matches) return;
+      const rnd = (a, b) => a + Math.random() * (b - a);
+      const drift = Array.from(plasma.querySelectorAll('circle')).map((c) => {
+        const frames = Array.from({ length: 6 }, () => ({
+          transform: 'translate(' + rnd(-34, 34) + 'px,' + rnd(-16, 16) + 'px) scale(' + rnd(0.7, 1.6) + ')',
+        }));
+        frames.push(frames[0]);
+        return c.animate(frames, {
+          duration: rnd(900, 1700),
+          iterations: Infinity,
+          easing: 'ease-in-out',
+          delay: -rnd(0, 1200),
+        });
+      });
+      const tint = plasma.animate(
+        [{ filter: 'hue-rotate(0deg)' }, { filter: 'hue-rotate(360deg)' }],
+        { duration: 3200, iterations: Infinity },
+      );
+      let level = 0;
+      let target = 0;
+      let ramp = 0;
+      const apply = () => {
+        const rate = 1 + level * 2.6;
+        drift.forEach((a) => a.updatePlaybackRate(rate));
+        tint.updatePlaybackRate(1 + level * 3);
+        plasma.style.opacity = String(0.5 + level * 0.5);
+      };
+      const step = () => {
+        const speed = target > level ? 0.12 : 0.025;
+        level += (target - level) * speed;
+        if (Math.abs(target - level) < 0.01) level = target;
+        apply();
+        ramp = level === target ? 0 : requestAnimationFrame(step);
+      };
+      const set = (value) => {
+        target = value;
+        if (!ramp) ramp = requestAnimationFrame(step);
+      };
+      const hot = () => button.matches(':hover, :active, :focus-visible') || button.getAttribute('aria-expanded') === 'true';
+      const settle = () => set(hot() ? 1 : 0);
+      apply();
+      ['pointerenter', 'focus'].forEach((t) => button.addEventListener(t, () => set(1)));
+      button.addEventListener('pointerdown', () => set(1));
+      ['pointerleave', 'pointerup', 'pointercancel', 'blur'].forEach((t) => button.addEventListener(t, () => setTimeout(settle, 0)));
+      new MutationObserver(settle).observe(button, { attributes: true, attributeFilter: ['aria-expanded'] });
+    })();
+
+    // Normas passando depressa por dentro do cabeçalho. WAAPI, porque os modos
+    // planos zeram animation do CSS; os modos reduzidos ficam parados.
+    (() => {
+      const rows = document.querySelectorAll('[data-standards-row]');
+      if (!rows.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      rows.forEach((row, i) => {
+        const frames = i === 0
+          ? [{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }]
+          : [{ transform: 'translateX(-50%)' }, { transform: 'translateX(0)' }];
+        row.animate(frames, { duration: i === 0 ? 7000 : 5200, iterations: Infinity });
+      });
+    })();
+
     const compact = window.matchMedia('(max-width: 1180px)');
     const FX = ['el-flip', 'el-drop', 'el-zoom', 'el-blur', 'el-spin', 'el-slide'];
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -221,6 +315,44 @@ const NAV = [
 </script>
 
 <style is:global>
+  /* Normas correndo por dentro da gaveta do cabeçalho: letra preta, fundo atual. */
+  .site-header .nav-shell { position: relative; isolation: isolate; }
+  .nav-standards {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .nav-standards__row {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .08em;
+    color: #000;
+    opacity: .2;
+    will-change: transform;
+  }
+  .nav-standards__row span { padding: 0 1.15rem; }
+  html[data-legacy-mode='true'] .nav-standards { display: none; }
+
+  /* Botão Menu: o plasma vive por dentro e nunca passa da borda. */
+  .site-header .nav-menu-toggle { position: relative; overflow: hidden; isolation: isolate; }
+  .nav-plasma {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: .5;
+    pointer-events: none;
+  }
+  .nav-plasma circle { transform-box: fill-box; transform-origin: center; mix-blend-mode: multiply; }
   .site-header .nav-menu-toggle { display: none; }
   .site-header .nav-sections { display: contents; }
 

@@ -92,8 +92,15 @@ check('modes: the current mode is named by a tag beside the emblems, which also 
   modes.includes('data-mode-tag') && modes.includes('data-mode-tag-text') && modes.includes('backdrop-filter') && modes.includes("button.setAttribute('aria-current', 'true')") && !modes.includes('tabIndex = -1'));
 check('modes: each emblem has its own signature loop (alpha colour, beta pulsar, gamma quasar) and reduced motion skips them',
   modes.includes('serious-beams') && modes.includes('serious-jets') && modes.includes('serious-flare') && modes.includes('if (loops.has(node) || reducedMotion.matches) return;'));
-check('modes: help button charges while held and disperses on release',
-  modes.includes('data-help-energy') && modes.includes("'pointerup'") && modes.includes('const release'));
+check('modes: no separate help button; the tag is polyglot but always returns to Portuguese',
+  !modes.includes('data-mode-help]') && !modes.includes('serious-help"') && modes.includes('LANGS') && modes.includes('const scrambleTag') && modes.includes('const showOtherLanguage') && modes.includes("paintTag('pt', names[mode])"));
+check('header: Menu button carries a contained plasma that calms when released; standards run inside the drawer',
+  header.includes('data-nav-plasma') && header.includes('updatePlaybackRate') && header.includes('data-standards-row') && header.includes('STANDARDS_A'));
+const gavetas = read('src/styles/gavetas.css');
+check('drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint',
+  gavetas.includes('--drawer-tint') && gavetas.includes('backdrop-filter') && footer.includes("'--drawer-tint'") && read('src/layouts/BaseLayout.astro').includes('gavetas.css'));
+check('footer: sections and resume removed; mathematics canvas pauses off screen and respects reduced motion',
+  !footer.includes('footer-nav') && !footer.includes('resumePdf') && footer.includes('data-footer-math') && footer.includes('IntersectionObserver') && footer.includes('prefers-reduced-motion'));
 check('modes: transition uses Web Animations (flat modes zero CSS animation) and honours reduced motion',
   modes.includes('.animate(') && modes.includes("matchMedia('(prefers-reduced-motion: reduce)')") && modes.includes('reducedMotion.matches'));
 check('modes: pointer locked while the comet runs, and announced to screen readers',
