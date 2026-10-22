@@ -47,6 +47,14 @@
 }
 
 @font-face {
+  font-family: "Portfolio Script"; /* Caveat (SIL OFL) — caligrafia do brief de UX Writing no Método */
+  src: url("../../assets/fonts/Caveat-Variable.woff") format("woff");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Portfolio Hand";
   /* Despite its .otf suffix, this asset uses TrueType outlines. */
   src:

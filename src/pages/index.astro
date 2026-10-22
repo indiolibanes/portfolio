@@ -44,6 +44,22 @@ const background = [
     markAlt: '',
   },
 ];
+
+// Etapas do método como fluxogramas “à mão”: três passos, uma decisão (com laço de retorno) e a entrega.
+const METHOD_FLOWS = [
+  { colors: ['#f6cf5b', '#f4a85f', '#efe08a', '#b9d98a'], decision: '#fff1b8', stroke: '#8a6414',
+    nodes: ['Objetivo', 'Referências', 'Linguagem e tom'], ask: 'Critérios claros?', end: 'Arquitetura da informação', back: 'não: refinar',
+    label: 'Objetivo, referências e linguagem e tom; decisão: critérios claros? Se não, refinar; se sim, arquitetura da informação.' },
+  { colors: ['#8cc8ee', '#6fd0d6', '#a9bdf0', '#8ee0b4'], decision: '#d8eefb', stroke: '#2a6f98',
+    nodes: ['Prompt e restrições', 'IA prototipa', 'Eu reviso o código'], ask: 'Dentro das regras?', end: 'Versão candidata', back: 'não: reescrever',
+    label: 'Prompt e restrições, IA prototipa, eu reviso o código; decisão: dentro das regras? Se não, reescrever; se sim, versão candidata.' },
+  { colors: ['#f2a1bb', '#f6b58f', '#e9a0d8', '#f2d27a'], decision: '#fde3ec', stroke: '#9a3d5e',
+    nodes: ['Hierarquia', 'Legibilidade', 'Comportamento'], ask: 'Passou no teste?', end: 'Limites registrados', back: 'não: corrigir',
+    label: 'Hierarquia, legibilidade e comportamento; decisão: passou no teste? Se não, corrigir; se sim, limites registrados.' },
+  { colors: ['#b9a2ee', '#9fb0f2', '#d3a4ea', '#e8c4f0'], decision: '#ece3fb', stroke: '#5f469c',
+    nodes: ['Decisão registrada', 'Fluxo mapeado', 'Commit e docs'], ask: 'Alguém retoma?', end: 'Conhecimento transferido', back: 'não: detalhar',
+    label: 'Decisão registrada, fluxo mapeado, commit e documentação; decisão: alguém consegue retomar? Se não, detalhar; se sim, conhecimento transferido.' },
+];
 ---
 
 <BaseLayout>
@@ -839,14 +855,145 @@ const background = [
         </div>
         <MethodPresenter />
       </div>
-      <div class="method-stage" aria-hidden="true"></div>
+      <div class="method-stage">
+        <a class="method-stage-link" href="https://www.behance.net/gallery/119235467/My-Debut-UX-Project" target="_blank" rel="noopener noreferrer" aria-label="Ver o estudo de caso do aplicativo de astrofísica gamificada no Behance (abre em nova aba)">
+          <span>estudo de caso</span> Astrophysics Application <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <svg class="fl-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id="fl-rough" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="4" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" /></filter>
+      </svg>
       <ol class="method-steps" aria-label="Quatro etapas do processo">
-        <li data-reveal><span class="method-index">01 / Concepção</span><h3>Dar forma à ideia</h3><p>Objetivos, referências, linguagem, arquitetura da informação e critérios de sucesso.</p></li>
-        <li data-reveal><span class="method-index">02 / Execução assistida</span><h3>Experimentar possibilidades</h3><p>Uso de IA para prototipagem e implementação, com instruções, restrições e revisões explícitas.</p></li>
-        <li data-reveal><span class="method-index">03 / Avaliação</span><h3>Confrontar o resultado</h3><p>Revisão de hierarquia, legibilidade, comportamento, coerência e limitações do que foi produzido.</p></li>
-        <li data-reveal><span class="method-index">04 / Documentação</span><h3>Deixar um caminho</h3><p>Registro de decisões e fluxos para facilitar manutenção, continuidade e transferência de conhecimento.</p></li>
+        <li data-reveal>
+          <span class="method-index">01 / Concepção</span><h3>Dar forma à ideia</h3><p>Objetivos, referências, linguagem, arquitetura da informação e critérios de sucesso.</p>
+          <svg class="method-flow" viewBox="0 0 240 216" role="img" aria-label={METHOD_FLOWS[0].label}>
+            <g filter="url(#fl-rough)" stroke={METHOD_FLOWS[0].stroke} stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+              {METHOD_FLOWS[0].nodes.map((_, k) => (
+                <rect class="fl-node" style={`--i:${k}`} x="34" y={4 + k * 40} width="190" height="26" rx="8" fill={METHOD_FLOWS[0].colors[k]} />
+              ))}
+              <polygon class="fl-node" style="--i:3" points="129,124 224,148 129,172 34,148" fill={METHOD_FLOWS[0].decision} />
+              <rect class="fl-node" style="--i:4" x="34" y="186" width="190" height="26" rx="13" fill={METHOD_FLOWS[0].colors[3]} />
+              <g class="fl-arrow" fill="none">
+                <path d="M129 30 V44 M129 70 V84 M129 110 V122 M129 172 V186" style="--i:1" />
+                <path class="fl-loop" d="M34 148 H12 V17 H32" />
+              </g>
+              <g class="fl-head" fill={METHOD_FLOWS[0].stroke} stroke="none">
+                <path d="M124 42 L129 50 L134 42Z M124 82 L129 90 L134 82Z M124 120 L129 128 L134 120Z M124 178 L129 186 L134 178Z M30 12 L38 17 L30 22Z" />
+              </g>
+            </g>
+            <g class="fl-text" text-anchor="middle">
+              {METHOD_FLOWS[0].nodes.map((t, k) => (
+                <>
+                  <circle cx="50" cy={17 + k * 40} r="8" fill="#fffdf6" stroke={METHOD_FLOWS[0].stroke} stroke-width="1.2" />
+                  <text x="50" y={21.5 + k * 40} class="fl-num">{k + 1}</text>
+                  <text x="136" y={22 + k * 40}>{t}</text>
+                </>
+              ))}
+              <text x="129" y="152.5">{METHOD_FLOWS[0].ask}</text>
+              <text x="136" y="203">{METHOD_FLOWS[0].end}</text>
+              <text class="fl-note" x="8" y="146" text-anchor="end" transform="rotate(-90 8 146)">{METHOD_FLOWS[0].back}</text>
+              <text class="fl-note" x="141" y="183" text-anchor="start">sim</text>
+            </g>
+          </svg>
+        </li>
+        <li data-reveal>
+          <span class="method-index">02 / Execução assistida</span><h3>Experimentar possibilidades</h3><p>Uso de IA para prototipagem e implementação, com instruções, restrições e revisões explícitas.</p>
+          <svg class="method-flow" viewBox="0 0 240 216" role="img" aria-label={METHOD_FLOWS[1].label}>
+            <g filter="url(#fl-rough)" stroke={METHOD_FLOWS[1].stroke} stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+              {METHOD_FLOWS[1].nodes.map((_, k) => (
+                <rect class="fl-node" style={`--i:${k}`} x="34" y={4 + k * 40} width="190" height="26" rx="8" fill={METHOD_FLOWS[1].colors[k]} />
+              ))}
+              <polygon class="fl-node" style="--i:3" points="129,124 224,148 129,172 34,148" fill={METHOD_FLOWS[1].decision} />
+              <rect class="fl-node" style="--i:4" x="34" y="186" width="190" height="26" rx="13" fill={METHOD_FLOWS[1].colors[3]} />
+              <g class="fl-arrow" fill="none">
+                <path d="M129 30 V44 M129 70 V84 M129 110 V122 M129 172 V186" style="--i:1" />
+                <path class="fl-loop" d="M34 148 H12 V17 H32" />
+              </g>
+              <g class="fl-head" fill={METHOD_FLOWS[1].stroke} stroke="none">
+                <path d="M124 42 L129 50 L134 42Z M124 82 L129 90 L134 82Z M124 120 L129 128 L134 120Z M124 178 L129 186 L134 178Z M30 12 L38 17 L30 22Z" />
+              </g>
+            </g>
+            <g class="fl-text" text-anchor="middle">
+              {METHOD_FLOWS[1].nodes.map((t, k) => (
+                <>
+                  <circle cx="50" cy={17 + k * 40} r="8" fill="#fffdf6" stroke={METHOD_FLOWS[1].stroke} stroke-width="1.2" />
+                  <text x="50" y={21.5 + k * 40} class="fl-num">{k + 1}</text>
+                  <text x="136" y={22 + k * 40}>{t}</text>
+                </>
+              ))}
+              <text x="129" y="152.5">{METHOD_FLOWS[1].ask}</text>
+              <text x="136" y="203">{METHOD_FLOWS[1].end}</text>
+              <text class="fl-note" x="8" y="146" text-anchor="end" transform="rotate(-90 8 146)">{METHOD_FLOWS[1].back}</text>
+              <text class="fl-note" x="141" y="183" text-anchor="start">sim</text>
+            </g>
+          </svg>
+        </li>
+        <li data-reveal>
+          <span class="method-index">03 / Avaliação</span><h3>Confrontar o resultado</h3><p>Revisão de hierarquia, legibilidade, comportamento, coerência e limitações do que foi produzido.</p>
+          <svg class="method-flow" viewBox="0 0 240 216" role="img" aria-label={METHOD_FLOWS[2].label}>
+            <g filter="url(#fl-rough)" stroke={METHOD_FLOWS[2].stroke} stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+              {METHOD_FLOWS[2].nodes.map((_, k) => (
+                <rect class="fl-node" style={`--i:${k}`} x="34" y={4 + k * 40} width="190" height="26" rx="8" fill={METHOD_FLOWS[2].colors[k]} />
+              ))}
+              <polygon class="fl-node" style="--i:3" points="129,124 224,148 129,172 34,148" fill={METHOD_FLOWS[2].decision} />
+              <rect class="fl-node" style="--i:4" x="34" y="186" width="190" height="26" rx="13" fill={METHOD_FLOWS[2].colors[3]} />
+              <g class="fl-arrow" fill="none">
+                <path d="M129 30 V44 M129 70 V84 M129 110 V122 M129 172 V186" style="--i:1" />
+                <path class="fl-loop" d="M34 148 H12 V17 H32" />
+              </g>
+              <g class="fl-head" fill={METHOD_FLOWS[2].stroke} stroke="none">
+                <path d="M124 42 L129 50 L134 42Z M124 82 L129 90 L134 82Z M124 120 L129 128 L134 120Z M124 178 L129 186 L134 178Z M30 12 L38 17 L30 22Z" />
+              </g>
+            </g>
+            <g class="fl-text" text-anchor="middle">
+              {METHOD_FLOWS[2].nodes.map((t, k) => (
+                <>
+                  <circle cx="50" cy={17 + k * 40} r="8" fill="#fffdf6" stroke={METHOD_FLOWS[2].stroke} stroke-width="1.2" />
+                  <text x="50" y={21.5 + k * 40} class="fl-num">{k + 1}</text>
+                  <text x="136" y={22 + k * 40}>{t}</text>
+                </>
+              ))}
+              <text x="129" y="152.5">{METHOD_FLOWS[2].ask}</text>
+              <text x="136" y="203">{METHOD_FLOWS[2].end}</text>
+              <text class="fl-note" x="8" y="146" text-anchor="end" transform="rotate(-90 8 146)">{METHOD_FLOWS[2].back}</text>
+              <text class="fl-note" x="141" y="183" text-anchor="start">sim</text>
+            </g>
+          </svg>
+        </li>
+        <li data-reveal>
+          <span class="method-index">04 / Documentação</span><h3>Deixar um caminho</h3><p>Registro de decisões e fluxos para facilitar manutenção, continuidade e transferência de conhecimento.</p>
+          <svg class="method-flow" viewBox="0 0 240 216" role="img" aria-label={METHOD_FLOWS[3].label}>
+            <g filter="url(#fl-rough)" stroke={METHOD_FLOWS[3].stroke} stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+              {METHOD_FLOWS[3].nodes.map((_, k) => (
+                <rect class="fl-node" style={`--i:${k}`} x="34" y={4 + k * 40} width="190" height="26" rx="8" fill={METHOD_FLOWS[3].colors[k]} />
+              ))}
+              <polygon class="fl-node" style="--i:3" points="129,124 224,148 129,172 34,148" fill={METHOD_FLOWS[3].decision} />
+              <rect class="fl-node" style="--i:4" x="34" y="186" width="190" height="26" rx="13" fill={METHOD_FLOWS[3].colors[3]} />
+              <g class="fl-arrow" fill="none">
+                <path d="M129 30 V44 M129 70 V84 M129 110 V122 M129 172 V186" style="--i:1" />
+                <path class="fl-loop" d="M34 148 H12 V17 H32" />
+              </g>
+              <g class="fl-head" fill={METHOD_FLOWS[3].stroke} stroke="none">
+                <path d="M124 42 L129 50 L134 42Z M124 82 L129 90 L134 82Z M124 120 L129 128 L134 120Z M124 178 L129 186 L134 178Z M30 12 L38 17 L30 22Z" />
+              </g>
+            </g>
+            <g class="fl-text" text-anchor="middle">
+              {METHOD_FLOWS[3].nodes.map((t, k) => (
+                <>
+                  <circle cx="50" cy={17 + k * 40} r="8" fill="#fffdf6" stroke={METHOD_FLOWS[3].stroke} stroke-width="1.2" />
+                  <text x="50" y={21.5 + k * 40} class="fl-num">{k + 1}</text>
+                  <text x="136" y={22 + k * 40}>{t}</text>
+                </>
+              ))}
+              <text x="129" y="152.5">{METHOD_FLOWS[3].ask}</text>
+              <text x="136" y="203">{METHOD_FLOWS[3].end}</text>
+              <text class="fl-note" x="8" y="146" text-anchor="end" transform="rotate(-90 8 146)">{METHOD_FLOWS[3].back}</text>
+              <text class="fl-note" x="141" y="183" text-anchor="start">sim</text>
+            </g>
+          </svg>
+        </li>
       </ol>
-      <p class="method-closing" data-reveal>A ferramenta auxilia na execução; a responsabilidade pelas escolhas permanece comigo.</p>
+      <p class="method-closing" data-reveal data-typewriter>A ferramenta auxilia na execução; a responsabilidade pelas escolhas permanece comigo.</p>
     </section>
 
     <section

@@ -138,3 +138,106 @@ html[data-legacy-mode='true'] body {
 
 html[data-legacy-mode='true'] #sobre.hero::before { content: 'Kauê Alencar — Portfólio.exe' !important; }
 html[data-legacy-mode='true'] #lab #curadoria::before { content: 'PI NIR — SpectrumLab.exe' !important; }
+
+/* ======================================================================================
+   2026-10-22 — Consistência: toda seção é uma janela; menus cinza; barra de tarefas;
+   fontes de sistema da época (MS Sans Serif / Tahoma / Arial / Times New Roman / Courier New).
+   ====================================================================================== */
+
+/* ---------- Fontes padrão do Windows 95/98 ---------- */
+html[data-legacy-mode='true'] body,
+html[data-legacy-mode='true'] body :is(p, li, a, span, small, strong, em, b, i, button, input, label, div, td, th, figcaption, summary) {
+  font-family: Tahoma, 'MS Sans Serif', 'Microsoft Sans Serif', Arial, sans-serif !important;
+}
+html[data-legacy-mode='true'] body :is(h1, h2, h3, h4, blockquote, .method-closing, .lab-project-card h3) {
+  font-family: 'Times New Roman', Times, serif !important;
+  font-weight: bold;
+  letter-spacing: 0 !important;
+  text-shadow: none !important;
+}
+html[data-legacy-mode='true'] body :is(code, pre, kbd, samp, .eyebrow, .method-index, .project-label, .tw-ghost, .music-track-age) {
+  font-family: 'Courier New', Courier, monospace !important;
+}
+html[data-legacy-mode='true'] body :is(.sr-only) { font-family: inherit !important; }
+
+/* ---------- Cada seção vira uma janela ---------- */
+html[data-legacy-mode='true'] .portfolio-main > section:not(#sobre) {
+  position: relative;
+  width: min(1000px, calc(100% - 24px));
+  margin: 34px auto 0 !important;
+  padding: 1.2rem !important;
+  border: solid #c0c0c0 !important;
+  border-width: 48px 6px 6px !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  color: #000;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, 0 0 0 1px #000, 2px 2px 0 1px #000 !important;
+  overflow: visible;
+}
+/* barra de título (azul-marinho) + botões de janela */
+html[data-legacy-mode='true'] .portfolio-main > section:not(#sobre)::before {
+  content: attr(data-win-title);
+  position: absolute; top: -45px; left: -3px; right: -3px; height: 18px; z-index: 6;
+  padding: 0 70px 0 22px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='14'%3E%3Cg fill='%23c0c0c0' stroke='%23000'%3E%3Crect x='.5' y='.5' width='15' height='13'/%3E%3Crect x='19.5' y='.5' width='15' height='13'/%3E%3Crect x='38.5' y='.5' width='15' height='13'/%3E%3C/g%3E%3Cg stroke='%23fff' fill='none'%3E%3Cpath d='M1.5 12.5V1.5H14.5M20.5 12.5V1.5H33.5M39.5 12.5V1.5H52.5'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Crect x='4' y='9' width='7' height='2'/%3E%3Crect x='23' y='3' width='9' height='2'/%3E%3Cpath d='M23 3h1v8h-1zM31 3h1v8h-1zM23 10h9v1h-9z'/%3E%3Cpath d='M42 3l2 0 2 2 2-2 2 0-3 3 3 3-2 0-2-2-2 2-2 0 3-3z'/%3E%3C/g%3E%3C/svg%3E") right 3px center / 56px 14px no-repeat,
+    linear-gradient(90deg, #000080, #1084d0);
+  color: #fff; font: bold 12px/18px Tahoma, Arial, sans-serif !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* barra de menus cinza (Arquivo, Editar…) logo abaixo do título */
+html[data-legacy-mode='true'] .portfolio-main > section:not(#sobre)::after {
+  content: 'Arquivo   Editar   Exibir   Ir   Ajuda';
+  position: absolute; top: -25px; left: -3px; right: -3px; height: 19px; z-index: 6;
+  padding: 0 8px; background: #c0c0c0; border-bottom: 1px solid #808080;
+  color: #000; font: 12px/19px Tahoma, Arial, sans-serif !important; white-space: pre; overflow: hidden; pointer-events: none;
+}
+html[data-legacy-mode='true'] #lab::before { content: '📁 Laboratório — Explorer.exe' !important; }
+html[data-legacy-mode='true'] #metodo::before { content: '📝 Método — Bloco de notas' !important; }
+html[data-legacy-mode='true'] #bastidores::before { content: '💾 Bastidores — Prompt do MS-DOS' !important; }
+html[data-legacy-mode='true'] #percurso::before { content: '💻 Percurso — Meu computador' !important; }
+html[data-legacy-mode='true'] #musica::before { content: '🎵 Música — Media Player' !important; }
+html[data-legacy-mode='true'] #contato::before { content: '✉ Contato — Outlook Express' !important; }
+
+/* cartões internos: janelas pequenas com bisel; o rótulo vira barra de título */
+html[data-legacy-mode='true'] .method-steps li {
+  padding: 0 !important; background: #c0c0c0 !important; border: 0 !important; border-radius: 0 !important;
+  box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  display: flex !important; flex-direction: column;
+}
+html[data-legacy-mode='true'] .method-steps li > .method-index {
+  display: block; margin: 3px 3px 0; padding: 1px 6px; color: #fff !important; font-size: 11px !important;
+  background: linear-gradient(90deg, #000080, #1084d0); text-transform: none;
+}
+html[data-legacy-mode='true'] .method-steps li > :is(h3, p) { margin: 0; padding: 6px 10px; background: #fff; margin-inline: 3px; }
+html[data-legacy-mode='true'] .method-steps li > p { margin-bottom: 3px; padding-top: 0; flex: 1; }
+
+/* ---------- Cabeçalho: barra de menus cinza ---------- */
+html[data-legacy-mode='true'] .site-header { background: #c0c0c0 !important; padding: 0 !important; border-bottom: 1px solid #000; box-shadow: inset 0 1px #fff, 0 2px 0 #808080; }
+html[data-legacy-mode='true'] .nav-shell {
+  width: 100% !important; max-width: none; border: 0 !important; border-radius: 0 !important; background: #c0c0c0 !important; box-shadow: none !important; padding: 3px 8px !important;
+}
+html[data-legacy-mode='true'] .nav-shell a, html[data-legacy-mode='true'] .nav-menu-toggle { color: #000 !important; text-decoration: none !important; }
+html[data-legacy-mode='true'] .nav-sections a { padding: 2px 9px; border: 1px solid transparent; font-size: 12px; background: transparent !important; border-radius: 0 !important; }
+html[data-legacy-mode='true'] .nav-sections a:hover, html[data-legacy-mode='true'] .nav-sections a:focus-visible {
+  background: #000080 !important; color: #fff !important;
+}
+html[data-legacy-mode='true'] .nav-sections a:hover * { color: #fff !important; }
+html[data-legacy-mode='true'] .nav-cta, html[data-legacy-mode='true'] .serious-toggle {
+  background: #c0c0c0 !important; color: #000 !important; border: 0 !important; border-radius: 0 !important;
+  box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+}
+html[data-legacy-mode='true'] .nav-elements { display: none !important; }
+
+/* ---------- Rodapé: barra de tarefas ---------- */
+html[data-legacy-mode='true'] .portfolio-footer {
+  width: 100%; margin-top: 40px; padding: 4px 6px !important; background: #c0c0c0 !important; border-top: 2px solid #fff !important;
+  box-shadow: 0 -1px 0 #dfdfdf; color: #000;
+}
+html[data-legacy-mode='true'] .portfolio-footer .footer-shell { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+html[data-legacy-mode='true'] .footer-mark {
+  margin: 0; padding: 2px 10px; font: bold 12px Tahoma, Arial, sans-serif !important; color: #000;
+  box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+}
+html[data-legacy-mode='true'] .footer-mark::before { content: '⊞ Iniciar · '; }
+html[data-legacy-mode='true'] .footer-copy, html[data-legacy-mode='true'] .footer-legal { margin: 0; font-size: 11px; color: #000; }

@@ -617,11 +617,13 @@
   // ======================================================================================================
   // Método — folheando páginas: do sketch ao wireframe até o aplicativo pronto (astrofísica gamificada)
   // ======================================================================================================
-  const FP = 12; // páginas do bloco
-  const FSTAGE = ['SKETCH', 'SKETCH', 'SKETCH', 'SKETCH', 'WIREFRAME', 'WIREFRAME', 'WIREFRAME', 'WIREFRAME', 'PROTÓTIPO', 'PROTÓTIPO', 'PROTÓTIPO', 'APP PRONTO'];
-  const FCYCLE = 9.4;
-  const flipStart = (i) => (i < FP - 1 ? 0.4 + i * 0.32 : 8.5);
-  const flipDur = (i) => (i < FP - 1 ? 0.5 : 0.75);
+  const FP = 12; // telas do app (sketch → wireframe → protótipo)
+  const NP = FP + 1; // + a página 0: o brief do UX Writer, escrito à mão
+  const FSTAGE = ['BRIEF · UX WRITING', 'SKETCH', 'SKETCH', 'SKETCH', 'SKETCH', 'WIREFRAME', 'WIREFRAME', 'WIREFRAME', 'WIREFRAME', 'PROTÓTIPO', 'PROTÓTIPO', 'PROTÓTIPO', 'APP PRONTO'];
+  const WRITE = 7.6; // segundos de escrita antes de folhear
+  const FCYCLE = WRITE + 9.4;
+  const flipStart = (i) => WRITE + (i < NP - 1 ? 0.4 + i * 0.3 : 8.5);
+  const flipDur = (i) => (i < NP - 1 ? 0.5 : 0.75);
 
   const wobbleLine = (ctx, r, x1, y1, x2, y2, amp) => {
     ctx.beginPath();
@@ -785,9 +787,114 @@
     ctx.beginPath(); ctx.roundRect(0, 0, W, H, rad); ctx.stroke();
   };
 
+  // Página 0 — o brief do UX Writer, escrito à mão com caneta-tinteiro (revelação da esquerda p/ a direita).
+  const BRIEF_LINES = [
+    { k: 'Para quem', v: 'curiosos, de 15 a 99 anos', a: 1.5, d: 1.0 },
+    { k: 'Problema', v: 'física parece “coisa de gênio”', a: 2.6, d: 1.1 },
+    { k: 'Promessa', v: 'uma missão por dia, sem medo', a: 3.8, d: 1.1, mark: true },
+    { k: 'Voz', v: 'curiosa · gentil · zero jargão', a: 5.0, d: 1.0 },
+  ];
+  const BRIEF_BUBBLES = [
+    { t: 'Pronto para a Missão 3?', x: 0.07, y: 0.78, w: 0.4, a: 6.1, d: 0.7, c: '#2b6c8f' },
+    { t: '+120 XP! Você orbitou Marte', x: 0.5, y: 0.78, w: 0.43, a: 6.5, d: 0.8, c: '#b0476a' },
+  ];
+  const clampW = (ctx, txt, size, maxW) => {
+    ctx.font = `600 ${size}px "Portfolio Script", "Segoe Script", cursive`;
+    const m = ctx.measureText(txt).width;
+    return m > maxW ? size * (maxW / m) : size;
+  };
+  // desenha `txt` revelado até a fração `p`; devolve a posição da ponta da caneta
+  const inkText = (ctx, txt, x, y, size, maxW, p, color) => {
+    const sz = clampW(ctx, txt, size, maxW);
+    ctx.font = `600 ${sz}px "Portfolio Script", "Segoe Script", cursive`;
+    const tw = ctx.measureText(txt).width;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(x - 4, y - sz * 1.1, (tw + 8) * p, sz * 1.5); ctx.clip();
+    ctx.fillStyle = color; ctx.fillText(txt, x, y);
+    ctx.restore();
+    return { px: x + tw * p, py: y - sz * 0.25, tw, sz };
+  };
+  const drawBriefPage = (ctx, W, H, tau) => {
+    const u = W / 100; const hv = H / 100;
+    const rad = Math.min(W, H) * 0.04;
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(0, 0, W, H, rad); ctx.clip();
+    ctx.fillStyle = '#f7f0dd'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(100,130,170,0.2)'; ctx.lineWidth = 1;
+    for (let y = hv * 7; y < H; y += hv * 5) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(200,90,80,0.35)'; ctx.beginPath(); ctx.moveTo(4 * u, 0); ctx.lineTo(4 * u, H); ctx.stroke();
+    const prog = (a, d) => clamp((tau - a) / d, 0, 1);
+    let pen = null;
+    const setPen = (o, p) => { if (p > 0 && p < 1) pen = o; };
+    // carimbo em máquina de escrever
+    const st = prog(0.0, 0.5);
+    ctx.save(); ctx.translate(W - 6 * u, 8 * hv); ctx.rotate(0.06); ctx.globalAlpha = st;
+    ctx.font = `700 ${H * 0.035}px "Portfolio Typewriter", ui-monospace, monospace`; ctx.textAlign = 'right';
+    ctx.strokeStyle = 'rgba(176,71,42,0.7)'; ctx.lineWidth = 1.6; const stw = ctx.measureText('BRIEF · UX WRITING').width;
+    ctx.strokeRect(-stw - 8, -H * 0.045, stw + 16, H * 0.065);
+    ctx.fillStyle = 'rgba(176,71,42,0.85)'; ctx.fillText('BRIEF · UX WRITING', 0, 0); ctx.restore();
+    // título
+    const pt = prog(0.2, 1.1);
+    const t1 = inkText(ctx, 'Astro Quest', 8 * u, 21 * hv, H * 0.18, 50 * u, pt, '#1f2a55');
+    setPen(t1, pt);
+    // sublinhado a marca-texto
+    const pu = prog(1.2, 0.35);
+    if (pu > 0) {
+      ctx.save(); ctx.globalAlpha = 0.7; ctx.strokeStyle = '#e9b93a'; ctx.lineWidth = H * 0.028; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(8 * u, 25 * hv); ctx.quadraticCurveTo(26 * u, 27 * hv, (8 + 42 * pu) * u, 25 * hv); ctx.stroke(); ctx.restore();
+    }
+    ctx.font = `600 ${H * 0.058}px "Portfolio Script", cursive`; ctx.fillStyle = 'rgba(31,42,85,0.65)';
+    ctx.globalAlpha = prog(0.9, 0.5); ctx.fillText('app de astrofísica gamificada · pt-BR', 8 * u, 32 * hv); ctx.globalAlpha = 1;
+    // linhas do brief
+    BRIEF_LINES.forEach((ln, n) => {
+      const p = prog(ln.a, ln.d); if (p <= 0) return;
+      const y = (41.5 + n * 9.2) * hv;
+      const kp = Math.min(1, p * 2.2);
+      const k = inkText(ctx, ln.k, 8 * u, y, H * 0.07, 24 * u, kp, '#b0392a');
+      const vx = 8 * u + k.tw + 3.5 * u;
+      if (ln.mark) {
+        ctx.save(); ctx.globalAlpha = 0.45; ctx.fillStyle = '#ffe36b';
+        const vw = ctx.measureText(ln.v).width;
+        ctx.fillRect(vx - 4, y - H * 0.047, Math.max(0, (W - vx - 6 * u)) * clamp((p - 0.4) / 0.6, 0, 1), H * 0.058); ctx.restore();
+      }
+      const vp = clamp((p - 0.35) / 0.65, 0, 1);
+      const v = inkText(ctx, '— ' + ln.v, vx - 2.6 * u, y, H * 0.07, W - vx - 4 * u, vp, '#1f2a55');
+      setPen(vp > 0 ? v : k, p);
+    });
+    // microcopy: balões
+    BRIEF_BUBBLES.forEach((bb) => {
+      const p = prog(bb.a, bb.d); if (p <= 0) return;
+      const x = bb.x * W; const y = bb.y * H; const w = bb.w * W; const h = H * 0.12;
+      ctx.save();
+      ctx.strokeStyle = bb.c; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.globalAlpha = Math.min(1, p * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      const sc = 0.9 + 0.1 * smooth(0, 1, p);
+      ctx.translate(x + w / 2, y + h / 2); ctx.scale(sc, sc); ctx.translate(-(x + w / 2), -(y + h / 2));
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, h * 0.45); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + w * 0.16, y + h); ctx.lineTo(x + w * 0.1, y + h + H * 0.045); ctx.lineTo(x + w * 0.27, y + h); ctx.stroke();
+      ctx.restore();
+      const q = inkText(ctx, bb.t, x + w * 0.07, y + h * 0.68, H * 0.062, w * 0.86, clamp((p - 0.3) / 0.7, 0, 1), bb.c);
+      setPen(q, clamp((p - 0.3) / 0.7, 0, 1));
+    });
+    // caneta-tinteiro
+    if (pen && tau < WRITE) {
+      ctx.save(); ctx.translate(pen.px, pen.py); ctx.rotate(-0.95);
+      const L = H * 0.3; const Wd = H * 0.03;
+      ctx.fillStyle = '#1b1b26'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Wd * 0.5, -Wd * 1.6); ctx.lineTo(-Wd * 0.5, -Wd * 1.6); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#7a1f2b'; ctx.fillRect(-Wd * 0.62, -L, Wd * 1.24, L - Wd * 1.6);
+      ctx.fillStyle = '#d9b45a'; ctx.fillRect(-Wd * 0.66, -Wd * 4, Wd * 1.32, Wd * 0.5);
+      ctx.restore();
+      ctx.fillStyle = 'rgba(31,42,85,0.85)'; ctx.beginPath(); ctx.arc(pen.px, pen.py, 1.6, 0, TAU); ctx.fill();
+    }
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(60,50,40,0.4)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.roundRect(0, 0, W, H, rad); ctx.stroke();
+  };
+
   const flipbook = {
-    still: 6.5,
-    init() {},
+    still: 7.4,
+    init() { try { document.fonts && document.fonts.load('600 40px "Portfolio Script"'); } catch {} },
     draw(c, t) {
       const { ctx, w, h } = c;
       // O palco é um espaço reservado no HTML (.method-stage): o bloco de rascunho fica ali, em paisagem.
@@ -804,7 +911,8 @@
       const bx = sx + (sw - W) / 2;
       const by = sy + (sh - H) / 2 + sh * 0.03;
       const tau = t % FCYCLE;
-      const f = Array.from({ length: FP }, (_, i) => clamp((tau - flipStart(i)) / flipDur(i), 0, 1));
+      const f = Array.from({ length: NP }, (_, i) => clamp((tau - flipStart(i)) / flipDur(i), 0, 1));
+      const page = (i) => (i === 0 ? drawBriefPage(ctx, W, H, tau > WRITE ? 99 : tau) : drawAppPage(ctx, W, H, i - 1));
       let base = f.findIndex((v) => v === 0);
       if (base < 0) base = 0;
       ctx.save();
@@ -817,9 +925,9 @@
         ctx.strokeStyle = 'rgba(60,50,40,0.28)'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.roundRect(k * 1.5, k * 3.5, W, H, H * 0.04); ctx.fill(); ctx.stroke();
       }
-      drawAppPage(ctx, W, H, base);
+      page(base);
       // páginas em voo (a de menor índice fica por cima)
-      for (let i = FP - 1; i >= 0; i -= 1) {
+      for (let i = NP - 1; i >= 0; i -= 1) {
         const v = f[i];
         if (v <= 0 || v >= 1) continue;
         const e = v * v * (3 - 2 * v);
@@ -827,7 +935,7 @@
         const ca = Math.cos(a);
         ctx.save();
         ctx.transform(ca, Math.sin(a) * 0.06, 0, 1, 0, -Math.sin(a) * H * 0.02);
-        if (a < Math.PI / 2) drawAppPage(ctx, W, H, i);
+        if (a < Math.PI / 2) page(i);
         else {
           ctx.globalAlpha = 1 - smooth(Math.PI / 2, Math.PI, a) * 0.9;
           ctx.fillStyle = '#ece3cd'; ctx.beginPath(); ctx.roundRect(0, 0, W, H, H * 0.04); ctx.fill();
@@ -849,12 +957,12 @@
       ctx.fillStyle = '#d98b8b'; ctx.fillRect(-pl - pw * 0.7, -pw / 2, pw * 0.7, pw);
       ctx.restore();
       // etiqueta do estágio
-      const idx = Math.min(base, FP - 1);
+      const idx = Math.min(base, NP - 1);
       ctx.font = '700 13px "Portfolio Typewriter", ui-monospace, monospace';
       ctx.fillStyle = 'rgba(60,48,36,0.9)';
-      ctx.fillText(`${String(idx + 1).padStart(2, '0')}/${FP} · ${FSTAGE[idx]}`, 0, -10);
+      ctx.fillText(`${String(idx + 1).padStart(2, '0')}/${NP} · ${FSTAGE[idx]}`, 0, -10);
       for (let k = 0; k < 3; k += 1) {
-        const act = (idx < 4 ? 0 : idx < 8 ? 1 : 2) === k;
+        const act = (idx < 5 ? 0 : idx < 9 ? 1 : 2) === k;
         ctx.fillStyle = act ? '#b5471f' : 'rgba(60,48,36,0.25)';
         ctx.beginPath(); ctx.arc(W - 40 + k * 16, -14, act ? 4.5 : 3.2, 0, TAU); ctx.fill();
       }

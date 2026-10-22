@@ -1,0 +1,43 @@
+/* Modo Editorial — princípio “e-ink”: menos é mais.
+   Papel branco, tinta preta, filetes finos, sem ilustrações decorativas, sem sombras, sem cenas animadas.
+   Só texto, hierarquia e espaço. */
+
+/* ---------- 1. Tudo o que é desenho sai ---------- */
+html[data-serious-mode='true'] :is(
+  .scene-canvas, .cosmic-starfield, .hero-ornaments, .method-presenter, .method-stage, .method-flow, .fl-defs,
+  .prism-spectrum, .mm-splash, .mm-arrow, .mm-icon, .github-gif-strip, .architecture-map,
+  .lab-sophia-presence, .lab-sophia-guide,
+  .music-panorama, .music-scene-art, .music-piano, .music-glow, .music-moonglow, .music-sky-lantern, .music-star,
+  .music-petal-body, .music-petal-vein, .music-kicker-dot, .listening-note-score, .listening-note-sheet, .listening-note-tape,
+  [data-scene='clockwork'], .decorative-motion, .pixel-paths
+) { display: none !important; }
+
+/* ---------- 2. Superfícies: papel e tinta ---------- */
+html[data-serious-mode='true'] .portfolio-main :is(section, article, li, .lab-project-card, .listening-note, .listening-note-paper, .playlist-card, .recent-track-card, .hero-note) {
+  box-shadow: none !important; text-shadow: none !important; background-image: none !important;
+}
+html[data-serious-mode='true'] .portfolio-main :is(.lab-project-card, .listening-note-paper, .playlist-card, .recent-track-card, .method-steps li, .github-feature) {
+  border-radius: 0 !important; background-color: transparent !important; border: 0 !important; border-top: 1px solid var(--line, #d8d8d8) !important;
+}
+html[data-serious-mode='true'] .portfolio-main :is(a, button, .button)[class] { box-shadow: none !important; }
+
+/* ---------- 3. Ritmo, medidas e proporções ---------- */
+html[data-serious-mode='true'] .portfolio-main { max-width: 1080px; margin-inline: auto; }
+html[data-serious-mode='true'] .section { padding-block: clamp(4rem, 9vw, 7.5rem); }
+html[data-serious-mode='true'] .section + .section { border-top: 1px solid var(--line, #e2e2e2); }
+html[data-serious-mode='true'] .section :is(.section-heading, .method-heading, .music-heading, .github-heading) { margin-bottom: clamp(2rem, 4vw, 3.25rem); }
+html[data-serious-mode='true'] .section :is(h1, h2) { max-width: 20ch; line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
+html[data-serious-mode='true'] .section h3 { line-height: 1.2; margin-bottom: 0.6rem; }
+html[data-serious-mode='true'] .section :is(p, li) { max-width: 66ch; line-height: 1.7; }
+html[data-serious-mode='true'] .section :is(.eyebrow, .method-index, .project-label) { letter-spacing: 0.12em; font-size: 0.72rem; margin-bottom: 0.9rem; }
+
+/* grades de cartões viram colunas de texto com filetes, em vez de blocos coloridos */
+html[data-serious-mode='true'] :is(.method-steps, .playlist-grid, .lab-project-grid) { gap: clamp(1.5rem, 3vw, 2.5rem); }
+html[data-serious-mode='true'] .method-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { html[data-serious-mode='true'] .method-steps { grid-template-columns: 1fr; } }
+html[data-serious-mode='true'] .method-steps li { padding: 1.25rem 0 0 !important; }
+html[data-serious-mode='true'] .method-closing { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line, #d8d8d8); font-style: italic; }
+
+/* o toque final: imagens ornamentais com tons de cinza, hover sem movimento */
+html[data-serious-mode='true'] .portfolio-main img:not([src*='qr']) { filter: grayscale(1) contrast(1.05); }
+html[data-serious-mode='true'] .portfolio-main *:hover { transform: none !important; }
