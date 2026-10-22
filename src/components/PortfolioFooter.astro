@@ -8,7 +8,20 @@ const today = new Date();
     <div>
       <p class="footer-mark">{PROFILE.name}</p>
       <p class="footer-copy">Documentação, organização da informação, escrita e publicação digital.</p>
-      <p class="footer-legal">© {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.</p>
+      <nav class="footer-nav" aria-label="Seções do portfólio">
+        <a href="/#sobre">Sobre</a>
+        <a href="/#lab">Laboratório</a>
+        <a href="/#metodo">Método</a>
+        <a href="/#bastidores">Bastidores</a>
+        <a href="/#percurso">Percurso</a>
+        <a href="/#musica">Música</a>
+        <a href="/curiosidades/">Curiosidades</a>
+        <a href="/#contato">Contato</a>
+      </nav>
+      <p class="footer-legal">
+        © {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.
+        {PROFILE.resumePdf && (<> · <a class="footer-resume" href={PROFILE.resumePdf} target="_blank" rel="noopener noreferrer">Currículo (PDF)<span class="sr-only"> — abre em nova aba</span></a> · atualizado em outubro de 2026</>)}
+      </p>
     </div>
 
     <div class="social-links" aria-label="Contato, perfis e navegação">

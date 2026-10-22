@@ -3,6 +3,28 @@ import { PROFILE } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
 
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
+
+// Tabela periódica do menu: cada destino é escrito com símbolos de elementos (Sobre = S·O·B·Re).
+// cat: nm não metal · md semimetal · tm metal de transição · ae alcalino-terroso · ln lantanídeo · hl halogênio
+const EL: Record<string, [number, string, string]> = {
+  S: [16, 'Enxofre', 'nm'], O: [8, 'Oxigênio', 'nm'], B: [5, 'Boro', 'md'], Re: [75, 'Rênio', 'tm'],
+  La: [57, 'Lantânio', 'ln'], Ra: [88, 'Rádio', 'ae'], T: [1, 'Trítio', 'nm'], Mo: [42, 'Molibdênio', 'tm'],
+  Te: [52, 'Telúrio', 'md'], D: [1, 'Deutério', 'nm'], Ba: [56, 'Bário', 'ae'], Ti: [22, 'Titânio', 'tm'],
+  P: [15, 'Fósforo', 'nm'], Er: [68, 'Érbio', 'ln'], Cu: [29, 'Cobre', 'tm'], I: [53, 'Iodo', 'hl'],
+  Ca: [20, 'Cálcio', 'ae'], Ir: [77, 'Irídio', 'tm'], Co: [27, 'Cobalto', 'tm'], N: [7, 'Nitrogênio', 'nm'],
+  Ta: [73, 'Tântalo', 'tm'],
+};
+const tiles = (symbols: string[]) => symbols.map((sym) => ({ sym, z: EL[sym][0], name: EL[sym][1], cat: EL[sym][2] }));
+const NAV = [
+  { href: '/#sobre', id: 'sobre', label: 'Sobre', el: tiles(['S', 'O', 'B', 'Re']) },
+  { href: '/#lab', id: 'lab', label: 'Laboratório', el: tiles(['La', 'B', 'O', 'Ra', 'T', 'O']) },
+  { href: '/#metodo', id: 'metodo', label: 'Método', el: tiles(['Mo', 'Te', 'D', 'O']) },
+  { href: '/#bastidores', id: 'bastidores', label: 'Bastidores', el: tiles(['Ba', 'S', 'Ti', 'D', 'O', 'Re', 'S']) },
+  { href: '/#percurso', id: 'percurso', label: 'Percurso', el: tiles(['P', 'Er', 'Cu', 'S', 'O']) },
+  { href: '/#musica', id: 'musica', label: 'Música', el: tiles(['Mo', 'S', 'I', 'Ca']) },
+  { href: '/curiosidades/', id: '', label: 'Curiosidades', el: tiles(['Cu', 'Ir', 'O', 'S', 'I', 'D']) },
+  { href: '/#contato', id: 'contato', label: 'Contato', el: tiles(['Co', 'N', 'Ta', 'T', 'O']), cta: true },
+];
 ---
 
 <header class="site-header">
@@ -30,14 +52,21 @@ const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
         <span>Menu</span>
       </button>
       <div class="nav-sections" id="nav-sections" data-nav-sections>
-        <a href="/#sobre" data-nav-section="sobre">Sobre</a>
-        <a href="/#lab" data-nav-section="lab">Laboratório</a>
-        <a href="/#metodo" data-nav-section="metodo">Método</a>
-        <a href="/#bastidores" data-nav-section="bastidores">Bastidores</a>
-        <a href="/#percurso" data-nav-section="percurso">Percurso</a>
-        <a href="/#musica" data-nav-section="musica">Música</a>
-        <a href="/curiosidades/" aria-current={onCuriosities ? 'page' : undefined}>Curiosidades</a>
-        <a class="nav-cta" href="/#contato" data-nav-section="contato">Contato</a>
+        {NAV.map((item) => (
+          <a
+            class={item.cta ? 'nav-cta' : undefined}
+            href={item.href}
+            data-nav-section={item.id || undefined}
+            aria-current={item.id === '' && onCuriosities ? 'page' : undefined}
+          >
+            <span class="nav-label">{item.label}</span>
+            <span class="nav-elements" aria-hidden="true">
+              {item.el.map((e) => (
+                <span class="el" data-cat={e.cat}><i>{e.z}</i><b>{e.sym}</b><u>{e.name}</u></span>
+              ))}
+            </span>
+          </a>
+        ))}
       </div>
       <SeriousModeToggle />
     </div>
@@ -117,9 +146,31 @@ const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
     button.hidden = false;
 
     const compact = window.matchMedia('(max-width: 1180px)');
+    const FX = ['el-flip', 'el-drop', 'el-zoom', 'el-blur', 'el-spin', 'el-slide'];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let pulse = 0;
+    const reveal = () => {
+      const tiles = [...panel.querySelectorAll('.el')];
+      tiles.forEach((el) => {
+        el.style.setProperty('--fx', FX[(Math.random() * FX.length) | 0]);
+        el.style.setProperty('--d', `${Math.round(Math.random() * 520)}ms`);
+        el.classList.remove('is-pulse');
+      });
+      clearInterval(pulse);
+      if (reduce.matches) return;
+      // enquanto a gaveta está aberta, um elemento aleatório se “reacende” de tempos em tempos
+      pulse = setInterval(() => {
+        const el = tiles[(Math.random() * tiles.length) | 0];
+        if (!el) return;
+        el.style.setProperty('--fx', FX[(Math.random() * FX.length) | 0]);
+        el.style.setProperty('--d', '0ms');
+        el.classList.remove('is-pulse'); void el.offsetWidth; el.classList.add('is-pulse');
+      }, 900);
+    };
     const setOpen = (open, restoreFocus = false) => {
       button.setAttribute('aria-expanded', String(open));
       panel.dataset.open = String(open);
+      if (open) reveal(); else clearInterval(pulse);
       if (!open && restoreFocus) button.focus();
     };
 
@@ -225,6 +276,78 @@ const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
     html:not([data-legacy-mode='true']) .site-header .nav-shell { gap: .5rem; }
     html:not([data-legacy-mode='true']) .site-header .brand-copy { display: none; }
     html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) { padding: .5rem .7rem; }
+  }
+
+
+  /* ===== Autoral: a gaveta é uma tabela periódica, em qualquer largura ===== */
+  .site-header .nav-elements { display: none; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
+    min-height: 44px; display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .85rem;
+    border: 1px solid rgba(205, 188, 165, .92); border-radius: var(--radius-full);
+    background: rgba(255, 250, 240, .8); color: var(--ink); font-family: var(--font-ui);
+    font-size: .78rem; font-weight: 800; cursor: pointer;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-menu-toggle[aria-expanded='true'] { background: #2b2118; color: #f6e9c8; border-color: #2b2118; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections {
+    position: absolute; top: calc(100% + 10px); right: 0; left: auto; z-index: 60;
+    width: min(640px, calc(100vw - 2rem));
+    display: none; flex-direction: column; align-items: stretch; gap: .1rem; padding: .7rem;
+    border: 1px solid #2b2118; border-radius: 20px;
+    background: linear-gradient(160deg, #fbf4e3, #f1e6cc);
+    box-shadow: 0 22px 50px rgba(43, 33, 24, .28), inset 0 1px 0 #ffffffaa;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] { display: flex; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a {
+    display: grid !important; grid-template-columns: 7.4rem minmax(0, 1fr); align-items: center; gap: .6rem;
+    min-height: 0; padding: .4rem .55rem; border-radius: 14px; background: transparent; color: #2b2118;
+    border: 1px solid transparent;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a::after { display: none; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover,
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:focus-visible { background: #ffffff99; border-color: #2b211833; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a[aria-current='true'],
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a[aria-current='page'] { background: #2b21180f; border-color: #2b211840; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a.nav-cta { background: transparent; color: #2b2118; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-label { font-family: var(--font-ui); font-size: .84rem; font-weight: 800; letter-spacing: .01em; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-elements { display: flex; flex-wrap: wrap; gap: 4px; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el {
+    position: relative; width: 50px; height: 58px; flex: 0 0 auto; display: block; text-align: center;
+    border: 1.5px solid #2b2118; border-radius: 6px; box-shadow: 2px 2px 0 #2b211833;
+    background: var(--el-bg, #e7dcc0); color: #2b2118; transition: transform .25s cubic-bezier(.2,.8,.2,1.2), box-shadow .25s;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el i { position: absolute; top: 3px; left: 5px; font: 700 8.5px/1 var(--font-ui); font-style: normal; opacity: .75; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el b { position: absolute; inset: 14px 0 12px; display: flex; align-items: center; justify-content: center; font: 800 1.45rem/1 Georgia, 'Times New Roman', serif; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el u { position: absolute; left: 0; right: 0; bottom: 3px; font: 600 6.4px/1 var(--font-ui); text-decoration: none; letter-spacing: .01em; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='nm'] { --el-bg: #c6e6c3; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='md'] { --el-bg: #dfe6a6; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='tm'] { --el-bg: #f2cc9d; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ae'] { --el-bg: #f4e0a0; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='ln'] { --el-bg: #e4c6ec; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el[data-cat='hl'] { --el-bg: #bfe0f2; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el { transform: translateY(-2px); box-shadow: 2px 4px 0 #2b211844; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el:nth-child(odd) { transform: translateY(-3px) rotate(-3deg); }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a:hover .el:nth-child(even) { transform: translateY(-3px) rotate(3deg); }
+
+  /* revelação aleatória (o script sorteia --fx e --d a cada abertura) */
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] .el { animation: var(--fx, el-zoom) 560ms cubic-bezier(.2, .8, .2, 1.1) var(--d, 0ms) both; }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] .el.is-pulse { animation: var(--fx, el-zoom) 560ms cubic-bezier(.2, .8, .2, 1.1) 0ms both; }
+  @keyframes el-flip { from { transform: perspective(300px) rotateY(95deg) scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes el-drop { from { transform: translateY(-22px) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes el-zoom { from { transform: scale(0); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes el-blur { from { transform: scale(1.5); filter: blur(7px); opacity: 0; } to { transform: none; filter: none; opacity: 1; } }
+  @keyframes el-spin { from { transform: rotate(-200deg) scale(.1); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes el-slide { from { transform: translateX(-26px) skewX(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] .el, html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] .el.is-pulse { animation: none; }
+  }
+  @media (max-width: 560px) {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections a { grid-template-columns: 1fr; gap: .25rem; padding: .35rem .45rem; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el { width: 38px; height: 46px; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el b { inset: 12px 0 10px; font-size: 1.15rem; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el i { font-size: 7px; left: 4px; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el u { display: none; }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-label { font-size: .76rem; }
   }
 
   /* Legacy · 1998 keeps its inline link bar: no hamburger existed then. */
