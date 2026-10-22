@@ -294,11 +294,11 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
   await page.goto(`${baseUrl}/`, { waitUntil: 'load' });
   const cycle = [];
   for (let i = 0; i < 4; i += 1) {
-    cycle.push(await page.evaluate(() => ({ mode: document.documentElement.dataset.portfolioMode, label: document.querySelector('[data-mode-group]')?.getAttribute('aria-label'), order: Array.from(document.querySelectorAll('[data-mode-option]')).map((o) => o.dataset.modeOption), url: location.search })));
+    cycle.push(await page.evaluate(() => ({ mode: document.documentElement.dataset.portfolioMode, label: document.querySelector('[data-mode-group]')?.getAttribute('aria-label'), order: Array.from(document.querySelectorAll('[data-mode-option]:not([hidden])')).map((o) => o.dataset.modeOption), url: location.search })));
     // Clica na opção seguinte da molécula (o primeiro item depois do atual).
     await page.evaluate(() => {
       const order = Array.from(document.querySelectorAll('[data-mode-option]'));
-      const next = order.find((o) => o.dataset.active !== 'true');
+      const next = order.find((o) => !o.hidden);
       next?.click();
     });
     await page.waitForTimeout(200);

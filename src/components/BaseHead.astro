@@ -43,14 +43,10 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
       } else if (seriousParam === '0' || seriousParam === 'false') {
         mode = 'authorial';
       } else {
-        const storedMode = localStorage.getItem('portfolio-mode');
+        const storedMode = localStorage.getItem('portfolio-mode-v2');
 
         if (supportedModes.includes(storedMode)) {
           mode = storedMode;
-        } else if (
-          localStorage.getItem('portfolio-serious-mode') === 'true'
-        ) {
-          mode = 'editorial';
         }
       }
 
