@@ -145,6 +145,20 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero
   color: #5a4c42;
 }
 
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-question {
+  max-width: 60ch;
+  margin: 1.1rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--sun);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-question p {
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-current {
   max-width: 60ch;
   margin: 1.5rem 0 0;
