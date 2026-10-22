@@ -294,14 +294,21 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
   await page.goto(`${baseUrl}/`, { waitUntil: 'load' });
   const cycle = [];
   for (let i = 0; i < 4; i += 1) {
-    cycle.push(await page.evaluate(() => ({ mode: document.documentElement.dataset.portfolioMode, label: document.querySelector('[data-mode-group]')?.getAttribute('aria-label'), order: Array.from(document.querySelectorAll('[data-mode-option]:not([hidden])')).map((o) => o.dataset.modeOption), url: location.search })));
-    // Clica na opção seguinte da molécula (o primeiro item depois do atual).
+    // Molécula: alternativa · modo atual · alternativa (ordem visual = ordem do DOM).
+    cycle.push(await page.evaluate(() => ({
+      mode: document.documentElement.dataset.portfolioMode,
+      label: document.querySelector('[data-mode-group]')?.getAttribute('aria-label'),
+      order: Array.from(document.querySelectorAll('[data-mode-node]')).map((n) => `${n.dataset.slot}:${n.dataset.modeNode}`),
+      focusable: Array.from(document.querySelectorAll('[data-mode-option]')).filter((o) => o.tabIndex >= 0).length,
+      current: document.querySelectorAll('[data-mode-option][aria-current="true"]').length,
+      url: location.search,
+    })));
+    // Clica na alternativa da esquerda (o próximo modo do ciclo).
     await page.evaluate(() => {
-      const order = Array.from(document.querySelectorAll('[data-mode-option]'));
-      const next = order.find((o) => !o.hidden);
-      next?.click();
+      document.querySelector('[data-mode-node][data-slot="left"] [data-mode-option]')?.click();
     });
-    await page.waitForTimeout(200);
+    // A rotação dura até ~620 ms (Autoral); espera terminar antes de ler o estado.
+    await page.waitForTimeout(800);
   }
   report.interactions.modeCycle = cycle;
   await page.reload({ waitUntil: 'load' });

@@ -76,7 +76,7 @@ html:not([data-legacy-mode='true']) .site-header .serious-toggle .serious-icon {
   transform-origin: 50% 60%;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-toggle {
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-toggle:not([aria-current='true']) {
   border: 2px solid transparent;
   background:
     linear-gradient(#fff8e6, #fff8e6) padding-box,
@@ -85,7 +85,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header
   box-shadow: 0 6px 18px -8px rgba(143, 90, 28, 0.55);
 }
 
-html[data-serious-mode='true'] .site-header .serious-toggle {
+html[data-serious-mode='true'] .site-header .serious-toggle:not([aria-current='true']) {
   border: 2px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
@@ -93,7 +93,7 @@ html[data-serious-mode='true'] .site-header .serious-toggle {
   animation: attn-spin 6s linear infinite;
 }
 
-html:not([data-legacy-mode='true']) .site-header .serious-toggle:hover {
+html:not([data-legacy-mode='true']) .site-header .serious-toggle:not([aria-current='true']):hover {
   transform: translateY(-1px) scale(1.04);
 }
 
