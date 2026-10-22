@@ -96,6 +96,12 @@ check('modes: no separate help button; the tag is polyglot but always returns to
   !modes.includes('data-mode-help]') && !modes.includes('serious-help"') && modes.includes('LANGS') && modes.includes('const scrambleTag') && modes.includes('const showOtherLanguage') && modes.includes("paintTag('pt', names[mode])"));
 check('header: Menu button carries a contained plasma that calms when released; standards run inside the drawer',
   header.includes('data-nav-plasma') && header.includes('updatePlaybackRate') && header.includes('data-standards-row') && header.includes('STANDARDS_A'));
+check('modes: language change glitches, and the dot colour follows the language',
+  modes.includes('const paintGlitch') && modes.includes('const glitchTag') && modes.includes('tag.dataset.lang = lang') && modes.includes("[data-lang='en'] .serious-tag__dot"));
+check('modes: gamma jets are diagonal (rotated) and chaotic; beta spins fast with a counter-rotating pair; alpha is asymmetric',
+  modes.includes('rotate(32 32 32)') && modes.includes('serious-beams2__spin') && modes.includes('duration: 190') && modes.includes('serious-ray') && modes.includes('serious-flare2'));
+check('brand: hand-inked caricature replaces the K, keeps the K as fallback, animates 3.4 s, honours reduced motion and Legacy',
+  header.includes('data-brand-mark') && header.includes("font-size=\"56\"") && header.includes('burstGroup') && header.includes("legacyMode === 'true'") && header.includes('prefers-reduced-motion'));
 const gavetas = read('src/styles/gavetas.css');
 check('drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint',
   gavetas.includes('--drawer-tint') && gavetas.includes('backdrop-filter') && footer.includes("'--drawer-tint'") && read('src/layouts/BaseLayout.astro').includes('gavetas.css'));
