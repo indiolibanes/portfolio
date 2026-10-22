@@ -67,7 +67,7 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html #sobre .cv-download-button,
   html #sobre .cv-download-button::after,
-  html #sobre .cv-download-button > span[aria-hidden],
+  html #sobre .cv-download-button > span[aria-hidden] {
     animation: none !important;
   }
 }
