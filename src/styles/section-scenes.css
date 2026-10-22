@@ -35,16 +35,40 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #docume
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #documentacao .documentation-note { color: #7dffb0; }
 
 
-/* ---------- Método: cada quadrante ganha a sua cor; as páginas folheadas aparecem por trás ---------- */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li { border-width: 1px; box-shadow: 3px 4px 0 #0f1f1655, inset 0 1px 0 #ffffff14; backdrop-filter: blur(6px) brightness(.62) saturate(1.2); -webkit-backdrop-filter: blur(6px) brightness(.62) saturate(1.2); }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) { background: linear-gradient(145deg, #86601e99, #523a10a6); border-color: #e9c574aa; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) { background: linear-gradient(145deg, #1f6a9699, #123e5ca6); border-color: #7fc8eeaa; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) { background: linear-gradient(145deg, #94405c99, #5a2233a6); border-color: #f0a0b8aa; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) { background: linear-gradient(145deg, #6a47a299, #3d285fa6); border-color: #c4a8f5aa; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) .method-index { color: #ffdf94; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) .method-index { color: #a9e0ff; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) .method-index { color: #ffc6d5; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) .method-index { color: #e0d0ff; }
+/* ---------- Método: mesa de desenho (papel), cartões pastel por quadrante e o bloco de rascunho em paisagem ---------- */
+.method-stage { display: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-stage { display: block; height: clamp(250px, 40vw, 470px); margin: .25rem 0 1rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo { background: repeating-linear-gradient(0deg, #6a5a4210 0 1px, transparent 1px 28px), repeating-linear-gradient(90deg, #6a5a4210 0 1px, transparent 1px 28px), radial-gradient(ellipse at 92% 0, #fffaf0, transparent 48%), linear-gradient(160deg, #f4ebd8, #eadfc6); color: #2a2118; border-color: #c9b78f; box-shadow: 0 20px 50px #5e482f22, inset 0 1px 0 #ffffffaa; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo :is(h2, h3) { color: #231a12; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo :is(.method-lead, .method-closing) { color: #2e251b; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .eyebrow { color: #8a4b2a; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-disclosure { color: #3a2e22; background: #fffaf0cc; border-left-color: #b5471f; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-disclosure strong { color: #231a12; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-intro :is(h2, .method-lead, .eyebrow) { text-shadow: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li { border-width: 1px; box-shadow: 3px 4px 0 #5e482f2e; backdrop-filter: none; -webkit-backdrop-filter: none; color: #2a2118; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps p { color: #3a2e22; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) { background: linear-gradient(145deg, #f9e9bd, #f2d892); border-color: #c99a2e; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) { background: linear-gradient(145deg, #d9edf8, #bcdcef); border-color: #4f97bf; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) { background: linear-gradient(145deg, #f8d9e2, #efc0ce); border-color: #c0607e; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) { background: linear-gradient(145deg, #e6dcf7, #d2c3ef); border-color: #8a6cc0; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(1) .method-index { color: #7a5200; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(2) .method-index { color: #1d5c82; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(3) .method-index { color: #8e2f4c; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #metodo .method-steps > li:nth-child(4) .method-index { color: #523a8c; }
+
+/* ---------- Laboratório: sala do colisor (o azul-acinzentado saiu) ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab { background: radial-gradient(ellipse at 50% 0%, #0f1a36cc, transparent 55%), linear-gradient(180deg, #04060c, #070a13 55%, #04060b); border-color: #25365f; }
+
+/* ---------- Arquitetura: relógio desmontado no lugar do fluxograma ---------- */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-architecture { min-height: clamp(300px, 34vw, 430px); background: radial-gradient(ellipse at 30% 15%, #2c1b14, #0b0507 72%); border: 1px solid #c9a45c40; border-radius: 18px; overflow: hidden; box-shadow: inset 0 0 70px #000c; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-architecture .architecture-map { display: none; }
+
+/* ---------- Footer: navegação pelas seções e currículo ---------- */
+.footer-nav { display: flex; flex-wrap: wrap; gap: .25rem .9rem; margin: .8rem 0 .2rem; font-size: .82rem; font-weight: 650; }
+.footer-nav a, .footer-resume { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: currentColor; opacity: .85; }
+.footer-nav a:hover, .footer-resume:hover { opacity: 1; }
+html[data-legacy-mode='true'] .footer-nav a, html[data-legacy-mode='true'] .footer-resume { color: #0000ee !important; opacity: 1; font-family: 'Times New Roman', serif; }
+html[data-legacy-mode='true'] .footer-nav a:visited { color: #551a8b; }
 
 /* ---------- Bastidores: noite neural, sem o fundo jeans; o cartão vira vidro ---------- */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #bastidores { background: radial-gradient(ellipse at 18% 20%, #1d3a5a66, transparent 55%), radial-gradient(ellipse at 86% 82%, #3a2a5a55, transparent 55%), linear-gradient(160deg, #0a1420, #0d1a2a 55%, #0a1620); border-color: #6f9fc055; box-shadow: 0 22px 60px #05101d55, inset 0 1px 0 #ffffff14; }
