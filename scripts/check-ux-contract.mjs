@@ -63,6 +63,7 @@ check('music: cover is a vertical half panel with a style-detecting canvas (rain
 check('music: cover card spans the whole section, has no bar graph and derives a Material-You-style tonal scheme', !music.includes('cover-eq') && music.includes('applyTonalScheme') && music.includes('cover-wave') && read('src/styles/music-scene.css').includes('max-width: none') && read('src/styles/music-player.css').includes('--md-primary-container'));
 check('music: cover proxy is allow-listed to the Last.fm CDN', read('functions/api/music/cover.js').includes('lastfm.freetls.fastly.net') && read('functions/api/music/cover.js').includes('Forbidden'));
 check('music: cover animation is quiet in Editorial/Legacy and with reduced motion', read('public/scripts/cover-fx.js').includes('prefers-reduced-motion') && music.includes('fxQuiet'));
+check('music: title and subtitle live inside the listening widget; eyebrow stays in the heading', music.includes('music-card-head') && music.indexOf('music-card-head') > music.indexOf('music-listening-panel') && music.indexOf('music-source-label') < music.indexOf('music-listening-panel'));
 check('music: error/fallback containers', music.includes('data-music-loading') && music.includes('data-music-profile'));
 check('music: playback state available', music.includes('track.nowPlaying'));
 check('music: polling and visibility pause', music.includes('setInterval(') && music.includes('visibilitychange') && music.includes('document.hidden'));
