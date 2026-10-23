@@ -1,7 +1,7 @@
 // Static source-contract checks for the portfolio GUI/UX audit.
 // These checks are intentionally narrow and cannot replace browser,
  // assistive-technology, visual-regression or Cloudflare runtime tests.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -100,8 +100,8 @@ check('modes: language change glitches, and the dot colour follows the language'
   modes.includes('const paintGlitch') && modes.includes('const glitchTag') && modes.includes('tag.dataset.lang = lang') && modes.includes("[data-lang='en'] .serious-tag__dot"));
 check('modes: gamma jets are diagonal (rotated) and chaotic; beta spins fast with a counter-rotating pair; alpha is asymmetric',
   modes.includes('rotate(32 32 32)') && modes.includes('serious-beams2__spin') && modes.includes('duration: 190') && modes.includes('serious-ray') && modes.includes('serious-flare2'));
-check('brand: anime 360° turnaround (canvas) replaces the K, keeps the K as fallback, runs under 5 s, honours reduced motion and Legacy',
-  header.includes('data-brand-mark') && header.includes('brand-canvas') && header.includes('const DURATION = 4800') && header.includes("legacyMode === 'true'") && header.includes('prefers-reduced-motion'));
+check('brand: anime 360° turnaround (sprite from his photo) replaces the K, keeps the K as fallback, runs under 5 s, honours reduced motion and Legacy',
+  header.includes('data-brand-mark') && header.includes("/brand/kaue-anime.webp") && header.includes('const FRAMES = 48') && header.includes('const FPS = 12') && 48 / 12 < 5 && existsSync(join(root, 'public/brand/kaue-anime.webp')) && header.includes("legacyMode === 'true'") && header.includes('prefers-reduced-motion') && !header.includes('brand-canvas'));
 const gavetas = read('src/styles/gavetas.css');
 check('drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint',
   gavetas.includes('--drawer-tint') && gavetas.includes('backdrop-filter') && footer.includes("'--drawer-tint'") && read('src/layouts/BaseLayout.astro').includes('gavetas.css'));
