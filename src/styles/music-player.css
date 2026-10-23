@@ -293,3 +293,76 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave svg { animation: none !important; }
 }
+
+
+/* ---------- Título dentro do widget (2026-10-23) ----------
+   "O que anda tocando." e o subtítulo moram no próprio painel, acima do cartão da capa.
+   O painel vira o widget (vidro escuro, borda, raio); o cartão fica embutido nele.
+   O eyebrow "06 / Música · Last.fm · atividade recente" continua no lugar de sempre. */
+.music-shelf .music-heading--gallery .music-listening-panel {
+  overflow: hidden;
+  border-radius: 22px;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel {
+  border: 1px solid rgba(240, 207, 134, .34);
+  background: linear-gradient(150deg, rgba(18, 16, 40, .9), rgba(8, 8, 20, .96));
+  box-shadow: inset 0 1px 0 rgba(255, 244, 222, .16), 0 22px 44px -14px rgba(0, 0, 0, .7);
+  backdrop-filter: blur(10px);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel:has(.recent-track-card[data-now-playing='true']) {
+  border-color: rgba(240, 207, 134, .55);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 222, .2), 0 22px 44px -14px rgba(0, 0, 0, .7), 0 0 34px -8px rgba(240, 207, 134, .4);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.music-shelf .music-heading--gallery .music-card-head {
+  display: block;
+  grid-area: auto;
+  align-self: auto;
+  justify-self: stretch;
+  max-width: none;
+  padding: clamp(1.1rem, 2.6vw, 1.8rem) clamp(1.1rem, 2.6vw, 1.8rem) clamp(.8rem, 1.8vw, 1.1rem);
+  text-align: left;
+}
+.music-shelf .music-heading--gallery .music-card-head h2 {
+  margin: 0;
+  max-width: none;
+  font-size: clamp(1.9rem, 3.6vw, 3.1rem);
+  line-height: 1.04;
+  color: #fff2d9;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .45);
+}
+.music-shelf .music-heading--gallery .music-card-head .music-heading-description {
+  max-width: 46ch;
+  margin: .55rem 0 0;
+  color: #f1e4ea;
+  font-size: clamp(.9rem, 1.2vw, 1rem);
+  line-height: 1.55;
+}
+/* Eyebrow fica onde está; só o contraste sobe para ler sobre o fundo da seção. */
+.music-shelf .music-heading--gallery .music-source-label { color: #ffd98a; }
+.music-shelf .music-heading--gallery .music-source-label span {
+  background: rgba(255, 249, 238, .16);
+  border-color: rgba(255, 249, 238, .42);
+  color: #fff7ec;
+}
+html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel {
+  background: var(--surface, #fff);
+  border-color: var(--line, #555);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-card-head :is(h2, p) { color: var(--ink, #111); text-shadow: none; }
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel {
+  background: #fff;
+  border: 2px inset #fff;
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head { padding: .6rem .4rem; }
+html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head :is(h2, p) { color: #000 !important; text-shadow: none; }
