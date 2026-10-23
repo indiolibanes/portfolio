@@ -418,3 +418,93 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel:has(.recent-track-card[data-cover-fx]) {
   border-color: hsla(var(--cover-hue, 42), 80%, 70%, .45);
 }
+
+
+/* ---------- Capa em tamanho máximo; título no topo da coluna de texto (2026-10-23) ----------
+   A capa é a informação principal: ocupa a altura toda do widget, na maior largura que cabe.
+   O título e o subtítulo vão para o topo da coluna da direita (a faixa azul escura sai).
+   Grade de três áreas no próprio painel: "cover head" / "cover copy". Os wrappers intermediários
+   (grade de palco e cartão) viram display: contents; o cartão oculto continua oculto. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "cover head" "cover copy";
+  align-items: stretch;
+  padding: 0;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-grid--stage,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-grid--stage > .recent-track-card:not([hidden]) {
+  display: contents;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[hidden] { display: none !important; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-loading,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-status-profile,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-no-script {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 1.2rem;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-artwork-shell.cover-figure {
+  grid-area: cover;
+  align-self: stretch;
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  transform: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .cover-frame {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(380px, 44vw, 600px);
+  aspect-ratio: auto;
+  border-radius: 0;
+  -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+          mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-copy {
+  grid-area: copy;
+  align-self: center;
+  padding: clamp(1rem, 2.4vw, 2.2rem) clamp(1.2rem, 2.8vw, 2.8rem) clamp(1.4rem, 2.6vw, 2.4rem) clamp(.4rem, 1vw, 1rem);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head {
+  grid-area: head;
+  display: block;
+  border-top: 0;
+  padding: clamp(1.2rem, 2.6vw, 2.2rem) clamp(1.2rem, 2.8vw, 2.8rem) 0 clamp(.4rem, 1vw, 1rem);
+  text-align: left;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head h2 {
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+  line-height: 1.04;
+  margin: 0;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head .music-heading-description {
+  margin: .5rem 0 0;
+  max-width: 44ch;
+  font-size: clamp(.86rem, 1.1vw, .95rem);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 {
+  font-size: clamp(2.2rem, 4.6vw, 4.2rem);
+  line-height: 1;
+}
+@media (max-width: 680px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "head" "cover" "copy";
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .cover-frame {
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head { padding: 1.1rem 1.1rem 0; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { padding: 1rem 1.1rem 1.4rem; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+}
