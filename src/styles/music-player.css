@@ -20,7 +20,7 @@
 .recent-track-card .cover-beam,
 .recent-track-card .cover-eq,
 .recent-track-card .cover-notes,
-.recent-track-card .cover-reflection { display: none; }
+.recent-track-card .cover-fx { display: none; }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
   --shift: 0; --tilt-x: 0; --tilt-y: 0;
@@ -28,11 +28,11 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   isolation: isolate;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(150px, 46%) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2rem);
-  min-height: clamp(260px, 30vw, 340px);
-  padding: clamp(1rem, 2.4vw, 1.6rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  min-height: 0;
+  padding: 0;
   border: 1px solid rgba(240, 207, 134, .34);
   border-radius: 22px;
   background: linear-gradient(150deg, rgba(18, 16, 40, .9), rgba(8, 8, 20, .96));
@@ -66,14 +66,14 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 
 /* Capa nítida + reflexo. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-shell {
-  display: block; position: relative; z-index: 1; width: 100%; max-width: 300px; aspect-ratio: auto; border: 0; border-radius: 0; overflow: visible;
-  justify-self: center;
+  display: block; position: relative; z-index: 1; width: 100%; max-width: none; aspect-ratio: auto; border: 0; border-radius: 0; overflow: visible;
+  justify-self: stretch; align-self: stretch;
   transform: translate3d(calc(var(--tilt-x) * -6px), calc(var(--shift) * -14px + var(--tilt-y) * -4px), 0) rotateY(calc(var(--tilt-x) * 5deg)) rotateX(calc(var(--tilt-y) * -4deg));
   transform-style: preserve-3d; transition: transform .35s ease-out;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-frame {
-  position: relative; width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden;
-  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 244, 222, .18);
+  position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, #000 68%, transparent 100%); mask-image: linear-gradient(90deg, #000 68%, transparent 100%);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork,
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-fallback {
@@ -88,19 +88,20 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   background: linear-gradient(180deg, rgba(255, 255, 255, .1), transparent 30%, transparent 55%, rgba(8, 8, 20, .62));
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection {
-  display: block; width: 100%; aspect-ratio: 1 / .32; margin-top: 3px; overflow: hidden; pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent 85%);
-          mask-image: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent 85%);
+
+/* Canvas do estilo detectado (chuva, contorno, escamas, brasas, poeira): cobre o painel vertical. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-fx {
+  display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; mix-blend-mode: screen;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection img {
-  display: block; width: 100%; aspect-ratio: 1; object-fit: cover; transform: scaleY(-1); filter: blur(1.5px);
+/* A cor dominante da capa tinge a borda e a luz do cartão. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-cover-fx] {
+  border-color: hsla(var(--cover-hue, 42), 80%, 70%, .45);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 222, .16), 0 22px 44px -14px rgba(0, 0, 0, .7), 0 0 40px -10px hsla(var(--cover-hue, 42), 90%, 60%, .5);
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection img[hidden] { display: none; }
 
 /* Barras de equalizador na base da capa. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq {
-  display: flex; align-items: flex-end; gap: 2px; position: absolute; inset: auto 0 0 0; height: 34%; padding: 0 5px; z-index: 2; pointer-events: none;
+  display: flex; align-items: flex-end; gap: 2px; position: absolute; inset: auto 0 0 0; height: 22%; padding: 0 5px; z-index: 3; pointer-events: none;
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%); mask-image: linear-gradient(180deg, transparent, #000 45%);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq i {
@@ -110,7 +111,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   transform-origin: bottom; opacity: .45; scale: 1 .35;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='true'] .cover-eq i {
-  opacity: .8; animation: cover-eq var(--d, 900ms) ease-in-out var(--o, 0ms) infinite alternate;
+  opacity: .55; animation: cover-eq var(--d, 900ms) ease-in-out var(--o, 0ms) infinite alternate;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='false'] .cover-eq i {
   animation: cover-eq-idle 4.5s ease-in-out var(--o, 0ms) infinite alternate;
@@ -189,7 +190,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 @keyframes cover-beam { 0%, 55% { transform: skewX(-18deg) translateX(0); opacity: 0; } 62% { opacity: 1; } 100% { transform: skewX(-18deg) translateX(560%); opacity: 0; } }
 
 /* Texto. */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { position: relative; z-index: 2; min-width: 0; display: grid; gap: .15rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { position: relative; z-index: 2; min-width: 0; display: grid; gap: .15rem; align-content: center; padding: clamp(1.2rem, 3vw, 2.4rem) clamp(1.2rem, 3vw, 2.4rem) clamp(1.2rem, 3vw, 2.4rem) clamp(.4rem, 1vw, .8rem); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker {
   display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 0 0 .5rem; font: 700 .72rem/1 var(--font-interface, system-ui); text-transform: uppercase; letter-spacing: .22em; color: var(--player-gold);
 }
@@ -220,7 +221,6 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .cover-frame img.recent-artwork {
   animation: cover-ken 24s ease-in-out 1.6s infinite alternate;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .cover-reflection { animation: cover-fade .9s ease .9s both; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .music-kicker { animation: cover-kicker 1s var(--cover-ease) .35s both; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening h3 { animation: cover-name 1.1s var(--cover-ease) .5s both; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening :is(.recent-artist, .recent-album, .music-meta-row) { animation: cover-lift .9s var(--cover-ease) .8s both; }
@@ -236,7 +236,11 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
     grid-template-columns: minmax(0, 1fr); min-height: 0; text-align: center;
   }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-shell { max-width: min(78%, 280px); }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .cover-frame {
+    -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%); mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { padding: .4rem 1.2rem 1.6rem; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-shell { max-width: min(100%, 360px); justify-self: center; }
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-meta-row { justify-content: center; }
 }
