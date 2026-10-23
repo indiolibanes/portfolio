@@ -31,6 +31,23 @@ html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [d
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal]:not(.is-in)[data-rv='blur'] { filter: blur(14px); }
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal].is-in { opacity: 1; transform: none; filter: none; clip-path: inset(0 0 0 0); }
 
+/* Seções (Curiosidades, Música): data-reveal="section" sorteia entre epicentro, dissolver, emergir e aparecer. */
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='section']:not(.is-in)[data-rv='epicenter'] { opacity: .5; clip-path: circle(2.5% at var(--rv-x, 50%) var(--rv-y, 50%)); transform: scale(.97); filter: brightness(1.8) saturate(1.4); }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='section'][data-rv='epicenter'].is-in { clip-path: circle(150% at var(--rv-x, 50%) var(--rv-y, 50%)); animation: rv-quake 1100ms ease-out var(--rv-delay, 0ms) 1 backwards; }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='section']:not(.is-in)[data-rv='dissolve'] { filter: blur(22px) saturate(.2) brightness(1.4); transform: scale(1.02); }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='section']:not(.is-in)[data-rv='emerge'] { clip-path: inset(100% 0 0 0); transform: translate3d(0, 48px, 0) scale(.94); transform-origin: 50% 100%; }
+html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='section']:not(.is-in)[data-rv='appear'] { transform: none; filter: none; }
+/* Tremor do epicentro: amplitude decai, proporcional à magnitude sorteada. */
+@keyframes rv-quake {
+  0%   { transform: translate3d(0, 0, 0); }
+  12%  { transform: translate3d(calc(var(--rv-mag, 1) * -7px), calc(var(--rv-mag, 1) * 4px), 0); }
+  26%  { transform: translate3d(calc(var(--rv-mag, 1) * 6px), calc(var(--rv-mag, 1) * -5px), 0); }
+  42%  { transform: translate3d(calc(var(--rv-mag, 1) * -4px), calc(var(--rv-mag, 1) * 3px), 0); }
+  60%  { transform: translate3d(calc(var(--rv-mag, 1) * 2px), calc(var(--rv-mag, 1) * -2px), 0); }
+  80%  { transform: translate3d(calc(var(--rv-mag, 1) * -1px), 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
 /* Imagem-assinatura (data-reveal="iris"): o quadro abre a partir do centro. Começa em 4 % para o
  * observador ainda enxergar a caixa. */
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='iris']:not(.is-in) { clip-path: circle(4% at 50% 50%); transform: none; filter: none; }

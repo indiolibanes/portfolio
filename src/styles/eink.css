@@ -7,7 +7,7 @@ html[data-serious-mode='true'] :is(
   .scene-canvas, .cosmic-starfield, .hero-ornaments, .method-presenter, .method-stage, .method-flow, .fl-defs,
   .prism-spectrum, .mm-splash, .mm-arrow, .mm-icon, .github-gif-strip, .architecture-map,
   .lab-sophia-presence, .lab-sophia-guide,
-  .music-panorama, .music-scene-art, .music-piano, .music-glow, .music-moonglow, .music-sky-lantern, .music-star,
+  .music-panorama, .music-scene-art, .music-glow, .music-moonglow, .music-sky-lantern, .music-star,
   .music-petal-body, .music-petal-vein, .music-kicker-dot, .listening-note-score, .listening-note-sheet, .listening-note-tape,
   [data-scene='clockwork'], .decorative-motion, .pixel-paths
 ) { display: none !important; }

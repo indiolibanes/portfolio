@@ -16,6 +16,8 @@
   if (!enabled) return;
 
   const effects = ['rise', 'drop', 'slide-l', 'slide-r', 'unfold', 'bloom', 'spin', 'flip', 'dim', 'lighten', 'blur'];
+  // Seções "estáticas" (Curiosidades, Música) sorteiam num conjunto próprio, mais teatral.
+  const sectionEffects = ['epicenter', 'dissolve', 'emerge', 'appear'];
   const stepMs = 260;
   const jitterMs = 110;
   const maxDelayMs = 2000;
@@ -38,21 +40,28 @@
   const lastEffect = new WeakMap();
 
   const between = (min, max) => min + Math.random() * (max - min);
-  const pick = (element) => {
-    const previous = effects.indexOf(lastEffect.get(element));
-    const pool = effects.length - (previous >= 0 ? 1 : 0);
+  const pick = (element, list = effects) => {
+    const previous = list.indexOf(lastEffect.get(element));
+    const pool = list.length - (previous >= 0 ? 1 : 0);
     let index = Math.min(pool - 1, (Math.random() * pool) | 0);
     if (previous >= 0 && index >= previous) index += 1;
-    const next = effects[index];
+    const next = list[index];
     lastEffect.set(element, next);
     return next;
   };
 
   const enter = (element) => {
     const iris = element.getAttribute('data-reveal') === 'iris';
-    const effect = iris ? 'iris' : pick(element);
+    const section = element.getAttribute('data-reveal') === 'section';
+    const effect = iris ? 'iris' : pick(element, section ? sectionEffects : effects);
     element.setAttribute('data-rv', effect);
-    element.style.setProperty('--rv-dur', `${iris ? 2200 : Math.round(between(minDurMs, maxDurMs))}ms`);
+    if (effect === 'epicenter') {
+      // Epicentro sorteado; a magnitude (0.6–1.4) escala o tremor que acompanha a abertura.
+      element.style.setProperty('--rv-x', `${Math.round(between(18, 82))}%`);
+      element.style.setProperty('--rv-y', `${Math.round(between(20, 80))}%`);
+      element.style.setProperty('--rv-mag', between(0.6, 1.4).toFixed(2));
+    }
+    element.style.setProperty('--rv-dur', `${iris ? 2200 : section && effect === 'epicenter' ? 1900 : Math.round(between(minDurMs, maxDurMs))}ms`);
     void element.offsetWidth; // consolida o estado escondido antes de entrar
     element.classList.add('is-in');
   };
