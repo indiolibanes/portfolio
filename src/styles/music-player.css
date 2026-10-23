@@ -366,3 +366,55 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listen
 }
 html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head { padding: .6rem .4rem; }
 html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head :is(h2, p) { color: #000 !important; text-shadow: none; }
+
+
+/* ---------- Widget no topo, camada única (2026-10-23) ----------
+   Some a camada externa (o painel roxo da seção): o widget é a única superfície, sobe para a metade
+   superior e ocupa a largura inteira da seção. Título e subtítulo descem para o pé do widget.
+   O eyebrow "06 / Música · Last.fm · atividade recente" fica onde estava; sem o fundo escuro atrás,
+   só a cor muda (tinta escura) para continuar legível sobre o papel. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf.music-shelf--gallery {
+  --bleed: clamp(1rem, 2.3vw, 2rem);
+  background: none;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+  color: var(--ink, #2b2118);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-panorama {
+  width: auto;
+  margin-inline: calc(var(--bleed) * -1);
+  justify-self: stretch;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-source-label { color: var(--ink, #2b2118); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-source-label span {
+  background: rgba(43, 33, 24, .07);
+  border-color: rgba(43, 33, 24, .32);
+  color: var(--ink, #2b2118);
+}
+.music-shelf .music-heading--gallery .music-card-head {
+  border-top: 1px solid rgba(255, 244, 222, .14);
+  padding-top: clamp(1rem, 2.2vw, 1.6rem);
+}
+@media (min-width: 900px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: end;
+    gap: .4rem clamp(1.5rem, 4vw, 3.5rem);
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head h2 { font-size: clamp(2rem, 3.8vw, 3.4rem); }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head .music-heading-description { margin: 0 0 .25rem; max-width: 48ch; }
+}
+
+/* O cartão é só conteúdo dentro do widget: sem borda, sombra nem raio próprios (nem a luz tingida pela capa). */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[data-cover-fx],
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[data-now-playing] {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel:has(.recent-track-card[data-cover-fx]) {
+  border-color: hsla(var(--cover-hue, 42), 80%, 70%, .45);
+}
