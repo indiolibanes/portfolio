@@ -71,3 +71,71 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
     animation: none !important;
   }
 }
+
+/* ---------- Curiosidades e Contato: botões vivos (2026-10-22) ----------
+   Autoral: preenchimento vibrante por botão, borda cônica girando, brilho que varre e
+   halo pulsando. Editorial: só um anel de tinta discreto e a seta que acena.
+   Legacy: nada se move. Movimento reduzido: tudo parado, cores mantidas. */
+
+@keyframes attn-halo {
+  0%, 100% { box-shadow: 0 0 0 0 var(--attn-glow), 0 6px 20px -6px var(--attn-glow); }
+  50% { box-shadow: 0 0 0 9px transparent, 0 10px 30px -4px var(--attn-glow); }
+}
+@keyframes attn-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+:is(.curiosities-teaser__link, #contato .closing-actions .button) {
+  --attn-a: #ffd36b; --attn-b: #ff7ab8; --attn-glow: rgba(255, 190, 90, .6); --attn-ink: #231526;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(135deg, var(--attn-a), var(--attn-b)) padding-box,
+    conic-gradient(from var(--attn-angle), #fff6c8, var(--attn-a), var(--attn-b), #8fd3ff, #fff6c8) border-box;
+  color: var(--attn-ink);
+  font-weight: 800;
+  letter-spacing: .01em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .35);
+  animation: attn-spin 3.2s linear infinite, attn-halo 2.4s ease-in-out infinite;
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1.2), filter .25s;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .closing-actions .button.closing-whatsapp-button { --attn-a: #7dffb0; --attn-b: #1fd0a0; --attn-glow: rgba(60, 230, 150, .6); --attn-ink: #06281b; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .closing-actions .button.closing-linkedin-button { --attn-a: #8fd3ff; --attn-b: #6a7bff; --attn-glow: rgba(110, 150, 255, .65); --attn-ink: #0b1740; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .curiosities-teaser:not(#_) .curiosities-teaser__link { --attn-a: #c9a4ff; --attn-b: #ff8fd0; --attn-glow: rgba(210, 130, 255, .6); --attn-ink: #2a0f3a; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+:is(.curiosities-teaser__link, #contato .closing-actions .button)::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .8), transparent);
+  animation: attn-sheen 3s ease-in-out infinite;
+  pointer-events: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+:is(.curiosities-teaser__link, #contato .closing-actions .button) > span[aria-hidden] {
+  display: inline-block;
+  animation: attn-nudge 1.6s ease-in-out infinite;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+:is(.curiosities-teaser__link, #contato .closing-actions .button):is(:hover, :focus-visible) {
+  transform: translateY(-3px) scale(1.05);
+  filter: brightness(1.08) saturate(1.15);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+:is(.curiosities-teaser__link, #contato .closing-actions .button):focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Editorial: discreto, só tinta. */
+html[data-serious-mode='true'] :is(.curiosities-teaser__link, #contato .closing-actions .button) { animation: attn-ring-ink 3s ease-out infinite; }
+html[data-serious-mode='true'] :is(.curiosities-teaser__link, #contato .closing-actions .button) > span[aria-hidden] { display: inline-block; animation: attn-nudge 2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html :is(.curiosities-teaser__link, #contato .closing-actions .button),
+  html :is(.curiosities-teaser__link, #contato .closing-actions .button)::after,
+  html :is(.curiosities-teaser__link, #contato .closing-actions .button) > span[aria-hidden] {
+    animation: none !important;
+  }
+}

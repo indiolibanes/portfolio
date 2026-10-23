@@ -440,7 +440,7 @@ for (const viewport of VIEWPORTS.filter((v) => ['390', '1440'].includes(v.name))
     await strip(page, '#musica .music-panorama', `music-butterflies-${w}`, 8, 230, panoramaClick(vp.width < 700 ? 120 : 420, vp.width < 700 ? 90 : 260));
     await page.waitForTimeout(1500);
     await strip(page, '#musica .music-panorama', `music-ribbons-${w}`, 8, 230, panoramaClick(vp.width < 700 ? 200 : 700, vp.width < 700 ? 110 : 300));
-    await strip(page, '#musica .listening-note', `music-note-${w}`, 4, 700);
+    await strip(page, '#musica [data-cover-hero]', `music-cover-${w}`, 4, 700);
     await strip(page, '#contato .closing-marks', `orbit-${w}`, 10, 600);
     report.motion[`log-${w}`] = { errors: log.pageErrors, console: log.console.filter((c) => !c.includes('503')) };
     await context.close();

@@ -1,279 +1,255 @@
 /*
- * Last.fm player — redone 2026-10-13.
+ * Capa viva — a última faixa do Last.fm no padrão do SaintHero (Horologiarius).
  *
- * A pocket record player on the moonlit terrace: the album sleeve with a vinyl
- * sliding out from behind it (it spins while a track is playing and rests half
- * tucked in when the track is only "recently heard"), three equaliser bars in
- * place of the old status dot, and a thin light that travels along the bottom
- * edge while music is on. Same markup and data hooks as before — MusicShelf.astro
- * only sets data-now-playing and .is-live.
+ * Camadas: cópia desfocada e escurecida ao fundo (respira), capa nítida com
+ * máscaras suaves, abertura por clip-path + assentamento (escala/brilho/blur) +
+ * ken-burns, texto em cascata, poeira dourada, feixe diagonal, paralaxe de
+ * rolagem (--shift) e inclinação por ponteiro (--tilt-x/--tilt-y).
+ * Extras musicais: barras de equalizador sobre a base da capa e notas ♪ ♫
+ * espelhadas no reflexo abaixo. Com música tocando as barras dançam; ouvido
+ * recentemente elas descansam.
  *
- * Authorial mode only. Editorial and Legacy keep their own flat cards.
- * Footprint is unchanged on purpose: the illustration's panel must stay clear
- * of the four faces.
+ * Só no modo Autoral. Editorial e Legacy mantêm o cartão plano e estático
+ * (as camadas decorativas ficam ocultas); movimento reduzido congela tudo.
  */
 
-:root { --player-ink: #fff4de; --player-gold: #f0cf86; }
+:root { --player-ink: #fff4de; --player-gold: #f0cf86; --cover-ease: cubic-bezier(.16, 1, .3, 1); }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
-  --vinyl-out: 30%;
+.recent-track-card .cover-backdrop,
+.recent-track-card .cover-dust,
+.recent-track-card .cover-beam,
+.recent-track-card .cover-eq,
+.recent-track-card .cover-notes,
+.recent-track-card .cover-reflection { display: none; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
+  --shift: 0; --tilt-x: 0; --tilt-y: 0;
   position: relative;
   isolation: isolate;
-  grid-template-columns: 84px minmax(0, 1fr);
-  column-gap: clamp(2.2rem, 3.4vw, 2.9rem);
-  align-items: center;
-  padding: .85rem 1rem .95rem .85rem;
-  border: 1px solid rgba(240, 207, 134, .34);
-  border-radius: 20px;
-  background:
-    radial-gradient(120% 90% at 0% 0%, rgba(240, 207, 134, .13), transparent 55%),
-    linear-gradient(150deg, rgba(24, 28, 62, .92), rgba(12, 11, 28, .94));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 244, 222, .16),
-    0 16px 34px -10px rgba(0, 0, 0, .6);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   overflow: hidden;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[data-now-playing='true'] {
-  --vinyl-out: 48%;
-  border-color: rgba(240, 207, 134, .5);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 244, 222, .2),
-    0 0 0 1px rgba(240, 207, 134, .08),
-    0 16px 36px -10px rgba(0, 0, 0, .65),
-    0 0 26px -8px rgba(240, 207, 134, .35);
-}
-
-/* Sleeve + vinyl --------------------------------------------------------- */
-
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork-shell {
-  position: relative;
-  z-index: 1;
-  width: 84px;
-  aspect-ratio: 1;
-  border: 0;
-  border-radius: 7px;
-  overflow: visible;
-  background: none;
-  box-shadow: none;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork-fallback {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  border-radius: 7px;
-  object-fit: cover;
-  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 244, 222, .18);
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork-fallback {
   display: grid;
-  place-items: center;
-  background: linear-gradient(145deg, #2a2f6a, #14122e);
-  color: var(--player-gold);
-  font-size: 2rem;
-}
-html .music-shelf .music-heading--gallery .recent-artwork-fallback[hidden],
-html .music-shelf .music-heading--gallery .recent-artwork[hidden] { display: none !important; }
-
-/* sleeve gloss */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border-radius: 7px;
-  background: linear-gradient(120deg, rgba(255, 255, 255, .28), transparent 38%, transparent 70%, rgba(255, 255, 255, .08));
-  pointer-events: none;
-}
-
-/* the record */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artwork-shell::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 2%;
-  left: 0;
-  width: 96%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, #07060f 0 4%, #f0cf86 5% 9%, #b3173c 10% 27%, #07060f 28% 29%, transparent 30%),
-    conic-gradient(from 25deg, transparent 0 18%, rgba(255, 255, 255, .2) 26%, transparent 36% 62%, rgba(255, 255, 255, .13) 72%, transparent 82%),
-    repeating-radial-gradient(circle, #181628 0 1.6px, #0b0a15 1.6px 3px);
-  box-shadow: 0 0 0 1px rgba(255, 244, 222, .14), 4px 6px 12px -2px rgba(0, 0, 0, .65);
-  transform: translateX(var(--vinyl-out)) rotate(0deg);
-  transition: transform .7s cubic-bezier(.3, .8, .3, 1);
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-card:is(:hover, :focus-within) { --vinyl-out: 56%; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-card[data-now-playing='true'] .recent-artwork-shell::before {
-  animation: player-vinyl-spin 4.8s linear infinite;
-}
-@keyframes player-vinyl-spin {
-  from { transform: translateX(var(--vinyl-out)) rotate(0deg); }
-  to   { transform: translateX(var(--vinyl-out)) rotate(360deg); }
-}
-
-/* Copy ------------------------------------------------------------------- */
-
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-copy { min-width: 0; display: grid; gap: .08rem; }
-
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-kicker {
-  margin: 0 0 .25rem;
-  display: flex;
-  flex-wrap: wrap;
+  grid-template-columns: minmax(150px, 46%) minmax(0, 1fr);
   align-items: center;
-  gap: .15rem .42rem;
-  color: var(--player-gold);
-  font-size: .54rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-track-age { color: rgba(255, 244, 222, .6); letter-spacing: .06em; }
-
-/* status dot → equaliser bars */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-kicker-dot {
-  flex: 0 0 auto;
-  width: 13px;
-  height: 11px;
-  border-radius: 0;
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 3px 35% no-repeat,
-    linear-gradient(currentColor, currentColor) 50% 100% / 3px 70% no-repeat,
-    linear-gradient(currentColor, currentColor) 100% 100% / 3px 50% no-repeat;
-  box-shadow: none;
-  opacity: .55;
-  animation: none;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-kicker-dot.is-live {
-  opacity: 1;
-  color: #ff8fa3;
-  animation: player-eq-a 1.05s ease-in-out infinite alternate;
-}
-@keyframes player-eq-a {
-  0%   { background-size: 3px 30%, 3px 85%, 3px 45%; }
-  35%  { background-size: 3px 90%, 3px 40%, 3px 75%; }
-  70%  { background-size: 3px 55%, 3px 100%, 3px 30%; }
-  100% { background-size: 3px 80%, 3px 55%, 3px 95%; }
-}
-
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-copy h3 {
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  color: var(--player-ink);
-  font-size: clamp(1rem, 1.35vw, 1.2rem);
-  line-height: 1.16;
-  letter-spacing: -.005em;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, .45);
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-artist {
-  margin: .12rem 0 0;
-  color: #ffe2a4;
-  font-size: .74rem;
-  font-weight: 700;
-  letter-spacing: .01em;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-album {
-  margin: 0;
-  color: rgba(255, 244, 222, .62);
-  font-size: .64rem;
-  font-style: italic;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-album:empty { display: none; }
-
-/* link pill */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-meta-row { margin-top: .5rem; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .apple-music-link {
-  display: inline-flex;
-  align-items: center;
-  gap: .25rem;
-  min-height: 30px;
-  padding: .2rem .7rem;
-  border: 1px solid rgba(240, 207, 134, .5);
-  border-radius: 999px;
-  background: rgba(240, 207, 134, .08);
-  color: var(--player-ink);
-  font-size: .64rem;
-  font-weight: 700;
-  letter-spacing: .03em;
-  text-decoration: none;
-  transition: background .2s ease, color .2s ease, transform .2s ease;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .apple-music-link:is(:hover, :focus-visible) {
-  background: #f0cf86;
-  color: #1a1633;
-  transform: translateY(-1px);
-}
-@media (max-width: 1199px) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .music-shelf .music-heading--gallery .apple-music-link { min-height: 44px; }
-}
-
-/* travelling light along the bottom edge while music plays */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-card::after {
-  content: "";
-  position: absolute;
-  inset: auto 14px 0 14px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(240, 207, 134, .15), transparent);
-  pointer-events: none;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .recent-track-card[data-now-playing='true']::after {
-  background: linear-gradient(90deg, rgba(240, 207, 134, 0) 0 30%, #ffe2a4 50%, rgba(240, 207, 134, 0) 70% 100%) 0 0 / 220% 100%;
-  animation: player-glide 3.2s linear infinite;
-}
-@keyframes player-glide { from { background-position: 120% 0; } to { background-position: -120% 0; } }
-
-/* loading / idle line keeps the same glass */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-.music-shelf .music-heading--gallery .music-listening-panel .music-loading {
+  gap: clamp(1rem, 3vw, 2rem);
+  min-height: clamp(260px, 30vw, 340px);
+  padding: clamp(1rem, 2.4vw, 1.6rem);
   border: 1px solid rgba(240, 207, 134, .34);
-  border-radius: 20px;
-  background: linear-gradient(150deg, rgba(24, 28, 62, .9), rgba(12, 11, 28, .92));
-  color: var(--player-ink);
+  border-radius: 22px;
+  background: linear-gradient(150deg, rgba(18, 16, 40, .9), rgba(8, 8, 20, .96));
+  box-shadow: inset 0 1px 0 rgba(255, 244, 222, .16), 0 22px 44px -14px rgba(0, 0, 0, .7);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[data-now-playing='true'] {
+  border-color: rgba(240, 207, 134, .55);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 222, .2), 0 22px 44px -14px rgba(0, 0, 0, .7), 0 0 34px -8px rgba(240, 207, 134, .4);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card[hidden] { display: none; }
+
+/* Fundo: a própria capa, desfocada, escura e respirando. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop {
+  display: block; position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: blur(34px) saturate(1.5) brightness(.42);
+  transform: scale(1.3);
+  animation: cover-breathe 16s ease-in-out infinite alternate;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(8, 8, 20, .25), rgba(8, 8, 20, .7) 70%), radial-gradient(120% 90% at 20% 50%, transparent, rgba(8, 8, 20, .55));
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img[hidden] { display: none; }
+@keyframes cover-breathe {
+  from { transform: scale(1.2) translate3d(0, 0, 0); }
+  to   { transform: scale(1.36) translate3d(2%, -1.5%, 0); }
+}
+
+/* Capa nítida + reflexo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-shell {
+  display: block; position: relative; z-index: 1; width: 100%; max-width: 300px; aspect-ratio: auto; border: 0; border-radius: 0; overflow: visible;
+  justify-self: center;
+  transform: translate3d(calc(var(--tilt-x) * -6px), calc(var(--shift) * -14px + var(--tilt-y) * -4px), 0) rotateY(calc(var(--tilt-x) * 5deg)) rotateX(calc(var(--tilt-y) * -4deg));
+  transform-style: preserve-3d; transition: transform .35s ease-out;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-frame {
+  position: relative; width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden;
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 244, 222, .18);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-fallback {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; margin: 0;
+  display: grid; place-items: center; font-size: 4rem; color: var(--player-gold); background: #14122a;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .recent-artwork-shell::before,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .recent-artwork-shell::after { content: none; }
+/* Luz sobre a capa: gradiente que a funde ao fundo, como as máscaras do santo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .1), transparent 30%, transparent 55%, rgba(8, 8, 20, .62));
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection {
+  display: block; width: 100%; aspect-ratio: 1 / .32; margin-top: 3px; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent 85%);
+          mask-image: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent 85%);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection img {
+  display: block; width: 100%; aspect-ratio: 1; object-fit: cover; transform: scaleY(-1); filter: blur(1.5px);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-reflection img[hidden] { display: none; }
+
+/* Barras de equalizador na base da capa. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq {
+  display: flex; align-items: flex-end; gap: 2px; position: absolute; inset: auto 0 0 0; height: 34%; padding: 0 5px; z-index: 2; pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%); mask-image: linear-gradient(180deg, transparent, #000 45%);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq i {
+  flex: 1; height: var(--h, 40%); min-height: 6%; border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #fff2c4, #f0cf86 45%, rgba(240, 120, 150, .75));
+  box-shadow: 0 0 8px rgba(255, 226, 164, .55);
+  transform-origin: bottom; opacity: .45; scale: 1 .35;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='true'] .cover-eq i {
+  opacity: .8; animation: cover-eq var(--d, 900ms) ease-in-out var(--o, 0ms) infinite alternate;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='false'] .cover-eq i {
+  animation: cover-eq-idle 4.5s ease-in-out var(--o, 0ms) infinite alternate;
+}
+@keyframes cover-eq { from { scale: 1 .18; } 50% { scale: 1 var(--p, .7); } to { scale: 1 1; } }
+@keyframes cover-eq-idle { from { scale: 1 .2; } to { scale: 1 .5; } }
+/* Pesos determinísticos por barra (alturas estáticas quando o movimento é reduzido). */
+.cover-eq i:nth-child(7n+1) { --h: 38%; --d: 760ms; --o: -120ms; --p: .55; }
+.cover-eq i:nth-child(7n+2) { --h: 70%; --d: 980ms; --o: -480ms; --p: .85; }
+.cover-eq i:nth-child(7n+3) { --h: 52%; --d: 640ms; --o: -300ms; --p: .4; }
+.cover-eq i:nth-child(7n+4) { --h: 86%; --d: 1120ms; --o: -700ms; --p: .95; }
+.cover-eq i:nth-child(7n+5) { --h: 44%; --d: 840ms; --o: -60ms; --p: .6; }
+.cover-eq i:nth-child(7n+6) { --h: 64%; --d: 700ms; --o: -540ms; --p: .75; }
+.cover-eq i:nth-child(7n)   { --h: 30%; --d: 1040ms; --o: -880ms; --p: .5; }
+
+/* Notas ♪ ♫ que sobem da capa e, espelhadas, afundam no reflexo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes {
+  display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: visible;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes span {
+  position: absolute; left: var(--x, 20%); bottom: 8%; font: 700 clamp(1rem, 2.2vw, 1.5rem)/1 "Portfolio Bookman", Georgia, serif;
+  color: #ffe9a8; text-shadow: 0 0 10px rgba(255, 226, 164, .8); opacity: 0;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes span::after {
+  content: attr(data-n); position: absolute; left: 0; top: 100%; transform: scaleY(-1); transform-origin: top; opacity: .35; filter: blur(1px);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='true'] .cover-notes span {
+  animation: cover-note var(--nd, 5.5s) ease-out var(--no, 0s) infinite;
+}
+.cover-notes span:nth-child(1) { --x: 8%;  --nd: 5.2s; --no: 0s;    --sway: 14px; }
+.cover-notes span:nth-child(2) { --x: 24%; --nd: 6.1s; --no: -1.4s; --sway: -18px; }
+.cover-notes span:nth-child(3) { --x: 40%; --nd: 5.6s; --no: -3.1s; --sway: 12px; }
+.cover-notes span:nth-child(4) { --x: 56%; --nd: 6.6s; --no: -2.2s; --sway: -14px; }
+.cover-notes span:nth-child(5) { --x: 70%; --nd: 5.0s; --no: -4.2s; --sway: 18px; }
+.cover-notes span:nth-child(6) { --x: 84%; --nd: 6.3s; --no: -.7s;  --sway: -12px; }
+.cover-notes span:nth-child(7) { --x: 16%; --nd: 7.0s; --no: -5.0s; --sway: 16px; }
+.cover-notes span:nth-child(8) { --x: 92%; --nd: 5.8s; --no: -3.7s; --sway: -16px; }
+@keyframes cover-note {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) rotate(-8deg) scale(.7); }
+  12%  { opacity: 1; }
+  70%  { opacity: .9; }
+  100% { opacity: 0; transform: translate3d(var(--sway), -150%, 0) rotate(10deg) scale(1.15); }
+}
+
+/* Poeira dourada e feixe diagonal. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-dust { display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-dust i {
+  position: absolute; left: var(--l); bottom: -4%; width: var(--s, 3px); height: var(--s, 3px); border-radius: 50%;
+  background: #ffe2a4; box-shadow: 0 0 6px rgba(255, 226, 164, .9); opacity: 0;
+  animation: cover-dust var(--t, 11s) linear var(--dl, 0s) infinite;
+}
+.cover-dust i:nth-child(1)  { --l: 6%;  --s: 2px; --t: 12s; --dl: -2s; }
+.cover-dust i:nth-child(2)  { --l: 14%; --s: 3px; --t: 9s;  --dl: -6s; }
+.cover-dust i:nth-child(3)  { --l: 23%; --s: 2px; --t: 13s; --dl: -1s; }
+.cover-dust i:nth-child(4)  { --l: 33%; --s: 4px; --t: 10s; --dl: -4s; }
+.cover-dust i:nth-child(5)  { --l: 42%; --s: 2px; --t: 14s; --dl: -9s; }
+.cover-dust i:nth-child(6)  { --l: 51%; --s: 3px; --t: 11s; --dl: -3s; }
+.cover-dust i:nth-child(7)  { --l: 60%; --s: 2px; --t: 12s; --dl: -7s; }
+.cover-dust i:nth-child(8)  { --l: 69%; --s: 3px; --t: 9.5s; --dl: -5s; }
+.cover-dust i:nth-child(9)  { --l: 77%; --s: 2px; --t: 13s; --dl: -10s; }
+.cover-dust i:nth-child(10) { --l: 85%; --s: 4px; --t: 10.5s; --dl: -8s; }
+.cover-dust i:nth-child(11) { --l: 92%; --s: 2px; --t: 12s; --dl: -.5s; }
+.cover-dust i:nth-child(12) { --l: 97%; --s: 3px; --t: 11s; --dl: -6.5s; }
+@keyframes cover-dust {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0); }
+  15%  { opacity: .85; }
+  85%  { opacity: .5; }
+  100% { opacity: 0; transform: translate3d(14px, -330px, 0); }
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-beam {
+  display: block; position: absolute; top: -20%; bottom: -20%; left: -40%; width: 30%; z-index: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 236, 190, .16), transparent);
+  transform: skewX(-18deg) translateX(0); mix-blend-mode: screen;
+  animation: cover-beam 9s ease-in-out 1.2s infinite;
+}
+@keyframes cover-beam { 0%, 55% { transform: skewX(-18deg) translateX(0); opacity: 0; } 62% { opacity: 1; } 100% { transform: skewX(-18deg) translateX(560%); opacity: 0; } }
+
+/* Texto. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { position: relative; z-index: 2; min-width: 0; display: grid; gap: .15rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin: 0 0 .5rem; font: 700 .72rem/1 var(--font-interface, system-ui); text-transform: uppercase; letter-spacing: .22em; color: var(--player-gold);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-track-age { color: rgba(255, 244, 222, .6); letter-spacing: .06em; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker-dot {
+  width: 9px; height: 9px; border-radius: 50%; background: rgba(240, 207, 134, .5); flex: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker-dot.is-live { background: #ffe2a4; animation: cover-live 1.6s ease-in-out infinite; }
+@keyframes cover-live { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 226, 164, .7); } 50% { box-shadow: 0 0 0 7px rgba(255, 226, 164, 0); } }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 {
+  margin: 0; color: #fff4de; font: 500 clamp(1.5rem, 3.4vw, 2.5rem)/1.05 var(--font-display, "Portfolio Bookman", Georgia, serif); text-shadow: 0 2px 18px rgba(0, 0, 0, .6); text-wrap: balance;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-artist { margin: .4rem 0 0; color: #f6e7d3; font-size: clamp(1rem, 1.6vw, 1.2rem); font-weight: 600; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-album { margin: 0; color: rgba(255, 244, 222, .7); font-style: italic; font-size: .95rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-album:empty { display: none; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-meta-row { margin-top: .8rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-provenance { color: rgba(255, 244, 222, .6); font-size: .78rem; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .apple-music-link {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; color: #1a1228; font-weight: 700; text-decoration: none;
+  background: linear-gradient(135deg, #ffe2a4, #f0cf86 55%, #f0a0b8); box-shadow: 0 0 18px -4px rgba(255, 226, 164, .7);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .apple-music-link:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Entrada (padrão SaintHero): abre de cima para baixo, assenta, e o texto sobe em cascata. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .cover-frame {
+  animation: cover-open 1.1s var(--cover-ease) both, cover-settle 1.6s var(--cover-ease) both;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .cover-frame img.recent-artwork {
+  animation: cover-ken 24s ease-in-out 1.6s infinite alternate;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .cover-reflection { animation: cover-fade .9s ease .9s both; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening .music-kicker { animation: cover-kicker 1s var(--cover-ease) .35s both; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening h3 { animation: cover-name 1.1s var(--cover-ease) .5s both; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card.is-opening :is(.recent-artist, .recent-album, .music-meta-row) { animation: cover-lift .9s var(--cover-ease) .8s both; }
+@keyframes cover-open { from { clip-path: inset(0 0 100% 0); opacity: 0; } 30% { opacity: 1; } to { clip-path: inset(0); opacity: 1; } }
+@keyframes cover-settle { from { transform: scale(1.35); filter: brightness(.2) blur(6px); } to { transform: scale(1); filter: none; } }
+@keyframes cover-ken { from { transform: scale(1) translate3d(0, 0, 0); } to { transform: scale(1.1) translate3d(-1.5%, -2%, 0); } }
+@keyframes cover-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cover-kicker { from { opacity: 0; letter-spacing: .7em; } to { opacity: 1; letter-spacing: .22em; } }
+@keyframes cover-name { from { opacity: 0; transform: translateY(18px); filter: blur(8px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; filter: none; clip-path: inset(0); } }
+@keyframes cover-lift { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 680px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
+    grid-template-columns: minmax(0, 1fr); min-height: 0; text-align: center;
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card .recent-artwork-shell { max-width: min(78%, 280px); }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-meta-row { justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .music-shelf .music-heading--gallery .recent-track-card,
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .music-shelf .music-heading--gallery .recent-track-card * ,
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .music-shelf .music-heading--gallery .recent-track-card::after,
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
-  .music-shelf .music-heading--gallery .recent-artwork-shell::before {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card * ,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-card *::after {
     animation: none !important;
     transition: none !important;
   }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-beam,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-dust { display: none; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq i { scale: 1 .6; opacity: .7; }
 }

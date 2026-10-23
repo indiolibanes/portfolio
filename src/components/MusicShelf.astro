@@ -13,6 +13,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   data-has-playlists={String(hasPlaylists)}
   aria-busy="false"
   data-music-state="idle"
+  data-reveal="section"
 >
   <div class="music-heading music-heading--gallery">
     <div class="music-heading-copy">
@@ -34,26 +35,36 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       <a class="music-status-profile" href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer" data-music-profile hidden>Abrir Last.fm <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>
 
       <article
-        class="recent-track-card"
+        class="recent-track-card cover-hero"
         data-recent-card
+        data-cover-hero
         hidden
       >
-        <div class="recent-artwork-shell">
-          <div
-            class="recent-artwork-fallback"
-            data-artwork-fallback
-            aria-hidden="true"
-          >
-            ♪
-          </div>
+        <div class="cover-backdrop" aria-hidden="true"><img data-track-backdrop alt="" hidden /></div>
+        <div class="cover-dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="cover-beam" aria-hidden="true"></span>
 
-          <img
-            class="recent-artwork"
-            data-track-artwork
-            alt=""
-            loading="lazy"
-            hidden
-          />
+        <div class="recent-artwork-shell cover-figure">
+          <div class="cover-frame">
+            <div
+              class="recent-artwork-fallback"
+              data-artwork-fallback
+              aria-hidden="true"
+            >
+              ♪
+            </div>
+
+            <img
+              class="recent-artwork"
+              data-track-artwork
+              alt=""
+              loading="lazy"
+              hidden
+            />
+            <div class="cover-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="cover-notes" aria-hidden="true"><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♩">♩</span><span data-n="♬">♬</span><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♬">♬</span><span data-n="♩">♩</span></div>
+          </div>
+          <div class="cover-reflection" aria-hidden="true"><img data-track-reflection alt="" hidden /></div>
         </div>
 
         <div class="recent-track-copy">
@@ -106,23 +117,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       </div>
     </div>
 
-    <aside class="listening-note listening-note--moonlight" aria-label="Fragmento do ensaio Moonlight Sonata">
-      <i class="listening-note-sheet listening-note-sheet--a" aria-hidden="true"></i>
-      <i class="listening-note-sheet listening-note-sheet--b" aria-hidden="true"></i>
-      <i class="listening-note-paper" aria-hidden="true"></i>
-      <span class="listening-note-tape" aria-hidden="true"></span>
-      <div class="listening-note-top">
-        <span>Fragmento / 01</span>
-        <span>Memória &amp; música</span>
-      </div>
-      <div class="listening-note-score" data-decorative-motion aria-hidden="true"><span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span></div>
-      <blockquote class="listening-note-quote listening-note-typewriter">
-        <span class="music-quote-assistive">Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
-        <span class="music-quote-typed" aria-hidden="true" data-sonata-typing>Diante da grande arte, a conclusão é que a música não apenas deleita, mas ordena a substância do caráter.</span>
-      </blockquote>
-      <p class="listening-note-footer"><cite>Moonlight Sonata</cite> <span aria-hidden="true">—</span> A harmonia do pretérito imperfeito</p>
-    </aside>
-
     <figure class="music-panorama" aria-labelledby="music-panorama-caption" data-music-panorama>
       <picture class="music-scene-art">
         <source type="image/avif" srcset="/assets/music-moonlit-terrace-v4.avif" />
@@ -133,50 +127,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         <span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span>
         <span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span>
       </div>
-      <svg class="music-piano" viewBox="0 0 240 92" aria-hidden="true" focusable="false">
-        <g class="mp-body">
-        <path class="mp-lid" d="M18 14 L182 34 L178 44 L14 24 Z"/>
-        <path class="mp-case" d="M26 40 H214 Q224 40 222 52 L216 62 H30 L24 52 Q22 40 26 40 Z"/>
-        <rect class="mp-kb" x="34" y="54" width="168" height="12"/>
-        <rect class="mp-w" x="34" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="46" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="58" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="70" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="82" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="94" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="106" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="118" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="130" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="142" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="154" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="166" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="178" y="54" width="12" height="12"/>
-        <rect class="mp-w" x="190" y="54" width="12" height="12"/>
-        <rect class="mp-bk" x="42" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="54" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="78" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="90" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="102" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="126" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="138" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="162" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="174" y="54" width="8" height="7"/>
-        <rect class="mp-bk" x="186" y="54" width="8" height="7"/>
-        <path class="mp-leg" d="M52 62 L48 84 M120 62 L120 86 M196 62 L200 84 M40 74 H208"/>
-        </g>
-        <rect class="mp-hit mp-s0" x="42" y="54" width="8" height="7"/>
-        <rect class="mp-hit mp-s1" x="58" y="54" width="12" height="12"/>
-        <rect class="mp-hit mp-s2" x="90" y="54" width="8" height="7"/>
-        <rect class="mp-hit mp-s3" x="126" y="54" width="8" height="7"/>
-        <rect class="mp-hit mp-s4" x="90" y="54" width="8" height="7"/>
-        <rect class="mp-hit mp-s5" x="58" y="54" width="12" height="12"/>
-        <text class="mp-note mp-n0" x="46" y="46">♪</text>
-        <text class="mp-note mp-n1" x="64" y="46">♪</text>
-        <text class="mp-note mp-n2" x="94" y="46">♪</text>
-        <text class="mp-note mp-n3" x="130" y="46">♪</text>
-        <text class="mp-note mp-n4" x="94" y="46">♪</text>
-        <text class="mp-note mp-n5" x="64" y="46">♪</text>
-        </svg>
       <div class="music-panorama-glows" aria-hidden="true">
         <span class="music-glow music-glow--lantern"></span>
         <span class="music-glow music-glow--lily"></span>
@@ -272,6 +222,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
   const artwork = document.querySelector('[data-track-artwork]');
   const artworkFallback = document.querySelector('[data-artwork-fallback]');
+  const backdropImg = document.querySelector('[data-track-backdrop]');
+  const reflectionImg = document.querySelector('[data-track-reflection]');
   const title = document.querySelector('[data-track-title]');
   const artist = document.querySelector('[data-track-artist]');
   const album = document.querySelector('[data-track-album]');
@@ -320,6 +272,12 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
 
   let lastTrackKey = '';
+  let openedKey = '';
+  function replayCoverOpen() {
+    recentCard.classList.remove('is-opening');
+    void recentCard.offsetWidth;
+    recentCard.classList.add('is-opening');
+  }
   const announcement = document.createElement('p');
   announcement.className = 'sr-only';
   announcement.setAttribute('aria-live', 'polite');
@@ -356,10 +314,20 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         : `Capa de ${track.name}`;
       artwork.hidden = false;
       artworkFallback.hidden = true;
+      [backdropImg, reflectionImg].forEach((copy) => {
+        if (!copy) return;
+        copy.src = track.artwork;
+        copy.hidden = false;
+      });
     } else {
       artwork.removeAttribute('src');
       artwork.hidden = true;
       artworkFallback.hidden = false;
+      [backdropImg, reflectionImg].forEach((copy) => {
+        if (!copy) return;
+        copy.removeAttribute('src');
+        copy.hidden = true;
+      });
     }
 
     if (track.url) {
@@ -381,8 +349,14 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       statusDot.classList.remove('is-live');
     }
 
+    const wasHidden = recentCard.hidden;
     recentCard.hidden = false;
     settleShelf('', track.nowPlaying ? 'playing' : 'recent');
+    // A capa "abre" na primeira revelação e a cada nova faixa (padrão SaintHero).
+    if (wasHidden || trackKey !== openedKey) {
+      openedKey = trackKey;
+      replayCoverOpen();
+    }
   }
 
   function showMusicError() {
@@ -419,45 +393,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       musicRequestPending = false;
     }
   }
-
-  // A citação permanece disponível por inteiro sem JavaScript ou com movimento reduzido.
-  const sonataQuote = shelf?.querySelector('[data-sonata-typing]');
-
-  if (
-    sonataQuote &&
-    'IntersectionObserver' in window &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  ) {
-    const originalQuote = sonataQuote.textContent.trim();
-    let started = false;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (started || !entries.some((entry) => entry.isIntersecting)) return;
-      started = true;
-      observer.disconnect();
-      // O post-it é colado uma vez, junto com o início da digitação.
-      (sonataQuote.closest('.listening-note') || sonataQuote).classList.add('is-sticking');
-
-      let position = 0;
-      sonataQuote.textContent = '';
-      sonataQuote.classList.add('music-quote-typing');
-
-      const typeNext = () => {
-        position = Math.min(position + 1, originalQuote.length);
-        sonataQuote.textContent = originalQuote.slice(0, position);
-        if (position < originalQuote.length) {
-          window.setTimeout(typeNext, 38);
-        } else {
-          sonataQuote.classList.remove('music-quote-typing');
-        }
-      };
-
-      typeNext();
-    }, { threshold: 0.35 });
-
-    observer.observe(sonataQuote.closest('.listening-note') || sonataQuote);
-  }
-
 
   // Cada clique alterna o recorte real de uma borboleta e o bastonete que se desfaz em pétalas.
   // O botão ocupa a imagem e não apresenta controle visual, mas mantém suporte ao teclado.
@@ -677,6 +612,37 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     document.addEventListener('visibilitychange', scheduleAmbient);
     window.addEventListener('portfolio:mode', scheduleAmbient);
     reducedMotion.addEventListener('change', scheduleAmbient);
+  }
+
+  // Paralaxe de rolagem e inclinação por ponteiro (mesmo padrão de saint-hero.js).
+  // Só no modo Autoral, com movimento permitido e ponteiro fino.
+  if (recentCard && typeof window.matchMedia === 'function') {
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const hover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const root = document.documentElement;
+    const quiet = () => calm.matches || root.dataset.seriousMode === 'true' || root.dataset.legacyMode === 'true';
+    let frame = 0;
+    const shift = () => {
+      frame = 0;
+      if (quiet() || recentCard.hidden) return;
+      const box = recentCard.getBoundingClientRect();
+      const mid = box.top + box.height / 2 - window.innerHeight / 2;
+      recentCard.style.setProperty('--shift', Math.max(-1, Math.min(1, mid / window.innerHeight)).toFixed(3));
+    };
+    window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(shift); }, { passive: true });
+    window.addEventListener('portfolio:mode', shift);
+    if (hover.matches) {
+      recentCard.addEventListener('pointermove', (event) => {
+        if (quiet()) return;
+        const box = recentCard.getBoundingClientRect();
+        recentCard.style.setProperty('--tilt-x', (((event.clientX - box.left) / box.width - .5) * 2).toFixed(3));
+        recentCard.style.setProperty('--tilt-y', (((event.clientY - box.top) / box.height - .5) * 2).toFixed(3));
+      }, { passive: true });
+      recentCard.addEventListener('pointerleave', () => {
+        recentCard.style.setProperty('--tilt-x', '0');
+        recentCard.style.setProperty('--tilt-y', '0');
+      });
+    }
   }
 
   shelf?.setAttribute('aria-busy', 'true');
