@@ -24,13 +24,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     </div>
 
     <div class="music-listening-panel" aria-label="Atividade musical recente">
-      <div class="music-heading-copy music-card-head">
-        <h2 id="music-title">O que anda tocando.</h2>
-        <p class="music-heading-description">
-          Uma pequena janela para as audições registradas no Last.fm,
-          independentemente do player usado.
-        </p>
-      </div>
       <noscript><p class="music-no-script">As audições recentes precisam de JavaScript. <a href={SOCIALS.lastfm} target="_blank" rel="noopener noreferrer">Abrir Last.fm <span aria-hidden="true">↗</span></a></p></noscript>
       <div class="music-grid music-grid--stage">
       <p class="music-loading" data-music-loading role="status" aria-live="polite" hidden></p>
@@ -118,6 +111,13 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
           </div>
         </div>
       </article>
+      </div>
+      <div class="music-heading-copy music-card-head">
+        <h2 id="music-title">O que anda tocando.</h2>
+        <p class="music-heading-description">
+          Uma pequena janela para as audições registradas no Last.fm,
+          independentemente do player usado.
+        </p>
       </div>
     </div>
 
