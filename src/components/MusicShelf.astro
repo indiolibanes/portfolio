@@ -41,6 +41,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         hidden
       >
         <div class="cover-backdrop" aria-hidden="true"><img data-track-backdrop alt="" hidden /></div>
+        <div class="cover-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="cover-dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <span class="cover-beam" aria-hidden="true"></span>
 
@@ -61,7 +62,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
               loading="lazy"
               hidden
             />
-            <div class="cover-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
             <canvas class="cover-fx" data-cover-fx aria-hidden="true"></canvas>
             <div class="cover-notes" aria-hidden="true"><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♩">♩</span><span data-n="♬">♬</span><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♬">♬</span><span data-n="♩">♩</span></div>
           </div>
@@ -96,6 +96,8 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
             class="recent-album"
             data-track-album
           ></p>
+
+          <div class="cover-wave" aria-hidden="true"><svg viewBox="0 0 640 16" preserveAspectRatio="none"><path d="M0 8 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 "/></svg></div>
 
           <div class="music-meta-row">
             <a
@@ -289,12 +291,31 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     const root = document.documentElement;
     return root.dataset.seriousMode === 'true' || root.dataset.legacyMode === 'true';
   }
+  // Esquema tonal ao estilo Material You: um matiz-semente gera papéis (primário, secundário,
+  // terciário, contêiner, superfície) em tons fixos, como no tema dinâmico do Jetpack Compose.
+  function applyTonalScheme(analysed) {
+    const seed = analysed.accent.h;
+    const second = analysed.palette[1] ? analysed.palette[1].h : seed + 40;
+    const third = analysed.palette[2] ? analysed.palette[2].h : seed + 110;
+    const tone = (h, s, l) => 'hsl(' + Math.round(((h % 360) + 360) % 360) + ' ' + s + '% ' + l + '%)';
+    const gray = (analysed.stats && analysed.stats.sat < 0.12);
+    const sat = gray ? 8 : 62;
+    const style = recentCard.style;
+    style.setProperty('--md-primary', tone(seed, sat, 78));
+    style.setProperty('--md-on-primary', tone(seed, sat, 14));
+    style.setProperty('--md-primary-container', tone(seed, Math.round(sat * 0.75), 30));
+    style.setProperty('--md-secondary', tone(second, Math.round(sat * 0.8), 74));
+    style.setProperty('--md-tertiary', tone(third, sat, 76));
+    style.setProperty('--md-surface', tone(seed, Math.round(sat * 0.4), 8));
+    style.setProperty('--md-surface-high', tone(seed, Math.round(sat * 0.4), 14));
+  }
   function applyCoverFx(analysed) {
     const fx = window.PortfolioCoverFX;
     if (!fx || !fxCanvas || !recentCard) return;
     if (fxController) { fxController.destroy(); fxController = null; }
     recentCard.dataset.coverFx = analysed.style;
     recentCard.style.setProperty('--cover-hue', String(Math.round(analysed.accent.h)));
+    applyTonalScheme(analysed);
     fxController = fx.create(fxCanvas, analysed, { quiet: fxQuiet });
   }
   const fallbackAnalysis = () => ({
