@@ -65,6 +65,7 @@ check('music: cover proxy is allow-listed to the Last.fm CDN', read('functions/a
 check('music: cover animation is quiet in Editorial/Legacy and with reduced motion', read('public/scripts/cover-fx.js').includes('prefers-reduced-motion') && music.includes('fxQuiet'));
 check('music: title and subtitle live inside the listening widget; eyebrow stays in the heading', music.includes('music-card-head') && music.indexOf('music-card-head') > music.indexOf('music-listening-panel') && music.indexOf('music-source-label') < music.indexOf('music-listening-panel'));
 check('music: widget sits on top as the single layer; title and subtitle come after the player', music.indexOf('music-card-head') > music.indexOf('data-recent-card') && read('src/styles/music-player.css').includes('camada única'));
+check('modes: the line between the emblems is a vibrating-string model (standing harmonics + closed loop), reduced motion = static frame', read('src/components/SeriousModeToggle.astro').includes('STRING_MODES') && read('src/components/SeriousModeToggle.astro').includes('serious-link__loop') && !read('src/components/SeriousModeToggle.astro').includes('updatePlaybackRate'));
 check('music: error/fallback containers', music.includes('data-music-loading') && music.includes('data-music-profile'));
 check('music: playback state available', music.includes('track.nowPlaying'));
 check('music: polling and visibility pause', music.includes('setInterval(') && music.includes('visibilitychange') && music.includes('document.hidden'));
