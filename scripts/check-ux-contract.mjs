@@ -55,7 +55,7 @@ check('lab cards: 5 standardized statuses',
   (home.match(/data-status="(?:progress|published)"/g) || []).length === 5);
 check('music: static section anchor', hasId(music, 'section', 'musica'));
 check('music: no-JS fallback', music.includes('<noscript>') && music.includes('SOCIALS.lastfm'));
-check('music: last track is a living album-cover hero (SaintHero pattern), no Moonlight note or piano', music.includes('data-cover-hero') && music.includes('cover-backdrop') && music.includes('cover-eq') && music.includes('cover-notes') && !music.includes('listening-note') && !music.includes('music-piano'));
+check('music: last track is a living album-cover hero (SaintHero pattern), no Moonlight note or piano', music.includes('data-cover-hero') && music.includes('cover-backdrop') && music.includes('cover-ambient') && music.includes('cover-notes') && !music.includes('listening-note') && !music.includes('music-piano'));
 check('music: cover hero motion stays out of reduced-motion, Editorial and Legacy', read('src/styles/music-player.css').includes('prefers-reduced-motion') && read('src/styles/music-player.css').includes("html:not([data-serious-mode='true']):not([data-legacy-mode='true'])"));
 check('reveal: Curiosidades and Música take random section entrances', read('public/scripts/reveal.js').includes('epicenter') && read('src/components/MusicShelf.astro').includes('data-reveal="section"') && read('src/pages/index.astro').includes('curiosities-teaser" aria-labelledby="curiosities-teaser-title" data-reveal="section"'));
 check('attention: Curiosidades and Contato buttons are animated and respect reduced motion', read('src/styles/attention.css').includes('attn-halo') && read('src/styles/attention.css').includes('#contato .closing-actions .button'));
