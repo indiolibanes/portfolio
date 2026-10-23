@@ -100,8 +100,8 @@ check('modes: language change glitches, and the dot colour follows the language'
   modes.includes('const paintGlitch') && modes.includes('const glitchTag') && modes.includes('tag.dataset.lang = lang') && modes.includes("[data-lang='en'] .serious-tag__dot"));
 check('modes: gamma jets are diagonal (rotated) and chaotic; beta spins fast with a counter-rotating pair; alpha is asymmetric',
   modes.includes('rotate(32 32 32)') && modes.includes('serious-beams2__spin') && modes.includes('duration: 190') && modes.includes('serious-ray') && modes.includes('serious-flare2'));
-check('brand: anime 360° turnaround (canvas) replaces the K, keeps the K as fallback, runs under 5 s, honours reduced motion and Legacy',
-  header.includes('data-brand-mark') && header.includes('brand-canvas') && header.includes('const DURATION = 4800') && header.includes("legacyMode === 'true'") && header.includes('prefers-reduced-motion'));
+check('brand: looping avatar video replaces the K, keeps a still poster, honours reduced motion and Legacy',
+  header.includes('data-brand-mark') && header.includes('brand-video') && header.includes('/brand/avatar-poster.jpg') && header.includes('/brand/avatar.webm') && header.includes('prefers-reduced-motion') && header.includes("data-legacy-mode='true'] .brand-mark .brand-video"));
 const gavetas = read('src/styles/gavetas.css');
 check('drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint',
   gavetas.includes('--drawer-tint') && gavetas.includes('backdrop-filter') && footer.includes("'--drawer-tint'") && read('src/layouts/BaseLayout.astro').includes('gavetas.css'));
