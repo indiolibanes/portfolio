@@ -62,9 +62,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
               hidden
             />
             <div class="cover-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <canvas class="cover-fx" data-cover-fx aria-hidden="true"></canvas>
             <div class="cover-notes" aria-hidden="true"><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♩">♩</span><span data-n="♬">♬</span><span data-n="♪">♪</span><span data-n="♫">♫</span><span data-n="♬">♬</span><span data-n="♩">♩</span></div>
           </div>
-          <div class="cover-reflection" aria-hidden="true"><img data-track-reflection alt="" hidden /></div>
         </div>
 
         <div class="recent-track-copy">
@@ -216,6 +216,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   </div>
 </section>
 
+<script is:inline src="/scripts/cover-fx.js" defer></script>
 <script is:inline>
   const shelf = document.querySelector('[data-music-shelf]');
   const recentCard = document.querySelector('[data-recent-card]');
@@ -223,7 +224,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   const artwork = document.querySelector('[data-track-artwork]');
   const artworkFallback = document.querySelector('[data-artwork-fallback]');
   const backdropImg = document.querySelector('[data-track-backdrop]');
-  const reflectionImg = document.querySelector('[data-track-reflection]');
+  const fxCanvas = document.querySelector('[data-cover-fx]');
   const title = document.querySelector('[data-track-title]');
   const artist = document.querySelector('[data-track-artist]');
   const album = document.querySelector('[data-track-album]');
@@ -271,6 +272,61 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     }
   }
 
+  // A capa vem por um proxy do próprio site (permite ler os pixels e pedir o original maior).
+  // Se o proxy falhar, volta à URL direta: a capa aparece e a animação usa o estilo padrão.
+  let fxController = null;
+  let coverSource = '';
+  function coverProxy(url) {
+    try {
+      return new URL(url).hostname === 'lastfm.freetls.fastly.net'
+        ? '/api/music/cover?u=' + encodeURIComponent(url)
+        : url;
+    } catch (error) {
+      return url;
+    }
+  }
+  function fxQuiet() {
+    const root = document.documentElement;
+    return root.dataset.seriousMode === 'true' || root.dataset.legacyMode === 'true';
+  }
+  function applyCoverFx(analysed) {
+    const fx = window.PortfolioCoverFX;
+    if (!fx || !fxCanvas || !recentCard) return;
+    if (fxController) { fxController.destroy(); fxController = null; }
+    recentCard.dataset.coverFx = analysed.style;
+    recentCard.style.setProperty('--cover-hue', String(Math.round(analysed.accent.h)));
+    fxController = fx.create(fxCanvas, analysed, { quiet: fxQuiet });
+  }
+  const fallbackAnalysis = () => ({
+    style: 'dust',
+    palette: [{ h: 42, s: 0.85 }, { h: 300, s: 0.6 }, { h: 200, s: 0.7 }],
+    accent: { h: 42, s: 0.85 },
+    contour: null,
+    stats: {},
+  });
+  function loadCover(url) {
+    coverSource = url;
+    let triedDirect = false;
+    artwork.onload = () => {
+      if (coverSource !== url) return;
+      const fx = window.PortfolioCoverFX;
+      if (!fx) return;
+      let analysed;
+      try { analysed = fx.analyze(artwork, 0.75); } catch (error) { analysed = fallbackAnalysis(); }
+      applyCoverFx(analysed);
+    };
+    artwork.onerror = () => {
+      if (triedDirect || coverSource !== url) return;
+      triedDirect = true;
+      artwork.src = url;
+    };
+    artwork.src = coverProxy(url);
+  }
+  window.addEventListener?.('load', () => {
+    // O script da animação é adiado; se a capa já carregou antes dele, analisa agora.
+    if (!fxController && artwork?.complete && artwork.naturalWidth && artwork.onload) artwork.onload();
+  });
+
   let lastTrackKey = '';
   let openedKey = '';
   function replayCoverOpen() {
@@ -308,13 +364,13 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     album.title = track.album || '';
 
     if (track.artwork) {
-      artwork.src = track.artwork;
+      if (coverSource !== track.artwork) loadCover(track.artwork);
       artwork.alt = track.album
         ? `Capa de ${track.album}`
         : `Capa de ${track.name}`;
       artwork.hidden = false;
       artworkFallback.hidden = true;
-      [backdropImg, reflectionImg].forEach((copy) => {
+      [backdropImg].forEach((copy) => {
         if (!copy) return;
         copy.src = track.artwork;
         copy.hidden = false;
@@ -323,7 +379,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       artwork.removeAttribute('src');
       artwork.hidden = true;
       artworkFallback.hidden = false;
-      [backdropImg, reflectionImg].forEach((copy) => {
+      [backdropImg].forEach((copy) => {
         if (!copy) return;
         copy.removeAttribute('src');
         copy.hidden = true;
