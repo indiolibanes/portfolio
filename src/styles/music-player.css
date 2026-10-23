@@ -18,9 +18,10 @@
 .recent-track-card .cover-backdrop,
 .recent-track-card .cover-dust,
 .recent-track-card .cover-beam,
-.recent-track-card .cover-eq,
 .recent-track-card .cover-notes,
-.recent-track-card .cover-fx { display: none; }
+.recent-track-card .cover-fx,
+.recent-track-card .cover-ambient,
+.recent-track-card .cover-wave { display: none; }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
   --shift: 0; --tilt-x: 0; --tilt-y: 0;
@@ -28,7 +29,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   isolation: isolate;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 32%) minmax(0, 1fr);
   align-items: stretch;
   gap: 0;
   min-height: 0;
@@ -98,34 +99,6 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   border-color: hsla(var(--cover-hue, 42), 80%, 70%, .45);
   box-shadow: inset 0 1px 0 rgba(255, 244, 222, .16), 0 22px 44px -14px rgba(0, 0, 0, .7), 0 0 40px -10px hsla(var(--cover-hue, 42), 90%, 60%, .5);
 }
-
-/* Barras de equalizador na base da capa. */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq {
-  display: flex; align-items: flex-end; gap: 2px; position: absolute; inset: auto 0 0 0; height: 22%; padding: 0 5px; z-index: 3; pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%); mask-image: linear-gradient(180deg, transparent, #000 45%);
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq i {
-  flex: 1; height: var(--h, 40%); min-height: 6%; border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #fff2c4, #f0cf86 45%, rgba(240, 120, 150, .75));
-  box-shadow: 0 0 8px rgba(255, 226, 164, .55);
-  transform-origin: bottom; opacity: .45; scale: 1 .35;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='true'] .cover-eq i {
-  opacity: .55; animation: cover-eq var(--d, 900ms) ease-in-out var(--o, 0ms) infinite alternate;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='false'] .cover-eq i {
-  animation: cover-eq-idle 4.5s ease-in-out var(--o, 0ms) infinite alternate;
-}
-@keyframes cover-eq { from { scale: 1 .18; } 50% { scale: 1 var(--p, .7); } to { scale: 1 1; } }
-@keyframes cover-eq-idle { from { scale: 1 .2; } to { scale: 1 .5; } }
-/* Pesos determinísticos por barra (alturas estáticas quando o movimento é reduzido). */
-.cover-eq i:nth-child(7n+1) { --h: 38%; --d: 760ms; --o: -120ms; --p: .55; }
-.cover-eq i:nth-child(7n+2) { --h: 70%; --d: 980ms; --o: -480ms; --p: .85; }
-.cover-eq i:nth-child(7n+3) { --h: 52%; --d: 640ms; --o: -300ms; --p: .4; }
-.cover-eq i:nth-child(7n+4) { --h: 86%; --d: 1120ms; --o: -700ms; --p: .95; }
-.cover-eq i:nth-child(7n+5) { --h: 44%; --d: 840ms; --o: -60ms; --p: .6; }
-.cover-eq i:nth-child(7n+6) { --h: 64%; --d: 700ms; --o: -540ms; --p: .75; }
-.cover-eq i:nth-child(7n)   { --h: 30%; --d: 1040ms; --o: -880ms; --p: .5; }
 
 /* Notas ♪ ♫ que sobem da capa e, espelhadas, afundam no reflexo. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes {
@@ -255,5 +228,68 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-notes,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-beam,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-dust { display: none; }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-eq i { scale: 1 .6; opacity: .7; }
+}
+
+/* ---------- Largura total + tema dinâmico (ideia do Material You / Jetpack Compose) ----------
+   O cartão ocupa a seção inteira, como a faixa dos santos. A cor-semente da capa vira um esquema
+   tonal (--md-*, definido em MusicShelf): superfície, primário, secundário, terciário. O lado que
+   sobra recebe formas orgânicas que giram e mudam de contorno, ao estilo das formas do M3 Expressive,
+   e uma linha ondulada de progresso indeterminada que anda enquanto toca. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
+  --md-primary: #ffe2a4; --md-on-primary: #2a1d05; --md-primary-container: #5a4415; --md-secondary: #f0b7d0; --md-tertiary: #a9d6ff; --md-surface: #0d0c18; --md-surface-high: #17152a;
+  min-height: 0;
+  background: linear-gradient(120deg, var(--md-surface), var(--md-surface-high) 60%, var(--md-primary-container));
+  transition: background .8s ease;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop::after {
+  background: linear-gradient(90deg, transparent 20%, var(--md-surface) 78%), radial-gradient(120% 90% at 20% 50%, transparent, rgba(8, 8, 20, .45));
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img { opacity: .55; }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient {
+  display: block; position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i {
+  position: absolute; display: block; opacity: .34; mix-blend-mode: screen; filter: blur(6px);
+  animation: cover-morph var(--mt, 16s) ease-in-out infinite alternate, cover-drift var(--dt, 26s) linear infinite;
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(1) { width: 46%; aspect-ratio: 1; right: -8%; top: -30%; background: var(--md-primary-container); --mt: 17s; --dt: 38s; opacity: .7; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(2) { width: 30%; aspect-ratio: 1; right: 14%; bottom: -28%; background: var(--md-secondary); --mt: 13s; --dt: 31s; opacity: .22; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(3) { width: 18%; aspect-ratio: 1; right: 3%; bottom: 12%; background: var(--md-tertiary); --mt: 11s; --dt: 24s; opacity: .26; }
+@keyframes cover-morph {
+  0%   { border-radius: 58% 42% 55% 45% / 48% 58% 42% 52%; }
+  33%  { border-radius: 38% 62% 44% 56% / 60% 40% 60% 40%; }
+  66%  { border-radius: 64% 36% 62% 38% / 42% 56% 44% 58%; }
+  100% { border-radius: 46% 54% 38% 62% / 56% 44% 62% 38%; }
+}
+@keyframes cover-drift { from { rotate: 0deg; } to { rotate: 360deg; } }
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 { font-size: clamp(1.8rem, 4.2vw, 3.4rem); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker { color: var(--md-primary); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker-dot.is-live { background: var(--md-primary); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-artist { color: var(--md-secondary); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .apple-music-link {
+  background: var(--md-primary); color: var(--md-on-primary); box-shadow: 0 0 22px -6px var(--md-primary);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-provenance {
+  padding: .3rem .7rem; border-radius: 999px; background: color-mix(in srgb, var(--md-primary-container) 70%, transparent); color: var(--md-primary);
+}
+
+/* Linha de progresso ondulada (indeterminada): a onda anda um comprimento por ciclo. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave {
+  display: block; height: 16px; width: min(100%, 420px); margin: .9rem 0 .2rem; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent); mask-image: linear-gradient(90deg, #000 70%, transparent);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave svg { display: block; width: 640px; max-width: none; height: 16px; animation: cover-wave 1.4s linear infinite; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave path { fill: none; stroke: var(--md-primary); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 4px var(--md-primary)); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card[data-now-playing='false'] .cover-wave svg { animation-duration: 6s; opacity: .45; }
+@keyframes cover-wave { to { transform: translateX(-40px); } }
+
+@media (max-width: 680px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave { margin-inline: auto; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(1) { width: 90%; right: -30%; top: auto; bottom: -20%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i,
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave svg { animation: none !important; }
 }
