@@ -1,0 +1,68 @@
+---
+// Cenário provisório do modo-experimental: lua cheia + portal lunar chinês.
+// Regra de cor: ambiente frio (azul) e detalhes chineses quentes (vermelho/ouro).
+// Tudo decorativo (aria-hidden). O cenário detalhado virá depois; troque este componente.
+const studs = Array.from({ length: 24 }, (_, i) => {
+  const a = (i / 24) * Math.PI * 2;
+  return { x: +(100 + Math.cos(a) * 94).toFixed(2), y: +(100 + Math.sin(a) * 94).toFixed(2) };
+});
+const lanterns = [
+  { cls: 'xm-lantern--a', rope: 70 },
+  { cls: 'xm-lantern--b', rope: 130 },
+  { cls: 'xm-lantern--c', rope: 40 },
+];
+---
+
+<div class="xm-backdrop" aria-hidden="true">
+  <div class="xm-moon-wrap">
+    <div class="xm-moon"></div>
+    <svg class="xm-gate" viewBox="0 0 200 200" focusable="false">
+      <circle cx="100" cy="100" r="98" fill="none" stroke="#9c1f17" stroke-width="5"></circle>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#e0a23b" stroke-width="1.4" opacity="0.85"></circle>
+      <circle cx="100" cy="100" r="102" fill="none" stroke="#5b0f0c" stroke-width="2.4" opacity="0.8"></circle>
+      {studs.map((s) => <circle cx={s.x} cy={s.y} r="1.7" fill="#e8b04a"></circle>)}
+    </svg>
+  </div>
+
+  {lanterns.map((l) => (
+    <svg class={`xm-lantern ${l.cls}`} viewBox="0 0 60 260" focusable="false">
+      <line x1="30" y1="0" x2="30" y2={l.rope + 40} stroke="#6b1511" stroke-width="1.6"></line>
+      <g transform={`translate(0 ${l.rope})`}>
+        <rect x="23" y="40" width="14" height="6" rx="2" fill="#e0a23b"></rect>
+        <ellipse cx="30" cy="78" rx="26" ry="32" fill="url(#xm-lantern-grad)"></ellipse>
+        <path d="M30 46 C 14 62, 14 94, 30 110 M30 46 C 46 62, 46 94, 30 110 M30 46 V110" fill="none" stroke="#7a1410" stroke-width="1.2" opacity="0.7"></path>
+        <rect x="21" y="108" width="18" height="7" rx="2" fill="#e0a23b"></rect>
+        <path d="M30 115 V150 M24 115 L22 146 M36 115 L38 146" stroke="#d8332a" stroke-width="2" stroke-linecap="round"></path>
+        <ellipse cx="30" cy="78" rx="26" ry="32" fill="url(#xm-lantern-glow)"></ellipse>
+      </g>
+    </svg>
+  ))}
+
+  <svg class="xm-clouds xm-clouds--a" viewBox="0 0 320 120" focusable="false">
+    <g fill="none" stroke="#d6402c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 96 C8 70 44 68 48 90 C52 58 98 56 100 88 C106 62 150 64 150 92 C170 82 190 96 176 108 L24 108 C6 108 2 100 8 96 Z"></path>
+      <path d="M48 90 C42 80 52 74 58 80 C62 86 54 90 50 86" stroke-width="2.2"></path>
+      <path d="M100 88 C96 78 106 72 112 78 C116 84 108 88 104 84" stroke-width="2.2"></path>
+    </g>
+  </svg>
+  <svg class="xm-clouds xm-clouds--b" viewBox="0 0 320 120" focusable="false">
+    <g fill="none" stroke="#d6402c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 96 C8 70 44 68 48 90 C52 58 98 56 100 88 C106 62 150 64 150 92 C170 82 190 96 176 108 L24 108 C6 108 2 100 8 96 Z"></path>
+      <path d="M48 90 C42 80 52 74 58 80 C62 86 54 90 50 86" stroke-width="2.2"></path>
+    </g>
+  </svg>
+
+  <svg width="0" height="0" style="position:absolute" focusable="false">
+    <defs>
+      <radialGradient id="xm-lantern-grad" cx="0.5" cy="0.45" r="0.6">
+        <stop offset="0" stop-color="#ff6a4a"></stop>
+        <stop offset="0.6" stop-color="#d8261c"></stop>
+        <stop offset="1" stop-color="#8a110e"></stop>
+      </radialGradient>
+      <radialGradient id="xm-lantern-glow" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#ffb070" stop-opacity="0.55"></stop>
+        <stop offset="1" stop-color="#ffb070" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+  </svg>
+</div>

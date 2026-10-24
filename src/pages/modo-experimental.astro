@@ -2,8 +2,10 @@
 // Protótipo do modo-experimental. Rota solta: sem link no site, fora do sitemap, noindex.
 // Para publicar de verdade, o menu vira o cabeçalho de um modo novo em BaseLayout/SeriousModeToggle.
 import ExperimentalMenu from '../components/ExperimentalMenu.astro';
+import LunarBackdrop from '../components/LunarBackdrop.astro';
 import '../styles/global.css';
 import '../styles/experimental.css';
+import '../styles/experimental-scene.css';
 ---
 
 <!doctype html>
@@ -19,8 +21,17 @@ import '../styles/experimental.css';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body id="top" class="xm-space">
+    <LunarBackdrop />
+    <canvas class="xm-sophia" data-xm-sophia role="img" aria-label="Sophia, assustada, de olhos arregalados, apontando para o menu"></canvas>
+    <div class="xm-stage-ui">
+      <button class="xm-spin" type="button" data-xm-spin aria-label="Girar a Sophia 360 graus" title="Girar 360°">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4.5h-4.5"></path><text x="12" y="14.6" text-anchor="middle" font-size="6.2" font-weight="700" fill="currentColor" font-family="system-ui,sans-serif">360</text></svg>
+      </button>
+      <span class="xm-hint">Role para ampliar · arraste para girar</span>
+    </div>
     <ExperimentalMenu />
     <main id="conteudo" class="xm-space__main"></main>
+    <script type="module" src="/experimental/sophia-scene.js"></script>
   </body>
 </html>
 

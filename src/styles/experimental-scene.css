@@ -1,0 +1,135 @@
+/* modo-experimental: cenário (lua + portal chinês), canvas da Sophia e controles inferiores.
+   Camadas: backdrop (0) < canvas Sophia (1) < controles (2) < menu (z do experimental.css). */
+
+.xm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Lua cheia fria, alinhada ao ponto onde a Sophia fica (tx do canvas ≈ 32% da largura). */
+.xm-moon-wrap {
+  position: absolute;
+  left: 32%;
+  top: 48%;
+  width: min(66vh, 52vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+.xm-moon {
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 34%, rgba(120, 150, 215, 0.55) 0 5%, transparent 6%),
+    radial-gradient(circle at 62% 28%, rgba(120, 150, 215, 0.4) 0 8%, transparent 9%),
+    radial-gradient(circle at 55% 66%, rgba(120, 150, 215, 0.5) 0 6%, transparent 7%),
+    radial-gradient(circle at 24% 62%, rgba(120, 150, 215, 0.35) 0 9%, transparent 10%),
+    radial-gradient(circle at 38% 32%, #e8f0ff 0%, #c3d6fa 42%, #8aa8e0 74%, #5f7fc4 100%);
+  box-shadow:
+    0 0 60px 10px rgba(150, 185, 255, 0.45),
+    0 0 180px 50px rgba(90, 130, 235, 0.28);
+  animation: xm-moon-breathe 9s ease-in-out infinite;
+}
+.xm-gate {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 6px rgba(214, 64, 44, 0.45));
+}
+
+.xm-lantern {
+  position: absolute;
+  top: 0;
+  height: auto;
+  transform-origin: 50% 0;
+  animation: xm-sway 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(255, 90, 60, 0.45));
+}
+.xm-lantern--a { left: 7%; width: 54px; animation-delay: -1.2s; }
+.xm-lantern--b { left: 58%; width: 44px; animation-delay: -3.1s; }
+.xm-lantern--c { left: 72%; width: 38px; animation-delay: -2.2s; }
+
+.xm-clouds {
+  position: absolute;
+  height: auto;
+  opacity: 0.6;
+  animation: xm-drift 18s ease-in-out infinite alternate;
+}
+.xm-clouds--a { left: 2%; bottom: 3%; width: min(36vw, 300px); }
+.xm-clouds--b { right: 4%; bottom: 18%; width: min(28vw, 230px); animation-duration: 23s; animation-delay: -8s; }
+
+@keyframes xm-sway {
+  0%, 100% { rotate: -3.5deg; }
+  50% { rotate: 3.5deg; }
+}
+@keyframes xm-drift {
+  from { translate: -14px 0; }
+  to { translate: 18px -6px; }
+}
+@keyframes xm-moon-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.06); }
+}
+
+/* Sophia */
+.xm-sophia {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+html[data-xm-drag='true'] body { cursor: grabbing; user-select: none; }
+
+/* Controles inferiores esquerdos */
+.xm-stage-ui {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.xm-spin {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(190, 210, 255, 0.45);
+  background: rgba(14, 24, 58, 0.62);
+  color: #eef1ff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.xm-spin:hover { background: rgba(60, 38, 54, 0.7); border-color: #e0794a; }
+.xm-spin:active { transform: scale(0.94); }
+.xm-spin:focus-visible { outline: 3px solid #ffd15a; outline-offset: 3px; }
+.xm-spin svg { width: 26px; height: 26px; }
+.xm-hint {
+  font: 500 0.78rem/1.2 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: rgba(226, 234, 255, 0.75);
+  text-shadow: 0 1px 6px rgba(2, 6, 20, 0.9);
+}
+@media (hover: none) { .xm-hint { display: none; } }
+
+html[data-xm-sophia='off'] .xm-stage-ui { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .xm-lantern, .xm-clouds, .xm-moon { animation: none; }
+}
+
+/* Retrato / telas estreitas: a Sophia fica quase ao centro; menos lanternas para não cobrir o menu. */
+@media (max-aspect-ratio: 17/20) {
+  .xm-moon-wrap { left: 44%; top: 52%; width: min(88vw, 52vh); }
+  .xm-lantern--b, .xm-lantern--c { display: none; }
+}
