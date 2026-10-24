@@ -11,3 +11,8 @@
 # /assets and the rest of public/ keep stable names and stay on Cloudflare's default.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Protótipo do modo-experimental: não indexar nem seguir (o robots.txt continua liberado de propósito, para não anunciar a rota).
+/modo-experimental*
+  ! X-Robots-Tag
+  X-Robots-Tag: noindex, nofollow, noarchive
