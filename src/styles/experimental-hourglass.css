@@ -1,0 +1,56 @@
+/* Página da ampulheta (modo-experimental). Fundo azul escuro espacial, como o protótipo do menu. */
+html,
+body.hg-page {
+  margin: 0;
+  height: 100%;
+  background-color: #060b1f;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 72% 18%, rgba(46, 70, 150, 0.22), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 14% 88%, rgba(24, 44, 110, 0.25), transparent 70%);
+  color: #eef1ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.hg-stage {
+  position: fixed;
+  inset: 0;
+}
+
+.hg-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+
+.hg-canvas:active {
+  cursor: grabbing;
+}
+
+.hg-canvas:focus-visible {
+  box-shadow: inset 0 0 0 2px #cf6f60;
+}
+
+.hg-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  margin: 0;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: rgba(238, 241, 255, 0.6);
+  pointer-events: none;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.hg-error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #eef1ff;
+}

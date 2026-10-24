@@ -1,0 +1,39 @@
+---
+// Protótipo da ampulheta 3D (modo-experimental). Rota solta: noindex, fora do sitemap, sem links.
+// Modelo: public/models/ampulheta.glb · código: public/experimental/ampulheta*.js
+import '../../styles/experimental-hourglass.css';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="theme-color" content="#060b1f" />
+    <title>Ampulheta — protótipo</title>
+    <meta name="description" content="Protótipo interno. Não faz parte do portfólio publicado." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="hg-page">
+    <main class="hg-stage">
+      <canvas
+        class="hg-canvas"
+        data-hourglass
+        tabindex="0"
+        role="img"
+        aria-label="Ampulheta de vidro com areia dourada sobre uma mesa de madeira. Clique para rachar o vidro; no vigésimo clique ele quebra e a areia cai na mesa."
+      ></canvas>
+      <p class="hg-hint">Arraste para girar · role ou pince para aproximar · clique no vidro para rachar</p>
+    </main>
+    <script type="module">
+      import { startHourglass } from '/experimental/ampulheta.js';
+      const canvas = document.querySelector('[data-hourglass]');
+      const speed = Number(new URLSearchParams(location.search).get('speed')) || 1;
+      startHourglass(canvas, { timeScale: speed }).catch((err) => {
+        console.error(err);
+        canvas.insertAdjacentHTML('afterend', '<p class="hg-error">Não foi possível montar a cena 3D neste navegador.</p>');
+      });
+    </script>
+  </body>
+</html>
