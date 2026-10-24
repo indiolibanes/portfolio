@@ -1,4 +1,4 @@
-// Reveal ao rolar, nos dois sentidos — mesmo princípio do Horologiarius, adaptado ao portfólio.
+// Reveal ao rolar, nos dois sentidos — princípio de movimento adaptado ao portfólio.
 // Elementos com data-reveal ficam escondidos até entrarem na tela. A cada entrada sorteia-se um efeito
 // novo (nunca o mesmo duas vezes seguidas), com duração e atraso próprios; ao sair, o elemento volta ao
 // estado escondido e o efeito toca de novo na próxima vez. Quem entra junto é ordenado da esquerda para a

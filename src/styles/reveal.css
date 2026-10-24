@@ -1,5 +1,5 @@
 /*
- * Reveal ao rolar — princípios de movimento do Horologiarius no portfólio (2026-10-21).
+ * Reveal ao rolar — princípios de movimento do portfólio (2026-10-21).
  * Conduzido por /scripts/reveal.js, que só liga .reveal-on quando há movimento permitido.
  * Elementos com data-reveal ficam escondidos; ao entrarem, o script grava um data-rv sorteado
  * e põe .is-in; ao saírem, tira .is-in e o efeito toca de novo. O estado escondido É o efeito,
@@ -55,7 +55,7 @@ html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [d
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='iris'] img { transition: transform 2600ms var(--motion-emphasized), filter 2000ms ease; }
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal='iris']:not(.is-in) img { transform: scale(1.3); filter: brightness(0.45) saturate(0.7); }
 
-/* Brilho que passa nos botões que importam (como no Horologiarius). */
+/* Brilho que passa nos botões que importam. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) :is(#sobre .editorial-primary, #contato .closing-email-button) { position: relative; overflow: hidden; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) :is(#sobre .editorial-primary, #contato .closing-email-button)::after {
   content: '';

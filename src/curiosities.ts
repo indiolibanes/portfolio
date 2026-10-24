@@ -27,7 +27,7 @@ export interface Curiosity {
 }
 
 /** Data da última adição, em ISO (AAAA-MM-DD). */
-export const CURIOSITIES_UPDATED = '2026-10-17';
+export const CURIOSITIES_UPDATED = '2026-10-23';
 
 export const CURIOSITIES: Curiosity[] = [
   {
@@ -91,10 +91,9 @@ export const CURIOSITIES: Curiosity[] = [
     id: 'ferramentas',
     tag: 'Método',
     title: 'Notas em Markdown, publicação por Git',
-    text: 'As notas nascem no Obsidian e chegam ao Horologiarius por um fluxo com revisão manual antes de ir ao ar. Prefiro ferramentas abertas, que eu possa levar comigo.',
+    text: 'As notas nascem no Obsidian e passam por revisão manual antes de ir ao ar. Prefiro ferramentas abertas, que eu possa levar comigo.',
     why: 'Se a escrita sobrevive à ferramenta, ela vale mais do que a ferramenta.',
     accent: 'blue',
-    link: { href: 'https://horologiarius.com/', label: 'Abrir o Horologiarius', external: true },
   },
   {
     id: 'sophia',
