@@ -1,0 +1,548 @@
+/*
+ * modo-experimental — protótipo do menu orbital (fora do site público).
+ *
+ * Tom: o bege do Autoral (tokens de global.css). Só a rota /modo-experimental/
+ * importa este arquivo; nada daqui chega ao BaseLayout.
+ *
+ * Ajustes rápidos:
+ *   --xm-orbit-period  volta completa do texto em torno do botão (10 s). Se mudar,
+ *                      mude também dur="10s" nos dois <animate> de ExperimentalMenu.astro.
+ *   --xm-spin-period   rotação do “planeta” dentro do botão (quase imperceptível).
+ *   --xm-open          expansão da gaveta (0,5 s).
+ *   --xm-hop           pulo das letras (2,5 s; precisa casar com HOP_MS no script).
+ */
+
+/* Fonte itálica do NieR: sem arquivo no repositório (licença própria). Se ela estiver
+   instalada no aparelho, entra por local(); para servir a todos, coloque o WOFF2
+   licenciado em public/fonts/ e acrescente  url("/fonts/nier-italic.woff2") format("woff2")
+   à lista de src. Enquanto isso, a pilha cai num itálico clássico. */
+@font-face {
+  font-family: 'Portfolio NieR';
+  font-style: italic;
+  font-weight: 400 800;
+  src: local('NieR Italic'), local('NieR-Italic'), local('NieR Automata Italic'), local('NieR Automata');
+  font-display: swap;
+}
+
+.xm-header {
+  --xm-ink: #2b2118;
+  --xm-orbit-period: 10s;
+  --xm-spin-period: 120s;
+  --xm-open: 500ms;
+  --xm-hop: 2500ms;
+  --xm-nier: 'Portfolio NieR', 'Cormorant Garamond', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 14px 16px 0;
+}
+
+.xm-wrap {
+  position: relative;
+  width: min(var(--page, 1180px), 100%);
+  margin: 0 auto;
+}
+
+.xm-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Barra ---------- */
+
+.xm-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 80px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid rgba(205, 188, 165, 0.92);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 250, 240, 0.78);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: 0 5px 20px rgba(94, 72, 49, 0.08);
+}
+
+.xm-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.xm-brand__mark {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid #bb9350;
+  border-radius: 50%;
+  background: var(--sun-soft, #f5df9c);
+}
+
+.xm-brand__mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.xm-brand__copy {
+  display: grid;
+  line-height: 1.1;
+  min-width: 0;
+}
+
+.xm-brand__copy strong {
+  font-size: 0.9rem;
+}
+
+.xm-brand__copy small {
+  margin-top: 3px;
+  color: var(--ink-soft, #75685d);
+  font-family: var(--font-retro, ui-monospace, monospace);
+  font-size: 0.68rem;
+}
+
+/* ---------- Botão orbitado ---------- */
+
+/* A elipse que o texto percorre sobra ~20 px de cada lado da pílula: a margem a mantém dentro da barra. */
+.xm-menu {
+  position: relative;
+  flex: 0 0 auto;
+  margin-right: 24px;
+}
+
+.xm-toggle {
+  position: relative;
+  display: block;
+  width: 92px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--xm-ink);
+  font-family: var(--font-ui, system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.xm-toggle:focus-visible {
+  outline: 3px solid var(--rose, #cf6f60);
+  outline-offset: 5px;
+}
+
+.xm-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  height: 88px;
+  translate: -50% -50%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Área transparente que amplia o alvo de clique até a órbita. */
+.xm-orbit__hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.xm-orbit__text text {
+  font-family: var(--xm-nier);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 10.5px;
+  paint-order: stroke fill;
+  stroke: rgba(255, 250, 240, 0.8);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+
+.xm-orbit__dot {
+  font-size: 0.7em;
+  font-style: normal;
+}
+
+.xm-core {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(205, 188, 165, 0.92);
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.86);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.xm-toggle[aria-expanded='true'] .xm-core {
+  background: var(--xm-ink);
+  border-color: var(--xm-ink);
+  color: #f6e9c8;
+}
+
+/* O “planeta”: textura em faixas que gira como a Terra, devagar a ponto de passar despercebida. */
+.xm-globe {
+  position: absolute;
+  inset: -45%;
+  z-index: -2;
+  opacity: 0.5;
+  filter: blur(7px);
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 111, 168, 0.4),
+    rgba(255, 209, 90, 0.4),
+    rgba(92, 195, 255, 0.4),
+    rgba(169, 139, 255, 0.4),
+    rgba(123, 227, 160, 0.4),
+    rgba(255, 111, 168, 0.4)
+  );
+  animation: xm-spin var(--xm-spin-period) linear infinite;
+}
+
+@keyframes xm-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Plasma: o mesmo brilho do Autoral, contido na pílula; JS regula a intensidade. */
+.xm-plasma {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.xm-plasma circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  mix-blend-mode: multiply;
+}
+
+.xm-toggle[aria-expanded='true'] .xm-plasma circle {
+  mix-blend-mode: screen;
+}
+
+/* Aberto, o plasma clareia o fundo escuro: o rótulo ganha um halo escuro para continuar legível. */
+.xm-label,
+.xm-core > svg:not(.xm-plasma) {
+  position: relative;
+}
+
+.xm-toggle[aria-expanded='true'] .xm-label {
+  text-shadow: 0 0 4px #2b2118, 0 0 9px #2b2118, 0 1px 0 #2b2118;
+}
+
+.xm-toggle[aria-expanded='true'] .xm-core > svg:not(.xm-plasma) {
+  filter: drop-shadow(0 0 3px #2b2118);
+}
+
+/* ---------- Gaveta ---------- */
+
+.xm-drawer {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  width: min(580px, 100%);
+  visibility: hidden;
+  transition: visibility 0s linear var(--xm-open);
+}
+
+.xm-drawer[data-state='open'] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Sombra num prato à parte: o clip-path do vidro cortaria a própria sombra. */
+.xm-drawer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  box-shadow: 0 22px 50px rgba(43, 33, 24, 0.26);
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: 100% 0;
+  transition: transform var(--xm-open) cubic-bezier(0.2, 0.85, 0.25, 1), opacity var(--xm-open) ease;
+  pointer-events: none;
+}
+
+.xm-drawer[data-state='open']::before {
+  opacity: 1;
+  transform: none;
+}
+
+/* Vidro translúcido, bege do Autoral. Abre na diagonal, do canto do botão para baixo e para a esquerda. */
+.xm-glass {
+  position: relative;
+  max-height: calc(100dvh - 7.5rem);
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(43, 33, 24, 0.38);
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(251, 244, 227, 0.68), rgba(241, 230, 204, 0.5));
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(18px) saturate(130%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  clip-path: inset(0 0 100% 100% round 22px);
+  transition: clip-path var(--xm-open) cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+
+.xm-drawer[data-state='open'] .xm-glass {
+  clip-path: inset(0 0 0 0 round 22px);
+}
+
+.xm-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 30px 0.7rem 0.4rem; /* folga para o primeiro pulo, que sobe até 26 px */
+  list-style: none;
+}
+
+.xm-link {
+  display: flex;
+  justify-content: center;
+  padding: 0.28rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: var(--xm-ink);
+  text-decoration: none;
+}
+
+.xm-link:hover,
+.xm-link:focus-visible {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(43, 33, 24, 0.2);
+}
+
+.xm-link:focus-visible {
+  outline: 3px solid var(--rose, #cf6f60);
+  outline-offset: -3px;
+}
+
+.xm-elements {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+}
+
+/* ---------- Tabela periódica (mesmo desenho do Autoral, sem a legenda à esquerda) ---------- */
+
+.xm-el {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 52px;
+  border: 1.5px solid var(--xm-ink);
+  border-radius: 6px;
+  background: var(--el-bg, #e7dcc0);
+  box-shadow: 2px 2px 0 rgba(43, 33, 24, 0.2);
+  color: var(--xm-ink);
+  text-align: center;
+  transform-origin: 50% 100%;
+  transition: translate 0.25s cubic-bezier(0.2, 0.8, 0.2, 1.2), rotate 0.25s ease, box-shadow 0.25s ease;
+}
+
+.xm-el i {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font: 700 8.5px/1 var(--font-ui, sans-serif);
+  font-style: normal;
+  opacity: 0.75;
+}
+
+.xm-el b {
+  position: absolute;
+  inset: 14px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 800 1.45rem/1 Georgia, 'Times New Roman', serif;
+}
+
+.xm-el u {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px;
+  overflow: hidden;
+  font: 600 6.4px/1 var(--font-ui, sans-serif);
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.xm-el[data-cat='nm'] { --el-bg: #c6e6c3; }
+.xm-el[data-cat='md'] { --el-bg: #dfe6a6; }
+.xm-el[data-cat='tm'] { --el-bg: #f2cc9d; }
+.xm-el[data-cat='ae'] { --el-bg: #f4e0a0; }
+.xm-el[data-cat='ln'] { --el-bg: #e4c6ec; }
+.xm-el[data-cat='hl'] { --el-bg: #bfe0f2; }
+.xm-el[data-cat='ng'] { --el-bg: #dccdf2; }
+.xm-el[data-cat='alk'] { --el-bg: #f6bfa8; }
+.xm-el[data-cat='pt'] { --el-bg: #d3d9df; }
+.xm-el[data-cat='ac'] { --el-bg: #f2c0d8; }
+
+.xm-ch {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 2px;
+  color: var(--xm-ink);
+  font: 800 1.9rem/1 Georgia, 'Times New Roman', serif;
+  transform-origin: 50% 100%;
+}
+
+/* O hover usa as propriedades individuais (translate/rotate) para não brigar com o transform do pulo. */
+.xm-link:hover .xm-el { translate: 0 -2px; box-shadow: 2px 4px 0 rgba(43, 33, 24, 0.27); }
+.xm-link:hover .xm-el:nth-child(odd) { translate: 0 -3px; rotate: -3deg; }
+.xm-link:hover .xm-el:nth-child(even) { translate: 0 -3px; rotate: 3deg; }
+
+/* Brilho na cor real do elemento: um halo borrado cuja opacidade respira (só opacity, barato). */
+.xm-el::after,
+.xm-ch::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Halo só por fora: o box-shadow não pinta sob o próprio pseudo-elemento, então o pastel do azulejo fica limpo. */
+.xm-el::after {
+  inset: 0;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 2px var(--glow), 0 0 22px 4px var(--glow);
+}
+
+.xm-ch::after {
+  inset: 6px -4px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  filter: blur(5px);
+}
+
+.xm-el.is-lit::after,
+.xm-ch.is-lit::after {
+  animation: xm-glow 3.4s ease-in-out var(--gd, 0s) infinite alternate;
+}
+
+@keyframes xm-glow {
+  from { opacity: 0.12; }
+  to { opacity: 0.55; }
+}
+
+/* ---------- Contatos ---------- */
+
+.xm-social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0.9rem 0;
+  padding: 0.85rem 0 1rem;
+  border-top: 1px solid rgba(43, 33, 24, 0.22);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.xm-drawer[data-state='open'] .xm-social {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.3s;
+}
+
+.xm-social__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid rgba(43, 33, 24, 0.4);
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.55);
+  color: var(--xm-ink);
+  font: 800 0.78rem/1 var(--font-ui, sans-serif);
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.xm-social__link:hover,
+.xm-social__link:focus-visible {
+  background: #fffaf0;
+  box-shadow: 0 3px 0 rgba(43, 33, 24, 0.18);
+  transform: translateY(-2px);
+}
+
+.xm-social__link:focus-visible {
+  outline: 3px solid var(--rose, #cf6f60);
+  outline-offset: 2px;
+}
+
+/* ---------- Sem JavaScript: a gaveta fica aberta, no fluxo ---------- */
+
+html:not([data-xm-js]) .xm-toggle { display: none; }
+html:not([data-xm-js]) .xm-drawer { position: static; width: 100%; margin-top: 10px; visibility: visible; transition: none; }
+html:not([data-xm-js]) .xm-drawer::before { display: none; }
+html:not([data-xm-js]) .xm-glass { clip-path: none; transition: none; }
+html:not([data-xm-js]) .xm-social { opacity: 1; transform: none; }
+html:not([data-xm-js]) .xm-menu { display: none; }
+
+/* ---------- Celular ---------- */
+
+@media (max-width: 560px) {
+  .xm-header { padding: 10px 10px 0; }
+  .xm-bar { gap: 0.5rem; padding-left: 10px; }
+  .xm-brand__copy { display: none; }
+  .xm-menu { margin-right: 22px; }
+  .xm-list { padding-inline: 0.4rem; }
+  .xm-el { width: 38px; height: 46px; }
+  .xm-ch { height: 46px; font-size: 1.6rem; }
+  .xm-el b { inset: 12px 0 10px; font-size: 1.15rem; }
+  .xm-el i { left: 4px; font-size: 7px; }
+  .xm-el u { display: none; }
+}
+
+/* ---------- Movimento reduzido: sem órbita, sem pulo, sem respiração ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .xm-globe { animation: none; }
+  .xm-drawer,
+  .xm-drawer::before,
+  .xm-glass,
+  .xm-social { transition: none; }
+  .xm-drawer::before { transform: none; }
+  .xm-glass { clip-path: none; opacity: 0; }
+  .xm-drawer[data-state='open'] .xm-glass { opacity: 1; }
+  .xm-el.is-lit::after,
+  .xm-ch.is-lit::after { animation: none; opacity: 0.3; }
+}
