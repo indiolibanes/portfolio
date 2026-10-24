@@ -1,7 +1,7 @@
 ---
 // Menu do modo-experimental (protótipo, fora do site público).
 // Botão circular (três linhas, padrão Material You) com “CONHEÇA ●” girando em órbita circular
-// em volta dele; ao abrir, a gaveta de vidro aparece e o rótulo “Menu” surge à esquerda do botão.
+// em volta dele; ao abrir, a gaveta de vidro aparece e a legenda “MENU” surge à esquerda do botão.
 // Estilos: src/styles/experimental.css · comportamento: public/scripts/experimental-menu.js
 import { PROFILE } from '../config';
 import { spell, isElement, LOOSE_GLOW } from '../periodic-table';
@@ -42,7 +42,7 @@ const ORBIT_PATH = `M 0 ${-R} A ${R} ${R} 0 1 1 0 ${R} A ${R} ${R} 0 1 1 0 ${-R}
         <g class="xm-orbit__spin" fill="url(#xm-orbit-grad)">
           <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"></animateTransform>
           <text class="xm-orbit__text">
-            <textPath href="#xm-orbit-path" textLength={CIRCUMFERENCE} lengthAdjust="spacing">CONHEÇA&nbsp;<tspan class="xm-orbit__dot">●</tspan>&nbsp;CONHEÇA&nbsp;<tspan class="xm-orbit__dot">●</tspan>&nbsp;</textPath>
+            <textPath href="#xm-orbit-path" textLength={CIRCUMFERENCE} lengthAdjust="spacing">CONHEÇA&nbsp;<tspan class="xm-orbit__dot">●</tspan>&nbsp;CONHEÇA&nbsp;<tspan class="xm-orbit__dot">●</tspan>&nbsp;CONHEÇA&nbsp;<tspan class="xm-orbit__dot">●</tspan>&nbsp;</textPath>
           </text>
         </g>
       </svg>

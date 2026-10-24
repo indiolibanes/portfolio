@@ -31,12 +31,14 @@
   --xm-open: 500ms;
   --xm-hop: 2500ms;
   --xm-size: 56px;
+  --xm-orbit-size: 14.2px; /* três “CONHEÇA ●” ocupam a circunferência (251 px) quase sem esticar o espaçamento */
+  --xm-legend: #eef1ff;
   --xm-nier: 'Portfolio NieR', 'Cormorant Garamond', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
 
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 14px 40px 0 18px; /* 40 px à direita: o anel de texto sai 32 px além do botão */
+  padding: 40px 40px 0 18px; /* topo: o anel sai ~21 px acima do botão; direita: idem, ~21 px */
   /* O cabeçalho é só um trilho para o botão: o resto da página continua clicável. */
   pointer-events: none;
 }
@@ -97,14 +99,14 @@
   pointer-events: all;
 }
 
-.xm-orbit__text text {
+.xm-orbit__text {
   font-family: var(--xm-nier);
   font-style: italic;
   font-weight: 600;
-  font-size: 10.5px;
+  font-size: var(--xm-orbit-size, 14.2px);
   paint-order: stroke fill;
-  stroke: rgba(255, 250, 240, 0.85);
-  stroke-width: 2.4px;
+  stroke: rgba(7, 13, 34, 0.85);
+  stroke-width: 2px;
   stroke-linejoin: round;
 }
 
@@ -187,18 +189,19 @@
   mix-blend-mode: screen;
 }
 
-/* Rótulo “Menu”: fica à esquerda do botão e só aparece com a gaveta aberta. */
+/* Legenda “MENU”: só o texto, centralizado na vertical, à esquerda do botão. Aparece com a gaveta.
+   Tipografia alternativa: Portfolio Roguepunk (já carregada pelo site para os nomes). */
 .xm-label {
   position: absolute;
   top: 50%;
-  right: calc(100% + 40px); /* afastado do botão para não cobrir o anel de texto, que sai 32 px */
+  right: calc(100% + 40px); /* afastado do botão para não cobrir o anel de texto */
   translate: 0 -50%;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(205, 188, 165, 0.92);
-  border-radius: 999px;
-  background: rgba(255, 250, 240, 0.86);
-  color: var(--xm-ink);
-  font: 800 0.85rem/1 var(--font-ui, system-ui, sans-serif);
+  color: var(--xm-legend);
+  font-family: 'Portfolio Roguepunk', 'Arial Black', Impact, sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
   transform: translateX(10px);
