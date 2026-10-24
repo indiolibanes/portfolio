@@ -104,6 +104,21 @@ function pack(pos, nor, idx) {
   return { pos: new Float32Array(pos), nor: new Float32Array(nor), idx: new Uint16Array(idx) };
 }
 
+// Cor por vértice (RGB linear, multiplica a cor do material): `fn([x, y, z]) → [r, g, b]`.
+// Serve para pontas azul-marinho em orelhas, cauda e patas sem separar malhas.
+export function paint(geo, fn) {
+  const n = geo.pos.length / 3;
+  const col = new Float32Array(n * 3);
+  for (let i = 0; i < n; i += 1) {
+    const c = fn([geo.pos[i * 3], geo.pos[i * 3 + 1], geo.pos[i * 3 + 2]]);
+    col[i * 3] = c[0];
+    col[i * 3 + 1] = c[1];
+    col[i * 3 + 2] = c[2];
+  }
+  geo.col = col;
+  return geo;
+}
+
 export function sphere(r, ws = 24, hs = 18) {
   const pos = [];
   const nor = [];
@@ -129,23 +144,31 @@ export function sphere(r, ws = 24, hs = 18) {
   return pack(pos, nor, idx);
 }
 
-// Eixo no Y; rTop em +Y. Cone = rTop 0.
-export function cylinder(rTop, rBot, h, seg = 16) {
+// Eixo no Y; rTop em +Y. Cone = rTop 0. `hs` = segmentos em altura (para pintar gradientes).
+export function cylinder(rTop, rBot, h, seg = 16, hs = 1) {
   const pos = [];
   const nor = [];
   const idx = [];
   const slope = (rBot - rTop) / h;
-  for (let i = 0; i <= seg; i += 1) {
-    const th = (i / seg) * Math.PI * 2;
-    const cx = Math.cos(th);
-    const sz = Math.sin(th);
-    const inv = 1 / Math.hypot(1, slope);
-    pos.push(cx * rTop, h / 2, sz * rTop, cx * rBot, -h / 2, sz * rBot);
-    nor.push(cx * inv, slope * inv, sz * inv, cx * inv, slope * inv, sz * inv);
+  const inv = 1 / Math.hypot(1, slope);
+  for (let k = 0; k <= hs; k += 1) {
+    const f = k / hs;
+    const y = h / 2 - h * f;
+    const r = rTop + (rBot - rTop) * f;
+    for (let i = 0; i <= seg; i += 1) {
+      const th = (i / seg) * Math.PI * 2;
+      const cx = Math.cos(th);
+      const sz = Math.sin(th);
+      pos.push(cx * r, y, sz * r);
+      nor.push(cx * inv, slope * inv, sz * inv);
+    }
   }
-  for (let i = 0; i < seg; i += 1) {
-    const a = i * 2;
-    idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+  for (let k = 0; k < hs; k += 1) {
+    for (let i = 0; i < seg; i += 1) {
+      const a = k * (seg + 1) + i;
+      const b = a + seg + 1;
+      idx.push(a, b, a + 1, b, b + 1, a + 1);
+    }
   }
   const cap = (y, r, ny) => {
     if (r <= 0) return;
@@ -161,6 +184,38 @@ export function cylinder(rTop, rBot, h, seg = 16) {
   };
   cap(h / 2, rTop, 1);
   cap(-h / 2, rBot, -1);
+  return pack(pos, nor, idx);
+}
+
+// Casca de cilindro aberta na frente (+Z): `gap` rad de abertura centrada em +Z (jaleco aberto).
+// Dos dois lados é iluminada (o shader inverte a normal nas faces de trás).
+export function shell(rTop, rBot, h, seg, gap, hs = 1) {
+  const pos = [];
+  const nor = [];
+  const idx = [];
+  const slope = (rBot - rTop) / h;
+  const inv = 1 / Math.hypot(1, slope);
+  const start = Math.PI / 2 + gap / 2;
+  const span = Math.PI * 2 - gap;
+  for (let k = 0; k <= hs; k += 1) {
+    const f = k / hs;
+    const y = h / 2 - h * f;
+    const r = rTop + (rBot - rTop) * f;
+    for (let i = 0; i <= seg; i += 1) {
+      const th = start + (i / seg) * span;
+      const cx = Math.cos(th);
+      const sz = Math.sin(th);
+      pos.push(cx * r, y, sz * r);
+      nor.push(cx * inv, slope * inv, sz * inv);
+    }
+  }
+  for (let k = 0; k < hs; k += 1) {
+    for (let i = 0; i < seg; i += 1) {
+      const a = k * (seg + 1) + i;
+      const b = a + seg + 1;
+      idx.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
   return pack(pos, nor, idx);
 }
 
@@ -247,7 +302,7 @@ const norm = (a) => {
   return [a[0] / l, a[1] / l, a[2] / l];
 };
 
-// Tubo ao longo de uma polilinha, com transporte paralelo do referencial.
+// Tubo ao longo de uma polilinha, com transporte paralelo do referencial. `radius`: número ou vetor (um por ponto).
 export function tube(points, radius, seg = 14) {
   const n = points.length;
   const T = points.map((_, i) => norm(sub(points[Math.min(n - 1, i + 1)], points[Math.max(0, i - 1)])));
@@ -266,7 +321,8 @@ export function tube(points, radius, seg = 14) {
     for (let j = 0; j <= seg; j += 1) {
       const a = (j / seg) * Math.PI * 2;
       const d = [N[0] * Math.cos(a) + B[0] * Math.sin(a), N[1] * Math.cos(a) + B[1] * Math.sin(a), N[2] * Math.cos(a) + B[2] * Math.sin(a)];
-      pos.push(points[i][0] + d[0] * radius, points[i][1] + d[1] * radius, points[i][2] + d[2] * radius);
+      const rad = Array.isArray(radius) ? radius[i] : radius;
+      pos.push(points[i][0] + d[0] * rad, points[i][1] + d[1] * rad, points[i][2] + d[2] * rad);
       nor.push(...d);
     }
   }
@@ -277,6 +333,95 @@ export function tube(points, radius, seg = 14) {
       idx.push(a, b, a + 1, b, b + 1, a + 1);
     }
   }
+  return pack(pos, nor, idx);
+}
+
+// Triângulos com normal por face; `ref(centro)` diz para que lado a normal deve apontar
+// (padrão: para longe da origem, o que vale para peças convexas ou centradas).
+function flat(tris, ref = (c) => c) {
+  const pos = [];
+  const nor = [];
+  const idx = [];
+  tris.forEach(([a, b, c]) => {
+    let n = norm(cross(sub(b, a), sub(c, a)));
+    const cen = [(a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3, (a[2] + b[2] + c[2]) / 3];
+    if (dot(n, ref(cen)) < 0) n = [-n[0], -n[1], -n[2]];
+    const base = pos.length / 3;
+    [a, b, c].forEach((p) => {
+      pos.push(...p);
+      nor.push(...n);
+    });
+    idx.push(base, base + 1, base + 2);
+  });
+  return pack(pos, nor, idx);
+}
+
+// Estrela de 4 pontas facetada (bipirâmide achatada), no plano XY, de frente para +Z.
+// Mesma construção do `create_four_point_star` do arquivo do Blender.
+export function star(size, thick, points = 4) {
+  const n = points * 2;
+  const ring = (z) => Array.from({ length: n }, (_, i) => {
+    const a = (i * Math.PI) / points;
+    const r = i % 2 === 0 ? size : size * 0.28;
+    return [Math.cos(a) * r, Math.sin(a) * r, z];
+  });
+  const f = ring(thick * 0.5);
+  const b = ring(-thick * 0.5);
+  const tris = [];
+  for (let i = 0; i < n; i += 1) {
+    const j = (i + 1) % n;
+    tris.push([[0, 0, thick], f[i], f[j]]);
+    tris.push([[0, 0, -thick], b[j], b[i]]);
+    tris.push([f[i], f[j], b[j]], [f[i], b[j], b[i]]);
+  }
+  return flat(tris);
+}
+
+// Lua crescente extrudada (charme do quadril), aberta para +X, no plano XY.
+export function crescent(R, thick, n = 18) {
+  const r = R * 0.8;
+  const d = R * 0.38;
+  const x = (R * R - r * r + d * d) / (2 * d);
+  const y = Math.sqrt(Math.max(0, R * R - x * x));
+  const phi = Math.atan2(y, x);
+  const psi = Math.atan2(y, x - d);
+  const outer = [];
+  const inner = [];
+  for (let i = 0; i <= n; i += 1) {
+    const t = i / n;
+    const ao = phi + t * (Math.PI * 2 - 2 * phi);
+    const ai = psi + t * (Math.PI * 2 - 2 * psi);
+    outer.push([Math.cos(ao) * R, Math.sin(ao) * R]);
+    inner.push([d + Math.cos(ai) * r, Math.sin(ai) * r]);
+  }
+  const P = (q, z) => [q[0], q[1], z];
+  const h = thick / 2;
+  const front = [];
+  const back = [];
+  const rim = [];
+  const cut = [];
+  for (let i = 0; i < n; i += 1) {
+    const o0 = outer[i], o1 = outer[i + 1], i0 = inner[i], i1 = inner[i + 1];
+    front.push([P(o0, h), P(o1, h), P(i1, h)], [P(o0, h), P(i1, h), P(i0, h)]);
+    back.push([P(o0, -h), P(o1, -h), P(i1, -h)], [P(o0, -h), P(i1, -h), P(i0, -h)]);
+    rim.push([P(o0, h), P(o1, h), P(o1, -h)], [P(o0, h), P(o1, -h), P(o0, -h)]);
+    cut.push([P(i0, h), P(i1, h), P(i1, -h)], [P(i0, h), P(i1, -h), P(i0, -h)]);
+  }
+  const g = [
+    flat(front, () => [0, 0, 1]),
+    flat(back, () => [0, 0, -1]),
+    flat(rim),
+    flat(cut, (c) => [d - c[0], -c[1], 0]), // para dentro do recorte (rumo ao centro do círculo interno)
+  ];
+  const pos = [];
+  const nor = [];
+  const idx = [];
+  g.forEach((q) => {
+    const base = pos.length / 3;
+    pos.push(...q.pos);
+    nor.push(...q.nor);
+    q.idx.forEach((k) => idx.push(base + k));
+  });
   return pack(pos, nor, idx);
 }
 
@@ -293,6 +438,8 @@ export function hex(h, k = 1) {
 const VS = `
 attribute vec3 aPos;
 attribute vec3 aNor;
+attribute vec3 aCol;
+varying vec3 vC;
 uniform mat4 uModel;
 uniform mat4 uVP;
 uniform mat3 uNM;
@@ -302,6 +449,7 @@ void main() {
   vec4 w = uModel * vec4(aPos, 1.0);
   vW = w.xyz;
   vN = uNM * aNor;
+  vC = aCol;
   gl_Position = uVP * w;
 }`;
 
@@ -313,6 +461,7 @@ precision mediump float;
 #endif
 varying vec3 vN;
 varying vec3 vW;
+varying vec3 vC;
 uniform vec3 uColor;
 uniform vec3 uEmissive;
 uniform float uShine;
@@ -330,15 +479,16 @@ void main() {
   vec3 N = normalize(vN);
   if (!gl_FrontFacing) N = -N;
   vec3 V = normalize(uCam - vW);
-  vec3 col = uColor * mix(uGround, uSky, N.y * 0.5 + 0.5);
+  vec3 base = uColor * vC;
+  vec3 col = base * mix(uGround, uSky, N.y * 0.5 + 0.5);
   float spec = 0.0;
 
   float n0 = max(dot(N, uD0), 0.0);
-  col += uColor * uC0 * n0;
+  col += base * uC0 * n0;
   spec += pow(max(dot(N, normalize(uD0 + V)), 0.0), uShine) * n0 * dot(uC0, vec3(0.33));
 
   float n1 = max(dot(N, uD1), 0.0);
-  col += uColor * uC1 * n1;
+  col += base * uC1 * n1;
   spec += pow(max(dot(N, normalize(uD1 + V)), 0.0), uShine) * n1 * dot(uC1, vec3(0.33));
 
   vec3 Lp = uPP - vW;
@@ -346,7 +496,7 @@ void main() {
   Lp = normalize(Lp);
   float att = 1.0 / (1.0 + d2 * 0.18);
   float np = max(dot(N, Lp), 0.0) * att;
-  col += uColor * uPC * np;
+  col += base * uPC * np;
   spec += pow(max(dot(N, normalize(Lp + V)), 0.0), uShine) * np * dot(uPC, vec3(0.33));
 
   col += vec3(spec * uSpec);
@@ -386,6 +536,7 @@ export class MiniGL {
     });
     this.aPos = gl.getAttribLocation(prog, 'aPos');
     this.aNor = gl.getAttribLocation(prog, 'aNor');
+    this.aCol = gl.getAttribLocation(prog, 'aCol');
     gl.enableVertexAttribArray(this.aPos);
     gl.enableVertexAttribArray(this.aNor);
     gl.enable(gl.DEPTH_TEST);
@@ -416,6 +567,7 @@ export class MiniGL {
       pos: mk(gl.ARRAY_BUFFER, geo.pos),
       nor: mk(gl.ARRAY_BUFFER, geo.nor),
       idx: mk(gl.ELEMENT_ARRAY_BUFFER, geo.idx),
+      col: geo.col ? mk(gl.ARRAY_BUFFER, geo.col) : null,
       count: geo.idx.length,
       mat: {
         color: hex(mat.color),
@@ -502,6 +654,14 @@ export class MiniGL {
     gl.vertexAttribPointer(this.aPos, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, m.nor);
     gl.vertexAttribPointer(this.aNor, 3, gl.FLOAT, false, 0, 0);
+    if (m.col) {
+      gl.enableVertexAttribArray(this.aCol);
+      gl.bindBuffer(gl.ARRAY_BUFFER, m.col);
+      gl.vertexAttribPointer(this.aCol, 3, gl.FLOAT, false, 0, 0);
+    } else {
+      gl.disableVertexAttribArray(this.aCol);
+      gl.vertexAttrib3f(this.aCol, 1, 1, 1);
+    }
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.idx);
     gl.uniformMatrix4fv(L.uModel, false, node.world);
     gl.uniformMatrix3fv(L.uNM, false, m4.normalMatrix(this.NM, node.world));
