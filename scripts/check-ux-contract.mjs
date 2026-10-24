@@ -38,19 +38,18 @@ for (const [section, title] of [
   ['curadoria', 'knowledge-title'],
   ['documentacao', 'documentation-title'],
 ]) {
-  check(section + ': section exists', hasId(home, section === 'traducao' || section === 'curadoria' ? 'article' : 'a', section));
+  check(section + ': section exists', hasId(home, section === 'documentacao' ? 'a' : 'article', section));
   check(section + ': H3 heading exists', hasId(home, 'h3', title));
 }
 for (const [id, title] of [
   ['reflexao', 'essay-title'],
   ['arquitetura', 'architecture-title'],
-  ['documentacao', 'documentation-title'],
 ]) {
-  const tag = home.match(new RegExp('<a\\s+id="' + id + '"[\\s\\S]*?>'));
-  check(id + ': short accessible name + new tab notice',
-    Boolean(tag?.[0]?.includes('aria-labelledby="' + title + ' ' + title + '-new-tab"')) &&
-    home.includes('id="' + title + '-new-tab"'));
+  const card = home.match(new RegExp('<article\\s+id="' + id + '"[\\s\\S]*?</article>'))?.[0] ?? '';
+  check(id + ': static card, no outbound link', card.length > 0 && !/\bhref=|target="_blank"/.test(card));
+  check(id + ': no new-tab notice left behind', !home.includes('id="' + title + '-new-tab"'));
 }
+check('home: no link to Horologiarius in lab cards', !/href="https:\/\/horologiarius\.com/.test(home));
 check('lab cards: 5 standardized statuses',
   (home.match(/data-status="(?:progress|published)"/g) || []).length === 5);
 check('music: static section anchor', hasId(music, 'section', 'musica'));
