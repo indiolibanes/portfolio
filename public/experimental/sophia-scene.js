@@ -36,7 +36,11 @@ async function boot() {
   let model;
   try {
     const buf = await fetchGLB(GLB_URL, (p) => { if (hint) hint.textContent = `Chamando a Sophia… ${Math.round(p * 100)}%`; });
-    model = await renderer.loadModel(buf);
+    // tufos de pelo reduzidos: do contrário cobrem fitas, brincos de orelha e as estrelas da cauda
+    model = await renderer.loadModel(buf, {
+      thin: { Sophia_fur_locks: 0.8, Sophia_tail_locks: 0.55 },
+      shrink: { Sophia_fur_locks: 0.75, Sophia_tail_locks: 0.8 },
+    });
   } catch (err) {
     console.warn('[modo-experimental] Sophia não carregou:', err);
     off();
@@ -71,12 +75,12 @@ function run(renderer, model) {
     d0: norm([-0.5, 0.6, 0.65]), // luar: do alto à esquerda, na frente
     c0: hex('#cfe0ff', 0.95),
     d1: norm([0.9, 0.1, 0.4]), // brasa das lanternas, vinda da direita
-    c1: hex('#ff5a3c', 0.8),
+    c1: hex('#ff6a48', 0.5),
     pp: [-0.9, 1.5, 1.2],
-    pc: hex('#ff7a50', 0.35),
+    pc: hex('#ff7a50', 0.2),
     rim: hex('#8fb2ff', 1),
     rimK: 0.3,
-    exposure: 0.95,
+    exposure: 0.92,
   };
 
   // ------------------------------------------------------------ câmera
@@ -360,7 +364,8 @@ function run(renderer, model) {
     ['lid_L', 'lid_R'].forEach((n) => sk.rotateLocal(n, quat.euler(-0.22, 0, 0)));
     ['ear_L_1', 'ear_R_1'].forEach((n, k) => sk.rotateLocal(n, quat.euler(-0.32 + sh1 * 0.03, 0, (k ? 1 : -1) * (0.14 + sh2 * 0.03))));
     sk.rotateLocal('upper_arm_L', quat.euler(sh1 * 0.05, 0, sh2 * 0.05));
-    sk.rotateLocal('tail_1', quat.euler(0, Math.sin(t * 1.6) * (still ? 0 : 0.22), 0));
+    // a cauda se afasta do corpo, para as estrelas aparecerem ao lado dela
+    sk.rotateLocal('tail_1', quat.euler(0, 0.75 * calm + Math.sin(t * 1.6) * (still ? 0 : 0.18), 0));
 
     // ---- braço direito aponta para o botão do menu (ou para o cursor, se estiver sobre o menu)
     // o cotovelo estica até quase reto quando ela aponta: o braço lê melhor de longe
