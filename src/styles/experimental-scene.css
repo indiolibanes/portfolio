@@ -110,10 +110,30 @@ html[data-xm-drag='true'] body { cursor: grabbing; user-select: none; }
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
-.xm-spin:hover { background: rgba(60, 38, 54, 0.7); border-color: #e0794a; }
-.xm-spin:active { transform: scale(0.94); }
-.xm-spin:focus-visible { outline: 3px solid #ffd15a; outline-offset: 3px; }
+.xm-spin:hover,
+.xm-walk__btn:hover { background: rgba(60, 38, 54, 0.7); border-color: #e0794a; }
+.xm-spin:active,
+.xm-walk__btn:active { transform: scale(0.94); }
+.xm-spin:focus-visible,
+.xm-walk__btn:focus-visible { outline: 3px solid #ffd15a; outline-offset: 3px; }
 .xm-spin svg { width: 26px; height: 26px; }
+.xm-walk { display: flex; gap: 8px; }
+.xm-walk__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(190, 210, 255, 0.45);
+  background: rgba(14, 24, 58, 0.62);
+  color: #eef1ff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  touch-action: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.xm-walk__btn svg { width: 22px; height: 22px; }
 .xm-hint {
   font: 500 0.78rem/1.2 system-ui, sans-serif;
   letter-spacing: 0.04em;
