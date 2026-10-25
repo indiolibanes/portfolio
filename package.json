@@ -17,7 +17,12 @@
     "check:tetris": "node scripts/test-tetris.mjs"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@react-three/rapier": "^2.2.0",
+    "@types/three": "^0.186.0",
     "astro": "^7.3.1",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "three": "^0.186.1"
   }
 }
