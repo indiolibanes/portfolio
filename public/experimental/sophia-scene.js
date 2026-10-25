@@ -1,17 +1,18 @@
-// modo-experimental: a Sophia de verdade (sophia.glb), assustada, apontando para o menu.
+// modo-experimental: a Sophia (sophia-vetorial.glb), assustada, apontando para o menu.
 // - olhos arregalados que disparam de um lado ao outro; ao passar o cursor no menu/gaveta ela segue o cursor;
-// - a mão direita (animação "Point") aponta para o botão do menu e, com o cursor no menu, para o cursor;
-// - tremor de medo, orelhas para trás, leve recuo do corpo;
+// - o braço esquerdo (pv_arm_L) aponta para o botão do menu e, com o cursor no menu, para o cursor;
+// - tremor de medo, orelhas abertas, leve recuo do corpo;
 // - anda para a direita ou esquerda (setas, A/D, botões ◀ ▶ e passeios curtos por conta própria);
 // - botão inferior esquerdo gira 360°; arrastar o fundo também gira; roda do mouse, +/− e pinça dão zoom.
-// O cenário (lua, portal, lanternas, nuvens) fica em HTML/CSS (LunarBackdrop.astro) e será trocado depois.
-// Motor: gltf-skel.js (esqueleto/animação) + gltf-gl.js (WebGL2). O CSP do site não aceita CDN, então não há Three.js.
+// O modelo é um conjunto de peças com pivôs (scripts/rig-sophia-vetorial.py): não há esqueleto nem clipes,
+// então a pose sai de rotações por código, aplicadas sobre a pose de repouso a cada quadro.
+// Motor: gltf-skel.js (grafo de nós) + gltf-gl.js (WebGL2). O CSP do site não aceita CDN, então não há Three.js.
 import { Renderer, fetchGLB, hex, quat } from './gltf-gl.js';
 
 const canvas = document.querySelector('[data-xm-sophia]');
 const spinBtn = document.querySelector('[data-xm-spin]');
 const hint = document.querySelector('.xm-hint');
-const GLB_URL = '/experimental/sophia.glb';
+const GLB_URL = '/experimental/sophia-vetorial.glb';
 
 if (canvas) boot();
 
@@ -36,11 +37,7 @@ async function boot() {
   let model;
   try {
     const buf = await fetchGLB(GLB_URL, (p) => { if (hint) hint.textContent = `Chamando a Sophia… ${Math.round(p * 100)}%`; });
-    // tufos de pelo reduzidos: do contrário cobrem fitas, brincos de orelha e as estrelas da cauda
-    model = await renderer.loadModel(buf, {
-      thin: { Sophia_fur_locks: 0.8, Sophia_tail_locks: 0.55 },
-      shrink: { Sophia_fur_locks: 0.75, Sophia_tail_locks: 0.8 },
-    });
+    model = await renderer.loadModel(buf);
   } catch (err) {
     console.warn('[modo-experimental] Sophia não carregou:', err);
     off();
@@ -58,14 +55,6 @@ function run(renderer, model) {
   const lerp = (a, b, k) => a + (b - a) * k;
   const rnd = (a, b) => a + Math.random() * (b - a);
   const damp = (rate, dt) => 1 - Math.exp(-rate * dt); // suavização independente do fps
-
-  // Livro e caneta não combinam com o susto (e a mão direita aponta).
-  model.draws.forEach((d) => { if (sk.names[d.node] === 'Book' || sk.names[d.node] === 'Pen') d.hidden = true; });
-
-  const POINT = sk.clips.Point;
-  const WALK = sk.clips.Walk;
-  const ARM_R = ['upper_arm_R', 'forearm_R', 'hand_R', 'fingers_R', 'thumb_R'].filter((n) => n in sk.index);
-  const armSaved = ARM_R.map(() => new Float32Array(4));
 
   // ------------------------------------------------------------ ambiente: frio (azul) + calor (vermelho)
   const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
@@ -119,7 +108,6 @@ function run(renderer, model) {
   let pointer = null; // cursor sobre o menu
   let walkAmt = 0; // 0 parada .. 1 andando
   let walkPhase = 0;
-  let dirIntent = 0; // -1 esquerda, 1 direita (teclado/botões)
   let step = null; // passo curto do botão por teclado
   let wander = { target: 0, wait: rnd(5, 9) };
   let idleSince = 0;
@@ -254,8 +242,16 @@ function run(renderer, model) {
   const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
   const wrapPi = (a) => ((a + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
 
-  const SPEED = 0.42; // m/s: o ciclo "Walk" (1 s) cobre ±0,083 m de pé em meio ciclo → 0,33 m/s a 1×
-  const RATE = SPEED / 0.33;
+  const SPEED = 0.42; // m/s de deslocamento na cena
+  const STRIDE = 7; // rad/s da passada (pernas)
+
+  // pose de repouso das peças: cada quadro parte dela e acumula as rotações do medo
+  const restR = sk.restR;
+  const restS = sk.restS;
+  const restT = sk.restT;
+  const rotate = (name, q) => sk.rotateLocal(name, q);
+  const scale = (name, k) => { const i = sk.index[name]; if (i !== undefined) for (let a = 0; a < 3; a += 1) sk.S[i * 3 + a] = restS[i * 3 + a] * k; };
+
   let prev = performance.now();
   let first = true;
 
@@ -296,7 +292,7 @@ function run(renderer, model) {
     walkAmt = lerp(walkAmt, want ? 1 : 0, damp(want ? 7 : 9, dt));
     if (want) pose.x = clamp(pose.x + want * SPEED * dt * Math.min(1, walkAmt * 1.3), minX, maxX);
     else if (walkAmt > 0.02) pose.x = clamp(pose.x + (faceYaw > 0 ? 1 : -1) * SPEED * dt * walkAmt * 0.3, minX, maxX);
-    if (walkAmt > 0.01) walkPhase += dt * RATE * walkAmt;
+    if (walkAmt > 0.01) walkPhase += dt * STRIDE * walkAmt;
 
     // ---- direção do corpo: de frente para onde anda; parada, de três quartos para o menu
     const targetFace = walkAmt > 0.15 && want ? want * 1.25 : FACE_MENU;
@@ -310,7 +306,7 @@ function run(renderer, model) {
 
     // ---- olhar: com o cursor no menu, segue o cursor; senão dispara de um lado a outro
     if (pointer) {
-      const [ex, ey] = project(...toWorld(sk.worldPos('head')));
+      const [ex, ey] = project(...toWorld(sk.worldPos('pv_head')));
       look.tx = clamp((pointer.x - ex) / (innerWidth * 0.3), -1, 1);
       look.ty = clamp(-(pointer.y - ey) / (innerHeight * 0.3), -1, 1);
     } else if (!still) {
@@ -328,56 +324,42 @@ function run(renderer, model) {
     look.x = lerp(look.x, look.tx, lk);
     look.y = lerp(look.y, look.ty, lk);
 
-    // ---- animação base: "Point" parada, misturada com "Walk" quando anda
+    // ---- pose: começa do repouso (sem acúmulo entre quadros)
+    sk.R.set(restR);
+    sk.T.set(restT);
+    sk.S.set(restS);
+
+    // ---- medo: tremor, recuo, orelhas abertas, olhos arregalados que disparam
     leftWalk = lerp(leftWalk, want < 0 ? 1 : 0, damp(8, dt));
     const aimW = 1 - leftWalk;
-    sk.evaluate([{ clip: POINT, time: 0, weight: 1, loop: false }]);
-    ARM_R.forEach((n, k) => armSaved[k].set(sk.R.subarray(sk.index[n] * 4, sk.index[n] * 4 + 4)));
-    if (walkAmt > 0.01) {
-      sk.evaluate([
-        { clip: POINT, time: 0, weight: 1 - walkAmt, loop: false },
-        { clip: WALK, time: walkPhase, weight: walkAmt, loop: true },
-      ]);
-      // o braço que aponta continua apontando (a mira é desligada à esquerda, onde ele ficaria atrás do corpo)
-      ARM_R.forEach((n, k) => {
-        const i = sk.index[n] * 4;
-        const cur = [sk.R[i], sk.R[i + 1], sk.R[i + 2], sk.R[i + 3]];
-        sk.R.set(quat.slerp(cur, [...armSaved[k]], aimW), i);
-      });
-    }
-
-    // de perfil para o menu, a cabeça se volta para quem olha; andando, olha para o caminho
-    lookBack = lerp(lookBack, walkAmt > 0.3 ? 0 : 1, damp(5, dt));
-
-    // ---- medo: tremor, recuo, orelhas para trás, olhos arregalados que disparam
     const sh1 = still ? 0 : Math.sin(t * 52) * 0.5 + Math.sin(t * 37 + 1) * 0.5;
     const sh2 = still ? 0 : Math.sin(t * 44 + 2) * 0.5 + Math.sin(t * 29) * 0.5;
     const breathe = still ? 0 : Math.sin(t * 5.2) * 0.5 + 0.5;
     const calm = 1 - walkAmt * 0.6;
-    sk.rotateLocal('spine', quat.euler(-0.07 * calm + breathe * 0.012, 0, sh1 * 0.01));
-    sk.rotateLocal('chest', quat.euler(breathe * 0.02, 0, sh2 * 0.012));
-    sk.rotateLocal('head', quat.euler(-look.y * 0.16 + sh2 * 0.01, look.x * 0.3 - 0.5 * lookBack, sh1 * 0.014));
-    ['eye_L', 'eye_R'].forEach((n) => {
-      sk.rotateLocal(n, quat.euler(-look.y * 0.3, look.x * 0.42, 0));
-      sk.scaleNode(n, 1.16 + (still ? 0 : Math.max(0, Math.sin(t * 1.7)) * 0.04));
-    });
-    ['lid_L', 'lid_R'].forEach((n) => sk.rotateLocal(n, quat.euler(-0.22, 0, 0)));
-    ['ear_L_1', 'ear_R_1'].forEach((n, k) => sk.rotateLocal(n, quat.euler(-0.32 + sh1 * 0.03, 0, (k ? 1 : -1) * (0.14 + sh2 * 0.03))));
-    sk.rotateLocal('upper_arm_L', quat.euler(sh1 * 0.05, 0, sh2 * 0.05));
-    // a cauda se afasta do corpo, para as estrelas aparecerem ao lado dela
-    sk.rotateLocal('tail_1', quat.euler(0, 0.75 * calm + Math.sin(t * 1.6) * (still ? 0 : 0.18), 0));
+    const bob = still ? 0 : Math.abs(Math.sin(walkPhase)) * 0.012 * walkAmt;
+    const legA = Math.sin(walkPhase) * 0.5 * walkAmt; // passada: pernas alternam (eixo x, de frente para a câmera)
 
-    // ---- braço direito aponta para o botão do menu (ou para o cursor, se estiver sobre o menu)
-    // o cotovelo estica até quase reto quando ela aponta: o braço lê melhor de longe
-    if (aimW > 0.01) {
-      const fi = sk.index.forearm_R * 4;
-      const rest = [sk.restR[fi], sk.restR[fi + 1], sk.restR[fi + 2], sk.restR[fi + 3]];
-      sk.R.set(quat.slerp([sk.R[fi], sk.R[fi + 1], sk.R[fi + 2], sk.R[fi + 3]], rest, 0.7 * aimW), fi);
-    }
+    rotate('pv_body', quat.euler(-0.07 * calm + breathe * 0.012 + bob, 0, sh1 * 0.01));
+    rotate('pv_head', quat.euler(-look.y * 0.16 + sh2 * 0.01, look.x * 0.3 - 0.5 * lookBack, sh1 * 0.014));
+    // de perfil para o menu, a cabeça se volta para quem olha; andando, olha para o caminho
+    lookBack = lerp(lookBack, walkAmt > 0.3 ? 0 : 1, damp(5, dt));
+    ['eye_L', 'eye_R'].forEach((n) => {
+      rotate(n, quat.euler(-look.y * 0.3, look.x * 0.42, 0));
+      scale(n, 1.16 + (still ? 0 : Math.max(0, Math.sin(t * 1.7)) * 0.04));
+    });
+    ['pupil_L', 'pupil_R'].forEach((n) => scale(n, 0.7)); // pupila pequena: susto
+    rotate('pv_ear_L', quat.euler(0, 0, -0.32 + sh1 * 0.03)); // orelhas abertas, para fora
+    rotate('pv_ear_R', quat.euler(0, 0, 0.32 - sh1 * 0.03));
+    rotate('pv_leg_L', quat.euler(legA, 0, 0));
+    rotate('pv_leg_R', quat.euler(-legA, 0, 0));
+    // a cauda se afasta do corpo, para as estrelas aparecerem ao lado dela
+    rotate('pv_tail', quat.euler(0, 0.6 * calm + Math.sin(t * 1.6) * (still ? 0 : 0.18), 0));
+
+    // ---- braço que aponta: o ombro segue o corpo; o braço mira o botão do menu (ou o cursor, se estiver sobre o menu)
     sk.updateWorld();
     if (aimW > 0.01) {
       const aim = pointer || menuHit;
-      const shoulderM = sk.worldPos('upper_arm_R');
+      const shoulderM = sk.worldPos('pv_arm_L');
       const shoulderW = toWorld(shoulderM);
       const p = unproject(aim.x, aim.y, shoulderW[2]);
       // ângulo na tela, limitado: o braço aponta para a direita e nunca cruza o rosto (menu bem acima, em retrato)
@@ -385,7 +367,7 @@ function run(renderer, model) {
       const d = [Math.cos(ang), Math.sin(ang), 0.3]; // um pouco para a frente
       const dm = dirToModel(d);
       const tgt = [shoulderM[0] + dm[0], shoulderM[1] + dm[1], shoulderM[2] + dm[2]];
-      sk.aim('upper_arm_R', 'hand_R', tgt, aimW);
+      sk.aim('pv_arm_L', 'hand_L', tgt, aimW);
     }
     sk.updateSkin();
 
