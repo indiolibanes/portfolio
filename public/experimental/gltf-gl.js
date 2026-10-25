@@ -6,7 +6,7 @@
 // metal/rugosidade (GGX), brilho de pelo (sheen), verniz (clearcoat) e emissão forte, além de uma luz fria de lua,
 // uma luz quente de lanterna, um ponto de luz, ambiente hemisférico e um "céu" analítico para os reflexos.
 
-import { parseGLB, Skeleton, composeInto, mulInto } from './gltf-skel.js';
+import { parseGLB, readAccessor, Skeleton, composeInto, mulInto } from './gltf-skel.js';
 export { quat } from './gltf-skel.js';
 
 // '#rrggbb' (sRGB) → linear
@@ -241,6 +241,25 @@ function normalMatrix(out, m) {
   return out;
 }
 
+// Mantém a fração `keep` dos tufos (componentes conexos da malha), escolhidos por um hash fixo.
+function thinTufts(idx, nv, keep) {
+  const par = new Int32Array(nv);
+  for (let i = 0; i < nv; i += 1) par[i] = i;
+  const find = (x) => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
+  for (let i = 0; i < idx.length; i += 3) {
+    const a = find(idx[i]);
+    for (let k = 1; k < 3; k += 1) { const c = find(idx[i + k]); if (c !== a) par[c] = a; }
+  }
+  const out = [];
+  for (let i = 0; i < idx.length; i += 3) {
+    let h = (find(idx[i]) + 1) * 2654435761;
+    h = (h ^ (h >>> 15)) >>> 0;
+    if ((h % 1000) / 1000 < keep) out.push(idx[i], idx[i + 1], idx[i + 2]);
+  }
+  return new Uint32Array(out);
+}
+
+const TUFT = 25;
 const COMPONENTS = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4 };
 
 export class Renderer {
@@ -290,7 +309,9 @@ export class Renderer {
 
   // ---------------------------------------------------------------- carga do modelo
 
-  async loadModel(buffer) {
+  // opts.thin: { nomeDoMaterial: fração de tufos a manter } — os tufos ("locks") do pelo são geometria opaca e,
+  // todos juntos, escondem fitas, brincos e as estrelas da cauda; manter só parte deles deixa o pelo fofo e os detalhes à vista.
+  async loadModel(buffer, opts = {}) {
     const gl = this.gl;
     const { json, bin } = parseGLB(buffer);
     const skeleton = new Skeleton(json, bin);
@@ -340,6 +361,7 @@ export class Renderer {
       const pbr = m.pbrMetallicRoughness || {};
       const ext = m.extensions || {};
       return {
+        name: m.name,
         base: pbr.baseColorFactor || [1, 1, 1, 1],
         baseTex: pbr.baseColorTexture ? textures[pbr.baseColorTexture.index] : null,
         metal: pbr.metallicFactor ?? 1,
@@ -378,12 +400,42 @@ export class Renderer {
         const hasCol = attr('COLOR_0', 3);
         const skinned = node.skin !== undefined && attr('JOINTS_0', 4, true) && attr('WEIGHTS_0', 5);
         const ia = json.accessors[prim.indices];
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferFor(ia.bufferView, gl.ELEMENT_ARRAY_BUFFER));
+        const mat = materialOf(prim.material);
+        let count = ia.count;
+        let itype = ia.componentType;
+        let ioff = ia.byteOffset || 0;
+        const shrink = opts.shrink?.[mat.name];
+        const nv = json.accessors[prim.attributes.POSITION].count;
+        if (shrink && shrink < 1 && nv % TUFT === 0) {
+          // cada tufo = 6 anéis de 4 vértices + ponta (25): encolhe em torno do anel da raiz, que fica colado à pele
+          const P = readAccessor(json, bin, prim.attributes.POSITION);
+          for (let t = 0; t < nv; t += TUFT) {
+            let rx = 0, ry = 0, rz = 0;
+            for (let k = 0; k < 4; k += 1) { rx += P[(t + k) * 3] / 4; ry += P[(t + k) * 3 + 1] / 4; rz += P[(t + k) * 3 + 2] / 4; }
+            for (let k = 0; k < TUFT; k += 1) {
+              const o = (t + k) * 3;
+              P[o] = rx + (P[o] - rx) * shrink; P[o + 1] = ry + (P[o + 1] - ry) * shrink; P[o + 2] = rz + (P[o + 2] - rz) * shrink;
+            }
+          }
+          const pb = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, pb);
+          gl.bufferData(gl.ARRAY_BUFFER, P, gl.STATIC_DRAW);
+          gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        }
+        const keep = opts.thin?.[mat.name];
+        if (keep !== undefined && keep < 1) {
+          const kept = thinTufts(readAccessor(json, bin, prim.indices), json.accessors[prim.attributes.POSITION].count, keep);
+          const eb = gl.createBuffer();
+          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, eb);
+          gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, kept, gl.STATIC_DRAW);
+          count = kept.length;
+          itype = gl.UNSIGNED_INT;
+          ioff = 0;
+        } else {
+          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferFor(ia.bufferView, gl.ELEMENT_ARRAY_BUFFER));
+        }
         gl.bindVertexArray(null);
-        draws.push({
-          node: ni, vao, skinned: !!skinned, hasUV, hasCol, count: ia.count, itype: ia.componentType,
-          ioff: ia.byteOffset || 0, mat: materialOf(prim.material),
-        });
+        draws.push({ node: ni, vao, skinned: !!skinned, hasUV, hasCol, count, itype, ioff, mat });
       });
     });
 
@@ -504,6 +556,7 @@ export class Renderer {
       gl.bindTexture(gl.TEXTURE_2D, m.emisTex || this.white);
       gl.uniform1i(U.uHasEmis, m.emisTex ? 1 : 0);
       gl.bindVertexArray(d.vao);
+      if (!d.skinned) { gl.vertexAttribI4ui(4, 0, 0, 0, 0); gl.vertexAttrib4f(5, 1, 0, 0, 0); }
       if (!d.hasUV) gl.vertexAttrib2f(2, 0, 0);
       if (!d.hasCol) gl.vertexAttrib4f(3, 1, 1, 1, 1);
       gl.drawElements(gl.TRIANGLES, d.count, d.itype, d.ioff);
