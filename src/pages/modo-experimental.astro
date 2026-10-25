@@ -27,7 +27,15 @@ import '../styles/experimental-scene.css';
       <button class="xm-spin" type="button" data-xm-spin aria-label="Girar a Sophia 360 graus" title="Girar 360°">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4.5h-4.5"></path><text x="12" y="14.6" text-anchor="middle" font-size="6.2" font-weight="700" fill="currentColor" font-family="system-ui,sans-serif">360</text></svg>
       </button>
-      <span class="xm-hint">Role para ampliar · arraste para girar</span>
+      <div class="xm-walk" role="group" aria-label="Fazer a Sophia andar">
+        <button class="xm-walk__btn" type="button" data-xm-walk="-1" aria-label="Andar para a esquerda (segure)" title="Andar para a esquerda (←)">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14.5 6l-6 6 6 6"></path></svg>
+        </button>
+        <button class="xm-walk__btn" type="button" data-xm-walk="1" aria-label="Andar para a direita (segure)" title="Andar para a direita (→)">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 6l6 6-6 6"></path></svg>
+        </button>
+      </div>
+      <span class="xm-hint">Role para ampliar · arraste para girar · ← → para andar</span>
     </div>
     <ExperimentalMenu />
     <main id="conteudo" class="xm-space__main"></main>
