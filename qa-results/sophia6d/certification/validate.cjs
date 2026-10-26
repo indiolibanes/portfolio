@@ -1,0 +1,1 @@
+const fs=require('fs'),v=require('gltf-validator');(async()=>{for(const p of process.argv.slice(2)){const r=await v.validateBytes(new Uint8Array(fs.readFileSync(p)),{uri:p,maxIssues:1000000});fs.writeFileSync(p.replace(/.*\//,'certification/')+'.khronos.json',JSON.stringify(r,null,2));console.log(p,JSON.stringify({...r.issues,messages:r.issues.messages.slice(0,5)}))}})();
