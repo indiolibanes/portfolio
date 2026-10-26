@@ -27,7 +27,7 @@ export interface Curiosity {
 }
 
 /** Data da última adição, em ISO (AAAA-MM-DD). */
-export const CURIOSITIES_UPDATED = '2026-10-23';
+export const CURIOSITIES_UPDATED = '2026-10-26';
 
 export const CURIOSITIES: Curiosity[] = [
   {
@@ -106,3 +106,48 @@ export const CURIOSITIES: Curiosity[] = [
     wide: true,
   },
 ];
+
+/**
+ * Processo criativo — bloco de texto corrido abaixo da lista de curiosidades.
+ * Cada etapa tem um rótulo curto (label) e o texto (body). Em `intro`, o parágrafo de abertura.
+ */
+export interface CreativeStep {
+  label: string;
+  body: string;
+}
+
+export const CREATIVE_PROCESS: { title: string; intro: string; steps: CreativeStep[] } = {
+  title: 'Como nasce um projeto',
+  intro:
+    'Por questão de pensamento lateral, meus projetos raramente nascem prontos ou respeitam algum tipo de linearidade. São camadas que se ajuntam e formam um panorama tridimensional — ou quadrimensional se considerarmos o tempo, o elemento central das minhas sinapses.',
+  steps: [
+    {
+      label: 'Experiência e referências.',
+      body: 'Quando uma ideia não está necessariamente maturada — se é que virá em algum momento —, aplico um princípio emergencial bastante simples: “copia, mas faz melhor”. Referências existem justamente para permitir progresso e evolução. Desde o avatar de anime ao widget musical de sua respectiva seção. O modo leitura foi “emprestado” de um dos meus jogos favoritos — e desafio-lhes a acertar.',
+    },
+    {
+      label: 'Captura.',
+      body: 'Sempre anoto as ideias fragmentadas ou esboços iniciais, sendo de madrugada ao acordar ou durante uma prova; o importante é jamais perdê-los. Elementos como composição, forma de hierarquia, tipografia, paleta de cores e animações aleatórias. Registro tudo em vez de decidir na hora.',
+    },
+    {
+      label: 'Conexão.',
+      body: 'A partir dessas anotações, procuro conexões impensadas entre temas aparentemente impossíveis: astrofísica, tempo, tipografia, música, componentes da tabela periódica como menu. Quando agrega à identidade, é implementada; caso contrário, sequer lembro que existiu.',
+    },
+    {
+      label: 'Incubação.',
+      body: 'Tempo de maturação de ideias. Muitas soluções só apareceram após um intervalo — como uma latência considerável — e não por esforço direto. Outros elementos posteriores podem contribuir para esse raciocínio. Jamais tratarei esse tempo como improdutivo, pois é a essência do método.',
+    },
+    {
+      label: 'Composição.',
+      body: 'Montei as seções, as cenas animadas, os fluxogramas, paleta de cores e easter eggs, priorizando espaçamento, alinhamento e uma composição integrada, em vez de elementos avulsos e que ferem a simetria.',
+    },
+    {
+      label: 'Revisão.',
+      body: 'Testo cada mudança em desktop, celular, movimento reduzido e nos quatro modos (sim, há um alpha a caminho) disponíveis. A auditoria tende à profundidade acima da velocidade: corrigir o que pode ser melhorado, mesmo que esteja “utilizável”.',
+    },
+    {
+      label: 'Publicação.',
+      body: 'Publiquei em branches dedicadas, mesclando à main quando aplicáveis, com disponibilidade do histórico das decisões. Mantive a documentação para que outras pessoas — ou eu mesmo no futuro — consigam verificar por que o site é como é.',
+    },
+  ],
+};

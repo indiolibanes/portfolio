@@ -92,6 +92,14 @@ check('curiosidades: external links open safely and announce the new tab',
   curiosities.includes("rel={item.link.external ? 'noopener noreferrer' : undefined}") &&
   curiosities.includes('(abre em nova aba)'));
 check('curiosidades: content kept in one data file', curiositiesData.includes('export const CURIOSITIES'));
+check('curiosidades: creative process is a labelled section with an ordered list of steps',
+  curiosities.includes('aria-labelledby="creative-process-title"') &&
+  curiosities.includes('id="creative-process-title"') &&
+  curiosities.includes('<ol class="creative-process__steps">'));
+check('curiosidades: creative process content kept in the data file',
+  curiositiesData.includes('export const CREATIVE_PROCESS') && (curiositiesData.match(/label: '/g) || []).length >= 7);
+check('curiosidades: creative process steps animate nothing (no motion to gate)',
+  !/animation|transition/.test(read('src/styles/curiosidades.css').split('Creative process')[1]?.split('Return links')[0] ?? ''));
 check('curiosidades: header link', header.includes('href="/curiosidades/"'));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));

@@ -216,6 +216,84 @@ html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'
   display: none !important;
 }
 
+/* ---------- Creative process (texto corrido, abaixo da lista) ---------- */
+
+.creative-process {
+  margin: clamp(3rem, 7vw, 5rem) 0 0;
+  padding: clamp(1.6rem, 4vw, 2.6rem) 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.creative-process__head {
+  max-width: 46rem;
+}
+
+.creative-process__title {
+  margin: 0.2rem 0 0.9rem;
+  color: var(--brick-dark);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+}
+
+.creative-process__intro {
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  font-style: italic;
+  line-height: 1.65;
+}
+
+.creative-process__steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.1rem, 2.6vw, 1.8rem) clamp(1.4rem, 3.6vw, 2.8rem);
+  margin: clamp(2rem, 5vw, 3rem) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: creative-step;
+}
+
+.creative-process__step {
+  position: relative;
+  padding: 0 0 0 3.1rem;
+  counter-increment: creative-step;
+}
+
+/* Numbered marker in the retro face, aligned to the label's first line. */
+.creative-process__step::before {
+  content: counter(creative-step, decimal-leading-zero);
+  position: absolute;
+  top: 0.12rem;
+  left: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-retro);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.creative-process__label {
+  margin: 0 0 0.35rem;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.creative-process__body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 860px) {
+  .creative-process__steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ---------- Return links ---------- */
 
 .curiosities-return {

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
-import { CURIOSITIES, CURIOSITIES_UPDATED } from '../curiosities';
+import { CURIOSITIES, CURIOSITIES_UPDATED, CREATIVE_PROCESS } from '../curiosities';
 
 const updatedLabel = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
@@ -63,6 +63,23 @@ const updatedLabel = new Intl.DateTimeFormat('pt-BR', {
         </li>
       ))}
     </ul>
+
+    <section class="creative-process" aria-labelledby="creative-process-title">
+      <header class="creative-process__head">
+        <p class="eyebrow">Método</p>
+        <h2 id="creative-process-title" class="creative-process__title">{CREATIVE_PROCESS.title}</h2>
+        <p class="creative-process__intro">{CREATIVE_PROCESS.intro}</p>
+      </header>
+
+      <ol class="creative-process__steps">
+        {CREATIVE_PROCESS.steps.map((step) => (
+          <li class="creative-process__step">
+            <h3 class="creative-process__label">{step.label}</h3>
+            <p class="creative-process__body">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
 
     <nav class="curiosities-return" aria-label="Atalhos">
       <a href="/">Voltar ao portfólio</a>
