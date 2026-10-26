@@ -1,0 +1,477 @@
+{
+  "status": "REPROVADA_PARA_CERTIFICACAO_GEOMETRICA",
+  "input_files": {
+    "Sophia_Fase6D.glb": {
+      "bytes": 16413188,
+      "sha256": "bf71210efd66ca0f913bd0be1b930b6a035c4dc7d4fe2df9e11a3aa63935f427"
+    },
+    "Sophia_Fase6D_cartoes_opcional.glb": {
+      "bytes": 16699328,
+      "sha256": "0cddeb02527a07ad130b69f1c5b4b6f93ba3f4b9bdb78539c85bb930585c9908"
+    }
+  },
+  "khronos_unfiltered": {
+    "Sophia_Fase6D.glb": {
+      "numErrors": 0,
+      "numWarnings": 110669,
+      "numInfos": 13,
+      "numHints": 1642,
+      "truncated": false
+    },
+    "Sophia_Fase6D_cartoes_opcional.glb": {
+      "numErrors": 0,
+      "numWarnings": 114354,
+      "numInfos": 13,
+      "numHints": 1642,
+      "truncated": false
+    },
+    "Sophia_Fase6D_higienizada.glb": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 13,
+      "numHints": 1642,
+      "truncated": false
+    },
+    "Sophia_Fase6D_cartoes_higienizada.glb": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 13,
+      "numHints": 1642,
+      "truncated": false
+    }
+  },
+  "variant_decision": "DISCARD_CURRENT_CARDS: undesirable ear/cheek appearance under actual alpha MASK 0.4, sheen and culling; exact root witness distances exceed 0.5mm. No selected cards integrated.",
+  "collision_summaries": {
+    "Eyes399": {
+      "completed_samples": 399,
+      "summary": {
+        "rest": {
+          "R_upper": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 1
+          },
+          "R_lower": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 1
+          },
+          "L_upper": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 1
+          },
+          "L_lower": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 1
+          }
+        },
+        "Idle": {
+          "R_upper": {
+            "frames_with_crossings": 113,
+            "triangle_pair_samples": 1601,
+            "frames_below_0_3mm": 116
+          },
+          "R_lower": {
+            "frames_with_crossings": 47,
+            "triangle_pair_samples": 922,
+            "frames_below_0_3mm": 115
+          },
+          "L_upper": {
+            "frames_with_crossings": 113,
+            "triangle_pair_samples": 1593,
+            "frames_below_0_3mm": 116
+          },
+          "L_lower": {
+            "frames_with_crossings": 47,
+            "triangle_pair_samples": 923,
+            "frames_below_0_3mm": 115
+          }
+        },
+        "Write": {
+          "R_upper": {
+            "frames_with_crossings": 90,
+            "triangle_pair_samples": 2512,
+            "frames_below_0_3mm": 90
+          },
+          "R_lower": {
+            "frames_with_crossings": 67,
+            "triangle_pair_samples": 1643,
+            "frames_below_0_3mm": 91
+          },
+          "L_upper": {
+            "frames_with_crossings": 90,
+            "triangle_pair_samples": 2533,
+            "frames_below_0_3mm": 90
+          },
+          "L_lower": {
+            "frames_with_crossings": 67,
+            "triangle_pair_samples": 1643,
+            "frames_below_0_3mm": 91
+          }
+        },
+        "Point": {
+          "R_upper": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 13778,
+            "frames_below_0_3mm": 74
+          },
+          "R_lower": {
+            "frames_with_crossings": 10,
+            "triangle_pair_samples": 169,
+            "frames_below_0_3mm": 11
+          },
+          "L_upper": {
+            "frames_with_crossings": 3,
+            "triangle_pair_samples": 64,
+            "frames_below_0_3mm": 3
+          },
+          "L_lower": {
+            "frames_with_crossings": 5,
+            "triangle_pair_samples": 403,
+            "frames_below_0_3mm": 5
+          }
+        },
+        "Wave": {
+          "R_upper": {
+            "frames_with_crossings": 9,
+            "triangle_pair_samples": 253,
+            "frames_below_0_3mm": 67
+          },
+          "R_lower": {
+            "frames_with_crossings": 10,
+            "triangle_pair_samples": 492,
+            "frames_below_0_3mm": 69
+          },
+          "L_upper": {
+            "frames_with_crossings": 9,
+            "triangle_pair_samples": 246,
+            "frames_below_0_3mm": 67
+          },
+          "L_lower": {
+            "frames_with_crossings": 10,
+            "triangle_pair_samples": 484,
+            "frames_below_0_3mm": 69
+          }
+        },
+        "Walk": {
+          "R_upper": {
+            "frames_with_crossings": 5,
+            "triangle_pair_samples": 108,
+            "frames_below_0_3mm": 29
+          },
+          "R_lower": {
+            "frames_with_crossings": 3,
+            "triangle_pair_samples": 147,
+            "frames_below_0_3mm": 29
+          },
+          "L_upper": {
+            "frames_with_crossings": 5,
+            "triangle_pair_samples": 107,
+            "frames_below_0_3mm": 29
+          },
+          "L_lower": {
+            "frames_with_crossings": 3,
+            "triangle_pair_samples": 154,
+            "frames_below_0_3mm": 29
+          }
+        }
+      }
+    },
+    "Hem399": {
+      "completed_samples": 399,
+      "summary": {
+        "rest": {
+          "lining_coat": {
+            "frames_with_crossings": 1,
+            "triangle_pair_samples": 1072,
+            "frames_below_0_3mm": 1
+          },
+          "lining_body": {
+            "frames_with_crossings": 1,
+            "triangle_pair_samples": 761,
+            "frames_below_0_3mm": 1
+          }
+        },
+        "Idle": {
+          "lining_coat": {
+            "frames_with_crossings": 121,
+            "triangle_pair_samples": 143977,
+            "frames_below_0_3mm": 121
+          },
+          "lining_body": {
+            "frames_with_crossings": 121,
+            "triangle_pair_samples": 92016,
+            "frames_below_0_3mm": 121
+          }
+        },
+        "Write": {
+          "lining_coat": {
+            "frames_with_crossings": 98,
+            "triangle_pair_samples": 111547,
+            "frames_below_0_3mm": 98
+          },
+          "lining_body": {
+            "frames_with_crossings": 98,
+            "triangle_pair_samples": 70550,
+            "frames_below_0_3mm": 98
+          }
+        },
+        "Point": {
+          "lining_coat": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 68219,
+            "frames_below_0_3mm": 74
+          },
+          "lining_body": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 53748,
+            "frames_below_0_3mm": 74
+          }
+        },
+        "Wave": {
+          "lining_coat": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 70818,
+            "frames_below_0_3mm": 74
+          },
+          "lining_body": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 72788,
+            "frames_below_0_3mm": 74
+          }
+        },
+        "Walk": {
+          "lining_coat": {
+            "frames_with_crossings": 31,
+            "triangle_pair_samples": 34120,
+            "frames_below_0_3mm": 31
+          },
+          "lining_body": {
+            "frames_with_crossings": 31,
+            "triangle_pair_samples": 30913,
+            "frames_below_0_3mm": 31
+          }
+        }
+      }
+    },
+    "Tail399": {
+      "completed_samples": 399,
+      "summary": {
+        "rest": {
+          "tail_body": {
+            "frames_with_crossings": 1,
+            "triangle_pair_samples": 436,
+            "frames_below_0_3mm": 1
+          },
+          "tail_coat": {
+            "frames_with_crossings": 1,
+            "triangle_pair_samples": 320,
+            "frames_below_0_3mm": 1
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "backbow_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          }
+        },
+        "Idle": {
+          "tail_body": {
+            "frames_with_crossings": 121,
+            "triangle_pair_samples": 52215,
+            "frames_below_0_3mm": 121
+          },
+          "tail_coat": {
+            "frames_with_crossings": 121,
+            "triangle_pair_samples": 38808,
+            "frames_below_0_3mm": 121
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "backbow_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          }
+        },
+        "Write": {
+          "tail_body": {
+            "frames_with_crossings": 98,
+            "triangle_pair_samples": 42260,
+            "frames_below_0_3mm": 98
+          },
+          "tail_coat": {
+            "frames_with_crossings": 98,
+            "triangle_pair_samples": 31481,
+            "frames_below_0_3mm": 98
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "backbow_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          }
+        },
+        "Point": {
+          "tail_body": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 31904,
+            "frames_below_0_3mm": 74
+          },
+          "tail_coat": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 23861,
+            "frames_below_0_3mm": 74
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "backbow_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 5
+          }
+        },
+        "Wave": {
+          "tail_body": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 31880,
+            "frames_below_0_3mm": 74
+          },
+          "tail_coat": {
+            "frames_with_crossings": 74,
+            "triangle_pair_samples": 23862,
+            "frames_below_0_3mm": 74
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "backbow_body": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 3
+          }
+        },
+        "Walk": {
+          "tail_body": {
+            "frames_with_crossings": 31,
+            "triangle_pair_samples": 13285,
+            "frames_below_0_3mm": 31
+          },
+          "tail_coat": {
+            "frames_with_crossings": 31,
+            "triangle_pair_samples": 10160,
+            "frames_below_0_3mm": 31
+          },
+          "tail_backbow": {
+            "frames_with_crossings": 0,
+            "triangle_pair_samples": 0,
+            "frames_below_0_3mm": 0
+          },
+          "side_ribbons_body": {
+            "frames_with_crossings": 8,
+            "triangle_pair_samples": 314,
+            "frames_below_0_3mm": 10
+          },
+          "side_ribbons_gold": {
+            "frames_with_crossings": 8,
+            "triangle_pair_samples": 10,
+            "frames_below_0_3mm": 10
+          },
+          "backbow_body": {
+            "frames_with_crossings": 2,
+            "triangle_pair_samples": 21,
+            "frames_below_0_3mm": 4
+          }
+        }
+      }
+    }
+  },
+  "not_done": [
+    "No final approved GLB: cleaned files are uncertified review candidates.",
+    "No paw reshaping/pads added. Existing groove depth not independently reconstructed against a hem-only intermediate.",
+    "No eyelid rig/morph rebuild, 36–40mm remodel, complete manual Blink certification or iris offset correction. Existing eyes preserved.",
+    "No geometric repair of the153 orientation failures or measured lining/tail/ribbon/bow intersections.",
+    "No global signed clearance0.6–2.5mm for decorations over all clips; decorations measured locally in rest only.",
+    "No tail distant-ring self-collision certification.",
+    "No animation video or definitive naturalness assessment for tail; distal bone rebind not applied.",
+    "No complete all-pair audit: fresh tests cover eyes/globe, lining/coat+body, tail/body+coat+backbow, lateral ribbons/body+gold, backbow/body. Mouth/body, wrist/coat, chestbow/coat, shoulder sleeve/trunk, ear jewelry/chains, pen/page, collar/body and all fur exclusion pairs were not freshly measured.",
+    "No full exact root-edge distance field for all cards; 398+rest scan uses local candidate faces at root midpoint, then six worst witnesses are verified globally.",
+    "No regenerated64-bit byte-identical optional-card reconstruction: ZIP lacks fluff_lib.py and matching fluff_glbio.py.",
+    "No backbow/coat, backbow/hair, lateral-ribbon/thigh split reported separately.",
+    "No comparison to a geometrically corrected final exists; cleaned candidate has identical rendered geometry to6D."
+  ],
+  "proposals": {
+    "coat_retopology": "At shoulder sleeve/trunk union: rebuild armhole as connected non-overlapping edge loops; close hidden internal sleeve cap, preserve silhouette, transfer UV/material border and skin weights by surface correspondence, then retest Point/Walk/Write. Requires user authorization before application.",
+    "eyes": "Use a morph driven closure over the actual eye surface. Decouple eyelid rotation that pivots inside globe; preserve head/eye follow transforms, convert blink channels to morph weights, rebuild closed target and normal deltas, constrain all visible eyelid surface to>=0.3mm, verify contact line and aperture before reshaping38mm. Not applied.",
+    "tail": "Rebuild or subdivide the long constellation strands and attach surface coordinates plus normal offset; a per-vertex projection alone can invert triangles. Validate triangle-to-surface clearance as well as vertices.",
+    "paws": "Create smooth three-lobed distal silhouette with two shallow clefts and separate pad islands anchored to original local palm/foot surface. Copy original nearest-surface skin weights, then audit book/pen/sleeves over all samples before adoption. Not applied."
+  }
+}
