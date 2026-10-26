@@ -1,0 +1,70 @@
+{
+  "status": "partial_implementation_not_final_certification",
+  "sha256": "bcd64d5553a604f7455ee1696242e66688ca393d9dd006f1d3f9a9ae698761dd",
+  "implemented": [
+    "Reconstructed two long4-vertex-section tubes of constellation primitive231, preserving indices, UVs, weights and morphs.",
+    "153 inverted triangles eliminated without reversing indices."
+  ],
+  "formal": {
+    "khronos_errors": 0,
+    "khronos_warnings": 0,
+    "winding_inverted_triangles": 0,
+    "loops_endpoint_error_mm": 0,
+    "idempotent_byte_identical": true
+  },
+  "not_done": [
+    "Eye rig/Blink and eyelid remodel.",
+    "Lining geometry and lining/coat/body intersections.",
+    "Paw/toe/pad remodeling.",
+    "Authorized shoulder retopology.",
+    "Other inherited collisions and full all-pair certification.",
+    "Global triangle clearance and self-intersection certification of repaired strands; motion test measured local vertex-to-triangle distances only."
+  ],
+  "motion_results": {
+    "method": "Locally signed triangle query on faces incident to four nearest vertices. Vertex samples only; not a global triangle clearance or self-intersection certificate.",
+    "results": [
+      {
+        "clip": "rest",
+        "samples": 1,
+        "local_vertex_gap_min_mm": 1.2639329071719834,
+        "max_mm": 1.6993429416403474,
+        "frames_outside_band": 0
+      },
+      {
+        "clip": "Idle",
+        "samples": 121,
+        "local_vertex_gap_min_mm": 1.2607979411997094,
+        "max_mm": 1.7251315595282062,
+        "frames_outside_band": 0
+      },
+      {
+        "clip": "Write",
+        "samples": 98,
+        "local_vertex_gap_min_mm": 1.2541812941055521,
+        "max_mm": 1.7305331601252194,
+        "frames_outside_band": 0
+      },
+      {
+        "clip": "Point",
+        "samples": 74,
+        "local_vertex_gap_min_mm": 1.232084980242664,
+        "max_mm": 1.7400158798322551,
+        "frames_outside_band": 0
+      },
+      {
+        "clip": "Wave",
+        "samples": 74,
+        "local_vertex_gap_min_mm": 1.23782373825425,
+        "max_mm": 1.737786251412015,
+        "frames_outside_band": 0
+      },
+      {
+        "clip": "Walk",
+        "samples": 31,
+        "local_vertex_gap_min_mm": 1.2377723477186113,
+        "max_mm": 1.7377393436167377,
+        "frames_outside_band": 0
+      }
+    ]
+  }
+}
