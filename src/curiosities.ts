@@ -143,7 +143,7 @@ export const CREATIVE_PROCESS: { title: string; intro: string; steps: CreativeSt
     },
     {
       label: 'Revisão.',
-      body: 'Testo cada mudança em desktop, celular, movimento reduzido e nos quatro modos (sim, há um alpha a caminho) disponíveis. A auditoria tende à profundidade acima da velocidade: corrigir o que pode ser melhorado, mesmo que esteja “utilizável”.',
+      body: 'Testo cada mudança em desktop, mobile, movimento otimizado e nos quatro modos (sim, há uma nova versão experimental <i>alpha</i> a caminho) disponíveis. A auditoria tende à profundidade acima da velocidade: corrigir o que pode ser melhorado, mesmo que esteja “utilizável”.',
     },
     {
       label: 'Publicação.',
