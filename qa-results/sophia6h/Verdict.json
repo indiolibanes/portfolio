@@ -1,0 +1,26 @@
+{
+ "fase": "6H",
+ "status": "CANDIDATA_PARCIAL_NAO_APROVADA",
+ "base_sha256": "228a2525dfd281b3e8e35f7a1e2d5b0c3156b4dfebc7c38cd50c23955d4d3290",
+ "candidata_sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+ "validator": "0_ERROS_0_AVISOS_12_INFOS",
+ "H_A": {
+  "cabeca_juba_massas_olhos_boca_orelhas": "EXECUTADA; aprovacao artistica pendente de revisao humana",
+  "microgaze": "NAO_RECUPERADO (pivo dos olhos)"
+ },
+ "H_B": {
+  "wave_manga_x_cranio": "0 (6G: ate 356)",
+  "write_capa_e_pena": "capa para fora; ponta 0,67-0,74 mm da pagina; pena x caderno 0; maos x caderno no Write 0",
+  "pescoco_x_jaleco_forro": "0 (6G: ate 385)",
+  "pescoco_x_colarinho": "7/36 poses, max 20 (Write)",
+  "cauda": "106 mechas em fluxo; cauda-base x corpo/vestuario inalterado (151/738)",
+  "jaleco": "NAO_TRABALHADO",
+  "maos": "NAO_TRABALHADAS"
+ },
+ "H_C": {
+  "gltf_skel_weights": "CORRIGIDO (e540702)",
+  "gltf_gl_morphs": "IMPLEMENTADO (86d67a4); Blink/Smile/BrowRaise/MouthOpen e 5 clipes visiveis no renderer real",
+  "modelo_ativo": "INALTERADO; render identico pixel a pixel"
+ },
+ "push_merge_deploy": "NAO_REALIZADOS"
+}

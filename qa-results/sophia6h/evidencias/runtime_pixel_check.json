@@ -1,0 +1,112 @@
+{
+ "blink_1": {
+  "changed_pixels": 13051,
+  "visible": true,
+  "bbox_xywh": [
+   90,
+   333,
+   457,
+   88
+  ]
+ },
+ "smile_1": {
+  "changed_pixels": 2333,
+  "visible": true,
+  "bbox_xywh": [
+   99,
+   364,
+   444,
+   163
+  ]
+ },
+ "browraise_1": {
+  "changed_pixels": 2249,
+  "visible": true,
+  "bbox_xywh": [
+   172,
+   287,
+   353,
+   74
+  ]
+ },
+ "mouthopen_1": {
+  "changed_pixels": 6076,
+  "visible": true,
+  "bbox_xywh": [
+   150,
+   482,
+   309,
+   53
+  ]
+ },
+ "blink_smile_brow": {
+  "changed_pixels": 15257,
+  "visible": true,
+  "bbox_xywh": [
+   90,
+   291,
+   457,
+   235
+  ]
+ },
+ "smile_mouthopen": {
+  "changed_pixels": 4847,
+  "visible": true,
+  "bbox_xywh": [
+   99,
+   364,
+   444,
+   171
+  ]
+ },
+ "all_1": {
+  "changed_pixels": 21399,
+  "visible": true,
+  "bbox_xywh": [
+   90,
+   287,
+   457,
+   248
+  ]
+ },
+ "clip_Idle_blink_from_channel": {
+  "changed_pixels": 12307,
+  "visible": true
+ },
+ "clip_Idle_expressions_over_clip": {
+  "changed_pixels": 2692,
+  "visible": true
+ },
+ "clip_Point_blink_from_channel": {
+  "changed_pixels": 7517,
+  "visible": true
+ },
+ "clip_Point_expressions_over_clip": {
+  "changed_pixels": 2549,
+  "visible": true
+ },
+ "clip_Walk_blink_from_channel": {
+  "changed_pixels": 13679,
+  "visible": true
+ },
+ "clip_Walk_expressions_over_clip": {
+  "changed_pixels": 2577,
+  "visible": true
+ },
+ "clip_Wave_blink_from_channel": {
+  "changed_pixels": 12562,
+  "visible": true
+ },
+ "clip_Wave_expressions_over_clip": {
+  "changed_pixels": 3148,
+  "visible": true
+ },
+ "clip_Write_blink_from_channel": {
+  "changed_pixels": 12819,
+  "visible": true
+ },
+ "clip_Write_expressions_over_clip": {
+  "changed_pixels": 2569,
+  "visible": true
+ }
+}
