@@ -12,7 +12,7 @@
 | Clipes | 5 (Idle, Write, Point, Wave, Walk); mesmos canais, tempos e interpolação |
 | Morphs | 4 (Blink, Smile, BrowRaise, MouthOpen); 4 alvos em todas as primitivas da malha principal |
 | Khronos glTF-Validator 2.0.0-dev.3.10 | 0 erros, 0 avisos, 12 infos (os mesmos 11 `UNUSED_OBJECT` e 1 `IMAGE_NPOT_DIMENSIONS` da 6G) |
-| Repo (branch `sophia/integration-portfolio`) | commits locais `86d67a4` (morphs no `gltf-gl.js`) e o de QA da 6H, sobre `e540702` (6G). Nada enviado ao remoto. |
+| Repo (branch `sophia/integration-portfolio`) | commits locais `86d67a4` (morphs no `gltf-gl.js`) e `74912d7` (QA da 6H), sobre `e540702` (6G). Nada enviado ao remoto. |
 
 Prioridade cumprida: a H-A foi feita primeiro e é a parte mais completa. A H-B foi feita em parte: Wave, Write, pescoço e cauda avançaram; jaleco e mãos não. A H-C foi feita por completo.
 
