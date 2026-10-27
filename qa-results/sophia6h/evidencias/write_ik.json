@@ -1,0 +1,49 @@
+{
+ "book_tilt_deg": 38.0,
+ "pen_slide_mm": 0.0,
+ "grip_point_book_local": [
+  0.0947,
+  -0.075,
+  -0.0381
+ ],
+ "cover_to_front_camera_cos": [
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756,
+  0.756
+ ],
+ "tip_to_writing_face_before_ik": {
+  "dist_min_mm": 39.55,
+  "dist_median_mm": 40.62,
+  "dist_max_mm": 41.54,
+  "signed_min_mm": -41.54,
+  "shaft_signed_min_mm": -40.84,
+  "paw_signed_min_mm": -87.1,
+  "sleeve_head_min_mm": 33.14,
+  "samples": 97
+ },
+ "tip_to_writing_face_6H": {
+  "dist_min_mm": 0.67,
+  "dist_median_mm": 0.7,
+  "dist_max_mm": 0.74,
+  "signed_min_mm": 0.67,
+  "shaft_signed_min_mm": 3.55,
+  "paw_signed_min_mm": 7.7,
+  "sleeve_head_min_mm": 22.77,
+  "samples": 388
+ },
+ "ik_delta_max_deg": {
+  "upper_arm_R": 5.21,
+  "forearm_R": 49.36,
+  "hand_R": 85.48
+ }
+}

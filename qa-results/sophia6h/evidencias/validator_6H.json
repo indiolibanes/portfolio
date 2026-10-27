@@ -1,0 +1,119 @@
+{
+ "issues": {
+  "numErrors": 0,
+  "numWarnings": 0,
+  "numInfos": 12,
+  "numHints": 0
+ },
+ "codes": [
+  "IMAGE_NPOT_DIMENSIONS",
+  "UNUSED_OBJECT"
+ ],
+ "info": {
+  "version": "2.0",
+  "generator": "Sophia restoration / proportions, facial silhouette, cloth bind repair and cycle continuity",
+  "extensionsUsed": [
+   "KHR_materials_clearcoat",
+   "KHR_materials_emissive_strength",
+   "KHR_materials_sheen"
+  ],
+  "resources": [
+   {
+    "pointer": "/buffers/0",
+    "mimeType": "application/gltf-buffer",
+    "storage": "glb",
+    "byteLength": 20065740
+   },
+   {
+    "pointer": "/images/0",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 1024,
+     "height": 512,
+     "format": "rgb",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   },
+   {
+    "pointer": "/images/1",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 1024,
+     "height": 512,
+     "format": "rgb",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   },
+   {
+    "pointer": "/images/2",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 2048,
+     "height": 1280,
+     "format": "rgba",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   },
+   {
+    "pointer": "/images/3",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 2048,
+     "height": 2048,
+     "format": "rgb",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   },
+   {
+    "pointer": "/images/4",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 2048,
+     "height": 2048,
+     "format": "rgb",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   },
+   {
+    "pointer": "/images/5",
+    "mimeType": "image/png",
+    "storage": "buffer-view",
+    "image": {
+     "width": 512,
+     "height": 512,
+     "format": "rgb",
+     "primaries": "srgb",
+     "transfer": "srgb",
+     "bits": 8
+    }
+   }
+  ],
+  "animationCount": 5,
+  "materialCount": 28,
+  "hasMorphTargets": true,
+  "hasSkins": true,
+  "hasTextures": true,
+  "hasDefaultScene": true,
+  "drawCallCount": 286,
+  "totalVertexCount": 202105,
+  "totalTriangleCount": 291306,
+  "maxUVs": 1,
+  "maxInfluences": 4,
+  "maxAttributes": 6
+ }
+}

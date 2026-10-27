@@ -1,0 +1,417 @@
+{
+ "metodo": "audit.test (6F): broad phase esferas/AABB + narrow phase segmento-triângulo e distância triângulo-triângulo; candidatos dentro de 0,3 mm. Contagens são pares de triângulos, não defeitos independentes. Amostras discretas, não contínuas.",
+ "sha256_6H": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+ "sha256_6G": "228a2525dfd281b3e8e35f7a1e2d5b0c3156b4dfebc7c38cd50c23955d4d3290",
+ "resumo_6G": {
+  "Olhos x pálpebras": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.18763782259805456
+  },
+  "Olhos x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.43851645694171976
+  },
+  "Pálpebras x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.36135385985592494
+  },
+  "Delineado/cílios x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 2.854574360314376
+  },
+  "Mechas x orelhas": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 3.0887597285159836
+  },
+  "Mechas x acessórios": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Mechas x colarinho/lapelas/laço": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 3.231696657797751
+  },
+  "Mechas x jaleco": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 4.684119586018737
+  },
+  "Mechas x mãos/pena/caderno": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 8.849167104738656
+  },
+  "Ornamentos x testa": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.45645407315040587
+  },
+  "Sobrancelhas/ouro facial x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.6703330721830617
+  },
+  "Crânio x acessórios das orelhas": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.8389965572760347
+  },
+  "Pescoço x jaleco (crânio/pescoço x colarinho)": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 46,
+   "min_candidate_mm": 0.0
+  },
+  "Pescoço x jaleco (crânio/pescoço x jaleco)": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 385,
+   "min_candidate_mm": 0.0
+  },
+  "Braços x mangas": {
+   "poses": 36,
+   "poses_with_crossings": 5,
+   "max_crossings": 46,
+   "min_candidate_mm": 0.0
+  },
+  "Mãos x pena": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 925,
+   "min_candidate_mm": 0.0
+  },
+  "Mãos x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 245,
+   "min_candidate_mm": 0.0
+  },
+  "Cauda x corpo": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 151,
+   "min_candidate_mm": 0.0
+  },
+  "Cauda x vestuário": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 738,
+   "min_candidate_mm": 0.0
+  },
+  "Constelação x superfície da cauda": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.5522163012037438
+  },
+  "Plumagem da cauda x corpo": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x jaleco": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x laços/fitas": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x constelação": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 2.1838308296749087
+  },
+  "Pena x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.16587112796710868
+  },
+  "Mangas x crânio (Wave)": {
+   "poses": 36,
+   "poses_with_crossings": 7,
+   "max_crossings": 356,
+   "min_candidate_mm": 0.0
+  },
+  "Mangas x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 28,
+   "max_crossings": 872,
+   "min_candidate_mm": 0.0
+  },
+  "[intencional] Massas de pelo x crânio (raiz embutida)": {
+   "poses": 45,
+   "poses_with_crossings": 45,
+   "max_crossings": 8724,
+   "min_candidate_mm": 0.0
+  }
+ },
+ "resumo_6H": {
+  "Olhos x pálpebras": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.1237186001158971
+  },
+  "Olhos x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.3698266907466899
+  },
+  "Pálpebras x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.3676240589387728
+  },
+  "Delineado/cílios x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 3.023967510976813
+  },
+  "Mechas x orelhas": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 4.593932951162238
+  },
+  "Mechas x acessórios": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Mechas x colarinho/lapelas/laço": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Mechas x jaleco": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 4.244510918065971
+  },
+  "Mechas x mãos/pena/caderno": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Ornamentos x testa": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.4530221965091762
+  },
+  "Sobrancelhas/ouro facial x crânio": {
+   "poses": 45,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.6698414050598509
+  },
+  "Crânio x acessórios das orelhas": {
+   "poses": 36,
+   "poses_with_crossings": 1,
+   "max_crossings": 6,
+   "min_candidate_mm": 0.0
+  },
+  "Pescoço x jaleco (crânio/pescoço x colarinho)": {
+   "poses": 36,
+   "poses_with_crossings": 7,
+   "max_crossings": 20,
+   "min_candidate_mm": 0.0
+  },
+  "Pescoço x jaleco (crânio/pescoço x jaleco)": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Braços x mangas": {
+   "poses": 36,
+   "poses_with_crossings": 12,
+   "max_crossings": 46,
+   "min_candidate_mm": 0.0
+  },
+  "Mãos x pena": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 657,
+   "min_candidate_mm": 0.0
+  },
+  "Mãos x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 29,
+   "max_crossings": 245,
+   "min_candidate_mm": 0.0
+  },
+  "Cauda x corpo": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 151,
+   "min_candidate_mm": 0.0
+  },
+  "Cauda x vestuário": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 738,
+   "min_candidate_mm": 0.0
+  },
+  "Constelação x superfície da cauda": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.5522163012037438
+  },
+  "Plumagem da cauda x corpo": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x jaleco": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x laços/fitas": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Plumagem da cauda x constelação": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 1.7729405811469545
+  },
+  "Juba x colarinho/lapelas/laço": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x jaleco": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x braços/mãos": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x mangas (braço)": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x acessórios das orelhas": {
+   "poses": 36,
+   "poses_with_crossings": 2,
+   "max_crossings": 24,
+   "min_candidate_mm": 0.0
+  },
+  "Juba x laços/fitas das costas": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x cauda": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Juba x plumagem da cauda": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Tufos das orelhas x acessórios": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Pena x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": 0.16659806086140844
+  },
+  "Mangas x crânio (Wave)": {
+   "poses": 36,
+   "poses_with_crossings": 0,
+   "max_crossings": 0,
+   "min_candidate_mm": null
+  },
+  "Mangas x caderno": {
+   "poses": 36,
+   "poses_with_crossings": 35,
+   "max_crossings": 872,
+   "min_candidate_mm": 0.0
+  },
+  "[intencional] Juba x crânio (raiz embutida)": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 1831,
+   "min_candidate_mm": 0.0
+  },
+  "[intencional] Juba x massas de pelo (pelo sobre pelo)": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 1772,
+   "min_candidate_mm": 0.0
+  },
+  "[intencional] Massas de pelo x crânio (raiz embutida)": {
+   "poses": 45,
+   "poses_with_crossings": 45,
+   "max_crossings": 2609,
+   "min_candidate_mm": 0.0
+  },
+  "[intencional] Tufos x orelhas (raiz embutida)": {
+   "poses": 36,
+   "poses_with_crossings": 36,
+   "max_crossings": 439,
+   "min_candidate_mm": 0.0
+  }
+ }
+}

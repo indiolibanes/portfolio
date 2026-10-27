@@ -1,0 +1,9 @@
+// node render.cjs tasks.json outdir   (tasks: [{name,path(file),view,clip,time,weights,clay,...}])
+const fs=require('fs'),http=require('http'),path=require('path'),{chromium}=require('playwright');
+(async()=>{const tasks=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));const out=path.resolve(process.argv[3]);const threeRoot=process.env.THREE_ROOT;
+const files={};tasks.forEach((t,i)=>{const k='/m/'+path.basename(t.file);files[k]=path.resolve(t.file);t.path=k});
+const server=http.createServer((req,res)=>{let p;const u=decodeURIComponent(req.url.split('?')[0]);if(u==='/viewer.html')p=path.join(__dirname,'viewer.html');else if(files[u])p=files[u];else if(u.startsWith('/vendor/three/'))p=path.join(threeRoot,u.slice(14));if(!p||!fs.existsSync(p)){res.writeHead(404);res.end();return}res.setHeader('Content-Type',p.endsWith('.js')?'text/javascript':p.endsWith('.html')?'text/html':'application/octet-stream');fs.createReadStream(p).pipe(res)});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});const page=await browser.newPage({viewport:{width:900,height:900}});page.on('pageerror',e=>{console.error('PAGEERR',e.message)});page.on('console',m=>{if(m.type()==='error')console.error('CONSOLE',m.text())});
+await page.goto(`http://127.0.0.1:${server.address().port}/viewer.html`);await page.waitForFunction(()=>window.ready,null,{timeout:120000});
+const manifest=[];for(const t of tasks){const o={...t};delete o.file;const st=await page.evaluate(async(o)=>window.renderModel(o),o);const target=path.join(out,t.name+'.png');fs.mkdirSync(path.dirname(target),{recursive:true});await page.screenshot({path:target});manifest.push({...t,stats:st});process.stdout.write(t.name+' ')}
+fs.writeFileSync(path.join(out,'manifest_'+path.basename(process.argv[2])),JSON.stringify(manifest,null,1));await browser.close();server.close()})();

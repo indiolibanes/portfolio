@@ -1,0 +1,522 @@
+{
+ "base_sha256": "228a2525dfd281b3e8e35f7a1e2d5b0c3156b4dfebc7c38cd50c23955d4d3290",
+ "candidate_sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+ "checks": {
+  "nodes_identical": true,
+  "skins_json_identical_except_accessor_index": true,
+  "joint_count": [
+   101,
+   101
+  ],
+  "inverse_bind_matrices_identical": true,
+  "animation_names": [
+   [
+    "Idle",
+    "Write",
+    "Point",
+    "Wave",
+    "Walk"
+   ],
+   [
+    "Idle",
+    "Write",
+    "Point",
+    "Wave",
+    "Walk"
+   ]
+  ],
+  "animation_channel_targets_times_interpolation_identical": true,
+  "animation_channels_with_changed_keys": [
+   {
+    "clip": "Write",
+    "node": "upper_arm_R",
+    "path": "rotation",
+    "max_abs_delta": 0.03328545019030571
+   },
+   {
+    "clip": "Write",
+    "node": "forearm_R",
+    "path": "rotation",
+    "max_abs_delta": 0.2831147313117981
+   },
+   {
+    "clip": "Write",
+    "node": "hand_R",
+    "path": "rotation",
+    "max_abs_delta": 0.5605757981538773
+   },
+   {
+    "clip": "Write",
+    "node": "Book",
+    "path": "translation",
+    "max_abs_delta": 0.08959682285785675
+   },
+   {
+    "clip": "Write",
+    "node": "Book",
+    "path": "rotation",
+    "max_abs_delta": 1.7506475448608398
+   },
+   {
+    "clip": "Wave",
+    "node": "upper_arm_R",
+    "path": "rotation",
+    "max_abs_delta": 0.18021485209465027
+   }
+  ],
+  "morph_target_names": [
+   [
+    "Blink",
+    "Smile",
+    "BrowRaise",
+    "MouthOpen"
+   ],
+   [
+    "Blink",
+    "Smile",
+    "BrowRaise",
+    "MouthOpen"
+   ]
+  ],
+  "all_mesh0_primitives_have_4_targets": true,
+  "animation_count": [
+   5,
+   5
+  ],
+  "image_bytes_identical": true,
+  "materials_count": [
+   28,
+   28
+  ],
+  "materials_changed": [],
+  "primitives_mesh0": [
+   277,
+   279
+  ],
+  "book_pen_meshes_identical": true,
+  "mesh0_primitives_byte_equivalent": 245,
+  "mesh0_primitives_changed": [
+   [
+    2,
+    "Sophia_gold",
+    {
+     "phase6_source": [
+      0,
+      2
+     ],
+     "phase6c_input_primitive": 2
+    }
+   ],
+   [
+    3,
+    "Sophia_nose",
+    {
+     "phase6_source": [
+      0,
+      3
+     ],
+     "phase6c_input_primitive": 3
+    }
+   ],
+   [
+    9,
+    "Sophia_gold",
+    {
+     "phase6_source": [
+      0,
+      9
+     ],
+     "phase6c_input_primitive": 9
+    }
+   ],
+   [
+    10,
+    "Sophia_gold",
+    {
+     "phase6_source": [
+      0,
+      10
+     ],
+     "phase6c_input_primitive": 10
+    }
+   ],
+   [
+    11,
+    "Sophia_gold",
+    {
+     "phase6_source": [
+      0,
+      11
+     ],
+     "phase6c_input_primitive": 11
+    }
+   ],
+   [
+    13,
+    "Warm_sclera",
+    {
+     "faceA3": "right_sclera",
+     "phase6_source": [
+      0,
+      23
+     ],
+     "phase6c_input_primitive": 13
+    }
+   ],
+   [
+    14,
+    "Amber_iris_sculpted",
+    {
+     "faceA3": "right_iris",
+     "phase6_source": [
+      0,
+      24
+     ],
+     "phase6c_input_primitive": 14
+    }
+   ],
+   [
+    15,
+    "Sophia_fur",
+    {
+     "faceA3": "right_upper_lid",
+     "phase6_source": [
+      0,
+      25
+     ],
+     "phase6c_input_primitive": 15
+    }
+   ],
+   [
+    16,
+    "Sophia_fur",
+    {
+     "faceA3": "right_lower_lid",
+     "phase6_source": [
+      0,
+      26
+     ],
+     "phase6c_input_primitive": 16
+    }
+   ],
+   [
+    17,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "right_eyeliner",
+     "phase6_source": [
+      0,
+      27
+     ],
+     "phase6c_input_primitive": 17
+    }
+   ],
+   [
+    18,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "right_lash_1",
+     "phase6_source": [
+      0,
+      28
+     ],
+     "phase6c_input_primitive": 18
+    }
+   ],
+   [
+    19,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "right_lash_2",
+     "phase6_source": [
+      0,
+      29
+     ],
+     "phase6c_input_primitive": 19
+    }
+   ],
+   [
+    20,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "right_lash_3",
+     "phase6_source": [
+      0,
+      30
+     ],
+     "phase6c_input_primitive": 20
+    }
+   ],
+   [
+    21,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "right_lash_4",
+     "phase6_source": [
+      0,
+      31
+     ],
+     "phase6c_input_primitive": 21
+    }
+   ],
+   [
+    22,
+    "Warm_sclera",
+    {
+     "faceA3": "right_catchlight_1",
+     "phase6_source": [
+      0,
+      32
+     ],
+     "phase6c_input_primitive": 22
+    }
+   ],
+   [
+    23,
+    "Warm_sclera",
+    {
+     "faceA3": "right_catchlight_2",
+     "phase6_source": [
+      0,
+      33
+     ],
+     "phase6c_input_primitive": 23
+    }
+   ],
+   [
+    24,
+    "Warm_sclera",
+    {
+     "faceA3": "left_sclera",
+     "phase6_source": [
+      0,
+      34
+     ],
+     "phase6c_input_primitive": 24
+    }
+   ],
+   [
+    25,
+    "Amber_iris_sculpted",
+    {
+     "faceA3": "left_iris",
+     "phase6_source": [
+      0,
+      35
+     ],
+     "phase6c_input_primitive": 25
+    }
+   ],
+   [
+    26,
+    "Sophia_fur",
+    {
+     "faceA3": "left_upper_lid",
+     "phase6_source": [
+      0,
+      36
+     ],
+     "phase6c_input_primitive": 26
+    }
+   ],
+   [
+    27,
+    "Sophia_fur",
+    {
+     "faceA3": "left_lower_lid",
+     "phase6_source": [
+      0,
+      37
+     ],
+     "phase6c_input_primitive": 27
+    }
+   ],
+   [
+    28,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "left_eyeliner",
+     "phase6_source": [
+      0,
+      38
+     ],
+     "phase6c_input_primitive": 28
+    }
+   ],
+   [
+    29,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "left_lash_1",
+     "phase6_source": [
+      0,
+      39
+     ],
+     "phase6c_input_primitive": 29
+    }
+   ],
+   [
+    30,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "left_lash_2",
+     "phase6_source": [
+      0,
+      40
+     ],
+     "phase6c_input_primitive": 30
+    }
+   ],
+   [
+    31,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "left_lash_3",
+     "phase6_source": [
+      0,
+      41
+     ],
+     "phase6c_input_primitive": 31
+    }
+   ],
+   [
+    32,
+    "Warm_espresso_lashes",
+    {
+     "faceA3": "left_lash_4",
+     "phase6_source": [
+      0,
+      42
+     ],
+     "phase6c_input_primitive": 32
+    }
+   ],
+   [
+    33,
+    "Warm_sclera",
+    {
+     "faceA3": "left_catchlight_1",
+     "phase6_source": [
+      0,
+      43
+     ],
+     "phase6c_input_primitive": 33
+    }
+   ],
+   [
+    34,
+    "Warm_sclera",
+    {
+     "faceA3": "left_catchlight_2",
+     "phase6_source": [
+      0,
+      44
+     ],
+     "phase6c_input_primitive": 34
+    }
+   ],
+   [
+    35,
+    "Sophia_mouth",
+    {
+     "faceA3": "upper_lip",
+     "phase6_source": [
+      0,
+      45
+     ],
+     "phase6c_input_primitive": 35
+    }
+   ],
+   [
+    36,
+    "Sophia_mouth",
+    {
+     "faceA3": "lower_lip",
+     "phase6_source": [
+      0,
+      46
+     ],
+     "phase6c_input_primitive": 36
+    }
+   ],
+   [
+    274,
+    "Sophia_fur",
+    {
+     "phase6f": "retopologized_cranium",
+     "neck_overlap": "intentional"
+    }
+   ],
+   [
+    275,
+    "Sophia_fur_locks_phase5_pelt",
+    {
+     "phase6h": "sculpted_fur_clumps",
+     "clump_count": 31,
+     "clearance_target_mm": 3.0
+    }
+   ],
+   [
+    276,
+    "Sophia_tail_locks",
+    {
+     "phase6h": "tail_flow_clumps",
+     "lock_count": 106,
+     "clearance_target_mm": 2.5
+    }
+   ]
+  ],
+  "mesh0_primitives_added": [
+   [
+    277,
+    "Sophia_fur_locks_phase5_pelt",
+    {
+     "phase6h": "inner_ear_tufts",
+     "tuft_count": 8,
+     "clearance_target_mm": 2.5
+    }
+   ],
+   [
+    278,
+    "Sophia_fur_locks_phase5_pelt",
+    {
+     "phase6h": "continuous_ruff",
+     "layers": 1,
+     "shape": "bell_mane",
+     "clearance_target_mm": 3.0
+    }
+   ]
+  ],
+  "uv_arrays_identical_on_unchanged_primitives": true,
+  "uv_present_where_material_has_texture": true,
+  "6G_all_finite": true,
+  "6G_all_indices_valid": true,
+  "6G_max_normal_unit_error": 1.1920928955078125e-07,
+  "6G_max_weight_sum_error": 4.470348358154297e-08,
+  "6G_triangles": 286604,
+  "6G_max_joint_index_ok": true,
+  "6G_zero_weight_with_nonzero_joint": 0,
+  "6G_near_degenerate_by_threshold": {
+   "1e-12": 1589,
+   "1e-10": 1902,
+   "1e-09": 2324
+  },
+  "6G_bytes": 20777996,
+  "6G_draw_primitives": 284,
+  "6H_all_finite": true,
+  "6H_all_indices_valid": true,
+  "6H_max_normal_unit_error": 1.1920928955078125e-07,
+  "6H_max_weight_sum_error": 4.470348358154297e-08,
+  "6H_triangles": 291306,
+  "6H_max_joint_index_ok": true,
+  "6H_zero_weight_with_nonzero_joint": 0,
+  "6H_near_degenerate_by_threshold": {
+   "1e-12": 1589,
+   "1e-10": 1891,
+   "1e-09": 2305
+  },
+  "6H_bytes": 20795692,
+  "6H_draw_primitives": 286,
+  "6H_all_animation_samples_finite": true
+ }
+}

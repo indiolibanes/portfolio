@@ -238,6 +238,16 @@ export class Skeleton {
     }
     this.meshNode = nodes.findIndex((nd) => nd.skin !== undefined);
 
+    // pesos de morph (glTF "weights"): mantidos à parte; nunca escritos na escala do nó.
+    const meshDef = this.meshNode >= 0 ? (json.meshes || [])[nodes[this.meshNode].mesh] : null;
+    const nTargets = meshDef ? Math.max(0, ...meshDef.primitives.map((p) => (p.targets || []).length)) : 0;
+    this.restM = new Float32Array(nTargets);
+    if (meshDef && meshDef.weights) this.restM.set(meshDef.weights.slice(0, nTargets));
+    if (nodes[this.meshNode] && nodes[this.meshNode].weights) this.restM.set(nodes[this.meshNode].weights.slice(0, nTargets));
+    this.morphWeights = new Float32Array(this.restM);
+    this.pM = new Float32Array(nTargets);
+    this.targetNames = (meshDef && meshDef.extras && meshDef.extras.targetNames) || [];
+
     // animações
     this.clips = {};
     (json.animations || []).forEach((a) => {
@@ -262,7 +272,7 @@ export class Skeleton {
   }
 
   // grava no pose (T, R, S) a amostra do clipe em `time` (segundos, com repetição ou fixo).
-  sample(clip, time, T, R, S, loop = true) {
+  sample(clip, time, T, R, S, loop = true, M = null) {
     const d = clip.duration || 1;
     const t = loop ? ((time % d) + d) % d : Math.min(Math.max(time, 0), d);
     for (const ch of clip.channels) {
@@ -275,6 +285,14 @@ export class Skeleton {
       const span = times[j] - times[i];
       const f = ch.step || span <= 0 ? 0 : (t - times[i]) / span;
       const v = ch.values;
+      if (ch.path === 'weights') {
+        // canal de morph: vetor com todos os alvos por quadro-chave; só o nó da malha com pele é usado
+        if (M && ch.node === this.meshNode) {
+          const c = v.length / times.length;
+          for (let k = 0; k < Math.min(c, M.length); k += 1) M[k] = v[i * c + k] + (v[j * c + k] - v[i * c + k]) * f;
+        }
+        continue;
+      }
       if (ch.path === 'rotation') {
         const q = quat.slerp([v[i * 4], v[i * 4 + 1], v[i * 4 + 2], v[i * 4 + 3]], [v[j * 4], v[j * 4 + 1], v[j * 4 + 2], v[j * 4 + 3]], f);
         R.set(q, ch.node * 4);
@@ -293,12 +311,15 @@ export class Skeleton {
     this.T.fill(0);
     this.S.fill(0);
     this.R.fill(0);
+    this.morphWeights.fill(0);
     live.forEach((l, li) => {
       this.pT.set(this.restT);
       this.pR.set(this.restR);
       this.pS.set(this.restS);
-      if (l.clip) this.sample(l.clip, l.time, this.pT, this.pR, this.pS, l.loop !== false);
+      this.pM.set(this.restM);
+      if (l.clip) this.sample(l.clip, l.time, this.pT, this.pR, this.pS, l.loop !== false, this.pM);
       const w = l.weight / total;
+      for (let k = 0; k < this.pM.length; k += 1) this.morphWeights[k] += this.pM[k] * w;
       for (let i = 0; i < n * 3; i += 1) { this.T[i] += this.pT[i] * w; this.S[i] += this.pS[i] * w; }
       for (let i = 0; i < n; i += 1) {
         const o = i * 4;
@@ -307,7 +328,7 @@ export class Skeleton {
         for (let k = 0; k < 4; k += 1) this.R[o + k] += this.pR[o + k] * w * s;
       }
     });
-    if (!live.length) { this.T.set(this.restT); this.R.set(this.restR); this.S.set(this.restS); return; }
+    if (!live.length) { this.T.set(this.restT); this.R.set(this.restR); this.S.set(this.restS); this.morphWeights.set(this.restM); return; }
     for (let i = 0; i < n; i += 1) {
       const o = i * 4;
       const l = Math.hypot(this.R[o], this.R[o + 1], this.R[o + 2], this.R[o + 3]) || 1;
