@@ -1,18 +1,20 @@
-// modo-experimental: a Sophia (sophia-vetorial.glb), assustada, apontando para o menu.
+// modo-experimental: a Sophia alpha (sophia-alpha.glb, candidata 6H), assustada, apontando para o menu.
 // - olhos arregalados que disparam de um lado ao outro; ao passar o cursor no menu/gaveta ela segue o cursor;
 // - o braço esquerdo (pv_arm_L) aponta para o botão do menu e, com o cursor no menu, para o cursor;
 // - tremor de medo, orelhas abertas, leve recuo do corpo;
 // - anda para a direita ou esquerda (setas, A/D, botões ◀ ▶ e passeios curtos por conta própria);
 // - botão inferior esquerdo gira 360°; arrastar o fundo também gira; roda do mouse, +/− e pinça dão zoom.
-// O modelo é um conjunto de peças com pivôs (scripts/rig-sophia-vetorial.py): não há esqueleto nem clipes,
-// então a pose sai de rotações por código, aplicadas sobre a pose de repouso a cada quadro.
+// O modelo tem esqueleto (101 ossos, pele e morphs). A pose sai de rotações por código sobre a pose de repouso
+// a cada quadro; os nomes pv_* abaixo são apelidos para os ossos reais (ALIAS, dentro de run()).
 // Motor: gltf-skel.js (grafo de nós) + gltf-gl.js (WebGL2). O CSP do site não aceita CDN, então não há Three.js.
 import { Renderer, fetchGLB, hex, quat } from './gltf-gl.js';
 
 const canvas = document.querySelector('[data-xm-sophia]');
 const spinBtn = document.querySelector('[data-xm-spin]');
 const hint = document.querySelector('.xm-hint');
-const GLB_URL = '/experimental/sophia-vetorial.glb';
+const GLB_URL = '/experimental/sophia-alpha.glb';
+// O alpha tem ~1,1 m de altura (o modelo de peças tinha ~0,5). A escala fica na cena: pose.scale e a conversão de coordenadas.
+const SC = 0.46;
 
 if (canvas) boot();
 
@@ -100,7 +102,13 @@ function run(renderer, model) {
 
   // ------------------------------------------------------------ estado da personagem
   const FACE_MENU = 0.85; // de pé, quase de perfil para a direita (o menu fica lá); a cabeça volta-se para quem olha
-  const pose = { x: 0, y: 0, z: 0, yaw: FACE_MENU, scale: 1 };
+  const pose = { x: 0, y: 0, z: 0, yaw: FACE_MENU, scale: SC };
+  // apelidos: os nomes da cena antiga (peças com pivôs) apontam para os ossos do alpha
+  const ALIAS = {
+    pv_body: 'hips', pv_head: 'head', pv_ear_L: 'ear_L_1', pv_ear_R: 'ear_R_1',
+    pv_leg_L: 'thigh_L', pv_leg_R: 'thigh_R', pv_tail: 'tail_1', pv_arm_L: 'upper_arm_L',
+  };
+  const J = (n) => ALIAS[n] ?? n;
   let faceYaw = FACE_MENU;
   let userYaw = 0; // giro de 360°/arrasto
   let spin = null;
@@ -143,7 +151,7 @@ function run(renderer, model) {
   const toWorld = (p) => {
     const c = Math.cos(pose.yaw);
     const s = Math.sin(pose.yaw);
-    return [pose.x + p[0] * c + p[2] * s, pose.y + p[1], pose.z - p[0] * s + p[2] * c];
+    return [pose.x + (p[0] * c + p[2] * s) * SC, pose.y + p[1] * SC, pose.z + (-p[0] * s + p[2] * c) * SC];
   };
   const dirToModel = (d) => {
     const c = Math.cos(pose.yaw);
@@ -249,8 +257,8 @@ function run(renderer, model) {
   const restR = sk.restR;
   const restS = sk.restS;
   const restT = sk.restT;
-  const rotate = (name, q) => sk.rotateLocal(name, q);
-  const scale = (name, k) => { const i = sk.index[name]; if (i !== undefined) for (let a = 0; a < 3; a += 1) sk.S[i * 3 + a] = restS[i * 3 + a] * k; };
+  const rotate = (name, q) => sk.rotateLocal(J(name), q);
+  const scale = (name, k) => { const i = sk.index[J(name)]; if (i !== undefined) for (let a = 0; a < 3; a += 1) sk.S[i * 3 + a] = restS[i * 3 + a] * k; };
 
   let prev = performance.now();
   let first = true;
@@ -306,7 +314,7 @@ function run(renderer, model) {
 
     // ---- olhar: com o cursor no menu, segue o cursor; senão dispara de um lado a outro
     if (pointer) {
-      const [ex, ey] = project(...toWorld(sk.worldPos('pv_head')));
+      const [ex, ey] = project(...toWorld(sk.worldPos(J('pv_head'))));
       look.tx = clamp((pointer.x - ex) / (innerWidth * 0.3), -1, 1);
       look.ty = clamp(-(pointer.y - ey) / (innerHeight * 0.3), -1, 1);
     } else if (!still) {
@@ -347,7 +355,6 @@ function run(renderer, model) {
       rotate(n, quat.euler(-look.y * 0.3, look.x * 0.42, 0));
       scale(n, 1.16 + (still ? 0 : Math.max(0, Math.sin(t * 1.7)) * 0.04));
     });
-    ['pupil_L', 'pupil_R'].forEach((n) => scale(n, 0.7)); // pupila pequena: susto
     rotate('pv_ear_L', quat.euler(0, 0, -0.32 + sh1 * 0.03)); // orelhas abertas, para fora
     rotate('pv_ear_R', quat.euler(0, 0, 0.32 - sh1 * 0.03));
     rotate('pv_leg_L', quat.euler(legA, 0, 0));
@@ -359,7 +366,7 @@ function run(renderer, model) {
     sk.updateWorld();
     if (aimW > 0.01) {
       const aim = pointer || menuHit;
-      const shoulderM = sk.worldPos('pv_arm_L');
+      const shoulderM = sk.worldPos(J('pv_arm_L'));
       const shoulderW = toWorld(shoulderM);
       const p = unproject(aim.x, aim.y, shoulderW[2]);
       // ângulo na tela, limitado: o braço aponta para a direita e nunca cruza o rosto (menu bem acima, em retrato)
@@ -367,7 +374,7 @@ function run(renderer, model) {
       const d = [Math.cos(ang), Math.sin(ang), 0.3]; // um pouco para a frente
       const dm = dirToModel(d);
       const tgt = [shoulderM[0] + dm[0], shoulderM[1] + dm[1], shoulderM[2] + dm[2]];
-      sk.aim('pv_arm_L', 'hand_L', tgt, aimW);
+      sk.aim(J('pv_arm_L'), 'hand_L', tgt, aimW);
     }
     sk.updateSkin();
 

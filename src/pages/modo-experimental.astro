@@ -2,7 +2,6 @@
 // Protótipo do modo-experimental. Rota solta: sem link no site, fora do sitemap, noindex.
 // Para publicar de verdade, o menu vira o cabeçalho de um modo novo em BaseLayout/SeriousModeToggle.
 import ExperimentalMenu from '../components/ExperimentalMenu.astro';
-import LunarBackdrop from '../components/LunarBackdrop.astro';
 import '../styles/global.css';
 import '../styles/experimental.css';
 import '../styles/experimental-scene.css';
@@ -15,13 +14,12 @@ import '../styles/experimental-scene.css';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content="noindex, nofollow, noarchive" />
-    <meta name="theme-color" content="#060b1f" />
+    <meta name="theme-color" content="#000000" />
     <title>Modo experimental — protótipo do menu</title>
     <meta name="description" content="Protótipo interno do menu orbital. Não faz parte do portfólio publicado." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body id="top" class="xm-space">
-    <LunarBackdrop />
     <canvas class="xm-sophia" data-xm-sophia role="img" aria-label="Sophia, assustada, de olhos arregalados, apontando para o menu"></canvas>
     <div class="xm-stage-ui">
       <button class="xm-spin" type="button" data-xm-spin aria-label="Girar a Sophia 360 graus" title="Girar 360°">
@@ -44,21 +42,11 @@ import '../styles/experimental-scene.css';
 </html>
 
 <style is:global>
-  /* Fundo azul escuro espacial: só isso na página. Sobrescreve o fundo bege do site. */
+  /* Fundo preto liso: só isso na página. Sobrescreve o fundo bege do site. */
   html,
   body.xm-space {
-    background-color: #060b1f !important;
-    background-image:
-      radial-gradient(ellipse 60% 50% at 72% 18%, rgba(46, 70, 150, 0.38), transparent 70%),
-      radial-gradient(ellipse 55% 45% at 14% 88%, rgba(24, 44, 110, 0.42), transparent 70%),
-      radial-gradient(1px 1px at 12% 22%, rgba(230, 236, 255, 0.55), transparent),
-      radial-gradient(1px 1px at 38% 64%, rgba(230, 236, 255, 0.4), transparent),
-      radial-gradient(1px 1px at 61% 12%, rgba(230, 236, 255, 0.5), transparent),
-      radial-gradient(1px 1px at 84% 52%, rgba(230, 236, 255, 0.35), transparent),
-      radial-gradient(1px 1px at 92% 82%, rgba(230, 236, 255, 0.45), transparent),
-      radial-gradient(1px 1px at 27% 91%, rgba(230, 236, 255, 0.3), transparent) !important;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background-color: #000 !important;
+    background-image: none !important;
     min-height: 100vh;
   }
   body.xm-space { margin: 0; }
