@@ -45,6 +45,17 @@ layout(location = 2) in vec2 aUV;
 layout(location = 3) in vec4 aCol;
 layout(location = 4) in uvec4 aJoints;
 layout(location = 5) in vec4 aWeights;
+// morph targets (até 4): deltas de posição em 6–9 e de normal em 10–13. Alvos sem bufferView (todos zero no glTF)
+// ficam desligados e leem o valor genérico (0,0,0).
+layout(location = 6) in vec3 aMP0;
+layout(location = 7) in vec3 aMP1;
+layout(location = 8) in vec3 aMP2;
+layout(location = 9) in vec3 aMP3;
+layout(location = 10) in vec3 aMN0;
+layout(location = 11) in vec3 aMN1;
+layout(location = 12) in vec3 aMN2;
+layout(location = 13) in vec3 aMN3;
+uniform vec4 uMorph;
 uniform mat4 uVP;
 uniform mat4 uModel;
 uniform mat3 uNM;
@@ -60,8 +71,8 @@ mat4 joint(uint j) {
               texelFetch(uJoints, ivec2(2, r), 0), texelFetch(uJoints, ivec2(3, r), 0));
 }
 void main() {
-  vec4 p = vec4(aPos, 1.0);
-  vec3 n = aNor;
+  vec4 p = vec4(aPos + uMorph.x * aMP0 + uMorph.y * aMP1 + uMorph.z * aMP2 + uMorph.w * aMP3, 1.0);
+  vec3 n = aNor + uMorph.x * aMN0 + uMorph.y * aMN1 + uMorph.z * aMN2 + uMorph.w * aMN3;
   if (uSkinned == 1) {
     mat4 s = joint(aJoints.x) * aWeights.x + joint(aJoints.y) * aWeights.y
            + joint(aJoints.z) * aWeights.z + joint(aJoints.w) * aWeights.w;
@@ -260,6 +271,8 @@ function thinTufts(idx, nv, keep) {
 }
 
 const TUFT = 25;
+const MAX_MORPHS = 4;
+const ZERO4 = new Float32Array(4);
 const COMPONENTS = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4 };
 
 export class Renderer {
@@ -269,7 +282,7 @@ export class Renderer {
     this.gl = gl;
     this.canvas = canvas;
     this.prog = program(gl, VS, FS);
-    this.U = uniforms(gl, this.prog, ['uVP', 'uModel', 'uNM', 'uSkinned', 'uJoints', 'uBase', 'uBaseTex', 'uHasBase', 'uEmis', 'uEmisTex',
+    this.U = uniforms(gl, this.prog, ['uMorph', 'uVP', 'uModel', 'uNM', 'uSkinned', 'uJoints', 'uBase', 'uBaseTex', 'uHasBase', 'uEmis', 'uEmisTex',
       'uHasEmis', 'uEmisK', 'uMetal', 'uRough', 'uSheen', 'uCoat', 'uCoatR', 'uCam', 'uSky', 'uGround', 'uD0', 'uC0', 'uD1', 'uC1',
       'uPP', 'uPC', 'uRim', 'uRimK', 'uExposure']);
     this.shadowProg = program(gl, SHADOW_VS, SHADOW_FS);
@@ -294,6 +307,10 @@ export class Renderer {
     this.M = new Float32Array(16);
     this.C = new Float32Array(16);
     this.NM = new Float32Array(9);
+    this.MW = new Float32Array(4);
+    this.MWm = new Float32Array(4);
+    // valor genérico (0) dos atributos de morph desligados: estado do contexto, definido uma vez
+    for (let k = 6; k < 14; k += 1) gl.vertexAttrib3f(k, 0, 0, 0);
     this.lost = false;
     canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.lost = true; });
   }
@@ -386,6 +403,7 @@ export class Renderer {
           const ai = prim.attributes[name];
           if (ai === undefined) return false;
           const a = json.accessors[ai];
+          if (a.bufferView === undefined) return false; // accessor sem bufferView = todo zero (glTF 2.0 §3.6.2.3)
           const bv = json.bufferViews[a.bufferView];
           gl.bindBuffer(gl.ARRAY_BUFFER, bufferFor(a.bufferView, gl.ARRAY_BUFFER));
           gl.enableVertexAttribArray(loc);
@@ -399,6 +417,23 @@ export class Renderer {
         const hasUV = attr('TEXCOORD_0', 2);
         const hasCol = attr('COLOR_0', 3);
         const skinned = node.skin !== undefined && attr('JOINTS_0', 4, true) && attr('WEIGHTS_0', 5);
+        // morph targets: liga só os alvos com dados; máscara de quais pesos importam para esta primitiva
+        let morphMask = 0;
+        (prim.targets || []).slice(0, MAX_MORPHS).forEach((t, k) => {
+          const on = (name, loc) => {
+            const ai = t[name];
+            if (ai === undefined || json.accessors[ai].bufferView === undefined) return false;
+            const a = json.accessors[ai];
+            const bv = json.bufferViews[a.bufferView];
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufferFor(a.bufferView, gl.ARRAY_BUFFER));
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 3, a.componentType, !!a.normalized, bv.byteStride || 0, a.byteOffset || 0);
+            return true;
+          };
+          const hp = on('POSITION', 6 + k);
+          const hn = on('NORMAL', 10 + k);
+          if (hp || hn) morphMask |= 1 << k;
+        });
         const ia = json.accessors[prim.indices];
         const mat = materialOf(prim.material);
         let count = ia.count;
@@ -435,7 +470,7 @@ export class Renderer {
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferFor(ia.bufferView, gl.ELEMENT_ARRAY_BUFFER));
         }
         gl.bindVertexArray(null);
-        draws.push({ node: ni, vao, skinned: !!skinned, hasUV, hasCol, count, itype, ioff, mat });
+        draws.push({ node: ni, vao, skinned: !!skinned, hasUV, hasCol, count, itype, ioff, mat, morphMask });
       });
     });
 
@@ -528,7 +563,14 @@ export class Renderer {
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, sk.joints.length, gl.RGBA, gl.FLOAT, sk.jointMatrices);
     }
 
+    // pesos de morph: model.morphOverride (ex.: composeExpressions de sophia-expressions.js) ou os do esqueleto
+    // (canais glTF "weights" dos clipes, já misturados por Skeleton.evaluate)
+    const mw = model.morphOverride || sk.morphWeights || ZERO4;
+    const mv = this.MW;
+    const masked = this.MWm;
+    for (let k = 0; k < MAX_MORPHS; k += 1) mv[k] = k < mw.length ? mw[k] : 0;
     let lastDouble = null;
+    let lastMask = -1;
     for (const d of model.draws) {
       if (d.hidden) continue;
       const m = d.mat;
@@ -556,6 +598,11 @@ export class Renderer {
       gl.bindTexture(gl.TEXTURE_2D, m.emisTex || this.white);
       gl.uniform1i(U.uHasEmis, m.emisTex ? 1 : 0);
       gl.bindVertexArray(d.vao);
+      if (d.morphMask !== lastMask) {
+        for (let k = 0; k < 4; k += 1) masked[k] = d.morphMask & (1 << k) ? mv[k] : 0;
+        gl.uniform4fv(U.uMorph, d.morphMask ? masked : ZERO4);
+        lastMask = d.morphMask;
+      }
       if (!d.skinned) { gl.vertexAttribI4ui(4, 0, 0, 0, 0); gl.vertexAttrib4f(5, 1, 0, 0, 0); }
       if (!d.hasUV) gl.vertexAttrib2f(2, 0, 0);
       if (!d.hasCol) gl.vertexAttrib4f(3, 1, 1, 1, 1);

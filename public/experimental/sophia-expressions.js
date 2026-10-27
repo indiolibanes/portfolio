@@ -28,3 +28,16 @@ export function applyExpressions(root, e = {}, meshes = morphMeshes(root)) {
   }
   return meshes;
 }
+
+// Runtime próprio (gltf-skel.js + gltf-gl.js, sem Three): mesma regra de composição sobre o vetor de pesos do
+// esqueleto. Uso: model.morphOverride = composeExpressions(model.skeleton.morphWeights, { smile: .6 }, out);
+// (passe um Float32Array(4) reutilizável em `out` para não alocar a cada quadro).
+export function composeExpressions(base, e = {}, out = new Float32Array(4)) {
+  const clamp = (v) => Math.min(1, Math.max(0, v || 0));
+  for (let k = 0; k < 4; k += 1) out[k] = base && k < base.length ? base[k] : 0;
+  out[0] = Math.max(out[0], clamp(e.blink));
+  if (e.smile !== undefined) out[1] = clamp(e.smile);
+  if (e.browRaise !== undefined) out[2] = clamp(e.browRaise);
+  if (e.mouthOpen !== undefined) out[3] = clamp(e.mouthOpen);
+  return out;
+}

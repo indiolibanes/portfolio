@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Sophia 6H — morphs no runtime próprio</title></head>
+<body style="margin:0;background:#1d2340"><canvas id="c" width="640" height="640" style="width:640px;height:640px"></canvas>
+<script type="module">
+// Harness de QA: usa o renderer REAL do site (gltf-gl.js + gltf-skel.js). Não substitui o modelo ativo.
+import { Renderer, hex } from '/experimental/gltf-gl.js';
+import { composeExpressions } from '/experimental/sophia-expressions.js';
+const canvas = document.getElementById('c');
+const r = new Renderer(canvas);
+const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
+const env = { sky: hex('#b4c8ff', 0.55), ground: hex('#3a4a8c', 0.38), d0: norm([-0.5, 0.6, 0.65]), c0: hex('#cfe0ff', 0.95),
+  d1: norm([0.9, 0.1, 0.4]), c1: hex('#ff6a48', 0.5), pp: [-0.9, 1.5, 1.2], pc: hex('#ff7a50', 0.2), rim: hex('#8fb2ff', 1), rimK: 0.3, exposure: 1.0 };
+let model = null;
+window.load = async (url) => { model = await r.loadModel(await (await fetch(url)).arrayBuffer());
+  return { draws: model.draws.length, morphDraws: model.draws.filter((d) => d.morphMask).length, targets: model.skeleton.targetNames, clips: Object.keys(model.skeleton.clips) }; };
+// spec: { clip, t (fração 0–1), override: [4] | null, cam: {...}, yaw }
+window.frame = (spec) => {
+  const sk = model.skeleton;
+  if (spec.clip) { const c = sk.clips[spec.clip]; sk.evaluate([{ clip: c, time: c.duration * spec.t, weight: 1 }]); }
+  else sk.evaluate([]);
+  sk.updateWorld(); sk.updateSkin();
+  const fromClip = Array.from(sk.morphWeights);
+  model.morphOverride = spec.override ? Float32Array.from(spec.override) : spec.expr ? composeExpressions(sk.morphWeights, spec.expr) : null;
+  const cam = Object.assign({ fov: 20 * Math.PI / 180, x: 0, y: 0.66, dist: 1.05, tx: 0, ty: 0 }, spec.cam || {});
+  r.render(model, { x: 0, y: 0, z: 0, yaw: spec.yaw || 0, scale: 1 }, cam, env, null);
+  r.gl.finish();
+  return { fromClip, used: Array.from(model.morphOverride || sk.morphWeights), png: spec.png ? canvas.toDataURL('image/png') : null };
+};
+window.perf = (clip, n = 40) => { const sk = model.skeleton; const c = sk.clips[clip]; const ts = [];
+  for (let i = 0; i < n; i += 1) { const a = performance.now(); sk.evaluate([{ clip: c, time: c.duration * i / n, weight: 1 }]); sk.updateWorld(); sk.updateSkin();
+    r.render(model, { x: 0, y: 0, z: 0, yaw: 0, scale: 1 }, { fov: 0.66, x: 0, y: 0.5, dist: 2.5, tx: 0, ty: 0 }, env, null); r.gl.finish(); ts.push(performance.now() - a); }
+  ts.sort((x, y) => x - y); return { median: ts[n >> 1], p90: ts[Math.floor(n * .9)] }; };
+window.ready = true;
+</script></body></html>
