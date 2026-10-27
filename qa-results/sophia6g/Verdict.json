@@ -1,0 +1,38 @@
+{
+ "fase": "6G",
+ "status": "CANDIDATA_PARCIAL_NAO_APROVADA",
+ "base_sha256": "ad7f751ef5584172441a7e6601543dbcc407d3e9e141af06458652e4277b177a",
+ "candidata_sha256": "228a2525dfd281b3e8e35f7a1e2d5b0c3156b4dfebc7c38cd50c23955d4d3290",
+ "commit_25cc7c3": "INDISPONIVEL_NO_REMOTO (HEAD 74ae799)",
+ "validator": "PASSOU_0_ERROS_0_AVISOS_12_INFOS_0_DICAS",
+ "estrutura": {
+  "rig_ibm_animacoes_imagens_identicos": true,
+  "morphs_4_mesmos_nomes": true,
+  "primitivas_equivalentes": 245,
+  "alteradas": 31,
+  "novas": 1
+ },
+ "6G_A_rosto": "EXECUTADA (cranio/focinho, olhos, nariz/boca, mechas); aprovacao artistica depende de revisao humana",
+ "6G_B": {
+  "mechas_x_orelhas_acessorios_colarinho_jaleco_maos": "0_CRUZAMENTOS_EM_45_POSES_AMOSTRADAS",
+  "ornamentos_testa": "REPROJETADOS_0_CRUZAMENTOS_FOLGA_0.46mm",
+  "cranio_x_acessorios_orelhas": "0_CRUZAMENTOS_EM_36_POSES",
+  "blink_runtime_threejs": "CONFLITO_CONFIRMADO_E_CORRIGIDO_POR_HELPER",
+  "blink_runtime_gltf_skel": "DEFEITO_CONFIRMADO_E_CORRIGIDO (gltf-gl.js nao desenha morphs)"
+ },
+ "6G_C": {
+  "cauda": "PLUMAGEM_ADICIONADA_0_CRUZAMENTOS_NOVOS",
+  "jaleco_mangas": "PENDENTE",
+  "maos_pena_caderno_write": "PENDENTE"
+ },
+ "residuos_declarados": [
+  "pescoco x colarinho 38-46 pares (oculto)",
+  "pescoco x forro 29 pares em repouso (oculto)",
+  "Wave: manga atravessa a cabeca (herdado, 385 pares)",
+  "maos x pena/caderno, cauda x corpo/vestuario, bracos x mangas (herdados)"
+ ],
+ "desempenho": "desktop equivalente; celular EMULADO (SwiftShader, CPU 4x) quadro ~30-50% mais lento; nenhum dispositivo real testado",
+ "main_merge": false,
+ "deploy": false,
+ "push": false
+}

@@ -1,0 +1,28 @@
+<!doctype html><html><head><script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script><style>body{margin:0}canvas{display:block}</style></head><body><script type="module">
+// Iluminação, tone mapping, fundo e câmeras idênticos ao viewer da 6F (scripts/viewer.html); vistas extras acrescentadas.
+import * as THREE from 'three';import{GLTFLoader}from'three/addons/loaders/GLTFLoader.js';
+const W=900;const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(W,W);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;document.body.appendChild(renderer.domElement);const scene=new THREE.Scene();scene.background=new THREE.Color('#303846');scene.add(new THREE.HemisphereLight(0xffffff,0x525665,1.5));for(const [p,c,i]of [[[1,2,3],0xfff1e2,2.5],[[-2,1,2],0xdce7ff,1.5],[[1,2,-2],0xffffff,2]]){const l=new THREE.DirectionalLight(c,i);l.position.set(...p);scene.add(l)}
+const camera=new THREE.OrthographicCamera(-.57,.57,.57,-.57,.005,20);const cache={};let root,mixer,gl;
+const views={front:[[.12,.51,2],[.12,.51,0],.55],threequarters:[[1.4,.72,2],[.10,.51,-.08],.55],profile:[[2,.54,-.08],[.10,.51,-.08],.55],back:[[.12,.51,-2],[.12,.51,0],.55],face:[[0,.67,2],[0,.67,.04],.235],ear:[[.2,.84,2],[0,.84,0],.25],paws:[[.4,.16,2],[0,.13,.04],.19],tail:[[1,.55,-2],[.30,.36,-.25],.36],book:[[.4,.55,2],[0,.42,.1],.26],
+ profile_L:[[2,.54,-.08],[.10,.51,-.08],.55],profile_R:[[-2,.54,-.08],[.10,.51,-.08],.55],
+ face_profile_L:[[2,.66,0],[0,.66,0],.22],face_profile_R:[[-2,.66,0],[0,.66,0],.22],face_34L:[[1.4,.72,2],[0,.66,.02],.22],face_34R:[[-1.4,.72,2],[0,.66,.02],.22],
+ eyes:[[0,.625,2],[0,.625,.1],.11],ear_close_R:[[.9,.82,2],[.14,.79,0],.14],ear_close_L:[[-.9,.82,2],[-.14,.79,0],.14],fur:[[.6,.75,2],[0,.68,.03],.17],
+ head_top:[[0,2.2,.6],[0,.66,0],.24],write_close:[[.6,.55,2],[-.03,.42,.12],.17]};
+async function load(path){if(!cache[path])cache[path]=await new GLTFLoader().loadAsync(path);return cache[path]}
+// opts: {path,view,clip,time,weights,clay,externalWeights,applyExternal:'before'|'after',hideMaterials:[]}
+window.renderModel=async(o)=>{const g=await load(o.path);if(root!==g.scene){if(root)scene.remove(root);root=g.scene;scene.add(root)}
+ if(!g.userData.mats){g.userData.mats=new Map();root.traverse(x=>{if(x.isMesh)g.userData.mats.set(x,x.material)})}
+ mixer=new THREE.AnimationMixer(root);root.traverse(x=>{if(x.morphTargetInfluences)x.morphTargetInfluences.fill(0)});
+ for(const [mesh,mat] of g.userData.mats){mesh.material=mat;mesh.visible=true}
+ const setW=(w)=>{root.traverse(x=>{if(x.morphTargetInfluences&&w)w.forEach((v,i)=>x.morphTargetInfluences[i]=v)})};
+ if(o.externalWeights&&o.applyExternal==='before')setW(o.externalWeights);
+ if(o.clip){const a=g.animations.find(a=>a.name===o.clip);if(a)mixer.clipAction(a).play()}mixer.setTime(o.time||0);
+ if(o.externalWeights&&o.applyExternal==='after')setW(o.externalWeights);
+ if(o.weights)setW(o.weights);
+ let infl=null;root.traverse(x=>{if(x.morphTargetInfluences&&!infl)infl=Array.from(x.morphTargetInfluences)});
+ const neutral=new THREE.MeshStandardMaterial({color:0xb4b1aa,roughness:1,side:THREE.DoubleSide});
+ for(const [mesh,mat] of g.userData.mats){if(o.clay)mesh.material=neutral;if(o.hideMaterials&&o.hideMaterials.includes(mat.name))mesh.visible=false}
+ root.updateMatrixWorld(true);let[e,t,mag]=views[o.view];camera.left=-mag;camera.right=mag;camera.top=mag;camera.bottom=-mag;camera.updateProjectionMatrix();camera.position.set(...e);camera.lookAt(...t);renderer.render(scene,camera);
+ return {triangles:renderer.info.render.triangles,calls:renderer.info.render.calls,influences:infl}};
+window.ready=true;
+</script></body></html>

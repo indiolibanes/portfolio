@@ -1,0 +1,19 @@
+<!doctype html><html><head><script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script></head><body><script type="module">
+import * as THREE from 'three';import{GLTFLoader}from'three/addons/loaders/GLTFLoader.js';import{applyExpressions,morphMeshes}from'/sophia-expressions.js';
+window.run=async(path)=>{const g=await new GLTFLoader().loadAsync(path);const root=g.scene;const meshes=morphMeshes(root);const res={meshesWithMorphs:meshes.length,clips:{}};
+ const read=()=>{const vals=meshes.map(m=>Array.from(m.morphTargetInfluences));const first=vals[0];const uniform=vals.every(v=>v.every((x,i)=>Math.abs(x-first[i])<1e-6));return {first,uniform}};
+ for(const clip of g.animations){const mixer=new THREE.AnimationMixer(root);const act=mixer.clipAction(clip);act.play();const r={peakBlink:0,naiveSmileLost:0,afterSmileKept:0,blinkKeptAfter:0,samples:0,nonUniform:0,composeBlinkOk:0};
+  for(let i=0;i<=120;i++){const t=clip.duration*i/120;
+   // (a) ingênuo: expressão antes do update
+   meshes.forEach(m=>{m.morphTargetInfluences[1]=1});mixer.setTime(t);let a=read();if(!a.uniform)r.nonUniform++;r.peakBlink=Math.max(r.peakBlink,a.first[0]);if(a.first[1]<.5)r.naiveSmileLost++;
+   const clipBlink=a.first[0];
+   // (b) helper depois do update
+   mixer.setTime(t);applyExpressions(root,{smile:1,browRaise:.5,mouthOpen:.3,blink:.2},meshes);let b=read();
+   if(Math.abs(b.first[1]-1)<1e-6&&Math.abs(b.first[2]-.5)<1e-6&&Math.abs(b.first[3]-.3)<1e-6)r.afterSmileKept++;
+   if(Math.abs(b.first[0]-Math.max(clipBlink,.2))<1e-6)r.composeBlinkOk++;
+   r.samples++}
+  res.clips[clip.name]=r;mixer.stopAllAction()}
+ // transição Idle -> Point (crossFade 0.4 s): pesos permanecem em [0,1]
+ const mixer=new THREE.AnimationMixer(root);const A=mixer.clipAction(g.animations.find(a=>a.name==='Idle'));const B=mixer.clipAction(g.animations.find(a=>a.name==='Point'));A.play();mixer.update(1.0);B.play();A.crossFadeTo(B,.4,false);let lo=1,hi=0;for(let i=0;i<30;i++){mixer.update(1/60);const v=read().first;lo=Math.min(lo,...v);hi=Math.max(hi,...v)}res.crossfade={min:lo,max:hi};
+ return res};window.ready=true;
+</script></body></html>
