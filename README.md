@@ -17,6 +17,8 @@ Portfólio pessoal e, ao mesmo tempo, laboratório de **arquitetura de conteúdo
 - [O que há no site](#o-que-há-no-site)
 - [Três modos de leitura](#três-modos-de-leitura)
 - [Cenas animadas](#cenas-animadas)
+- [Sophia: personagem e laboratório 3D](#sophia-personagem-e-laboratório-3d)
+- [Página 404 interativa](#página-404-interativa)
 - [Princípios de interface](#princípios-de-interface)
 - [Stack](#stack)
 - [Estrutura](#estrutura)
@@ -43,7 +45,7 @@ Uma página principal com sete seções numeradas (ordem canônica em `src/secti
 | 06 | Música | `#musica` | atividade recente via Last.fm |
 | 07 | Contato | `#contato` | céu profundo com estrelas, planetas e cometas |
 
-Páginas extras: `/curiosidades`, `/sophia` (a personagem e seu sigilo) e a 404.
+Páginas extras: `/curiosidades`, `/sophia/` (a personagem, seu sigilo e fragmentos), e a **404 interativa com Tetris**. A rota `/modo-experimental/` é um **protótipo isolado**, sem link na navegação, marcado `noindex` e fora do sitemap; não constitui um quarto modo publicado.
 
 ### Menu em tabela periódica
 
@@ -80,6 +82,23 @@ Tokens e regras: `mode-tokens.css`, `serious.css` (Editorial), `eink.css`, `mono
 
 Regras do motor: só desenha o que está na tela e com a aba visível; com `prefers-reduced-motion` pinta **um único quadro estático**; nos modos Editorial e Legacy fica desligado. Para inspecionar um quadro fixo: `window.PortfolioScenes.renderAt(host, t)`.
 
+## Sophia: personagem e laboratório 3D
+
+**Sophia** é a personagem-escriba do portfólio. Sua presença atravessa componentes e cenas do site; a página [`/sophia/`](https://kaue.pages.dev/sophia/) reúne um pequeno registro narrativo, um sigilo interativo e fragmentos alternáveis. A personagem também aparece na página 404.
+
+O trabalho 3D tem **dois contextos distintos**:
+
+- **Experiência corrente do portfólio:** componentes e modelos já associados ao site. O desenvolvimento visual experimental não deve substituir silenciosamente os assets ativos ou alterar suas animações sem revisão.
+- **Protótipo `/modo-experimental/`:** página deliberadamente não indexada nem integrada à navegação. Utiliza `public/experimental/sophia-alpha.glb`, `sophia-scene.js`, `gltf-gl.js` e `gltf-skel.js` para testar Sophia num cenário WebGL2. A cena inclui observação/giro da personagem, aproximação e deslocamento; o carregamento 3D falha de modo não fatal quando WebGL2 ou o modelo não estão disponíveis.
+
+O contrato técnico documentado para as candidatas da Sophia inclui **101 joints**, cinco animações (`Idle`, `Write`, `Point`, `Wave`, `Walk`) e quatro morph targets (`Blink`, `Smile`, `BrowRaise`, `MouthOpen`). A existência de um GLB válido ou de um protótipo funcional **não equivale à aprovação artística, à ausência de colisões ou à liberação para substituir o modelo do site**. Em particular, a auditoria 6H registra uma candidata parcial, não aprovada, com pendências de inspeção visual e de geometria.
+
+Os registros de testes e limitações ficam em `qa-results/sophia6g/` e `qa-results/sophia6h/`, incluindo [relatório 6H](./qa-results/sophia6h/Relatorio_6H.md) e [veredicto estruturado](./qa-results/sophia6h/Verdict.json). Os testes de runtime não dispensam inspeção humana e validação no navegador de destino.
+
+## Página 404 interativa
+
+A página `src/pages/404.astro` combina as ilustrações da Sophia e um **Tetris jogável**, com pontuação, linhas, níveis, próxima peça e controles de jogo. Os links de recuperação para o portfólio e para o Laboratório permanecem visíveis independentemente do jogo. A lógica central é exercitada por `npm run check:tetris`; isso não substitui testes de acessibilidade, teclado e mobile no navegador.
+
 ## Princípios de interface
 
 - nada essencial depende de JavaScript: a âncora de Música existe no HTML estático e há `<noscript>` com link para o Last.fm;
@@ -94,6 +113,7 @@ Regras do motor: só desenha o que está na tela e com a aba visível; com `pref
 - [Astro](https://astro.build/) 7 (saída estática, sem framework de UI)
 - CSS puro em camadas (sem aninhamento, ordem de importação definida em `src/layouts/BaseLayout.astro`)
 - Canvas 2D e JavaScript sem dependências para as cenas
+- WebGL2 e leitor glTF próprio na rota experimental; pacotes Three.js, React Three Fiber, drei e Rapier também constam das dependências para experimentos 3D, mas o site principal não é uma SPA React
 - [sharp](https://sharp.pixelplumbing.com/) para imagens Open Graph, quadros estáticos e recortes
 - Cloudflare Pages e uma Pages Function (`functions/api/music/recent.js`) para o Last.fm
 - Node.js 22.12 ou superior
@@ -104,7 +124,7 @@ Regras do motor: só desenha o que está na tela e com a aba visível; com `pref
 src/
   components/      cabeçalho (menu periódico), rodapé, música, modos, Sophia, animações
   layouts/         BaseLayout (ordem das folhas de estilo)
-  pages/           index, curiosidades, sophia, 404
+  pages/           index, curiosidades, sophia, 404 (Tetris), modo-experimental (noindex)
   scripts/         máquina de escrever e utilitários de cliente
   styles/          tokens, tipografia, modos, cenas, e-ink, Win98, mobile
   config.ts        site, perfil, redes e música
@@ -112,12 +132,13 @@ src/
 
 public/
   scripts/         scenes.js (motor de cenas) e reveal.js (entrada ao rolar)
+  experimental/    Sophia alpha, runtime WebGL2/glTF e controlador da cena isolada
   …                imagens, PDF do currículo, robots, sitemap, _headers
 assets/fonts/      fontes locais e suas licenças
 functions/api/music/recent.js   proxy do Last.fm (Cloudflare Pages Function)
 scripts/           geração de assets, currículo, contrato de UX, testes
 docs/              decisões, auditorias e fluxo de publicação
-qa/ e qa-results/  harness de QA no navegador e seus resultados
+qa/ e qa-results/  harness de QA, evidências e auditorias da Sophia (6G/6H)
 .github/workflows/ QA temporário e sincronização de assets externos
 ```
 
@@ -141,10 +162,12 @@ npm run preview   # serve o resultado
 npm run check:ux      # contrato estático de UX sobre o código-fonte
 npm run check:og      # imagens Open Graph
 npm run check:api     # API de música
-node scripts/test-music-state.mjs   # estados do widget de música
+npm run check:tetris  # regras da página 404
+node scripts/test-music-state.mjs        # estados do widget de música
+node scripts/test-sophia-morph-runtime.mjs # morphs no runtime experimental
 ```
 
-Essas verificações leem o código-fonte e simulam o navegador; **não substituem** teste em navegador real, leitor de tela, medição de contraste ou comparação visual. Ao mexer em cenas ou modos, confira os três modos, a largura de desktop (≈1440 px) e a de celular (≈390 px) e o movimento reduzido. As auditorias mais recentes estão em `qa-results/` e `docs/`.
+Essas verificações são testes estáticos ou de lógica/runtime conforme cada script; **não substituem** teste em navegador real, leitor de tela, medição de contraste ou comparação visual. Ao mexer em cenas ou modos, confira os três modos, a largura de desktop (≈1440 px) e a de celular (≈390 px) e o movimento reduzido. As auditorias mais recentes estão em `qa-results/` e `docs/`.
 
 ## Tipografia e fontes
 
@@ -208,10 +231,12 @@ Ainda não há workflow de build/verificação para pull requests nem lockfile d
 | `docs/contact-orbits.md` | composição do Contato |
 | `docs/og-audit-2026-10-12.md` | auditoria das imagens Open Graph |
 | `docs/phrolova-vector-reference.md` | referência vetorial de uma ilustração |
+| `qa-results/sophia6g/` | evidências e ferramentas de auditoria da fase 6G |
+| `qa-results/sophia6h/Relatorio_6H.md`, `Verdict.json` | resultados da candidata parcial 6H e limites da aprovação |
 
 ## Decisões preservadas
 
-Ao mexer no projeto, preserve: paleta, fontes, ilustrações e texturas; os três modos (e a ausência de modo escuro); a composição da seção Música; as cenas e personagens existentes; e o conteúdo textual da seção Método. Mudanças editoriais, substituição de URLs pessoais e remoção de materiais de terceiros dependem de confirmação. Nenhuma credencial entra no repositório. Trabalho em branch dedicada, sem merge sem autorização.
+Ao mexer no projeto, preserve: paleta, fontes, ilustrações e texturas; os três modos (e a ausência de modo escuro); a composição da seção Música; as cenas e personagens existentes; e o conteúdo textual da seção Método. Mudanças editoriais, substituição de URLs pessoais e remoção de materiais de terceiros dependem de confirmação. O protótipo `/modo-experimental/` permanece fora da navegação e não implica a aprovação de versões experimentais da Sophia; a evolução do GLB deve manter gates de geometria, rig, animações, morphs e revisão visual. Nenhuma credencial entra no repositório. Trabalho em branch dedicada, sem merge sem autorização.
 
 ## Princípios
 
