@@ -17,11 +17,16 @@
     "check:tetris": "node scripts/test-tetris.mjs"
   },
   "dependencies": {
+    "@astrojs/react": "7.1.2",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@react-three/rapier": "^2.2.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
     "@types/three": "^0.186.0",
     "astro": "^7.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "sharp": "^0.35.4",
     "three": "^0.186.1"
   }

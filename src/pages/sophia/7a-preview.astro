@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SophiaPreview from '../../components/sophia7a/SophiaPreview.jsx';
+---
+<BaseLayout title="Sophia 7A — prévia de integração" description="Prévia isolada de Sophia 7A." robots="noindex, nofollow, noarchive">
+  <main id="conteudo" class="sophia7a-page">
+    <p class="eyebrow">Laboratório · prévia</p>
+    <h1>Sophia 7A</h1>
+    <p>Explore a câmera, a constelação e o livro. Use Ctrl + roda para aproximar; os controles também respondem ao teclado.</p>
+    <SophiaPreview client:visible />
+    <noscript><p>A cena interativa requer JavaScript. A imagem de Sophia permanece disponível acima.</p></noscript>
+    <p><a href="/sophia/">Voltar ao registro de Sophia</a></p>
+  </main>
+</BaseLayout>
+<style>
+  .sophia7a-page { max-width: 72rem; margin: auto; padding: clamp(1rem, 4vw, 3rem); }
+  .sophia7a-page :global(.sophia7a-stage) { height: min(78vh, 780px); min-height: 520px; margin-block: 1rem; }
+  .sophia7a-page :global(.sophia7a-fallback) { max-width: 38rem; margin: 2rem auto; text-align: center; }
+  .sophia7a-page :global(.sophia7a-fallback img) { width: 100%; height: auto; border-radius: 1rem; }
+  .sophia7a-page :global(.sophia7a-error-poster) { max-width: 100%; max-height: 65vh; object-fit: contain; }
+  .sophia7a-page :global(button) { cursor: pointer; }
+  @media (max-width: 600px) { .sophia7a-page :global(.sophia7a-stage) { height: 75svh; min-height: 480px; } }
+</style>
