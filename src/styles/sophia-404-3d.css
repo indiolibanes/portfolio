@@ -89,7 +89,7 @@
   font:500 .68rem ui-monospace,monospace; color:#d9c9a7;
   letter-spacing:.04em; opacity:.8;
 }
-html[data-sophia404='loading'] .sophia-stage__loading {display:block}
+html[data-sophia404='loading'] [data-sophia-stage]:not([data-sophia-failed='true']) > .sophia-stage__loading {display:block}
 html[data-sophia404='loading'] .sophia-portrait-stage:not([data-sophia-failed='true']) > .sophia-portrait {
   visibility:hidden; /* no flash of the old Baby before the GLB becomes visible */
 }
