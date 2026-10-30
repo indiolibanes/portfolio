@@ -106,8 +106,13 @@ html[data-sophia404='loading'] .sophia-portrait-stage:not([data-sophia-failed='t
 .sophia-lounge[data-sophia-stage] .sophia-stage__canvas {
   inset:0; width:100%;height:100%;
 }
+/* The original architectural drawing is a lightweight stage while the 3D GLB
+   loads. Only its old fox is hidden, so there is no Baby→3D character swap. */
 html[data-sophia404='loading'] .sophia-lounge:not([data-sophia-failed='true']) > .sophia-art {
-  visibility:hidden; /* 3D replaces the whole room, not only the fox */
+  visibility:visible;
+}
+html[data-sophia404='loading'] .sophia-lounge:not([data-sophia-failed='true']) .slo-fox {
+  opacity:0;
 }
 .sophia-lounge[data-sophia-ready='true'] > .sophia-art {visibility:hidden}
 .sophia-lounge[data-sophia-failed='true'] > .sophia-art {visibility:visible!important}
