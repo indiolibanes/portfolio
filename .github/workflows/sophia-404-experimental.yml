@@ -1,0 +1,31 @@
+name: Sophia 404 experiment checks
+
+on:
+  push:
+    branches:
+      - experiment/sophia-404-three-2026-10-30
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-game:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: GLB source exists
+        run: test -s public/experimental/sophia-alpha.glb
+      - name: Build Astro
+        run: npm run build
+      - name: Tetris regression
+        run: npm run check:tetris
+      - name: UX contract regression
+        run: npm run check:ux
