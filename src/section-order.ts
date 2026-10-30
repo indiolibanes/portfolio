@@ -9,7 +9,6 @@ export const SECTION_ORDER = [
   'metodo',
   'bastidores',
   'musica',
-  'experimentos',
   'contato',
 ] as const;
 
