@@ -109,8 +109,8 @@ export async function mountSophia404(root) {
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
   // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
-  camera.position.copy(portrait ? vec(0.0, 2.65, 6.0) : vec(0.72, 3.05, 8.7));
-  camera.lookAt(portrait ? vec(0.0, 2.65, 0) : vec(0, 1.78, -0.35));
+  camera.position.copy(portrait ? vec(0.0, 2.25, 6.0) : vec(0.72, 3.05, 8.7));
+  camera.lookAt(portrait ? vec(0.0, 2.25, 0) : vec(0, 1.78, -0.35));
 
   scene.add(new THREE.HemisphereLight(0xdce6ff, 0x3b263e, portrait ? 1.6 : 1.25));
   const warm = new THREE.DirectionalLight(0xffc99d, portrait ? 1.9 : 1.25);
@@ -195,7 +195,7 @@ export async function mountSophia404(root) {
     // The portrait frames head, ears and paws; the lounge shows the whole figure.
     const narrow = w < 600;
     // Camera crop shows the 6H's head and upper chest only.
-    const viewHeight = portrait ? 1.34 : (narrow ? 4.02 : 4.78);
+    const viewHeight = portrait ? 1.65 : (narrow ? 4.02 : 4.78);
     if (!portrait) {
       actor.position.x = narrow ? -0.48 : -1.55;
       actor.position.z = narrow ? 1.15 : 1.2;
