@@ -14,6 +14,18 @@ import '../styles/sophia-404-3d.css';
   title="404 — Sophia perdeu a página"
   description="A página solicitada não foi encontrada."
 >
+  <script is:inline>
+    (() => {
+      try {
+        const enabled = !!window.WebGL2RenderingContext
+          && !matchMedia('(prefers-reduced-motion: reduce)').matches
+          && !navigator.connection?.saveData
+          && document.documentElement.dataset.legacyMode !== 'true'
+          && document.documentElement.dataset.seriousMode !== 'true';
+        if (enabled) document.documentElement.dataset.sophia404 = 'loading';
+      } catch {}
+    })();
+  </script>
   <main id="conteudo" class="sophia-404">
     <section class="sophia-404__panel" aria-labelledby="missing-title">
       <div class="sophia-404__layout">
@@ -35,12 +47,20 @@ import '../styles/sophia-404-3d.css';
         <div class="sophia-tetris" data-tetris data-state="idle" data-input="kb" role="group" aria-labelledby="tetris-title">
           <h2 id="tetris-title" class="sr-only">Tetris da Sophia</h2>
 
-          <div class="tetris-board">
-            <div class="tetris-playfield">
+          <div class="sophia-arcade-cabinet">
+            <div class="sophia-arcade-top">
               <div class="sophia-portrait-stage" data-sophia-stage="portrait" data-sophia-mood="idle">
                 <SophiaPortrait />
                 <canvas class="sophia-stage__canvas" data-sophia-canvas aria-hidden="true"></canvas>
+                <span class="sophia-stage__loading" aria-hidden="true">Sophia está chegando…</span>
               </div>
+              <span class="sophia-arcade-top__label" aria-hidden="true">01 / PLAYER</span>
+            </div>
+            <div class="sophia-arcade-marquee" aria-hidden="true">
+              <span>TETRIS</span><strong>404</strong>
+            </div>
+            <div class="tetris-board">
+              <div class="tetris-playfield">
               <div class="tetris-frame" data-tetris-frame>
                 <canvas
                   class="tetris-canvas"
@@ -74,6 +94,9 @@ import '../styles/sophia-404-3d.css';
                 <div><dt>Recorde</dt><dd data-tetris-best>0</dd></div>
               </dl>
             </div>
+          </div>
+
+          <p class="sophia-arcade-footer">SETAS / WASD <span aria-hidden="true">·</span> ESPAÇO <span aria-hidden="true">·</span> P PARA PAUSAR</p>
           </div>
 
           <div class="tetris-pad" data-tetris-pad role="group" aria-label="Controles de toque">
