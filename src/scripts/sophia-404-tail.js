@@ -36,7 +36,7 @@ export function applyConstellationTail(fox) {
       const material = original.clone();
       // Strong deterministic fallback: never leave the tail white on a device
       // where the skinning shader hook cannot run.
-      material.color.set('#253b77');
+      material.color.set('#182957');
       material.roughness = 0.84;
       material.metalness = 0;
       material.onBeforeCompile = (shader) => {
@@ -56,9 +56,9 @@ export function applyConstellationTail(fox) {
         shader.fragmentShader = shader.fragmentShader.replace(
           '#include <color_fragment>',
           '#include <color_fragment>\n'
-          + 'float sophiaInk=smoothstep(0.13,0.72,vSophiaTailGradient);\n'
+          + 'float sophiaInk=0.55+0.45*smoothstep(0.06,0.48,vSophiaTailGradient);\n'
           + 'vec3 sophiaIvory=vec3(0.88,0.80,0.66);\n'
-          + 'vec3 sophiaNavy=vec3(0.035,0.06,0.25);\n'
+          + 'vec3 sophiaNavy=vec3(0.018,0.035,0.16);\n'
           + 'diffuseColor.rgb=mix(sophiaIvory,sophiaNavy,sophiaInk);'
         );
       };
