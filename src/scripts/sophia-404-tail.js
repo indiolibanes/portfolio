@@ -1,39 +1,74 @@
-/* Tone the tip of the existing skinned tail using its own joints.
-   No geometry editing, external material or modification to the shared cached GLB. */
+/**
+ * Sophia's original 6H GLB uses white base colors for Sophia_tail and
+ * Sophia_tail_locks. The renderer previously attempted to recolor all skinned
+ * materials, missing the tail and risking damage to the coat/face.
+ *
+ * Change ONLY tail materials. A navy fallback color works even if shader
+ * customization is unavailable. On WebGL, blend ivory-to-navy by the already
+ * rigged tail joints. Retain the original emissive constellation texture.
+ */
 export function applyConstellationTail(fox) {
-  const allocated = new Set();
-  fox.traverse((mesh) => {
-    if (!mesh.isSkinnedMesh || !mesh.skeleton?.bones?.length) return;
-    const tails = mesh.skeleton.bones.map((bone,index) => ({name:bone.name,index}))
-      .filter((bone)=>/^tail(?:_|\.|$)/i.test(bone.name));
-    if (!tails.length) return;
-    const terms = tails.map(({name,index})=>{
-      const level = Number(name.match(/(\d+)$/)?.[1]||1);
-      const tone = level<=1?0.20:level===2?0.70:1.0;
-      const id = index.toFixed(1);
-      return '(abs(skinIndex.x-'+id+')<0.5?skinWeight.x:0.0)*'+tone.toFixed(2)
-        +' + (abs(skinIndex.y-'+id+')<0.5?skinWeight.y:0.0)*'+tone.toFixed(2)
-        +' + (abs(skinIndex.z-'+id+')<0.5?skinWeight.z:0.0)*'+tone.toFixed(2)
-        +' + (abs(skinIndex.w-'+id+')<0.5?skinWeight.w:0.0)*'+tone.toFixed(2);
+  const owned = new Set();
+  const changed = [];
+
+  fox.traverse((object) => {
+    if (!object.isSkinnedMesh || !object.skeleton?.bones) return;
+    const tailBones = object.skeleton.bones.map((bone, index) => {
+      const m = /^tail_(\d+)$/i.exec(bone.name);
+      return m ? { index, order: Number(m[1]) } : null;
+    }).filter(Boolean);
+    if (!tailBones.length) return;
+
+    const terms = tailBones.map(({ index, order }) => {
+      const weight = Math.max(0.06, Math.min(1, (order - 1) / 5));
+      const id = Number(index).toFixed(1);
+      const member = ['x','y','z','w'].map(
+        (axis) => '(abs(skinIndex.' + axis + '-' + id + ')<0.5?skinWeight.' + axis + ':0.0)'
+      ).join('+');
+      return '(' + member + ')*' + weight.toFixed(3);
     });
-    const originals = Array.isArray(mesh.material)?mesh.material:[mesh.material];
-    const modified = originals.map((original) => {
-      if (!original?.isMeshStandardMaterial && !original?.isMeshPhysicalMaterial) return original;
-      const material=original.clone();allocated.add(material);
-      material.onBeforeCompile=(shader)=>{
-        const m='varying float vSophiaTailTone;';
-        shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\n'+m);
-        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',
-          '#include <begin_vertex>\n#ifdef USE_SKINNING\nvSophiaTailTone=clamp('+terms.map(t=>'('+t+')').join('+')+',0.0,1.0);\n#else\nvSophiaTailTone=0.0;\n#endif');
-        shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\n'+m);
-        shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',
-          '#include <color_fragment>\nfloat tailInk=smoothstep(0.15,0.88,vSophiaTailTone);\ndiffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.055,0.085,0.30),tailInk*0.89);');
+    const reference = Array.isArray(object.material) ? object.material : [object.material];
+    const replacement = reference.map((original) => {
+      const name = original?.name || '';
+      if (!/^Sophia_tail(?:_locks)?$/i.test(name)) return original;
+      if (!original.isMeshStandardMaterial && !original.isMeshPhysicalMaterial) return original;
+
+      const material = original.clone();
+      // Strong deterministic fallback: never leave the tail white on a device
+      // where the skinning shader hook cannot run.
+      material.color.set('#253b77');
+      material.roughness = 0.84;
+      material.metalness = 0;
+      material.onBeforeCompile = (shader) => {
+        const varying = 'varying float vSophiaTailGradient;';
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <common>', '#include <common>\n' + varying
+        );
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <begin_vertex>',
+          '#include <begin_vertex>\n#ifdef USE_SKINNING\n'
+          + 'vSophiaTailGradient=clamp(' + terms.join('+') + ',0.0,1.0);\n'
+          + '#else\nvSophiaTailGradient=0.8;\n#endif'
+        );
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <common>', '#include <common>\n' + varying
+        );
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <color_fragment>',
+          '#include <color_fragment>\n'
+          + 'float sophiaInk=smoothstep(0.13,0.72,vSophiaTailGradient);\n'
+          + 'vec3 sophiaIvory=vec3(0.88,0.80,0.66);\n'
+          + 'vec3 sophiaNavy=vec3(0.035,0.06,0.25);\n'
+          + 'diffuseColor.rgb=mix(sophiaIvory,sophiaNavy,sophiaInk);'
+        );
       };
-      material.customProgramCacheKey=()=> 'sophia-tail-v2-'+tails.map(t=>t.index).join('-');
-      material.needsUpdate=true;
+      material.customProgramCacheKey = () => 'sophia-tail-specific-v3-' + tailBones.map(t=>t.index).join('-');
+      material.needsUpdate = true;
+      owned.add(material);
+      changed.push(name);
       return material;
     });
-    mesh.material=Array.isArray(mesh.material)?modified:modified[0];
+    object.material = Array.isArray(object.material) ? replacement : replacement[0];
   });
-  return () => { for (const material of allocated) material.dispose(); };
+  return { changed, dispose: () => { for (const material of owned) material.dispose(); } };
 }
