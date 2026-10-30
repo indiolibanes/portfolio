@@ -77,11 +77,13 @@ export async function mountSophia404(root) {
   const room = portrait ? null : buildSophiaRoom(scene);
   const actor = new THREE.Group();
   actor.add(fox);
+  // Give the fox visual priority over the architecture, particularly at 390px.
+  actor.scale.setScalar(portrait ? 1.16 : 1.32);
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
   // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
-  camera.position.copy(portrait ? vec(0, 1.85, 6.1) : vec(0.55, 2.75, 9.2));
-  camera.lookAt(portrait ? vec(0, 1.7, 0) : vec(0, 1.7, -0.3));
+  camera.position.copy(portrait ? vec(0, 1.85, 6.1) : vec(1.65, 3.55, 8.6));
+  camera.lookAt(portrait ? vec(0, 1.7, 0) : vec(0, 1.88, -0.3));
 
   scene.add(new THREE.HemisphereLight(0xdce6ff, 0x3b263e, portrait ? 1.6 : 1.25));
   const warm = new THREE.DirectionalLight(0xffc99d, portrait ? 1.9 : 1.25);
@@ -174,9 +176,9 @@ export async function mountSophia404(root) {
     const aspect = w / h;
     // The portrait frames head, ears and paws; the lounge shows the whole figure.
     const narrow = w < 600;
-    const viewHeight = portrait ? 2.75 : (narrow ? 4.15 : 5.15);
+    const viewHeight = portrait ? 2.48 : (narrow ? 4.12 : 4.72);
     if (!portrait) {
-      actor.position.x = narrow ? -0.55 : -1.55;
+      actor.position.x = narrow ? -0.48 : -1.55;
       actor.position.z = narrow ? 1.15 : 1.2;
     }
     camera.left = -viewHeight * aspect / 2;
@@ -223,7 +225,7 @@ export async function mountSophia404(root) {
     const shake = calm ? 0 : Math.sin(t * 15) * celebrate;
     const look = interactive ? pointerX : (playing ? 0.22 : -0.10);
 
-    actor.rotation.y = (portrait ? 0 : 0.035) + look * 0.08;
+    actor.rotation.y = (portrait ? 0 : 0.17) + look * 0.08;
     actor.rotation.z = calm ? 0 : sway * 0.016 + shake * 0.045;
     actor.position.y = calm ? 0 : Math.max(0, celebrate * Math.abs(Math.sin(t * 12)) * 0.11);
     rotate('hips', breath * 0.025, 0, sway * 0.02);
