@@ -15,7 +15,7 @@ import { applyConstellationTail } from './sophia-404-tail.js';
 // Never silently substitute the 6H for the missing 7B in the lounge.
 const MODEL_PATHS = {
   portrait: '/experimental/sophia-alpha.glb',
-  lounge: '/experimental/sophia-7b-e1.glb',
+  lounge: '/experimental/sophia-7b-e1-stage.glb',
 };
 const models = new Map();
 function sourceModel(kind) {
@@ -101,7 +101,31 @@ export async function mountSophia404(root) {
     root.dataset.sophiaTail = 'authored-7b';
   }
   root.dataset.sophiaProps = removedProps.join(',');
+  // GLB 7B-E1 Stage uses body-root tracks only. Its face, hands and book
+  // remain fused in the untouched authored geometry; no fake bone animation.
   const room = portrait ? null : buildSophiaRoom(scene);
+  const mixer = !portrait && gltf.animations?.length ? new THREE.AnimationMixer(fox) : null;
+  const stageClips = new Map();
+  if (mixer) for (const clip of gltf.animations) stageClips.set(clip.name, clip);
+  let currentAction = null;
+  let currentClipName = '';
+  function playStageClip(name, once = false) {
+    if (!mixer || !stageClips.has(name) || (currentClipName === name && !once)) return;
+    const next = mixer.clipAction(stageClips.get(name));
+    next.enabled = true;
+    next.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, once ? 1 : Infinity);
+    next.clampWhenFinished = !once;
+    next.reset().play();
+    if (currentAction && currentAction !== next) currentAction.fadeOut(0.22);
+    next.fadeIn(0.22);
+    currentAction = next;
+    currentClipName = name;
+  }
+  mixer?.addEventListener('finished', () => playStageClip('Idle_Breathe'));
+  if (mixer) {
+    playStageClip('Idle_Breathe');
+    root.dataset.sophiaClips = [...stageClips.keys()].join(',');
+  }
   const actor = new THREE.Group();
   actor.add(fox);
   // Give the fox visual priority over the architecture, particularly at 390px.
@@ -267,6 +291,7 @@ export async function mountSophia404(root) {
       clamp(celebrate * 0.8 + upset * 0.3, 0, 1), celebrate * 0.6,
       blink);
     resize();
+    mixer?.update(dt);
     room?.update(t);
     renderer.render(scene, camera);
     if (!ready) {
@@ -299,6 +324,13 @@ export async function mountSophia404(root) {
   function react(next) {
     mood = next;
     moodAt = performance.now();
+    if (!portrait) {
+      const clip = next === 'cheer' ? 'Celebrate_Small'
+        : next === 'playing' ? 'Focus_On_Game'
+        : next === 'over' ? 'Look_Around'
+        : 'Idle_Breathe';
+      playStageClip(clip, next === 'cheer');
+    }
   }
   function dispose() {
     if (disposed) return;
@@ -315,6 +347,7 @@ export async function mountSophia404(root) {
     shellCleanup(controller);
     room?.dispose();
     tail.dispose();
+    if (mixer) { mixer.stopAllAction(); mixer.uncacheRoot(fox); }
     renderer.dispose();
     renderer.forceContextLoss();
   }

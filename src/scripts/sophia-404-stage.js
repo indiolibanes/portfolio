@@ -61,13 +61,13 @@ document.addEventListener('sophia:tetris', (event) => {
   const mood = event.detail?.mood || 'idle';
   root.dataset.sophiaMood = mood;
   mounted.get(root)?.react(mood);
-  // Lounge reacts to a completed game, too, without altering the game itself.
-  if (mood === 'cheer' || mood === 'over') {
-    const lounge = document.querySelector('[data-sophia-stage="lounge"]');
-    if (lounge) {
-      lounge.dataset.sophiaMood = mood;
-      mounted.get(lounge)?.react(mood);
-    }
+  // The unrigged 7B responds with authored whole-body clips: focus while
+  // playing, a small celebration, and idle otherwise. No finger/paw claim.
+  const lounge = document.querySelector('[data-sophia-stage="lounge"]');
+  if (lounge) {
+    const mappedMood = ['cheer', 'over', 'playing'].includes(mood) ? mood : 'idle';
+    lounge.dataset.sophiaMood = mappedMood;
+    mounted.get(lounge)?.react(mappedMood);
   }
 });
 
