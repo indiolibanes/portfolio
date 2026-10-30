@@ -29,7 +29,7 @@ A página 404 continua sendo Astro + Tetris Canvas 2D. O script `sophia-404-stag
 
 ### QA obrigatória antes do merge
 
-1. Executar `npm ci`, `npm run build`, `npm run check:tetris` e `npm run check:ux`.
+1. Executar `npm install`, `npm run build`, `npm run check:tetris` e `npm run check:ux`. A `main` tem três falhas pré-existentes no contrato global de navegação/Curiosidades: verificar que não surgiu nenhuma falha adicional e que todos os testes `404:` continuam PASS.
 2. Abrir /404 em 390px, 768px e 1440px, conferir rosto, orelhas, braços, proporção e se a Sophia não cobre o tabuleiro nem a TV.
 3. Jogar Tetris (iniciar, pausar, completar linha, quatro linhas, perder, reiniciar), teclado, controle e toque.
 4. Verificar versões sem WebGL, economia de dados, reduzir movimento, modo Editorial/Legacy e navegação offscreen/volta.
