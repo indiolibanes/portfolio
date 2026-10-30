@@ -5,7 +5,7 @@ const base = process.env.QA_BASE_URL || 'http://127.0.0.1:4321';
 await mkdir('qa-results/sophia-404', { recursive: true });
 const browser = await chromium.launch({
   headless: true,
-  args: ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader', '--disable-web-security'],
+  args: ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader'],
 });
 let failed = false;
 try {
