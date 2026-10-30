@@ -1,7 +1,9 @@
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:4321';
+const has7B = existsSync('public/experimental/sophia-7b-e1.glb');
 await mkdir('qa-results/sophia-404', { recursive: true });
 const browser = await chromium.launch({
   headless: true,
@@ -34,33 +36,44 @@ try {
       console.log('PASS', width, JSON.stringify(stats));
     }
     await page.screenshot({ path: 'qa-results/sophia-404/404-' + width + '.png', fullPage: true });
-    // Perform WebGL smoke check with 2D fallback allowed on software-only runners.
+    // Verify independent legacy + 7B lifecycle. The E1 file is 17 MB and
+    // may be absent before its separate binary upload to this branch.
     if (width === 390 || width === 1440) {
-      await page.locator('[data-sophia-stage="lounge"]').scrollIntoViewIfNeeded();
-      try {
-        await page.waitForFunction(() => {
-          const r = document.querySelector('[data-sophia-stage="lounge"]');
-          return r?.dataset.sophiaReady === 'true' || r?.dataset.sophiaFailed === 'true';
-        }, null, { timeout: 25000 });
-      } catch {}
-      const result = await page.locator('[data-sophia-stage="lounge"]').evaluate(
-        el => ({
-          ready: el.dataset.sophiaReady,
-          failed: el.dataset.sophiaFailed,
-          accessories: el.dataset.sophiaProps,
-          tail: el.dataset.sophiaTail,
-          framebuffer: (() => {
-            const c = el.querySelector('[data-sophia-canvas]');
-            return [c.width, c.height, c.clientWidth, c.clientHeight];
-          })(),
-        }),
-      );
-      console.log('3D room', width, JSON.stringify(result));
-      if (result.ready !== 'true' || result.accessories !== 'Book,Pen' || result.tail !== 'recolored') {
-        failed = true;
-        console.error('FAIL 3D room did not initialize', width, JSON.stringify(result));
-      }
-      await page.screenshot({ path:'qa-results/sophia-404/404-room-' + width + '.png', fullPage:true });
+      const portrait = page.locator('[data-sophia-stage="portrait"]');
+      await portrait.scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => {
+        const r = document.querySelector('[data-sophia-stage="portrait"]');
+        return r?.dataset.sophiaReady === 'true' || r?.dataset.sophiaFailed === 'true';
+      }, null, { timeout: 25000 });
+      const legacy = await portrait.evaluate(el => ({
+        ready: el.dataset.sophiaReady, model: el.dataset.sophiaModel,
+        tail: el.dataset.sophiaTail, props: el.dataset.sophiaProps,
+      }));
+      if (legacy.ready !== 'true' || legacy.model !== '6H-legacy-bust'
+        || legacy.tail !== 'hidden' || legacy.props !== 'Book,Pen') {
+        failed = true; console.error('FAIL legacy cameo', width, legacy);
+      } else console.log('PASS legacy cameo', width, legacy);
+
+      const lounge = page.locator('[data-sophia-stage="lounge"]');
+      await lounge.scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => {
+        const r = document.querySelector('[data-sophia-stage="lounge"]');
+        return r?.dataset.sophiaReady === 'true' || r?.dataset.sophiaFailed === 'true';
+      }, null, {timeout: 25000});
+      const modern = await lounge.evaluate(el=>({
+        ready: el.dataset.sophiaReady, model: el.dataset.sophiaModel,
+        tail: el.dataset.sophiaTail, failed: el.dataset.sophiaFailed,
+        originalArtVisible: getComputedStyle(el.querySelector('.sophia-art')).visibility,
+      }));
+      console.log('3D room', width, JSON.stringify(modern));
+      if (has7B) {
+        if (modern.ready !== 'true' || modern.model !== '7B-E1-unrigged' || modern.tail !== 'authored-7b') {
+          failed = true; console.error('FAIL 7B integration', modern);
+        }
+      } else if (modern.failed !== 'true' || modern.originalArtVisible !== 'visible') {
+        failed = true; console.error('FAIL missing-model fallback', modern);
+      } else console.warn('BLOCKED: 7B binary is not yet committed; safe SVG fallback confirmed.');
+      await page.screenshot({ path:'qa-results/sophia-404/404-room-'+width+'.png', fullPage:true });
     }
     await page.close();
   }

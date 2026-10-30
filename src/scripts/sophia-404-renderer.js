@@ -10,20 +10,27 @@ import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.j
 import { buildSophiaRoom } from './sophia-404-room.js';
 import { applyConstellationTail } from './sophia-404-tail.js';
 
-const MODEL_URL = '/experimental/sophia-alpha.glb'; // available rigged alpha; replace with 7B after validated export
-let modelPromise;
-function sourceModel() {
-  if (!modelPromise) {
-    modelPromise = new GLTFLoader().loadAsync(MODEL_URL).catch((error) => {
-      modelPromise = null;
+// The versions are deliberately distinct. The 7B source is a Tripo *unrigged*
+// GLB provided by the author; it must be checked into the exact path below.
+// Never silently substitute the 6H for the missing 7B in the lounge.
+const MODEL_PATHS = {
+  portrait: '/experimental/sophia-alpha.glb',
+  lounge: '/experimental/sophia-7b-e1.glb',
+};
+const models = new Map();
+function sourceModel(kind) {
+  const url = MODEL_PATHS[kind];
+  if (!models.has(url)) {
+    models.set(url, new GLTFLoader().loadAsync(url).catch((error) => {
+      models.delete(url);
       throw error;
-    });
+    }));
   }
-  return modelPromise;
+  return models.get(url);
 }
 
-function normalizedFox(original) {
-  const fox = cloneSkeleton(original);
+function normalizedFox(original, portrait) {
+  const fox = portrait ? cloneSkeleton(original) : original.clone(true);
   fox.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(fox);
   if (bounds.isEmpty()) throw new Error('Sophia GLB has no visible geometry');
@@ -31,11 +38,15 @@ function normalizedFox(original) {
   const center = bounds.getCenter(new THREE.Vector3());
   const factor = 2.35 / Math.max(size.y, 0.001);
   fox.scale.multiplyScalar(factor);
-  // Alpha 6H is notably broader than the original Sophia illustration: restore a
-  // narrower silhouette without changing the rig, head height or eye spacing.
-  fox.scale.x *= 0.86;
-  fox.scale.z *= 0.91;
-  fox.position.set(-center.x * factor * 0.86, -bounds.min.y * factor, -center.z * factor * 0.91);
+  if (portrait) {
+    // Original 6H: slightly narrower silhouette, same skeleton and materials.
+    fox.scale.x *= 0.86;
+    fox.scale.z *= 0.91;
+    fox.position.set(-center.x * factor * 0.86, -bounds.min.y * factor, -center.z * factor * 0.91);
+  } else {
+    // New 7B: preserve Tripo's authored proportions; no synthetic slimming.
+    fox.position.set(-center.x * factor, -bounds.min.y * factor, -center.z * factor);
+  }
   fox.traverse((node) => {
     if (node.isSkinnedMesh) node.frustumCulled = false;
   });
@@ -61,7 +72,7 @@ export async function mountSophia404(root) {
 
   let gltf;
   try {
-    gltf = await sourceModel();
+    gltf = await sourceModel(kind);
   } catch (error) {
     renderer.dispose();
     throw error;
@@ -72,30 +83,34 @@ export async function mountSophia404(root) {
   }
 
   const scene = new THREE.Scene();
-  const fox = normalizedFox(gltf.scene);
-  // 6H embeds the notebook and pen as separate children of the hand bones.
-  // They belong to the writing scene, not a Tetris cabinet or game room.
+  const fox = normalizedFox(gltf.scene, portrait);
+  root.dataset.sophiaModel = portrait ? '6H-legacy-bust' : '7B-E1-unrigged';
   const removedProps = [];
-  for (const name of ['Book', 'Pen']) {
-    const accessory = fox.getObjectByName(name);
-    if (accessory) {
-      accessory.visible = false;
-      removedProps.push(name);
+  let tail = { changed: [], dispose() {} };
+  if (portrait) {
+    for (const name of ['Book', 'Pen']) {
+      const accessory = fox.getObjectByName(name);
+      if (accessory) { accessory.visible = false; removedProps.push(name); }
     }
+    // The legacy cameo is ONLY a bust. Collapse the old tail at its base so
+    // the broken silhouette can never intrude alongside the head.
+    const rootTail = fox.getObjectByName('tail_1');
+    if (rootTail) rootTail.scale.setScalar(0.0001);
+    root.dataset.sophiaTail = rootTail ? 'hidden' : 'not-found';
+  } else {
+    root.dataset.sophiaTail = 'authored-7b';
   }
   root.dataset.sophiaProps = removedProps.join(',');
-  const tail = applyConstellationTail(fox);
-  root.dataset.sophiaTail = tail.changed.length ? 'recolored' : 'unavailable';
   const room = portrait ? null : buildSophiaRoom(scene);
   const actor = new THREE.Group();
   actor.add(fox);
   // Give the fox visual priority over the architecture, particularly at 390px.
-  actor.scale.setScalar(portrait ? 1.16 : 1.74);
+  actor.scale.setScalar(portrait ? 1.38 : 1.42);
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
   // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
-  camera.position.copy(portrait ? vec(0, 1.85, 6.1) : vec(1.65, 3.55, 8.6));
-  camera.lookAt(portrait ? vec(0, 1.7, 0) : vec(0, 1.88, -0.3));
+  camera.position.copy(portrait ? vec(0.0, 2.25, 6.0) : vec(0.72, 3.05, 8.7));
+  camera.lookAt(portrait ? vec(0.0, 2.25, 0) : vec(0, 1.78, -0.35));
 
   scene.add(new THREE.HemisphereLight(0xdce6ff, 0x3b263e, portrait ? 1.6 : 1.25));
   const warm = new THREE.DirectionalLight(0xffc99d, portrait ? 1.9 : 1.25);
@@ -179,7 +194,8 @@ export async function mountSophia404(root) {
     const aspect = w / h;
     // The portrait frames head, ears and paws; the lounge shows the whole figure.
     const narrow = w < 600;
-    const viewHeight = portrait ? 2.48 : (narrow ? 4.12 : 4.72);
+    // Camera crop shows the 6H's head and upper chest only.
+    const viewHeight = portrait ? 1.65 : (narrow ? 4.02 : 4.78);
     if (!portrait) {
       actor.position.x = narrow ? -0.48 : -1.55;
       actor.position.z = narrow ? 1.15 : 1.2;
@@ -228,15 +244,18 @@ export async function mountSophia404(root) {
     const shake = calm ? 0 : Math.sin(t * 15) * celebrate;
     const look = interactive ? pointerX : (playing ? 0.22 : -0.10);
 
-    actor.rotation.y = (portrait ? 0 : 0.17) + look * 0.08;
-    actor.rotation.z = calm ? 0 : sway * 0.016 + shake * 0.045;
-    actor.position.y = calm ? 0 : Math.max(0, celebrate * Math.abs(Math.sin(t * 12)) * 0.11);
+    actor.rotation.y = (portrait ? 0 : 0.045) + look * (portrait ? 0.06 : 0.035);
+    actor.rotation.z = calm ? 0 : sway * (portrait ? 0.012 : 0.008) + shake * 0.025;
+    // The Tripo 7B has NO skin/joints. Use only subtle root sway/weight-shift;
+    // do not pretend that its paws move independently or it can walk.
+    actor.position.y = calm ? 0 : (portrait ? Math.max(0, celebrate * Math.abs(Math.sin(t * 12)) * 0.055)
+      : Math.sin(t * 1.4) * 0.018 + celebrate * Math.max(0, Math.sin(t * 8)) * 0.05);
     rotate('hips', breath * 0.025, 0, sway * 0.02);
     rotate('head', (sleep ? -0.13 : 0.04) + (interactive ? -pointerY * 0.12 : 0) - celebrate * 0.12,
       look * 0.26, (sway + shake) * 0.045);
     rotate('ear_L_1', 0, 0, -0.06 - celebrate * 0.22 + (calm ? 0 : Math.sin(t * 3.7) * 0.05));
     rotate('ear_R_1', 0, 0, 0.06 + celebrate * 0.22 - (calm ? 0 : Math.sin(t * 3.4) * 0.05));
-    rotate('tail_1', 0, calm ? 0 : Math.sin(t * (celebrate ? 7 : 2)) * (0.15 + celebrate * 0.28), 0);
+    if (!portrait) rotate('tail_1', 0, calm ? 0 : Math.sin(t * 2) * 0.15, 0);
     // Restrained arm gestures; never rely on nonexistent named animation clips.
     rotate('upper_arm_L', portrait ? -0.12 : 0.42 + celebrate * 0.18, 0, celebrate * 0.14);
     rotate('upper_arm_R', portrait ? -0.12 : 0.42 + celebrate * 0.18, 0, -celebrate * 0.14);
