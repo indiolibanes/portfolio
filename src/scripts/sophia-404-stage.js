@@ -6,6 +6,11 @@
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 const saveData = navigator.connection?.saveData === true;
 const stages = [...document.querySelectorAll('[data-sophia-stage]')];
+// Mark intended 3D stages before asynchronous imports; the old SVG is a
+// fallback, never a transient "first frame" that gets swapped after seconds.
+if (!reduce.matches && !saveData && document.documentElement.dataset.sophia404 === 'loading') {
+  for (const root of stages) root.dataset.sophiaLoading = 'true';
+}
 const visible = new Set();
 const mounted = new Map();
 const pending = new Set();
@@ -22,11 +27,14 @@ async function wake(root) {
     if (!root.isConnected) return;
     const stage = await mountSophia404(root);
     mounted.set(root, stage);
+    delete root.dataset.sophiaLoading;
     stage.react(root.dataset.sophiaMood || 'idle');
     stage.setActive(visible.has(root) && !document.hidden && !quiet() && !reduce.matches && !saveData);
   } catch (error) {
     // An unavailable GLB, WebGL failure or context loss leaves original SVG visible.
     root.dataset.sophiaFailed = 'true';
+    root.dataset.sophiaReady = 'false';
+    delete root.dataset.sophiaLoading;
     console.warn('[Sophia 404] 3D indisponível; preservando ilustração.', error);
   } finally {
     pending.delete(root);
