@@ -39,7 +39,7 @@ jobs:
           # The three existing navigation checks fail in main, unrelated to /404.
           # Do not mask a new failure, even outside /404.
           actual=$(grep '^FAIL ' /tmp/sophia-ux.log || true)
-          expected=$(printf '%s\\n' 'FAIL nav: lab label aligned' 'FAIL nav: music static link' 'FAIL curiosidades: header link')
+          expected=$(printf '%s\n' 'FAIL nav: lab label aligned' 'FAIL nav: music static link' 'FAIL curiosidades: header link')
           if [ "$actual" != "$expected" ]; then
             echo 'Unexpected UX failures; refusing to accept them as baseline.'
             exit 1
