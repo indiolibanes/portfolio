@@ -4,6 +4,7 @@ on:
     branches:
       - feat/404-arcade-room-2p5d-2026-10-30
       - fix/sophia-404-book-tail-render-quality-2026-10-30
+      - feat/404-sophia-legacy-and-7b-2026-10-30
   workflow_dispatch:
 
 permissions:
@@ -56,6 +57,8 @@ jobs:
             sleep 1
           done
           node scripts/qa-sophia-404.mjs
+      - name: Required 7B-E1 binary and provenance (block merge until uploaded)
+        run: node scripts/check-sophia-7b.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
