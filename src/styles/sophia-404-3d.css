@@ -1,0 +1,73 @@
+/*
+ * Sophia 404 — progressive 2.5D upgrade.
+ * The original SVGs remain canonical fallbacks, including for Legacy/Editorial,
+ * reduced motion, offline contexts, and when the experimental GLB is unavailable.
+ */
+.sophia-portrait-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 420 / 440;
+  isolation: isolate;
+  overflow: hidden;
+  margin-bottom: -4px;
+  line-height: 0;
+}
+.sophia-portrait-stage > .sophia-portrait {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+.sophia-portrait-stage .sophia-art--portrait {
+  width: 100%;
+  height: 100%;
+}
+.sophia-lounge[data-sophia-stage] {
+  position: relative;
+  isolation: isolate;
+}
+.sophia-stage__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.sophia-lounge .sophia-stage__canvas {
+  inset: auto;
+  left: 7.5%;
+  top: 1%;
+  width: 43%;
+  height: 97%;
+}
+[data-sophia-ready='true'] > .sophia-stage__canvas {
+  opacity: 1;
+}
+.sophia-portrait-stage[data-sophia-ready='true'] > .sophia-portrait {
+  visibility: hidden;
+}
+.sophia-lounge[data-sophia-ready='true'] .slo-fox {
+  opacity: 0;
+}
+html:is([data-legacy-mode='true'], [data-serious-mode='true']) [data-sophia-stage] > .sophia-stage__canvas {
+  display: none !important;
+}
+html:is([data-legacy-mode='true'], [data-serious-mode='true']) .sophia-portrait-stage > .sophia-portrait {
+  visibility: visible !important;
+}
+html:is([data-legacy-mode='true'], [data-serious-mode='true']) .sophia-lounge .slo-fox {
+  opacity: 1 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-sophia-stage] > .sophia-stage__canvas {
+    display: none !important;
+    transition: none;
+  }
+  .sophia-portrait-stage > .sophia-portrait { visibility: visible !important; }
+  .sophia-lounge .slo-fox { opacity: 1 !important; }
+}

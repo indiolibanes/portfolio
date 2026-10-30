@@ -1,0 +1,47 @@
+name: Sophia 404 experiment checks
+
+on:
+  push:
+    branches:
+      - experiment/sophia-404-three-2026-10-30
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-game:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: GLB source exists
+        run: test -s public/experimental/sophia-alpha.glb
+      - name: Build Astro
+        run: npm run build
+      - name: Tetris regression
+        run: npm run check:tetris
+      - name: UX contract (known main baseline separated from 404)
+        shell: bash
+        run: |
+          set +e
+          npm run check:ux > /tmp/sophia-ux.log 2>&1
+          code=$?
+          set -e
+          cat /tmp/sophia-ux.log
+          if [ "$code" -eq 0 ]; then exit 0; fi
+          # The three existing navigation checks fail in main, unrelated to /404.
+          # Do not mask a new failure, even outside /404.
+          actual=$(grep '^FAIL ' /tmp/sophia-ux.log || true)
+          expected=$(printf '%s\n' 'FAIL nav: lab label aligned' 'FAIL nav: music static link' 'FAIL curiosidades: header link')
+          if [ "$actual" != "$expected" ]; then
+            echo 'Unexpected UX failures; refusing to accept them as baseline.'
+            exit 1
+          fi
+          echo 'Known baseline: 3 navigation checks; all 404 checks passed.'
