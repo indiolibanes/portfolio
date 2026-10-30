@@ -13,6 +13,8 @@ const {
 
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
+// A página do palco experimental é acessível por URL direta, mas não é indexável.
+const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 ---
 
 <meta charset="UTF-8" />
@@ -21,7 +23,7 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 
 <title>{title}</title>
 <meta name="description" content={description} />
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="robots" content={isUnlistedStage ? 'noindex, nofollow, noarchive' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 <meta name="theme-color" content="#f6efdc" />
 
 <script is:inline>
