@@ -5,6 +5,7 @@ on:
       - feat/404-arcade-room-2p5d-2026-10-30
       - fix/sophia-404-book-tail-render-quality-2026-10-30
       - feat/404-sophia-legacy-and-7b-2026-10-30
+      - feat/sophia-7b-stage-animations-2026-10-30
   workflow_dispatch:
 
 permissions:
