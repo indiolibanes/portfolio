@@ -35,19 +35,23 @@ try {
     }
     await page.screenshot({ path: 'qa-results/sophia-404/404-' + width + '.png', fullPage: true });
     // Perform WebGL smoke check with 2D fallback allowed on software-only runners.
-    if (width === 1440) {
+    if (width === 390 || width === 1440) {
       await page.locator('[data-sophia-stage="lounge"]').scrollIntoViewIfNeeded();
       try {
         await page.waitForFunction(() => {
           const r = document.querySelector('[data-sophia-stage="lounge"]');
           return r?.dataset.sophiaReady === 'true' || r?.dataset.sophiaFailed === 'true';
-        }, { timeout: 22000 });
+        }, null, { timeout: 25000 });
       } catch {}
       const result = await page.locator('[data-sophia-stage="lounge"]').evaluate(
         el => ({ ready: el.dataset.sophiaReady, failed: el.dataset.sophiaFailed }),
       );
-      console.log('3D scene result', JSON.stringify(result));
-      await page.screenshot({ path:'qa-results/sophia-404/404-room-1440.png', fullPage:true });
+      console.log('3D room', width, JSON.stringify(result));
+      if (result.ready !== 'true') {
+        failed = true;
+        console.error('FAIL 3D room did not initialize', width, JSON.stringify(result));
+      }
+      await page.screenshot({ path:'qa-results/sophia-404/404-room-' + width + '.png', fullPage:true });
     }
     await page.close();
   }
