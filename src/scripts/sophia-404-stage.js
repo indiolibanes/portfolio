@@ -23,7 +23,7 @@ async function wake(root) {
     const stage = await mountSophia404(root);
     mounted.set(root, stage);
     stage.react(root.dataset.sophiaMood || 'idle');
-    stage.setActive(visible.has(root) && !document.hidden && !quiet());
+    stage.setActive(visible.has(root) && !document.hidden && !quiet() && !reduce.matches && !saveData);
   } catch (error) {
     // An unavailable GLB, WebGL failure or context loss leaves original SVG visible.
     root.dataset.sophiaFailed = 'true';
@@ -42,7 +42,7 @@ const observer = new IntersectionObserver((entries) => {
     } else {
       visible.delete(root);
     }
-    mounted.get(root)?.setActive(visible.has(root) && !document.hidden && !quiet());
+    mounted.get(root)?.setActive(visible.has(root) && !document.hidden && !quiet() && !reduce.matches && !saveData);
   }
 }, { rootMargin: '160px 0px', threshold: 0.02 });
 for (const stage of stages) observer.observe(stage);
@@ -65,7 +65,7 @@ document.addEventListener('sophia:tetris', (event) => {
 
 const syncVisibility = () => {
   for (const root of stages) {
-    const active = visible.has(root) && !document.hidden && !quiet();
+    const active = visible.has(root) && !document.hidden && !quiet() && !reduce.matches && !saveData;
     mounted.get(root)?.setActive(active);
     // CSS keeps the SVG in editorial/legacy, even when WebGL has loaded.
     if (active && !mounted.has(root)) void wake(root);
