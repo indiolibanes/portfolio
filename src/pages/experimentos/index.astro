@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/experimental-stage.css';
+---
+
+<BaseLayout
+  title="Experimentos · Palco ao luar"
+  description="Um estudo autoral de cenografia 2.5D: céu e lago em camadas, arquitetura tridimensional e espaços reservados para personagens."
+>
+  <main id="conteudo" class="experimental-page" data-experiment-root>
+    <header class="experimental-page__intro">
+      <p class="eyebrow">Experimentos / 01 · Espaço, matéria e movimento</p>
+      <h1>Entre o luar e a forma.</h1>
+      <p>
+        O mesmo terraço, duas maneiras de olhar. A ilustração continua como referência;
+        o novo palco acrescenta profundidade, luz e geometria para futuros estudos de animação.
+      </p>
+      <a href="/#musica" class="experimental-page__back">Voltar à seção Música ↗</a>
+    </header>
+
+    <section class="experimental-workspace" aria-label="Estudo do terraço noturno">
+      <div class="experimental-workspace__bar">
+        <div class="experimental-tabs" role="tablist" aria-label="Modo de visualização">
+          <button id="ex-tab-stage" type="button" role="tab" aria-controls="ex-panel-stage" aria-selected="true" tabindex="0" data-ex-tab="stage">Palco 2.5D</button>
+          <button id="ex-tab-reference" type="button" role="tab" aria-controls="ex-panel-reference" aria-selected="false" tabindex="-1" data-ex-tab="reference">Composição original</button>
+        </div>
+        <span class="experimental-workspace__phase">Protótipo de cenografia · fase 01</span>
+      </div>
+
+      <div id="ex-panel-stage" role="tabpanel" aria-labelledby="ex-tab-stage" data-ex-panel="stage">
+        <div class="ex-stage-shell" data-ex-stage data-ex-state="preview" aria-label="Cenário noturno do terraço: lago, lua, céu estrelado, balaustrada de pedra e três espaços vazios para personagens">
+          <div class="ex-stage-sky" aria-hidden="true">
+            <span class="ex-stage-moon"></span>
+            <span class="ex-stage-mountains"></span>
+            <span class="ex-stage-lake"></span>
+            <span class="ex-stage-horizon"></span>
+            <span class="ex-stage-stars"></span>
+          </div>
+          <div class="ex-stage-canvas" data-ex-canvas aria-hidden="true"></div>
+          <div class="ex-stage-foreground" aria-hidden="true"></div>
+          <div class="ex-stage-overlay" data-ex-intro>
+            <span class="ex-stage-overline">The moonlit terrace / 2.5D study</span>
+            <p>O espaço antes das personagens.</p>
+            <button type="button" data-ex-start>Ativar palco tridimensional</button>
+            <small>Inicia apenas quando solicitado. Não carrega os modelos GLB nesta fase.</small>
+          </div>
+          <div class="ex-stage-status" role="status" aria-live="polite" data-ex-status hidden></div>
+        </div>
+        <div class="ex-stage-toolbar">
+          <p>Arraste o olhar com o mouse para uma paralaxe discreta. O palco contém geometria 3D real e um fundo visual em camadas.</p>
+          <div class="ex-stage-toolbar__actions">
+            <button type="button" data-ex-anchors aria-pressed="true" hidden>Ocultar âncoras</button>
+            <button type="button" data-ex-pause aria-pressed="false" hidden>Pausar movimento</button>
+          </div>
+        </div>
+        <div class="ex-stage-legend" aria-label="Posições previstas para os modelos">
+          <span><i class="ex-dot ex-dot--red" aria-hidden="true"></i>Phrolova · esquerda</span>
+          <span><i class="ex-dot ex-dot--gold" aria-hidden="true"></i>Hsin · centro</span>
+          <span><i class="ex-dot ex-dot--blue" aria-hidden="true"></i>Shorekeeper · direita</span>
+          <span><i class="ex-dot ex-dot--ivory" aria-hidden="true"></i>Sophia · primeiro plano</span>
+        </div>
+      </div>
+
+      <div id="ex-panel-reference" role="tabpanel" aria-labelledby="ex-tab-reference" data-ex-panel="reference" hidden>
+        <figure class="ex-reference">
+          <picture>
+            <source srcset="/assets/music-moonlit-terrace-v4.avif" type="image/avif" />
+            <img src="/assets/music-moonlit-terrace-v4.webp" width="2528" height="1696" loading="lazy" decoding="async" alt="Ilustração original: terraço de pedra diante de um lago noturno, com lua dourada, Phrolova à esquerda, Shorekeeper à direita, Hsin no centro e Sophia em primeiro plano." />
+          </picture>
+          <figcaption>Referência visual preservada. A cena ilustrada original permanece na seção Música, sem modificações.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="experimental-page__notes" aria-labelledby="ex-notes-title">
+      <h2 id="ex-notes-title">O que já existe — e o que ainda falta</h2>
+      <p>
+        O palco combina planos atmosféricos com piso, balaustrada, pedestais e iluminação
+        construídos em Three.js. As marcações mostram onde os modelos serão integrados
+        posteriormente; elas não são as personagens nem representam animações concluídas.
+      </p>
+      <p>
+        Próximos estudos: normalização dos GLB de Phrolova e Shorekeeper,
+        exportação e revisão do modelo de Hsin e criação da Sophia adolescente.
+        Interações mais complexas e física entram apenas depois da validação do cenário.
+      </p>
+      <p class="experimental-page__credits">
+        Modelos previstos:
+        <a href="https://skfb.ly/pzzNv" target="_blank" rel="noopener noreferrer">“Phrolova wuthering waves”</a>
+        e <a href="https://skfb.ly/pzzQo" target="_blank" rel="noopener noreferrer">“Shorekeeper wuthering waves”</a>,
+        por Great anime fan, sob
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>.
+        Os arquivos ainda não são carregados neste protótipo.
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import '../../scripts/experimental-stage';
+</script>
