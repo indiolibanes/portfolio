@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feat/404-arcade-room-2p5d-2026-10-30
+      - fix/sophia-404-book-tail-render-quality-2026-10-30
   workflow_dispatch:
 
 permissions:
