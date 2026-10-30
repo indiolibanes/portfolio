@@ -51,7 +51,7 @@ export async function mountSophia404(root) {
   const portrait = kind === 'portrait';
   // Only create WebGL when the stage is close to the viewport.
   const renderer = new THREE.WebGLRenderer({
-    canvas, alpha: true, antialias: false, powerPreference: 'low-power',
+    canvas, alpha: true, antialias: true, powerPreference: 'high-performance',
     preserveDrawingBuffer: false,
   });
   renderer.setClearColor('#000000', 0);
@@ -73,12 +73,24 @@ export async function mountSophia404(root) {
 
   const scene = new THREE.Scene();
   const fox = normalizedFox(gltf.scene);
-  const releaseTail = applyConstellationTail(fox);
+  // 6H embeds the notebook and pen as separate children of the hand bones.
+  // They belong to the writing scene, not a Tetris cabinet or game room.
+  const removedProps = [];
+  for (const name of ['Book', 'Pen']) {
+    const accessory = fox.getObjectByName(name);
+    if (accessory) {
+      accessory.visible = false;
+      removedProps.push(name);
+    }
+  }
+  root.dataset.sophiaProps = removedProps.join(',');
+  const tail = applyConstellationTail(fox);
+  root.dataset.sophiaTail = tail.changed.length ? 'recolored' : 'unavailable';
   const room = portrait ? null : buildSophiaRoom(scene);
   const actor = new THREE.Group();
   actor.add(fox);
   // Give the fox visual priority over the architecture, particularly at 390px.
-  actor.scale.setScalar(portrait ? 1.16 : 1.32);
+  actor.scale.setScalar(portrait ? 1.16 : 1.74);
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
   // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
@@ -95,24 +107,10 @@ export async function mountSophia404(root) {
 
   // The controller is a simple lightweight 3D prop, independent of the rig.
   // The SVG room remains the backdrop: a true 2.5D theatrical composition.
-  let controller;
-  if (!portrait) {
-    controller = new THREE.Group();
-    const shell = new THREE.Mesh(
-      new THREE.BoxGeometry(0.38, 0.105, 0.20),
-      new THREE.MeshStandardMaterial({ color: 0x151929, metalness: 0.25, roughness: 0.55 }),
-    );
-    controller.add(shell);
-    const ledMaterial = new THREE.MeshBasicMaterial({ color: 0x8ea5ff });
-    for (const x of [-0.115, 0.115]) {
-      const led = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 5), ledMaterial);
-      led.position.set(x, 0.058, 0.025);
-      controller.add(led);
-    }
-    controller.position.set(0, 1.12, 0.47);
-    controller.rotation.x = -0.20;
-    actor.add(controller);
-  }
+  // The former unrigged controller crossed the fox's face/chest as a black
+  // rectangle in the 404 screenshots. Keep the hands unobstructed until a
+  // real hand-tracked prop has been authored in the next model revision.
+  const controller = null;
 
   const initialRotations = new Map();
   const bones = new Map();
@@ -171,7 +169,12 @@ export async function mountSophia404(root) {
     width = w;
     height = h;
     const mobile = matchMedia('(pointer: coarse)').matches;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.5));
+    // The previous 1.15 mobile cap made the fox visibly pixelated even when
+    // the source mesh was detailed. Keep a conservative cap on low-memory
+    // devices, but give normal phones a sharp framebuffer.
+    const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
+    const cap = lowMemory ? 1.35 : mobile ? 2 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
     renderer.setSize(w, h, false);
     const aspect = w / h;
     // The portrait frames head, ears and paws; the lounge shows the whole figure.
@@ -292,7 +295,7 @@ export async function mountSophia404(root) {
     // releasing them here would break other clones.
     shellCleanup(controller);
     room?.dispose();
-    releaseTail();
+    tail.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
   }

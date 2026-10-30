@@ -44,10 +44,19 @@ try {
         }, null, { timeout: 25000 });
       } catch {}
       const result = await page.locator('[data-sophia-stage="lounge"]').evaluate(
-        el => ({ ready: el.dataset.sophiaReady, failed: el.dataset.sophiaFailed }),
+        el => ({
+          ready: el.dataset.sophiaReady,
+          failed: el.dataset.sophiaFailed,
+          accessories: el.dataset.sophiaProps,
+          tail: el.dataset.sophiaTail,
+          framebuffer: (() => {
+            const c = el.querySelector('[data-sophia-canvas]');
+            return [c.width, c.height, c.clientWidth, c.clientHeight];
+          })(),
+        }),
       );
       console.log('3D room', width, JSON.stringify(result));
-      if (result.ready !== 'true') {
+      if (result.ready !== 'true' || result.accessories !== 'Book,Pen' || result.tail !== 'recolored') {
         failed = true;
         console.error('FAIL 3D room did not initialize', width, JSON.stringify(result));
       }
