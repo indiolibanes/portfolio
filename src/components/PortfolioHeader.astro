@@ -3,7 +3,6 @@ import { PROFILE } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
 
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
-const onExperiments = Astro.url.pathname.startsWith('/experimentos');
 
 // Tabela periódica do menu: cada destino é escrito com símbolos de elementos (Sobre = S·O·B·Re).
 // As letras que não existem na tabela ficam soltas, ao lado dos azulejos, como no logotipo de Breaking Bad.
@@ -54,7 +53,6 @@ const NAV = [
   { href: '/#metodo', id: 'metodo', label: 'Método' },
   { href: '/#bastidores', id: 'bastidores', label: 'Bastidores' },
   { href: '/#musica', id: 'musica', label: 'Música' },
-  { href: '/experimentos/', id: '', label: 'Experimentos' },
   { href: '/curiosidades/', id: '', label: 'Curiosidades' },
   { href: '/#contato', id: 'contato', label: 'Contato', cta: true },
 ].map((item) => ({ ...item, segs: spell(item.label) }));
@@ -115,7 +113,7 @@ const NAV = [
             class={item.cta ? 'nav-cta' : undefined}
             href={item.href}
             data-nav-section={item.id || undefined}
-            aria-current={item.label === 'Experimentos' && onExperiments || item.label === 'Curiosidades' && onCuriosities ? 'page' : undefined}
+            aria-current={item.id === '' && onCuriosities ? 'page' : undefined}
           >
             <span class="nav-label">{item.label}</span>
             <span class="nav-elements" aria-hidden="true">
