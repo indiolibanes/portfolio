@@ -81,7 +81,7 @@ export function buildSophiaRoom(scene) {
     const y=-.3+Math.floor(i/3)*.43;
     tvBox(.30,.20,.055,x,y,.792,i%2?goldGlow:cream);
   }
-  tvBox(2.9,.15,1.7,3.18,-1.26,-.02,warmWood); // moved by tv local transform, shelf below
+  box(2.9,.15,1.7,3.18,.9,-1.6,warmWood); // stand beneath the television
   const knob=sphere(.095,4.18,1.17,-.65,goldGlow); accent.push(knob);
   box(2.7,.20,1.44,3.16,.52,-1.55,warmWood);
   box(.21,.56,1.1,2.0,.23,-1.55,warmWood);
