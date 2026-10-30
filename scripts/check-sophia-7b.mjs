@@ -6,8 +6,8 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 
-const file = 'public/experimental/sophia-7b-e1.glb';
-const expectedSha = 'b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a';
+const file = 'public/experimental/sophia-7b-e1-stage.glb';
+const expectedSha = 'ba75051ed118863656a4878e584c9388be3646289eefb4bd2044860bd99fa90d';
 if (!existsSync(file)) {
   console.error('BLOCKED — Missing author-provided 7B GLB:', file);
   console.error('Upload sophia-7b-e1.glb to public/experimental/ in the PR branch.');
@@ -22,5 +22,8 @@ const json = JSON.parse(bytes.toString('utf8', 20, 20 + jsonLength));
 if (!json.meshes?.length || !json.materials?.length) throw Error('Missing mesh/material');
 const hash = createHash('sha256').update(bytes).digest('hex');
 if (hash !== expectedSha) throw Error('Source GLB does not match approved user upload: ' + hash);
-console.log('PASS Sophia 7B-E1 —', bytes.length, 'bytes,',json.meshes.length,'mesh(es),',
-  (json.skins || []).length, 'skin(s),',(json.animations||[]).length,'animation(s)');
+const names = (json.animations||[]).map(a=>a.name);
+for (const clip of ['Idle_Breathe','Focus_On_Game','Celebrate_Small','Look_Around'])
+  if (!names.includes(clip)) throw Error('Missing required stage clip: ' + clip);
+if ((json.skins||[]).length) throw Error('Unexpected rig: stage source must remain unrigged');
+console.log('PASS Sophia 7B-E1 Stage —',bytes.length,'bytes,',names.join(', '));
