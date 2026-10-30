@@ -7,6 +7,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js';
+import { buildSophiaRoom } from './sophia-404-room.js';
+import { applyConstellationTail } from './sophia-404-tail.js';
 
 const MODEL_URL = '/experimental/sophia-alpha.glb'; // available rigged alpha; replace with 7B after validated export
 let modelPromise;
@@ -29,7 +31,11 @@ function normalizedFox(original) {
   const center = bounds.getCenter(new THREE.Vector3());
   const factor = 2.35 / Math.max(size.y, 0.001);
   fox.scale.multiplyScalar(factor);
-  fox.position.set(-center.x * factor, -bounds.min.y * factor, -center.z * factor);
+  // Alpha 6H is notably broader than the original Sophia illustration: restore a
+  // narrower silhouette without changing the rig, head height or eye spacing.
+  fox.scale.x *= 0.86;
+  fox.scale.z *= 0.91;
+  fox.position.set(-center.x * factor * 0.86, -bounds.min.y * factor, -center.z * factor * 0.91);
   fox.traverse((node) => {
     if (node.isSkinnedMesh) node.frustumCulled = false;
   });
@@ -67,18 +73,23 @@ export async function mountSophia404(root) {
 
   const scene = new THREE.Scene();
   const fox = normalizedFox(gltf.scene);
+  const releaseTail = applyConstellationTail(fox);
+  const room = portrait ? null : buildSophiaRoom(scene);
   const actor = new THREE.Group();
   actor.add(fox);
+  // Give the fox visual priority over the architecture, particularly at 390px.
+  actor.scale.setScalar(portrait ? 1.16 : 1.32);
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
-  camera.position.copy(portrait ? vec(0.24, 1.83, 5) : vec(3.1, 2.2, 4.5));
-  camera.lookAt(portrait ? vec(0, 1.64, 0) : vec(0, 1.14, 0));
+  // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
+  camera.position.copy(portrait ? vec(0, 1.85, 6.1) : vec(1.65, 3.55, 8.6));
+  camera.lookAt(portrait ? vec(0, 1.7, 0) : vec(0, 1.88, -0.3));
 
-  scene.add(new THREE.HemisphereLight(0xdce6ff, 0x3b263e, portrait ? 2.0 : 1.45));
-  const warm = new THREE.DirectionalLight(0xffc99d, portrait ? 2.2 : 1.5);
+  scene.add(new THREE.HemisphereLight(0xdce6ff, 0x3b263e, portrait ? 1.6 : 1.25));
+  const warm = new THREE.DirectionalLight(0xffc99d, portrait ? 1.9 : 1.25);
   warm.position.set(-2, 4, 3);
   scene.add(warm);
-  const cool = new THREE.DirectionalLight(0x799bff, portrait ? 1.0 : 2.2);
+  const cool = new THREE.DirectionalLight(0x799bff, portrait ? 0.9 : 1.6);
   cool.position.set(3, 2, -1);
   scene.add(cool);
 
@@ -98,7 +109,7 @@ export async function mountSophia404(root) {
       led.position.set(x, 0.058, 0.025);
       controller.add(led);
     }
-    controller.position.set(0.1, 0.84, 0.33);
+    controller.position.set(0, 1.12, 0.47);
     controller.rotation.x = -0.20;
     actor.add(controller);
   }
@@ -164,7 +175,12 @@ export async function mountSophia404(root) {
     renderer.setSize(w, h, false);
     const aspect = w / h;
     // The portrait frames head, ears and paws; the lounge shows the whole figure.
-    const viewHeight = portrait ? 1.72 : 3.05;
+    const narrow = w < 600;
+    const viewHeight = portrait ? 2.48 : (narrow ? 4.12 : 4.72);
+    if (!portrait) {
+      actor.position.x = narrow ? -0.48 : -1.55;
+      actor.position.z = narrow ? 1.15 : 1.2;
+    }
     camera.left = -viewHeight * aspect / 2;
     camera.right = viewHeight * aspect / 2;
     camera.top = viewHeight / 2;
@@ -209,7 +225,7 @@ export async function mountSophia404(root) {
     const shake = calm ? 0 : Math.sin(t * 15) * celebrate;
     const look = interactive ? pointerX : (playing ? 0.22 : -0.10);
 
-    actor.rotation.y = (portrait ? 0 : -0.45) + look * 0.09;
+    actor.rotation.y = (portrait ? 0 : 0.17) + look * 0.08;
     actor.rotation.z = calm ? 0 : sway * 0.016 + shake * 0.045;
     actor.position.y = calm ? 0 : Math.max(0, celebrate * Math.abs(Math.sin(t * 12)) * 0.11);
     rotate('hips', breath * 0.025, 0, sway * 0.02);
@@ -219,16 +235,17 @@ export async function mountSophia404(root) {
     rotate('ear_R_1', 0, 0, 0.06 + celebrate * 0.22 - (calm ? 0 : Math.sin(t * 3.4) * 0.05));
     rotate('tail_1', 0, calm ? 0 : Math.sin(t * (celebrate ? 7 : 2)) * (0.15 + celebrate * 0.28), 0);
     // Restrained arm gestures; never rely on nonexistent named animation clips.
-    rotate('upper_arm_L', portrait ? -0.12 : 0.18 + celebrate * 0.30, 0, celebrate * 0.15);
-    rotate('upper_arm_R', portrait ? -0.12 : 0.18 + celebrate * 0.30, 0, -celebrate * 0.15);
+    rotate('upper_arm_L', portrait ? -0.12 : 0.42 + celebrate * 0.18, 0, celebrate * 0.14);
+    rotate('upper_arm_R', portrait ? -0.12 : 0.42 + celebrate * 0.18, 0, -celebrate * 0.14);
     if (controller) {
-      controller.position.y = 0.85 + (calm ? 0 : Math.sin(t * (playing ? 8 : 2.5)) * 0.015);
+      controller.position.y = 1.12 + (calm ? 0 : Math.sin(t * (playing ? 8 : 2.5)) * 0.015);
       controller.rotation.z = shake * 0.07;
     }
     expression(clamp(0.16 + celebrate * 0.74 - upset * 0.14, 0, 1),
       clamp(celebrate * 0.8 + upset * 0.3, 0, 1), celebrate * 0.6,
       blink);
     resize();
+    room?.update(t);
     renderer.render(scene, camera);
     if (!ready) {
       ready = true;
@@ -240,6 +257,7 @@ export async function mountSophia404(root) {
     event.preventDefault();
     contextLost = true;
     root.dataset.sophiaReady = 'false';
+    root.dataset.sophiaFailed = 'true';
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
   };
@@ -273,6 +291,8 @@ export async function mountSophia404(root) {
     // GLTF geometries/materials/textures belong to the shared cached source;
     // releasing them here would break other clones.
     shellCleanup(controller);
+    room?.dispose();
+    releaseTail();
     renderer.dispose();
     renderer.forceContextLoss();
   }

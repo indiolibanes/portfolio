@@ -1,0 +1,63 @@
+name: Sophia 404 arcade QA
+on:
+  push:
+    branches:
+      - feat/404-arcade-room-2p5d-2026-10-30
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies (base lockfile currently differs)
+        run: npm install --no-audit --no-fund
+      - name: Validate scripts and GLB
+        run: |
+          node --check src/scripts/sophia-404-renderer.js
+          node --check src/scripts/sophia-404-tail.js
+          node --check src/scripts/sophia-404-room.js
+          node --check src/scripts/sophia-404-stage.js
+          test -s public/experimental/sophia-alpha.glb
+      - name: Build
+        run: npm run build
+      - name: Tetris rules
+        run: npm run check:tetris
+      - name: UX contract (compare known main baseline)
+        shell: bash
+        run: |
+          set +e
+          npm run check:ux > /tmp/ux.log 2>&1
+          code=$?
+          set -e
+          cat /tmp/ux.log
+          if [ "$code" -eq 0 ]; then exit 0; fi
+          actual=$(grep '^FAIL ' /tmp/ux.log || true)
+          expected=$(printf '%s\n' 'FAIL nav: lab label aligned' 'FAIL nav: music static link' 'FAIL curiosidades: header link')
+          test "$actual" = "$expected"
+      - name: Browser dependencies
+        run: |
+          npm install --no-save --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Browser smoke
+        run: |
+          npx astro preview --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
+          for i in $(seq 1 45); do
+            curl -fsS http://127.0.0.1:4321/ > /dev/null && break
+            sleep 1
+          done
+          node scripts/qa-sophia-404.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sophia-404-arcade-screenshots
+          path: qa-results/sophia-404/
+          if-no-files-found: ignore
