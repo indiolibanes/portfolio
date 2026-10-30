@@ -7,6 +7,7 @@ import SophiaPortrait from '../components/SophiaPortrait.astro';
 import '../styles/sophia-tetris.css';
 import '../styles/sophia-pixel.css';
 import '../styles/sophia-illustration.css';
+import '../styles/sophia-404-3d.css';
 ---
 
 <BaseLayout
@@ -36,7 +37,10 @@ import '../styles/sophia-illustration.css';
 
           <div class="tetris-board">
             <div class="tetris-playfield">
-              <SophiaPortrait />
+              <div class="sophia-portrait-stage" data-sophia-stage="portrait" data-sophia-mood="idle">
+                <SophiaPortrait />
+                <canvas class="sophia-stage__canvas" data-sophia-canvas aria-hidden="true"></canvas>
+              </div>
               <div class="tetris-frame" data-tetris-frame>
                 <canvas
                   class="tetris-canvas"
@@ -333,7 +337,11 @@ import '../styles/sophia-illustration.css';
       // Humor do mascote: acompanha o estado do jogo; uma linha feita vira "cheer" por um instante.
       const MOODS = { idle: 'calm', playing: 'play', paused: 'sleep', over: 'sleep' };
       let cheerTimer = 0;
-      const showMood = () => { if (mascot) mascot.dataset.mood = cheerTimer ? 'cheer' : MOODS[state]; };
+      const showMood = () => {
+        if (mascot) mascot.dataset.mood = cheerTimer ? 'cheer' : MOODS[state];
+        const mood = cheerTimer ? 'cheer' : (state === 'playing' ? 'playing' : state === 'paused' ? 'paused' : state === 'over' ? 'over' : 'idle');
+        document.dispatchEvent(new CustomEvent('sophia:tetris', { detail: { mood } }));
+      };
       const setState = (next) => {
         state = next;
         root.dataset.state = next;
@@ -830,5 +838,8 @@ import '../styles/sophia-illustration.css';
       resize();
       hud();
     })();
+  </script>
+  <script>
+    import '../scripts/sophia-404-stage.js';
   </script>
 </BaseLayout>
