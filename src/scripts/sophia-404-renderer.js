@@ -90,7 +90,7 @@ export async function mountSophia404(root) {
   const actor = new THREE.Group();
   actor.add(fox);
   // Give the fox visual priority over the architecture, particularly at 390px.
-  actor.scale.setScalar(portrait ? 1.16 : 1.32);
+  actor.scale.setScalar(portrait ? 1.16 : 1.74);
   scene.add(actor);
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 30);
   // Both cameras face the fox, especially the gamer-room: no more back/profile shot.
@@ -107,24 +107,10 @@ export async function mountSophia404(root) {
 
   // The controller is a simple lightweight 3D prop, independent of the rig.
   // The SVG room remains the backdrop: a true 2.5D theatrical composition.
-  let controller;
-  if (!portrait) {
-    controller = new THREE.Group();
-    const shell = new THREE.Mesh(
-      new THREE.BoxGeometry(0.38, 0.105, 0.20),
-      new THREE.MeshStandardMaterial({ color: 0x151929, metalness: 0.25, roughness: 0.55 }),
-    );
-    controller.add(shell);
-    const ledMaterial = new THREE.MeshBasicMaterial({ color: 0x8ea5ff });
-    for (const x of [-0.115, 0.115]) {
-      const led = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 5), ledMaterial);
-      led.position.set(x, 0.058, 0.025);
-      controller.add(led);
-    }
-    controller.position.set(0, 1.12, 0.47);
-    controller.rotation.x = -0.20;
-    actor.add(controller);
-  }
+  // The former unrigged controller crossed the fox's face/chest as a black
+  // rectangle in the 404 screenshots. Keep the hands unobstructed until a
+  // real hand-tracked prop has been authored in the next model revision.
+  const controller = null;
 
   const initialRotations = new Map();
   const bones = new Map();
