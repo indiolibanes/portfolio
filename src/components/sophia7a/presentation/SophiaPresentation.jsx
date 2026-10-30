@@ -148,13 +148,22 @@ export const SophiaPresentation = forwardRef(function SophiaPresentation(props, 
 
     engine.start().then((started) => {
       if (engine._disposed || started === false) return;
-      engine.setPaused(initial.current.paused);
+      // Enquanto carrega, React guarda a intenção; só sincroniza recursos após start() completo.
+      const desired = initial.current;
+      engine.setPaused(desired.paused);
+      engine.setEffects(desired.effects);
+      engine.setEffectIntensity(desired.effectIntensity);
+      engine.setReducedMotion(desired.reduced);
+      engine.setTouchGuard(desired.guard);
       setStatus('ready');
       if (debug) window.__sophiaReady = true;
       cb.current.onReady?.(engine.getMetrics());
     }).catch((err) => {
       if (engine._disposed || err?.name === 'AbortError') return;
       console.error('[SophiaPresentation]', err);
+      // Uma falha real precisa liberar renderer, eventos e tarefas em voo antes do fallback.
+      engine.dispose();
+      if (engineRef.current === engine) engineRef.current = null;
       setErrorMsg(String(err?.message || err));
       setStatus(err?.code === 'webgl-unavailable' ? 'nowebgl' : 'error');
       if (debug) window.__sophiaError = String(err?.message || err);
@@ -174,12 +183,12 @@ export const SophiaPresentation = forwardRef(function SophiaPresentation(props, 
   }, [modelUrl, maskUrl, quality, governor, wheelZoom, enablePan, expectedSha256, expectedBytes, debug, continuous, retryKey]);
 
   // ------------------------------------------------------------ estado → motor
-  useEffect(() => { engineRef.current?.setPaused(paused); }, [paused, status]);
-  useEffect(() => { engineRef.current?.setEffects(effects); }, [effects, status]);
-  useEffect(() => { engineRef.current?.setEffectIntensity(effectIntensity); }, [effectIntensity, status]);
-  useEffect(() => { engineRef.current?.setReducedMotion(reduced); }, [reduced, status]);
+  useEffect(() => { if (status === 'ready') engineRef.current?.setPaused(paused); }, [paused, status]);
+  useEffect(() => { if (status === 'ready') engineRef.current?.setEffects(effects); }, [effects, status]);
+  useEffect(() => { if (status === 'ready') engineRef.current?.setEffectIntensity(effectIntensity); }, [effectIntensity, status]);
+  useEffect(() => { if (status === 'ready') engineRef.current?.setReducedMotion(reduced); }, [reduced, status]);
   useEffect(() => { if (reduced) setPaused(true); }, [reduced]);
-  useEffect(() => { engineRef.current?.setTouchGuard(guardActive && !explore); }, [guardActive, explore, status]);
+  useEffect(() => { if (status === 'ready') engineRef.current?.setTouchGuard(guardActive && !explore); }, [guardActive, explore, status]);
   useEffect(() => { if (!guardActive) setExplore(false); }, [guardActive]);
 
   // hotspots (fora do React: o motor posiciona os elementos a cada quadro). Os refs de callback já

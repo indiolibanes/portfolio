@@ -282,6 +282,8 @@ export class SophiaEngine {
         preserveDrawingBuffer: !!this.opts.debug, // só para capturas de teste
       });
     } catch (e) {
+      // Erros arbitrários do construtor não são prova de ausência de WebGL.
+      if (!/WebGL context could not be created|Error creating WebGL context|WebGL is not supported/i.test(String(e?.message || e))) throw e;
       const err = new Error('WebGL indisponível neste navegador/dispositivo.');
       err.code = 'webgl-unavailable';
       err.cause = e;
@@ -500,8 +502,12 @@ export class SophiaEngine {
   }
 
   // ------------------------------------------------------------------ estado
-  setPaused(v) { this.state.paused = !!v; this._dirty = true; this._requestRender(); }
+  setPaused(v) {
+    if (this._disposed) return;
+    this.state.paused = !!v; this._dirty = true; this._requestRender();
+  }
   setEffects(v) {
+    if (this._disposed) return;
     this.state.effects = !!v;
     this.fx?.setEnabled(this.state.effects);
     this._applyEffectsVisibility();
@@ -509,8 +515,10 @@ export class SophiaEngine {
     this._requestRender();
   }
   setReducedMotion(v) {
+    if (this._disposed) return;
     this.state.reduced = !!v;
-    this.controls.enableDamping = !v;
+    if (this.state.ready && !this.controls) throw new Error('Controles ausentes no motor pronto.');
+    if (this.controls) this.controls.enableDamping = !v;
     this.fx?.setReduced(v);
     this._dirty = true;
     this._requestRender();
@@ -520,18 +528,29 @@ export class SophiaEngine {
     this._suspended = !!v;
     if (!v) { this._lastTickAt = null; this._lastRenderAt = null; this._dirty = true; }
   }
-  setEffectIntensity(v) { this.fx?.setIntensity(v); this._dirty = true; this._requestRender(); }
+  setEffectIntensity(v) {
+    if (this._disposed) return;
+    this.opts.effectIntensity = v;
+    this.fx?.setIntensity(v);
+    this._dirty = true; this._requestRender();
+  }
 
-  setTouchGuard(v) { this._setTouchGuard(v, true); }
+  setTouchGuard(v) { if (!this._disposed) this._setTouchGuard(v, true); }
   _setTouchGuard(locked, emit) {
     this.state.touchGuard = !!locked;
-    this.controls.enabled = !locked;
+    if (this.state.ready && (!this.controls || !this.renderer)) throw new Error('Controles ou renderer ausentes no motor pronto.');
+    if (this.controls) this.controls.enabled = !locked;
     // 'pan-y': rolagem vertical da página passa pelo canvas enquanto travado
-    this.renderer.domElement.style.touchAction = locked ? 'pan-y' : 'none';
+    if (this.renderer) this.renderer.domElement.style.touchAction = locked ? 'pan-y' : 'none';
     if (emit) this._emit('touchGuard', this.state.touchGuard);
   }
 
   _applyEffectsVisibility() {
+    // A preferência existe antes do renderer e do céu; _createScene a aplica quando ambos existem.
+    if (!this.starfield) {
+      if (this.state.ready) throw new Error('Céu estrelado ausente no motor pronto.');
+      return;
+    }
     const lvl = QUALITY_LEVELS[this.state.qualityLevel];
     const on = this.state.effects;
     this.starfield.object.visible = on && lvl.starfield;
