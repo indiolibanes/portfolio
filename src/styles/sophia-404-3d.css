@@ -1,73 +1,135 @@
-/*
- * Sophia 404 — progressive 2.5D upgrade.
- * The original SVGs remain canonical fallbacks, including for Legacy/Editorial,
- * reduced motion, offline contexts, and when the experimental GLB is unavailable.
- */
+/* 404 — arcade cabinet + full 3D diorama, progressively enhanced. */
+.sophia-tetris { width:100%; }
+.sophia-arcade-cabinet {
+  position:relative; box-sizing:border-box; width:min(100%,380px); max-width:100%;
+  padding:0 12px 14px; border:3px solid #35314b; border-radius:22px 22px 9px 9px;
+  color:#eee9f8; background:linear-gradient(100deg,#1c1b33,#090d1a 24%,#0c0e1c 75%,#33304c);
+  box-shadow: inset 3px 0 0 #63638d, inset -3px 0 0 #17182d,
+    0 20px 38px rgba(0,0,0,.34),0 0 20px rgba(105,100,202,.12);
+}
+.sophia-arcade-cabinet::before,.sophia-arcade-cabinet::after {
+  content:''; position:absolute; top:240px; bottom:18px; width:5px;
+  background:repeating-linear-gradient(180deg,#ffd56a 0 4px,#523a30 4px 13px);
+  opacity:.65; pointer-events:none;
+}
+.sophia-arcade-cabinet::before {left:2px}
+.sophia-arcade-cabinet::after {right:2px}
+.sophia-arcade-top {
+  position:relative; height:190px; overflow:hidden; border-radius:16px 16px 0 0;
+  background: radial-gradient(ellipse at 50% 80%,#3f3361 0%,#0e1329 55%,#090a15 95%);
+  border-bottom:1px solid #343356;
+}
+.sophia-arcade-top__label {
+  position:absolute; z-index:3; right:10px; top:11px; color:#e0ca81;
+  font:600 .63rem/1.2 ui-monospace,monospace; letter-spacing:.12em; pointer-events:none;
+}
 .sophia-portrait-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 420 / 440;
-  isolation: isolate;
-  overflow: hidden;
-  margin-bottom: -4px;
-  line-height: 0;
+  position:relative; width:100%; height:100%; isolation:isolate; margin:0;
+  aspect-ratio:auto; line-height:0;
 }
 .sophia-portrait-stage > .sophia-portrait {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  margin:0; height:100%; width:100%; overflow:hidden;
 }
 .sophia-portrait-stage .sophia-art--portrait {
-  width: 100%;
-  height: 100%;
+  height:100%; width:auto; max-width:none;
 }
-.sophia-lounge[data-sophia-stage] {
-  position: relative;
-  isolation: isolate;
+.sophia-arcade-marquee {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:9px 14px 8px; margin:0 -4px 12px;
+  border:2px solid #d7a149; border-radius:5px;
+  background:linear-gradient(145deg,#672a65,#25246e 55%,#0c2f56);
+  box-shadow:0 0 17px #c566a955,inset 0 0 10px #dd84c044;
+  text-shadow:0 0 7px #ffa3da; letter-spacing:.16em;
+}
+.sophia-arcade-marquee span {font:900 clamp(1.2rem,5vw,1.55rem)/1.1 ui-monospace,monospace; color:#ffe3ad}
+.sophia-arcade-marquee strong {font:800 1rem/1 ui-monospace,monospace; color:#bfe8ff}
+.sophia-arcade-cabinet .tetris-board {
+  display:grid; grid-template-columns:minmax(0,1fr) 79px;
+  align-items:start; gap:10px; width:100%; flex-wrap:nowrap;
+}
+.sophia-arcade-cabinet .tetris-playfield {
+  width:100%; min-width:0; max-width:none; flex:initial;
+}
+.sophia-arcade-cabinet .tetris-frame {
+  border:4px solid #363a55; border-radius:5px; overflow:hidden;
+  box-shadow:inset 0 0 9px #000,0 0 12px #6f77c633;
+}
+.sophia-arcade-cabinet .tetris-side {
+  display:grid; grid-template-columns:1fr; gap:.65rem;
+  flex:initial; min-width:0; max-width:none; width:100%;
+  font-size:.8rem;
+}
+.sophia-arcade-cabinet .tetris-next canvas {max-width:100%;width:57px;height:57px}
+.sophia-arcade-cabinet .tetris-stats {display:grid;grid-template-columns:1fr;gap:.55rem}
+.sophia-arcade-cabinet .tetris-stats dd {font-size:1rem}
+.sophia-arcade-cabinet .tetris-label,
+.sophia-arcade-cabinet .tetris-stats dt {font-size:.57rem;letter-spacing:.06em}
+.sophia-arcade-footer {
+  font:.59rem/1.5 ui-monospace,monospace;
+  text-align:center; letter-spacing:.055em; color:#e6c788;
+  border-top:1px solid #515076; padding:11px 0 0; margin:13px 0 0;
+}
+.sophia-arcade-footer span {padding:0 2px;color:#a4a9e2}
+@media (pointer:fine) {
+  .sophia-tetris .tetris-pad {display:none}
+}
+/* Keep physical touch buttons when there is no hardware keyboard. */
+@media (pointer:coarse) {
+  .sophia-arcade-footer {display:none}
 }
 .sophia-stage__canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  display: block;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 260ms ease;
+  position:absolute; inset:0; z-index:2; display:block;
+  width:100%; height:100%; opacity:0; pointer-events:none;
+  transition:opacity .24s ease-out;
 }
-.sophia-lounge .sophia-stage__canvas {
-  inset: auto;
-  left: 7.5%;
-  top: 1%;
-  width: 43%;
-  height: 97%;
+.sophia-stage__loading {
+  display:none; position:absolute; bottom:12px; left:50%; z-index:1;
+  transform:translateX(-50%); white-space:nowrap;
+  font:500 .68rem ui-monospace,monospace; color:#d9c9a7;
+  letter-spacing:.04em; opacity:.8;
 }
-[data-sophia-ready='true'] > .sophia-stage__canvas {
-  opacity: 1;
+html[data-sophia404='loading'] .sophia-stage__loading {display:block}
+html[data-sophia404='loading'] .sophia-portrait-stage:not([data-sophia-failed='true']) > .sophia-portrait {
+  visibility:hidden; /* no flash of the old Baby before the GLB becomes visible */
 }
-.sophia-portrait-stage[data-sophia-ready='true'] > .sophia-portrait {
-  visibility: hidden;
+[data-sophia-ready='true'] > .sophia-stage__canvas {opacity:1}
+[data-sophia-ready='true'] > .sophia-stage__loading {display:none!important}
+.sophia-portrait-stage[data-sophia-ready='true'] > .sophia-portrait {visibility:hidden}
+.sophia-lounge[data-sophia-stage] {
+  position:relative; isolation:isolate; box-sizing:border-box;
+  overflow:hidden; aspect-ratio:1200/510; min-height:200px;
+  background: radial-gradient(ellipse at 30% 35%,#15213f,#080a14 68%);
+  border:1px solid #333047; border-radius:8px;
+  box-shadow:0 18px 36px #080a1540;
 }
-.sophia-lounge[data-sophia-ready='true'] .slo-fox {
-  opacity: 0;
+.sophia-lounge[data-sophia-stage] .sophia-stage__canvas {
+  inset:0; width:100%;height:100%;
 }
-html:is([data-legacy-mode='true'], [data-serious-mode='true']) [data-sophia-stage] > .sophia-stage__canvas {
-  display: none !important;
+html[data-sophia404='loading'] .sophia-lounge:not([data-sophia-failed='true']) > .sophia-art {
+  visibility:hidden; /* 3D replaces the whole room, not only the fox */
 }
-html:is([data-legacy-mode='true'], [data-serious-mode='true']) .sophia-portrait-stage > .sophia-portrait {
-  visibility: visible !important;
+.sophia-lounge[data-sophia-ready='true'] > .sophia-art {visibility:hidden}
+.sophia-lounge[data-sophia-failed='true'] > .sophia-art {visibility:visible!important}
+.sophia-portrait-stage[data-sophia-failed='true'] > .sophia-portrait {visibility:visible!important}
+html:is([data-serious-mode='true'],[data-legacy-mode='true']) [data-sophia-stage] > .sophia-stage__canvas {
+  display:none!important;
 }
-html:is([data-legacy-mode='true'], [data-serious-mode='true']) .sophia-lounge .slo-fox {
-  opacity: 1 !important;
+html:is([data-serious-mode='true'],[data-legacy-mode='true']) .sophia-portrait-stage > .sophia-portrait,
+html:is([data-serious-mode='true'],[data-legacy-mode='true']) .sophia-lounge > .sophia-art {
+  visibility:visible!important;
 }
-@media (prefers-reduced-motion: reduce) {
-  [data-sophia-stage] > .sophia-stage__canvas {
-    display: none !important;
-    transition: none;
+@media (prefers-reduced-motion:reduce) {
+  [data-sophia-stage] > .sophia-stage__canvas {display:none!important;transition:none}
+  .sophia-portrait-stage > .sophia-portrait,.sophia-lounge > .sophia-art {
+    visibility:visible!important;
   }
-  .sophia-portrait-stage > .sophia-portrait { visibility: visible !important; }
-  .sophia-lounge .slo-fox { opacity: 1 !important; }
+  .sophia-stage__loading {display:none!important}
+}
+@media (max-width:420px) {
+  .sophia-arcade-cabinet {padding-inline:9px}
+  .sophia-arcade-cabinet .tetris-board {grid-template-columns:minmax(0,1fr) 68px;gap:7px}
+  .sophia-arcade-top {height:175px}
+  .sophia-lounge[data-sophia-stage] {aspect-ratio:4/3}
+  .sophia-arcade-cabinet .tetris-stats dd {font-size:.9rem}
 }
