@@ -1,0 +1,20 @@
+name: Audit Sophia model assets
+on:
+  push:
+    branches:
+      - audit/404-sophia-model-assets-2026-10-30
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect GLB structures
+        run: node scripts/audit-sophia-assets.mjs
+      - name: Publish audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sophia-assets-structural-audit
+          path: qa-results/sophia-asset-audit/report.json
