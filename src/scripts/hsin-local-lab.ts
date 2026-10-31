@@ -727,7 +727,10 @@ async function initializeLab(root: HTMLElement) {
     if (!renderer || !scene || !camera || !model || lost) return;
     // Capture the original exported facial weights and the current expression
     // with identical framing, materials, camera and body pose.
-    const before = new Map([...initialMorphs].map(([mesh, values]) => [mesh, [...(mesh.morphTargetInfluences ?? values)]]));
+    const before = new Map<Skinned, number[]>(
+      [...initialMorphs].map(([mesh, values]): [Skinned, number[]] =>
+        [mesh, [...(mesh.morphTargetInfluences ?? values)]]),
+    );
     try {
       resetMorphs();
       renderer.render(scene, camera);
