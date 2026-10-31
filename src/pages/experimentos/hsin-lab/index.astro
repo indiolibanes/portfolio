@@ -58,6 +58,24 @@ import '../../../styles/hsin-local-lab.css';
         </div>
 
         <div class="hsin-lab__group">
+          <h2>02B · Diagnóstico visual</h2>
+          <p class="hsin-lab__small">Se o GLB mostrar apenas uma silhueta, alterne os modos abaixo. Eles são temporários, não modificam o arquivo ou aprovam os materiais originais.</p>
+          <label for="hsin-render-mode">Modo de materiais</label>
+          <select id="hsin-render-mode" data-hsin-render-mode disabled>
+            <option value="original">Original exportado (unlit/alpha BLEND)</option>
+            <option value="opaque">Texturas + opacidade diagnóstica</option>
+            <option value="clay">Argila iluminada (sem texturas)</option>
+            <option value="normals">Normais de superfície</option>
+          </select>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-front disabled>Ver de frente (+Z)</button>
+            <button type="button" data-hsin-rear disabled>Ver de trás (−Z)</button>
+          </div>
+          <p class="hsin-lab__small" data-hsin-material-summary>O inventário aparecerá após selecionar o GLB.</p>
+          <p class="hsin-lab__small"><strong>Limitação:</strong> os materiais Face/Eye do GLB podem não ter texturas incorporadas. Nenhum modo recupera shaders ausentes da exportação.</p>
+        </div>
+
+        <div class="hsin-lab__group">
           <h2>03 · Teste ósseo — experimental</h2>
           <p class="hsin-lab__small">Rotaciona <em>um osso por vez</em> em relação à postura original. Não é um sistema de IK nem uma pose final.</p>
           <label for="hsin-bone-search">Filtrar ossos</label>
