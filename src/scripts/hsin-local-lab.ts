@@ -67,6 +67,11 @@ async function initializeLab(root: HTMLElement) {
   const btnFull = q<HTMLButtonElement>('[data-hsin-full]');
   const btnFace = q<HTMLButtonElement>('[data-hsin-face]');
   const btnShot = q<HTMLButtonElement>('[data-hsin-shot]');
+  const btnSideBySide = q<HTMLButtonElement>('[data-hsin-side-by-side]');
+  const btnSavePose = q<HTMLButtonElement>('[data-hsin-save-pose]');
+  const inputLoadPose = q<HTMLInputElement>('[data-hsin-load-pose]');
+  const btnFingerTest = q<HTMLButtonElement>('[data-hsin-finger-test]');
+  const influentialOnly = q<HTMLInputElement>('[data-hsin-influential]');
   const btnReport = q<HTMLButtonElement>('[data-hsin-report]');
   const boneFilter = q<HTMLInputElement>('[data-hsin-bone-search]');
   const boneRegion = q<HTMLSelectElement>('[data-hsin-bone-region]');
@@ -95,6 +100,7 @@ async function initializeLab(root: HTMLElement) {
   let initialMorphs = new Map<Skinned, number[]>();
   let initialQuaternions = new Map<Bone, import('three').Quaternion>();
   let modifiedBoneAxes = new Map<Bone, { x: number; y: number; z: number }>();
+  const skinInfluence = new Map<Bone, number>();
   let morphValues = new Map<string, number>();
   let selectedBone: Bone | null = null;
   let renderMode: 'original' | 'opaque' | 'clay' | 'normals' = 'original';
@@ -113,13 +119,15 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
-  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnReport, frontButton, rearButton];
+  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     boneFilter.disabled = !enabled;
     boneRegion.disabled = !enabled;
+    influentialOnly.disabled = !enabled;
+    inputLoadPose.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
   };
@@ -342,6 +350,7 @@ async function initializeLab(root: HTMLElement) {
     initialMorphs.clear();
     initialQuaternions.clear();
     modifiedBoneAxes.clear();
+    skinInfluence.clear();
     morphValues.clear();
     selectedBone = null;
   }
@@ -445,6 +454,31 @@ async function initializeLab(root: HTMLElement) {
     }
   }
 
+  // Only vertices with nonzero skin weights actually move with a joint. Most
+  // original Rigify widget/IK nodes were exported without their Blender drivers.
+  // This diagnostic prevents mistaken "posing" of controls that affect no mesh.
+  function analyzeSkinInfluences() {
+    skinInfluence.clear();
+    for (const mesh of skinned) {
+      const joints = mesh.geometry.getAttribute('skinIndex');
+      const weights = mesh.geometry.getAttribute('skinWeight');
+      if (!joints || !weights) continue;
+      const skeletonBones = mesh.skeleton.bones;
+      const count = Math.min(joints.count, weights.count);
+      for (let vertex = 0; vertex < count; vertex++) {
+        for (let component = 0; component < 4; component++) {
+          const w = component === 0 ? weights.getX(vertex) : component === 1 ? weights.getY(vertex)
+            : component === 2 ? weights.getZ(vertex) : weights.getW(vertex);
+          if (w <= .0001) continue;
+          const index = component === 0 ? joints.getX(vertex) : component === 1 ? joints.getY(vertex)
+            : component === 2 ? joints.getZ(vertex) : joints.getW(vertex);
+          const bone = skeletonBones[index];
+          if (bone) skinInfluence.set(bone, (skinInfluence.get(bone) ?? 0) + w);
+        }
+      }
+    }
+  }
+
   function populateBones(filter: string) {
     const previousName = selectedBone?.name ?? '';
     boneSelect.replaceChildren();
@@ -461,8 +495,14 @@ async function initializeLab(root: HTMLElement) {
       if (selectedRegion === 'head') return /head|neck/i.test(name);
       return true;
     };
-    const matches = candidates.filter((bone) => regionMatch(bone.name) && bone.name.toLowerCase().includes(filter.toLowerCase()));
-    matches.slice(0, 100).forEach((bone) => boneSelect.add(new Option(bone.name, bone.uuid)));
+    const matches = candidates.filter((bone) =>
+      regionMatch(bone.name) && bone.name.toLowerCase().includes(filter.toLowerCase()) &&
+      (!influentialOnly.checked || (skinInfluence.get(bone) ?? 0) > .01));
+    matches.slice(0, 160).forEach((bone) => {
+      const influence = skinInfluence.get(bone) ?? 0;
+      const tag = influence > .01 ? ' · ligado ao skin' : ' · sem influência direta';
+      boneSelect.add(new Option(bone.name + tag, bone.uuid));
+    });
     const previousStillPresent = matches.some((bone) => bone.name === previousName);
     selectedBone = previousStillPresent ? matches.find((bone) => bone.name === previousName)! : null;
     boneSelect.value = selectedBone?.uuid ?? '';
@@ -597,6 +637,7 @@ async function initializeLab(root: HTMLElement) {
       skinned.forEach((mesh) => mesh.skeleton.bones.forEach((bone) => distinctBones.add(bone)));
       bones = [...distinctBones];
       bones.forEach((bone) => initialQuaternions.set(bone, bone.quaternion.clone()));
+      analyzeSkinInfluences();
       const option = preset.querySelector('option[value="custom"]');
       if (!option) preset.add(new Option('Ajuste manual', 'custom'));
       selectedBone = null;
@@ -614,7 +655,8 @@ async function initializeLab(root: HTMLElement) {
       const names = new Set(skinned.flatMap((mesh) => Object.keys(mesh.morphTargetDictionary ?? {})));
       summary.textContent =
         skinned.length + ' SkinnedMesh · ' + bones.length +
-        ' ossos distintos · ' + names.size + ' morphs nomeados. ' +
+        ' ossos distintos (' + skinInfluence.size + ' com influência direta) · ' +
+        names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
     } catch (error) {
@@ -645,6 +687,21 @@ async function initializeLab(root: HTMLElement) {
   });
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
+  influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
+  btnFingerTest.addEventListener('click', () => {
+    // This is a candidate only: verify anatomy and local axis before posing.
+    boneRegion.value = 'right-fingers';
+    influentialOnly.checked = true;
+    boneFilter.value = 'ORG-Bip001Finger1.R';
+    populateBones(boneFilter.value);
+    const target = bones.find((bone) => bone.name === 'ORG-Bip001Finger1.R');
+    if (target && (skinInfluence.get(target) ?? 0) > .01) {
+      selectedBone = target;
+      boneSelect.value = target.uuid;
+      syncBoneAxes();
+      setStatus('Osso Finger1.R selecionado. Teste um eixo por vez; ainda não há posing aprovado.');
+    } else setStatus('Controle direto Finger1.R não encontrado com influência: verifique o rig.');
+  });
   boneSelect.addEventListener('change', () => {
     selectedBone = bones.find((b) => b.uuid === boneSelect.value) ?? null;
     syncBoneAxes();
@@ -666,13 +723,122 @@ async function initializeLab(root: HTMLElement) {
     }, 'image/png');
   });
 
+  btnSideBySide.addEventListener('click', () => {
+    if (!renderer || !scene || !camera || !model || lost) return;
+    // Capture the original exported facial weights and the current expression
+    // with identical framing, materials, camera and body pose.
+    const before = new Map([...initialMorphs].map(([mesh, values]) => [mesh, [...(mesh.morphTargetInfluences ?? values)]]));
+    try {
+      resetMorphs();
+      renderer.render(scene, camera);
+      const w = renderer.domElement.width, h = renderer.domElement.height;
+      const comparison = document.createElement('canvas');
+      comparison.width = w * 2; comparison.height = h + 52;
+      const ctx = comparison.getContext('2d');
+      if (!ctx) throw new Error('Canvas 2D indisponível');
+      ctx.fillStyle = '#142033';
+      ctx.fillRect(0, 0, comparison.width, comparison.height);
+      ctx.fillStyle = '#f6e0ba';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('Expressão exportada', 14, 32);
+      ctx.fillText('Expressão de teste: ' + currentPreset, w + 14, 32);
+      ctx.drawImage(renderer.domElement, 0, 52, w, h);
+      before.forEach((values, mesh) => {
+        if (mesh.morphTargetInfluences) mesh.morphTargetInfluences.splice(0, values.length, ...values);
+      });
+      renderer.render(scene, camera);
+      ctx.drawImage(renderer.domElement, w, 52, w, h);
+      comparison.toBlob((blob) => {
+        if (blob) downloadBlob(blob, 'hsin-104-comparacao-ab.png');
+        else setStatus('Falha ao gerar comparação A/B.');
+      }, 'image/png');
+    } catch (error) {
+      setStatus('Falha A/B: ' + (error instanceof Error ? error.message : String(error)));
+    } finally {
+      before.forEach((values, mesh) => {
+        if (mesh.morphTargetInfluences) mesh.morphTargetInfluences.splice(0, values.length, ...values);
+      });
+      invalidate();
+    }
+  });
+
+  function collectPose() {
+    const allNames = new Set(skinned.flatMap((mesh) => Object.keys(mesh.morphTargetDictionary ?? {})));
+    const morphs: Record<string, number> = {};
+    for (const name of allNames) {
+      const value = getMorph(name);
+      if (value !== null && Number.isFinite(value)) morphs[name] = Number(value.toFixed(5));
+    }
+    const rotations = [...modifiedBoneAxes.entries()].filter(([, v]) =>
+      Math.abs(v.x) + Math.abs(v.y) + Math.abs(v.z) > .01).map(([bone, axes]) =>
+      ({ name: bone.name, degrees: { ...axes } }));
+    return {
+      schema: 'hsin-local-pose-v1',
+      labVersion: '1.0.4',
+      sourceName: fileMetadata?.name ?? '',
+      morphs,
+      rotations,
+    };
+  }
+
+  btnSavePose.addEventListener('click', () => {
+    if (!model) return;
+    const json = JSON.stringify(collectPose(), null, 2);
+    downloadBlob(new Blob([json], { type: 'application/json' }), 'hsin-104-pose-local.json');
+  });
+
+  inputLoadPose.addEventListener('change', async () => {
+    const file = inputLoadPose.files?.[0];
+    if (!file || !model) return;
+    try {
+      if (file.size > 65536) throw new Error('O JSON excede 64 KiB.');
+      const data: unknown = JSON.parse(await file.text());
+      if (!data || typeof data !== 'object') throw new Error('Preset inválido.');
+      const pose = data as {schema?: unknown; sourceName?: unknown; morphs?: Record<string, unknown>;
+        rotations?: Array<{ name?: unknown; degrees?: Record<string, unknown> }>};
+      if (pose.schema !== 'hsin-local-pose-v1' || !pose.morphs ||
+          typeof pose.morphs !== 'object' || !Array.isArray(pose.rotations)) {
+        throw new Error('Formato incompatível com a bancada v1.0.4.');
+      }
+      if (pose.sourceName !== fileMetadata?.name) {
+        throw new Error('O preset foi salvo para outro nome de GLB; selecione o modelo de origem.');
+      }
+      if (pose.rotations.length > 823 || Object.keys(pose.morphs).length > 169) {
+        throw new Error('Preset excede as estruturas esperadas.');
+      }
+      resetMorphs();
+      restoreBones();
+      for (const [name, value] of Object.entries(pose.morphs)) {
+        if (typeof value === 'number' && Number.isFinite(value) && Math.abs(value) <= 1) putMorph(name, value);
+      }
+      for (const entry of pose.rotations) {
+        if (typeof entry.name !== 'string' || !entry.degrees) continue;
+        const bone = bones.find((b) => b.name === entry.name);
+        if (!bone) continue;
+        for (const axis of ['x', 'y', 'z'] as const) {
+          const degrees = entry.degrees[axis];
+          if (typeof degrees === 'number' && Number.isFinite(degrees) && Math.abs(degrees) <= 65)
+            setBoneAxis(bone, axis, degrees);
+        }
+      }
+      currentPreset = 'custom';
+      preset.value = 'custom';
+      rebuildMorphPanel();
+      syncBoneAxes();
+      setStatus('Preset local restaurado. Validação visual da expressão e da pose ainda necessária.');
+      invalidate();
+    } catch (error) {
+      setStatus('Não foi possível restaurar: ' + (error instanceof Error ? error.message : String(error)));
+    } finally { inputLoadPose.value = ''; }
+  });
+
   btnReport.addEventListener('click', () => {
     if (!fileMetadata) return;
     const changes = [...modifiedBoneAxes.entries()].filter(([, v]) =>
       Math.abs(v.x) + Math.abs(v.y) + Math.abs(v.z) > 0).map(([bone, degrees]) =>
       ({ name: bone.name, degrees }));
     const data = {
-      schemaVersion: '1.0', gate: 'VISUAL_REVIEW_REQUIRED',
+      schemaVersion: '1.0.4', gate: 'VISUAL_REVIEW_REQUIRED',
       privacy: 'Local-file diagnosis, no mesh or image data included',
       source: fileMetadata, capturedAt: new Date().toISOString(),
       preset: currentPreset,
@@ -681,7 +847,7 @@ async function initializeLab(root: HTMLElement) {
       face: Object.fromEntries(
         FACE_NAMES.filter((name) => getMorph(name) !== null).map((name) => [name, getMorph(name)]),
       ),
-      bones: { total: bones.length, changed: changes },
+      bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
       note: 'Render duration is not FPS or mobile performance verification.',
     };
