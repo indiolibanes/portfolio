@@ -3,7 +3,8 @@
  * the old lounge fox is hidden in CSS, not duplicated under the sprite.
  * No WebGL is loaded for this room. */
 import { loungeMarkup } from '../sophia-lounge';
-const svg = loungeMarkup();
+// Mobile crops the panoramic SVG instead of letterboxing it.
+const svg = loungeMarkup().replace('<svg class=', '<svg preserveAspectRatio="xMidYMid slice" class=');
 const sprites = ['run', 'play', 'stress', 'throw', 'leave'];
 const base = '/experimental/sophia-2d';
 ---
