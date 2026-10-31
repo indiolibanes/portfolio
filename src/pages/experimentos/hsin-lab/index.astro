@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Facial Acting Pass A · candidata / Android</p>
+      <p class="hsin-lab__version">Facial Acting Pass B · candidata / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -67,6 +67,29 @@ import '../../../styles/hsin-local-lab.css';
           <p data-hsin-facial-status role="status" aria-live="polite">Escolha o arquivo local para iniciar. Toque no Android dá atenção temporária; arrastar continua movendo a câmera.</p>
           <details><summary>Diagnóstico da atuação facial</summary><pre data-hsin-facial-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
         </section>
+
+        <details class="hsin-lab__group">
+          <summary>Pass B · Microexpressões</summary>
+          <label for="hsin-facial-pass">Perfil de comparação sobre a mesma referência</label>
+          <select id="hsin-facial-pass" data-hsin-facial-pass disabled>
+            <option value="a">Pass A · referência</option><option value="b" selected>Pass B · candidata</option>
+          </select>
+          <label for="hsin-facial-intensity">Intensidade B <output data-hsin-facial-intensity-out>55%</output></label>
+          <input id="hsin-facial-intensity" data-hsin-facial-intensity type="range" min="0" max="1" step=".05" value=".55" disabled />
+          <label for="hsin-facial-attention">Atenção visual</label>
+          <select id="hsin-facial-attention" data-hsin-facial-attention disabled>
+            <option value="auto">Adquirir, fixar, desviar e retornar</option><option value="cursor">Seguimento contínuo · diagnóstico</option><option value="neutral">Centralizar · diagnóstico</option>
+          </select>
+          <label for="hsin-facial-morph">Controle isolado — teto medido no arquivo</label>
+          <select id="hsin-facial-morph" data-hsin-facial-morph disabled><option>Carregue o GLB</option></select>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-facial-morph-test disabled>Testar controle isolado</button>
+            <button type="button" data-hsin-facial-smile-test disabled>Testar sorriso de canto</button>
+            <button type="button" data-hsin-facial-nose-test disabled>Sorriso + nariz · laboratório</button>
+          </div>
+          <p class="hsin-lab__small">Use A/B facial acima para congelar referência e candidata. O perfil A preserva o comportamento anterior; intensidade B em 0% também reproduz A. A reação nasal fica apenas no laboratório até aprovação visual. O ciclo corporal de QA sinaliza preparação, sustentação e liberação à face; as expressões também funcionam sem o braço.</p>
+          <details><summary>Relatório geométrico dos morphs</summary><pre class="hsin-lab__inventory" data-hsin-facial-audit>Aguardando calibração.</pre></details>
+        </details>
 
         <details class="hsin-lab__group">
           <summary>02 · Expressão facial</summary>
