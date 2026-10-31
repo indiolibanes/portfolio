@@ -41,10 +41,8 @@ assert.ok(!existsSync(join(ROOT, 'assets/og-portfolio.svg')), 'Old OG SVG must n
 const png = readFileSync(join(ROOT, 'assets/og-portfolio.png'));
 assert.ok(png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), 'Source OG image is not PNG');
 assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1200, 630], 'Source PNG dimensions');
-const gif = readFileSync(join(ROOT, 'public/og-portfolio-animated.gif'));
-assert.match(gif.toString('ascii', 0, 6), /^GIF8[79]a$/);
-assert.deepEqual([gif.readUInt16LE(6), gif.readUInt16LE(8)], [800, 420], 'Optional GIF dimensions');
-console.log('OG source: PASS (editorial Sophia card, PNG 1200x630, optional legacy GIF 800x420, metadata wired)');
+assert.ok(!existsSync(join(ROOT, 'public/og-portfolio-animated.gif')), 'Obsolete meme GIF must not be public');
+console.log('OG source: PASS (editorial Sophia card, PNG 1200x630, metadata wired)');
 
 if (process.argv.includes('--dist')) {
   const distPath = join(ROOT, 'dist');

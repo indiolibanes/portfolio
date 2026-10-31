@@ -27,4 +27,4 @@ npm run build
 
 Confirmar no JPG gerado: 1200 × 630, legibilidade dos dois blocos de texto em miniatura, ausência da legenda antiga, preservação dos óculos e da pata erguida. A prévia social depende de cache específico de WhatsApp, Telegram, Discord, X e outros serviços; nem o build nem a mudança de query asseguram atualização imediata em todos.
 
-O GIF em `public/og-portfolio-animated.gif` é um **artefato legado opcional**, não referenciado pelo Open Graph. Atualizá-lo é trabalho independente, sem impacto no cartão estático compartilhado.
+O GIF público antigo foi **retirado**, porque ainda expunha a legenda anterior embora não fosse referenciado pelo Open Graph. A animação só será recriada sob demanda com `python3 scripts/build-og-card.py --gif`, sem textos incorporados; esta opção não faz parte do build.

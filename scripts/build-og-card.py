@@ -6,7 +6,7 @@
 
 Inputs : public/images/sophia/lab-single-tail.webp  (the lab-section Sophia)
 Outputs: assets/og-portfolio.png            (1200x630, picked up by scripts/generate-og.mjs)
-         public/og-portfolio-animated.gif   (800x420 loop, same artwork)
+         public/og-portfolio-animated.gif   (800x420, only with --gif)
 
 This script preserves Sophia and the pointing-paw pose. Editorial typography
 is composed separately by scripts/generate-og.mjs during the site build.
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     out = ROOT / 'assets/og-portfolio.png'
     compose().save(out, optimize=True)
     print('wrote', out.relative_to(ROOT))
-    if '--no-gif' in sys.argv: sys.exit()
+    if '--gif' not in sys.argv: sys.exit()
     n = 28
     frames = [compose(i / n).resize((800, 420), Image.LANCZOS) for i in range(n)]
     pal = frames[0].quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
