@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Bancada v1.0.5 · Color Restoration / Android</p>
+      <p class="hsin-lab__version">Bancada v1.0.7 · Gesto do indicador (experimental) / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -127,8 +127,24 @@ import '../../../styles/hsin-local-lab.css';
           <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>
         </div>
 
+        <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
+          <h2>03A · The Moon Fox’s Secret — gesto do indicador</h2>
+          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. O botão <strong>Definir alvo nos lábios</strong> ativa um toque no rosto. O braço direito tentará aproximar a ponta do indicador desse ponto; não é uma pose aprovada, nem há detecção de colisões.</p>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
+            <button type="button" data-hsin-solve-gesture disabled>2. Simular gesto</button>
+          </div>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-undo-gesture disabled>Desfazer gesto</button>
+            <button type="button" data-hsin-clear-target disabled>Limpar alvo</button>
+          </div>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-show-target checked disabled /> Mostrar marcador dourado do alvo</label>
+          <p class="hsin-lab__mode-feedback" data-hsin-gesture-status role="status" aria-live="polite">Carregue o GLB com o rosto colorido para examinar a cadeia Bip001*.R.</p>
+          <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo altera apenas clavícula, braço, antebraço e punho direitos; as expressões e os outros ossos permanecem intactos. Use <strong>Salvar preset de pose JSON</strong> para preservar o resultado no próprio Android.</p>
+        </div>
+
         <div class="hsin-lab__group">
-          <h2>03 · Teste ósseo — experimental</h2>
+          <h2>03B · Articulações individuais</h2>
           <p class="hsin-lab__small">Rotaciona <em>um osso por vez</em> em relação à postura original. Não é um sistema de IK nem uma pose final.</p>
           <label for="hsin-bone-region">Região do rig</label>
           <select id="hsin-bone-region" data-hsin-bone-region disabled>
