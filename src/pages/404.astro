@@ -1,13 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SophiaDetective from '../components/SophiaDetective.astro';
-import SophiaLounge from '../components/SophiaLounge.astro';
+import SophiaRoom2DTemp from '../components/SophiaRoom2DTemp.astro';
 import SophiaMascot from '../components/SophiaMascot.astro';
 import SophiaPortrait from '../components/SophiaPortrait.astro';
 import '../styles/sophia-tetris.css';
 import '../styles/sophia-pixel.css';
 import '../styles/sophia-illustration.css';
 import '../styles/sophia-404-3d.css';
+import '../styles/sophia-room2d-temp.css';
 ---
 
 <BaseLayout
@@ -123,7 +124,7 @@ import '../styles/sophia-404-3d.css';
         </div>
       </div>
 
-      <SophiaLounge />
+      <SophiaRoom2DTemp />
 
       <p class="sophia-404__aside">Nem tudo que se perde deixa necessariamente de existir. Às vezes, apenas foi parar no <i>cinturão de Kuiper</i>.</p>
     </section>
@@ -864,5 +865,6 @@ import '../styles/sophia-404-3d.css';
   </script>
   <script>
     import '../scripts/sophia-404-stage.js';
+    import '../scripts/sophia-room2d-temp.js';
   </script>
 </BaseLayout>
