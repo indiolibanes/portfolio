@@ -107,6 +107,7 @@ async function initializeLab(root: HTMLElement) {
   const checkShowTarget = q<HTMLInputElement>('[data-hsin-show-target]');
   const gestureStatus = q<HTMLElement>('[data-hsin-gesture-status]');
   const motionDuration = q<HTMLSelectElement>('[data-hsin-motion-duration]');
+  const actingStyle = q<HTMLSelectElement>('[data-hsin-acting-style]');
   const influentialOnly = q<HTMLInputElement>('[data-hsin-influential]');
   const btnReport = q<HTMLButtonElement>('[data-hsin-report]');
   const boneFilter = q<HTMLInputElement>('[data-hsin-bone-search]');
@@ -181,6 +182,7 @@ async function initializeLab(root: HTMLElement) {
     influentialOnly.disabled = !enabled;
     checkShowTarget.disabled = !enabled;
     motionDuration.disabled = !enabled;
+    actingStyle.disabled = !enabled;
     inputLoadPose.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
@@ -1207,7 +1209,12 @@ async function initializeLab(root: HTMLElement) {
       frameModel('upper');
       viewport.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       const duration = Number(motionDuration.value) || 1250;
-      const result = gestureLab.animateToPose(duration);
+      const style = actingStyle.value;
+      const level = style === 'theatrical' ? .85 :
+        style === 'natural' ? .55 : style === 'subtle' ? .30 : 0;
+      const result = gestureLab.animateToPose(duration, {
+        actingLevel: level, staged: style !== 'classic',
+      });
       gestureStatus.textContent = result.message;
       gestureStatus.dataset.state = result.ok ? 'success' : 'error';
     } catch (error) {
@@ -1406,6 +1413,7 @@ async function initializeLab(root: HTMLElement) {
       ),
       bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
       gesture: gestureLab?.getDiagnostics() ?? null,
+      actingStyle: actingStyle.value,
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
       note: 'Render duration is not FPS or mobile performance verification.',
     };
