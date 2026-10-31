@@ -103,7 +103,7 @@ async function initializeLab(root: HTMLElement) {
   const skinInfluence = new Map<Bone, number>();
   let morphValues = new Map<string, number>();
   let selectedBone: Bone | null = null;
-  let renderMode: 'original' | 'opaque' | 'clay' | 'normals' = 'original';
+  let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' = 'original';
   let cameraDirection: 1 | -1 = 1;
   let viewFocus: 'full' | 'face' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
@@ -262,22 +262,35 @@ async function initializeLab(root: HTMLElement) {
     diagnosticMaterials.clear();
   }
 
+  // GLTFLoader maps KHR_materials_unlit to MeshBasicMaterial. A regular
+  // MeshStandardMaterial can still have a valid color map: never misreport it
+  // as a missing texture simply because it is physically lit.
+  function colorMap(source: import('three').Material): import('three').Texture | null {
+    if (!THREE) return null;
+    if (source instanceof THREE.MeshBasicMaterial || source instanceof THREE.MeshStandardMaterial ||
+        source instanceof THREE.MeshToonMaterial) return source.map;
+    return null;
+  }
+
   function updateMaterialSummary() {
     if (!THREE) return;
     const all = new Set<import('three').Material>();
     originalMaterials.forEach((assigned) => {
       (Array.isArray(assigned) ? assigned : [assigned]).forEach((material) => all.add(material));
     });
+    const count = [...all].filter((material) => !!colorMap(material)).length;
+    const normals = [...all].filter((material) =>
+      material instanceof THREE!.MeshStandardMaterial && !!material.normalMap).length;
     const unlit = [...all].filter((material) => material instanceof THREE!.MeshBasicMaterial).length;
-    const blend = [...all].filter((material) => material.transparent).length;
+    const transparent = [...all].filter((material) => material.transparent).length;
     const missingMaps = [...all].filter((material) =>
-      /face|eye/i.test(material.name) &&
-      (!(material instanceof THREE!.MeshBasicMaterial) || !material.map)).map((m) => m.name);
+      /face|eye/i.test(material.name) && !colorMap(material)).map((material) => material.name);
     materialSummary.textContent =
-      all.size + ' materiais distintos; ' + unlit + ' sem iluminação (unlit); ' +
-      blend + ' com transparência. ' +
-      (missingMaps.length ? 'Sem textura de cor incorporada: ' + missingMaps.join(', ') + '. ' : '') +
-      'Uma silhueta não comprova fidelidade dos shaders.';
+      all.size + ' materiais · ' + count + ' mapas de cor · ' +
+      normals + ' mapas de normais · ' + unlit + ' unlit · ' +
+      transparent + ' transparentes. ' +
+      (missingMaps.length ? 'Sem mapas de cor: ' + missingMaps.join(', ') + '. ' : '') +
+      'Os mapas RGB e normais convertidos não reproduzem o shader proprietário.';
   }
 
   function applyRenderMode(mode: typeof renderMode) {
@@ -289,16 +302,33 @@ async function initializeLab(root: HTMLElement) {
       originalMaterials.forEach((original, mesh) => {
         const transform = (source: import('three').Material): import('three').Material => {
           let material: import('three').Material;
+          const map = colorMap(source);
+          const baseColor = source instanceof THREE!.MeshBasicMaterial ||
+            source instanceof THREE!.MeshStandardMaterial ? source.color.clone() :
+            new THREE!.Color(0xffffff);
           if (mode === 'opaque') {
             material = source.clone();
-            // Diagnostic alpha cutout, retaining the color maps where present.
-            // This can alter the appearance of hair and cloth; it is NOT a fidelity fix.
+            // Diagnostic alpha cutout, not an approved treatment for transparent hair.
             material.transparent = false;
             material.alphaTest = .18;
             material.depthWrite = true;
             material.opacity = 1;
             material.side = THREE!.DoubleSide;
             material.blending = THREE!.NormalBlending;
+          } else if (mode === 'color') {
+            // Color-only makes the recovered source diffuse atlas visible independently
+            // of moonlight, tone mapping, shadows or original GLSL shader assumptions.
+            material = new THREE!.MeshBasicMaterial({
+              map, color: baseColor, side: THREE!.DoubleSide,
+              transparent: false, depthWrite: true, toneMapped: false,
+            });
+          } else if (mode === 'toon') {
+            // The original anime shader is unavailable; this is a controlled
+            // approximation with existing textures and lighting, not game fidelity.
+            material = new THREE!.MeshToonMaterial({
+              map, color: baseColor, side: THREE!.DoubleSide,
+              transparent: false, depthWrite: true,
+            });
           } else if (mode === 'normals') {
             material = new THREE!.MeshNormalMaterial({ side: THREE!.DoubleSide });
           } else {
