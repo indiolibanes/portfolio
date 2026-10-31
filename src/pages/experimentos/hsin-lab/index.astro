@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Bancada v1.0.4 · Estudo de aparência e rig</p>
+      <p class="hsin-lab__version">Bancada v1.0.5 · Color Restoration / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -67,10 +67,12 @@ import '../../../styles/hsin-local-lab.css';
 
         <div class="hsin-lab__group">
           <h2>02B · Diagnóstico visual</h2>
-          <p class="hsin-lab__small">Se o GLB mostrar apenas uma silhueta, alterne os modos abaixo. Eles são temporários, não modificam o arquivo ou aprovam os materiais originais.</p>
+          <p class="hsin-lab__small">Selecione a v1.0.5 no aparelho. Se aparecer apenas uma silhueta ou uma face monocromática, compare os modos abaixo. Eles alteram apenas a visualização, sem editar o arquivo.</p>
           <label for="hsin-render-mode">Modo de materiais</label>
           <select id="hsin-render-mode" data-hsin-render-mode disabled>
-            <option value="original">Original exportado (unlit/alpha BLEND)</option>
+            <option value="original">Materiais do GLB selecionado (fidelidade a conferir)</option>
+            <option value="color">RGB restaurado · cores sem iluminação</option>
+            <option value="toon">Toon · iluminação estilizada experimental</option>
             <option value="opaque">Texturas + opacidade diagnóstica</option>
             <option value="clay">Argila iluminada (sem texturas)</option>
             <option value="normals">Normais de superfície</option>
@@ -80,8 +82,8 @@ import '../../../styles/hsin-local-lab.css';
             <button type="button" data-hsin-rear disabled>Ver de trás (−Z)</button>
           </div>
           <p class="hsin-lab__small" data-hsin-material-summary>O inventário aparecerá após selecionar o GLB.</p>
-          <p class="hsin-lab__small">v1.0.4 traz uma aproximação PBR experimental: compare com a v1.0.3 no mesmo enquadramento. Materiais mais luminosos não demonstram fidelidade ao shader original.</p>
-          <p class="hsin-lab__small"><strong>Limitação:</strong> os materiais Face/Eye do GLB podem não ter texturas incorporadas. Nenhum modo recupera shaders ausentes da exportação.</p>
+          <p class="hsin-lab__small">v1.0.5 recupera os mapas RGB e recompõe quatro mapas de normais compactados (Up, Down, Cloth e Tail). Compare <strong>Original → RGB restaurado → Toon</strong> no mesmo enquadramento. A coloração ainda não é certificada como fiel aos shaders do jogo.</p>
+          <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>
         </div>
 
         <div class="hsin-lab__group">
