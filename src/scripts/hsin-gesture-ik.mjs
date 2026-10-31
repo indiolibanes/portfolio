@@ -1,0 +1,239 @@
+/**
+ * Hsin v1.0.7 — local-only right-hand gesture experiment.
+ * No assets, remote calls, external rig or implicit animation.
+ *
+ * A tap on the actual rendered face defines the target. Damped CCD rotates
+ * ONLY the proven contiguous right-arm bone chain. This is diagnostic IK,
+ * not a production-ready pose or anatomically validated finger contact.
+ */
+export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onStatus, invalidate, getFaceMeshes }) {
+  const NAMES = {
+    clavicle: 'Bip001Clavicle.R',
+    upper: 'Bip001UpperArm.R',
+    forearm: 'Bip001Forearm.R',
+    wrist: 'Bip001Hand.R',
+    fingerBase: 'Bip001Finger1.R',
+    fingerMiddle: 'Bip001Finger11.R',
+    fingerTip: 'Bip001Finger12.R',
+  };
+  const LIMITS = [
+    [NAMES.wrist, 38],
+    [NAMES.forearm, 135],
+    [NAMES.upper, 110],
+    [NAMES.clavicle, 23],
+  ];
+  const SOFT_STEP = THREE.MathUtils.degToRad(10);
+  const EPSILON = 1e-6;
+  const markerGeometry = new THREE.SphereGeometry(0.012, 10, 8);
+  const markerMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffcc70, depthTest: false, depthWrite: false,
+    transparent: true, opacity: 0.96, toneMapped: false,
+  });
+  const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+  marker.renderOrder = 10000;
+  marker.visible = false;
+  scene.add(marker);
+
+  let bones = new Map();
+  let rest = new Map();
+  let target = null;
+  let picking = false;
+  let disposed = false;
+  let lastError = null;
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  function attach(boneList, originalQuaternions) {
+    bones = new Map(boneList.map((bone) => [bone.name, bone]));
+    rest = originalQuaternions;
+    target = null;
+    marker.visible = false;
+    picking = false;
+    orbit.enabled = true;
+    lastError = null;
+    invalidate();
+    const missing = [...Object.values(NAMES)].filter((name) => !bones.has(name));
+    if (missing.length) {
+      onStatus('A cadeia direita não está completa: ' + missing.join(', '));
+      return false;
+    }
+    const hand = bones.get(NAMES.wrist);
+    const forearm = bones.get(NAMES.forearm);
+    const upper = bones.get(NAMES.upper);
+    const clavicle = bones.get(NAMES.clavicle);
+    if (hand.parent !== forearm || forearm.parent !== upper ||
+        upper.parent !== clavicle) {
+      onStatus('A hierarquia da cadeia direita não corresponde ao GLB auditado. IK desativado.');
+      return false;
+    }
+    return true;
+  }
+
+  function chooseTarget() {
+    if (disposed || !bones.get(NAMES.fingerTip)) return false;
+    picking = true;
+    orbit.enabled = false;
+    canvas.style.cursor = 'crosshair';
+    onStatus('Toque no canto dos lábios da Hsin. O alvo será colocado na superfície real da malha facial.');
+    return true;
+  }
+  function cancelTargetSelection() {
+    picking = false;
+    orbit.enabled = true;
+    canvas.style.cursor = '';
+  }
+  function pointerDown(event) {
+    if (!picking || disposed || !event.isPrimary) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    pointer.set(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1,
+    );
+    raycaster.setFromCamera(pointer, camera);
+    const faces = getFaceMeshes().filter((mesh) => mesh.visible);
+    const hit = raycaster.intersectObjects(faces, false)[0];
+    if (!hit) {
+      onStatus('Não encontrei a superfície facial nesse ponto. Enquadre o rosto e toque na região da boca.');
+      return;
+    }
+    // Small camera-facing lift keeps the marker visible and avoids accidental
+    // penetration of the face. This offset is visual, not a collision solver.
+    const lift = new THREE.Vector3().subVectors(camera.position, hit.point)
+      .normalize().multiplyScalar(0.008);
+    target = hit.point.clone().add(lift);
+    marker.position.copy(target);
+    marker.visible = true;
+    cancelTargetSelection();
+    lastError = null;
+    invalidate();
+    onStatus('Alvo definido na face. Acione Simular gesto; use Desfazer para restaurar o rig.');
+  }
+  canvas.addEventListener('pointerdown', pointerDown, true);
+
+  function resetTarget() {
+    target = null;
+    marker.visible = false;
+    cancelTargetSelection();
+    lastError = null;
+    invalidate();
+  }
+  function getTarget() { return target?.clone() ?? null; }
+  function setMarkerVisible(value) {
+    marker.visible = !!value && !!target;
+    invalidate();
+  }
+  function fingertip() {
+    const middle = bones.get(NAMES.fingerMiddle);
+    const distal = bones.get(NAMES.fingerTip);
+    if (!middle || !distal) return null;
+    const m = middle.getWorldPosition(new THREE.Vector3());
+    const d = distal.getWorldPosition(new THREE.Vector3());
+    // The fingertip has no explicit terminal bone in the exported skeleton.
+    return d.clone().addScaledVector(d.clone().sub(m), 0.70);
+  }
+  function restoreChain() {
+    for (const [name] of LIMITS) {
+      const bone = bones.get(name);
+      const quaternion = rest.get(bone);
+      if (quaternion) bone.quaternion.copy(quaternion);
+    }
+    bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+    lastError = null;
+    invalidate();
+  }
+  function pose() {
+    if (!target) return { ok: false, message: 'Primeiro escolha um ponto na boca com o botão Definir alvo.' };
+    const chain = LIMITS.map(([name, max]) =>
+      ({ bone: bones.get(name), limit: THREE.MathUtils.degToRad(max), name }));
+    if (chain.some((item) => !item.bone || !rest.get(item.bone))) {
+      return { ok: false, message: 'Rig incompleto ou pose original ausente. Não foi aplicado nenhum movimento.' };
+    }
+    // Each solve starts from the same baseline; never accumulate rotations.
+    restoreChain();
+    const tip = bones.get(NAMES.fingerTip);
+    let iterations = 0;
+    for (; iterations < 22; iterations++) {
+      let current = fingertip();
+      if (!current || current.distanceTo(target) < 0.012) break;
+      for (const { bone, limit } of chain) {
+        const joint = bone.getWorldPosition(new THREE.Vector3());
+        const currentVec = current.clone().sub(joint);
+        const targetVec = target.clone().sub(joint);
+        if (currentVec.lengthSq() < EPSILON || targetVec.lengthSq() < EPSILON) continue;
+        const angle = currentVec.angleTo(targetVec);
+        if (!Number.isFinite(angle) || angle < 0.0001) continue;
+        const axisWorld = currentVec.clone().cross(targetVec);
+        if (axisWorld.lengthSq() < EPSILON) continue;
+        axisWorld.normalize();
+        const parentQ = bone.parent.getWorldQuaternion(new THREE.Quaternion());
+        const axisLocal = axisWorld.applyQuaternion(parentQ.invert()).normalize();
+        const angleDelta = Math.min(SOFT_STEP, angle * 0.66);
+        bone.quaternion.premultiply(
+          new THREE.Quaternion().setFromAxisAngle(axisLocal, angleDelta),
+        ).normalize();
+        const original = rest.get(bone);
+        const deviation = original.angleTo(bone.quaternion);
+        if (deviation > limit) {
+          bone.quaternion.copy(original).slerp(bone.quaternion, limit / deviation);
+        }
+        bone.updateWorldMatrix(true, true);
+        current = fingertip();
+      }
+    }
+    const distance = fingertip()?.distanceTo(target) ?? Infinity;
+    lastError = Number.isFinite(distance) ? distance : null;
+    invalidate();
+    return {
+      ok: true, iterations, distance,
+      converged: distance <= 0.02,
+      message: 'Teste IK: ponta do indicador a ' + distance.toFixed(3) +
+        ' unidades do alvo; ' + iterations + ' iterações. Verifique anatomia, cotovelo e clipping.',
+    };
+  }
+  function rotations() {
+    return LIMITS.map(([name]) => {
+      const bone = bones.get(name);
+      if (!bone) return null;
+      return { name, quaternion: bone.quaternion.toArray().map((v) => Number(v.toFixed(8))) };
+    }).filter(Boolean);
+  }
+  function restoreRotations(entries) {
+    if (!Array.isArray(entries) || entries.length > 4) return false;
+    const valid = entries.every((entry) =>
+      LIMITS.some(([name]) => name === entry?.name) &&
+      Array.isArray(entry.quaternion) && entry.quaternion.length === 4 &&
+      entry.quaternion.every((value) => typeof value === 'number' && Number.isFinite(value) && Math.abs(value) <= 1));
+    if (!valid) return false;
+    for (const entry of entries) {
+      const bone = bones.get(entry.name);
+      if (!bone) continue;
+      bone.quaternion.fromArray(entry.quaternion).normalize();
+    }
+    bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+    invalidate();
+    return true;
+  }
+  function getDiagnostics() {
+    return { ready: LIMITS.every(([name]) => bones.has(name)), picking,
+      target: target?.toArray() ?? null, distance: lastError,
+      chain: LIMITS.map(([name, max]) => ({ name, maximumDeviationDegrees: max })),
+    };
+  }
+  function dispose() {
+    if (disposed) return;
+    disposed = true;
+    canvas.removeEventListener('pointerdown', pointerDown, true);
+    cancelTargetSelection();
+    scene.remove(marker);
+    markerGeometry.dispose();
+    markerMaterial.dispose();
+  }
+  return {
+    attach, chooseTarget, cancelTargetSelection, resetTarget,
+    getTarget, setMarkerVisible, restoreChain, pose, rotations,
+    restoreRotations, getDiagnostics, dispose,
+  };
+}
