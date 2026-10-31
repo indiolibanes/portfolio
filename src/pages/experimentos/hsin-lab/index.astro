@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Bancada v1.0.8 · Gesture Animation / Android</p>
+      <p class="hsin-lab__version">Bancada v1.0.9 · Character Acting / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -129,12 +129,20 @@ import '../../../styles/hsin-local-lab.css';
         </div>
 
         <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
-          <h2>03A · The Moon Fox’s Secret — gesto animado</h2>
-          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. O botão <strong>Definir alvo nos lábios</strong> ativa um toque no rosto. Em seguida, <strong>Animar gesto</strong> movimenta o braço gradualmente até a pose já validada na bancada; <strong>Desfazer gesto</strong> também anima o retorno. Sem colisões ou pose anatômica aprovada.</p>
+          <h2>03A · The Moon Fox’s Secret — atuação</h2>
+          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. <strong>Definir alvo nos lábios</strong> seleciona o contato. A atuação separa antecipação, elevação e acomodação, mantendo a pose labial da v1.0.8 como referência. <strong>Desfazer gesto</strong> anima o retorno. Sem colisões nem validação anatômica definitiva.</p>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
             <button type="button" data-hsin-solve-gesture disabled>2. Animar gesto</button>
           </div>
+          <label for="hsin-acting-style">Atuação e movimento secundário</label>
+          <select id="hsin-acting-style" data-hsin-acting-style disabled>
+            <option value="classic">Referência v1.0.8 · interpolação uniforme</option>
+            <option value="subtle">Discreta · dedos e cabeça (30%)</option>
+            <option value="natural" selected>Natural · três tempos (55%)</option>
+            <option value="theatrical">Teatral · três tempos (85%)</option>
+          </select>
+          <p class="hsin-lab__small">A coreografia separa antecipação, elevação e acomodação; o indicador continua usando o alvo calculado por IK. Pequenas rotações de cabeça e dedos são experimentais e reversíveis. Compare com a referência v1.0.8 antes de aprovar a atuação.</p>
           <label for="hsin-motion-duration">Ritmo da animação (somente da bancada)</label>
           <select id="hsin-motion-duration" data-hsin-motion-duration disabled>
             <option value="800">Rápido · 0,8 s</option>
