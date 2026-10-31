@@ -179,7 +179,7 @@ async function initializeLab(root: HTMLElement) {
       directorButton.textContent = state === 'stopped' ? 'Iniciar ciclo de QA' : 'Parar ciclo de QA';
       directorButton.setAttribute('aria-pressed', String(state !== 'stopped'));
       if (state === 'gesture') {
-        const result = gestureLab?.animateToPose(1800, { actingLevel: .3, staged: true });
+        const result = gestureLab?.animateToPose(1800, { actingLevel: .3, staged: true, spatial: actingStyle.value === 'spatial' });
         if (!result?.ok) { director.stop(); directorStatus.textContent = result?.message ?? 'Rig indisponível.'; }
       }
       if (state === 'release') gestureLab?.animateRestore(1400);
@@ -1380,6 +1380,7 @@ async function initializeLab(root: HTMLElement) {
       sourceName: fileMetadata?.name ?? '',
       morphs,
       rotations,
+      contactLocal: gestureLab?.getContactLocal() ?? null,
       gestureQuaternions: gestureLab?.rotations() ?? [],
       gestureDiagnostics: gestureLab?.getDiagnostics() ?? null,
     };
@@ -1400,6 +1401,7 @@ async function initializeLab(root: HTMLElement) {
       if (!data || typeof data !== 'object') throw new Error('Preset inválido.');
       const pose = data as {schema?: unknown; sourceName?: unknown; morphs?: Record<string, unknown>;
         rotations?: Array<{ name?: unknown; degrees?: Record<string, unknown> }>;
+        contactLocal?: unknown;
         gestureQuaternions?: Array<{ name?: unknown; quaternion?: unknown }>};
       if (pose.schema !== 'hsin-local-pose-v1' || !pose.morphs ||
           typeof pose.morphs !== 'object' || !Array.isArray(pose.rotations)) {
@@ -1425,6 +1427,9 @@ async function initializeLab(root: HTMLElement) {
           if (typeof degrees === 'number' && Number.isFinite(degrees) && Math.abs(degrees) <= 65)
             setBoneAxis(bone, axis, degrees);
         }
+      }
+      if (pose.contactLocal != null && !gestureLab?.restoreContactLocal(pose.contactLocal)) {
+        throw new Error('Alvo local incompatível com o rig carregado.');
       }
       if (pose.gestureQuaternions?.length) {
         if (!gestureLab?.restoreRotations(pose.gestureQuaternions)) {
