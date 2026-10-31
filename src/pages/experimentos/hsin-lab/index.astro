@@ -11,6 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
+      <p class="hsin-lab__version">Bancada v1.0.4 · Estudo de aparência e rig</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -29,6 +30,7 @@ import '../../../styles/hsin-local-lab.css';
           <button data-hsin-full type="button" disabled>Corpo inteiro</button>
           <button data-hsin-face type="button" disabled>Aproximar rosto</button>
           <button data-hsin-shot type="button" disabled>Salvar captura PNG</button>
+          <button data-hsin-side-by-side type="button" disabled>Comparar A/B em PNG</button>
           <span data-hsin-fps class="hsin-lab__metric" aria-live="off">Renderização sob demanda</span>
         </div>
       </div>
@@ -78,6 +80,7 @@ import '../../../styles/hsin-local-lab.css';
             <button type="button" data-hsin-rear disabled>Ver de trás (−Z)</button>
           </div>
           <p class="hsin-lab__small" data-hsin-material-summary>O inventário aparecerá após selecionar o GLB.</p>
+          <p class="hsin-lab__small">v1.0.4 traz uma aproximação PBR experimental: compare com a v1.0.3 no mesmo enquadramento. Materiais mais luminosos não demonstram fidelidade ao shader original.</p>
           <p class="hsin-lab__small"><strong>Limitação:</strong> os materiais Face/Eye do GLB podem não ter texturas incorporadas. Nenhum modo recupera shaders ausentes da exportação.</p>
         </div>
 
@@ -94,6 +97,8 @@ import '../../../styles/hsin-local-lab.css';
           </select>
           <label for="hsin-bone-search">Filtrar ossos por nome</label>
           <input id="hsin-bone-search" type="search" placeholder="Bip001Hand, Finger1, DEF, ORG, fk…" data-hsin-bone-search disabled />
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-influential checked disabled /> Mostrar apenas ossos com influência direta no skinning</label>
+          <div class="hsin-lab__view-actions"><button type="button" data-hsin-finger-test disabled>Selecionar Finger1.R (candidato a indicador)</button></div>
           <label for="hsin-bone">Osso selecionado</label>
           <select id="hsin-bone" data-hsin-bone disabled><option value="">Selecione um osso</option></select>
           <div class="hsin-lab__bone-axes" data-hsin-axes>
@@ -107,6 +112,12 @@ import '../../../styles/hsin-local-lab.css';
         <div class="hsin-lab__group">
           <h2>04 · Evidências privadas</h2>
           <button data-hsin-report type="button" disabled>Exportar diagnóstico JSON</button>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-save-pose disabled>Salvar preset de pose JSON</button>
+            <label for="hsin-load-pose" class="hsin-lab__filelabel">Restaurar preset salvo (local)</label>
+            <input id="hsin-load-pose" type="file" accept=".json,application/json" data-hsin-load-pose disabled />
+          </div>
+          <p class="hsin-lab__small">O preset contém pesos dos morph targets e rotações locais dos ossos, não imagens ou malhas. Escolha um arquivo compatível com a mesma Hsin.</p>
           <p class="hsin-lab__small">O relatório registra o nome e o tamanho do arquivo, os pesos faciais e a transformação dos ossos modificados. <strong>Não contém malhas nem texturas.</strong> Se preferir, não o compartilhe.</p>
         </div>
       </div>
