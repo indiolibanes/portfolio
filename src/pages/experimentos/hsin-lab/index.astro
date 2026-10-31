@@ -83,6 +83,16 @@ import '../../../styles/hsin-local-lab.css';
             <option value="clay">Argila iluminada (sem texturas)</option>
             <option value="normals">Normais de superfície</option>
           </select>
+          <div class="hsin-lab__direct-panel" aria-label="Atalhos de materiais Face_D e Eye_D">
+            <p class="hsin-lab__small"><strong>Diagnóstico direto — use estes botões no Android:</strong> cada um aplica o modo sem abrir o seletor de arquivos. Se faltar um mapa de textura, uma mensagem aparecerá aqui.</p>
+            <div class="hsin-lab__direct-buttons">
+              <button type="button" data-hsin-mode-button="face-direct" disabled>Face_D direto</button>
+              <button type="button" data-hsin-mode-button="face-data" disabled>Face_D reconstruído</button>
+              <button type="button" data-hsin-mode-button="eye-direct" disabled>Eye_D direto</button>
+              <button type="button" data-hsin-mode-button="eye-data" disabled>Eye_D reconstruído</button>
+            </div>
+            <p class="hsin-lab__mode-feedback" data-hsin-mode-feedback role="status" aria-live="polite">Carregue um GLB e escolha um dos quatro testes.</p>
+          </div>
           <p class="hsin-lab__small">Teste direto usa o mapa do material correspondente em MeshBasicMaterial branco, sem iluminação, transparência, vertex colors ou alpha test. UV0/UV1 mostram coordenadas por gradiente e quadriculado; ausência de atributo será avisada. A amostra ainda requer avaliação visual.</p>
           <p class="hsin-lab__small">Teste diferencial v1.0.6C: compare Face_D direct sample com Face_D pixels reconstruídos. O segundo modo lê o bitmap já incorporado ao GLB, converte-o em RGBA opaco e cria uma DataTexture local de até 1024px. Se apenas a DataTexture mostrar cores, investigue a rota de upload/configuração da textura original no WebGL. Os arquivos não são enviados ao servidor.</p>
           <label for="hsin-lighting">Intensidade das luzes (afeta apenas materiais iluminados)</label>
