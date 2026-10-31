@@ -146,14 +146,28 @@ check('404: best score storage is guarded', /try \{ best = Number\(localStorage/
 check('404: old runner is gone', !notFound.includes('sophia-runner') && !read('src/styles/global.css').includes('sophia-runner'));
 const portraitSrc = read('src/components/SophiaPortrait.astro');
 const loungeSrc = read('src/components/SophiaLounge.astro');
+const room2dSrc = read('src/components/SophiaRoom2DTemp.astro');
+const room2dCss = read('src/styles/sophia-room2d-temp.css');
+const room2dScript = read('src/scripts/sophia-room2d-temp.js');
 const mascotSrc = read('src/components/SophiaMascot.astro');
 const illustrationCss = read('src/styles/sophia-illustration.css');
-check('404: portrait, mascot and lounge are wired in',
-  ['SophiaPortrait', 'SophiaMascot', 'SophiaLounge'].every((n) => notFound.includes(`<${n} />`)) && !/SophiaObserver|SophiaGamer|tetris-fox/.test(notFound));
+check('404: portrait, mascot and temporary 2D room are wired in',
+  ['SophiaPortrait', 'SophiaMascot', 'SophiaRoom2DTemp'].every((n) => notFound.includes(`<${n} />`))
+  && !notFound.includes('<SophiaLounge />')
+  && !/SophiaObserver|SophiaGamer|tetris-fox/.test(notFound));
+check('404: faithful 2D room keeps original architecture but not the old fox',
+  room2dSrc.includes('loungeMarkup()')
+  && room2dCss.includes('.sophia-room2d .slo-fox { display: none !important; }')
+  && ['run', 'play', 'stress', 'throw', 'leave'].every((name) => room2dSrc.includes(name))
+  && room2dScript.includes('IntersectionObserver')
+  && room2dCss.includes('prefers-reduced-motion: reduce'));
 check('404: only the mascot is pixel art; portrait and lounge are vector illustrations',
   mascotSrc.includes('crispEdges') && !read('src/sophia-portrait.ts').includes('crispEdges') && !read('src/sophia-lounge.ts').includes('crispEdges'));
-check('404: decorative art is hidden from assistive tech, the lounge has one label',
-  portraitSrc.includes('aria-hidden="true"') && mascotSrc.includes('aria-hidden="true"') && /role="img"\s+aria-label=/.test(loungeSrc));
+check('404: decorative art is hidden from assistive tech, the 2D room has one label',
+  portraitSrc.includes('aria-hidden="true"') && mascotSrc.includes('aria-hidden="true"')
+  && /role="img"\s+aria-label=/.test(room2dSrc)
+  && room2dSrc.includes('aria-hidden="true"')
+  && /alt=""/.test(room2dSrc));
 check('404: illustration animation is off for reduced motion and paused off screen',
   /@media \(prefers-reduced-motion: no-preference\)/.test(illustrationCss) && illustrationCss.includes("[data-paused='true']") && notFound.includes('[data-art-anim]'));
 check('404: illustrations stay visible in Legacy', illustrationCss.includes("html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art"));
