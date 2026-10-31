@@ -585,32 +585,6 @@ async function initializeLab(root: HTMLElement) {
       });
       return;
     }
-      const family = mode.startsWith('face-') ? 'face' : 'eye';
-      const matches = [...originalMaterials.values()].flatMap((v) => Array.isArray(v) ? v : [v])
-        .filter((m) => materialFamily(m) === family && colorMap(m));
-      if (!matches.length) {
-        // A silent revert previously looked like selecting "Materiais do GLB".
-        // Explain *which* source is loaded and *why* direct sampling cannot run.
-        renderMode = 'original';
-        renderModeSelect.value = 'original';
-        const from = fileMetadata?.name || 'GLB sem nome';
-        const available = [...originalMaterials.values()]
-          .flatMap((value) => Array.isArray(value) ? value : [value])
-          .filter((material) => materialFamily(material) === family);
-        feedback('Modo ' + mode + ' indisponível em ' + from +
-          ': ' + (available.length ? 'material encontrado, mas sem mapa RGB embutido.' :
-            'nenhuma malha/material Face/Eye reconhecida.') +
-          ' Carregue a v1.0.5 COLOR RESTORATION, não o GLB original v1.1.');
-        modeButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
-        invalidate(); return;
-      }
-      isolationSelect.value = family; isolateParts(family);
-      feedback('Aplicado ' + mode + ' a ' + (fileMetadata?.name || 'GLB') +
-        ': ' + matches.length + ' material(is) com mapa. ' +
-        matches.map((m) => { const map = colorMap(m)!; return m.name + ' → ' + (map.name || '(mapa sem nome)') +
-          ' · UV' + map.channel + ' · imagem ' + (map.image ? 'presente' : 'ausente'); }).join('; ') +
-        '. Confira a imagem; nome e presença do mapa não comprovam amostragem correta.', true);
-    }
     if (mode !== 'original') {
       originalMaterials.forEach((original, mesh) => {
         const transform = (source: import('three').Material): import('three').Material => {
