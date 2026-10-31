@@ -1,3 +1,4 @@
+import { PASS_B_NAMES } from './hsin-face-morph-audit.mjs';
 /** Morph adapter: no URLs/assets, no changes to bones/materials. THREE is injected. */
 export const PUPIL_NAMES = ['Up','Down','In','Out'].flatMap(axis => ['R','L'].map(side => `Pupil_${axis}_${side}`));
 export const FACE_ACTING_NAMES = ['E_Close_R','E_Close_L','M_Smile_R','M_Smile_L',...PUPIL_NAMES];
@@ -67,31 +68,41 @@ export function cursorHeadOffset(THREE, ndc, camera, head, radius, localCenter=[
 }
 
 
-export function projectGazeOffset(THREE, offset, calibration) {
-  if(!calibration.ready)return [0,0,0];
+export function measuredGazeAxes(THREE, calibration) {
+  if(!calibration.ready)return undefined;
   const horizontal=new THREE.Vector3(...calibration.directions.Pupil_In_R)
     .sub(new THREE.Vector3(...calibration.directions.Pupil_In_L)).normalize();
   const vertical=new THREE.Vector3(...calibration.directions.Pupil_Up_R)
     .add(new THREE.Vector3(...calibration.directions.Pupil_Up_L));
   vertical.addScaledVector(horizontal,-vertical.dot(horizontal)).normalize();
-  const desired=new THREE.Vector3(...offset);
+  return {horizontal:horizontal.toArray(),vertical:vertical.toArray()};
+}
+export function projectGazeOffset(THREE, offset, calibration) {
+  const axes=measuredGazeAxes(THREE,calibration);if(!axes)return [0,0,0];
+  const horizontal=new THREE.Vector3(...axes.horizontal),vertical=new THREE.Vector3(...axes.vertical),desired=new THREE.Vector3(...offset);
   return horizontal.multiplyScalar(desired.dot(horizontal)).addScaledVector(vertical,desired.dot(vertical)).clampLength(0,1).toArray();
 }
 
-export function createFaceBinding(meshes, baseline, calibration) {
+export function createFaceBinding(meshes, baseline, calibration, audit={limits:{}}) {
+  const names=[...new Set([...FACE_ACTING_NAMES,...PASS_B_NAMES])];
   const channels = new Set();
-  for(const mesh of meshes) for(const name of FACE_ACTING_NAMES) if(mesh.morphTargetDictionary?.[name]!==undefined)channels.add(name);
+  for(const mesh of meshes) for(const name of names) if(mesh.morphTargetDictionary?.[name]!==undefined)channels.add(name);
   return {
     channels:[...channels],
     apply(state) {
       const gazeMagnitude=Math.hypot(...state.gaze);
-      for(const [mesh,base] of baseline) for(const name of FACE_ACTING_NAMES) {
+      for(const [mesh,base] of baseline) for(const name of names) {
         const i=mesh.morphTargetDictionary?.[name];if(i===undefined)continue;
         const v=base[i];let value=v;
         if(name==='E_Close_R')value=v+(1-v)*state.closeR;
         else if(name==='E_Close_L')value=v+(1-v)*state.closeL;
-        else if(name==='M_Smile_R')value=v+(1-v)*state.smileR;
-        else if(name==='M_Smile_L')value=v+(1-v)*state.smileL;
+        else if(name==='M_Smile_R')value=v+(1-v)*Math.min(state.smileR,state.policy==='b'?(audit.limits[name]??0):1);
+        else if(name==='M_Smile_L')value=v+(1-v)*Math.min(state.smileL,state.policy==='b'?(audit.limits[name]??0):1);
+        else if(audit.limits[name]>0) {
+          let overlay=Math.max(0,Math.min(audit.limits[name],state.overlays?.[name]??0));
+          if(/^E_(Smile|Squint)_/.test(name))overlay*=Math.pow(1-(name.endsWith('_R')?state.closeR:state.closeL),2);
+          value=v+(1-v)*overlay;
+        }
         else if(calibration.ready && calibration.directions[name]) {
           const d=calibration.directions[name], weight=Math.max(0,d.reduce((sum,x,j)=>sum+x*state.gaze[j],0));
           value=v*(1-gazeMagnitude)+(1-v)*weight;
