@@ -77,11 +77,19 @@ import '../../../styles/hsin-local-lab.css';
             <option value="clay">Argila iluminada (sem texturas)</option>
             <option value="normals">Normais de superfície</option>
           </select>
+          <label for="hsin-lighting">Intensidade das luzes (afeta apenas materiais iluminados)</label>
+          <select id="hsin-lighting" data-hsin-lighting disabled>
+            <option value="original">Alta · bancada anterior (2 / 2,8 / 1,8)</option>
+            <option value="controlled">Controlada · comparação (0,35 / 0,8 / 0,25)</option>
+            <option value="off">Sem luz · teste de materiais unlit</option>
+          </select>
+          <p class="hsin-lab__small">Alterne as luzes mantendo material, expressão e câmera. O modo RGB sem luz deve permanecer igual: luz não corrige um material unlit. Nenhuma das opções reproduz o shader original.</p>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-front disabled>Ver de frente (+Z)</button>
             <button type="button" data-hsin-rear disabled>Ver de trás (−Z)</button>
           </div>
           <p class="hsin-lab__small" data-hsin-material-summary>O inventário aparecerá após selecionar o GLB.</p>
+          <details><summary>Inspecionar materiais e mapas</summary><pre class="hsin-lab__inventory" data-hsin-material-details>Aguardando arquivo.</pre></details>
           <p class="hsin-lab__small">v1.0.5 recupera os mapas RGB e recompõe quatro mapas de normais compactados (Up, Down, Cloth e Tail). Compare <strong>Original → RGB restaurado → Toon</strong> no mesmo enquadramento. A coloração ainda não é certificada como fiel aos shaders do jogo.</p>
           <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>
         </div>
