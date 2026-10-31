@@ -70,3 +70,13 @@
 .hsin-lab__atlas figure { margin:0; min-width:0; }
 .hsin-lab__atlas canvas { display:block; width:100%; max-width:512px; height:auto; border-radius:.5rem; background:#1a2130; }
 .hsin-lab__atlas figcaption { font:.72rem/1.45 var(--font-ui); margin:.35rem 0; color:#e3d2b8; overflow-wrap:anywhere; }
+
+/* Explicit diagnostic action buttons, independent of Android native select. */
+.hsin-lab__direct-panel { margin: .8rem 0 1rem; padding: .65rem 0; border-top: 1px solid #baa07b55; border-bottom: 1px solid #baa07b55; }
+.hsin-lab__direct-buttons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
+.hsin-lab__direct-buttons button { min-height: 46px; font-size:.83rem; line-height:1.3; text-align:center; }
+.hsin-lab__direct-buttons button[aria-pressed="true"] { border: 2px solid #f2d196; background:#3b506b; }
+.hsin-lab__mode-feedback { font:.82rem/1.5 var(--font-ui); color:#e8d7b9; overflow-wrap:anywhere; margin:.65rem 0; }
+.hsin-lab__mode-feedback[data-state="error"] { color:#ffbdad; }
+.hsin-lab__mode-feedback[data-state="success"] { color:#d3e6d2; }
+@media(max-width:380px) { .hsin-lab__direct-buttons { grid-template-columns:1fr; } }
