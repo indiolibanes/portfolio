@@ -139,12 +139,13 @@ import '../../../styles/hsin-local-lab.css';
           <p class="hsin-lab__small" data-hsin-director-status role="status">Defina o alvo nos lábios para experimentar o ciclo. O movimento usa a referência v1.0.9; a trajetória com pole vector ainda está em estudo.</p>
           <label for="hsin-acting-style">Atuação e movimento secundário</label>
           <select id="hsin-acting-style" data-hsin-acting-style disabled>
+            <option value="spatial">Trajetória espacial CCD · experimento sem pole</option>
             <option value="classic">Referência v1.0.8 · interpolação uniforme</option>
             <option value="subtle">Discreta · dedos e cabeça (30%)</option>
             <option value="natural" selected>Natural · três tempos (55%)</option>
             <option value="theatrical">Teatral · três tempos (85%)</option>
           </select>
-          <p class="hsin-lab__small">A coreografia separa antecipação, elevação e acomodação; o indicador continua usando o alvo calculado por IK. Pequenas rotações de cabeça e dedos são experimentais e reversíveis. Compare com a referência v1.0.8 antes de aprovar a atuação.</p>
+          <p class="hsin-lab__small">O modo espacial é um teste com IK CCD por ponto, sem pole vector nem colisão; restaure o braço antes de usá-lo. A coreografia de referência separa antecipação, elevação e acomodação; o indicador continua usando o alvo calculado por IK. Pequenas rotações de cabeça e dedos são experimentais e reversíveis. Compare com a referência v1.0.8 antes de aprovar a atuação.</p>
           <label for="hsin-motion-duration">Ritmo da animação (somente da bancada)</label>
           <select id="hsin-motion-duration" data-hsin-motion-duration disabled>
             <option value="800">Rápido · 0,8 s</option>
