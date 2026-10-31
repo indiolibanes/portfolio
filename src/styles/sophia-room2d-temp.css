@@ -1,0 +1,164 @@
+/* Temporary 2D gamer scene for /404. All animation is CSS, activated only
+ * while the scene is visible. The SVG room remains readable without JS. */
+.sophia-room2d {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  aspect-ratio: 1200 / 510;
+  min-height: 218px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #090d20;
+}
+.sophia-room2d > .sophia-art--lounge {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.sophia-room2d .slo-fox { display: none !important; }
+.sophia-room2d__stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+.sophia-room2d__sprite,
+.sophia-room2d__gamepad {
+  position: absolute;
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.sophia-room2d__sprite {
+  bottom: 4%;
+  left: 26%;
+  width: 35%;
+  transform-origin: 45% 95%;
+}
+.sophia-room2d__sprite--run { width: 43%; bottom: 6%; }
+.sophia-room2d__sprite--throw { width: 41%; left: 20%; bottom: 5%; }
+.sophia-room2d__sprite--leave { width: 40%; bottom: 5%; }
+.sophia-room2d__gamepad {
+  width: 10%;
+  min-width: 30px;
+  left: 20%;
+  bottom: 14%;
+  z-index: 3;
+  transform-origin: 50% 60%;
+}
+.sophia-room2d__impact {
+  position: absolute;
+  left: 14%;
+  bottom: 5%;
+  width: 12%;
+  height: 3%;
+  border-radius: 50%;
+  transform: scale(.3);
+  opacity: 0;
+  background: #ffcf6b;
+  box-shadow: 0 0 16px 6px #ff7d41a8;
+}
+.sophia-room2d[data-running='false'] .sophia-room2d__sprite,
+.sophia-room2d[data-running='false'] .sophia-room2d__gamepad,
+.sophia-room2d[data-running='false'] .sophia-room2d__impact {
+  animation-play-state: paused !important;
+}
+/* A useful static scene if JS is unavailable or motion should be reduced. */
+.sophia-room2d[data-phase='play'] .sophia-room2d__sprite--play,
+.sophia-room2d[data-phase='stress'] .sophia-room2d__sprite--stress,
+.sophia-room2d[data-phase='throw'] .sophia-room2d__sprite--throw,
+.sophia-room2d[data-phase='leave'] .sophia-room2d__sprite--leave,
+.sophia-room2d[data-phase='enter'] .sophia-room2d__sprite--run {
+  opacity: 1;
+}
+.sophia-room2d[data-phase='enter'] .sophia-room2d__sprite--run {
+  animation: sophia-run-in 1.25s cubic-bezier(.18,.53,.2,.98) both;
+}
+.sophia-room2d[data-phase='play'] .sophia-room2d__sprite--play {
+  animation: sophia-button-mash .21s ease-in-out infinite alternate;
+}
+.sophia-room2d[data-phase='stress'] .sophia-room2d__sprite--stress {
+  animation: sophia-frustration .13s steps(2,end) infinite;
+}
+.sophia-room2d[data-phase='throw'] .sophia-room2d__sprite--throw {
+  animation: sophia-release .7s ease-out both;
+}
+.sophia-room2d[data-phase='throw'] .sophia-room2d__gamepad {
+  opacity: 1;
+  animation: sophia-gamepad-impact .82s cubic-bezier(.2,.1,.75,.8) both;
+}
+.sophia-room2d[data-phase='throw'] .sophia-room2d__impact {
+  animation: sophia-impact-flash .82s ease-out both;
+}
+.sophia-room2d[data-phase='leave'] .sophia-room2d__sprite--leave {
+  animation: sophia-storm-off 1.6s ease-in both;
+}
+.sophia-room2d[data-phase='leave'] .sophia-room2d__gamepad,
+.sophia-room2d[data-phase='empty'] .sophia-room2d__gamepad {
+  opacity: 1;
+  left: 10%;
+  bottom: 4%;
+  transform: rotate(175deg) scale(.73);
+  filter: brightness(.74);
+}
+@keyframes sophia-run-in {
+  0% { transform: translateX(-170%) translateY(-3%) rotate(-8deg); opacity: 0; }
+  20% {opacity: 1;}
+  68% {transform: translateX(6%) translateY(-4%) rotate(2deg);}
+  100% {transform: translateX(0) translateY(0) rotate(0);}
+}
+@keyframes sophia-button-mash {
+  0% {transform: translateY(0) rotate(-.8deg);}
+  100% {transform: translateY(-1.5%) rotate(.8deg);}
+}
+@keyframes sophia-frustration {
+  0% {transform:translateX(-1.5%) rotate(-1deg);}
+  100% {transform:translateX(1.5%) rotate(1deg);}
+}
+@keyframes sophia-release {
+  0% {transform: rotate(7deg) translateY(3%);}
+  52% {transform:rotate(-7deg) translateY(-5%);}
+  100% {transform:rotate(0) translateY(0);}
+}
+@keyframes sophia-gamepad-impact {
+  0% {left: 27%; bottom: 54%; transform:translateY(0) rotate(0) scale(.8); opacity: 1;}
+  39% {left: 9%; bottom: 65%; transform:translateY(-5px) rotate(-70deg) scale(.8); opacity: 1;}
+  76% {left: 7%; bottom: 4%; transform:translateY(0) rotate(-175deg) scale(.78);opacity:1;}
+  86% {left: 10%; bottom: 14%; transform:translateY(0) rotate(-200deg) scale(.75);opacity:1;}
+  100% {left: 10%; bottom: 4%; transform:translateY(0) rotate(-185deg) scale(.73);opacity:1;}
+}
+@keyframes sophia-impact-flash {
+  0%, 72% {opacity: 0;transform: scale(.2);}
+  78% {opacity: .95;transform: scale(1.2);}
+  100% {opacity: 0;transform: scale(2.3);}
+}
+@keyframes sophia-storm-off {
+  0% {transform:translateX(0);}
+  28% {transform:translateX(14%) translateY(-2%);}
+  100% {transform:translateX(235%) translateY(0);opacity:1;}
+}
+@media (max-width: 600px) {
+  .sophia-room2d {aspect-ratio: 4 / 3; min-height: 230px;}
+  .sophia-room2d__sprite {width: 66%; bottom: 7%; left: 18%;}
+  .sophia-room2d__sprite--run {width: 76%; left: 14%;}
+  .sophia-room2d__sprite--throw {width: 70%; left: 11%;}
+  .sophia-room2d__sprite--leave {width: 71%; left: 17%;}
+  .sophia-room2d__gamepad {width: 17%;}
+  .sophia-room2d__impact {width: 17%;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .sophia-room2d .sophia-room2d__sprite,
+  .sophia-room2d .sophia-room2d__gamepad,
+  .sophia-room2d .sophia-room2d__impact {animation:none !important;transition:none !important;}
+  .sophia-room2d .sophia-room2d__sprite {opacity:0 !important;}
+  .sophia-room2d .sophia-room2d__sprite--play {opacity:1 !important;}
+  .sophia-room2d .sophia-room2d__gamepad {opacity:0 !important;}
+}

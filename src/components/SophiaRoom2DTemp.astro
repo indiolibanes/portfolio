@@ -1,0 +1,43 @@
+---
+/** Temporary 2D Sophia sequence. The original room SVG remains as scenery;
+ * the old lounge fox is hidden in CSS, not duplicated under the sprite.
+ * No WebGL is loaded for this room. */
+import { loungeMarkup } from '../sophia-lounge';
+// Mobile crops the panoramic SVG instead of letterboxing it.
+const svg = loungeMarkup().replace('<svg class=', '<svg preserveAspectRatio="xMidYMid slice" class=');
+const sprites = ['run', 'play', 'stress', 'throw', 'leave'];
+const base = '/experimental/sophia-2d';
+---
+
+<figure
+  class="sophia-lounge sophia-room2d"
+  data-sophia-room2d
+  data-phase="play"
+  role="img"
+  aria-label="Na sala de jogos, Sophia entra correndo, joga videogame, perde a paciência, atira o controle ao chão e sai indignada. A sequência é uma ilustração humorística."
+>
+  <Fragment set:html={svg} />
+  <div class="sophia-room2d__stage" aria-hidden="true">
+    {sprites.map((pose) => (
+      <img
+        class={`sophia-room2d__sprite sophia-room2d__sprite--${pose}`}
+        src={`${base}/sophia-2d-${pose}.webp`}
+        loading="lazy"
+        decoding="async"
+        alt=""
+        width="570"
+        height="475"
+      />
+    ))}
+    <img
+      class="sophia-room2d__gamepad"
+      src={`${base}/sophia-2d-gamepad.webp`}
+      loading="lazy"
+      decoding="async"
+      width="225"
+      height="176"
+      alt=""
+    />
+    <span class="sophia-room2d__impact" aria-hidden="true"></span>
+  </div>
+</figure>
