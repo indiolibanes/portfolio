@@ -319,7 +319,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       if (bone) restWorld.set(bone, bone.getWorldQuaternion(new THREE.Quaternion()));
     }
     ready = true;
-    rigMessage = DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)) ?
+    rigMessage = DEFORM_LINKS.slice(0, 2).every(([org, def]) => bones.has(org) && bones.has(def)) ?
       'Rig ativo identificado: cadeia ORG e deformadores DEF paralelos.' :
       'Rig ativo identificado, mas faltam deformadores DEF; valide o braço com atenção.';
     rigMessage += ' ' + boneCount + ' joints analisados; braço: ' +
@@ -518,7 +518,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     return { ready, picking, rigMessage, boneCount, animating: !!motion,
       elapsedMotionMs: motion?.elapsed ?? null,
       matchedBoneNames: { ...matchedBoneNames },
-      secondaryDeformers: DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)),
+      secondaryDeformers: DEFORM_LINKS.slice(0, 2).every(([org, def]) => bones.has(org) && bones.has(def)),
+      actingDeformers: DEFORM_LINKS.slice(2).filter(([org, def]) => bones.has(org) && bones.has(def)).length,
       target: target?.toArray() ?? null, distance: lastError,
       chain: LIMITS.map(([name, max]) => ({ name, maximumDeviationDegrees: max })),
       actingBones: ACTOR_EXTRAS.filter((entry) => bones.has(entry.name))
