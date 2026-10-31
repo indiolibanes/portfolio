@@ -1,0 +1,9 @@
+# Hsin — precomputed gesture study (partial)
+
+The previously delivered spatial CCD prototype is 1.0.9.1, not an approved 1.1.0. The latest Android video shows an expressive target pose but still mechanical motion. No private GLB, textures, video, or screenshot is stored here.
+
+This draft adds a test candidate that solves five spatial waypoints before animation, then interpolates cached local quaternions. It retains the existing baseline and final CCD target. It does not call CCD during playback; `solveCount` and the synthetic test verify that fact. The maximum angular difference between neighboring planned samples is exposed as `maxSampleStepRadians` on the result, in radians, not as measured angular speed. The same A/B target, camera, lighting and duration still need real testing.
+
+The QA director respects the selected author style, including the precomputed candidate. The author-selected contact can be stored in the pose JSON as a position in the `ORG-Bip001Head` local frame and restored for the same named GLB. It follows the head when resolved. It does not automatically compensate for head motion during an already baked gesture; retargeting, validity under morph deformation, and identity by content hash remain unverified. The user must not publish presets if their terms restrict derived data.
+
+Pending: effective elbow pole on the real skeleton, wrist orientation independent of fingertip, articulation of individual fingers, self-collision, joint-axis audit and anatomical limits; an autonomous visitor presentation and authorized asset provider are not implemented. The five CCD samples are a bounded intermediate prototype, not proof of organic movement or sufficient continuity. A match in quaternion endpoints is not proof of contact throughout playback. `VISUAL_QA_BLOCKED` until a real browser/Android comparison is available. No FPS, memory or real-world length measurements are claimed. Do not merge without visual and rights review.
