@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Bancada v1.0.7 · Gesto do indicador (experimental) / Android</p>
+      <p class="hsin-lab__version">Bancada v1.0.8 · Gesture Animation / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -129,19 +129,25 @@ import '../../../styles/hsin-local-lab.css';
         </div>
 
         <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
-          <h2>03A · The Moon Fox’s Secret — gesto do indicador</h2>
-          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. O botão <strong>Definir alvo nos lábios</strong> ativa um toque no rosto. O braço direito tentará aproximar a ponta do indicador desse ponto; não é uma pose aprovada, nem há detecção de colisões.</p>
+          <h2>03A · The Moon Fox’s Secret — gesto animado</h2>
+          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. O botão <strong>Definir alvo nos lábios</strong> ativa um toque no rosto. Em seguida, <strong>Animar gesto</strong> movimenta o braço gradualmente até a pose já validada na bancada; <strong>Desfazer gesto</strong> também anima o retorno. Sem colisões ou pose anatômica aprovada.</p>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
-            <button type="button" data-hsin-solve-gesture disabled>2. Simular gesto</button>
+            <button type="button" data-hsin-solve-gesture disabled>2. Animar gesto</button>
           </div>
+          <label for="hsin-motion-duration">Ritmo da animação (somente da bancada)</label>
+          <select id="hsin-motion-duration" data-hsin-motion-duration disabled>
+            <option value="800">Rápido · 0,8 s</option>
+            <option value="1250" selected>Natural · 1,25 s</option>
+            <option value="1800">Contemplativo · 1,8 s</option>
+          </select>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-undo-gesture disabled>Desfazer gesto</button>
             <button type="button" data-hsin-clear-target disabled>Limpar alvo</button>
           </div>
           <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-show-target checked disabled /> Mostrar marcador dourado do alvo</label>
           <p class="hsin-lab__mode-feedback" data-hsin-gesture-status role="status" aria-live="polite">Carregue o GLB com o rosto colorido para examinar a cadeia Bip001*.R.</p>
-          <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo altera apenas clavícula, braço, antebraço e punho direitos; as expressões e os outros ossos permanecem intactos. Use <strong>Salvar preset de pose JSON</strong> para preservar o resultado no próprio Android.</p>
+          <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo interpola as rotações da clavícula, braço, antebraço e punho direitos e atualiza os deformadores DEF durante o movimento. Com movimento reduzido, aplica a pose sem transição. Use <strong>Salvar preset de pose JSON</strong> após a animação para preservar o resultado no próprio Android.</p>
         </div>
 
         <div class="hsin-lab__group">
