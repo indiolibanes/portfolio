@@ -1,5 +1,6 @@
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
 import { readEmbeddedDiffuse } from './hsin-glb-embedded-textures.mjs';
+import { createHsinGestureLab } from './hsin-gesture-ik.mjs';
 /**
  * Hsin local-file diagnostic lab — no model URLs, uploads, telemetry, or auto-fetch.
  * Assets are only read via File.arrayBuffer() after the user's explicit selection.
@@ -98,6 +99,12 @@ async function initializeLab(root: HTMLElement) {
   const btnSavePose = q<HTMLButtonElement>('[data-hsin-save-pose]');
   const inputLoadPose = q<HTMLInputElement>('[data-hsin-load-pose]');
   const btnFingerTest = q<HTMLButtonElement>('[data-hsin-finger-test]');
+  const btnPickMouth = q<HTMLButtonElement>('[data-hsin-pick-mouth]');
+  const btnSolveGesture = q<HTMLButtonElement>('[data-hsin-solve-gesture]');
+  const btnUndoGesture = q<HTMLButtonElement>('[data-hsin-undo-gesture]');
+  const btnClearTarget = q<HTMLButtonElement>('[data-hsin-clear-target]');
+  const checkShowTarget = q<HTMLInputElement>('[data-hsin-show-target]');
+  const gestureStatus = q<HTMLElement>('[data-hsin-gesture-status]');
   const influentialOnly = q<HTMLInputElement>('[data-hsin-influential]');
   const btnReport = q<HTMLButtonElement>('[data-hsin-report]');
   const boneFilter = q<HTMLInputElement>('[data-hsin-bone-search]');
@@ -145,6 +152,7 @@ async function initializeLab(root: HTMLElement) {
   const diagnosticMaterials = new Set<import('three').Material>();
   const diagnosticTextures = new Set<import('three').Texture>();
   let embeddedDiffuse = new Map();
+  let gestureLab: ReturnType<typeof createHsinGestureLab> | null = null;
   let modeRequest = 0;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
@@ -157,7 +165,7 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
-  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnReport, frontButton, rearButton];
+  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
@@ -169,6 +177,7 @@ async function initializeLab(root: HTMLElement) {
     boneFilter.disabled = !enabled;
     boneRegion.disabled = !enabled;
     influentialOnly.disabled = !enabled;
+    checkShowTarget.disabled = !enabled;
     inputLoadPose.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
@@ -191,6 +200,8 @@ async function initializeLab(root: HTMLElement) {
     destroyed = true;
     cancelAnimationFrame(frame);
     cleanupModel();
+    gestureLab?.dispose();
+    gestureLab = null;
     orbit?.dispose();
     renderer?.dispose();
     renderer?.forceContextLoss();
@@ -245,6 +256,15 @@ async function initializeLab(root: HTMLElement) {
     orbit.minDistance = .06;
     orbit.maxDistance = 1000;
     orbit.addEventListener('change', invalidate);
+    gestureLab = createHsinGestureLab({
+      THREE, scene, camera, orbit, canvas, invalidate,
+      onStatus: (message: string) => { gestureStatus.textContent = message; },
+      getFaceMeshes: () => skinned.filter((mesh) => {
+        const original = originalMaterials.get(mesh);
+        return (Array.isArray(original) ? original : original ? [original] : [])
+          .some((material) => materialFamily(material) === 'face');
+      }),
+    });
     canvas.addEventListener('webglcontextlost', (event) => {
       event.preventDefault();
       lost = true;
@@ -723,6 +743,8 @@ async function initializeLab(root: HTMLElement) {
     skeletons.forEach((s) => s.dispose());
     model = null;
     embeddedDiffuse.clear();
+    gestureLab?.resetTarget();
+    gestureStatus.textContent = 'Carregue o GLB para iniciar a pose.';
     modeRequest++;
     atlasPanel.replaceChildren();
     atlasPanel.hidden = true;
@@ -926,6 +948,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function restoreBones() {
+    gestureLab?.cancelTargetSelection();
     initialQuaternions.forEach((quaternion, bone) => { bone.quaternion.copy(quaternion); });
     modifiedBoneAxes.clear();
     selectedBone?.updateMatrixWorld(true);
@@ -1026,6 +1049,10 @@ async function initializeLab(root: HTMLElement) {
       skinned.forEach((mesh) => mesh.skeleton.bones.forEach((bone) => distinctBones.add(bone)));
       bones = [...distinctBones];
       bones.forEach((bone) => initialQuaternions.set(bone, bone.quaternion.clone()));
+      const gestureReady = gestureLab?.attach(bones, initialQuaternions) ?? false;
+      gestureStatus.textContent = gestureReady ?
+        'Rig direto Bip001*.R identificado. Enquadre o rosto e toque em Definir alvo nos lábios.' :
+        'Rig direto incompleto. O gesto não pode ser simulado com segurança.';
       analyzeSkinInfluences();
       const option = preset.querySelector('option[value="custom"]');
       if (!option) preset.add(new Option('Ajuste manual', 'custom'));
@@ -1042,6 +1069,12 @@ async function initializeLab(root: HTMLElement) {
       atlasPanel.hidden = true;
       cameraDirection = 1;
       enableControls(true);
+      const gestureUsable = gestureLab?.getDiagnostics().ready ?? false;
+      btnPickMouth.disabled = !gestureUsable;
+      btnSolveGesture.disabled = !gestureUsable;
+      btnUndoGesture.disabled = !gestureUsable;
+      btnClearTarget.disabled = !gestureUsable;
+      checkShowTarget.disabled = !gestureUsable;
       modeFeedback.textContent = 'GLB carregado: ' + file.name +
         ' · mapa embutido Face_D: ' + (embeddedDiffuse.has('face') ? 'SIM' : 'NÃO') +
         ' · Eye_D: ' + (embeddedDiffuse.has('eye') ? 'SIM' : 'NÃO') + '.';
@@ -1119,6 +1152,38 @@ async function initializeLab(root: HTMLElement) {
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
   influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
+  btnPickMouth.addEventListener('click', () => {
+    if (!gestureLab || !model) return;
+    // Zoom to the genuine face so selecting the corner of the mouth is usable on phones.
+    frameModel('face');
+    gestureLab.chooseTarget();
+    gestureStatus.textContent = 'Seleção de alvo ativa: toque no canto dos lábios no viewport à esquerda/acima.';
+  });
+  btnSolveGesture.addEventListener('click', () => {
+    if (!gestureLab || !model) return;
+    try {
+      const result = gestureLab.pose();
+      gestureStatus.textContent = result.message;
+      gestureStatus.dataset.state = result.ok ? 'success' : 'error';
+      if (result.ok) frameModel('full');
+    } catch (error) {
+      gestureStatus.textContent = 'Falha ao calcular pose: ' +
+        (error instanceof Error ? error.message : String(error));
+      gestureStatus.dataset.state = 'error';
+    }
+  });
+  btnUndoGesture.addEventListener('click', () => {
+    gestureLab?.restoreChain();
+    gestureStatus.textContent = 'Braço direito restaurado à configuração exportada. Alvo preservado.';
+  });
+  btnClearTarget.addEventListener('click', () => {
+    gestureLab?.resetTarget();
+    gestureStatus.textContent = 'Alvo removido. Escolha novamente o canto dos lábios.';
+  });
+  checkShowTarget.addEventListener('change', () => {
+    gestureLab?.setMarkerVisible(checkShowTarget.checked);
+  });
+
   btnFingerTest.addEventListener('click', () => {
     // This is a candidate only: verify anatomy and local axis before posing.
     boneRegion.value = 'right-fingers';
@@ -1212,13 +1277,15 @@ async function initializeLab(root: HTMLElement) {
       sourceName: fileMetadata?.name ?? '',
       morphs,
       rotations,
+      gestureQuaternions: gestureLab?.rotations() ?? [],
+      gestureDiagnostics: gestureLab?.getDiagnostics() ?? null,
     };
   }
 
   btnSavePose.addEventListener('click', () => {
     if (!model) return;
     const json = JSON.stringify(collectPose(), null, 2);
-    downloadBlob(new Blob([json], { type: 'application/json' }), 'hsin-104-pose-local.json');
+    downloadBlob(new Blob([json], { type: 'application/json' }), 'hsin-107-pose-local.json');
   });
 
   inputLoadPose.addEventListener('change', async () => {
@@ -1229,7 +1296,8 @@ async function initializeLab(root: HTMLElement) {
       const data: unknown = JSON.parse(await file.text());
       if (!data || typeof data !== 'object') throw new Error('Preset inválido.');
       const pose = data as {schema?: unknown; sourceName?: unknown; morphs?: Record<string, unknown>;
-        rotations?: Array<{ name?: unknown; degrees?: Record<string, unknown> }>};
+        rotations?: Array<{ name?: unknown; degrees?: Record<string, unknown> }>;
+        gestureQuaternions?: Array<{ name?: unknown; quaternion?: unknown }>};
       if (pose.schema !== 'hsin-local-pose-v1' || !pose.morphs ||
           typeof pose.morphs !== 'object' || !Array.isArray(pose.rotations)) {
         throw new Error('Formato incompatível com a bancada v1.0.4.');
@@ -1254,6 +1322,12 @@ async function initializeLab(root: HTMLElement) {
           if (typeof degrees === 'number' && Number.isFinite(degrees) && Math.abs(degrees) <= 65)
             setBoneAxis(bone, axis, degrees);
         }
+      }
+      if (pose.gestureQuaternions?.length) {
+        if (!gestureLab?.restoreRotations(pose.gestureQuaternions)) {
+          throw new Error('Quaternions do gesto inválidos; não foi possível restaurá-los.');
+        }
+        gestureStatus.textContent = 'Rotações da cadeia direita restauradas do preset local; confira a pose visualmente.';
       }
       currentPreset = 'custom';
       preset.value = 'custom';
@@ -1282,6 +1356,7 @@ async function initializeLab(root: HTMLElement) {
         FACE_NAMES.filter((name) => getMorph(name) !== null).map((name) => [name, getMorph(name)]),
       ),
       bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
+      gesture: gestureLab?.getDiagnostics() ?? null,
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
       note: 'Render duration is not FPS or mobile performance verification.',
     };
