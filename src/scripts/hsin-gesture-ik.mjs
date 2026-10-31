@@ -6,6 +6,36 @@
  * ONLY the proven contiguous right-arm bone chain. This is diagnostic IK,
  * not a production-ready pose or anatomically validated finger contact.
  */
+// PropertyBinding.sanitizeNodeName() in GLTFLoader strips "." and other
+// reserved characters: glTF "ORG-Bip001Hand.R" becomes "ORG-Bip001HandR".
+// Canonical comparisons also tolerate "_" suffixes and keep sides distinct.
+// If duplicate aliases occur, refuse to select rather than guessing a joint.
+export function canonicalHsinBoneName(name) {
+  return String(name ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+export function resolveHsinBones(boneList, expectedNames) {
+  const candidates = new Map();
+  for (const bone of boneList) {
+    const key = canonicalHsinBoneName(bone.name);
+    if (!candidates.has(key)) candidates.set(key, []);
+    candidates.get(key).push(bone);
+  }
+  const resolved = new Map();
+  const missing = [];
+  const ambiguous = [];
+  const matches = {};
+  for (const name of expectedNames) {
+    const hits = candidates.get(canonicalHsinBoneName(name)) ?? [];
+    if (hits.length === 1) {
+      resolved.set(name, hits[0]);
+      matches[name] = hits[0].name;
+    } else if (hits.length === 0) missing.push(name);
+    else ambiguous.push({ expected: name, found: hits.map((item) => item.name) });
+  }
+  return { resolved, missing, ambiguous, matches };
+}
+
 export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onStatus, invalidate, getFaceMeshes }) {
   const NAMES = {
     // These are the REAL skinned meshes' 823-joint rig (skin 0).
@@ -43,6 +73,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   scene.add(marker);
 
   let bones = new Map();
+  let matchedBoneNames = {};
+  let boneCount = 0;
   let rest = new Map();
   let restWorld = new Map();
   let ready = false;
@@ -55,7 +87,13 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   const pointer = new THREE.Vector2();
 
   function attach(boneList, originalQuaternions) {
-    bones = new Map(boneList.map((bone) => [bone.name, bone]));
+    boneCount = boneList.length;
+    const expected = [...new Set([...Object.values(NAMES), ...DEFORM_LINKS.flat()])];
+    const resolution = resolveHsinBones(boneList, expected);
+    // All downstream operations remain keyed by canonical glTF/source aliases.
+    // They resolve to the *actual* Three.js Bone instances, never copies.
+    bones = resolution.resolved;
+    matchedBoneNames = resolution.matches;
     rest = originalQuaternions;
     restWorld.clear();
     ready = false;
@@ -65,9 +103,15 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     orbit.enabled = true;
     lastError = null;
     invalidate();
-    const missing = [...Object.values(NAMES)].filter((name) => !bones.has(name));
-    if (missing.length) {
-      rigMessage = 'O skin ativo não contém: ' + missing.join(', ');
+    const missing = Object.values(NAMES).filter((name) => !bones.has(name));
+    const ambiguous = resolution.ambiguous.filter(({ expected }) =>
+      Object.values(NAMES).includes(expected));
+    if (missing.length || ambiguous.length) {
+      rigMessage = 'Falha na resolução de nomes: ' +
+        (missing.length ? 'ausentes ' + missing.join(', ') + '. ' : '') +
+        (ambiguous.length ? 'ambíguos ' + ambiguous.map((item) => item.expected).join(', ') + '. ' : '') +
+        'O loader pode normalizar pontos e outros caracteres. Inspecionados ' +
+        boneCount + ' ossos do skin carregado.';
       onStatus(rigMessage);
       return false;
     }
@@ -94,6 +138,10 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     rigMessage = DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)) ?
       'Rig ativo identificado: cadeia ORG e deformadores DEF paralelos.' :
       'Rig ativo identificado, mas faltam deformadores DEF; valide o braço com atenção.';
+    rigMessage += ' ' + boneCount + ' joints analisados; braço: ' +
+      (matchedBoneNames[NAMES.upper] ?? 'não identificado') + ' → ' +
+      (matchedBoneNames[NAMES.forearm] ?? 'não identificado') + ' → ' +
+      (matchedBoneNames[NAMES.wrist] ?? 'não identificado') + '.';
     onStatus(rigMessage);
     return true;
   }
@@ -273,7 +321,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     return true;
   }
   function getDiagnostics() {
-    return { ready, picking, rigMessage,
+    return { ready, picking, rigMessage, boneCount,
+      matchedBoneNames: { ...matchedBoneNames },
       secondaryDeformers: DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)),
       target: target?.toArray() ?? null, distance: lastError,
       chain: LIMITS.map(([name, max]) => ({ name, maximumDeviationDegrees: max })),
