@@ -53,3 +53,9 @@
 
 .hsin-lab__view-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0; }
 .hsin-lab__view-actions button { flex: 1 1 140px; }
+
+/* v1.0.4: distinguish diagnostic version and direct-skinning controls. */
+.hsin-lab__version { display:inline-block; padding:.35rem .7rem; border-radius:999px; border:1px solid #a88a567e; font:.7rem var(--font-ui); letter-spacing:.06em; }
+.hsin-lab__group label.hsin-lab__checkbox { display:flex; align-items:center; gap:.6rem; margin:.8rem 0; font-size:.8rem; line-height:1.45; cursor:pointer; }
+.hsin-lab__checkbox input { width:1.15rem; height:1.15rem; flex:none; accent-color:#dcb877; }
+.hsin-lab__group .hsin-lab__view-actions .hsin-lab__filelabel { flex-basis:100%; margin:.7rem 0 0; }
