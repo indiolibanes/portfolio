@@ -39,12 +39,23 @@ const defUpperTwist = bone('DEF-Bip001UpperArm.R.001', 0, -.08, 0);
 const defForearm = bone('DEF-Bip001Forearm.R', -.05, -.11, 0);
 const defForearmTwist = bone('DEF-Bip001Forearm.R.001', 0, -.09, 0);
 const defHand = bone('DEF-Bip001Hand.R', -.04, -.10, 0);
+const head = bone('ORG-Bip001Head', 0, .22, 0);
+const defHead = bone('DEF-Bip001Head', 0, .22, 0);
+scene.add(head, defHead);
+const extraFingers = [2, 3, 4].map((index) => ({
+  org: bone('ORG-Bip001Finger' + index + '.R', 0, -.035, .025 * index),
+  def: bone('DEF-Bip001Finger' + index + '.R', 0, -.035, .025 * index),
+}));
+extraFingers.forEach(({ org, def }) => { hand.add(org); defHand.add(def); });
+const defIndex = bone('DEF-Bip001Finger1.R', 0, -.04, 0);
+defHand.add(defIndex);
 clavicle.add(defUpper); defUpper.add(defUpperTwist);
 defUpperTwist.add(defForearm); defForearm.add(defForearmTwist);
 defForearmTwist.add(defHand);
 const skeleton = [
   clavicle, upper, forearm, hand, fingerBase, fingerMiddle, fingerTip,
   defUpper, defUpperTwist, defForearm, defForearmTwist, defHand,
+  head, defHead, defIndex, ...extraFingers.flatMap(({org, def}) => [org, def]),
 ];
 const rests = new Map(skeleton.map(item => [item,item.quaternion.clone()]));
 const sampleFace = new THREE.Mesh(new THREE.SphereGeometry(.11,12,10), new THREE.MeshBasicMaterial());
@@ -57,6 +68,8 @@ const lab = createHsinGestureLab({
 assert.equal(lab.attach(skeleton, rests), true);
 assert.equal(lab.getDiagnostics().ready, true);
 assert.equal(lab.getDiagnostics().secondaryDeformers, true);
+assert.equal(lab.getDiagnostics().actingBones.length, 4);
+assert.equal(lab.getDiagnostics().actingDeformers, 5);
 // Regression: the glTF strings contain .R while THREE skeleton Bone.name lacks the dot.
 assert.equal(lab.getDiagnostics().matchedBoneNames['ORG-Bip001Hand.R'], 'ORG-Bip001HandR');
 assert.equal(lab.getDiagnostics().matchedBoneNames['ORG-Bip001Finger12.R'], 'ORG-Bip001Finger12R');
@@ -107,13 +120,15 @@ const runFrame = (time) => {
 try {
   lab.restoreChain();
   const joints = [clavicle, upper, forearm, hand];
+  const actors = [head, ...extraFingers.map(({ org }) => org)];
+  const homeActors = actors.map((joint) => joint.quaternion.clone());
   const home = joints.map((joint) => joint.quaternion.clone());
   assert.equal(lab.pose().ok, true);
   const goal = joints.map((joint) => joint.quaternion.clone());
   assert.ok(goal.some((q, i) => q.angleTo(home[i]) > 0.01),
     'synthetic gesture must rotate at least one joint');
   lab.restoreChain();
-  const animated = lab.animateToPose(1000);
+  const animated = lab.animateToPose(1000, { actingLevel: .7, staged: true });
   assert.equal(animated.ok, true);
   assert.equal(animated.animated, true);
   assert.equal(lab.getDiagnostics().animating, true);
@@ -137,6 +152,13 @@ try {
   assert.equal(lab.getDiagnostics().animating, false);
   joints.forEach((joint, i) =>
     assert.ok(joint.quaternion.angleTo(goal[i]) < 1e-5, 'IK endpoint preserved'));
+  actors.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(homeActors[i]) > 0.004,
+      'subtle secondary head/finger animation must reach an intentional pose: ' + joint.name));
+  for (const [org, def] of [[head, defHead], ...extraFingers.map(({org, def}) => [org, def])]) {
+    assert.ok(def.quaternion.angleTo(rests.get(def)) > 0.003,
+      'parallel DEF should follow active ORG motion: ' + org.name);
+  }
 
   assert.equal(lab.animateRestore(800), true);
   runFrame(1600);
@@ -145,6 +167,17 @@ try {
   assert.equal(lab.getDiagnostics().animating, false);
   joints.forEach((joint, i) =>
     assert.ok(joint.quaternion.angleTo(home[i]) < 1e-5, 'reversible return'));
+  actors.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(homeActors[i]) < 1e-5,
+      'restored secondary acting: ' + joint.name));
+  // Compare actual v1.0.8 fallback and staged choreography under the same
+  // rig: the classic mode must not introduce secondary acting.
+  lab.animateToPose(1000, { actingLevel: 0, staged: false });
+  runFrame(3000); runFrame(4000);
+  actors.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(homeActors[i]) < 1e-5,
+      'classic baseline must not animate secondary acting'));
+  lab.restoreChain();
 
   // An interrupted animation cannot continue to modify the rig afterward.
   lab.animateToPose(1000);
@@ -164,4 +197,4 @@ sampleFace.geometry.dispose();sampleFace.material.dispose();
 const legacy = bone('Bip001UpperArm.R', 0, 0, 0);
 assert.equal(lab.getDiagnostics().ready, true);
 assert.ok(!lab.rotations().some((x) => x.name === legacy.name));
-console.log('Hsin v1.0.8 active ORG/DEF rig, reversible CCD, smooth animation and visibility pause: PASS');
+console.log('Hsin v1.0.9 synthetic rig, staged acting, extra ORG/DEF, classic fallback, pause and undo: PASS');
