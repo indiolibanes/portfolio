@@ -1,3 +1,4 @@
+import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
 /**
  * Hsin local-file diagnostic lab — no model URLs, uploads, telemetry, or auto-fetch.
  * Assets are only read via File.arrayBuffer() after the user's explicit selection.
@@ -109,11 +110,12 @@ async function initializeLab(root: HTMLElement) {
   const skinInfluence = new Map<Bone, number>();
   let morphValues = new Map<string, number>();
   let selectedBone: Bone | null = null;
-  let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' = 'original';
+  let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' = 'original';
   let cameraDirection: 1 | -1 = 1;
   let viewFocus: 'full' | 'face' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
   const diagnosticMaterials = new Set<import('three').Material>();
+  const diagnosticTextures = new Set<import('three').Texture>();
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let lastCandidate: PresetName = 'smirk_D';
@@ -282,6 +284,8 @@ async function initializeLab(root: HTMLElement) {
     originalMaterials.forEach((original, mesh) => { mesh.material = original; });
     diagnosticMaterials.forEach((material) => material.dispose());
     diagnosticMaterials.clear();
+    diagnosticTextures.forEach((texture) => texture.dispose());
+    diagnosticTextures.clear();
   }
 
   // GLTFLoader maps KHR_materials_unlit to MeshBasicMaterial. A regular
@@ -314,6 +318,7 @@ async function initializeLab(root: HTMLElement) {
       const category = families(mesh);
       mesh.visible = mode === 'all' ||
         (mode === 'face' && category.has('face')) ||
+        (mode === 'eye' && category.has('eye')) ||
         (mode === 'face-eye' && (category.has('face') || category.has('eye'))) ||
         (mode === 'face-eye-hair' && (category.has('face') || category.has('eye') || category.has('hair')));
     });
@@ -388,7 +393,9 @@ async function initializeLab(root: HTMLElement) {
       transparent + ' transparentes. ' +
       (missingMaps.length ? 'Sem mapas de cor: ' + missingMaps.join(', ') + '. ' : '') +
       'Os mapas RGB e normais convertidos não reproduzem o shader proprietário.';
-    materialDetails.textContent = [...all].map((material) => {
+    const bindings = [...originalMaterials.entries()].filter(([, assigned]) =>
+      (Array.isArray(assigned) ? assigned : [assigned]).some((m) => materialFamily(m)));
+    materialDetails.textContent = JSON.stringify(bindings.map(([mesh, assigned]) => inspectBinding(mesh, assigned)), null, 2) + '\n\n' + [...all].map((material) => {
       const map = colorMap(material);
       if (!map) return material.name + ': sem mapa de cor';
       const dimensions = map.image?.width && map.image?.height
@@ -405,6 +412,21 @@ async function initializeLab(root: HTMLElement) {
     clearDiagnosticMaterials();
     renderMode = mode;
     renderModeSelect.value = mode;
+    if (mode === 'face-direct' || mode === 'eye-direct') {
+      const family = mode === 'face-direct' ? 'face' : 'eye';
+      const matches = [...originalMaterials.values()].flatMap((v) => Array.isArray(v) ? v : [v])
+        .filter((m) => materialFamily(m) === family && colorMap(m));
+      if (!matches.length) {
+        renderMode = 'original'; renderModeSelect.value = 'original';
+        setStatus('Não foi encontrado mapa de cor no material ' + family + '. Teste direto indisponível.');
+        invalidate(); return;
+      }
+      isolationSelect.value = family; isolateParts(family);
+      setStatus('Teste direto ' + family + ': ' + matches.length + ' material(is) com mapa. ' +
+        matches.map((m) => { const map = colorMap(m)!; return m.name + ' → ' + (map.name || '(mapa sem nome)') +
+          ' · UV' + map.channel + ' · imagem ' + (map.image ? 'presente' : 'ausente'); }).join('; ') +
+        '. Confirme visualmente; o nome não prova a identidade do atlas.');
+    }
     if (mode !== 'original') {
       originalMaterials.forEach((original, mesh) => {
         const transform = (source: import('three').Material): import('three').Material => {
@@ -413,7 +435,19 @@ async function initializeLab(root: HTMLElement) {
           const baseColor = source instanceof THREE!.MeshBasicMaterial ||
             source instanceof THREE!.MeshStandardMaterial ? source.color.clone() :
             new THREE!.Color(0xffffff);
-          if (mode === 'opaque') {
+          if (mode === 'face-direct' || mode === 'eye-direct') {
+            const family = mode === 'face-direct' ? 'face' : 'eye';
+            if (materialFamily(source) !== family || !map) return source;
+            material = directMaterial(THREE, source);
+          } else if (mode === 'uv0' || mode === 'uv1') {
+            const attr = mode === 'uv0' ? 'uv' : 'uv1';
+            if (!mesh.geometry.getAttribute(attr)) {
+              setStatus('UV ausente em ' + mesh.name + ': ' + attr + '.');
+              return source;
+            }
+            const debug = createUvMaterial(THREE, mode === 'uv0' ? 0 : 1, source.side);
+            material = debug.material; diagnosticTextures.add(debug.texture);
+          } else if (mode === 'opaque') {
             material = source.clone();
             // Diagnostic alpha cutout, not an approved treatment for transparent hair.
             material.transparent = false;
