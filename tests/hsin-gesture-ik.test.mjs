@@ -87,6 +87,76 @@ lab.restoreChain();
 for (const joint of [clavicle,upper,forearm,hand,defUpper,defForearm]) {
   assert.ok(joint.quaternion.angleTo(rests.get(joint)) < 1e-5, joint.name);
 }
+// Animation regression: deterministic fake rAF, no browser and no third-party
+// character data. The transition must not jump to the final quaternions.
+const savedRequest = globalThis.requestAnimationFrame;
+const savedCancel = globalThis.cancelAnimationFrame;
+let nextFrameId = 1;
+const scheduled = new Map();
+globalThis.requestAnimationFrame = (fn) => {
+  const id = nextFrameId++;
+  scheduled.set(id, fn);
+  return id;
+};
+globalThis.cancelAnimationFrame = (id) => { scheduled.delete(id); };
+const runFrame = (time) => {
+  const pending = [...scheduled.values()];
+  scheduled.clear();
+  for (const fn of pending) fn(time);
+};
+try {
+  lab.restoreChain();
+  const joints = [clavicle, upper, forearm, hand];
+  const home = joints.map((joint) => joint.quaternion.clone());
+  assert.equal(lab.pose().ok, true);
+  const goal = joints.map((joint) => joint.quaternion.clone());
+  assert.ok(goal.some((q, i) => q.angleTo(home[i]) > 0.01),
+    'synthetic gesture must rotate at least one joint');
+  lab.restoreChain();
+  const animated = lab.animateToPose(1000);
+  assert.equal(animated.ok, true);
+  assert.equal(animated.animated, true);
+  assert.equal(lab.getDiagnostics().animating, true);
+  joints.forEach((joint, i) => {
+    assert.ok(joint.quaternion.angleTo(home[i]) < 1e-6,
+      'IK solve must be visually restored before first animation frame');
+  });
+  runFrame(0);
+  runFrame(500);
+  const midway = joints.map((joint) => joint.quaternion.clone());
+  assert.ok(midway.some((q, i) =>
+    q.angleTo(home[i]) > 0.002 && q.angleTo(goal[i]) > 0.002),
+    'intermediate quaternions must be distinct from both endpoints');
+  lab.setVisible(false);
+  assert.equal(scheduled.size, 0, 'offscreen animation must pause');
+  lab.setVisible(true);
+  runFrame(1000); // The first resumed frame must not consume hidden time.
+  joints.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(midway[i]) < 1e-6, 'resume must not jump'));
+  runFrame(1500);
+  assert.equal(lab.getDiagnostics().animating, false);
+  joints.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(goal[i]) < 1e-5, 'IK endpoint preserved'));
+
+  assert.equal(lab.animateRestore(800), true);
+  runFrame(1600);
+  runFrame(2000);
+  runFrame(2400);
+  assert.equal(lab.getDiagnostics().animating, false);
+  joints.forEach((joint, i) =>
+    assert.ok(joint.quaternion.angleTo(home[i]) < 1e-5, 'reversible return'));
+
+  // An interrupted animation cannot continue to modify the rig afterward.
+  lab.animateToPose(1000);
+  assert.ok(scheduled.size > 0);
+  lab.stopMotion();
+  assert.equal(scheduled.size, 0);
+} finally {
+  if (savedRequest === undefined) delete globalThis.requestAnimationFrame;
+  else globalThis.requestAnimationFrame = savedRequest;
+  if (savedCancel === undefined) delete globalThis.cancelAnimationFrame;
+  else globalThis.cancelAnimationFrame = savedCancel;
+}
 lab.dispose();
 assert.equal(events.has('pointerdown'),false);
 sampleFace.geometry.dispose();sampleFace.material.dispose();
@@ -94,4 +164,4 @@ sampleFace.geometry.dispose();sampleFace.material.dispose();
 const legacy = bone('Bip001UpperArm.R', 0, 0, 0);
 assert.equal(lab.getDiagnostics().ready, true);
 assert.ok(!lab.rotations().some((x) => x.name === legacy.name));
-console.log('Hsin v1.0.7 active ORG/DEF skin, gesture target and reversible CCD: PASS');
+console.log('Hsin v1.0.8 active ORG/DEF rig, reversible CCD, smooth animation and visibility pause: PASS');
