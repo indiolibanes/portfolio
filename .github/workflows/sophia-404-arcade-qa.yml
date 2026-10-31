@@ -6,6 +6,7 @@ on:
       - fix/sophia-404-book-tail-render-quality-2026-10-30
       - feat/404-sophia-legacy-and-7b-2026-10-30
       - feat/sophia-7b-stage-animations-2026-10-30
+      - fix/404-load-existing-sophia-7b-e1-latest-2026-10-30
   workflow_dispatch:
 
 permissions:
@@ -58,7 +59,7 @@ jobs:
             sleep 1
           done
           node scripts/qa-sophia-404.mjs
-      - name: Required 7B-E1 binary and provenance (block merge until uploaded)
+      - name: Verify committed Sophia 7B E1 latest GLB
         run: node scripts/check-sophia-7b.mjs
       - uses: actions/upload-artifact@v4
         if: always()

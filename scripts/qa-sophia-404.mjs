@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:4321';
-const has7B = existsSync('public/experimental/sophia-7b-e1-stage.glb');
+const has7B = existsSync('public/experimental/sophia-7b-e1-latest.glb');
 await mkdir('qa-results/sophia-404', { recursive: true });
 const browser = await chromium.launch({
   headless: true,
@@ -63,17 +63,18 @@ try {
       const modern = await lounge.evaluate(el=>({
         ready: el.dataset.sophiaReady, model: el.dataset.sophiaModel,
         tail: el.dataset.sophiaTail, failed: el.dataset.sophiaFailed,
-        clips: el.dataset.sophiaClips,
+        motion: el.dataset.sophiaMotion,
+        source: el.dataset.sophiaSource,
         originalArtVisible: getComputedStyle(el.querySelector('.sophia-art')).visibility,
       }));
       console.log('3D room', width, JSON.stringify(modern));
       if (has7B) {
-        if (modern.ready !== 'true' || modern.model !== '7B-E1-unrigged' || modern.tail !== 'authored-7b' || !modern.clips?.includes('Idle_Breathe')) {
+        if (modern.ready !== 'true' || modern.model !== '7B-E1-unrigged' || modern.tail !== 'authored-7b' || modern.motion !== 'procedural-root' || modern.source !== '/experimental/sophia-7b-e1-latest.glb') {
           failed = true; console.error('FAIL 7B integration', modern);
         }
       } else if (modern.failed !== 'true' || modern.originalArtVisible !== 'visible') {
         failed = true; console.error('FAIL missing-model fallback', modern);
-      } else console.warn('BLOCKED: 7B binary is not yet committed; safe SVG fallback confirmed.');
+      } else console.warn('BLOCKED: Sophia 7B latest missing; safe SVG fallback confirmed.');
       await page.screenshot({ path:'qa-results/sophia-404/404-room-'+width+'.png', fullPage:true });
     }
     await page.close();
