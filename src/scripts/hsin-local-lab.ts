@@ -3,13 +3,31 @@
  * Assets are only read via File.arrayBuffer() after the user's explicit selection.
  * The HTML includes no proprietary model, textures, or derivative character imagery.
  */
-type PresetName = 'exported' | 'neutral' | 'smirk_A' | 'smirk_C' | 'custom';
+type PresetName = 'exported' | 'neutral' | 'open_eyes' | 'smirk_A' | 'smirk_C' | 'smirk_D' | 'custom';
 
 const FACE_NAMES = [
   'M_Smile_R', 'M_Smile_L', 'E_Smile_R', 'E_Smile_L',
   'E_Squint_R', 'E_Squint_L', 'B_Up_Add_R', 'B_Up_Add_L',
+  // Exported baseline contains significant eyelid/mouth weights. Test them explicitly.
+  'E_Insipid', 'E_Focus', 'E_Close_R', 'E_Close_L',
+  'M_meow_R', 'M_meow_L', 'M_Squint_R', 'M_Squint_L',
+  'B_Cheerful_R', 'B_Cheerful_L',
 ] as const;
-const OVERRIDES: Record<'smirk_A' | 'smirk_C', Record<string, number>> = {
+const OVERRIDES: Record<'smirk_A' | 'smirk_C' | 'open_eyes' | 'smirk_D', Record<string, number>> = {
+  open_eyes: {
+    E_Insipid: 0, E_Focus: .10, E_Close_R: 0, E_Close_L: 0,
+    E_Smile_R: 0, E_Smile_L: 0, E_Squint_R: 0, E_Squint_L: 0,
+  },
+  smirk_D: {
+    // Intentionally diagnostic, not an approved expression. Keep in 0..1.
+    E_Insipid: .05, E_Focus: .10, E_Close_R: 0, E_Close_L: 0,
+    E_Squint_R: .20, E_Squint_L: .04,
+    M_Smile_R: 1, M_Smile_L: .04,
+    M_meow_R: .12, M_meow_L: .03,
+    M_Squint_R: .65, M_Squint_L: .18,
+    B_Up_Add_R: .62, B_Up_Add_L: .04,
+    B_Cheerful_R: .56, B_Cheerful_L: .12,
+  },
   smirk_A: {
     M_Smile_R: .85, M_Smile_L: .32,
     E_Smile_R: .48, E_Smile_L: .20,
@@ -44,12 +62,14 @@ async function initializeLab(root: HTMLElement) {
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
   const btnRestoreFace = q<HTMLButtonElement>('[data-hsin-restore-face]');
+  const btnCompare = q<HTMLButtonElement>('[data-hsin-compare]');
   const btnRestoreBones = q<HTMLButtonElement>('[data-hsin-restore-bones]');
   const btnFull = q<HTMLButtonElement>('[data-hsin-full]');
   const btnFace = q<HTMLButtonElement>('[data-hsin-face]');
   const btnShot = q<HTMLButtonElement>('[data-hsin-shot]');
   const btnReport = q<HTMLButtonElement>('[data-hsin-report]');
   const boneFilter = q<HTMLInputElement>('[data-hsin-bone-search]');
+  const boneRegion = q<HTMLSelectElement>('[data-hsin-bone-region]');
   const boneSelect = q<HTMLSelectElement>('[data-hsin-bone]');
   const axes = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-axis]')];
   const metric = q<HTMLElement>('[data-hsin-fps]');
@@ -84,6 +104,7 @@ async function initializeLab(root: HTMLElement) {
   const diagnosticMaterials = new Set<import('three').Material>();
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
+  let lastCandidate: PresetName = 'smirk_D';
   let frame = 0;
   let visible = true;
   let lost = false;
@@ -92,12 +113,13 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
-  const buttons = [btnRestoreFace, btnRestoreBones, btnFull, btnFace, btnShot, btnReport, frontButton, rearButton];
+  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     boneFilter.disabled = !enabled;
+    boneRegion.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
   };
@@ -367,7 +389,7 @@ async function initializeLab(root: HTMLElement) {
       skinned.forEach((mesh) => mesh.morphTargetInfluences?.fill(0));
     } else {
       resetMorphs();
-      if (name === 'smirk_A' || name === 'smirk_C') {
+      if (name === 'smirk_A' || name === 'smirk_C' || name === 'smirk_D' || name === 'open_eyes') {
         Object.entries(OVERRIDES[name]).forEach(([key, value]) => putMorph(key, value));
       }
     }
@@ -376,6 +398,9 @@ async function initializeLab(root: HTMLElement) {
       if (current !== null) morphValues.set(target, current);
     }
     currentPreset = name;
+    if (name === 'smirk_A' || name === 'smirk_C' || name === 'smirk_D' || name === 'open_eyes') {
+      lastCandidate = name;
+    }
     preset.value = name;
     rebuildMorphPanel();
     invalidate();
@@ -428,7 +453,15 @@ async function initializeLab(root: HTMLElement) {
     const priority = /(hand|finger|index|thumb|arm|wrist|head|neck|spine|shoulder)/i;
     const candidates = [...bones].sort((a, b) =>
       Number(priority.test(b.name)) - Number(priority.test(a.name)) || a.name.localeCompare(b.name));
-    const matches = candidates.filter((bone) => bone.name.toLowerCase().includes(filter.toLowerCase()));
+    const selectedRegion = boneRegion.value;
+    const regionMatch = (name: string): boolean => {
+      if (selectedRegion === 'right-arm') return /Bip001(UpperArm|Forearm|Hand|Finger)/i.test(name) && /\.R(?:\.|$)/.test(name);
+      if (selectedRegion === 'right-fingers') return /Bip001Finger/i.test(name) && /\.R(?:\.|$)/.test(name);
+      if (selectedRegion === 'left-arm') return /Bip001(UpperArm|Forearm|Hand|Finger)/i.test(name) && /\.L(?:\.|$)/.test(name);
+      if (selectedRegion === 'head') return /head|neck/i.test(name);
+      return true;
+    };
+    const matches = candidates.filter((bone) => regionMatch(bone.name) && bone.name.toLowerCase().includes(filter.toLowerCase()));
     matches.slice(0, 100).forEach((bone) => boneSelect.add(new Option(bone.name, bone.uuid)));
     const previousStillPresent = matches.some((bone) => bone.name === previousName);
     selectedBone = previousStillPresent ? matches.find((bone) => bone.name === previousName)! : null;
@@ -567,6 +600,8 @@ async function initializeLab(root: HTMLElement) {
       const option = preset.querySelector('option[value="custom"]');
       if (!option) preset.add(new Option('Ajuste manual', 'custom'));
       selectedBone = null;
+      boneRegion.value = 'all';
+      boneFilter.value = '';
       resetMorphs();
       populateBones('');
       applyPreset('exported');
@@ -594,6 +629,11 @@ async function initializeLab(root: HTMLElement) {
   });
 
   preset.addEventListener('change', () => applyPreset(preset.value as PresetName));
+  btnCompare.addEventListener('click', () => {
+    // Fast A/B toggling is more readable than comparing subtle morph changes by memory.
+    if (currentPreset === 'exported' || currentPreset === 'neutral') applyPreset(lastCandidate);
+    else applyPreset('exported');
+  });
   btnRestoreFace.addEventListener('click', () => applyPreset('exported'));
   btnRestoreBones.addEventListener('click', restoreBones);
   btnFull.addEventListener('click', () => frameModel('full'));
@@ -604,6 +644,7 @@ async function initializeLab(root: HTMLElement) {
     applyRenderMode(renderModeSelect.value as typeof renderMode);
   });
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
+  boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
   boneSelect.addEventListener('change', () => {
     selectedBone = bones.find((b) => b.uuid === boneSelect.value) ?? null;
     syncBoneAxes();
