@@ -61,3 +61,12 @@
 .hsin-lab__group .hsin-lab__view-actions .hsin-lab__filelabel { flex-basis:100%; margin:.7rem 0 0; }
 
 .hsin-lab__inventory { white-space:pre-wrap; overflow-wrap:anywhere; font: .72rem/1.55 var(--font-ui); color:#d4c8b9; }
+
+/* v1.0.6: source-atlas comparison remains fully local in browser memory. */
+.hsin-lab__isolator { padding:.7rem .2rem; border-top:1px dashed #b7a17d45; margin:.75rem 0; }
+.hsin-lab__isolator button { margin:.65rem 0; }
+.hsin-lab__atlas { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:.75rem; margin:.75rem 0; }
+.hsin-lab__atlas[hidden] { display:none; }
+.hsin-lab__atlas figure { margin:0; min-width:0; }
+.hsin-lab__atlas canvas { display:block; width:100%; max-width:512px; height:auto; border-radius:.5rem; background:#1a2130; }
+.hsin-lab__atlas figcaption { font:.72rem/1.45 var(--font-ui); margin:.35rem 0; color:#e3d2b8; overflow-wrap:anywhere; }
