@@ -106,6 +106,7 @@ async function initializeLab(root: HTMLElement) {
   const btnClearTarget = q<HTMLButtonElement>('[data-hsin-clear-target]');
   const checkShowTarget = q<HTMLInputElement>('[data-hsin-show-target]');
   const gestureStatus = q<HTMLElement>('[data-hsin-gesture-status]');
+  const motionDuration = q<HTMLSelectElement>('[data-hsin-motion-duration]');
   const influentialOnly = q<HTMLInputElement>('[data-hsin-influential]');
   const btnReport = q<HTMLButtonElement>('[data-hsin-report]');
   const boneFilter = q<HTMLInputElement>('[data-hsin-bone-search]');
@@ -179,6 +180,7 @@ async function initializeLab(root: HTMLElement) {
     boneRegion.disabled = !enabled;
     influentialOnly.disabled = !enabled;
     checkShowTarget.disabled = !enabled;
+    motionDuration.disabled = !enabled;
     inputLoadPose.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
@@ -196,7 +198,10 @@ async function initializeLab(root: HTMLElement) {
   const invalidate = () => {
     if (!frame && visible && !document.hidden && !lost && !destroyed) frame = requestAnimationFrame(draw);
   };
-  const onVisibility = () => invalidate();
+  const onVisibility = () => {
+    gestureLab?.setVisible(visible && !document.hidden && !lost);
+    invalidate();
+  };
   const onPagehide = () => {
     destroyed = true;
     cancelAnimationFrame(frame);
@@ -269,11 +274,13 @@ async function initializeLab(root: HTMLElement) {
     canvas.addEventListener('webglcontextlost', (event) => {
       event.preventDefault();
       lost = true;
+      gestureLab?.setVisible(false);
       cancelAnimationFrame(frame); frame = 0;
       setStatus('Contexto WebGL perdido. Aguarde a restauração ou recarregue.');
     });
     canvas.addEventListener('webglcontextrestored', () => {
       lost = false;
+      gestureLab?.setVisible(visible && !document.hidden);
       setStatus('Contexto WebGL restaurado.');
       invalidate();
     });
@@ -292,6 +299,7 @@ async function initializeLab(root: HTMLElement) {
     resizeObserver.observe(viewport);
     intersectionObserver = new IntersectionObserver((entries) => {
       visible = entries[0]?.isIntersecting ?? false;
+      gestureLab?.setVisible(visible && !document.hidden && !lost);
       if (!visible) { cancelAnimationFrame(frame); frame = 0; }
       else invalidate();
     }, { threshold: .01 });
@@ -940,6 +948,7 @@ async function initializeLab(root: HTMLElement) {
 
   function setBoneAxis(bone: Bone, axis: 'x' | 'y' | 'z', degrees: number) {
     if (!THREE) return;
+    gestureLab?.stopMotion();
     const rest = initialQuaternions.get(bone);
     if (!rest) return;
     const state = modifiedBoneAxes.get(bone) ?? { x: 0, y: 0, z: 0 };
@@ -955,6 +964,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function restoreBones() {
+    gestureLab?.stopMotion();
     gestureLab?.cancelTargetSelection();
     initialQuaternions.forEach((quaternion, bone) => { bone.quaternion.copy(quaternion); });
     modifiedBoneAxes.clear();
@@ -1192,10 +1202,14 @@ async function initializeLab(root: HTMLElement) {
   btnSolveGesture.addEventListener('click', () => {
     if (!gestureLab || !model) return;
     try {
-      const result = gestureLab.pose();
+      // Make the viewport visible *before* running the tween, especially on
+      // Android where the controls are below the 3D canvas.
+      frameModel('upper');
+      viewport.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+      const duration = Number(motionDuration.value) || 1250;
+      const result = gestureLab.animateToPose(duration);
       gestureStatus.textContent = result.message;
       gestureStatus.dataset.state = result.ok ? 'success' : 'error';
-      if (result.ok) frameModel('upper');
     } catch (error) {
       gestureStatus.textContent = 'Falha ao calcular pose: ' +
         (error instanceof Error ? error.message : String(error));
@@ -1203,8 +1217,12 @@ async function initializeLab(root: HTMLElement) {
     }
   });
   btnUndoGesture.addEventListener('click', () => {
-    gestureLab?.restoreChain();
-    gestureStatus.textContent = 'Braço direito restaurado à configuração exportada. Alvo preservado.';
+    if (!gestureLab) return;
+    const duration = Math.max(650, Math.round((Number(motionDuration.value) || 1250) * .75));
+    viewport.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    gestureLab.animateRestore(duration);
+    gestureStatus.textContent = 'Retornando suavemente à postura original; alvo preservado.';
+    gestureStatus.dataset.state = 'success';
   });
   btnClearTarget.addEventListener('click', () => {
     gestureLab?.resetTarget();
