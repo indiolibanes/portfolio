@@ -1,16 +1,16 @@
 export const SITE = {
   title: 'Kauê Alencar — Portfólio',
   description:
-    'Portfólio pessoal de Kauê Alencar: documentação, organização da informação, escrita e publicação digital.',
+    'Portfólio e laboratório autoral de Kauê Alencar: escrita, documentação, interfaces e experiências interativas em tecnologia e 3D.',
   url: 'https://kaue.pages.dev',
-  ogImage: '/og-portfolio.jpg?v=20261012b',
-  ogImageAlt: 'Sophia, raposa cósmica, de óculos redondos com reflexos brancos e pata erguida junto ao rosto, sob “não ironicamente”; cartão azul-noite estrelado com Kauê Alencar, Escrita, Documentação e Informação.',
+  ogImage: '/og-portfolio.jpg?v=20261031-og2',
+  ogImageAlt: 'Sophia, raposa cósmica de óculos redondos e pata erguida junto ao rosto, em cartão azul-noite estrelado de Kauê Alencar: Escrita, sistemas e mundos possíveis; documentação, interfaces e experiências interativas.',
 };
 
 export const PROFILE = {
   name: 'Kauê Alencar',
   shortName: 'Kauê',
-  tagline: 'Documentação · Informação · Escrita',
+  tagline: 'Escrita · Documentação · Experimentos interativos',
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
   whatsapp: 'https://wa.me/5547989105443',
   email: 'kaue@tuta.com',
