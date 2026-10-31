@@ -1,3 +1,4 @@
+import { createFacialSession } from './hsin-face-session.mjs';
 import { createBehaviorDirector } from './hsin-acting-director.mjs';
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
 import { readEmbeddedDiffuse } from './hsin-glb-embedded-textures.mjs';
@@ -88,6 +89,15 @@ async function initializeLab(root: HTMLElement) {
   void checkBlobImagePermission();
 
   const summary = q<HTMLElement>('[data-hsin-summary]');
+  const facialRun = q<HTMLButtonElement>('[data-hsin-facial-run]');
+  const facialBlink = q<HTMLButtonElement>('[data-hsin-facial-blink]');
+  const facialWink = q<HTMLButtonElement>('[data-hsin-facial-wink]');
+  const facialAB = q<HTMLButtonElement>('[data-hsin-facial-ab]');
+  const facialRestore = q<HTMLButtonElement>('[data-hsin-facial-restore]');
+  const facialPresent = q<HTMLButtonElement>('[data-hsin-facial-present]');
+  const facialStatus = q<HTMLElement>('[data-hsin-facial-status]');
+  const facialDetails = q<HTMLElement>('[data-hsin-facial-details]');
+  const facialFlags = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-facial-channel]')];
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
   const btnRestoreFace = q<HTMLButtonElement>('[data-hsin-restore-face]');
@@ -159,6 +169,9 @@ async function initializeLab(root: HTMLElement) {
   const diagnosticTextures = new Set<import('three').Texture>();
   let embeddedDiffuse = new Map();
   let gestureLab: ReturnType<typeof createHsinGestureLab> | null = null;
+  let faceSession: ReturnType<typeof createFacialSession> | null = null;
+  let facialPresentation = false;
+  const presentationInert = new Map<HTMLElement, boolean>();
   let modeRequest = 0;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
@@ -188,6 +201,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
+    [facialRun,facialBlink,facialWink,facialAB,facialRestore,facialPresent,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -220,6 +234,11 @@ async function initializeLab(root: HTMLElement) {
   };
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const onReducedMotion = () => {
+    faceSession?.setReduced(reducedMotionQuery.matches);
+    if(faceSession) {
+      facialStatus.textContent = reducedMotionQuery.matches ? 'Movimento reduzido: estado facial preservado, ciclo suspenso.' : 'Preferência de movimento atualizada.';
+      refreshFacialDiagnostics();
+    }
     if (reducedMotionQuery.matches && director.getState().state !== 'stopped') {
       director.stop(); gestureLab?.restoreChain();
       directorStatus.textContent = 'Ciclo suspenso pela preferência de movimento reduzido.';
@@ -229,6 +248,7 @@ async function initializeLab(root: HTMLElement) {
   const onVisibility = () => {
     gestureLab?.setVisible(visible && !document.hidden && !lost);
     director.setVisible(visible && !document.hidden && !lost);
+    faceSession?.setVisible(visible && !document.hidden && !lost);
     invalidate();
   };
   const onPagehide = () => {
@@ -236,6 +256,10 @@ async function initializeLab(root: HTMLElement) {
     director.stop();
     reducedMotionQuery.removeEventListener('change', onReducedMotion);
     document.removeEventListener('visibilitychange', onVisibility);
+    root.removeEventListener('input', onFacialAuthorEdit, true);
+    root.removeEventListener('change', onFacialAuthorEdit, true);
+    window.removeEventListener('popstate', exitFacialPresentation);
+    window.removeEventListener('keydown', presentationKey);
     cancelAnimationFrame(frame);
     cleanupModel();
     gestureLab?.dispose();
@@ -308,6 +332,7 @@ async function initializeLab(root: HTMLElement) {
       lost = true;
       gestureLab?.setVisible(false);
       director.setVisible(false);
+      faceSession?.setVisible(false);
       cancelAnimationFrame(frame); frame = 0;
       setStatus('Contexto WebGL perdido. Aguarde a restauração ou recarregue.');
     });
@@ -315,6 +340,7 @@ async function initializeLab(root: HTMLElement) {
       lost = false;
       gestureLab?.setVisible(visible && !document.hidden);
       director.setVisible(visible && !document.hidden);
+      faceSession?.setVisible(visible && !document.hidden);
       setStatus('Contexto WebGL restaurado.');
       invalidate();
     });
@@ -335,6 +361,7 @@ async function initializeLab(root: HTMLElement) {
       visible = entries[0]?.isIntersecting ?? false;
       gestureLab?.setVisible(visible && !document.hidden && !lost);
       director.setVisible(visible && !document.hidden && !lost);
+      faceSession?.setVisible(visible && !document.hidden && !lost);
       if (!visible) { cancelAnimationFrame(frame); frame = 0; }
       else invalidate();
     }, { threshold: .01 });
@@ -761,6 +788,9 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function cleanupModel() {
+    faceSession?.dispose(); faceSession=null;
+    facialRun.textContent='Iniciar atuação facial';facialRun.setAttribute('aria-pressed','false');
+    if(facialPresentation)exitFacialPresentation();
     if (!THREE || !model || !scene) return;
     clearDiagnosticMaterials();
     scene.remove(model.scene);
@@ -821,6 +851,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function putMorph(name: string, weight: number) {
+    endFacialForEdit();
     const safe = Math.min(1, Math.max(-1, weight));
     skinned.forEach((mesh) => {
       const index = mesh.morphTargetDictionary?.[name];
@@ -849,6 +880,7 @@ async function initializeLab(root: HTMLElement) {
 
   function applyPreset(name: PresetName) {
     if (!skinned.length) return;
+    endFacialForEdit();
     if (name === 'neutral') {
       skinned.forEach((mesh) => mesh.morphTargetInfluences?.fill(0));
     } else {
@@ -1161,6 +1193,7 @@ async function initializeLab(root: HTMLElement) {
         names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
+      startFacial();
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
@@ -1170,6 +1203,83 @@ async function initializeLab(root: HTMLElement) {
       // Do not retain the chosen File in the DOM after load.
       fileInput.value = '';
     }
+  });
+
+  function refreshFacialDiagnostics() {
+    facialDetails.textContent=JSON.stringify(faceSession?.diagnostics() ?? {state:'baseline'},null,2);
+    const running=!!faceSession?.diagnostics().running;
+    facialRun.disabled=!model||reducedMotionQuery.matches;
+    const channels=faceSession?.diagnostics().channels;
+    facialBlink.disabled=!model||reducedMotionQuery.matches||!!channels&&(!channels.includes('E_Close_R')||!channels.includes('E_Close_L'));
+    facialWink.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_R');
+    facialRun.setAttribute('aria-pressed',String(running));
+    facialRun.textContent=reducedMotionQuery.matches?'Movimento reduzido ativo':running?'Pausar no estado atual':'Iniciar / retomar atuação facial';
+  }
+  function endFacialForEdit() {
+    if(!faceSession)return;
+    faceSession.dispose({restore:true});faceSession=null;
+    facialStatus.textContent='Expressão de referência restaurada. O próximo início capturará seus ajustes.';
+    facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();
+  }
+  function startFacial() {
+    if(!THREE||!model||!camera||!renderer)return false;
+    if(!faceSession) {
+      const candidates=bones.filter((bone)=>canonicalHsinBoneName(bone.name)==='orgbip001head');
+      faceSession=createFacialSession({THREE, meshes:skinned, head:candidates.length===1?candidates[0]:null,
+        camera,canvas:renderer.domElement,invalidate,
+        reducedMotion:reducedMotionQuery.matches,
+        canAttend:()=>!gestureLab?.getDiagnostics().picking,
+        onStatus:(message:string)=>{facialStatus.textContent=message;},
+      });
+      faceSession.configure(Object.fromEntries(facialFlags.map(c=>[c.dataset.hsinFacialChannel,c.checked])));
+    }
+    faceSession.setVisible(visible&&!document.hidden&&!lost);
+    const result=faceSession.start();facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();return result;
+  }
+  facialRun.addEventListener('click',()=>{
+    if(faceSession?.diagnostics().running){faceSession.pause();refreshFacialDiagnostics();}else startFacial();
+  });
+  for(const [button,kind] of [[facialBlink,'blink'],[facialWink,'wink']] as const) button.addEventListener('click',()=>{
+    if(!startFacial())return;
+    facialStatus.textContent=faceSession?.test(kind)?'Teste '+kind+' iniciado; confira a anatomia no GLB.':'Há uma piscada em andamento; aguarde antes do próximo teste.';
+    refreshFacialDiagnostics();
+  });
+  facialRestore.addEventListener('click',()=>{endFacialForEdit();invalidate();});
+  facialAB.addEventListener('click',()=>{
+    if(!faceSession){facialStatus.textContent='Inicie a candidata antes de comparar.';return;}
+    director.stop();gestureLab?.stopMotion();
+    const shown=faceSession.compare();facialAB.textContent=shown==='baseline'?'Mostrar candidata facial':'Mostrar referência facial';
+    facialStatus.textContent=shown==='baseline'?'A — estado anterior exato, atuação pausada.':'B — candidata congelada, mesma câmera e iluminação.';
+    refreshFacialDiagnostics();
+  });
+  facialFlags.forEach(control=>control.addEventListener('change',()=>{
+    faceSession?.configure(Object.fromEntries(facialFlags.map(c=>[c.dataset.hsinFacialChannel,c.checked])));
+    refreshFacialDiagnostics();
+  }));
+  function onFacialAuthorEdit(event: Event) {
+    const element=event.target as HTMLElement;
+    if(element.closest('[data-hsin-morphs]')||element.matches('[data-hsin-preset], [data-hsin-load-pose]'))endFacialForEdit();
+  }
+  root.addEventListener('input',onFacialAuthorEdit,true);root.addEventListener('change',onFacialAuthorEdit,true);
+  function exitFacialPresentation() {
+    facialPresentation=false;root.removeAttribute('data-facial-presentation');
+    document.body.classList.remove('hsin-facial-presentation');
+    for(const [element,inert] of presentationInert)element.inert=inert;
+    presentationInert.clear();
+    if(!destroyed)facialPresent.focus();window.dispatchEvent(new Event('resize'));
+  }
+  function presentationKey(event: KeyboardEvent) {if(event.key==='Escape'&&facialPresentation)history.back();}
+  window.addEventListener('popstate',exitFacialPresentation);window.addEventListener('keydown',presentationKey);
+  facialPresent.addEventListener('click',()=>{
+    if(!model||facialPresentation)return;
+    director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
+    startFacial();facialPresentation=true;root.setAttribute('data-facial-presentation','');
+    document.body.classList.add('hsin-facial-presentation');
+    for(const element of document.body.children)if(element instanceof HTMLElement&&element!==root&&!['SCRIPT','STYLE','LINK'].includes(element.tagName)){
+      presentationInert.set(element,element.inert);element.inert=true;
+    }
+    history.pushState({hsinFacialPreview:true},'',location.href);
+    viewport.tabIndex=0;viewport.focus();window.dispatchEvent(new Event('resize'));
   });
 
   preset.addEventListener('change', () => applyPreset(preset.value as PresetName));
@@ -1323,6 +1433,7 @@ async function initializeLab(root: HTMLElement) {
   });
 
   btnSideBySide.addEventListener('click', () => {
+    faceSession?.pause();refreshFacialDiagnostics();
     if (!renderer || !scene || !camera || !model || lost) return;
     // Capture the original exported facial weights and the current expression
     // with identical framing, materials, camera and body pose.
@@ -1383,10 +1494,12 @@ async function initializeLab(root: HTMLElement) {
       contactLocal: gestureLab?.getContactLocal() ?? null,
       gestureQuaternions: gestureLab?.rotations() ?? [],
       gestureDiagnostics: gestureLab?.getDiagnostics() ?? null,
+      facialActing: faceSession?.diagnostics() ?? null,
     };
   }
 
   btnSavePose.addEventListener('click', () => {
+    faceSession?.pause();refreshFacialDiagnostics();
     if (!model) return;
     const json = JSON.stringify(collectPose(), null, 2);
     downloadBlob(new Blob([json], { type: 'application/json' }), 'hsin-107-pose-local.json');
