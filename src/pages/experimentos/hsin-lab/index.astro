@@ -48,13 +48,19 @@ import '../../../styles/hsin-local-lab.css';
           <select id="hsin-preset" data-hsin-preset disabled>
             <option value="exported">Expressão exportada</option>
             <option value="neutral">Todos os morphs em zero (diagnóstico)</option>
+            <option value="open_eyes">Abrir olhos (remover pesos de pálpebras)</option>
             <option value="smirk_A">Smirk A — olhos mais fechados</option>
             <option value="smirk_C">Smirk C — assimetria conservadora</option>
+            <option value="smirk_D">Smirk D — contraste facial forte (teste)</option>
           </select>
           <div class="hsin-lab__morphs" data-hsin-morphs>
             <p class="hsin-lab__small">Os controles aparecem após carregar o GLB.</p>
           </div>
-          <button type="button" data-hsin-restore-face disabled>Restaurar expressão exportada</button>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-compare disabled>Comparar A/B · exportada ↔ teste</button>
+            <button type="button" data-hsin-restore-face disabled>Restaurar expressão exportada</button>
+          </div>
+          <p class="hsin-lab__small">A Smirk D e o modo Abrir olhos são testes para tornar as diferenças perceptíveis. Não são poses aprovadas. Ajuste E_Insipid e E_Focus manualmente para estudar as pálpebras.</p>
         </div>
 
         <div class="hsin-lab__group">
@@ -78,8 +84,16 @@ import '../../../styles/hsin-local-lab.css';
         <div class="hsin-lab__group">
           <h2>03 · Teste ósseo — experimental</h2>
           <p class="hsin-lab__small">Rotaciona <em>um osso por vez</em> em relação à postura original. Não é um sistema de IK nem uma pose final.</p>
-          <label for="hsin-bone-search">Filtrar ossos</label>
-          <input id="hsin-bone-search" type="search" placeholder="hand, index, finger, DEF, ORG…" data-hsin-bone-search disabled />
+          <label for="hsin-bone-region">Região do rig</label>
+          <select id="hsin-bone-region" data-hsin-bone-region disabled>
+            <option value="all">Todos os ossos</option>
+            <option value="right-arm">Braço e mão direitos (Bip001*.R)</option>
+            <option value="right-fingers">Dedos direitos (Bip001Finger*.R)</option>
+            <option value="left-arm">Braço e mão esquerdos (Bip001*.L)</option>
+            <option value="head">Cabeça e pescoço</option>
+          </select>
+          <label for="hsin-bone-search">Filtrar ossos por nome</label>
+          <input id="hsin-bone-search" type="search" placeholder="Bip001Hand, Finger1, DEF, ORG, fk…" data-hsin-bone-search disabled />
           <label for="hsin-bone">Osso selecionado</label>
           <select id="hsin-bone" data-hsin-bone disabled><option value="">Selecione um osso</option></select>
           <div class="hsin-lab__bone-axes" data-hsin-axes>
