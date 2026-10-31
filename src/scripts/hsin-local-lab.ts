@@ -1,4 +1,5 @@
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
+import { readEmbeddedDiffuse } from './hsin-glb-embedded-textures.mjs';
 /**
  * Hsin local-file diagnostic lab — no model URLs, uploads, telemetry, or auto-fetch.
  * Assets are only read via File.arrayBuffer() after the user's explicit selection.
@@ -118,6 +119,8 @@ async function initializeLab(root: HTMLElement) {
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
   const diagnosticMaterials = new Set<import('three').Material>();
   const diagnosticTextures = new Set<import('three').Texture>();
+  let embeddedDiffuse = new Map();
+  let modeRequest = 0;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let lastCandidate: PresetName = 'smirk_D';
@@ -454,6 +457,109 @@ async function initializeLab(root: HTMLElement) {
     }
   }
 
+
+  /**
+   * Material binding test that bypasses GLTFLoader's in-memory map accessor.
+   * Data are extracted from glTF pbrMetallicRoughness.baseColorTexture →
+   * textures[].source → images[].bufferView of the user's LOCAL GLB.
+   * Both modes use those same bytes; only the GPU upload differs.
+   */
+  async function applyEmbeddedMode(mode: 'face-direct' | 'face-data' | 'eye-direct' | 'eye-data') {
+    const request = ++modeRequest;
+    const family = mode.startsWith('face-') ? 'face' : 'eye';
+    const entry = embeddedDiffuse.get(family);
+    if (!THREE || !model || !entry) {
+      const message = 'GLB atual: ' + (fileMetadata?.name ?? 'nenhum') +
+        ' · ' + family + ': nenhuma referência glTF baseColorTexture incorporada encontrada. ' +
+        'Verifique o relatório de materiais.';
+      modeFeedback.textContent = message; modeFeedback.dataset.state = 'error';
+      setStatus(message);
+      return;
+    }
+    const mime = entry.mimeType;
+    const blobUrl = URL.createObjectURL(new Blob([entry.bytes], { type: mime }));
+    let image: HTMLImageElement;
+    try {
+      image = new Image();
+      image.decoding = 'async';
+      image.src = blobUrl;
+      await image.decode();
+    } catch (error) {
+      const message = 'Não foi possível decodificar ' + entry.imageName + ': ' + String(error);
+      modeFeedback.textContent = message;
+      modeFeedback.dataset.state = 'error';
+      setStatus(message);
+      return;
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
+    if (request !== modeRequest || !THREE || !model) return;
+    const asData = mode.endsWith('-data');
+    let texture: import('three').Texture;
+    if (asData) {
+      const scale = Math.min(1, 1024 / Math.max(image.naturalWidth, image.naturalHeight));
+      const w = Math.max(1, Math.round(image.naturalWidth * scale));
+      const h = Math.max(1, Math.round(image.naturalHeight * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) throw new Error('Canvas2D indisponível para reconstruir os pixels');
+      ctx.drawImage(image, 0, 0, w, h);
+      const pixels = new Uint8Array(ctx.getImageData(0, 0, w, h).data);
+      for (let i = 3; i < pixels.length; i += 4) pixels[i] = 255;
+      texture = new THREE.DataTexture(pixels, w, h, THREE.RGBAFormat, THREE.UnsignedByteType);
+    } else {
+      texture = new THREE.Texture(image);
+    }
+    texture.name = entry.imageName + (asData ? ' / DataTexture' : ' / HTMLImage texture');
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.flipY = false; // glTF UV origin; no automatic flip in the glTF asset
+    texture.channel = entry.texCoord;
+    texture.wrapS = entry.sampler.wrapS === 33071 ? THREE.ClampToEdgeWrapping :
+      entry.sampler.wrapS === 33648 ? THREE.MirroredRepeatWrapping : THREE.RepeatWrapping;
+    texture.wrapT = entry.sampler.wrapT === 33071 ? THREE.ClampToEdgeWrapping :
+      entry.sampler.wrapT === 33648 ? THREE.MirroredRepeatWrapping : THREE.RepeatWrapping;
+    texture.minFilter = THREE.LinearFilter; texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
+    texture.needsUpdate = true;
+    clearDiagnosticMaterials();
+    diagnosticTextures.add(texture);
+    let count = 0;
+    originalMaterials.forEach((original, mesh) => {
+      const transform = (source: import('three').Material) => {
+        if (materialFamily(source) !== family) return source;
+        count++;
+        const material = new THREE!.MeshBasicMaterial({
+          map: texture, color: 0xffffff, side: source.side,
+          transparent: false, opacity: 1, toneMapped: false,
+          vertexColors: false, alphaTest: 0, blending: THREE!.NoBlending,
+          depthWrite: true,
+        });
+        diagnosticMaterials.add(material);
+        return material;
+      };
+      mesh.material = Array.isArray(original) ? original.map(transform) : transform(original);
+    });
+    if (!count) {
+      const message = 'Imagem ' + entry.imageName + ' decodificada, mas a malha ' +
+        family + ' não foi localizada na cena Three.js.';
+      modeFeedback.textContent = message; modeFeedback.dataset.state = 'error';
+      setStatus(message); invalidate(); return;
+    }
+    isolationSelect.value = family;
+    isolateParts(family);
+    renderMode = mode; renderModeSelect.value = mode;
+    modeButtons.forEach((button) =>
+      button.setAttribute('aria-pressed', String(button.dataset.hsinModeButton === mode)));
+    const message = 'ATIVO: ' + mode + ' · ' + entry.imageName +
+      ' · ' + image.naturalWidth + '×' + image.naturalHeight + ' · ' +
+      count + ' material(is) em malha real · UV' + entry.texCoord +
+      ' · carregado diretamente do GLB (' + (asData ? 'pixels RGBA' : 'HTMLImage') + ').';
+    modeFeedback.textContent = message; modeFeedback.dataset.state = 'success';
+    setStatus(message);
+    invalidate();
+  }
+
   function applyRenderMode(mode: typeof renderMode) {
     if (!THREE || !model) {
       modeFeedback.textContent = 'Selecione o GLB antes de escolher um teste.';
@@ -466,10 +572,19 @@ async function initializeLab(root: HTMLElement) {
       modeFeedback.dataset.state = success ? 'success' : 'error';
       setStatus(message);
     };
+    modeRequest++;
     clearDiagnosticMaterials();
     renderMode = mode;
     renderModeSelect.value = mode;
     if (mode === 'face-direct' || mode === 'eye-direct' || mode === 'face-data' || mode === 'eye-data') {
+      // async decode: called only by user interaction; no source.map dependency.
+      void applyEmbeddedMode(mode).catch((error: unknown) => {
+        const message = 'Erro de textura embutida: ' +
+          (error instanceof Error ? error.message : String(error));
+        modeFeedback.textContent = message; modeFeedback.dataset.state = 'error'; setStatus(message);
+      });
+      return;
+    }
       const family = mode.startsWith('face-') ? 'face' : 'eye';
       const matches = [...originalMaterials.values()].flatMap((v) => Array.isArray(v) ? v : [v])
         .filter((m) => materialFamily(m) === family && colorMap(m));
@@ -608,6 +723,8 @@ async function initializeLab(root: HTMLElement) {
     textures.forEach((t) => t.dispose());
     skeletons.forEach((s) => s.dispose());
     model = null;
+    embeddedDiffuse.clear();
+    modeRequest++;
     atlasPanel.replaceChildren();
     atlasPanel.hidden = true;
     modeFeedback.textContent = 'Nenhum GLB carregado.';
@@ -893,6 +1010,7 @@ async function initializeLab(root: HTMLElement) {
         loader!.parse(bytes, '', resolve, reject);
       });
       cleanupModel();
+      embeddedDiffuse = readEmbeddedDiffuse(bytes);
       model = parsed;
       fileMetadata = { name: file.name, bytes: file.size };
       scene.add(parsed.scene);
@@ -926,12 +1044,15 @@ async function initializeLab(root: HTMLElement) {
       cameraDirection = 1;
       enableControls(true);
       modeFeedback.textContent = 'GLB carregado: ' + file.name +
-        '. Se os modos _D não funcionarem, verifique aqui se o mapa Face/Eye foi encontrado.';
+        ' · mapa embutido Face_D: ' + (embeddedDiffuse.has('face') ? 'SIM' : 'NÃO') +
+        ' · Eye_D: ' + (embeddedDiffuse.has('eye') ? 'SIM' : 'NÃO') + '.';
       modeFeedback.dataset.state = '';
       updateMaterialSummary();
       frameModel('full');
       const names = new Set(skinned.flatMap((mesh) => Object.keys(mesh.morphTargetDictionary ?? {})));
       summary.textContent =
+        'GLB embedded: Face_D ' + (embeddedDiffuse.has('face') ? 'presente' : 'ausente') +
+        ', Eye_D ' + (embeddedDiffuse.has('eye') ? 'presente' : 'ausente') + ' · ' +
         skinned.length + ' SkinnedMesh · ' + bones.length +
         ' ossos distintos (' + skinInfluence.size + ' com influência direta) · ' +
         names.size + ' morphs nomeados. ' +
