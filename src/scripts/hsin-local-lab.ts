@@ -60,6 +60,31 @@ async function initializeLab(root: HTMLElement) {
   const viewport = q<HTMLDivElement>('[data-hsin-viewport]');
   const placeholder = q<HTMLDivElement>('[data-hsin-placeholder]');
   const status = q<HTMLElement>('[data-hsin-status]');
+  const cspStatus = q<HTMLElement>('[data-hsin-csp-status]');
+
+  // Tiny, original one-pixel PNG: prove whether the deployed HTTP CSP allows
+  // local blob: image decoding before loading any third-party GLB.
+  async function checkBlobImagePermission() {
+    const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNw6jkNAAKtAZqQmYllAAAAAElFTkSuQmCC';
+    const bytes = Uint8Array.from(atob(png), (character) => character.charCodeAt(0));
+    const url = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+    const test = new Image();
+    try {
+      test.src = url;
+      await test.decode();
+      cspStatus.textContent = 'CSP blob: OK · imagens locais podem ser decodificadas neste navegador.';
+      cspStatus.dataset.state = 'success';
+    } catch (error) {
+      cspStatus.textContent = 'CSP blob: BLOQUEADO ou decodificação indisponível (' +
+        (error instanceof Error ? error.message : String(error)) +
+        '). Verifique o cabeçalho Content-Security-Policy desta prévia.';
+      cspStatus.dataset.state = 'error';
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+  void checkBlobImagePermission();
+
   const summary = q<HTMLElement>('[data-hsin-summary]');
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
