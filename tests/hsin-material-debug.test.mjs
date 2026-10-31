@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import {materialFamily,directMaterial,createUvMaterial,inspectBinding} from '../src/scripts/hsin-material-debug.mjs';
+const texture = new THREE.Texture({width:32,height:64}); texture.name='Face_D'; texture.channel=1; texture.flipY=false; texture.colorSpace=THREE.SRGBColorSpace; texture.offset.set(.2,.3); texture.repeat.set(.5,.75); texture.rotation=.4; texture.center.set(.1,.6);
+const source = new THREE.MeshBasicMaterial({map:texture,color:0xff0000,transparent:true,opacity:.4,vertexColors:true,alphaTest:.5}); source.name='Gathering Wives - Face Xin';
+assert.equal(materialFamily(source),'face');assert.equal(materialFamily({name:'Wuwa - Eye Xin'}),'eye');assert.equal(materialFamily({name:'Cloth'}),null);
+const d=directMaterial(THREE,source);assert.ok(d.isMeshBasicMaterial);assert.equal(d.map,texture);assert.equal(d.color.getHex(),0xffffff);assert.equal(d.transparent,false);assert.equal(d.opacity,1);assert.equal(d.alphaTest,0);assert.equal(d.vertexColors,false);assert.equal(d.toneMapped,false);assert.equal(d.blending,THREE.NoBlending);assert.equal(source.transparent,true);assert.equal(directMaterial(THREE,new THREE.MeshBasicMaterial()),null);
+for(const channel of [0,1]){const uv=createUvMaterial(THREE,channel,THREE.DoubleSide);assert.equal(uv.texture.channel,channel);assert.ok(uv.material.isMeshBasicMaterial);assert.notEqual(uv.texture.image.data[0],uv.texture.image.data[4]);uv.material.dispose();uv.texture.dispose()}
+const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0],3));g.setAttribute('uv1',new THREE.Float32BufferAttribute([.2,.3],2));g.addGroup(0,1,0);const mesh=new THREE.SkinnedMesh(g,source);mesh.name='face primitive';const report=inspectBinding(mesh,source);assert.equal(report.mesh,'face primitive');assert.equal(report.groups[0].materialIndex,0);assert.equal(report.attributes.uv,null);assert.equal(report.attributes.uv1.count,1);assert.equal(report.materials[0].map.channel,1);assert.deepEqual(report.materials[0].map.offset,[.2,.3]);assert.equal(report.materials[0].map.flipY,false);assert.equal(report.materials[0].map.colorSpace,THREE.SRGBColorSpace);
+d.dispose(); source.dispose();g.dispose();texture.dispose();
+console.log('Hsin direct sample and UV binding: PASS');
