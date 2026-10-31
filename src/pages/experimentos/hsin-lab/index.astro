@@ -71,12 +71,17 @@ import '../../../styles/hsin-local-lab.css';
           <label for="hsin-render-mode">Modo de materiais</label>
           <select id="hsin-render-mode" data-hsin-render-mode disabled>
             <option value="original">Materiais do GLB selecionado (fidelidade a conferir)</option>
+            <option value="uv0">UV0 · gradiente e quadriculado</option>
+            <option value="uv1">UV1 · gradiente e quadriculado</option>
+            <option value="face-direct">Face_D · amostragem direta (isola Face)</option>
+            <option value="eye-direct">Eye_D · amostragem direta (isola Eye)</option>
             <option value="color">RGB restaurado · cores sem iluminação</option>
             <option value="toon">Toon · iluminação estilizada experimental</option>
             <option value="opaque">Texturas + opacidade diagnóstica</option>
             <option value="clay">Argila iluminada (sem texturas)</option>
             <option value="normals">Normais de superfície</option>
           </select>
+          <p class="hsin-lab__small">Teste direto usa o mapa do material correspondente em MeshBasicMaterial branco, sem iluminação, transparência, vertex colors ou alpha test. UV0/UV1 mostram coordenadas por gradiente e quadriculado; ausência de atributo será avisada. A amostra ainda requer avaliação visual.</p>
           <label for="hsin-lighting">Intensidade das luzes (afeta apenas materiais iluminados)</label>
           <select id="hsin-lighting" data-hsin-lighting disabled>
             <option value="original">Alta · bancada anterior (2 / 2,8 / 1,8)</option>
@@ -94,6 +99,7 @@ import '../../../styles/hsin-local-lab.css';
             <select id="hsin-isolation" data-hsin-isolation disabled>
               <option value="all">Todas as partes — referência</option>
               <option value="face">Apenas Face — descartar oclusão</option>
+              <option value="eye">Apenas Eye — íris</option>
               <option value="face-eye">Face + Eye — verificar pupilas</option>
               <option value="face-eye-hair">Face + Eye + Hair/Bangs</option>
             </select>
