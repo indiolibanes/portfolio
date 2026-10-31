@@ -66,6 +66,11 @@
   background: #ffcf6b;
   box-shadow: 0 0 16px 6px #ff7d41a8;
 }
+.sophia-room2d[data-running='false'] .sophia-room2d__sprite,
+.sophia-room2d[data-running='false'] .sophia-room2d__gamepad,
+.sophia-room2d[data-running='false'] .sophia-room2d__impact {
+  animation-play-state: paused !important;
+}
 /* A useful static scene if JS is unavailable or motion should be reduced. */
 .sophia-room2d[data-phase='play'] .sophia-room2d__sprite--play,
 .sophia-room2d[data-phase='stress'] .sophia-room2d__sprite--stress,
