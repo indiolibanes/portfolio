@@ -1168,7 +1168,11 @@ async function initializeLab(root: HTMLElement) {
   influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
   btnPickMouth.addEventListener('click', () => {
     if (!gestureLab || !model) return;
-    // Zoom to the genuine face so selecting the corner of the mouth is usable on phones.
+    // Exit Eye-only isolation before raycasting against the visible Face.
+    // The uploaded GLB remains intact; the selected expression is preserved.
+    applyRenderMode('original');
+    isolationSelect.value = 'all';
+    isolateParts('all');
     frameModel('face');
     gestureLab.chooseTarget();
     gestureStatus.textContent = 'Seleção de alvo ativa: toque no canto dos lábios no viewport à esquerda/acima.';
