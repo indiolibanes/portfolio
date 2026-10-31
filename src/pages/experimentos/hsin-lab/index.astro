@@ -46,8 +46,8 @@ import '../../../styles/hsin-local-lab.css';
           <p class="hsin-lab__small" data-hsin-summary>Pronto para inspecionar o modelo local.</p>
         </div>
 
-        <div class="hsin-lab__group">
-          <h2>02 · Expressão facial</h2>
+        <details class="hsin-lab__group">
+          <summary>02 · Expressão facial</summary>
           <label for="hsin-preset">Preset de comparação (não aprovado)</label>
           <select id="hsin-preset" data-hsin-preset disabled>
             <option value="exported">Expressão exportada</option>
@@ -65,10 +65,10 @@ import '../../../styles/hsin-local-lab.css';
             <button type="button" data-hsin-restore-face disabled>Restaurar expressão exportada</button>
           </div>
           <p class="hsin-lab__small">A Smirk D e o modo Abrir olhos são testes para tornar as diferenças perceptíveis. Não são poses aprovadas. Ajuste E_Insipid e E_Focus manualmente para estudar as pálpebras.</p>
-        </div>
+        </details>
 
-        <div class="hsin-lab__group">
-          <h2>02B · Diagnóstico visual</h2>
+        <details class="hsin-lab__group">
+          <summary>02B · Diagnóstico visual</summary>
           <p class="hsin-lab__small">Selecione a v1.0.5 no aparelho. Se aparecer apenas uma silhueta ou uma face monocromática, compare os modos abaixo. Eles alteram apenas a visualização, sem editar o arquivo.</p>
           <label for="hsin-render-mode">Modo de materiais</label>
           <select id="hsin-render-mode" data-hsin-render-mode disabled>
@@ -126,7 +126,7 @@ import '../../../styles/hsin-local-lab.css';
           <details><summary>Inspecionar materiais e mapas</summary><pre class="hsin-lab__inventory" data-hsin-material-details>Aguardando arquivo.</pre></details>
           <p class="hsin-lab__small">v1.0.5 recupera os mapas RGB e recompõe quatro mapas de normais compactados (Up, Down, Cloth e Tail). Compare <strong>Original → RGB restaurado → Toon</strong> no mesmo enquadramento. A coloração ainda não é certificada como fiel aos shaders do jogo.</p>
           <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>
-        </div>
+        </details>
 
         <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
           <h2>03A · The Moon Fox’s Secret — atuação</h2>
@@ -135,6 +135,8 @@ import '../../../styles/hsin-local-lab.css';
             <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
             <button type="button" data-hsin-solve-gesture disabled>2. Animar gesto</button>
           </div>
+          <button type="button" data-hsin-director aria-pressed="false" disabled>Iniciar ciclo de QA</button>
+          <p class="hsin-lab__small" data-hsin-director-status role="status">Defina o alvo nos lábios para experimentar o ciclo. O movimento usa a referência v1.0.9; a trajetória com pole vector ainda está em estudo.</p>
           <label for="hsin-acting-style">Atuação e movimento secundário</label>
           <select id="hsin-acting-style" data-hsin-acting-style disabled>
             <option value="classic">Referência v1.0.8 · interpolação uniforme</option>
@@ -158,8 +160,8 @@ import '../../../styles/hsin-local-lab.css';
           <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo interpola as rotações da clavícula, braço, antebraço e punho direitos e atualiza os deformadores DEF durante o movimento. Com movimento reduzido, aplica a pose sem transição. Use <strong>Salvar preset de pose JSON</strong> após a animação para preservar o resultado no próprio Android.</p>
         </div>
 
-        <div class="hsin-lab__group">
-          <h2>03B · Articulações individuais</h2>
+        <details class="hsin-lab__group">
+          <summary>03B · Articulações individuais</summary>
           <p class="hsin-lab__small">Rotaciona <em>um osso por vez</em> em relação à postura original. Não é um sistema de IK nem uma pose final.</p>
           <label for="hsin-bone-region">Região do rig</label>
           <select id="hsin-bone-region" data-hsin-bone-region disabled>
@@ -181,10 +183,10 @@ import '../../../styles/hsin-local-lab.css';
             <label>Rotação local Z <output data-hsin-out-z>0°</output><input type="range" min="-65" max="65" value="0" step="1" data-hsin-axis="z" disabled /></label>
           </div>
           <button data-hsin-restore-bones type="button" disabled>Restaurar todos os ossos</button>
-        </div>
+        </details>
 
-        <div class="hsin-lab__group">
-          <h2>04 · Evidências privadas</h2>
+        <details class="hsin-lab__group">
+          <summary>04 · Evidências privadas</summary>
           <button data-hsin-report type="button" disabled>Exportar diagnóstico JSON</button>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-save-pose disabled>Salvar preset de pose JSON</button>
@@ -193,7 +195,7 @@ import '../../../styles/hsin-local-lab.css';
           </div>
           <p class="hsin-lab__small">O preset contém pesos dos morph targets e rotações locais dos ossos, não imagens ou malhas. Escolha um arquivo compatível com a mesma Hsin.</p>
           <p class="hsin-lab__small">O relatório registra o nome e o tamanho do arquivo, os pesos faciais e a transformação dos ossos modificados. <strong>Não contém malhas nem texturas.</strong> Se preferir, não o compartilhe.</p>
-        </div>
+        </details>
       </div>
     </section>
 
