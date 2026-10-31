@@ -80,6 +80,8 @@ async function initializeLab(root: HTMLElement) {
   const axes = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-axis]')];
   const metric = q<HTMLElement>('[data-hsin-fps]');
   const renderModeSelect = q<HTMLSelectElement>('[data-hsin-render-mode]');
+  const modeFeedback = q<HTMLElement>('[data-hsin-mode-feedback]');
+  const modeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-hsin-mode-button]')];
   const frontButton = q<HTMLButtonElement>('[data-hsin-front]');
   const rearButton = q<HTMLButtonElement>('[data-hsin-rear]');
   const materialSummary = q<HTMLElement>('[data-hsin-material-summary]');
@@ -132,6 +134,7 @@ async function initializeLab(root: HTMLElement) {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
+    modeButtons.forEach((button) => { button.disabled = !enabled; });
     lightingSelect.disabled = !enabled;
     isolationSelect.disabled = !enabled;
     atlasButton.disabled = !enabled;
@@ -452,7 +455,17 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function applyRenderMode(mode: typeof renderMode) {
-    if (!THREE || !model) return;
+    if (!THREE || !model) {
+      modeFeedback.textContent = 'Selecione o GLB antes de escolher um teste.';
+      return;
+    }
+    // This feedback lives beside the buttons, not in the file picker section.
+    // Android users can distinguish a failed mode from an unrelated file selection.
+    const feedback = (message: string, success = false) => {
+      modeFeedback.textContent = message;
+      modeFeedback.dataset.state = success ? 'success' : 'error';
+      setStatus(message);
+    };
     clearDiagnosticMaterials();
     renderMode = mode;
     renderModeSelect.value = mode;
@@ -461,15 +474,27 @@ async function initializeLab(root: HTMLElement) {
       const matches = [...originalMaterials.values()].flatMap((v) => Array.isArray(v) ? v : [v])
         .filter((m) => materialFamily(m) === family && colorMap(m));
       if (!matches.length) {
-        renderMode = 'original'; renderModeSelect.value = 'original';
-        setStatus('Não foi encontrado mapa de cor no material ' + family + '. Teste direto indisponível.');
+        // A silent revert previously looked like selecting "Materiais do GLB".
+        // Explain *which* source is loaded and *why* direct sampling cannot run.
+        renderMode = 'original';
+        renderModeSelect.value = 'original';
+        const from = fileMetadata?.name || 'GLB sem nome';
+        const available = [...originalMaterials.values()]
+          .flatMap((value) => Array.isArray(value) ? value : [value])
+          .filter((material) => materialFamily(material) === family);
+        feedback('Modo ' + mode + ' indisponível em ' + from +
+          ': ' + (available.length ? 'material encontrado, mas sem mapa RGB embutido.' :
+            'nenhuma malha/material Face/Eye reconhecida.') +
+          ' Carregue a v1.0.5 COLOR RESTORATION, não o GLB original v1.1.');
+        modeButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
         invalidate(); return;
       }
       isolationSelect.value = family; isolateParts(family);
-      setStatus('Teste ' + mode + ': ' + matches.length + ' material(is) com mapa. ' +
+      feedback('Aplicado ' + mode + ' a ' + (fileMetadata?.name || 'GLB') +
+        ': ' + matches.length + ' material(is) com mapa. ' +
         matches.map((m) => { const map = colorMap(m)!; return m.name + ' → ' + (map.name || '(mapa sem nome)') +
           ' · UV' + map.channel + ' · imagem ' + (map.image ? 'presente' : 'ausente'); }).join('; ') +
-        '. Confirme visualmente; o nome não prova a identidade do atlas.');
+        '. Confira a imagem; nome e presença do mapa não comprovam amostragem correta.', true);
     }
     if (mode !== 'original') {
       originalMaterials.forEach((original, mesh) => {
@@ -545,6 +570,15 @@ async function initializeLab(root: HTMLElement) {
         mesh.material = Array.isArray(original) ? original.map(transform) : transform(original);
       });
     }
+    modeButtons.forEach((button) => {
+      const active = button.dataset.hsinModeButton === mode;
+      button.setAttribute('aria-pressed', String(active));
+    });
+    if (!['face-direct', 'eye-direct', 'face-data', 'eye-data'].includes(mode)) {
+      modeFeedback.textContent = 'Visualização ' + mode + ' ativa' +
+        (fileMetadata?.name ? ' · ' + fileMetadata.name : '') + '.';
+      modeFeedback.dataset.state = 'success';
+    }
     invalidate();
   }
 
@@ -576,6 +610,9 @@ async function initializeLab(root: HTMLElement) {
     model = null;
     atlasPanel.replaceChildren();
     atlasPanel.hidden = true;
+    modeFeedback.textContent = 'Nenhum GLB carregado.';
+    modeFeedback.dataset.state = '';
+    modeButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
     atlasButton.textContent = 'Mostrar atlas Face/Eye (RGB carregado)';
     isolationSelect.value = 'all';
     originalMaterials.clear();
@@ -888,6 +925,9 @@ async function initializeLab(root: HTMLElement) {
       atlasPanel.hidden = true;
       cameraDirection = 1;
       enableControls(true);
+      modeFeedback.textContent = 'GLB carregado: ' + file.name +
+        '. Se os modos _D não funcionarem, verifique aqui se o mapa Face/Eye foi encontrado.';
+      modeFeedback.dataset.state = '';
       updateMaterialSummary();
       frameModel('full');
       const names = new Set(skinned.flatMap((mesh) => Object.keys(mesh.morphTargetDictionary ?? {})));
@@ -930,7 +970,31 @@ async function initializeLab(root: HTMLElement) {
       'Mostrar atlas Face/Eye (RGB carregado)' : 'Ocultar atlas Face/Eye';
   });
   renderModeSelect.addEventListener('change', () => {
-    applyRenderMode(renderModeSelect.value as typeof renderMode);
+    try { applyRenderMode(renderModeSelect.value as typeof renderMode); }
+    catch (error) {
+      console.error('Erro no modo de material Hsin', error);
+      modeFeedback.textContent = 'Erro ao selecionar modo: ' +
+        (error instanceof Error ? error.message : String(error));
+      modeFeedback.dataset.state = 'error';
+    }
+  });
+  modeButtons.forEach((button) => {
+    button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', (event) => {
+      // Explicit buttons avoid native Android select/dropdown ambiguities.
+      event.preventDefault();
+      event.stopPropagation();
+      const name = button.dataset.hsinModeButton as typeof renderMode | undefined;
+      if (!name) return;
+      try { applyRenderMode(name); }
+      catch (error) {
+        console.error('Hsin direct sample failed', error);
+        modeFeedback.textContent = 'Falha no teste ' + name + ': ' +
+          (error instanceof Error ? error.message : String(error));
+        modeFeedback.dataset.state = 'error';
+        setStatus(modeFeedback.textContent);
+      }
+    });
   });
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
