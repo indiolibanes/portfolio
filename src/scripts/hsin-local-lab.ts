@@ -82,6 +82,8 @@ async function initializeLab(root: HTMLElement) {
   const frontButton = q<HTMLButtonElement>('[data-hsin-front]');
   const rearButton = q<HTMLButtonElement>('[data-hsin-rear]');
   const materialSummary = q<HTMLElement>('[data-hsin-material-summary]');
+  const materialDetails = q<HTMLElement>('[data-hsin-material-details]');
+  const lightingSelect = q<HTMLSelectElement>('[data-hsin-lighting]');
 
   type ThreeModule = typeof import('three');
   type GLTF = import('three/addons/loaders/GLTFLoader.js').GLTF;
@@ -91,6 +93,7 @@ async function initializeLab(root: HTMLElement) {
   let THREE: ThreeModule | null = null;
   let renderer: import('three').WebGLRenderer | null = null;
   let scene: import('three').Scene | null = null;
+  let labLights: import('three').Light[] = [];
   let camera: import('three').PerspectiveCamera | null = null;
   let orbit: import('three/addons/controls/OrbitControls.js').OrbitControls | null = null;
   let loader: import('three/addons/loaders/GLTFLoader.js').GLTFLoader | null = null;
@@ -124,6 +127,7 @@ async function initializeLab(root: HTMLElement) {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
+    lightingSelect.disabled = !enabled;
     boneFilter.disabled = !enabled;
     boneRegion.disabled = !enabled;
     influentialOnly.disabled = !enabled;
@@ -185,13 +189,16 @@ async function initializeLab(root: HTMLElement) {
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
     scene = new THREE.Scene();
-    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
+    const ambient = new THREE.AmbientLight(0xffffff, 2.0);
+    scene.add(ambient);
     const key = new THREE.DirectionalLight(0xffe3b4, 2.8);
     key.position.set(2, 6, 8);
     scene.add(key);
     const fill = new THREE.DirectionalLight(0x9dbdf5, 1.8);
     fill.position.set(-4, 3, -5);
     scene.add(fill);
+    labLights = [ambient, key, fill];
+    setLighting();
     camera = new THREE.PerspectiveCamera(34, 1, .015, 5000);
     camera.position.set(0, 1.5, 5);
     orbit = new OrbitControls(camera, canvas);
@@ -232,6 +239,16 @@ async function initializeLab(root: HTMLElement) {
     intersectionObserver.observe(viewport);
     resize();
   }
+
+  function setLighting() {
+    const levels: Record<string, number[]> = {
+      original: [2, 2.8, 1.8], controlled: [.35, .8, .25], off: [0, 0, 0],
+    };
+    const values = levels[lightingSelect.value] ?? levels.original;
+    labLights.forEach((light, index) => { light.intensity = values[index]; });
+    invalidate();
+  }
+  lightingSelect.addEventListener('change', setLighting);
 
   // Restrict GLB assets to embedded buffers/textures so selecting a file cannot
   // silently trigger requests for external model dependencies or asset URLs.
@@ -291,6 +308,16 @@ async function initializeLab(root: HTMLElement) {
       transparent + ' transparentes. ' +
       (missingMaps.length ? 'Sem mapas de cor: ' + missingMaps.join(', ') + '. ' : '') +
       'Os mapas RGB e normais convertidos não reproduzem o shader proprietário.';
+    materialDetails.textContent = [...all].map((material) => {
+      const map = colorMap(material);
+      if (!map) return material.name + ': sem mapa de cor';
+      const dimensions = map.image?.width && map.image?.height
+        ? map.image.width + '×' + map.image.height : 'dimensões indisponíveis';
+      return material.name + ': ' + material.type + ' · mapa ' + (map.name || '(sem nome)') +
+        ' · ' + dimensions + ' · UV ' + map.channel + ' · espaço ' + (map.colorSpace || 'não definido') +
+        ' · flipY ' + map.flipY + ' · transparente ' + material.transparent +
+        ' · corte alfa ' + material.alphaTest;
+    }).join('\n');
   }
 
   function applyRenderMode(mode: typeof renderMode) {
