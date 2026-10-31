@@ -1,3 +1,4 @@
+import { createBehaviorDirector } from './hsin-acting-director.mjs';
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
 import { readEmbeddedDiffuse } from './hsin-glb-embedded-textures.mjs';
 import { canonicalHsinBoneName, createHsinGestureLab } from './hsin-gesture-ik.mjs';
@@ -106,6 +107,8 @@ async function initializeLab(root: HTMLElement) {
   const btnClearTarget = q<HTMLButtonElement>('[data-hsin-clear-target]');
   const checkShowTarget = q<HTMLInputElement>('[data-hsin-show-target]');
   const gestureStatus = q<HTMLElement>('[data-hsin-gesture-status]');
+  const directorButton = q<HTMLButtonElement>('[data-hsin-director]');
+  const directorStatus = q<HTMLElement>('[data-hsin-director-status]');
   const motionDuration = q<HTMLSelectElement>('[data-hsin-motion-duration]');
   const actingStyle = q<HTMLSelectElement>('[data-hsin-acting-style]');
   const influentialOnly = q<HTMLInputElement>('[data-hsin-influential]');
@@ -168,11 +171,26 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
+  const director = createBehaviorDirector({
+    requestFrame: (fn: FrameRequestCallback) => requestAnimationFrame(fn),
+    cancelFrame: (id: number) => cancelAnimationFrame(id),
+    onState: (state: string) => {
+      directorStatus.textContent = 'Ciclo de QA: ' + state + '.';
+      directorButton.textContent = state === 'stopped' ? 'Iniciar ciclo de QA' : 'Parar ciclo de QA';
+      directorButton.setAttribute('aria-pressed', String(state !== 'stopped'));
+      if (state === 'gesture') {
+        const result = gestureLab?.animateToPose(1800, { actingLevel: .3, staged: true });
+        if (!result?.ok) { director.stop(); directorStatus.textContent = result?.message ?? 'Rig indisponível.'; }
+      }
+      if (state === 'release') gestureLab?.animateRestore(1400);
+    },
+  });
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
+    directorButton.disabled = !enabled;
     modeButtons.forEach((button) => { button.disabled = !enabled; });
     lightingSelect.disabled = !enabled;
     isolationSelect.disabled = !enabled;
@@ -200,12 +218,24 @@ async function initializeLab(root: HTMLElement) {
   const invalidate = () => {
     if (!frame && visible && !document.hidden && !lost && !destroyed) frame = requestAnimationFrame(draw);
   };
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const onReducedMotion = () => {
+    if (reducedMotionQuery.matches && director.getState().state !== 'stopped') {
+      director.stop(); gestureLab?.restoreChain();
+      directorStatus.textContent = 'Ciclo suspenso pela preferência de movimento reduzido.';
+    }
+  };
+  reducedMotionQuery.addEventListener('change', onReducedMotion);
   const onVisibility = () => {
     gestureLab?.setVisible(visible && !document.hidden && !lost);
+    director.setVisible(visible && !document.hidden && !lost);
     invalidate();
   };
   const onPagehide = () => {
     destroyed = true;
+    director.stop();
+    reducedMotionQuery.removeEventListener('change', onReducedMotion);
+    document.removeEventListener('visibilitychange', onVisibility);
     cancelAnimationFrame(frame);
     cleanupModel();
     gestureLab?.dispose();
@@ -277,12 +307,14 @@ async function initializeLab(root: HTMLElement) {
       event.preventDefault();
       lost = true;
       gestureLab?.setVisible(false);
+      director.setVisible(false);
       cancelAnimationFrame(frame); frame = 0;
       setStatus('Contexto WebGL perdido. Aguarde a restauração ou recarregue.');
     });
     canvas.addEventListener('webglcontextrestored', () => {
       lost = false;
       gestureLab?.setVisible(visible && !document.hidden);
+      director.setVisible(visible && !document.hidden);
       setStatus('Contexto WebGL restaurado.');
       invalidate();
     });
@@ -302,6 +334,7 @@ async function initializeLab(root: HTMLElement) {
     intersectionObserver = new IntersectionObserver((entries) => {
       visible = entries[0]?.isIntersecting ?? false;
       gestureLab?.setVisible(visible && !document.hidden && !lost);
+      director.setVisible(visible && !document.hidden && !lost);
       if (!visible) { cancelAnimationFrame(frame); frame = 0; }
       else invalidate();
     }, { threshold: .01 });
@@ -752,6 +785,7 @@ async function initializeLab(root: HTMLElement) {
     materials.forEach((m) => m.dispose());
     textures.forEach((t) => t.dispose());
     skeletons.forEach((s) => s.dispose());
+    director.stop();
     model = null;
     embeddedDiffuse.clear();
     gestureLab?.resetTarget();
@@ -1190,7 +1224,17 @@ async function initializeLab(root: HTMLElement) {
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
   influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
+  directorButton.addEventListener('click', () => {
+    if (director.getState().state !== 'stopped') {
+      director.stop(); gestureLab?.animateRestore(800); return;
+    }
+    if (!gestureLab?.getTarget()) { directorStatus.textContent = 'Defina o alvo nos lábios antes de iniciar o ciclo de QA.'; return; }
+    const reducedMotion = reducedMotionQuery.matches;
+    viewport.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    if (!director.start({reducedMotion})) directorStatus.textContent = 'Ciclo desativado pela preferência de movimento reduzido.';
+  });
   btnPickMouth.addEventListener('click', () => {
+    director.stop();
     if (!gestureLab || !model) return;
     // Exit Eye-only isolation before raycasting against the visible Face.
     // The uploaded GLB remains intact; the selected expression is preserved.
@@ -1202,6 +1246,7 @@ async function initializeLab(root: HTMLElement) {
     gestureStatus.textContent = 'Seleção de alvo ativa: toque no canto dos lábios no viewport à esquerda/acima.';
   });
   btnSolveGesture.addEventListener('click', () => {
+    director.stop();
     if (!gestureLab || !model) return;
     try {
       // Make the viewport visible *before* running the tween, especially on
@@ -1213,7 +1258,7 @@ async function initializeLab(root: HTMLElement) {
       const level = style === 'theatrical' ? .85 :
         style === 'natural' ? .55 : style === 'subtle' ? .30 : 0;
       const result = gestureLab.animateToPose(duration, {
-        actingLevel: level, staged: style !== 'classic',
+        actingLevel: level, staged: style !== 'classic', spatial: style === 'spatial',
       });
       gestureStatus.textContent = result.message;
       gestureStatus.dataset.state = result.ok ? 'success' : 'error';
@@ -1224,6 +1269,7 @@ async function initializeLab(root: HTMLElement) {
     }
   });
   btnUndoGesture.addEventListener('click', () => {
+    director.stop();
     if (!gestureLab) return;
     const duration = Math.max(650, Math.round((Number(motionDuration.value) || 1250) * .75));
     viewport.scrollIntoView({ behavior: 'auto', block: 'nearest' });
@@ -1232,6 +1278,7 @@ async function initializeLab(root: HTMLElement) {
     gestureStatus.dataset.state = 'success';
   });
   btnClearTarget.addEventListener('click', () => {
+    director.stop();
     gestureLab?.resetTarget();
     gestureStatus.textContent = 'Alvo removido. Escolha novamente o canto dos lábios.';
   });

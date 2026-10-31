@@ -90,3 +90,6 @@
 .hsin-lab__gesture [data-hsin-gesture-status] { min-height: 2.5rem; padding: .5rem .65rem; border-left: 2px solid #d9bd82; background: #122033; }
 .hsin-lab__gesture [data-hsin-gesture-status][data-state="error"] { color: #ffc1b3; }
 .hsin-lab__gesture [data-hsin-gesture-status][data-state="success"] { color: #dce5d3; }
+.hsin-lab__group > summary { cursor:pointer; color:#e6c48e; font:500 1.25rem/1.2 var(--font-display); }
+.hsin-lab__group[open] > summary { margin-bottom:.8rem; }
+.hsin-lab__group > summary:focus-visible { outline:2px solid #e7c58f; outline-offset:4px; }

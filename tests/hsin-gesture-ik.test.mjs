@@ -179,6 +179,18 @@ try {
       'classic baseline must not animate secondary acting'));
   lab.restoreChain();
 
+  // Spatial mode is a separate experimental CCD path, with the same endpoint.
+  const spatial = lab.animateToPose(1000, { spatial:true, actingLevel:0 });
+  assert.equal(spatial.ok,true); assert.equal(spatial.animated,true);
+  runFrame(5000); runFrame(5500);
+  assert.equal(lab.getDiagnostics().animating,true);
+  assert.ok(joints.some((joint,i)=>joint.quaternion.angleTo(home[i])>.002), 'waypoint must move the rig');
+  lab.setVisible(false); assert.equal(scheduled.size,0);lab.setVisible(true);
+  runFrame(10000); runFrame(10500);
+  assert.equal(lab.getDiagnostics().animating,false);
+  joints.forEach((joint,i)=>assert.ok(joint.quaternion.angleTo(goal[i])<1e-5, 'spatial endpoint matches baseline'));
+  lab.restoreChain();
+
   // An interrupted animation cannot continue to modify the rig afterward.
   lab.animateToPose(1000);
   assert.ok(scheduled.size > 0);
