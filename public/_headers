@@ -18,11 +18,12 @@
   X-Robots-Tag: noindex, nofollow, noarchive
 
 
-# Hsin local-file lab. Embedded GLB textures are decoded through blob: URLs,
-# but the selected GLB itself is never served or uploaded by this site.
+# Hsin local-file lab. The global /* CSP forbids blob: images.
+# Cloudflare Pages concatenates duplicate CSP headers, so merely adding a
+# second CSP with img-src blob: does not loosen the first policy.
+# Detach the inherited CSP before attaching a route-specific strict CSP.
+# The model itself is never uploaded or served by this site.
 /experimentos/hsin-lab/*
   X-Robots-Tag: noindex, nofollow, noarchive
-  # Detach the more pervasive /* CSP. Two overlapping CSP headers are both
-  # enforced by the browser; the global img-src forbids blob: images.
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
