@@ -1,3 +1,4 @@
+import { sampleGestureArc } from './hsin-acting-director.mjs';
 /**
  * Hsin v1.0.7 — local-only right-hand gesture experiment.
  * No assets, remote calls, external rig or implicit animation.
@@ -161,12 +162,20 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const t = Math.min(1, current.elapsed / current.duration);
     // Smoothstep: both the raised arm and the return start/stop without snapping.
     const eased = t * t * (3 - 2 * t);
-    for (const { bone, from, to, role } of current.joints) {
-      const progress = current.staged ? stagedProgress(t, role) : eased;
-      bone.quaternion.copy(from).slerp(to, progress);
+    if (current.spatial) {
+      // Each waypoint is solved from the verified neutral rig. This is an
+      // experimental CCD trajectory, not a pole-vector or collision solver.
+      const { start, end, outward } = current.spatial;
+      const waypoint = sampleGestureArc(THREE, start, end, outward, t);
+      pose(waypoint, true);
+    } else {
+      for (const { bone, from, to, role } of current.joints) {
+        const progress = current.staged ? stagedProgress(t, role) : eased;
+        bone.quaternion.copy(from).slerp(to, progress);
+      }
+      bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+      synchronizeDeformers();
     }
-    bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
-    synchronizeDeformers();
     invalidate();
     if (t >= 1) {
       motion = null;
@@ -187,7 +196,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       return false;
     }
     motion = { joints, duration: Math.max(350, Math.min(2400, duration)),
-      elapsed: 0, lastTime: null, done, staged: options.staged === true };
+      elapsed: 0, lastTime: null, done, staged: options.staged === true, spatial: options.spatial || null };
     scheduleMotion();
     return true;
   }
@@ -218,6 +227,12 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     if (!target) return { ok: false, message: 'Primeiro defina um alvo na boca.' };
     stopMotion();
     const joints = motionJoints();
+    const useSpatial = options.spatial === true;
+    if (useSpatial && joints.some((bone) => !rest.get(bone) || bone.quaternion.angleTo(rest.get(bone)) > .01)) {
+      return { ok: false, message: 'Restaure primeiro o braço para comparar a trajetória espacial a partir da pose exportada.' };
+    }
+    const startTip = useSpatial ? fingertip() : null;
+    if (useSpatial && !startTip) return {ok:false, message:'Ponta do indicador indisponível.'};
     const level = Number.isFinite(options.actingLevel) ?
       Math.max(0, Math.min(1, options.actingLevel)) : .55;
     const secondary = secondaryJoints(level);
@@ -248,10 +263,13 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     });
     const animated = playMotion(entries, duration, () =>
       onStatus('Atuação concluída. Verifique dedos, inclinação da cabeça, cotovelo e contato labial.'),
-      { staged: options.staged !== false });
+      { staged: options.staged !== false,
+        spatial: useSpatial ? {start:startTip, end:target.clone(), outward:
+          new THREE.Vector3(startTip.x < target.x ? -1 : 1, .25, .35).normalize()
+            .multiplyScalar(Math.min(.12, startTip.distanceTo(target) * .20))} : null });
     return { ...result, animated,
       message: animated
-        ? 'Atuação em três etapas iniciada · ' + (duration / 1000).toFixed(2) +
+        ? (useSpatial ? 'Trajetória espacial CCD experimental iniciada · ' : 'Atuação em três etapas iniciada · ') + (duration / 1000).toFixed(2) +
           ' s · intensidade ' + Math.round(level * 100) +
           '%. Observe antecipação, braço, punho, dedos e cabeça.'
         : 'Pose aplicada sem transição por preferência de movimento reduzido.' };
@@ -416,8 +434,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       deform.updateWorldMatrix(true, true);
     }
   }
-  function restoreChain() {
-    stopMotion();
+  function resetChain(stop = true) {
+    if (stop) stopMotion();
     for (const [name] of LIMITS) {
       const bone = bones.get(name);
       const quaternion = rest.get(bone);
@@ -437,24 +455,25 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     lastError = null;
     invalidate();
   }
-  function pose() {
-    if (!target) return { ok: false, message: 'Primeiro escolha um ponto na boca com o botão Definir alvo.' };
+  function restoreChain() { resetChain(true); }
+  function pose(solveTarget = target, duringMotion = false) {
+    if (!solveTarget) return { ok: false, message: 'Primeiro escolha um ponto na boca com o botão Definir alvo.' };
     const chain = LIMITS.map(([name, max]) =>
       ({ bone: bones.get(name), limit: THREE.MathUtils.degToRad(max), name }));
     if (chain.some((item) => !item.bone || !rest.get(item.bone))) {
       return { ok: false, message: 'Rig incompleto ou pose original ausente. Não foi aplicado nenhum movimento.' };
     }
     // Each solve starts from the same baseline; never accumulate rotations.
-    restoreChain();
+    resetChain(!duringMotion);
     const tip = bones.get(NAMES.fingerTip);
     let iterations = 0;
     for (; iterations < 22; iterations++) {
       let current = fingertip();
-      if (!current || current.distanceTo(target) < 0.012) break;
+      if (!current || current.distanceTo(solveTarget) < 0.012) break;
       for (const { bone, limit } of chain) {
         const joint = bone.getWorldPosition(new THREE.Vector3());
         const currentVec = current.clone().sub(joint);
-        const targetVec = target.clone().sub(joint);
+        const targetVec = solveTarget.clone().sub(joint);
         if (currentVec.lengthSq() < EPSILON || targetVec.lengthSq() < EPSILON) continue;
         const angle = currentVec.angleTo(targetVec);
         if (!Number.isFinite(angle) || angle < 0.0001) continue;
@@ -479,7 +498,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     // The IK reaches using the contiguous ORG hand/finger chain. The parallel
     // DEF upper arm and forearm require the same world-space motion.
     synchronizeDeformers();
-    const distance = fingertip()?.distanceTo(target) ?? Infinity;
+    const distance = fingertip()?.distanceTo(solveTarget) ?? Infinity;
     lastError = Number.isFinite(distance) ? distance : null;
     invalidate();
     return {
