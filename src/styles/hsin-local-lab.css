@@ -80,3 +80,13 @@
 .hsin-lab__mode-feedback[data-state="error"] { color:#ffbdad; }
 .hsin-lab__mode-feedback[data-state="success"] { color:#d3e6d2; }
 @media(max-width:380px) { .hsin-lab__direct-buttons { grid-template-columns:1fr; } }
+
+/* v1.0.7: touch-guided right-index gesture study. */
+.hsin-lab__gesture { border-top: 2px solid #d2a86266; background: #1c2b40; }
+.hsin-lab__gesture .hsin-lab__view-actions { gap: .6rem; }
+.hsin-lab__gesture .hsin-lab__view-actions button { flex: 1 1 125px; min-height: 48px; }
+.hsin-lab__gesture [data-hsin-solve-gesture] { border-color: #e5be7f; background: #4b3d38; }
+.hsin-lab__gesture [data-hsin-pick-mouth] { border-color: #b4c3d9; }
+.hsin-lab__gesture [data-hsin-gesture-status] { min-height: 2.5rem; padding: .5rem .65rem; border-left: 2px solid #d9bd82; background: #122033; }
+.hsin-lab__gesture [data-hsin-gesture-status][data-state="error"] { color: #ffc1b3; }
+.hsin-lab__gesture [data-hsin-gesture-status][data-state="success"] { color: #dce5d3; }
