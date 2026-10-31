@@ -1063,9 +1063,13 @@ async function initializeLab(root: HTMLElement) {
       bones = [...distinctBones];
       bones.forEach((bone) => initialQuaternions.set(bone, bone.quaternion.clone()));
       const gestureReady = gestureLab?.attach(bones, initialQuaternions) ?? false;
+      const rigDiag = gestureLab?.getDiagnostics();
       gestureStatus.textContent = gestureReady ?
-        'Rig direto Bip001*.R identificado. Enquadre o rosto e toque em Definir alvo nos lábios.' :
-        'Rig direto incompleto. O gesto não pode ser simulado com segurança.';
+        'Skin ativo ORG-Bip001*.R confirmado; cadeia de dedos válida. ' +
+        (rigDiag?.secondaryDeformers ? 'Deformadores DEF sincronizados. ' : 'DEF incompletos; confira o braço. ') +
+        'Toque em Definir alvo nos lábios.' :
+        'Bloqueio de rig: ' + (rigDiag?.rigMessage ?? 'nenhum rig reconhecido') +
+        '. O GLB continua disponível para inspeção facial.';
       analyzeSkinInfluences();
       const option = preset.querySelector('option[value="custom"]');
       if (!option) preset.add(new Option('Ajuste manual', 'custom'));
