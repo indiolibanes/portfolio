@@ -94,6 +94,7 @@ async function initializeLab(root: HTMLElement) {
   const btnRestoreBones = q<HTMLButtonElement>('[data-hsin-restore-bones]');
   const btnFull = q<HTMLButtonElement>('[data-hsin-full]');
   const btnFace = q<HTMLButtonElement>('[data-hsin-face]');
+  const btnUpper = q<HTMLButtonElement>('[data-hsin-upper]');
   const btnShot = q<HTMLButtonElement>('[data-hsin-shot]');
   const btnSideBySide = q<HTMLButtonElement>('[data-hsin-side-by-side]');
   const btnSavePose = q<HTMLButtonElement>('[data-hsin-save-pose]');
@@ -147,7 +148,7 @@ async function initializeLab(root: HTMLElement) {
   let selectedBone: Bone | null = null;
   let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' | 'face-data' | 'eye-data' = 'original';
   let cameraDirection: 1 | -1 = 1;
-  let viewFocus: 'full' | 'face' = 'full';
+  let viewFocus: 'full' | 'face' | 'upper' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
   const diagnosticMaterials = new Set<import('three').Material>();
   const diagnosticTextures = new Set<import('three').Texture>();
@@ -165,7 +166,7 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
-  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
+  const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
@@ -956,9 +957,21 @@ async function initializeLab(root: HTMLElement) {
     invalidate();
   }
 
-  function frameModel(zoom: 'full' | 'face') {
+  function frameModel(zoom: 'full' | 'face' | 'upper') {
     if (!THREE || !model || !camera || !orbit) return;
     const bounds = new THREE.Box3();
+    if (zoom === 'upper') {
+      const head = bones.find((bone) => bone.name === 'Bip001Head');
+      if (head) {
+        const center = head.getWorldPosition(new THREE.Vector3());
+        center.y -= .12;
+        bounds.setFromCenterAndSize(center, new THREE.Vector3(.82, .90, .76));
+        for (const name of ['Bip001Hand.R', 'Bip001Forearm.R']) {
+          const bone = bones.find((candidate) => candidate.name === name);
+          if (bone) bounds.expandByPoint(bone.getWorldPosition(new THREE.Vector3()));
+        }
+      }
+    }
     if (zoom === 'face') {
       const face = skinned.filter((mesh) => {
         const count = mesh.geometry.getAttribute('position')?.count;
@@ -1111,6 +1124,7 @@ async function initializeLab(root: HTMLElement) {
   btnRestoreBones.addEventListener('click', restoreBones);
   btnFull.addEventListener('click', () => frameModel('full'));
   btnFace.addEventListener('click', () => frameModel('face'));
+  btnUpper.addEventListener('click', () => frameModel('upper'));
   frontButton.addEventListener('click', () => { cameraDirection = 1; frameModel(viewFocus); });
   rearButton.addEventListener('click', () => { cameraDirection = -1; frameModel(viewFocus); });
   isolationSelect.addEventListener('change', () => {
@@ -1165,7 +1179,7 @@ async function initializeLab(root: HTMLElement) {
       const result = gestureLab.pose();
       gestureStatus.textContent = result.message;
       gestureStatus.dataset.state = result.ok ? 'success' : 'error';
-      if (result.ok) frameModel('full');
+      if (result.ok) frameModel('upper');
     } catch (error) {
       gestureStatus.textContent = 'Falha ao calcular pose: ' +
         (error instanceof Error ? error.message : String(error));
