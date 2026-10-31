@@ -59,3 +59,5 @@
 .hsin-lab__group label.hsin-lab__checkbox { display:flex; align-items:center; gap:.6rem; margin:.8rem 0; font-size:.8rem; line-height:1.45; cursor:pointer; }
 .hsin-lab__checkbox input { width:1.15rem; height:1.15rem; flex:none; accent-color:#dcb877; }
 .hsin-lab__group .hsin-lab__view-actions .hsin-lab__filelabel { flex-basis:100%; margin:.7rem 0 0; }
+
+.hsin-lab__inventory { white-space:pre-wrap; overflow-wrap:anywhere; font: .72rem/1.55 var(--font-ui); color:#d4c8b9; }
