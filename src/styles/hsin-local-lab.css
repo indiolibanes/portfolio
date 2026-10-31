@@ -50,3 +50,6 @@
  .hsin-lab__metric { width:100%; }
 }
 @media(prefers-reduced-motion: reduce) { .hsin-lab *, .hsin-lab *::before { transition:none!important; animation:none!important; } }
+
+.hsin-lab__view-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0; }
+.hsin-lab__view-actions button { flex: 1 1 140px; }
