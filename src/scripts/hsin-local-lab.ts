@@ -1258,7 +1258,7 @@ async function initializeLab(root: HTMLElement) {
       const level = style === 'theatrical' ? .85 :
         style === 'natural' ? .55 : style === 'subtle' ? .30 : 0;
       const result = gestureLab.animateToPose(duration, {
-        actingLevel: level, staged: style !== 'classic',
+        actingLevel: level, staged: style !== 'classic', spatial: style === 'spatial',
       });
       gestureStatus.textContent = result.message;
       gestureStatus.dataset.state = result.ok ? 'success' : 'error';
