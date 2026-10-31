@@ -75,6 +75,8 @@ import '../../../styles/hsin-local-lab.css';
             <option value="uv1">UV1 · gradiente e quadriculado</option>
             <option value="face-direct">Face_D · amostragem direta (isola Face)</option>
             <option value="eye-direct">Eye_D · amostragem direta (isola Eye)</option>
+            <option value="face-data">Face_D · pixels reconstruídos (DataTexture)</option>
+            <option value="eye-data">Eye_D · pixels reconstruídos (DataTexture)</option>
             <option value="color">RGB restaurado · cores sem iluminação</option>
             <option value="toon">Toon · iluminação estilizada experimental</option>
             <option value="opaque">Texturas + opacidade diagnóstica</option>
@@ -82,6 +84,7 @@ import '../../../styles/hsin-local-lab.css';
             <option value="normals">Normais de superfície</option>
           </select>
           <p class="hsin-lab__small">Teste direto usa o mapa do material correspondente em MeshBasicMaterial branco, sem iluminação, transparência, vertex colors ou alpha test. UV0/UV1 mostram coordenadas por gradiente e quadriculado; ausência de atributo será avisada. A amostra ainda requer avaliação visual.</p>
+          <p class="hsin-lab__small">Teste diferencial v1.0.6C: compare Face_D direct sample com Face_D pixels reconstruídos. O segundo modo lê o bitmap já incorporado ao GLB, converte-o em RGBA opaco e cria uma DataTexture local de até 1024px. Se apenas a DataTexture mostrar cores, investigue a rota de upload/configuração da textura original no WebGL. Os arquivos não são enviados ao servidor.</p>
           <label for="hsin-lighting">Intensidade das luzes (afeta apenas materiais iluminados)</label>
           <select id="hsin-lighting" data-hsin-lighting disabled>
             <option value="original">Alta · bancada anterior (2 / 2,8 / 1,8)</option>
