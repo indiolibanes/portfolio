@@ -1,4 +1,5 @@
 import { sampleGestureArc } from './hsin-acting-director.mjs';
+import { inspectHsinWaypointContinuity } from './hsin-waypoint-safety.mjs';
 /**
  * Hsin v1.0.7 — local-only right-hand gesture experiment.
  * No assets, remote calls, external rig or implicit animation.
@@ -249,16 +250,32 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const solved = new Map(joints.map((bone) => [bone, bone.quaternion.clone()]));
     let baked = null;
     let maxStepRadians = 0;
+    let rejectedTrajectory = null;
     if (useSpatial) {
       const outward = new THREE.Vector3(startTip.x < target.x ? -1 : 1, .25, .35).normalize()
         .multiplyScalar(Math.min(.12, startTip.distanceTo(target) * .20));
       baked = [];
+      const inspectedFrames = [];
       for (let i = 0; i <= 4; i++) {
         const point = sampleGestureArc(THREE, startTip, target, outward, i / 4);
         pose(point, true);
         const frame = joints.map((bone) => bone.quaternion.clone());
-        if (i) frame.forEach((q, index) => { maxStepRadians = Math.max(maxStepRadians, q.angleTo(baked[i - 1][index])); });
         baked.push(frame);
+        const shoulder = bones.get(NAMES.upper)?.getWorldPosition(new THREE.Vector3());
+        const elbow = bones.get(NAMES.forearm)?.getWorldPosition(new THREE.Vector3());
+        const wrist = bones.get(NAMES.wrist)?.getWorldPosition(new THREE.Vector3());
+        inspectedFrames.push({ quaternions: frame, shoulder, elbow, wrist });
+      }
+      const safety = inspectHsinWaypointContinuity(inspectedFrames);
+      maxStepRadians = safety.maxStepRadians;
+      if (!safety.ok) {
+        // Preserve the proven facial contact: a rejected sampled path falls
+        // back to the already tested staged quaternion animation. Never let a
+        // disjoint or backwards elbow path reach the viewport unnoticed.
+        rejectedTrajectory = safety.reason +
+          ' (pose ' + (safety.frameIndex ?? '?') + ', ' +
+          (maxStepRadians * 180 / Math.PI).toFixed(1) + '°)';
+        baked = null;
       }
     }
     for (const [bone, quaternion] of [...starting, ...startingDeformers]) {
@@ -283,12 +300,18 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const animated = playMotion(useSpatial ? entries.slice(0, joints.length) : entries, duration, () =>
       onStatus('Atuação concluída. Verifique dedos, inclinação da cabeça, cotovelo e contato labial.'),
       { staged: options.staged !== false, baked });
-    return { ...result, animated, bakedSamples: baked?.length ?? 0, maxSampleStepRadians: useSpatial ? maxStepRadians : null,
-      message: animated
-        ? (useSpatial ? 'Trajetória pré-calculada (sem pole) iniciada · ' : 'Atuação em três etapas iniciada · ') + (duration / 1000).toFixed(2) +
-          ' s · intensidade ' + Math.round(level * 100) +
-          '%. Observe antecipação, braço, punho, dedos e cabeça.'
-        : 'Pose aplicada sem transição por preferência de movimento reduzido.' };
+    return { ...result, animated, bakedSamples: baked?.length ?? 0,
+      trajectoryAccepted: useSpatial ? !rejectedTrajectory : null,
+      fallbackReason: rejectedTrajectory,
+      maxSampleStepRadians: useSpatial ? maxStepRadians : null,
+      message: rejectedTrajectory
+        ? 'Trajetória espacial rejeitada por segurança: ' + rejectedTrajectory +
+          '. Executando a atuação clássica, sem inversão entre poses CCD amostradas. ' +
+          'A correção anatômica definitiva ainda exige pole vector e QA visual.'
+        : animated
+          ? (useSpatial ? 'Trajetória pré-calculada (sem pole) iniciada · ' : 'Atuação em três etapas iniciada · ') +
+            (duration / 1000).toFixed(2) + ' s. Verifique cotovelo, punho e dedos.'
+          : 'Pose aplicada sem transição por preferência de movimento reduzido.' };
   }
   function animateRestore(duration = 850) {
     if (!ready) return false;
