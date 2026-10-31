@@ -110,7 +110,7 @@ async function initializeLab(root: HTMLElement) {
   const skinInfluence = new Map<Bone, number>();
   let morphValues = new Map<string, number>();
   let selectedBone: Bone | null = null;
-  let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' = 'original';
+  let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' | 'face-data' | 'eye-data' = 'original';
   let cameraDirection: 1 | -1 = 1;
   let viewFocus: 'full' | 'face' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
@@ -407,13 +407,57 @@ async function initializeLab(root: HTMLElement) {
     }).join('\n');
   }
 
+
+  // Differential GPU upload test: rebuild an existing embedded texture's RGB
+  // pixels into a DataTexture. The model is never modified or uploaded. This
+  // bypasses the browser ImageBitmap/HTMLImage texture upload path while
+  // preserving the source UV channel and transform.
+  function reconstructPixels(source: import('three').Texture): import('three').DataTexture | null {
+    if (!THREE || !source.image) return null;
+    const image = source.image;
+    const width = Number(image.width), height = Number(image.height);
+    if (!width || !height || !Number.isFinite(width * height)) return null;
+    const scale = Math.min(1, 1024 / Math.max(width, height));
+    const w = Math.max(1, Math.round(width * scale));
+    const h = Math.max(1, Math.round(height * scale));
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(image as CanvasImageSource, 0, 0, w, h);
+      const rgba = ctx.getImageData(0, 0, w, h).data;
+      // The source images may carry packed shader masks in alpha; alpha in
+      // this control must be deliberately opaque, without guessing shader usage.
+      for (let i = 3; i < rgba.length; i += 4) rgba[i] = 255;
+      const buffer = new Uint8Array(rgba);
+      const result = new THREE.DataTexture(buffer, w, h, THREE.RGBAFormat, THREE.UnsignedByteType);
+      result.name = source.name + ' / RGBA from decoded bitmap';
+      result.colorSpace = source.colorSpace || THREE.SRGBColorSpace;
+      result.flipY = source.flipY;
+      result.channel = source.channel;
+      result.wrapS = source.wrapS; result.wrapT = source.wrapT;
+      result.offset.copy(source.offset); result.repeat.copy(source.repeat);
+      result.center.copy(source.center); result.rotation = source.rotation;
+      result.matrixAutoUpdate = source.matrixAutoUpdate;
+      result.minFilter = THREE.LinearFilter;
+      result.magFilter = THREE.LinearFilter;
+      result.generateMipmaps = false;
+      result.needsUpdate = true;
+      return result;
+    } catch (error) {
+      setStatus('Conversão local da textura falhou: ' + String(error));
+      return null;
+    }
+  }
+
   function applyRenderMode(mode: typeof renderMode) {
     if (!THREE || !model) return;
     clearDiagnosticMaterials();
     renderMode = mode;
     renderModeSelect.value = mode;
-    if (mode === 'face-direct' || mode === 'eye-direct') {
-      const family = mode === 'face-direct' ? 'face' : 'eye';
+    if (mode === 'face-direct' || mode === 'eye-direct' || mode === 'face-data' || mode === 'eye-data') {
+      const family = mode.startsWith('face-') ? 'face' : 'eye';
       const matches = [...originalMaterials.values()].flatMap((v) => Array.isArray(v) ? v : [v])
         .filter((m) => materialFamily(m) === family && colorMap(m));
       if (!matches.length) {
@@ -422,7 +466,7 @@ async function initializeLab(root: HTMLElement) {
         invalidate(); return;
       }
       isolationSelect.value = family; isolateParts(family);
-      setStatus('Teste direto ' + family + ': ' + matches.length + ' material(is) com mapa. ' +
+      setStatus('Teste ' + mode + ': ' + matches.length + ' material(is) com mapa. ' +
         matches.map((m) => { const map = colorMap(m)!; return m.name + ' → ' + (map.name || '(mapa sem nome)') +
           ' · UV' + map.channel + ' · imagem ' + (map.image ? 'presente' : 'ausente'); }).join('; ') +
         '. Confirme visualmente; o nome não prova a identidade do atlas.');
@@ -435,10 +479,26 @@ async function initializeLab(root: HTMLElement) {
           const baseColor = source instanceof THREE!.MeshBasicMaterial ||
             source instanceof THREE!.MeshStandardMaterial ? source.color.clone() :
             new THREE!.Color(0xffffff);
-          if (mode === 'face-direct' || mode === 'eye-direct') {
-            const family = mode === 'face-direct' ? 'face' : 'eye';
+          if (mode === 'face-direct' || mode === 'eye-direct' ||
+              mode === 'face-data' || mode === 'eye-data') {
+            const family = mode.startsWith('face-') ? 'face' : 'eye';
             if (materialFamily(source) !== family || !map) return source;
-            material = directMaterial(THREE, source);
+            if (mode.endsWith('-data')) {
+              const dataTexture = reconstructPixels(map);
+              if (dataTexture) {
+                diagnosticTextures.add(dataTexture);
+                material = new THREE!.MeshBasicMaterial({
+                  map: dataTexture, color: 0xffffff,
+                  side: source.side, transparent: false, opacity: 1,
+                  toneMapped: false, vertexColors: false,
+                  alphaTest: 0, blending: THREE!.NoBlending, depthWrite: true,
+                });
+              } else {
+                setStatus('Não foi possível reconstruir os pixels de ' + source.name +
+                  '. Use Mostrar atlas Face/Eye para investigar a imagem carregada.');
+                material = directMaterial(THREE, source);
+              }
+            } else material = directMaterial(THREE, source);
           } else if (mode === 'uv0' || mode === 'uv1') {
             const attr = mode === 'uv0' ? 'uv' : 'uv1';
             if (!mesh.geometry.getAttribute(attr)) {
