@@ -53,6 +53,10 @@ async function initializeLab(root: HTMLElement) {
   const boneSelect = q<HTMLSelectElement>('[data-hsin-bone]');
   const axes = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-axis]')];
   const metric = q<HTMLElement>('[data-hsin-fps]');
+  const renderModeSelect = q<HTMLSelectElement>('[data-hsin-render-mode]');
+  const frontButton = q<HTMLButtonElement>('[data-hsin-front]');
+  const rearButton = q<HTMLButtonElement>('[data-hsin-rear]');
+  const materialSummary = q<HTMLElement>('[data-hsin-material-summary]');
 
   type ThreeModule = typeof import('three');
   type GLTF = import('three/addons/loaders/GLTFLoader.js').GLTF;
@@ -73,6 +77,11 @@ async function initializeLab(root: HTMLElement) {
   let modifiedBoneAxes = new Map<Bone, { x: number; y: number; z: number }>();
   let morphValues = new Map<string, number>();
   let selectedBone: Bone | null = null;
+  let renderMode: 'original' | 'opaque' | 'clay' | 'normals' = 'original';
+  let cameraDirection: 1 | -1 = 1;
+  let viewFocus: 'full' | 'face' = 'full';
+  const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
+  const diagnosticMaterials = new Set<import('three').Material>();
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let frame = 0;
@@ -83,10 +92,11 @@ async function initializeLab(root: HTMLElement) {
   let fit: { center: import('three').Vector3; size: number } | null = null;
 
   const setStatus = (value: string) => { status.textContent = value; };
-  const buttons = [btnRestoreFace, btnRestoreBones, btnFull, btnFace, btnShot, btnReport];
+  const buttons = [btnRestoreFace, btnRestoreBones, btnFull, btnFace, btnShot, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
     preset.disabled = !enabled;
+    renderModeSelect.disabled = !enabled;
     boneFilter.disabled = !enabled;
     boneSelect.disabled = !enabled;
     axes.forEach((input) => { input.disabled = !enabled || !selectedBone; });
@@ -140,7 +150,9 @@ async function initializeLab(root: HTMLElement) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setClearColor(0x182237, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // The source declares all character materials as KHR_materials_unlit:
+    // ACES tonemapping distorts their base colors and cannot reconstruct absent shaders.
+    renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
     scene = new THREE.Scene();
     scene.add(new THREE.AmbientLight(0xffffff, 2.0));
@@ -213,8 +225,71 @@ async function initializeLab(root: HTMLElement) {
     }
   }
 
+  function clearDiagnosticMaterials() {
+    // Restore original assignments before releasing temporary diagnostic materials.
+    originalMaterials.forEach((original, mesh) => { mesh.material = original; });
+    diagnosticMaterials.forEach((material) => material.dispose());
+    diagnosticMaterials.clear();
+  }
+
+  function updateMaterialSummary() {
+    if (!THREE) return;
+    const all = new Set<import('three').Material>();
+    originalMaterials.forEach((assigned) => {
+      (Array.isArray(assigned) ? assigned : [assigned]).forEach((material) => all.add(material));
+    });
+    const unlit = [...all].filter((material) => material instanceof THREE!.MeshBasicMaterial).length;
+    const blend = [...all].filter((material) => material.transparent).length;
+    const missingMaps = [...all].filter((material) =>
+      /face|eye/i.test(material.name) &&
+      (!(material instanceof THREE!.MeshBasicMaterial) || !material.map)).map((m) => m.name);
+    materialSummary.textContent =
+      all.size + ' materiais distintos; ' + unlit + ' sem iluminação (unlit); ' +
+      blend + ' com transparência. ' +
+      (missingMaps.length ? 'Sem textura de cor incorporada: ' + missingMaps.join(', ') + '. ' : '') +
+      'Uma silhueta não comprova fidelidade dos shaders.';
+  }
+
+  function applyRenderMode(mode: typeof renderMode) {
+    if (!THREE || !model) return;
+    clearDiagnosticMaterials();
+    renderMode = mode;
+    renderModeSelect.value = mode;
+    if (mode !== 'original') {
+      originalMaterials.forEach((original, mesh) => {
+        const transform = (source: import('three').Material): import('three').Material => {
+          let material: import('three').Material;
+          if (mode === 'opaque') {
+            material = source.clone();
+            // Diagnostic alpha cutout, retaining the color maps where present.
+            // This can alter the appearance of hair and cloth; it is NOT a fidelity fix.
+            material.transparent = false;
+            material.alphaTest = .18;
+            material.depthWrite = true;
+            material.opacity = 1;
+            material.side = THREE!.DoubleSide;
+            material.blending = THREE!.NormalBlending;
+          } else if (mode === 'normals') {
+            material = new THREE!.MeshNormalMaterial({ side: THREE!.DoubleSide });
+          } else {
+            material = new THREE!.MeshStandardMaterial({
+              color: 0xd1b5bd, roughness: .93, metalness: 0,
+              side: THREE!.DoubleSide,
+            });
+          }
+          material.needsUpdate = true;
+          diagnosticMaterials.add(material);
+          return material;
+        };
+        mesh.material = Array.isArray(original) ? original.map(transform) : transform(original);
+      });
+    }
+    invalidate();
+  }
+
   function cleanupModel() {
     if (!THREE || !model || !scene) return;
+    clearDiagnosticMaterials();
     scene.remove(model.scene);
     const geometries = new Set<import('three').BufferGeometry>();
     const materials = new Set<import('three').Material>();
@@ -238,6 +313,7 @@ async function initializeLab(root: HTMLElement) {
     textures.forEach((t) => t.dispose());
     skeletons.forEach((s) => s.dispose());
     model = null;
+    originalMaterials.clear();
     skinned = [];
     bones = [];
     fit = null;
@@ -429,7 +505,8 @@ async function initializeLab(root: HTMLElement) {
     const vertical = size / (2 * Math.tan(fov / 2));
     const horizontal = vertical / Math.max(.6, camera.aspect);
     const distance = Math.max(vertical, horizontal) * (zoom === 'face' ? 1.6 : 1.42);
-    const direction = new THREE.Vector3(0, .08, 1).normalize();
+    viewFocus = zoom;
+    const direction = new THREE.Vector3(0, .08, cameraDirection).normalize();
     camera.position.copy(center).addScaledVector(direction, distance);
     camera.near = Math.max(.001, distance / 500);
     camera.far = Math.max(distance * 30, 20);
@@ -477,6 +554,7 @@ async function initializeLab(root: HTMLElement) {
       parsed.scene.traverse((item) => {
         if (item instanceof THREE!.SkinnedMesh) {
           skinned.push(item);
+          originalMaterials.set(item, item.material);
           if (item.morphTargetInfluences) {
             initialMorphs.set(item, [...item.morphTargetInfluences]);
           }
@@ -492,14 +570,18 @@ async function initializeLab(root: HTMLElement) {
       resetMorphs();
       populateBones('');
       applyPreset('exported');
+      renderMode = 'original';
+      renderModeSelect.value = 'original';
+      cameraDirection = 1;
       enableControls(true);
+      updateMaterialSummary();
       frameModel('full');
       const names = new Set(skinned.flatMap((mesh) => Object.keys(mesh.morphTargetDictionary ?? {})));
       summary.textContent =
         skinned.length + ' SkinnedMesh · ' + bones.length +
         ' ossos distintos · ' + names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
-      setStatus('GLB carregado em memória. Inspecione a imagem, os presets e os ossos.');
+      setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
@@ -516,6 +598,11 @@ async function initializeLab(root: HTMLElement) {
   btnRestoreBones.addEventListener('click', restoreBones);
   btnFull.addEventListener('click', () => frameModel('full'));
   btnFace.addEventListener('click', () => frameModel('face'));
+  frontButton.addEventListener('click', () => { cameraDirection = 1; frameModel(viewFocus); });
+  rearButton.addEventListener('click', () => { cameraDirection = -1; frameModel(viewFocus); });
+  renderModeSelect.addEventListener('change', () => {
+    applyRenderMode(renderModeSelect.value as typeof renderMode);
+  });
   boneFilter.addEventListener('input', () => populateBones(boneFilter.value));
   boneSelect.addEventListener('change', () => {
     selectedBone = bones.find((b) => b.uuid === boneSelect.value) ?? null;
@@ -547,7 +634,10 @@ async function initializeLab(root: HTMLElement) {
       schemaVersion: '1.0', gate: 'VISUAL_REVIEW_REQUIRED',
       privacy: 'Local-file diagnosis, no mesh or image data included',
       source: fileMetadata, capturedAt: new Date().toISOString(),
-      preset: currentPreset, face: Object.fromEntries(
+      preset: currentPreset,
+      renderMode, cameraDirection: cameraDirection === 1 ? '+Z' : '-Z',
+      materials: materialSummary.textContent,
+      face: Object.fromEntries(
         FACE_NAMES.filter((name) => getMorph(name) !== null).map((name) => [name, getMorph(name)]),
       ),
       bones: { total: bones.length, changed: changes },
