@@ -85,8 +85,118 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   let lastError = null;
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
+  // Motion lasts only for one explicit gesture; never runs continuously.
+  // Visibility changes pause its time and rAF, rather than consuming GPU/CPU.
+  let motion = null;
+  let motionFrame = 0;
+  let motionVisible = true;
+
+  function stopMotion() {
+    if (motionFrame) cancelAnimationFrame(motionFrame);
+    motionFrame = 0;
+    motion = null;
+  }
+  function setVisible(visible) {
+    motionVisible = !!visible;
+    if (!motionVisible) {
+      if (motionFrame) cancelAnimationFrame(motionFrame);
+      motionFrame = 0;
+      if (motion) motion.lastTime = null;
+    } else if (motion) {
+      scheduleMotion();
+    }
+  }
+  function scheduleMotion() {
+    if (!motion || motionFrame || disposed || !motionVisible ||
+        (typeof document !== 'undefined' && document.hidden)) return;
+    motionFrame = requestAnimationFrame(stepMotion);
+  }
+  function stepMotion(now) {
+    motionFrame = 0;
+    const current = motion;
+    if (!current || disposed || !motionVisible ||
+        (typeof document !== 'undefined' && document.hidden)) {
+      if (current) current.lastTime = null;
+      return;
+    }
+    if (current.lastTime !== null) current.elapsed += Math.max(0, now - current.lastTime);
+    current.lastTime = now;
+    const t = Math.min(1, current.elapsed / current.duration);
+    // Smoothstep: both the raised arm and the return start/stop without snapping.
+    const eased = t * t * (3 - 2 * t);
+    for (const { bone, from, to } of current.joints) {
+      bone.quaternion.copy(from).slerp(to, eased);
+    }
+    bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+    synchronizeDeformers();
+    invalidate();
+    if (t >= 1) {
+      motion = null;
+      current.done?.();
+    } else scheduleMotion();
+  }
+  function playMotion(joints, duration, done) {
+    stopMotion();
+    if (!joints.length) return false;
+    const reduce = typeof window !== 'undefined' &&
+      !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || duration <= 0) {
+      for (const { bone, to } of joints) bone.quaternion.copy(to);
+      bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+      synchronizeDeformers();
+      invalidate();
+      done?.();
+      return false;
+    }
+    motion = { joints, duration: Math.max(350, Math.min(2400, duration)),
+      elapsed: 0, lastTime: null, done };
+    scheduleMotion();
+    return true;
+  }
+  function motionJoints() {
+    return LIMITS.map(([name]) => bones.get(name)).filter(Boolean);
+  }
+  function animateToPose(duration = 1250) {
+    if (!ready) return { ok: false, message: rigMessage };
+    if (!target) return { ok: false, message: 'Primeiro defina um alvo na boca.' };
+    stopMotion();
+    const joints = motionJoints();
+    const starting = new Map(joints.map((bone) => [bone, bone.quaternion.clone()]));
+    const startingDeformers = DEFORM_LINKS.map(([, name]) => bones.get(name))
+      .filter(Boolean).map((bone) => [bone, bone.quaternion.clone()]);
+    // Compute the SAME final pose that already succeeded on Android.
+    const result = pose();
+    if (!result.ok) return result;
+    const solved = new Map(joints.map((bone) => [bone, bone.quaternion.clone()]));
+    for (const [bone, quaternion] of [...starting, ...startingDeformers]) {
+      bone.quaternion.copy(quaternion);
+    }
+    bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+    const entries = joints.map((bone) => ({
+      bone, from: starting.get(bone), to: solved.get(bone),
+    }));
+    const animated = playMotion(entries, duration, () =>
+      onStatus('Gesto concluído. Inspecione indicador, cotovelo e interseções; o alvo foi preservado.'));
+    return { ...result, animated,
+      message: animated
+        ? 'Movimento do braço iniciado · ' + (duration / 1000).toFixed(2) +
+          ' s. Observe a cena; o indicador deve chegar ao alvo gradualmente.'
+        : 'Pose aplicada sem animação por preferência de movimento reduzido.' };
+  }
+  function animateRestore(duration = 850) {
+    if (!ready) return false;
+    const joints = motionJoints();
+    const entries = joints.map((bone) => ({
+      bone, from: bone.quaternion.clone(), to: rest.get(bone)?.clone(),
+    })).filter((entry) => !!entry.to);
+    const animated = playMotion(entries, duration, () =>
+      onStatus('Braço restaurado suavemente à postura exportada. Alvo preservado.'));
+    if (!animated) onStatus('Braço restaurado à postura exportada. Alvo preservado.');
+    return true;
+  }
 
   function attach(boneList, originalQuaternions) {
+    stopMotion();
     boneCount = boneList.length;
     const expected = [...new Set([...Object.values(NAMES), ...DEFORM_LINKS.flat()])];
     const resolution = resolveHsinBones(boneList, expected);
@@ -148,6 +258,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
 
   function chooseTarget() {
     if (disposed || !ready) return false;
+    stopMotion();
     picking = true;
     orbit.enabled = false;
     canvas.style.cursor = 'crosshair';
@@ -191,6 +302,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   canvas.addEventListener('pointerdown', pointerDown, true);
 
   function resetTarget() {
+    stopMotion();
     target = null;
     marker.visible = false;
     cancelTargetSelection();
@@ -230,6 +342,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     }
   }
   function restoreChain() {
+    stopMotion();
     for (const [name] of LIMITS) {
       const bone = bones.get(name);
       const quaternion = rest.get(bone);
@@ -304,6 +417,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     }).filter(Boolean);
   }
   function restoreRotations(entries) {
+    stopMotion();
     if (!Array.isArray(entries) || entries.length > 4) return false;
     const valid = entries.every((entry) =>
       LIMITS.some(([name]) => name === entry?.name) &&
@@ -321,7 +435,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     return true;
   }
   function getDiagnostics() {
-    return { ready, picking, rigMessage, boneCount,
+    return { ready, picking, rigMessage, boneCount, animating: !!motion,
+      elapsedMotionMs: motion?.elapsed ?? null,
       matchedBoneNames: { ...matchedBoneNames },
       secondaryDeformers: DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)),
       target: target?.toArray() ?? null, distance: lastError,
@@ -330,6 +445,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   }
   function dispose() {
     if (disposed) return;
+    stopMotion();
     disposed = true;
     canvas.removeEventListener('pointerdown', pointerDown, true);
     cancelTargetSelection();
@@ -339,7 +455,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   }
   return {
     attach, chooseTarget, cancelTargetSelection, resetTarget,
-    getTarget, setMarkerVisible, restoreChain, pose, rotations,
-    restoreRotations, getDiagnostics, dispose,
+    getTarget, setMarkerVisible, restoreChain, pose, animateToPose, animateRestore,
+    stopMotion, setVisible, rotations, restoreRotations, getDiagnostics, dispose,
   };
 }
