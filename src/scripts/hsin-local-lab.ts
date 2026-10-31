@@ -98,6 +98,15 @@ async function initializeLab(root: HTMLElement) {
   const facialStatus = q<HTMLElement>('[data-hsin-facial-status]');
   const facialDetails = q<HTMLElement>('[data-hsin-facial-details]');
   const facialFlags = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-facial-channel]')];
+  const facialPass = q<HTMLSelectElement>('[data-hsin-facial-pass]');
+  const facialIntensity = q<HTMLInputElement>('[data-hsin-facial-intensity]');
+  const facialAttention = q<HTMLSelectElement>('[data-hsin-facial-attention]');
+  const facialMorph = q<HTMLSelectElement>('[data-hsin-facial-morph]');
+  const facialMorphTest = q<HTMLButtonElement>('[data-hsin-facial-morph-test]');
+  const facialSmileTest = q<HTMLButtonElement>('[data-hsin-facial-smile-test]');
+  const facialNoseTest = q<HTMLButtonElement>('[data-hsin-facial-nose-test]');
+  const facialAudit = q<HTMLElement>('[data-hsin-facial-audit]');
+  const facialIntensityOut = q<HTMLOutputElement>('[data-hsin-facial-intensity-out]');
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
   const btnRestoreFace = q<HTMLButtonElement>('[data-hsin-restore-face]');
@@ -188,6 +197,9 @@ async function initializeLab(root: HTMLElement) {
     requestFrame: (fn: FrameRequestCallback) => requestAnimationFrame(fn),
     cancelFrame: (id: number) => cancelAnimationFrame(id),
     onState: (state: string) => {
+      const cue=state==='anticipate'?'gesture:prepare':state==='hold'?'gesture:hold':
+        (state==='release'||state==='stopped')?'gesture:release':null;
+      if(cue)faceSession?.signal(cue);
       directorStatus.textContent = 'Ciclo de QA: ' + state + '.';
       directorButton.textContent = state === 'stopped' ? 'Iniciar ciclo de QA' : 'Parar ciclo de QA';
       directorButton.setAttribute('aria-pressed', String(state !== 'stopped'));
@@ -201,7 +213,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
-    [facialRun,facialBlink,facialWink,facialAB,facialRestore,facialPresent,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
+    [facialRun,facialBlink,facialWink,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -1214,6 +1226,21 @@ async function initializeLab(root: HTMLElement) {
     facialWink.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_R');
     facialRun.setAttribute('aria-pressed',String(running));
     facialRun.textContent=reducedMotionQuery.matches?'Movimento reduzido ativo':running?'Pausar no estado atual':'Iniciar / retomar atuação facial';
+    const isB=facialPass.value==='b', disabled=!model||reducedMotionQuery.matches||!isB;
+    [facialIntensity,facialAttention].forEach(control=>control.disabled=disabled);
+    [facialMorph,facialMorphTest,facialSmileTest,facialNoseTest].forEach(control=>control.disabled=disabled||Number(facialIntensity.value)<=0);
+    facialIntensityOut.value=Math.round(Number(facialIntensity.value)*100)+'%';
+    const audit=faceSession?.diagnostics().audit;
+    if(audit) {
+      const selected=facialMorph.value;facialMorph.replaceChildren();
+      audit.rows.forEach((row: {name:string;eligible:boolean;candidateCap:number})=>{
+        const option=new Option(row.name+' · teto '+row.candidateCap.toFixed(3)+(row.eligible?'':' · indisponível'),row.name);
+        option.disabled=!row.eligible;facialMorph.add(option);
+      });
+      if([...facialMorph.options].some(o=>o.value===selected))facialMorph.value=selected;
+      facialAudit.textContent=JSON.stringify(audit,null,2);
+    }
+
   }
   function endFacialForEdit() {
     if(!faceSession)return;
@@ -1227,15 +1254,38 @@ async function initializeLab(root: HTMLElement) {
       const candidates=bones.filter((bone)=>canonicalHsinBoneName(bone.name)==='orgbip001head');
       faceSession=createFacialSession({THREE, meshes:skinned, head:candidates.length===1?candidates[0]:null,
         camera,canvas:renderer.domElement,invalidate,
-        reducedMotion:reducedMotionQuery.matches,
+        reducedMotion:reducedMotionQuery.matches,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
         canAttend:()=>!gestureLab?.getDiagnostics().picking,
         onStatus:(message:string)=>{facialStatus.textContent=message;},
       });
       faceSession.configure(Object.fromEntries(facialFlags.map(c=>[c.dataset.hsinFacialChannel,c.checked])));
+      const bodyState=director.getState().state;
+      faceSession.signal(bodyState==='hold'?'gesture:hold':bodyState==='anticipate'||bodyState==='gesture'?'gesture:prepare':'gesture:release');
     }
     faceSession.setVisible(visible&&!document.hidden&&!lost);
     const result=faceSession.start();facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();return result;
   }
+  facialPass.addEventListener('change',()=>{
+    if(!faceSession)startFacial();else faceSession.setPass(facialPass.value);
+    facialStatus.textContent='Perfil '+facialPass.value.toUpperCase()+' selecionado sobre a mesma referência capturada; compare no mesmo enquadramento.';
+    facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();
+  });
+  facialIntensity.addEventListener('input',()=>{faceSession?.configure({intensity:Number(facialIntensity.value)});refreshFacialDiagnostics();});
+  facialAttention.addEventListener('change',()=>{faceSession?.configure({attentionMode:facialAttention.value});refreshFacialDiagnostics();});
+  facialMorphTest.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(!startFacial())return;
+    const ok=faceSession?.testMorph(facialMorph.value);
+    facialStatus.textContent=ok?'Teste isolado: '+facialMorph.value+'. Peso limitado pela auditoria; inspeção visual necessária.':'Aguarde a microexpressão/piscada atual ou selecione um controle disponível.';
+    refreshFacialDiagnostics();
+  });
+  for(const [button,kind] of [[facialSmileTest,'smile'],[facialNoseTest,'nose-smile']] as const)button.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(!startFacial())return;
+    const ok=faceSession?.testBeat(kind);
+    facialStatus.textContent=ok?'Beat de laboratório: '+kind+(kind==='nose-smile'?'. Nariz não é usado na apresentação automática.':'.'):'Aguarde a microexpressão/piscada atual antes de testar.';
+    refreshFacialDiagnostics();
+  });
   facialRun.addEventListener('click',()=>{
     if(faceSession?.diagnostics().running){faceSession.pause();refreshFacialDiagnostics();}else startFacial();
   });
