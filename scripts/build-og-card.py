@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Build the link-preview card ("não ironicamente" Sophia) and its animated twin.
+"""Build the original raised-paw Sophia illustration and its animated twin.
 
     pip install pillow numpy scipy opencv-python-headless
     python3 scripts/build-og-card.py
 
 Inputs : public/images/sophia/lab-single-tail.webp  (the lab-section Sophia)
 Outputs: assets/og-portfolio.png            (1200x630, picked up by scripts/generate-og.mjs)
-         public/og-portfolio-animated.gif   (800x420 loop, same artwork)
+         public/og-portfolio-animated.gif   (800x420, only with --gif)
 
-Everything, text included, is rasterised here so the card does not depend on
-the fonts installed on the build machine. Edit the constants, rerun, commit
-the PNG.
+This script preserves Sophia and the pointing-paw pose. Editorial typography
+is composed separately by scripts/generate-og.mjs during the site build.
+Regenerating this image is optional; the current PNG remains the source.
 """
 import math, random, sys
 from pathlib import Path
@@ -27,7 +27,6 @@ X0, Y0 = 550, 340 - 267 * SC   # card x of sprite x=120; card y of sprite y=0 (e
 EYES = [(232, 256), (309, 277)]   # sprite coords, measured on the 640x640 sheet
 LENS_R, FRAME, MAG = 34, 6.5, 1.42
 INK = (17, 20, 43, 255)
-CAPTION = (124, 200, 245)
 
 def font(name, size):
     for p in (name, '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'):
@@ -164,21 +163,8 @@ def background(t=0.0):
     return img
 
 def text_layer():
-    T = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(T)
-    cap = font(INTER.format('Medium'), 60)
-    for dx, dy, al in ((0, 5, 90),):
-        d.text((58 + dx, 40 + dy), 'não ironicamente', font=cap, fill=(0, 0, 20, al))
-    d.text((58, 40), 'não ironicamente', font=cap, fill=CAPTION + (255,))
-    d.line([(60, 150), (130, 150)], fill=(255, 214, 140, 200), width=2)
-    d.text((60, 178), 'Kauê Alencar', font=font('/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf', 50), fill=(255, 247, 232, 255))
-    sub = font(INTER.format('Regular'), 24)
-    for i, line in enumerate(('Escrita', 'Documentação', 'Informação')):
-        y = 272 + i * 40
-        d.polygon([(66, y + 15), (72, y + 9), (78, y + 15), (72, y + 21)], fill=(255, 214, 140, 255))
-        d.text((92, y), line, font=sub, fill=(222, 228, 247, 255))
-    d.text((60, 560), 'kaue.pages.dev', font=font(INTER.format('Medium'), 22), fill=(255, 214, 140, 235))
-    return T
+    """Keep the master sprite text-free; type is applied by generate-og.mjs."""
+    return Image.new('RGBA', (W, H), (0, 0, 0, 0))
 
 _HEAD = None
 def compose(t=None):
@@ -210,7 +196,7 @@ if __name__ == '__main__':
     out = ROOT / 'assets/og-portfolio.png'
     compose().save(out, optimize=True)
     print('wrote', out.relative_to(ROOT))
-    if '--no-gif' in sys.argv: sys.exit()
+    if '--gif' not in sys.argv: sys.exit()
     n = 28
     frames = [compose(i / n).resize((800, 420), Image.LANCZOS) for i in range(n)]
     pal = frames[0].quantize(colors=160, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
