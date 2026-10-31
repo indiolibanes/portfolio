@@ -89,6 +89,19 @@ import '../../../styles/hsin-local-lab.css';
             <button type="button" data-hsin-rear disabled>Ver de trás (−Z)</button>
           </div>
           <p class="hsin-lab__small" data-hsin-material-summary>O inventário aparecerá após selecionar o GLB.</p>
+          <div class="hsin-lab__isolator">
+            <label for="hsin-isolation">Teste de sobreposição de malhas (não altera o GLB)</label>
+            <select id="hsin-isolation" data-hsin-isolation disabled>
+              <option value="all">Todas as partes — referência</option>
+              <option value="face">Apenas Face — descartar oclusão</option>
+              <option value="face-eye">Face + Eye — verificar pupilas</option>
+              <option value="face-eye-hair">Face + Eye + Hair/Bangs</option>
+            </select>
+            <button data-hsin-atlas-button type="button" disabled>Mostrar atlas Face/Eye (RGB carregado)</button>
+            <div data-hsin-atlas class="hsin-lab__atlas" hidden></div>
+            <p class="hsin-lab__small">Se os atlas estiverem coloridos mas a face isolada continuar branca, investigue UV/sampler/material. Se a face isolada tiver cores, procure outra malha que a esteja encobrindo.</p>
+          </div>
+
           <details><summary>Inspecionar materiais e mapas</summary><pre class="hsin-lab__inventory" data-hsin-material-details>Aguardando arquivo.</pre></details>
           <p class="hsin-lab__small">v1.0.5 recupera os mapas RGB e recompõe quatro mapas de normais compactados (Up, Down, Cloth e Tail). Compare <strong>Original → RGB restaurado → Toon</strong> no mesmo enquadramento. A coloração ainda não é certificada como fiel aos shaders do jogo.</p>
           <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>

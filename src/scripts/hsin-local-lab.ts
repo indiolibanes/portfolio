@@ -82,6 +82,9 @@ async function initializeLab(root: HTMLElement) {
   const frontButton = q<HTMLButtonElement>('[data-hsin-front]');
   const rearButton = q<HTMLButtonElement>('[data-hsin-rear]');
   const materialSummary = q<HTMLElement>('[data-hsin-material-summary]');
+  const isolationSelect = q<HTMLSelectElement>('[data-hsin-isolation]');
+  const atlasButton = q<HTMLButtonElement>('[data-hsin-atlas-button]');
+  const atlasPanel = q<HTMLDivElement>('[data-hsin-atlas]');
   const materialDetails = q<HTMLElement>('[data-hsin-material-details]');
   const lightingSelect = q<HTMLSelectElement>('[data-hsin-lighting]');
 
@@ -128,6 +131,8 @@ async function initializeLab(root: HTMLElement) {
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     lightingSelect.disabled = !enabled;
+    isolationSelect.disabled = !enabled;
+    atlasButton.disabled = !enabled;
     boneFilter.disabled = !enabled;
     boneRegion.disabled = !enabled;
     influentialOnly.disabled = !enabled;
@@ -289,6 +294,81 @@ async function initializeLab(root: HTMLElement) {
     return null;
   }
 
+  // Isolation only toggles visible SkinnedMeshes; rig, node hierarchy and
+  // embedded original assets remain unchanged and fully restorable.
+  function isolateParts(mode: string) {
+    const families = (mesh: Skinned): Set<string> => {
+      const names = (Array.isArray(originalMaterials.get(mesh)) ?
+        originalMaterials.get(mesh) as import('three').Material[] :
+        [originalMaterials.get(mesh) as import('three').Material])
+        .filter(Boolean).map((m) => m.name.toLowerCase());
+      const categories = new Set<string>();
+      names.forEach((name) => {
+        if (/face/.test(name)) categories.add('face');
+        if (/eye/.test(name)) categories.add('eye');
+        if (/hair|bangs/.test(name)) categories.add('hair');
+      });
+      return categories;
+    };
+    skinned.forEach((mesh) => {
+      const category = families(mesh);
+      mesh.visible = mode === 'all' ||
+        (mode === 'face' && category.has('face')) ||
+        (mode === 'face-eye' && (category.has('face') || category.has('eye'))) ||
+        (mode === 'face-eye-hair' && (category.has('face') || category.has('eye') || category.has('hair')));
+    });
+    invalidate();
+  }
+
+  function drawAtlasPreviews() {
+    if (!THREE || !model) return;
+    atlasPanel.replaceChildren();
+    const sources = new Map<string, import('three').Texture>();
+    originalMaterials.forEach((material) => {
+      (Array.isArray(material) ? material : [material]).forEach((mat) => {
+        const name = mat.name;
+        if (!/face|eye/i.test(name)) return;
+        const map = colorMap(mat);
+        if (map) sources.set(name, map);
+      });
+    });
+    if (!sources.size) {
+      const note = document.createElement('p');
+      note.className = 'hsin-lab__small';
+      note.textContent = 'O GLB não fornece atlas de cor Face/Eye legíveis pelo loader.';
+      atlasPanel.append(note);
+      return;
+    }
+    sources.forEach((texture, name) => {
+      const element = document.createElement('figure');
+      const label = document.createElement('figcaption');
+      label.textContent = name + ' · imagem fonte (sem mapeamento UV)';
+      const canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 512;
+      canvas.style.width = '100%';
+      canvas.style.aspectRatio = '1';
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const image = texture.image;
+      if (ctx && image && ('width' in image) && ('height' in image) && image.width && image.height) {
+        try {
+          ctx.drawImage(image as CanvasImageSource, 0, 0, canvas.width, canvas.height);
+          const points = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          let sumR = 0, sumG = 0, sumB = 0, sampled = 0;
+          for (let i = 0; i < points.length; i += 4 * 257) {
+            sumR += points[i]; sumG += points[i + 1]; sumB += points[i + 2]; sampled++;
+          }
+          const values = [sumR, sumG, sumB].map((sum) => Math.round(sum / Math.max(1, sampled)));
+          label.textContent += ' · RGB médio aprox. ' + values.join('/') +
+            ' · flipY=' + texture.flipY + ' · colorSpace=' + texture.colorSpace;
+        } catch (error) {
+          label.textContent += ' · não foi possível desenhar a textura: ' + String(error);
+        }
+      } else label.textContent += ' · bitmap ainda não disponível no navegador';
+      element.append(canvas, label);
+      atlasPanel.append(element);
+    });
+  }
+
   function updateMaterialSummary() {
     if (!THREE) return;
     const all = new Set<import('three').Material>();
@@ -400,6 +480,10 @@ async function initializeLab(root: HTMLElement) {
     textures.forEach((t) => t.dispose());
     skeletons.forEach((s) => s.dispose());
     model = null;
+    atlasPanel.replaceChildren();
+    atlasPanel.hidden = true;
+    atlasButton.textContent = 'Mostrar atlas Face/Eye (RGB carregado)';
+    isolationSelect.value = 'all';
     originalMaterials.clear();
     skinned = [];
     bones = [];
@@ -705,6 +789,9 @@ async function initializeLab(root: HTMLElement) {
       applyPreset('exported');
       renderMode = 'original';
       renderModeSelect.value = 'original';
+      isolationSelect.value = 'all';
+      isolateParts('all');
+      atlasPanel.hidden = true;
       cameraDirection = 1;
       enableControls(true);
       updateMaterialSummary();
@@ -739,6 +826,15 @@ async function initializeLab(root: HTMLElement) {
   btnFace.addEventListener('click', () => frameModel('face'));
   frontButton.addEventListener('click', () => { cameraDirection = 1; frameModel(viewFocus); });
   rearButton.addEventListener('click', () => { cameraDirection = -1; frameModel(viewFocus); });
+  isolationSelect.addEventListener('change', () => {
+    isolateParts(isolationSelect.value);
+  });
+  atlasButton.addEventListener('click', () => {
+    atlasPanel.hidden = !atlasPanel.hidden;
+    if (!atlasPanel.hidden) drawAtlasPreviews();
+    atlasButton.textContent = atlasPanel.hidden ?
+      'Mostrar atlas Face/Eye (RGB carregado)' : 'Ocultar atlas Face/Eye';
+  });
   renderModeSelect.addEventListener('change', () => {
     applyRenderMode(renderModeSelect.value as typeof renderMode);
   });
