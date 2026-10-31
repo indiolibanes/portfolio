@@ -8,19 +8,27 @@
  */
 export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onStatus, invalidate, getFaceMeshes }) {
   const NAMES = {
-    clavicle: 'Bip001Clavicle.R',
-    upper: 'Bip001UpperArm.R',
-    forearm: 'Bip001Forearm.R',
-    wrist: 'Bip001Hand.R',
-    fingerBase: 'Bip001Finger1.R',
-    fingerMiddle: 'Bip001Finger11.R',
-    fingerTip: 'Bip001Finger12.R',
+    // These are the REAL skinned meshes' 823-joint rig (skin 0).
+    // The unprefixed Bip001* chain belongs to an unused 498-joint skin.
+    clavicle: 'ORG-Bip001Clavicle.R',
+    upper: 'ORG-Bip001UpperArm.R',
+    forearm: 'ORG-Bip001Forearm.R',
+    wrist: 'ORG-Bip001Hand.R',
+    fingerBase: 'ORG-Bip001Finger1.R',
+    fingerMiddle: 'ORG-Bip001Finger11.R',
+    fingerTip: 'ORG-Bip001Finger12.R',
   };
   const LIMITS = [
     [NAMES.wrist, 38],
     [NAMES.forearm, 135],
     [NAMES.upper, 110],
     [NAMES.clavicle, 23],
+  ];
+  // Hsin's active skin has a second, parallel DEF deformation chain.
+  // Both need to move for coherent visible upper-arm and forearm skinning.
+  const DEFORM_LINKS = [
+    ['ORG-Bip001UpperArm.R', 'DEF-Bip001UpperArm.R'],
+    ['ORG-Bip001Forearm.R', 'DEF-Bip001Forearm.R'],
   ];
   const SOFT_STEP = THREE.MathUtils.degToRad(10);
   const EPSILON = 1e-6;
@@ -36,6 +44,9 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
 
   let bones = new Map();
   let rest = new Map();
+  let restWorld = new Map();
+  let ready = false;
+  let rigMessage = 'Aguardando verificação do rig.';
   let target = null;
   let picking = false;
   let disposed = false;
@@ -46,6 +57,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   function attach(boneList, originalQuaternions) {
     bones = new Map(boneList.map((bone) => [bone.name, bone]));
     rest = originalQuaternions;
+    restWorld.clear();
+    ready = false;
     target = null;
     marker.visible = false;
     picking = false;
@@ -54,23 +67,39 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     invalidate();
     const missing = [...Object.values(NAMES)].filter((name) => !bones.has(name));
     if (missing.length) {
-      onStatus('A cadeia direita não está completa: ' + missing.join(', '));
+      rigMessage = 'O skin ativo não contém: ' + missing.join(', ');
+      onStatus(rigMessage);
       return false;
     }
     const hand = bones.get(NAMES.wrist);
     const forearm = bones.get(NAMES.forearm);
     const upper = bones.get(NAMES.upper);
     const clavicle = bones.get(NAMES.clavicle);
+    const fb = bones.get(NAMES.fingerBase);
+    const fm = bones.get(NAMES.fingerMiddle);
+    const ft = bones.get(NAMES.fingerTip);
     if (hand.parent !== forearm || forearm.parent !== upper ||
-        upper.parent !== clavicle) {
-      onStatus('A hierarquia da cadeia direita não corresponde ao GLB auditado. IK desativado.');
+        upper.parent !== clavicle || fb.parent !== hand ||
+        fm.parent !== fb || ft.parent !== fm) {
+      rigMessage = 'A hierarquia ORG do skin ativo é diferente da esperada. IK desativado.';
+      onStatus(rigMessage);
       return false;
     }
+    clavicle.updateWorldMatrix(true, true);
+    for (const name of [...Object.values(NAMES), ...DEFORM_LINKS.flat()]) {
+      const bone = bones.get(name);
+      if (bone) restWorld.set(bone, bone.getWorldQuaternion(new THREE.Quaternion()));
+    }
+    ready = true;
+    rigMessage = DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)) ?
+      'Rig ativo identificado: cadeia ORG e deformadores DEF paralelos.' :
+      'Rig ativo identificado, mas faltam deformadores DEF; valide o braço com atenção.';
+    onStatus(rigMessage);
     return true;
   }
 
   function chooseTarget() {
-    if (disposed || !bones.get(NAMES.fingerTip)) return false;
+    if (disposed || !ready) return false;
     picking = true;
     orbit.enabled = false;
     canvas.style.cursor = 'crosshair';
@@ -134,8 +163,31 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     // The fingertip has no explicit terminal bone in the exported skeleton.
     return d.clone().addScaledVector(d.clone().sub(m), 0.70);
   }
+  function synchronizeDeformers() {
+    // Match the *world-space rotation change* of the real ORG driver to its
+    // parallel DEF bone, keeping each DEF rest orientation. Do not copy local
+    // quaternions: Rigify exports different parent spaces for these branches.
+    for (const [driverName, deformName] of DEFORM_LINKS) {
+      const driver = bones.get(driverName);
+      const deform = bones.get(deformName);
+      if (!driver || !deform || !deform.parent) continue;
+      const driverRestWorld = restWorld.get(driver);
+      const deformRestWorld = restWorld.get(deform);
+      if (!driverRestWorld || !deformRestWorld) continue;
+      const desiredWorld = driver.getWorldQuaternion(new THREE.Quaternion())
+        .multiply(driverRestWorld.clone().invert()).multiply(deformRestWorld);
+      const parentWorld = deform.parent.getWorldQuaternion(new THREE.Quaternion());
+      deform.quaternion.copy(parentWorld.invert().multiply(desiredWorld)).normalize();
+      deform.updateWorldMatrix(true, true);
+    }
+  }
   function restoreChain() {
     for (const [name] of LIMITS) {
+      const bone = bones.get(name);
+      const quaternion = rest.get(bone);
+      if (quaternion) bone.quaternion.copy(quaternion);
+    }
+    for (const [, name] of DEFORM_LINKS) {
       const bone = bones.get(name);
       const quaternion = rest.get(bone);
       if (quaternion) bone.quaternion.copy(quaternion);
@@ -183,6 +235,9 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
         current = fingertip();
       }
     }
+    // The IK reaches using the contiguous ORG hand/finger chain. The parallel
+    // DEF upper arm and forearm require the same world-space motion.
+    synchronizeDeformers();
     const distance = fingertip()?.distanceTo(target) ?? Infinity;
     lastError = Number.isFinite(distance) ? distance : null;
     invalidate();
@@ -213,11 +268,13 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       bone.quaternion.fromArray(entry.quaternion).normalize();
     }
     bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+    synchronizeDeformers();
     invalidate();
     return true;
   }
   function getDiagnostics() {
-    return { ready: LIMITS.every(([name]) => bones.has(name)), picking,
+    return { ready, picking, rigMessage,
+      secondaryDeformers: DEFORM_LINKS.every(([org, def]) => bones.has(org) && bones.has(def)),
       target: target?.toArray() ?? null, distance: lastError,
       chain: LIMITS.map(([name, max]) => ({ name, maximumDeviationDegrees: max })),
     };
