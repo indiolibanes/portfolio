@@ -88,6 +88,12 @@ events.get('pointerdown')({
 });
 assert.equal(orbit.enabled, true);
 assert.ok(lab.getTarget());
+const contact = lab.getContactLocal(); assert.ok(contact);
+const targetBefore = lab.getTarget(); head.position.x += .1; scene.updateMatrixWorld(true);
+assert.ok(Math.abs(lab.getTarget().x - targetBefore.x - .1) < 1e-6, 'contact follows head');
+head.position.x -= .1; scene.updateMatrixWorld(true);
+assert.equal(lab.restoreContactLocal({bone:'invalid',position:[0,0,0]}),false);
+assert.equal(lab.restoreContactLocal(contact),true);
 const result = lab.pose();
 assert.equal(result.ok, true);
 assert.ok(Number.isFinite(result.distance), 'IK distance must be finite');
@@ -181,8 +187,10 @@ try {
 
   // Spatial mode is a separate experimental CCD path, with the same endpoint.
   const spatial = lab.animateToPose(1000, { spatial:true, actingLevel:0 });
-  assert.equal(spatial.ok,true); assert.equal(spatial.animated,true);
+  assert.equal(spatial.ok,true); assert.equal(spatial.animated,true); assert.equal(spatial.bakedSamples,5);
+  const countAfterPlanning = lab.getDiagnostics().solveCount;
   runFrame(5000); runFrame(5500);
+  assert.equal(lab.getDiagnostics().solveCount,countAfterPlanning,'playback must not solve CCD per frame');
   assert.equal(lab.getDiagnostics().animating,true);
   assert.ok(joints.some((joint,i)=>joint.quaternion.angleTo(home[i])>.002), 'waypoint must move the rig');
   lab.setVisible(false); assert.equal(scheduled.size,0);lab.setVisible(true);
