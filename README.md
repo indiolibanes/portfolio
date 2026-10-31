@@ -149,7 +149,7 @@ npm install
 npm run dev
 ```
 
-`dev` e `build` executam antes os scripts de geração (imagem Open Graph, quadros estáticos de movimento e recortes do Sobre).
+`dev` e `build` executam antes os scripts de geração (imagem Open Graph autoral com a Sophia original, quadros estáticos de movimento e recortes do Sobre).
 
 ```bash
 npm run build     # produção, com verificação das imagens OG
@@ -230,6 +230,7 @@ Ainda não há workflow de build/verificação para pull requests nem lockfile d
 | `docs/music-scene-v2.md`, `docs/music-scene-generation-prompt.md` | cena da seção Música |
 | `docs/contact-orbits.md` | composição do Contato |
 | `docs/og-audit-2026-10-12.md` | auditoria das imagens Open Graph |
+| `docs/og-refresh-2026-10-31.md` | nova identidade Open Graph, geração com Sophia original e verificação |
 | `docs/phrolova-vector-reference.md` | referência vetorial de uma ilustração |
 | `qa-results/sophia6g/` | evidências e ferramentas de auditoria da fase 6G |
 | `qa-results/sophia6h/Relatorio_6H.md`, `Verdict.json` | resultados da candidata parcial 6H e limites da aprovação |
