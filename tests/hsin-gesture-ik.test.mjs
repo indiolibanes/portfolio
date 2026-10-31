@@ -2,7 +2,7 @@
 // Wuthering Waves asset, texture, mesh, screenshot or model data.
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { createHsinGestureLab } from '../src/scripts/hsin-gesture-ik.mjs';
+import { createHsinGestureLab, canonicalHsinBoneName, resolveHsinBones } from '../src/scripts/hsin-gesture-ik.mjs';
 
 const events = new Map();
 const canvas = {
@@ -18,7 +18,8 @@ camera.updateMatrixWorld(true);
 const orbit = { enabled: true };
 function bone(name, x, y, z) {
   const b = new THREE.Bone();
-  b.name = name;
+  // GLTFLoader → PropertyBinding.sanitizeNodeName() removes the . in .R
+  b.name = name.replaceAll('.', '');
   b.position.set(x, y, z);
   return b;
 }
@@ -56,6 +57,16 @@ const lab = createHsinGestureLab({
 assert.equal(lab.attach(skeleton, rests), true);
 assert.equal(lab.getDiagnostics().ready, true);
 assert.equal(lab.getDiagnostics().secondaryDeformers, true);
+// Regression: the glTF strings contain .R while THREE skeleton Bone.name lacks the dot.
+assert.equal(lab.getDiagnostics().matchedBoneNames['ORG-Bip001Hand.R'], 'ORG-Bip001HandR');
+assert.equal(lab.getDiagnostics().matchedBoneNames['ORG-Bip001Finger12.R'], 'ORG-Bip001Finger12R');
+assert.equal(canonicalHsinBoneName('ORG-Bip001Finger1.R'), canonicalHsinBoneName('ORG-Bip001Finger1R'));
+const expected = ['ORG-Bip001Hand.R'];
+assert.equal(resolveHsinBones(skeleton, expected).missing.length, 0);
+const ambiguous = resolveHsinBones([hand, {name: 'ORG-Bip001Hand_R'}], expected);
+assert.equal(ambiguous.ambiguous.length, 1, 'ambiguous aliases must be rejected');
+assert.equal(ambiguous.resolved.size, 0);
+assert.equal(resolveHsinBones([{name:'Bip001HandR'}], expected).missing.length, 1);
 assert.equal(lab.chooseTarget(), true);
 assert.equal(orbit.enabled, false);
 events.get('pointerdown')({

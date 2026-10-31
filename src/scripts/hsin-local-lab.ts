@@ -1,6 +1,6 @@
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
 import { readEmbeddedDiffuse } from './hsin-glb-embedded-textures.mjs';
-import { createHsinGestureLab } from './hsin-gesture-ik.mjs';
+import { canonicalHsinBoneName, createHsinGestureLab } from './hsin-gesture-ik.mjs';
 /**
  * Hsin local-file diagnostic lab — no model URLs, uploads, telemetry, or auto-fetch.
  * Assets are only read via File.arrayBuffer() after the user's explicit selection.
@@ -900,10 +900,16 @@ async function initializeLab(root: HTMLElement) {
       Number(priority.test(b.name)) - Number(priority.test(a.name)) || a.name.localeCompare(b.name));
     const selectedRegion = boneRegion.value;
     const regionMatch = (name: string): boolean => {
-      if (selectedRegion === 'right-arm') return /Bip001(UpperArm|Forearm|Hand|Finger)/i.test(name) && /\.R(?:\.|$)/.test(name);
-      if (selectedRegion === 'right-fingers') return /Bip001Finger/i.test(name) && /\.R(?:\.|$)/.test(name);
-      if (selectedRegion === 'left-arm') return /Bip001(UpperArm|Forearm|Hand|Finger)/i.test(name) && /\.L(?:\.|$)/.test(name);
-      if (selectedRegion === 'head') return /head|neck/i.test(name);
+      const canonical = canonicalHsinBoneName(name);
+      const sideRight = /r(?:\d+)?$/.test(canonical);
+      const sideLeft = /l(?:\d+)?$/.test(canonical);
+      if (selectedRegion === 'right-arm')
+        return /bip001(?:upperarm|forearm|hand|finger)/.test(canonical) && sideRight;
+      if (selectedRegion === 'right-fingers')
+        return /bip001finger/.test(canonical) && sideRight;
+      if (selectedRegion === 'left-arm')
+        return /bip001(?:upperarm|forearm|hand|finger)/.test(canonical) && sideLeft;
+      if (selectedRegion === 'head') return /head|neck/.test(canonical);
       return true;
     };
     const matches = candidates.filter((bone) =>
@@ -961,13 +967,15 @@ async function initializeLab(root: HTMLElement) {
     if (!THREE || !model || !camera || !orbit) return;
     const bounds = new THREE.Box3();
     if (zoom === 'upper') {
-      const head = bones.find((bone) => bone.name === 'Bip001Head');
+      const head = bones.find((bone) =>
+        canonicalHsinBoneName(bone.name) === canonicalHsinBoneName('ORG-Bip001Head'));
       if (head) {
         const center = head.getWorldPosition(new THREE.Vector3());
         center.y -= .12;
         bounds.setFromCenterAndSize(center, new THREE.Vector3(.82, .90, .76));
-        for (const name of ['Bip001Hand.R', 'Bip001Forearm.R']) {
-          const bone = bones.find((candidate) => candidate.name === name);
+        for (const name of ['ORG-Bip001Hand.R', 'ORG-Bip001Forearm.R']) {
+          const bone = bones.find((candidate) =>
+            canonicalHsinBoneName(candidate.name) === canonicalHsinBoneName(name));
           if (bone) bounds.expandByPoint(bone.getWorldPosition(new THREE.Vector3()));
         }
       }
@@ -1210,9 +1218,10 @@ async function initializeLab(root: HTMLElement) {
     // This is a candidate only: verify anatomy and local axis before posing.
     boneRegion.value = 'right-fingers';
     influentialOnly.checked = true;
-    boneFilter.value = 'ORG-Bip001Finger1.R';
+    boneFilter.value = 'ORG-Bip001Finger1';
     populateBones(boneFilter.value);
-    const target = bones.find((bone) => bone.name === 'ORG-Bip001Finger1.R');
+    const target = bones.find((bone) =>
+      canonicalHsinBoneName(bone.name) === canonicalHsinBoneName('ORG-Bip001Finger1.R'));
     if (target && (skinInfluence.get(target) ?? 0) > .01) {
       selectedBone = target;
       boneSelect.value = target.uuid;
