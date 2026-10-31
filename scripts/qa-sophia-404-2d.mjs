@@ -51,10 +51,10 @@ try {
     if(width!==768){
       await page.waitForFunction(()=>document.querySelector('[data-sophia-room2d]')?.dataset.phase==='throw',
         null,{timeout:12500});
-      await page.screenshot({path:`qa-results/sophia-404-2d/throw-${width}.png`,fullPage:true});
+      await root.screenshot({path:`qa-results/sophia-404-2d/throw-${width}.png`,animations:'allow'});
       await page.waitForFunction(()=>document.querySelector('[data-sophia-room2d]')?.dataset.phase==='leave',
-        null,{timeout:4500});
-      await page.screenshot({path:`qa-results/sophia-404-2d/leave-${width}.png`,fullPage:true});
+        null,{timeout:7500});
+      await root.screenshot({path:`qa-results/sophia-404-2d/leave-${width}.png`,animations:'allow'});
     }
     if(errors.length){console.error('FAIL errors',width,errors);failed=true;}
     console.log('PASS /404',width,{score,errors:errors.length});
