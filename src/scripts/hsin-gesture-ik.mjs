@@ -118,9 +118,11 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   let ready = false;
   let rigMessage = 'Aguardando verificação do rig.';
   let target = null;
+  let contactLocal = null;
   let picking = false;
   let disposed = false;
   let lastError = null;
+  let solveCount = 0;
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   // Motion lasts only for one explicit gesture; never runs continuously.
@@ -162,12 +164,13 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const t = Math.min(1, current.elapsed / current.duration);
     // Smoothstep: both the raised arm and the return start/stop without snapping.
     const eased = t * t * (3 - 2 * t);
-    if (current.spatial) {
-      // Each waypoint is solved from the verified neutral rig. This is an
-      // experimental CCD trajectory, not a pole-vector or collision solver.
-      const { start, end, outward } = current.spatial;
-      const waypoint = sampleGestureArc(THREE, start, end, outward, t);
-      pose(waypoint, true);
+    if (current.baked) {
+      const sample = Math.min(current.baked.length - 1.0000001, t * (current.baked.length - 1));
+      const index = Math.floor(sample), alpha = sample - index;
+      const a = current.baked[index], b = current.baked[index + 1];
+      current.joints.forEach(({bone}, i) => bone.quaternion.copy(a[i]).slerp(b[i], t >= 1 ? 1 : alpha));
+      bones.get(NAMES.clavicle)?.updateWorldMatrix(true, true);
+      synchronizeDeformers();
     } else {
       for (const { bone, from, to, role } of current.joints) {
         const progress = current.staged ? stagedProgress(t, role) : eased;
@@ -196,7 +199,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       return false;
     }
     motion = { joints, duration: Math.max(350, Math.min(2400, duration)),
-      elapsed: 0, lastTime: null, done, staged: options.staged === true, spatial: options.spatial || null };
+      elapsed: 0, lastTime: null, done, staged: options.staged === true, baked: options.baked || null };
     scheduleMotion();
     return true;
   }
@@ -224,7 +227,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
 
   function animateToPose(duration = 1250, options = {}) {
     if (!ready) return { ok: false, message: rigMessage };
-    if (!target) return { ok: false, message: 'Primeiro defina um alvo na boca.' };
+    if (!getTarget()) return { ok: false, message: 'Primeiro defina um alvo na boca.' };
     stopMotion();
     const joints = motionJoints();
     const useSpatial = options.spatial === true;
@@ -244,6 +247,20 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const result = pose();
     if (!result.ok) return result;
     const solved = new Map(joints.map((bone) => [bone, bone.quaternion.clone()]));
+    let baked = null;
+    let maxStepRadians = 0;
+    if (useSpatial) {
+      const outward = new THREE.Vector3(startTip.x < target.x ? -1 : 1, .25, .35).normalize()
+        .multiplyScalar(Math.min(.12, startTip.distanceTo(target) * .20));
+      baked = [];
+      for (let i = 0; i <= 4; i++) {
+        const point = sampleGestureArc(THREE, startTip, target, outward, i / 4);
+        pose(point, true);
+        const frame = joints.map((bone) => bone.quaternion.clone());
+        if (i) frame.forEach((q, index) => { maxStepRadians = Math.max(maxStepRadians, q.angleTo(baked[i - 1][index])); });
+        baked.push(frame);
+      }
+    }
     for (const [bone, quaternion] of [...starting, ...startingDeformers]) {
       bone.quaternion.copy(quaternion);
     }
@@ -261,15 +278,14 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     for (const item of secondary) entries.push({
       bone: item.bone, from: starting.get(item.bone), to: item.target, role: item.role,
     });
-    const animated = playMotion(entries, duration, () =>
+    // The spatial candidate uses only the four driving joints. No CCD work
+    // occurs while playing; the existing final solution remains unchanged.
+    const animated = playMotion(useSpatial ? entries.slice(0, joints.length) : entries, duration, () =>
       onStatus('Atuação concluída. Verifique dedos, inclinação da cabeça, cotovelo e contato labial.'),
-      { staged: options.staged !== false,
-        spatial: useSpatial ? {start:startTip, end:target.clone(), outward:
-          new THREE.Vector3(startTip.x < target.x ? -1 : 1, .25, .35).normalize()
-            .multiplyScalar(Math.min(.12, startTip.distanceTo(target) * .20))} : null });
-    return { ...result, animated,
+      { staged: options.staged !== false, baked });
+    return { ...result, animated, bakedSamples: baked?.length ?? 0, maxSampleStepRadians: useSpatial ? maxStepRadians : null,
       message: animated
-        ? (useSpatial ? 'Trajetória espacial CCD experimental iniciada · ' : 'Atuação em três etapas iniciada · ') + (duration / 1000).toFixed(2) +
+        ? (useSpatial ? 'Trajetória pré-calculada (sem pole) iniciada · ' : 'Atuação em três etapas iniciada · ') + (duration / 1000).toFixed(2) +
           ' s · intensidade ' + Math.round(level * 100) +
           '%. Observe antecipação, braço, punho, dedos e cabeça.'
         : 'Pose aplicada sem transição por preferência de movimento reduzido.' };
@@ -300,6 +316,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     restWorld.clear();
     ready = false;
     target = null;
+    contactLocal = null;
     marker.visible = false;
     picking = false;
     orbit.enabled = true;
@@ -384,6 +401,8 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
     const lift = new THREE.Vector3().subVectors(camera.position, hit.point)
       .normalize().multiplyScalar(0.008);
     target = hit.point.clone().add(lift);
+    const head = bones.get('ORG-Bip001Head');
+    contactLocal = head ? head.worldToLocal(target.clone()) : null;
     marker.position.copy(target);
     marker.visible = true;
     cancelTargetSelection();
@@ -396,12 +415,28 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   function resetTarget() {
     stopMotion();
     target = null;
+    contactLocal = null;
     marker.visible = false;
     cancelTargetSelection();
     lastError = null;
     invalidate();
   }
-  function getTarget() { return target?.clone() ?? null; }
+  function getTarget() {
+    const head = bones.get('ORG-Bip001Head');
+    if (head && contactLocal) {
+      target = head.localToWorld(contactLocal.clone());
+      marker.position.copy(target);
+    }
+    return target?.clone() ?? null;
+  }
+  function getContactLocal() { return contactLocal ? { bone:'ORG-Bip001Head', position:contactLocal.toArray() } : null; }
+  function restoreContactLocal(value) {
+    const head = bones.get('ORG-Bip001Head');
+    if (!head || !value || value.bone !== 'ORG-Bip001Head' || !Array.isArray(value.position) ||
+        value.position.length !== 3 || !value.position.every(v => Number.isFinite(v) && Math.abs(v) <= 10)) return false;
+    contactLocal = new THREE.Vector3(...value.position); getTarget();
+    marker.visible = true; invalidate(); return true;
+  }
   function setMarkerVisible(value) {
     marker.visible = !!value && !!target;
     invalidate();
@@ -464,6 +499,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
       return { ok: false, message: 'Rig incompleto ou pose original ausente. Não foi aplicado nenhum movimento.' };
     }
     // Each solve starts from the same baseline; never accumulate rotations.
+    solveCount++;
     resetChain(!duringMotion);
     const tip = bones.get(NAMES.fingerTip);
     let iterations = 0;
@@ -535,7 +571,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   }
   function getDiagnostics() {
     return { ready, picking, rigMessage, boneCount, animating: !!motion,
-      elapsedMotionMs: motion?.elapsed ?? null,
+      elapsedMotionMs: motion?.elapsed ?? null, solveCount,
       matchedBoneNames: { ...matchedBoneNames },
       secondaryDeformers: DEFORM_LINKS.slice(0, 2).every(([org, def]) => bones.has(org) && bones.has(def)),
       actingDeformers: DEFORM_LINKS.slice(2).filter(([org, def]) => bones.has(org) && bones.has(def)).length,
@@ -557,7 +593,7 @@ export function createHsinGestureLab({ THREE, scene, camera, orbit, canvas, onSt
   }
   return {
     attach, chooseTarget, cancelTargetSelection, resetTarget,
-    getTarget, setMarkerVisible, restoreChain, pose, animateToPose, animateRestore,
+    getTarget, getContactLocal, restoreContactLocal, setMarkerVisible, restoreChain, pose, animateToPose, animateRestore,
     stopMotion, setVisible, rotations, restoreRotations, getDiagnostics, dispose,
   };
 }
