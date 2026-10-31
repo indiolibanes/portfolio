@@ -16,3 +16,10 @@
 /modo-experimental*
   ! X-Robots-Tag
   X-Robots-Tag: noindex, nofollow, noarchive
+
+
+# Hsin local-file lab. Embedded GLB textures are decoded through blob: URLs,
+# but the selected GLB itself is never served or uploaded by this site.
+/experimentos/hsin-lab/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
