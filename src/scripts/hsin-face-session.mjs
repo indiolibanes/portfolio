@@ -8,7 +8,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
   canAttend=()=>true, pass='a', intensity=.55, attentionMode='auto'}) {
   const baseline=snapshotFace(meshes), calibration=calibratePupils(THREE,meshes,head);
   let audit=null,profile=pass,auditHasB1=false,settings={intensity,attentionMode},flags={},bodyCue='gesture:release';
-  const ensureAudit=()=>{const needsB1=profile==='b1';if(!audit||(needsB1&&!auditHasB1)){
+  const ensureAudit=()=>{const needsB1=['b1','auto-b1'].includes(profile);if(!audit||(needsB1&&!auditHasB1)){
     audit=auditFacialMorphs(THREE,meshes,head,calibration,{includeB1:needsB1});auditHasB1=needsB1;
   }};
   if(profile!=='a')ensureAudit();
@@ -35,7 +35,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     if(touch&&event.type!=='pointerdown')return;
     const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
     pointer={x:(event.clientX-rect.left)/rect.width*2-1,y:1-(event.clientY-rect.top)/rect.height*2,touch};
-    if(touch)touchUntil=acting.sample().clock+(profile==='presentation'?4.2:1.3);
+    if(touch)touchUntil=acting.sample().clock+(['presentation','b1','auto-b1'].includes(profile)?4.2:1.3);
   }
   function leave(event){if(event.pointerType!=='touch'){pointer=null;acting.clearAttention();}}
   canvas.addEventListener('pointermove',pointerInput,{passive:true});
@@ -64,7 +64,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
       acting.configure({...flags,...settings});
     },
     setPass(next){
-      if(!['a','b','presentation','b1'].includes(next)||disposed)return false;
+      if(!['a','b','presentation','b1','auto-b1'].includes(next)||disposed)return false;
       const wasRunning=running;pause();binding.restore();profile=next;if(profile!=='a')ensureAudit();
       binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});acting=makeActing();acting.signal(bodyCue);
       showingBaseline=false;comparison?.clear();comparison=null;touchUntil=0;pointer=null;
@@ -72,7 +72,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     },
     signal(event){bodyCue=event;acting.signal(event);},
     testMorph(name,strength){return !reduced&&!disposed&&acting.testMorph(name,strength);},
-    testSmileProfile(name,strength=1){return !reduced&&!disposed&&profile==='b1'&&acting.testSmileProfile(name,strength);},
+    testSmileProfile(name,strength=1){return !reduced&&!disposed&&['b1','auto-b1'].includes(profile)&&acting.testSmileProfile(name,strength);},
     testBeat(kind){return !reduced&&!disposed&&acting.testBeat(kind);},
     compare(){
       pause();
