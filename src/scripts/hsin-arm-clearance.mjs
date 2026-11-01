@@ -1,7 +1,7 @@
 /** Project actual deformed torso/garment triangles into anatomical space.
  * A front-envelope guard, not cloth physics or a complete collision solver.
  * Built only while baking a candidate, never in the frame loop. */
-export function createArmClearanceAudit({THREE,meshes,side,origin,outward,up,forward,scale}) {
+export function createArmClearanceAudit({THREE,meshes,side,origin,outward,up,forward,scale,includeHead=false,includeMovingGarment=false}) {
  const canon=n=>n.replace(/[^a-z0-9]/gi,'').toLowerCase();
  const components=(mesh,index)=>{
   const j=mesh.geometry.getAttribute('skinIndex'),w=mesh.geometry.getAttribute('skinWeight');
@@ -18,15 +18,16 @@ export function createArmClearanceAudit({THREE,meshes,side,origin,outward,up,for
  for(const mesh of meshes){
   const g=mesh.geometry;if(!g.getAttribute('skinIndex')||!g.getAttribute('skinWeight'))continue;
   const body=/up xin/i.test(mesh.material?.name??''),garment=/cloth|tail|down/i.test(mesh.material?.name??'');
-  if(!body&&!garment)continue;
+  const hair=includeHead&&/hair|bangs/i.test(mesh.material?.name??''),face=includeHead&&/face xin/i.test(mesh.material?.name??'');
+  if(!body&&!garment&&!hair&&!face)continue;
   const types=Array.from({length:g.getAttribute('position').count},(_,i)=>components(mesh,i));
-  if(body)for(let i=0;i<types.length;i++)if(types[i].lower>.65)moving.push({mesh,index:i});
+  if(body||includeMovingGarment&&garment)for(let i=0;i<types.length;i++)if(types[i].lower>.65)moving.push({mesh,index:i});
   const index=g.getIndex(),length=index?.count??types.length;
   const vertex=i=>index?index.getX(i):i;
   for(let i=0;i+2<length;i+=3){const ids=[vertex(i),vertex(i+1),vertex(i+2)];
    const torso=body&&ids.every(j=>types[j].trunk>.5);
    const sleeve=garment&&ids.every(j=>types[j].upper>.65);
-   if(torso||sleeve)surfaces.push({mesh,ids,kind:torso?'torso':'sleeve'});
+   if(torso||sleeve||face||hair)surfaces.push({mesh,ids,kind:torso?'torso':sleeve?'sleeve':face?'head':'hair'});
   }
  }
  const local=(mesh,index)=>{
@@ -36,7 +37,8 @@ export function createArmClearanceAudit({THREE,meshes,side,origin,outward,up,for
  const cell=scale*.18;
  function check(){
   for(const mesh of meshes){mesh.updateWorldMatrix(true,false);mesh.skeleton.update();}
-  const grids={torso:new Map(),sleeve:new Map()},cache=new Map();
+  const kinds=includeHead?['torso','sleeve','head','hair']:['torso','sleeve'];
+  const grids=Object.fromEntries(kinds.map(k=>[k,new Map()])),cache=new Map();
   const point=(mesh,i)=>{let values=cache.get(mesh);if(!values)cache.set(mesh,values=new Map());if(!values.has(i))values.set(i,local(mesh,i));return values.get(i);};
   for(const {mesh,ids,kind}of surfaces){
    const [a,b,c]=ids.map(i=>point(mesh,i));
@@ -51,9 +53,9 @@ export function createArmClearanceAudit({THREE,meshes,side,origin,outward,up,for
     grids[kind].set(key,Math.max(grids[kind].get(key)??-Infinity,depth));
    }
   }
-  const report={torso:{tested:0,violations:0,minClearance:null},sleeve:{tested:0,violations:0,minClearance:null}};
+  const report=Object.fromEntries(kinds.map(k=>[k,{tested:0,violations:0,minClearance:null}]));
   for(const {mesh,index}of moving){const p=point(mesh,index),key=Math.floor(p[0]/cell)+','+Math.floor(p[1]/cell);
-   for(const kind of ['torso','sleeve']){
+   for(const kind of kinds){
     const depth=grids[kind].get(key);if(depth===undefined)continue;
     const gap=p[2]-depth,row=report[kind];row.tested++;row.minClearance=Math.min(row.minClearance??Infinity,gap);
     if(gap<scale*(kind==='torso'?.12:.025))row.violations++;
