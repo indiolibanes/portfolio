@@ -22,9 +22,12 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   let winkFallback=nextWink+(presentation?range(2,5):0);
   let autoWinkSide='wink';
   // Presentation-only arbiter state. Legacy passes never read or consume it, so their event sequence is unchanged.
-  let lidFreeAt=0,lastAttendClock=-Infinity,lastAttentionState='neutral';
+  let lidFreeAt=0,lastOpenAt=0,lastAttendClock=-Infinity,lastAttentionState='neutral',expressionWinkPending=false;
+  // Presentation contract: automatic blinks are 5–10 s apart, measured from the previous complete opening.
+  // A gaze-linked blink may anticipate the due blink, but never breaks that floor.
+  const BLINK_FLOOR=5;
   const winkSupported=()=>typeof expressions.supportsWink==='function'?expressions.supportsWink():true;
-  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');if(trigger(kind,origin)&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';}
+  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');const ok=trigger(kind,origin);if(ok&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';return ok;}
   function trigger(kind,origin='manual') {
     if(kind==='wink-right')kind='wink';
     if(lid || !['blink','wink','wink-left'].includes(kind))return false;
@@ -54,29 +57,37 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
       if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {
         const ended=lid;lid=null;nextBlink=clock+blinkDelay();
         // Refractory period: an eyelid event that fell due during this one may not fire back-to-back.
-        if(presentation)lidFreeAt=clock+(ended.kind==='blink'?range(2,3.2):range(1.8,2.8));
+        if(presentation){lidFreeAt=clock+(ended.kind==='blink'?range(2,3.2):range(1.8,2.8));lastOpenAt=clock;}
       }
       const lidReady=!presentation||clock>=lidFreeAt;
       if(!lid&&lidReady&&!(useB()&&expressions.isLab())){
         if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');
         else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){
           if(!presentation)trigger('wink','calendar');
-          // A calendar wink waits for a smile that supports it; if none comes, it is released after 25 s.
-          else if(winkSupported()||clock>=winkFallback+25)automaticWink('calendar');
+          // A calendar wink never fires on a calm face: if the smile does not support it, it is deferred and a supporting context is requested.
+          else if(winkSupported())automaticWink('calendar');
+          // Only the calendar re-check moves; nextWink stays, so an expression-linked wink can still land in the meantime.
+          else{winkFallback=clock+range(2,5);expressions.requestCoy?.();}
         }
       }
       if(presentation&&!lid&&flags.wink&&clock>=nextWink&&!winkSupported())expressions.requestCoy?.();
       if(clock>attentionUntil)target=[0,0,0];
       if(useB()) {
         extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1,attending:clock<=attentionUntil&&Math.hypot(...target)>.02,recent:clock-lastAttendClock<4});
-        if(extra.wink&&flags.wink&&(!presentation||(clock>=nextWink&&clock>=lidFreeAt)))presentation?automaticWink('expression'):trigger('wink','expression');
+        // Presentation: a smile-linked wink that arrives during the spacing window is held (not dropped) until its time comes.
+        if(presentation&&extra.wink&&flags.wink)expressionWinkPending=true;
+        else if(extra.wink&&flags.wink)trigger('wink','expression');
+        if(presentation&&expressionWinkPending){
+          if(clock>winkFallback+1)expressionWinkPending=false;
+          else if(clock>=nextWink&&!lid&&clock>=lidFreeAt&&winkSupported()&&automaticWink('expression'))expressionWinkPending=false;
+        }
         if(extra.isolated){attention.reset();gaze=[0,0,0];}
         else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral',calm:presentation&&expressions.isCalm?.()===true});
         // Blinks cluster with gaze shifts: a blink that is nearly due is released with a glance aside.
         if(presentation){
           const state=attention.state();
           if(state!==lastAttentionState){
-            if(state==='avert'&&!lid&&flags.blink&&clock>=lidFreeAt&&clock>=nextBlink-2&&!expressions.isLab()&&rng()<.65)trigger('blink','saccade');
+            if(state==='avert'&&!lid&&flags.blink&&clock>=lidFreeAt&&clock>=Math.max(nextBlink-2,lastOpenAt+BLINK_FLOOR)&&!expressions.isLab()&&rng()<.65)trigger('blink','saccade');
             lastAttentionState=state;
           }
         }

@@ -53,6 +53,10 @@ const percentile = (values, p) => { const s = [...values].sort((a, b) => a - b);
   const position = (t) => { const {index, mix} = timing.sample(t); return (lengths.slice(0, index).reduce((a, b) => a + b, 0) + mix * lengths[index]) / total; };
   // Waypoints are reached exactly at their authored times.
   [[.28, lengths[0] / total], [.68, (lengths[0] + lengths[1]) / total], [1, 1]].forEach(([t, s]) => assert.ok(Math.abs(position(t) - s) < 1e-9, `knot ${t}`));
+  // Restoration is exact at both ends: t=0 is the base pose and t=1 the final pose (no rounding in the blend).
+  assert.deepEqual(timing.sample(0), {index: 0, mix: 0});
+  assert.deepEqual(timing.sample(1), {index: 2, mix: 1});
+  // Scalar speed continuity only. Per-joint angular velocity is NOT covered by this module (see the audit).
   // Monotone: the arm never reverses along the path.
   let last = -1;
   for (let i = 0; i <= 2000; i++) { const p = position(i / 2000); assert.ok(p >= last - 1e-12, 'path progress must not go backwards'); last = p; }
