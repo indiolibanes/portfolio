@@ -1,4 +1,5 @@
 import { createPresentationExpression, PRESENTATION_ATTENTION } from './hsin-face-presentation.mjs';
+import { createFacialB1Director } from './hsin-face-b1.mjs';
 import { createAttentionDirector, createExpressionDirector } from './hsin-face-pass-b.mjs';
 /** Pure, deterministic facial clock. Eye events share one arbiter; mouth/gaze own separate channels. */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -7,9 +8,10 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   let random=seed>>>0, clock=0, lid=null, gaze=[0,0,0], target=[0,0,0], attentionUntil=0;
   let flags={blink:true,wink:true,smirk:true,gaze:true,...enabled};
   let level=Number.isFinite(intensity)?clamp(intensity,0,1):.55,mode=attentionMode;
-  const presentation=pass==='presentation';
+  const presentation=pass==='presentation'||pass==='b1';
   const attention=createAttentionDirector({seed:seed^0x5ac3,axes:gazeAxes,timing:presentation?PRESENTATION_ATTENTION:{}});
-  const expressions=(presentation?createPresentationExpression:createExpressionDirector)({seed:seed^0x77ac,limits:morphLimits});
+  const expressionFactory=pass==='b1'?createFacialB1Director:presentation?createPresentationExpression:createExpressionDirector;
+  const expressions=expressionFactory({seed:seed^0x77ac,limits:morphLimits});
   let extra={smileR:0,smileL:0,overlays:{},isolated:false};
   const useB=()=>(pass==='b'||presentation)&&level>0;
   const rng=()=>{random=(Math.imul(1664525,random)+1013904223)>>>0;return random/4294967296;};
@@ -37,7 +39,7 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     const smile=flags.smirk ? smooth(clock/2)*(.055+.045*Math.sin(clock*.42)) : 0;
     return {closeR:lid?.kind==='wink-left'?0:closure,closeL:lid?.kind==='wink'?0:closure,
       smileR:useB()?extra.smileR:smile,smileL:useB()?extra.smileL:smile*.18,
-      policy:useB()?'b':'a',overlays:useB()?extra.overlays:{},gaze:useB()&&extra.isolated?[0,0,0]:[...gaze],clock,event:lid?.kind??null};
+      policy:pass==='b1'?'b1':useB()?'b':'a',...(pass==='b1'?{diagnostic:!!extra.diagnostic}:{}),overlays:useB()?extra.overlays:{},gaze:useB()&&extra.isolated?[0,0,0]:[...gaze],clock,event:lid?.kind??null};
   }
   return {
     advance(dt) {
@@ -71,7 +73,8 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
       if(['auto','cursor','neutral'].includes(attentionMode))mode=attentionMode;
     },
     signal(event){if(['gesture:prepare','gesture:hold','gesture:release'].includes(event))expressions.signal(event);},
-    testMorph(name){return useB()&&!lid&&expressions.testMorph(name);},
+    testMorph(name,strength){return useB()&&!lid&&expressions.testMorph(name,strength);},
+    testSmileProfile(name,strength=1){return pass==='b1'&&!lid&&expressions.testProfile(name,strength);},
     testBeat(kind){return useB()&&!lid&&expressions.testBeat(kind);},
     sample,
     diagnostics(){return {clock,event:lid?{...lid}:null,nextBlink,nextWink,flags:{...flags},gaze:[...gaze],pass,intensity:level,attentionMode:mode,attention:attention.diagnostics(),expressions:expressions.diagnostics()};},
