@@ -1,3 +1,4 @@
+import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
 import { createPresentationMode } from './hsin-presentation-mode.mjs';
 import { createLeftSignaturePose } from './hsin-left-signature.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
@@ -114,6 +115,8 @@ async function initializeLab(root: HTMLElement) {
   const facialSmileTest = q<HTMLButtonElement>('[data-hsin-facial-smile-test]');
   const facialNoseTest = q<HTMLButtonElement>('[data-hsin-facial-nose-test]');
   const facialAudit = q<HTMLElement>('[data-hsin-facial-audit]');
+  const b1Auto=q<HTMLInputElement>('[data-hsin-b1-auto]');
+  const atmosphere=q<HTMLSelectElement>('[data-hsin-atmosphere]');
   const b1Profile=q<HTMLSelectElement>('[data-hsin-b1-profile]');
   const b1Strength=q<HTMLSelectElement>('[data-hsin-b1-strength]');
   const b1Test=q<HTMLButtonElement>('[data-hsin-b1-test]');
@@ -169,6 +172,7 @@ async function initializeLab(root: HTMLElement) {
   let renderer: import('three').WebGLRenderer | null = null;
   let scene: import('three').Scene | null = null;
   let labLights: import('three').Light[] = [];
+  let atmosphereTexture: import('three').Texture | null = null;
   let camera: import('three').PerspectiveCamera | null = null;
   let orbit: import('three/addons/controls/OrbitControls.js').OrbitControls | null = null;
   let loader: import('three/addons/loaders/GLTFLoader.js').GLTFLoader | null = null;
@@ -223,7 +227,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
-    [facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,b1Profile,b1Strength,b1Test,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
+    [b1Auto,atmosphere,facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,b1Profile,b1Strength,b1Test,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -287,6 +291,7 @@ async function initializeLab(root: HTMLElement) {
     gestureLab?.dispose();
     gestureLab = null;
     orbit?.dispose();
+    atmosphereTexture?.dispose();atmosphereTexture=null;
     renderer?.dispose();
     renderer?.forceContextLoss();
     resizeObserver?.disconnect();
@@ -322,6 +327,7 @@ async function initializeLab(root: HTMLElement) {
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
     scene = new THREE.Scene();
+    applyAtmosphere();
     const ambient = new THREE.AmbientLight(0xffffff, 2.0);
     scene.add(ambient);
     const key = new THREE.DirectionalLight(0xffe3b4, 2.8);
@@ -390,6 +396,18 @@ async function initializeLab(root: HTMLElement) {
     intersectionObserver.observe(viewport);
     resize();
   }
+
+  function applyAtmosphere() {
+    if(!THREE||!scene)return;
+    const next=createAtmosphereTexture(THREE,document,atmosphere.value);
+    if(!next)return;
+    scene.background=next;atmosphereTexture?.dispose();atmosphereTexture=next;invalidate();
+  }
+  atmosphere.addEventListener('change',applyAtmosphere);
+  b1Auto.addEventListener('change',()=>{
+    const next=b1Auto.checked?'auto-b1':'presentation';facialPass.value=next;
+    faceSession?.setPass(next);if(model)startFacial();refreshFacialDiagnostics();
+  });
 
   function setLighting() {
     const levels: Record<string, number[]> = {
@@ -1255,12 +1273,12 @@ async function initializeLab(root: HTMLElement) {
     [facialIntensity,facialAttention].forEach(control=>control.disabled=disabled);
     [facialMorph,facialMorphTest,facialSmileTest,facialNoseTest].forEach(control=>control.disabled=disabled||Number(facialIntensity.value)<=0);
     facialIntensityOut.value=Math.round(Number(facialIntensity.value)*100)+'%';
-    for(const c of [b1Profile,b1Strength,b1Test])c.disabled=!model||reducedMotionQuery.matches||facialPass.value!=='b1';
+    for(const c of [b1Profile,b1Strength,b1Test])c.disabled=!model||reducedMotionQuery.matches||!['b1','auto-b1'].includes(facialPass.value);
     const audit=faceSession?.diagnostics().audit;
     if(audit) {
       const selected=facialMorph.value;facialMorph.replaceChildren();
       audit.rows.forEach((row: {name:string;eligible:boolean;candidateCap:number})=>{
-        const option=new Option(row.name+' · teto auto '+row.candidateCap.toFixed(3)+(facialPass.value==='b1'?' · teste até 1':'')+(row.eligible?'':' · indisponível'),row.name);
+        const option=new Option(row.name+' · teto auto '+row.candidateCap.toFixed(3)+(['b1','auto-b1'].includes(facialPass.value)?' · teste até 1':'')+(row.eligible?'':' · indisponível'),row.name);
         option.disabled=!row.eligible;facialMorph.add(option);
       });
       if([...facialMorph.options].some(o=>o.value===selected))facialMorph.value=selected;
@@ -1301,7 +1319,7 @@ async function initializeLab(root: HTMLElement) {
   facialMorphTest.addEventListener('click',()=>{
     director.stop();gestureLab?.stopMotion();
     if(!startFacial())return;
-    const isB1=facialPass.value==='b1';
+    const isB1=['b1','auto-b1'].includes(facialPass.value);
     const ok=faceSession?.testMorph(facialMorph.value,isB1?Number(b1Strength.value):undefined);
     facialStatus.textContent=ok?'Teste isolado: '+facialMorph.value+(isB1?'. Amplitude ampliada SOMENTE no laboratório.':'. Peso limitado pela auditoria.')+' Inspeção visual necessária.':'Aguarde a microexpressão/piscada atual ou selecione um controle disponível.';
     refreshFacialDiagnostics();
@@ -1315,7 +1333,7 @@ async function initializeLab(root: HTMLElement) {
   });
   b1Test.addEventListener('click',()=>{
     director.stop();gestureLab?.stopMotion();
-    if(facialPass.value!=='b1'||!startFacial())return;
+    if(!['b1','auto-b1'].includes(facialPass.value)||!startFacial())return;
     const ok=faceSession?.testSmileProfile(b1Profile.value,Number(b1Strength.value));
     facialStatus.textContent=ok?'Candidata '+b1Profile.value+' em teste local; conferir vistas frontal, 3/4 e lateral.':'Teste indisponível ou expressão ainda em andamento.';
     refreshFacialDiagnostics();
@@ -1358,7 +1376,8 @@ async function initializeLab(root: HTMLElement) {
   const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
     if(mode==='presentation'&&model){
       director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
-      if(facialPass.value!=='presentation'){facialPass.value='presentation';faceSession?.setPass('presentation');}
+      const desired=b1Auto.checked?'auto-b1':'presentation';
+      if(facialPass.value!==desired){facialPass.value=desired;faceSession?.setPass(desired);}
       startFacial();applySignature();frameModel('presentation');
     }
     window.dispatchEvent(new Event('resize'));
