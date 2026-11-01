@@ -79,7 +79,7 @@ O modelo não é enviado a um servidor.</div>
           <summary>Expressão e atenção · perfis A / B / apresentação</summary>
           <label for="hsin-facial-pass">Perfil de comparação sobre a mesma referência</label>
           <select id="hsin-facial-pass" data-hsin-facial-pass disabled>
-            <option value="presentation" selected>Apresentação · presença contínua</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option>
+            <option value="presentation" selected>Apresentação · presença contínua</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option><option value="b1">Pass B.1 · calibração facial (laboratório)</option>
           </select>
           <label for="hsin-facial-intensity">Intensidade facial <output data-hsin-facial-intensity-out>75%</output></label>
           <input id="hsin-facial-intensity" data-hsin-facial-intensity type="range" min="0" max="1" step=".05" value=".75" disabled />
@@ -87,13 +87,30 @@ O modelo não é enviado a um servidor.</div>
           <select id="hsin-facial-attention" data-hsin-facial-attention disabled>
             <option value="auto">Adquirir, fixar, desviar e retornar</option><option value="cursor">Seguimento contínuo · diagnóstico</option><option value="neutral">Centralizar · diagnóstico</option>
           </select>
-          <label for="hsin-facial-morph">Controle isolado — teto medido no arquivo</label>
+          <label for="hsin-facial-morph">Controle isolado — teto automático e intervalo diagnóstico</label>
           <select id="hsin-facial-morph" data-hsin-facial-morph disabled><option>Carregue o GLB</option></select>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-facial-morph-test disabled>Testar controle isolado</button>
             <button type="button" data-hsin-facial-smile-test disabled>Testar sorriso de canto</button>
             <button type="button" data-hsin-facial-nose-test disabled>Sorriso + nariz · laboratório</button>
           </div>
+          <div class="hsin-lab__view-actions" aria-label="Pass B.1 — comparação de sorrisos">
+            <label for="hsin-b1-profile">Sorriso em teste
+              <select id="hsin-b1-profile" data-hsin-b1-profile disabled>
+                <option value="S1">S1 · Subtle Smirk</option>
+                <option value="S2">S2 · Playful Smirk</option>
+                <option value="S3">S3 · Signature Smile</option>
+              </select>
+            </label>
+            <label for="hsin-b1-strength">Amplitude diagnóstica
+              <select id="hsin-b1-strength" data-hsin-b1-strength disabled>
+                <option value=".25">25%</option><option value=".5">50%</option>
+                <option value="1" selected>100% da candidata</option>
+              </select>
+            </label>
+            <button type="button" data-hsin-b1-test disabled>Executar S1/S2/S3</button>
+          </div>
+          <p class="hsin-lab__small"><strong>Somente no Pass B.1, dentro deste laboratório:</strong> S1/S2/S3 e o teste isolado permitem influências maiores que os tetos automáticos, mas sempre limitadas ao intervalo 0–1. Os controles P_Nose_Up e P_Nose_Down podem ser comparados separadamente pelo seletor acima. Esses pesos não entram na apresentação; compare frontal, 3/4 e lateral sob a mesma câmera, material e iluminação antes de aprovar qualquer um.</p>
           <p class="hsin-lab__small">Use A/B facial acima para congelar referência e candidata. A e B preservam seus comportamentos anteriores; intensidade do perfil B em 0% também reproduz A. A apresentação usa intervalos e atenção próprios. A reação nasal fica apenas no laboratório até aprovação visual. O ciclo corporal de QA sinaliza preparação, sustentação e liberação à face; as expressões também funcionam sem o braço.</p>
           <details><summary>Relatório geométrico dos morphs</summary><pre class="hsin-lab__inventory" data-hsin-facial-audit>Aguardando calibração.</pre></details>
         </details>
