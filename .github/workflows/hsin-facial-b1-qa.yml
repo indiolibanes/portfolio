@@ -32,6 +32,8 @@ jobs:
           node tests/hsin-face-acting.test.mjs
           node tests/hsin-face-pass-b.test.mjs
           node tests/hsin-face-b1.test.mjs
+          node tests/hsin-b1-automation.test.mjs
+          node tests/hsin-chest.test.mjs
           node tests/hsin-presentation.test.mjs
           node tests/hsin-face-private.test.mjs
       - name: IK, rig and director regressions

@@ -5,7 +5,7 @@ import { snapshotFace, restoreFace, calibratePupils, cursorHeadOffset, projectGa
 /** A browser-local session. One owner for controlled facial targets, no bone/material writes. */
 export function createFacialSession({THREE, meshes, head, camera, canvas, invalidate, onStatus=()=>{},
   requestFrame=requestAnimationFrame, cancelFrame=cancelAnimationFrame, reducedMotion=false, seed=2718,
-  canAttend=()=>true, pass='a', intensity=.55, attentionMode='auto'}) {
+  canAttend=()=>true, onFrame=()=>{}, pass='a', intensity=.55, attentionMode='auto'}) {
   const baseline=snapshotFace(meshes), calibration=calibratePupils(THREE,meshes,head);
   let audit=null,profile=pass,auditHasB1=false,settings={intensity,attentionMode},flags={},bodyCue='gesture:release';
   const ensureAudit=()=>{const needsB1=['b1','auto-b1'].includes(profile);if(!audit||(needsB1&&!auditHasB1)){
@@ -27,7 +27,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
       const offset=cursorHeadOffset(THREE,ndc,camera,head,calibration.radius,calibration.focusCenter);
       acting.attention(projectGazeOffset(THREE,offset,calibration),pointer.touch?Math.max(0,touchUntil-time):1.3);
     }else if(pointer?.touch&&time>=touchUntil){pointer=null;acting.clearAttention();}
-    binding.apply(acting.advance(dt));invalidate();schedule();
+    const state=acting.advance(dt);binding.apply(state);onFrame(dt,state,acting.diagnostics());invalidate();schedule();
   }
   function pointerInput(event){
     if(!canAttend())return;
