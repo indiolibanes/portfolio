@@ -1,3 +1,5 @@
+import {createSleeveIntersectionAudit} from './hsin-sleeve-intersections.mjs';
+import {sampleHandSurface,createHandClearance} from './hsin-hand-clearance.mjs';
 import {createArmClearanceAudit} from './hsin-arm-clearance.mjs';
 import {resolveHsinBones} from './hsin-gesture-ik.mjs';
 import {solveSignatureElbow} from './hsin-left-signature.mjs';
@@ -7,7 +9,7 @@ import {ARM_ROLES,oppositeSide} from './hsin-arm-roles.mjs';
 import {CHEST_TIMING,breathAngles,breathSignal,limbWeights,organicChestTiming} from './hsin-limb-motion.mjs';
 import {COMPOSITION,composeChestTarget} from './hsin-hand-composition.mjs';
 /** Hsin adapter: the chest gesture belongs to one arm (ARM_ROLES.chest). The right arm keeps the under-chin signature. */
-export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_ROLES.chest.side,companion=null}){
+export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_ROLES.chest.side,companion=null,companionSurface=null,compositionPolicy=COMPOSITION,collar=false}){
  if(side!==ARM_ROLES.chest.side){
   const reason=`Papel do braço ${side}: este braço não executa o gesto de peito (${ARM_ROLES.chest.label}); a assinatura ${ARM_ROLES.signature.label} permanece exclusiva.`;
   return {apply:()=>false,restore:()=>{},atBaseline:()=>false,diagnostics:()=>({ready:false,reason,role:'REFUSED',collision:'VISUAL_QA_PENDING'})};
@@ -30,7 +32,7 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_RO
  const root=spine.getWorldPosition(v()),neckPos=neck.getWorldPosition(v()),shoulder=upper.getWorldPosition(v()),elbow=fore.getWorldPosition(v()),wrist=hand.getWorldPosition(v());
  const up=neckPos.clone().sub(root).normalize(),right=shoulder.clone().sub(root).addScaledVector(up,-shoulder.clone().sub(root).dot(up)).normalize();
  const eye=head.localToWorld(new THREE.Vector3(...calibration.focusCenter)),headPos=head.getWorldPosition(v()),forward=eye.clone().sub(headPos).addScaledVector(up,-eye.clone().sub(headPos).dot(up));forward.addScaledVector(right,-forward.dot(right)).normalize();
- const eyeSpan=calibration.radius/2.5*head.getWorldScale(v()).length()/Math.sqrt(3),center=root.clone().lerp(neckPos,.84).addScaledVector(right,eyeSpan*.15);
+ const eyeSpan=calibration.radius/2.5*head.getWorldScale(v()).length()/Math.sqrt(3),center=root.clone().lerp(neckPos,collar?.72:.84).addScaledVector(right,eyeSpan*(collar?1.2:.15));
  // Sample the user's own skinned torso surface, excluding vertices dominated by arms.
  let surface=null,best=-Infinity,samples=0;
  for(const mesh of meshes){if(!/up xin/i.test(mesh.material?.name??''))continue;const j=mesh.geometry.getAttribute('skinIndex'),w=mesh.geometry.getAttribute('skinWeight');if(!j||!w)continue;mesh.updateWorldMatrix(true,false);mesh.skeleton.update();
@@ -41,9 +43,10 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_RO
   }
  }
  if(!surface||samples<5){reason='Superfície do torso não identificada com segurança.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
- const desiredLong=up.clone().multiplyScalar(.84).addScaledVector(right,-.42).addScaledVector(forward,.12).normalize();
+ const desiredLong=up.clone().multiplyScalar(collar?.2:.84).addScaledVector(right,collar?-.75:-.42).addScaledVector(forward,collar?-.65:.12).normalize();
+ const surfaceOffset=collar?1.6:2.1;
  const fingerLocal=hand.worldToLocal(finger.getWorldPosition(v())).normalize(),fingerLength=finger.getWorldPosition(v()).distanceTo(wrist);
- const knuckleTarget=surface.clone().addScaledVector(forward,eyeSpan*2.1),target=knuckleTarget.clone().addScaledVector(desiredLong,-fingerLength);
+ const knuckleTarget=surface.clone().addScaledVector(forward,eyeSpan*surfaceOffset),target=knuckleTarget.clone().addScaledVector(desiredLong,-fingerLength);
  const pole=right.clone().multiplyScalar(.9).addScaledVector(up,-1).addScaledVector(forward,1.4);
  const solution=solveSignatureElbow(THREE,shoulder,target,shoulder.distanceTo(elbow),elbow.distanceTo(wrist),pole);
  if(!solution){reason='Alvo do peito fora do alcance da cadeia selecionada.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
@@ -103,6 +106,8 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_RO
   return new Map(changed.map(b=>[b,b.quaternion.clone()]));
  };
  const guard=createArmClearanceAudit({THREE,meshes,side,origin:root,outward:right,up,forward,scale:eyeSpan});
+ const handGuard=companionSurface?.length?createHandClearance({points:companionSurface,scale:eyeSpan}):null;
+ const sleeveGuard=collar?createSleeveIntersectionAudit({THREE,meshes,side,scale:eyeSpan}):null;
  const SAMPLES=64,BREATH_PROBES=[[.9,-1],[.9,1],[.95,-1],[.95,1],[1,-1],[1,1]];
  let departPose=null;
  /** Route, timing and guard for one resting target. Never leaves a pose applied. */
@@ -112,17 +117,19 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_RO
   if(!departPose||!approach||!final){restore();out.reason=label==='plain'?'Trajetória esquerda fora dos limites: gesto suspenso.':'Composição fora dos limites: gesto simples mantido.';return out;}
   out.route=[{time:0,pose:base},{time:.28,pose:departPose},{time:.68,pose:approach},{time:1,pose:final}];
   out.timing=createPathTiming(out.route.map(p=>p.time),out.route.slice(1).map((p,i)=>Math.hypot(...changed.map(b=>out.route[i].pose.get(b).angleTo(p.pose.get(b))))));
-  const worst={torso:0,sleeve:0},clearances={torso:Infinity,sleeve:Infinity},failures=[];let covered=0,handGap=Infinity;
+  const worst={torso:0,sleeve:0},clearances={torso:Infinity,sleeve:Infinity},failures=[];let covered=0,handGap=Infinity,surfaceGap=Infinity,surfaceFailed=false;
   const probe=(progress,breath)=>{
    render(out,progress,breath);const sample=guard.check();
+   if(sleeveGuard){const exact=sleeveGuard.check();if(exact.covered)sample.sleeve={tested:exact.tested,violations:exact.intersections,minClearance:null,method:exact.method};}
    if(sample.torso.violations||sample.sleeve.violations)failures.push({progress,breath,torso:sample.torso,sleeve:sample.sleeve});
    for(const kind of ['torso','sleeve']){worst[kind]=Math.max(worst[kind],sample[kind].violations);if(sample[kind].minClearance!==null){covered++;clearances[kind]=Math.min(clearances[kind],sample[kind].minClearance);}}
+   if(label==='composed'&&handGuard){const h=handGuard.check(sampleHandSurface({THREE,meshes,side}));surfaceFailed=surfaceFailed||!h.covered||h.tooClose;if(h.minDistance!==null)surfaceGap=Math.min(surfaceGap,h.minDistance);}
    if(companionVector)handGap=Math.min(handGap,hand.getWorldPosition(v()).distanceTo(companionVector),finger.getWorldPosition(v()).distanceTo(companionVector));
   };
   try{for(let i=0;i<=SAMPLES;i++)probe(i/SAMPLES,0);for(const[progress,breath]of BREATH_PROBES)probe(progress,breath);}finally{restore();}
-  out.minHandGap=Number.isFinite(handGap)?handGap:null;
-  out.guard={...guard.diagnostics(),samples:SAMPLES+1+BREATH_PROBES.length,failures,worstViolations:worst,minClearance:Object.fromEntries(Object.entries(clearances).map(([k,n])=>[k,Number.isFinite(n)?n:null]))};
-  const crowded=label==='composed'&&(out.minHandGap===null||out.minHandGap<COMPOSITION.hardGap*eyeSpan);
+  out.minHandGap=Number.isFinite(handGap)?handGap:null;out.handSurfaceGap=Number.isFinite(surfaceGap)?surfaceGap:null;
+  out.guard={...guard.diagnostics(),sleeveSurface:sleeveGuard?.diagnostics()??null,samples:SAMPLES+1+BREATH_PROBES.length,failures,worstViolations:worst,minClearance:Object.fromEntries(Object.entries(clearances).map(([k,n])=>[k,Number.isFinite(n)?n:null]))};
+  const crowded=label==='composed'&&(surfaceFailed||out.minHandGap===null||out.minHandGap<compositionPolicy.hardGap*eyeSpan);
   out.ok=!!covered&&!worst.torso&&!worst.sleeve&&!crowded;
   out.reason=!covered||worst.torso||worst.sleeve?(label==='plain'?'Folga do tórax/manga reprovada: gesto esquerdo suspenso até revisão.':'Folga do tórax/manga reprovada na composição: gesto simples mantido.'):crowded?'As mãos chegariam perto demais: composição suspensa, gesto simples mantido.':'Trajetória passou pelo envelope amostrado; manga, busto e cabelo exigem QA visual.';
   return out;
@@ -134,17 +141,17 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_RO
   }finally{restore();}
   if(!variants.plain.ok){candidate=null;reason=variants.plain.reason;}
   else{
-   reason=variants.plain.reason;metrics.pathGuard=variants.plain.guard;metrics.staging='DEPART_FORWARD_APPROACH_SETTLE';metrics.estimatedSurfaceOffset=eyeSpan*2.1;
+   reason=variants.plain.reason;metrics.pathGuard=variants.plain.guard;metrics.staging='DEPART_FORWARD_APPROACH_SETTLE';metrics.estimatedSurfaceOffset=eyeSpan*surfaceOffset;
    // Optional composition: the left hand rests a little nearer to the right hand's chin pose. Guarded, and plain is always the fallback.
    if(companionVector){
-    const verdict=composeChestTarget({target:target.toArray(),companion:companionPoint,forward:forward.toArray(),eyeSpan});
+    const verdict=composeChestTarget({target:target.toArray(),companion:companionPoint,forward:forward.toArray(),eyeSpan,pull:compositionPolicy.pull,maxShift:compositionPolicy.maxShift,minGap:compositionPolicy.minGap,depthPull:compositionPolicy.depthPull??0});
     metrics.composition={accepted:verdict.accepted,shiftEyeSpans:verdict.shift/eyeSpan,gapEyeSpans:Number.isFinite(verdict.gap)?verdict.gap/eyeSpan:null,reason:verdict.reason};
     if(verdict.accepted){
      try{const composedTarget=new THREE.Vector3(...verdict.target);variants.composed=buildVariant('composed',composedTarget,solveWaypoint(composedTarget,desiredLong,true));}finally{restore();}
     }
    }else metrics.composition={accepted:false,reason:'Mão de apoio não medida: composição indisponível.'};
   }
-  metrics.variants=Object.fromEntries(Object.entries(variants).filter(([,x])=>x).map(([k,x])=>[k,{ok:x.ok,reason:x.reason,minHandGapEyeSpans:x.minHandGap===null?null:x.minHandGap/eyeSpan,guard:x.guard}]));
+  metrics.variants=Object.fromEntries(Object.entries(variants).filter(([,x])=>x).map(([k,x])=>[k,{ok:x.ok,reason:x.reason,minHandGapEyeSpans:x.minHandGap===null?null:x.minHandGap/eyeSpan,handSurfaceGap:x.handSurfaceGap??null,handSurfaceChecked:!!handGuard,guard:x.guard}]));
   metrics.motion='LIMB_OVERLAP+BREATH';
  }
  return {apply,select,restore,atBaseline(){
@@ -160,11 +167,11 @@ export function createChestDirector({pose,seed=1,onEvent=()=>{},invalidate=()=>{
  const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
  // The breath signal rides the same clock; the pose fades it in only near the final pose.
  const perform=w=>pose.apply(w,{breath:breathSignal(time)});
- function start(canStart=true){
+ function start(canStart=true,{variant:requestedVariant}={}){
   if(phase!=='idle'||!canStart||!pose.diagnostics().ready||!pose.atBaseline())return false;
   // Per gesture: how long it takes, and whether the hands compose. A draw is only spent when the feature is wired in.
   spans=organic?organicChestTiming(random):{...CHEST_TIMING};
-  const composed=typeof compose==='function'&&compose()&&random()<COMPOSITION.chance,label=composed?'composed':'plain';
+  const composed=requestedVariant==='composed'||requestedVariant===undefined&&typeof compose==='function'&&compose()&&random()<COMPOSITION.chance,label=composed?'composed':'plain';
   variant=pose.select?.(label)?label:'plain';
   phase='entry';elapsed=0;onEvent('gesture:prepare');return true;
  }

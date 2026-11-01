@@ -5,6 +5,7 @@
  * instead of at the plain chest target, so the pair reads as one composition. This is a small
  * pull, not a meeting: the shift stays inside the torso plane, is capped, and never takes the
  * hands closer than `minGap`. If there is no room, nothing moves.
+ * The opt-in near variant may also reduce depth, with its real-skin guard.
  * All distances are in `eyeSpan` units (the calibrated inter-eye distance), scaled by the caller.
  */
 export const COMPOSITION = Object.freeze({
@@ -34,7 +35,7 @@ const finite = (v) => Array.isArray(v) && v.length === 3 && v.every(Number.isFin
  * @returns {{accepted:boolean, target:number[], shift:number, gap:number, reason:string}}
  *   `shift` and `gap` are in world units; `target` equals the input when not accepted.
  */
-export function composeChestTarget({ target, companion, forward, eyeSpan, pull = COMPOSITION.pull, maxShift = COMPOSITION.maxShift, minGap = COMPOSITION.minGap }) {
+export function composeChestTarget({ target, companion, forward, eyeSpan, pull = COMPOSITION.pull, maxShift = COMPOSITION.maxShift, minGap = COMPOSITION.minGap,depthPull=0 }) {
   const reject = (reason, gap = NaN) => ({ accepted: false, target: finite(target) ? [...target] : target, shift: 0, gap, reason });
   if (![target, companion, forward].every(finite) || !(eyeSpan > 0)) return reject('Entrada de composição inválida.');
   const norm = Math.hypot(...forward);
@@ -55,5 +56,12 @@ export function composeChestTarget({ target, companion, forward, eyeSpan, pull =
     shift = room > 0 ? Math.max(0, Math.min(shift, distance - Math.sqrt(room))) : shift;
   }
   if (!(shift > 1e-6 * eyeSpan)) return reject('Sem folga para aproximar as mãos.', gapAt(0));
-  return { accepted: true, target: add(target, scale(unit, shift)), shift, gap: gapAt(shift), reason: 'Composição calculada.' };
+  let delta=add(scale(unit,shift),scale(f,depth*Math.max(0,Math.min(.3,Number.isFinite(depthPull)?depthPull:0))));
+  const total=Math.hypot(...delta),cap=maxShift*eyeSpan;if(total>cap)delta=scale(delta,cap/total);
+  const at=t=>add(target,scale(delta,t)),gap=t=>Math.hypot(...sub(companion,at(t)));
+  let t=1;if(gap(1)<required){let low=0,high=1;for(let i=0;i<32;i++){const mid=(low+high)/2;if(gap(mid)<required)high=mid;else low=mid;}t=low;}
+  return {accepted:true,target:at(t),shift:Math.hypot(...delta)*t,gap:gap(t),reason:'Composição calculada.'};
 }
+
+/** Near-hand variant, opt-in only with actual hand-surface samples and visual QA pending. */
+export const NEAR_COMPOSITION=Object.freeze({...COMPOSITION,pull:.65,maxShift:1.1,minGap:1.3,hardGap:.65,depthPull:.2});

@@ -1,3 +1,4 @@
+import {createPresenceExpression} from './hsin-presence-expression.mjs';
 import {createAutoB1Director} from './hsin-iconic-expressions.mjs';
 import { createPresentationExpression, PRESENTATION_ATTENTION } from './hsin-face-presentation.mjs';
 import { createFacialB1Director } from './hsin-face-b1.mjs';
@@ -5,13 +6,13 @@ import { createAttentionDirector, createExpressionDirector } from './hsin-face-p
 /** Pure, deterministic facial clock. Eye events share one arbiter; mouth/gaze own separate channels. */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t);};
-export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,morphLimits={},gazeAxes,attentionMode='auto'}={}) {
+export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,morphLimits={},gazeAxes,attentionMode='auto',autonomous=false}={}) {
   let random=seed>>>0, clock=0, lid=null, gaze=[0,0,0], target=[0,0,0], attentionUntil=0;
   let flags={blink:true,wink:true,smirk:true,gaze:true,...enabled};
   let level=Number.isFinite(intensity)?clamp(intensity,0,1):.55,mode=attentionMode;
   const presentation=pass==='presentation'||pass==='b1'||pass==='auto-b1';
   const attention=createAttentionDirector({seed:seed^0x5ac3,axes:gazeAxes,timing:presentation?PRESENTATION_ATTENTION:{}});
-  const expressionFactory=pass==='auto-b1'?createAutoB1Director:pass==='b1'?createFacialB1Director:presentation?createPresentationExpression:createExpressionDirector;
+  const expressionFactory=pass==='auto-b1'?(autonomous?createPresenceExpression:createAutoB1Director):pass==='b1'?createFacialB1Director:presentation?createPresentationExpression:createExpressionDirector;
   const expressions=expressionFactory({seed:seed^0x77ac,limits:morphLimits});
   let extra={smileR:0,smileL:0,overlays:{},isolated:false};
   const useB=()=>(pass==='b'||presentation)&&level>0;
@@ -20,14 +21,26 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   const blinkDelay=()=>presentation?range(5,10):range(3.4,7.8);
   let nextBlink=presentation?range(5,10):range(3.4,6.8), nextWink=range(18,30);
   let winkFallback=nextWink+(presentation?range(2,5):0);
-  let autoWinkSide='wink';
+  let autoWinkSide='wink',winkStreak=0;
   // Presentation-only arbiter state. Legacy passes never read or consume it, so their event sequence is unchanged.
   let lidFreeAt=0,lastOpenAt=0,lastAttendClock=-Infinity,lastAttentionState='neutral',expressionWinkPending=false;
   // Presentation contract: automatic blinks are 5–10 s apart, measured from the previous complete opening.
   // A gaze-linked blink may anticipate the due blink, but never breaks that floor.
   const BLINK_FLOOR=5;
   const winkSupported=()=>typeof expressions.supportsWink==='function'?expressions.supportsWink():true;
-  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');const ok=trigger(kind,origin);if(ok&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';return ok;}
+  function automaticWink(origin){
+    let kind;
+    if(pass==='auto-b1'&&autonomous){
+      const rightChance=expressions.preferredWinkSide?.()==='L'?.42:.78;
+      kind=winkStreak>=2?(autoWinkSide==='wink'?'wink-left':'wink'):(rng()<rightChance?'wink':'wink-left');
+    }else kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');
+    const ok=trigger(kind,origin);
+    if(ok&&pass==='auto-b1'){
+      if(autonomous){winkStreak=kind===autoWinkSide?winkStreak+1:1;autoWinkSide=kind;}
+      else autoWinkSide=kind==='wink'?'wink-left':'wink';
+    }
+    return ok;
+  }
   function trigger(kind,origin='manual') {
     if(kind==='wink-right')kind='wink';
     if(lid || !['blink','wink','wink-left'].includes(kind))return false;
