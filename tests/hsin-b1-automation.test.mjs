@@ -21,3 +21,13 @@ console.log('B.1 automation: context selection, S1–S3, I1–I5 tests, wink alt
 
 const {createAutoB1Director}=await import('../src/scripts/hsin-iconic-expressions.mjs');
 const bodyFace=createAutoB1Director({seed:77,limits});bodyFace.step(.1,{enabled:true,intensity:.75});bodyFace.signal('gesture:prepare');assert.equal(bodyFace.diagnostics().context,'Warm Presence');const warmProfile=bodyFace.diagnostics().profile;bodyFace.signal('gesture:hold');assert.equal(bodyFace.diagnostics().profile,warmProfile,'hold must not restart the warm expression');bodyFace.signal('gesture:release');
+// Switching from and back to a lab profile must retain the preceding output.
+const smooth=createAutoB1Director({seed:3,limits});let frame;
+for(let i=0;i<300;i++)frame=smooth.step(.016,{enabled:true,intensity:.75});
+const previous=frame.smileR;assert.equal(smooth.testProfile('S3',1),true);
+frame=smooth.step(.016,{enabled:true,intensity:.75});assert.ok(Math.abs(frame.smileR-previous)<.02,'entering a lab test is continuous');
+let prior=frame;
+for(let i=0;i<500;i++){
+ const next=smooth.step(.016,{enabled:true,intensity:.75});
+ assert.ok(Math.abs(next.smileR-prior.smileR)<.04,'manual/automatic smile transition must be bounded');prior=next;
+}
