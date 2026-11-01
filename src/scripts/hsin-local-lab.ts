@@ -1263,9 +1263,12 @@ async function initializeLab(root: HTMLElement) {
       startFacial();
       signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
       signatureTransition=createPoseTransition({pose:signaturePose,invalidate});
+      // Measured while the right arm is still at rest, through the signature pose's own public API.
+      const signatureHandPoint=measureSignatureHand();
       if(presentationMode.get()==='presentation'&&!reducedMotionQuery.matches){applySignature();frameModel('presentation');}
-      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:ARM_ROLES.chest.side});
-      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
+      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:ARM_ROLES.chest.side,companion:signatureHandPoint});
+      // Organic timing per gesture; the hands may compose only while the signature is fully held.
+      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event),organic:true,compose:()=>(signatureTransition?.weight()??0)>=.999});
       armSideAudit=auditArmSides();
       // A clearly mirrored rig would put the chest gesture on the wrong hand: suspend it rather than perform it.
       const sidesUsable=armSideAudit.status!=='MIRRORED';
@@ -1400,6 +1403,20 @@ async function initializeLab(root: HTMLElement) {
   }
   root.addEventListener('input',onFacialAuthorEdit,true);root.addEventListener('change',onFacialAuthorEdit,true);
   /** Measure, from the loaded rig, which bone suffix sits on the character's anatomical right. */
+  /** Where the right wrist rests in the approved under-chin pose; the pose is restored before returning. */
+  function measureSignatureHand(): [number, number, number] | null {
+    const hand = bones.find((bone) => canonicalHsinBoneName(bone.name) === 'orgbip001handr');
+    if (!signaturePose || !signaturePose.diagnostics().ready || !hand) return null;
+    try {
+      signaturePose.apply(1);
+      hand.updateWorldMatrix(true, false);
+      const point = hand.getWorldPosition(new THREE!.Vector3()).toArray() as [number, number, number];
+      return point.every(Number.isFinite) ? point : null;
+    } finally {
+      signaturePose.restore();
+    }
+  }
+
   function auditArmSides(): ReturnType<typeof classifyArmSides> {
     const find = (name: string) => bones.find((bone) => canonicalHsinBoneName(bone.name) === name);
     const shoulderR = find('orgbip001upperarmr'), shoulderL = find('orgbip001upperarml');

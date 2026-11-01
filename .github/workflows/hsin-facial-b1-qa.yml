@@ -35,6 +35,10 @@ jobs:
           node tests/hsin-face-b1.test.mjs
           node tests/hsin-b1-automation.test.mjs
           node tests/hsin-chest.test.mjs
+          node tests/hsin-arm-roles.test.mjs
+          node tests/hsin-left-arm-motion.test.mjs
+          node tests/hsin-chest-director.test.mjs
+          node tests/hsin-chest-rig.test.mjs
           node tests/hsin-presentation.test.mjs
           node tests/hsin-face-private.test.mjs
           node tests/hsin-motion-director.test.mjs
