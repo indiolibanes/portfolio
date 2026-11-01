@@ -18,3 +18,6 @@ const parts=['M_Smile_R','M_Smile_L',...all],unique=[...new Set(parts)],mesh={mo
 const binding=createFaceBinding([mesh],snapshot,{ready:false,directions:{}},{limits}),face=createFacialActing({pass:'auto-b1',seed:12,morphLimits:limits,intensity:1,enabled:{blink:false,wink:false}});
 let peak=0;for(let i=0;i<1800;i++){const s=face.advance(1/60);binding.apply(s);peak=Math.max(peak,mesh.morphTargetInfluences[mesh.morphTargetDictionary.M_Smile_R]);}assert.ok(peak>.2);binding.restore();assert.deepEqual(mesh.morphTargetInfluences,snapshot.get(mesh));
 console.log('B.1 automation: context selection, S1–S3, I1–I5 tests, wink alternation, one composer, exact restore PASS');
+
+const {createAutoB1Director}=await import('../src/scripts/hsin-iconic-expressions.mjs');
+const bodyFace=createAutoB1Director({seed:77,limits});bodyFace.step(.1,{enabled:true,intensity:.75});bodyFace.signal('gesture:prepare');assert.equal(bodyFace.diagnostics().context,'Warm Presence');const warmProfile=bodyFace.diagnostics().profile;bodyFace.signal('gesture:hold');assert.equal(bodyFace.diagnostics().profile,warmProfile,'hold must not restart the warm expression');bodyFace.signal('gesture:release');
