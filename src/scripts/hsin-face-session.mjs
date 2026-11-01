@@ -9,7 +9,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
   const baseline=snapshotFace(meshes), calibration=calibratePupils(THREE,meshes,head);
   let audit=null,profile=pass,settings={intensity,attentionMode},flags={},bodyCue='gesture:release';
   const ensureAudit=()=>{if(!audit)audit=auditFacialMorphs(THREE,meshes,head,calibration);};
-  if(profile==='b')ensureAudit();
+  if(profile!=='a')ensureAudit();
   let binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});
   const makeActing=()=>createFacialActing({seed,pass:profile,...settings,enabled:flags,morphLimits:audit?.limits??{},gazeAxes:measuredGazeAxes(THREE,calibration)});
   let acting=makeActing();
@@ -33,7 +33,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     if(touch&&event.type!=='pointerdown')return;
     const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
     pointer={x:(event.clientX-rect.left)/rect.width*2-1,y:1-(event.clientY-rect.top)/rect.height*2,touch};
-    if(touch)touchUntil=acting.sample().clock+1.3;
+    if(touch)touchUntil=acting.sample().clock+(profile==='presentation'?4.2:1.3);
   }
   function leave(event){if(event.pointerType!=='touch'){pointer=null;acting.clearAttention();}}
   canvas.addEventListener('pointermove',pointerInput,{passive:true});
@@ -51,7 +51,8 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     setVisible(value){visible=!!value;last=null;if(!visible&&frame){cancelFrame(frame);frame=0;}else schedule();},
     setReduced(value){reduced=!!value;last=null;if(reduced&&frame){cancelFrame(frame);frame=0;}else schedule();},
     test(kind){
-      if(reduced||disposed||!binding.channels.includes('E_Close_R')||(kind==='blink'&&!binding.channels.includes('E_Close_L')))return false;
+      const required=kind==='wink-left'?['E_Close_L']:kind==='blink'?['E_Close_R','E_Close_L']:['E_Close_R'];
+      if(reduced||disposed||required.some(name=>!binding.channels.includes(name)))return false;
       return acting.trigger(kind);
     },
     configure(next){
@@ -61,8 +62,8 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
       acting.configure({...flags,...settings});
     },
     setPass(next){
-      if(!['a','b'].includes(next)||disposed)return false;
-      const wasRunning=running;pause();binding.restore();profile=next;if(profile==='b')ensureAudit();
+      if(!['a','b','presentation'].includes(next)||disposed)return false;
+      const wasRunning=running;pause();binding.restore();profile=next;if(profile!=='a')ensureAudit();
       binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});acting=makeActing();acting.signal(bodyCue);
       showingBaseline=false;comparison?.clear();comparison=null;touchUntil=0;pointer=null;
       if(wasRunning){running=true;schedule();}invalidate();return true;

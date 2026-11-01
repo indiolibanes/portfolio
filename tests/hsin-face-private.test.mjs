@@ -1,3 +1,4 @@
+import {createLeftSignaturePose} from '../src/scripts/hsin-left-signature.mjs';
 /** Optional local audit. No model is fetched, bundled, uploaded, or required by CI. */
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -25,4 +26,10 @@ const binding=createFaceBinding(meshes,baseline,calibration,audit), clock=create
 for(let i=0;i<3600;i++)binding.apply(clock.advance(1/60));
 binding.restore();for(const [mesh,values] of baseline)assert.deepEqual(mesh.morphTargetInfluences,values);
 assert.ok(binding.channels.includes('E_Close_R'));assert.ok(binding.channels.includes('E_Close_L'));assert.ok(binding.channels.includes('M_Smile_R'));assert.ok(binding.channels.includes('M_Smile_L'));
-console.log(JSON.stringify({privateAudit:'PASS',skinnedParts:meshes.length,joints:bones.length,calibratedPupilControls:calibration.records.length,auditedCandidates:audit.rows.length,exactRestore:true,rendering:'NOT TESTED — placeholder images, no WebGL'}));
+const transforms=new Map(bones.map(b=>[b,{position:b.position.toArray(),quaternion:b.quaternion.toArray(),scale:b.scale.toArray()}]));
+const signature=createLeftSignaturePose({THREE,bones,meshes,head:heads[0],calibration});
+assert.equal(signature.diagnostics().ready,true);for(const [b,t]of transforms)assert.deepEqual(b.quaternion.toArray(),t.quaternion,'pose construction restores every bone');
+assert.equal(signature.apply(),true);let changed=0;for(const [b,t]of transforms){assert.deepEqual(b.position.toArray(),t.position);assert.deepEqual(b.scale.toArray(),t.scale);if(!b.quaternion.toArray().every((v,i)=>v===t.quaternion[i])){assert.match(b.name,/^(ORG|DEF)-Bip001(UpperArm|Forearm|Hand)L$/);changed++;}}assert.equal(changed,6);
+const presenting=createFacialActing({pass:'presentation',intensity:.75,morphLimits:audit.limits,gazeAxes:measuredGazeAxes(THREE,calibration)});for(let i=0;i<3600;i++)binding.apply(presenting.advance(1/60));binding.restore();signature.restore();
+for(const [b,t]of transforms)assert.deepEqual(b.quaternion.toArray(),t.quaternion);for(const [mesh,values]of baseline)assert.deepEqual(mesh.morphTargetInfluences,values);
+console.log(JSON.stringify({leftSignature:signature.diagnostics(),privateAudit:'PASS',skinnedParts:meshes.length,joints:bones.length,calibratedPupilControls:calibration.records.length,auditedCandidates:audit.rows.length,exactRestore:true,rendering:'NOT TESTED — placeholder images, no WebGL'}));
