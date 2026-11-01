@@ -79,6 +79,9 @@ assert.ok(has('.hsin-lab button:disabled', 'opacity'), 'disabled state is distin
 assert.ok(has('.hsin-lab :focus-visible', 'var(--hsin-gold)'), 'focus ring is gold');
 assert.ok(has('.hsin-lab__options > summary:hover, .hsin-lab__options[open] > summary', 'var(--hsin-grad-accent)'), 'the ⋯ button reacts');
 assert.ok(has('.hsin-lab__options-content', 'var(--hsin-veil)') && has('.hsin-lab__options-content', 'backdrop-filter'), 'the menu is a translucent surface');
+assert.ok(has('.hsin-lab__options-content', 'animation:hsin-menu-embers'), 'menu has a gentle animated scarlet/amber gradient');
+assert.match(stripped, /@keyframes\s+hsin-menu-embers/, 'menu animation keyframes are defined');
+assert.match(stripped, /@media\(prefers-reduced-motion:reduce\)[^}]*animation:none\s*!important/, 'menu animation is disabled for reduced motion');
 assert.ok(has('.hsin-lab__viewport', 'var(--hsin-grad-stage)'), 'the stage uses the palette gradient');
 assert.ok(has('.hsin-lab__load input::file-selector-button', 'var(--hsin-grad-accent)'), 'the native file button follows the palette');
 assert.ok(has('.hsin-lab select, .hsin-lab input[type="search"]', 'var(--hsin-night-2)') && has('.hsin-lab select option', 'var(--hsin-night-2)'), 'select and its options are palette surfaces');
@@ -95,6 +98,9 @@ const defined = new Set([...stripped.matchAll(/--([a-z0-9-]+)\s*:/g)].map((m) =>
 for (const m of stripped.matchAll(/var\(--([a-z0-9-]+)/g)) assert.ok(defined.has(m[1]), `var(--${m[1]}) is defined`);
 const html = await readFile(new URL('../src/pages/experimentos/hsin-lab/index.astro', import.meta.url), 'utf8');
 const script = await readFile(new URL('../src/scripts/hsin-local-lab.ts', import.meta.url), 'utf8');
+assert.ok(script.includes('renderer.setClearColor(0x1a0c0a, 1)'), 'WebGL clear is the Hsin night, not legacy brown');
+assert.ok(script.includes('new THREE.DirectionalLight(0xedab87, 1.8)'), 'fill light uses a Hsin peach rather than generic blue');
+assert.ok(!/0x9dbdf5|0x291814/i.test(script), 'no original blue light or legacy clear colour');
 for (const klass of ['hsin-lab__menu-group', 'hsin-lab__options-content', 'hsin-lab__role', 'hsin-lab__controls', 'hsin-lab__viewport'])
   assert.ok(css.includes('.' + klass) && html.includes(klass), `.${klass} is styled and used`);
 for (const klass of ['hsin-lab__morph', 'hsin-lab__morphline']) assert.ok(css.includes('.' + klass) && script.includes(klass), `dynamic .${klass} stays styled`);
