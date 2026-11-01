@@ -114,6 +114,9 @@ async function initializeLab(root: HTMLElement) {
   const facialSmileTest = q<HTMLButtonElement>('[data-hsin-facial-smile-test]');
   const facialNoseTest = q<HTMLButtonElement>('[data-hsin-facial-nose-test]');
   const facialAudit = q<HTMLElement>('[data-hsin-facial-audit]');
+  const b1Profile=q<HTMLSelectElement>('[data-hsin-b1-profile]');
+  const b1Strength=q<HTMLSelectElement>('[data-hsin-b1-strength]');
+  const b1Test=q<HTMLButtonElement>('[data-hsin-b1-test]');
   const facialIntensityOut = q<HTMLOutputElement>('[data-hsin-facial-intensity-out]');
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
@@ -220,7 +223,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
-    [facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
+    [facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,b1Profile,b1Strength,b1Test,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -1252,11 +1255,12 @@ async function initializeLab(root: HTMLElement) {
     [facialIntensity,facialAttention].forEach(control=>control.disabled=disabled);
     [facialMorph,facialMorphTest,facialSmileTest,facialNoseTest].forEach(control=>control.disabled=disabled||Number(facialIntensity.value)<=0);
     facialIntensityOut.value=Math.round(Number(facialIntensity.value)*100)+'%';
+    for(const c of [b1Profile,b1Strength,b1Test])c.disabled=!model||reducedMotionQuery.matches||facialPass.value!=='b1';
     const audit=faceSession?.diagnostics().audit;
     if(audit) {
       const selected=facialMorph.value;facialMorph.replaceChildren();
       audit.rows.forEach((row: {name:string;eligible:boolean;candidateCap:number})=>{
-        const option=new Option(row.name+' · teto '+row.candidateCap.toFixed(3)+(row.eligible?'':' · indisponível'),row.name);
+        const option=new Option(row.name+' · teto auto '+row.candidateCap.toFixed(3)+(facialPass.value==='b1'?' · teste até 1':'')+(row.eligible?'':' · indisponível'),row.name);
         option.disabled=!row.eligible;facialMorph.add(option);
       });
       if([...facialMorph.options].some(o=>o.value===selected))facialMorph.value=selected;
@@ -1297,8 +1301,9 @@ async function initializeLab(root: HTMLElement) {
   facialMorphTest.addEventListener('click',()=>{
     director.stop();gestureLab?.stopMotion();
     if(!startFacial())return;
-    const ok=faceSession?.testMorph(facialMorph.value);
-    facialStatus.textContent=ok?'Teste isolado: '+facialMorph.value+'. Peso limitado pela auditoria; inspeção visual necessária.':'Aguarde a microexpressão/piscada atual ou selecione um controle disponível.';
+    const isB1=facialPass.value==='b1';
+    const ok=faceSession?.testMorph(facialMorph.value,isB1?Number(b1Strength.value):undefined);
+    facialStatus.textContent=ok?'Teste isolado: '+facialMorph.value+(isB1?'. Amplitude ampliada SOMENTE no laboratório.':'. Peso limitado pela auditoria.')+' Inspeção visual necessária.':'Aguarde a microexpressão/piscada atual ou selecione um controle disponível.';
     refreshFacialDiagnostics();
   });
   for(const [button,kind] of [[facialSmileTest,'smile'],[facialNoseTest,'nose-smile']] as const)button.addEventListener('click',()=>{
@@ -1306,6 +1311,13 @@ async function initializeLab(root: HTMLElement) {
     if(!startFacial())return;
     const ok=faceSession?.testBeat(kind);
     facialStatus.textContent=ok?'Beat de laboratório: '+kind+(kind==='nose-smile'?'. Nariz não é usado na apresentação automática.':'.'):'Aguarde a microexpressão/piscada atual antes de testar.';
+    refreshFacialDiagnostics();
+  });
+  b1Test.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(facialPass.value!=='b1'||!startFacial())return;
+    const ok=faceSession?.testSmileProfile(b1Profile.value,Number(b1Strength.value));
+    facialStatus.textContent=ok?'Candidata '+b1Profile.value+' em teste local; conferir vistas frontal, 3/4 e lateral.':'Teste indisponível ou expressão ainda em andamento.';
     refreshFacialDiagnostics();
   });
   facialRun.addEventListener('click',()=>{
