@@ -16,12 +16,13 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   const range=(a,b)=>a+(b-a)*rng();
   const blinkDelay=()=>presentation?range(5,10):range(3.4,7.8);
   let nextBlink=presentation?range(5,10):range(3.4,6.8), nextWink=range(18,30);
-  function trigger(kind) {
+  let winkFallback=nextWink+(presentation?range(2,5):0);
+  function trigger(kind,origin='manual') {
     if(kind==='wink-right')kind='wink';
     if(lid || !['blink','wink','wink-left'].includes(kind))return false;
     const wink=kind!=='blink';
-    if(wink)nextWink=clock+(presentation?range(22,44):range(18,32));
-    lid={kind,start:clock,close:wink?.12:range(.075,.105),hold:wink?range(.16,.24):range(.022,.042),open:wink?range(.24,.32):range(.145,.205)};
+    if(wink){nextWink=clock+(presentation?range(22,44):range(18,32));if(presentation)winkFallback=nextWink+range(2,5);}
+    lid={kind,...(presentation?{origin}:{}),start:clock,close:wink?.12:range(.075,.105),hold:wink?range(.16,.24):range(.022,.042),open:wink?range(.24,.32):range(.145,.205)};
     return true;
   }
   function closureValue() {
@@ -43,11 +44,11 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
       if(!Number.isFinite(dt)||dt<0)throw Error('Facial dt must be finite and nonnegative.');
       dt=Math.min(dt,.1);clock+=dt;
       if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {lid=null;nextBlink=clock+blinkDelay();}
-      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink');else if((!useB()||presentation)&&flags.wink&&clock>=nextWink){trigger(presentation&&rng()<.5?'wink-left':'wink');}}
+      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){trigger(presentation&&rng()<.5?'wink-left':'wink','calendar');}}
       if(clock>attentionUntil)target=[0,0,0];
       if(useB()) {
         extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1});
-        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))trigger(presentation&&rng()<.5?'wink-left':'wink');
+        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))trigger(presentation&&rng()<.5?'wink-left':'wink','expression');
         if(extra.isolated){attention.reset();gaze=[0,0,0];}
         else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral'});
       }else {
