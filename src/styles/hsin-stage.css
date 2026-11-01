@@ -20,6 +20,7 @@ inset:0}
 place-items:center;
 pointer-events:none;
 transition:opacity .25s ease}
+.hsin-stage__poster picture{display:contents}
 .hsin-stage__poster img{width:100%;
 height:100%;
 object-fit:contain;
@@ -69,7 +70,7 @@ transform:translateX(-50%);
 display:flex;
 gap:4px;
 padding:5px;
-border:1px solid #94b6da40;
+border:1px solid #c6b28b59;
 border-radius:28px;
 background:#0b1b34d9;
 box-shadow:0 6px 30px #050e203d}
@@ -90,7 +91,7 @@ line-height:1}
 color:#fff}
 .hsin-stage button:disabled{opacity:.4;
 cursor:default}
-.hsin-stage :focus-visible{outline:2px solid #b8d9ff;
+.hsin-stage :focus-visible{outline:2px solid #ead6ad;
 outline-offset:4px}
 .hsin-stage__status{position:absolute;
 left:50%;

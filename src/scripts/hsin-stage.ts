@@ -7,6 +7,7 @@ import {createChestDirector} from './hsin-chest-director.mjs';
 import {createBodyRepertoire} from './hsin-body-repertoire.mjs';
 import {createPoseTransition} from './hsin-pose-transition.mjs';
 import {createRestBreath} from './hsin-rest-breath.mjs';
+import {MOONLIT,createMoonlitEnvironment} from './hsin-moonlit-environment.mjs';
 
 /** Public player. The local-file lab, geometry solvers and authoring UI are separate entries. */
 export function mountHsinStage(root:HTMLElement){
@@ -52,19 +53,24 @@ export function mountHsinStage(root:HTMLElement){
    const [profileResponse,response]=await Promise.all([fetch(HSIN_STAGE.profile+version,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal})]);
    if(!profileResponse.ok)throw Error('Stage profile unavailable.');const profile=await profileResponse.json();if(profile.modelSha256!==asset.sha256)throw Error('Stage/profile version mismatch.');
    if(!response.ok)throw Error('Model unavailable.');
+   // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
+   const textureLoader=new T.TextureLoader();
+   const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url);if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
+   const scenery=Promise.all([sceneryTexture(MOONLIT.sky),sceneryTexture(MOONLIT.moon)]);
+   // Attach an immediate rejection handler while GLTF parsing is in flight.
+   scenery.catch(()=>{});
    const bytes=await response.arrayBuffer(),gltf=await new GLTFLoader().parseAsync(bytes,'');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
-   scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.fog=new T.Fog(HSIN_STAGE.colors.fog,7,22);
-   const sky=document.createElement('canvas');sky.width=256;sky.height=512;const ctx=sky.getContext('2d')!;
-   const gradient=ctx.createLinearGradient(0,0,0,512);gradient.addColorStop(0,'#081329');gradient.addColorStop(.45,'#244c78');gradient.addColorStop(.7,'#162d50');gradient.addColorStop(1,'#0b1d36');ctx.fillStyle=gradient;ctx.fillRect(0,0,256,512);
-   const halo=ctx.createRadialGradient(128,220,5,128,220,160);halo.addColorStop(0,'#6b95bb38');halo.addColorStop(1,'#6b95bb00');ctx.fillStyle=halo;ctx.fillRect(0,0,256,512);
-   const backdrop=new T.CanvasTexture(sky);backdrop.colorSpace=T.SRGBColorSpace;scene.background=backdrop;textures.add(backdrop);
-   const floor=new T.Mesh(new T.PlaneGeometry(60,60),new T.MeshBasicMaterial({color:0x122d4a}));floor.rotation.x=-Math.PI/2;floor.position.y=-.083;scene.add(floor);
+   // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
+   scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.add(model);
+   const [skyTexture,moonTexture]=await scenery;
+   if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
+   const moonlit=createMoonlitEnvironment({THREE:T,skyTexture,moonTexture});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
    const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform,roughness:.94,metalness:.08}));platform.position.y=-.042;scene.add(platform);
    const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);
    const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=128;const sc=shadowCanvas.getContext('2d')!,shade=sc.createRadialGradient(64,64,4,64,64,64);shade.addColorStop(0,'#020716b3');shade.addColorStop(1,'#02071600');sc.fillStyle=shade;sc.fillRect(0,0,128,128);
    const shadowTexture=new T.CanvasTexture(shadowCanvas);textures.add(shadowTexture);const shadow=new T.Mesh(new T.PlaneGeometry(1.3,1.3),new T.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.002;scene.add(shadow);
-   scene.add(new T.AmbientLight(0xc9ddf5,1.05));const key=new T.DirectionalLight(0xffeee4,2.1);key.position.set(2,4,5);scene.add(key);const rim=new T.DirectionalLight(0x7cb9ee,1.1);rim.position.set(-3,2,-4);scene.add(rim);
+   scene.add(new T.AmbientLight(0xc5d4eb,.95));const key=new T.DirectionalLight(0xd4e3fc,1.8);key.position.set(-2,4,5);scene.add(key);const rim=new T.DirectionalLight(0xe6d5b2,1.15);rim.position.set(-2,4,-5);scene.add(rim);
    model.position.y-=profile.bounds.min[1];scene.add(model);scene.updateMatrixWorld(true);
    // Static transforms are frozen. Driven bones update their local matrices; one scene flush per rendered frame.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});
@@ -77,7 +83,7 @@ export function mountHsinStage(root:HTMLElement){
    resetCamera=()=>{orbit.target.set(0,HSIN_STAGE.baseTargetY,0);camera.position.set(0,HSIN_STAGE.baseTargetY+.23,initialDistance);orbit.update();loop?.invalidate();};
    zoom=(factor:number)=>{const current=camera.position.distanceTo(orbit.target),distance=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,current*factor));camera.position.sub(orbit.target).multiplyScalar(distance/current).add(orbit.target);orbit.update();loop?.invalidate();};
    orbit.addEventListener('change',()=>{
-    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance),delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}loop?.invalidate();
+    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance),delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
    });
    fit();resize=new ResizeObserver(fit);resize.observe(host);
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
