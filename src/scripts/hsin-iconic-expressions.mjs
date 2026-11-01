@@ -8,7 +8,7 @@ const CONTEXTS={
  'Warm Presence':['I3','S1','I1'],
 };
 export function createAutoB1Director({seed=1,limits={}}={}){
- const manual=createFacialB1Director({seed,limits});let random=seed>>>0,time=0,next=0,context='Idle Allure',profile='S1',current={},body='gesture:release',lastManual=false,contextStarted=0,winkAttempted=false;
+ const manual=createFacialB1Director({seed,limits});let random=seed>>>0,time=0,next=0,context='Idle Allure',profile='S1',current={},body='gesture:release',lastManual=false,manualFrom={},manualElapsed=0,contextStarted=0,winkAttempted=false;
  const rng=()=>{random=(Math.imul(1664525,random)+1013904223)>>>0;return random/4294967296;};
  const pick=a=>a[Math.floor(rng()*a.length)];
  const names=[...new Set(Object.values(ALL_FACE_PROFILES).flatMap(p=>Object.keys(p)).filter(n=>n!=='label'))];
@@ -22,8 +22,18 @@ export function createAutoB1Director({seed=1,limits={}}={}){
   testProfile:(name,strength)=>manual.testProfile(name,strength),testMorph:(name,strength)=>manual.testMorph(name,strength),testBeat:kind=>manual.testBeat(kind),isLab:()=>manual.isLab(),
   step(dt,options={}){
    time+=dt;
-   if(manual.isLab()) {lastManual=true;return manual.step(dt,options);}
-   if(lastManual){current={};next=time+3;lastManual=false;}
+   if(manual.isLab()) {
+    if(!lastManual){manualFrom={...current};manualElapsed=0;}
+    const result=manual.step(dt,options);manualElapsed+=dt;
+    const t=Math.min(1,manualElapsed/.4),blend=t*t*(3-2*t);
+    const target={...result.overlays,M_Smile_R:result.smileR,M_Smile_L:result.smileL};
+    const keys=new Set([...names,...Object.keys(target)]),mixed={};
+    for(const n of keys)mixed[n]=(manualFrom[n]??0)+((target[n]??0)-(manualFrom[n]??0))*blend;
+    current={...mixed};lastManual=true;
+    const {M_Smile_R=0,M_Smile_L=0,...overlays}=mixed;
+    return {...result,smileR:M_Smile_R,smileL:M_Smile_L,overlays};
+   }
+   if(lastManual){next=time+3;lastManual=false;}
    if(time>=next){
     const desired=body==='gesture:hold'?'Warm Presence':options.attending?'Curious Attention':pick(['Idle Allure','Idle Allure','Coy Response','Warm Presence']);
     const candidates=CONTEXTS[desired].filter(p=>p!==profile);context=desired;contextStarted=time;winkAttempted=false;profile=pick(candidates.length?candidates:CONTEXTS[desired]);next=time+8+rng()*9;
