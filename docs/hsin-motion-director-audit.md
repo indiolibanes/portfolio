@@ -147,3 +147,9 @@ That is the first assertion in the file; the rest of the file never ran in CI, s
 
 Status of the PR: **kept open, not merged.** Merge waits for CI green and for human visual review of §8.
 
+
+### CI status (commit `f827837`)
+
+* `facial-regression` (GitHub Actions run 41323327828): **success**. Steps: `npm ci`, Pass A/B/B.1 and presentation suite (including `hsin-presentation` in full, with `three` installed by CI), IK/rig/arm/director regressions, Astro production build, UX contract.
+* `Cloudflare Pages`: was still `in_progress` when last checked. No preview URL is confirmed for this commit.
+* The earlier "not run" items in §9 are now run by CI, not by this environment. Visual QA is still pending (§8).
