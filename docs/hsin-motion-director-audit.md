@@ -1,7 +1,7 @@
 # HSIN — Motion Director Audit (2026-11-01)
 
 Branch: `experiment/hsin-motion-director-2026-11-01` · base: `main` @ `39bc2c3` (merge of PR #162)
-Status: **draft, not merged.** Visual approval is **pending a human with the private model** (see §8).
+Status: **draft, not merged.** Revision 2 (regression fixes, see §9). Visual approval is **pending a human with the private model** (see §8).
 
 > Scope note. This audit was done in an environment without `three`, without the private `hsin-v.1.0.5.glb`
 > and without a GPU/browser. Everything below that is labelled *measured* is a number from deterministic
@@ -31,7 +31,10 @@ the rig code, not from screen position (R12). No hand swap was made.
 | 1 | P0 | Left arm path, `hsin-left-signature.mjs` / `hsin-arm-clearance.mjs` | Guard samples the front envelope (49 poses) but not forearm garment / hinge constraint; shortest-arc `orient()` has no hinge/twist | Suspected forearm/sleeve clipping and elbow pop mid-path | **Not implemented** | High (touches the approved arm) | Private-model clearance test + human review | **Open — blocked, needs GLB** |
 | 2 | P1 | `hsin-face-pass-b.mjs` attention | Hold expiry always followed by `return` through centre; reacquire threshold `.12`/`.55 s` ignores small viewer drift | Eyes snap to centre ≈ every 5.5 s ("robotic tracking") | Glance returns to target, lagged pursuit, calm/long hold (presentation opt-in only) | Low: defaults reproduce Pass B | Trace: 0 centre visits per 2 min | Fixed (logic) |
 | 3 | P1 | `hsin-face-acting.mjs` lid slot | Blink, wink and saccade events could be scheduled <1.5 s apart | Double-blinks / stutter | `lidFreeAt` gate (blink 2–3.2 s, wink 1.8–2.8 s) | Low | Trace: 0 gaps <1.5 s | Fixed (logic) |
+| 3b | P0 (CI) | `hsin-face-acting.mjs` saccade-linked blink | Anticipation `clock >= nextBlink - 2` could fire a blink 3–5 s after the previous opening, below the 5 s presentation floor (CI: `blink gap 4.1166…`) | Blink rhythm breaks the 5–10 s contract | Gaze-linked anticipation also requires `clock >= lastOpenAt + 5` | Low: presentation-only | `tests/hsin-presentation.test.mjs` L19 | Fixed (rev. 2) |
 | 4 | P1 | `hsin-face-acting.mjs` + `hsin-iconic-expressions.mjs` | Calendar winks fired on a barely-smiling face (56 %) | Reads as a twitch, not provocation | Winks require `smileR ≥ .28`; otherwise `requestCoy()` raises the smile first | Low | Trace: 0 weak-smile winks | Fixed (logic) |
+| 4b | P1 (review) | `hsin-face-acting.mjs` calendar fallback | `clock >= winkFallback + 25` released a wink on a calm face after 25 s | Twitch on a calm face | Removed. Unsupported calendar wink is deferred (`winkFallback = clock + 2–5 s`) and `requestCoy()` is asked | Low | Trace: 0/473 weak-smile winks | Fixed (rev. 2) |
+| 4c | P1 (review) | `hsin-face-acting.mjs` expression-linked wink | A one-frame smile wink requested inside the 22 s spacing window was dropped (267 of 280 dropped requests in a probe). Reduced expression-origin winks from 36/60 seeds at base to 20/60 at the earlier candidate; the presentation test assertion `some seeded winks follow an expression` depends on this | Expression-linked winks almost disappeared | Requests are held as pending until `nextWink`, lid free and smile still supporting; expire after `winkFallback + 1 s` | Low–medium: changes wink timing | Same script, seeds 1–60, 600 s each: base 36/60 seeds (52 winks); HEAD 20/60 (27); rev. 1 24/60 (29); rev. 2 60/60 (472) | Fixed (rev. 2) |
 | 5 | P1 | `hsin-iconic-expressions.mjs` director | Attended viewer locked the director on *Curious Attention* (100 %) | Face feels stuck in one mood | Weighted selection, per-context cooldowns, min dwell | Medium (taste) | Trace: no context >35 %; longest repeat 7 slots | Fixed (logic); taste pending |
 | 6 | P2 | `hsin-chest-gesture.mjs` | Constant-speed segments between waypoints → stop-and-go | Mechanical, "robot arm" feel | `hsin-path-timing.mjs` monotone-cubic re-timing | Medium: **integration untested** (needs `three`) | Unit tests on timing module; private test | Implemented, partially verified |
 | 7 | P2 | Presentation clean-up | Reviewed: `hidden` attributes, no technical controls | — | None needed | — | `hsin-clean-presentation.test.mjs` passes | No defect |
@@ -58,26 +61,30 @@ No morph amplitude limits were raised (R8). No body motion was added (R10). The 
 ## 4. Before / after (deterministic logic trace)
 
 `node scripts/hsin-behavior-trace.mjs --baseline <dir with the 39bc2c3 modules>` — 30 seeds, dt = 1/60 s, pass `auto-b1`.
+Output saved in `docs/hsin-motion-director-trace.txt` (rev. 2).
 
-| Metric | Baseline `39bc2c3` | Candidate |
+| Metric | Baseline `39bc2c3` | Candidate (rev. 2) |
 |--------|-------------------:|----------:|
 | Time with eyes on a present viewer | 69.3 % | 94.8 % |
 | Eye returns to centre per 2 min | 21.8 | 0 |
-| Longest look-away from viewer | 2.63 s | 0.78 s |
-| Blinks / min | 6.76 | 6.96 |
-| Winks / min | 1.61 | 1.54 |
-| Blink interval median (min / p10 / p90) | 8.27 (5.3 / 5.92 / 12.83) | 8.23 (3.42 / 5.67 / 12.28) |
+| Longest look-away from viewer | 2.63 s | 0.83 s |
+| Blinks / min | 6.76 | 6.89 |
+| Winks / min | 1.61 | 1.58 |
+| Blink interval, start to start (min / p10 / median / p90) | 5.3 / 5.92 / 8.27 / 12.83 | 5.32 / 5.82 / 8.18 / 12.68 |
 | Lid events <1.5 s apart | 91 | 0 |
-| Winks on weak smile | 269 / 482 | 0 / 461 |
-| Glance-linked blinks | 0 | 418 |
-| Context share (viewer present) | Curious Attention 100 % | Curious 34.5 · Idle Allure 28.5 · Coy 16.9 · Warm 12.6 · Quiet 7.5 |
-| Longest run of same context (slots) | 99 | 7 |
+| Winks on weak smile | 269 / 482 | 0 / 473 |
+| Glance-linked blinks | 0 | 328 |
+| Context share (viewer present) | Curious Attention 100 % | Curious 34.9 · Idle Allure 27.8 · Coy 16.5 · Warm 11.8 · Quiet 9.0 |
+| Longest run of same context (slots) | 99 | 5 |
 
-Honest caveats: the minimum blink interval is now 3.42 s (glance-linked blinks); the median still sits in the
-5–10 s window. Coy Response at 16.9 % with a viewer present is higher than "occasional" may deserve — it is a
-tunable (`SELECTION`), and this is a taste decision for a human. Full output: `docs/hsin-motion-director-trace.txt`.
+Rev. 2 values replace the rev. 1 values (blink minimum 3.42 s, 418 glance-linked blinks), which broke the 5 s floor.
+
+Caveats: the trace measures blink *starts*; the presentation test measures from the *previous opening*, which is what the CI assertion checks. Coy Response at 16.5 % with a viewer present is higher than "occasional" may deserve; it is a tunable (`SELECTION`) and a taste decision for a human.
 
 ## 5. Tests
+
+Rev. 2 status is in §9. The list below is the state at rev. 1, kept for traceability.
+
 
 Executable here and passing: `hsin-b1-automation`, `hsin-clean-presentation`, `hsin-embedded-texture`,
 `hsin-face-b1`, `hsin-pose-transition`, **`hsin-motion-director`** (new: legacy golden hashes for passes `a`/`b`
@@ -113,3 +120,30 @@ skeleton, pose restoration, load/dispose lifecycle. The existing tests for those
 3. Record private screen captures (not committed) of: hand-under-chin signature (must be unchanged), chest gesture
    timing, 2 min of gaze with a cursor resting vs moving, a wink sequence. Compare with `main`.
 4. Only then judge artistic approval (R15). No preview URL was confirmed for this commit.
+
+## 9. Revision 2 — regression fixes (after CI failure on PR #163)
+
+GitHub Actions `Hsin facial B.1 regressions` failed at `tests/hsin-presentation.test.mjs` L19 (`blink gap 4.116…`).
+That is the first assertion in the file; the rest of the file never ran in CI, so later failures were hidden.
+
+| Item | Change | Evidence here |
+|------|--------|---------------|
+| P0 blink gap | Gaze-linked blink anticipation respects `lastOpenAt + 5 s` (presentation only). Natural link between gaze and blink kept (328 glance-linked blinks / 600 s × 30 seeds). | Three-free harness: gaps 5.08–9.92 s over 79 blinks. Trace min 5.32 s. |
+| P1 calendar fallback | `clock >= winkFallback + 25` removed. Unsupported calendar wink defers and asks `requestCoy()`. | Trace: 0/473 weak-smile winks. |
+| P1 expression wink | Smile-linked wink requests are held as pending until `nextWink` instead of being dropped. | 60/60 seeds, 472 expression-origin winks. Base 52 expression-origin winks over 60 seeds × 10 min (see table in §4c). |
+| Left/right alternation, single lid arbiter, manual lab | Unchanged. `automaticWink` now returns its result only. | Golden legacy hashes identical; manual `trigger` checks pass in harness. |
+| P2 chest timing | No geometry, rig, sleeve or offset change. Guard already samples `apply()` after `path`/`timing` are set, so it checks the executed trajectory. Restoration endpoints now asserted exactly (`sample(0)` = base, `sample(1)` = final). | `tests/hsin-motion-director.test.mjs` §2. |
+| Right hand | `hsin-right-signature.mjs` and `hsin-pose-transition.mjs` untouched (`git diff 39bc2c3 --` empty). | git diff |
+| CI | `hsin-facial-b1-qa.yml` now runs `hsin-motion-director`, `hsin-arm-clearance`, `hsin-waypoint-safety`, `hsin-pose-transition`, `hsin-clean-presentation`, `hsin-embedded-texture`; path filter includes `src/scripts/hsin-*.mjs`. Private audits remain SKIP without a GLB path (exit 0). | YAML parses; CI run on push. |
+
+### What is still NOT verified here
+
+* `three` is not installable in this environment (`registry.npmjs.org` does not resolve; no cached copy). So **the full `tests/hsin-presentation.test.mjs` was not run**. Only its three-free part was run (blink gap, winks, manual lid), via a scratch harness outside the repo.
+* The 11 `three`-dependent tests were not run here (see §5). CI is the first place they run.
+* `npm run build` (Astro) was not run here (no `node_modules`). CI runs it.
+* The per-joint angular velocity at each chest waypoint is **not** continuous. `hsin-path-timing.mjs` makes the *scalar* progress speed continuous, nothing more.
+* Expression-wink timing changed (rev. 2 holds requests). Winks now arrive closer to `nextWink`; a human should judge whether this reads better.
+* No visual QA. Nothing here approves the look of the character (R15).
+
+Status of the PR: **kept open, not merged.** Merge waits for CI green and for human visual review of §8.
+

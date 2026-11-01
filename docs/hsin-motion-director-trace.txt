@@ -5,26 +5,26 @@ metric                                       baseline (39bc2c3)         candidat
 [stationaryCursor]
 pctOnViewer                                  69.3                       94.8
 centreVisitsPer2min                          21.8                       0
-longestOffViewerSeconds                      2.63                       0.78
+longestOffViewerSeconds                      2.63                       0.83
 glancesPer2min                               10.9                       11.4
 
 [lidEvents]
-blinksPerMinute                              6.76                       6.96
-winksPerMinute                               1.61                       1.54
-blinkIntervalSeconds.min                     5.3                        3.42
-blinkIntervalSeconds.p10                     5.92                       5.67
-blinkIntervalSeconds.median                  8.27                       8.23
-blinkIntervalSeconds.p90                     12.83                      12.28
+blinksPerMinute                              6.76                       6.89
+winksPerMinute                               1.61                       1.58
+blinkIntervalSeconds.min                     5.3                        5.32
+blinkIntervalSeconds.p10                     5.92                       5.82
+blinkIntervalSeconds.median                  8.27                       8.18
+blinkIntervalSeconds.p90                     12.83                      12.68
 eventsWithGapUnder1_5s                       91                         0
 smallestGapSeconds                           0.05                       2.017
-winksOnWeakSmile                             269/482                    0/461
-saccadeLinkedBlinks                          0                          418
+winksOnWeakSmile                             269/482                    0/473
+saccadeLinkedBlinks                          0                          328
 
 [directorContexts]
-contextShare.Curious Attention               100%                       34.5%
-longestRunOfSameContextInSlots               99                         7
-slots                                        1910                       2176
-contextShare.Coy Response                    —                          16.9%
-contextShare.Idle Allure                     —                          28.5%
-contextShare.Quiet Intimacy                  —                          7.5%
-contextShare.Warm Presence                   —                          12.6%
+contextShare.Curious Attention               100%                       34.9%
+longestRunOfSameContextInSlots               99                         5
+slots                                        1910                       2165
+contextShare.Coy Response                    —                          16.5%
+contextShare.Idle Allure                     —                          27.8%
+contextShare.Quiet Intimacy                  —                          9%
+contextShare.Warm Presence                   —                          11.8%
