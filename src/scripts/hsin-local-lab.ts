@@ -1,7 +1,8 @@
 import {createChestPose,createChestDirector} from './hsin-chest-gesture.mjs';
 import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
 import { createPresentationMode } from './hsin-presentation-mode.mjs';
-import { createLeftSignaturePose } from './hsin-left-signature.mjs';
+import { createRightSignaturePose } from './hsin-right-signature.mjs';
+import { createPoseTransition } from './hsin-pose-transition.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
 import { createBehaviorDirector } from './hsin-acting-director.mjs';
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
@@ -199,8 +200,9 @@ async function initializeLab(root: HTMLElement) {
   let embeddedDiffuse = new Map();
   let gestureLab: ReturnType<typeof createHsinGestureLab> | null = null;
   let faceSession: ReturnType<typeof createFacialSession> | null = null;
-  let signaturePose: ReturnType<typeof createLeftSignaturePose> | null = null;
+  let signaturePose: ReturnType<typeof createRightSignaturePose> | null = null;
   let chestDirector: ReturnType<typeof createChestDirector> | null = null;
+  let signatureTransition: ReturnType<typeof createPoseTransition> | null = null;
   let modeRequest = 0;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
@@ -837,7 +839,7 @@ async function initializeLab(root: HTMLElement) {
     chestDirector?.cancel();chestDirector=null;
     faceSession?.dispose(); faceSession=null;
     facialRun.textContent='Iniciar atuação facial';facialRun.setAttribute('aria-pressed','false');
-    signaturePose?.restore();signaturePose=null;
+    signatureTransition?.reset();signatureTransition=null;signaturePose?.restore();signaturePose=null;
     if (!THREE || !model || !scene) return;
     clearDiagnosticMaterials();
     scene.remove(model.scene);
@@ -1062,7 +1064,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function setBoneAxis(bone: Bone, axis: 'x' | 'y' | 'z', degrees: number) {
-    if(chestDirector?.busy()&&/bip001(?:upperarm|forearm|hand|finger).*r(?:\d+)?$/i.test(bone.name.replace(/[^a-z0-9]/gi,''))){gestureStatus.textContent='Aguarde o gesto direito terminar.';return;}
+    if(chestDirector?.busy()&&/bip001(?:upperarm|forearm|hand|finger).*l(?:\d+)?$/i.test(bone.name.replace(/[^a-z0-9]/gi,''))){gestureStatus.textContent='Aguarde o gesto esquerdo terminar.';return;}
     if (!THREE) return;
     gestureLab?.stopMotion();
     const rest = initialQuaternions.get(bone);
@@ -1081,7 +1083,7 @@ async function initializeLab(root: HTMLElement) {
 
   function restoreBones() {
     chestDirector?.cancel();
-    signaturePose?.restore();signatureToggle.checked=false;refreshSignature();
+    signatureTransition?.reset();signaturePose?.restore();signatureToggle.checked=false;refreshSignature();
     gestureLab?.stopMotion();
     gestureLab?.cancelTargetSelection();
     initialQuaternions.forEach((quaternion, bone) => { bone.quaternion.copy(quaternion); });
@@ -1252,9 +1254,10 @@ async function initializeLab(root: HTMLElement) {
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
       startFacial();
-      signaturePose=createLeftSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
-      if(presentationMode.get()==='presentation'){applySignature();frameModel('presentation');}
-      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
+      signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
+      signatureTransition=createPoseTransition({pose:signaturePose,invalidate});
+      if(presentationMode.get()==='presentation'&&!reducedMotionQuery.matches){applySignature();frameModel('presentation');}
+      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:'L'});
       chestDirector=createChestDirector({pose:chestPose,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
       chestAuto.disabled=!chestPose.diagnostics().ready;chestTest.disabled=!chestPose.diagnostics().ready||reducedMotionQuery.matches;
       chestStatus.textContent=chestPose.diagnostics().reason;chestDetails.textContent=JSON.stringify(chestPose.diagnostics(),null,2);
@@ -1315,8 +1318,9 @@ async function initializeLab(root: HTMLElement) {
         reducedMotion:reducedMotionQuery.matches,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
         canAttend:()=>!gestureLab?.getDiagnostics().picking,
         onFrame:(dt:number,_state:unknown,diagnostics:{expressions?:{context?:string}})=>{
+          signatureTransition?.advance(dt);
           const legacy=gestureLab?.getDiagnostics();
-          const canStart=director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking;
+          const canStart=director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy();
           chestDirector?.advance(dt,{automatic:chestAuto.checked&&presentationMode.get()==='presentation',canStart,warm:diagnostics.expressions?.context==='Warm Presence'});
         },
         onStatus:(message:string)=>{facialStatus.textContent=message;},
@@ -1388,16 +1392,17 @@ async function initializeLab(root: HTMLElement) {
     signatureReport.textContent=JSON.stringify(diagnostic??{status:'Aguardando rig'},null,2);
   }
   function applySignature() {
-    if(chestDirector?.busy()){signatureToggle.checked=!!signaturePose?.diagnostics().active;signatureReport.textContent='Aguarde o gesto direito terminar.';return;}
-    if(signatureToggle.checked)signaturePose?.apply();else signaturePose?.restore();
+    if(chestDirector?.busy()){signatureToggle.checked=!!signaturePose?.diagnostics().active;signatureReport.textContent='Aguarde o gesto esquerdo terminar.';return;}
+    if(reducedMotionQuery.matches)return;
+    signatureTransition?.request(signatureToggle.checked?1:0);
     refreshSignature();invalidate();
   }
   signatureToggle.addEventListener('change',applySignature);
   chestTest.addEventListener('click',()=>{
     if(!startFacial())return;
     const legacy=gestureLab?.getDiagnostics();
-    const ok=chestDirector?.start(director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking);
-    chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço direito.';
+    const ok=chestDirector?.start(director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy());
+    chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço esquerdo.';
   });
   const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
     if(mode==='presentation'&&model){
@@ -1476,6 +1481,7 @@ async function initializeLab(root: HTMLElement) {
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
   influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
   directorButton.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
     if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     if (director.getState().state !== 'stopped') {
       director.stop(); gestureLab?.animateRestore(800); return;
@@ -1486,6 +1492,7 @@ async function initializeLab(root: HTMLElement) {
     if (!director.start({reducedMotion})) directorStatus.textContent = 'Ciclo desativado pela preferência de movimento reduzido.';
   });
   btnPickMouth.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
     if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab || !model) return;
@@ -1499,6 +1506,7 @@ async function initializeLab(root: HTMLElement) {
     gestureStatus.textContent = 'Seleção de alvo ativa: toque no canto dos lábios no viewport à esquerda/acima.';
   });
   btnSolveGesture.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
     if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab || !model) return;
@@ -1523,6 +1531,7 @@ async function initializeLab(root: HTMLElement) {
     }
   });
   btnUndoGesture.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
     if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab) return;
