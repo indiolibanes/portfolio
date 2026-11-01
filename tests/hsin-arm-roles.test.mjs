@@ -1,7 +1,7 @@
 // Arm roles: right arm = signature under the chin, left arm = hand on the chest. No THREE, no rig, no GLB.
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {ARM_ROLES, assertDisjointRoles, classifyArmSides, oppositeSide} from '../src/scripts/hsin-arm-roles.mjs';
+import {ARM_ROLES, assertDisjointRoles, classifyArmSides, isArmRoleVerified, oppositeSide} from '../src/scripts/hsin-arm-roles.mjs';
 import {createChestPose} from '../src/scripts/hsin-chest-gesture.mjs';
 
 // ---------------------------------------------------------------------------------------------
@@ -43,6 +43,11 @@ assert.ok(matches.separation > 0);
 const mirrored = classifyArmSides({...facingViewer, shoulderR: [.2, 1.4, 0], shoulderL: [-.2, 1.4, 0]});
 assert.equal(mirrored.status, 'MIRRORED');
 assert.match(mirrored.reason, /espelhado/);
+// Safety policy: an uncertain result must not silently become permission for automatic acting.
+assert.equal(isArmRoleVerified(matches), true);
+assert.equal(isArmRoleVerified(mirrored), false);
+assert.equal(isArmRoleVerified({status:'INDETERMINATE'}), false);
+assert.equal(isArmRoleVerified(null), false);
 // The answer must not depend on how the character is placed in the world.
 const facingX = {root: [0, 1, 0], up: [0, 1, 0], forward: [1, 0, 0]}; // right hand toward forward × up = +Z
 assert.equal(classifyArmSides({...facingX, shoulderR: [0, 1.4, .2], shoulderL: [0, 1.4, -.2]}).status, 'MATCHES_ROLES');
@@ -73,5 +78,6 @@ assert.ok(chestSource.includes('ARM_ROLES.chest.side'));
 const chestCall = labSource.replace(/\s+/g, ' ').match(/createChestPose\(.{0,600}?\}\)/)?.[0] ?? '';
 assert.ok(chestCall.includes('side:ARM_ROLES.chest.side'), 'the lab must pass the chest role side explicitly');
 assert.ok(!chestCall.includes("side:'R'") && !chestCall.includes("side:'L'"), 'no literal side in the lab call');
+assert.match(labSource, /const sidesUsable=isArmRoleVerified\(armSideAudit\)/, 'runtime should block ambiguous rig mapping');
 
 console.log('Arm roles: right=under-chin, left=chest, disjoint, chest refuses the signature arm, anatomical side classified from geometry PASS');
