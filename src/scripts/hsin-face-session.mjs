@@ -5,7 +5,7 @@ import { snapshotFace, restoreFace, calibratePupils, cursorHeadOffset, projectGa
 /** A browser-local session. One owner for controlled facial targets, no bone/material writes. */
 export function createFacialSession({THREE, meshes, head, camera, canvas, invalidate, onStatus=()=>{},
   requestFrame=requestAnimationFrame, cancelFrame=cancelAnimationFrame, reducedMotion=false, seed=2718,
-  canAttend=()=>true, onFrame=()=>{}, pass='a', intensity=.55, attentionMode='auto'}) {
+  canAttend=()=>true, onFrame=()=>{}, autonomous=false, pass='a', intensity=.55, attentionMode='auto'}) {
   const baseline=snapshotFace(meshes), calibration=calibratePupils(THREE,meshes,head);
   let audit=null,profile=pass,auditHasB1=false,settings={intensity,attentionMode},flags={},bodyCue='gesture:release';
   const ensureAudit=()=>{const needsB1=['b1','auto-b1'].includes(profile);if(!audit||(needsB1&&!auditHasB1)){
@@ -13,7 +13,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
   }};
   if(profile!=='a')ensureAudit();
   let binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});
-  const makeActing=()=>createFacialActing({seed,pass:profile,...settings,enabled:flags,morphLimits:audit?.limits??{},gazeAxes:measuredGazeAxes(THREE,calibration)});
+  const makeActing=()=>createFacialActing({seed,pass:profile,autonomous,...settings,enabled:flags,morphLimits:audit?.limits??{},gazeAxes:measuredGazeAxes(THREE,calibration)});
   let acting=makeActing();
   let running=false, visible=true, reduced=!!reducedMotion, disposed=false, frame=0,last=null, pointer=null, touchUntil=0;
   let comparison=null, showingBaseline=false;

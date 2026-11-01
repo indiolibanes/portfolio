@@ -1333,7 +1333,7 @@ async function initializeLab(root: HTMLElement) {
       const candidates=bones.filter((bone)=>canonicalHsinBoneName(bone.name)==='orgbip001head');
       faceSession=createFacialSession({THREE, meshes:skinned, head:candidates.length===1?candidates[0]:null,
         camera,canvas:renderer.domElement,invalidate,seed:actingSeed,
-        reducedMotion:reducedMotionQuery.matches,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
+        reducedMotion:reducedMotionQuery.matches,autonomous:true,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
         canAttend:()=>!gestureLab?.getDiagnostics().picking,
         onFrame:(dt:number,_state:unknown,diagnostics:{expressions?:{context?:string}})=>{
           signatureTransition?.advance(dt);
