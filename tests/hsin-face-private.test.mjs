@@ -1,3 +1,4 @@
+import {createChestPose,createChestDirector} from '../src/scripts/hsin-chest-gesture.mjs';
 import {createLeftSignaturePose} from '../src/scripts/hsin-left-signature.mjs';
 /** Optional local audit. No model is fetched, bundled, uploaded, or required by CI. */
 import assert from 'node:assert/strict';
@@ -32,4 +33,10 @@ assert.equal(signature.diagnostics().ready,true);for(const [b,t]of transforms)as
 assert.equal(signature.apply(),true);let changed=0;for(const [b,t]of transforms){assert.deepEqual(b.position.toArray(),t.position);assert.deepEqual(b.scale.toArray(),t.scale);if(!b.quaternion.toArray().every((v,i)=>v===t.quaternion[i])){assert.match(b.name,/^(ORG|DEF)-Bip001(UpperArm|Forearm|Hand)L$/);changed++;}}assert.equal(changed,6);
 const presenting=createFacialActing({pass:'presentation',intensity:.75,morphLimits:audit.limits,gazeAxes:measuredGazeAxes(THREE,calibration)});for(let i=0;i<3600;i++)binding.apply(presenting.advance(1/60));binding.restore();signature.restore();
 for(const [b,t]of transforms)assert.deepEqual(b.quaternion.toArray(),t.quaternion);for(const [mesh,values]of baseline)assert.deepEqual(mesh.morphTargetInfluences,values);
-console.log(JSON.stringify({leftSignature:signature.diagnostics(),privateAudit:'PASS',skinnedParts:meshes.length,joints:bones.length,calibratedPupilControls:calibration.records.length,auditedCandidates:audit.rows.length,exactRestore:true,rendering:'NOT TESTED — placeholder images, no WebGL'}));
+assert.equal(signature.apply(),true);const leftPose=new Map(bones.map(b=>[b,b.quaternion.toArray()]));
+const chest=createChestPose({THREE,bones,meshes,head:heads[0],calibration});assert.equal(chest.diagnostics().ready,true);assert.equal(chest.atBaseline(),true);
+for(const [b,values]of leftPose)assert.deepEqual(b.quaternion.toArray(),values,'candidate audit must restore transforms');
+for(const t of [0,.25,.5,.75,1]){assert.equal(chest.apply(t),true);for(const [b,values]of leftPose)if(/L(?:\d+)?$/.test(b.name))assert.deepEqual(b.quaternion.toArray(),values,'right gesture must not overwrite left chain');}
+assert.equal(chest.atBaseline(),false);chest.restore();assert.equal(chest.atBaseline(),true);for(const [b,values]of leftPose)assert.deepEqual(b.quaternion.toArray(),values);
+const events=[],actor=createChestDirector({pose:chest,onEvent:e=>events.push(e)});assert.equal(actor.start(true),true);for(let i=0;i<500;i++)actor.advance(.02);assert.equal(actor.busy(),false);assert.deepEqual(events,['gesture:prepare','gesture:hold','gesture:release']);for(const [b,values]of leftPose)assert.deepEqual(b.quaternion.toArray(),values);signature.restore();
+console.log(JSON.stringify({chest:chest.diagnostics(),leftSignature:signature.diagnostics(),privateAudit:'PASS',skinnedParts:meshes.length,joints:bones.length,calibratedPupilControls:calibration.records.length,auditedCandidates:audit.rows.length,exactRestore:true,rendering:'NOT TESTED — placeholder images, no WebGL'}));
