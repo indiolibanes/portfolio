@@ -1,42 +1,43 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HsinPresentationLayout from '../../../layouts/HsinPresentationLayout.astro';
 import '../../../styles/hsin-local-lab.css';
 ---
 
-<BaseLayout
+<HsinPresentationLayout
   title="Hsin · The Moon Fox · Apresentação local"
-  description="Bancada experimental local para avaliar deformações faciais e articulações de um modelo GLB sem transferir o arquivo ao servidor."
+  description="Hsin, The Moon Fox. Uma apresentação autônoma com arquivo privado local."
 >
   <main id="conteudo" class="hsin-lab" data-hsin-lab data-experience="presentation">
     <header class="hsin-lab__head">
-      <p class="hsin-lab__eyebrow">The Moon Fox / Experimento privado</p>
       <h1>Hsin <span>The Moon Fox</span></h1>
-      <p class="hsin-lab__version">Apresentação autônoma · candidata</p>
-      <p>Ela já está à sua espera. Escolha o arquivo no aparelho; depois, apenas explore a câmera e deixe o olhar encontrar você.</p>
-      <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
-
-    <details class="hsin-lab__privacy"><summary>Arquivo privado · créditos e condições</summary>
-      <p><strong>Arquivo local, sem upload.</strong> Nenhum modelo está incorporado a esta página ou ao repositório. Os resultados e capturas ficam com você até decidir compartilhá-los.</p>
-      <p>Uso experimental privado. Atribuição: recursos da personagem © Kuro Games; adaptação Blender: Lvoxx; re-rig: imblue__; shaders LSCherry. Créditos não representam licença para republicação.</p>
-      <p class="hsin-lab__small" data-hsin-csp-status role="status" aria-live="polite">Permissão de imagens temporárias: verificando...</p>
-    </details>
-
-    <section class="hsin-lab__experiencebar" aria-label="Apresentação e arquivo local">
-      <div class="hsin-lab__mode-switch" role="group" aria-label="Modo da experiência">
-        <button type="button" data-hsin-mode-presentation aria-pressed="true">Apresentação</button>
-        <button type="button" data-hsin-mode-lab aria-pressed="false" aria-controls="hsin-laboratory">Abrir laboratório</button>
-      </div>
-      <div class="hsin-lab__load">
-        <label for="hsin-input">Escolher Hsin no aparelho · .glb</label>
+    <section class="hsin-lab__experiencebar" aria-label="Arquivo e opções">
+      <div class="hsin-lab__load" data-hsin-load-only>
+        <label for="hsin-input">Escolher Hsin no aparelho</label>
         <input id="hsin-input" type="file" accept=".glb,model/gltf-binary" data-hsin-file />
-        <p data-hsin-status role="status" aria-live="polite">Seu arquivo fica neste navegador. A atuação começa automaticamente.</p>
       </div>
+      <details class="hsin-lab__options" data-hsin-options>
+        <summary aria-label="Opções da apresentação">⋯</summary>
+        <div class="hsin-lab__options-content">
+          <div class="hsin-lab__mode-switch" role="group" aria-label="Modo da experiência">
+            <button type="button" data-hsin-mode-presentation aria-pressed="true">Ver apresentação</button>
+            <button type="button" data-hsin-mode-lab aria-pressed="false" aria-controls="hsin-laboratory">Laboratório</button>
+          </div>
+          <button type="button" data-hsin-replace>Trocar arquivo</button>
+          <a href="/experimentos/">Voltar ao terraço</a>
+          <details class="hsin-lab__privacy"><summary>Créditos e arquivo privado</summary>
+            <p>Arquivo local, sem upload. O modelo não está incorporado à página.</p>
+            <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders: LSCherry. Uso experimental privado; créditos não autorizam redistribuição.</p>
+            <p data-hsin-csp-status role="status" aria-live="polite">Verificando imagens locais…</p>
+          </details>
+        </div>
+      </details>
     </section>
+    <p class="hsin-lab__load-status" data-hsin-status role="status" aria-live="polite"></p>
 
     <section class="hsin-lab__shell" aria-label="Bancada 3D">
       <div class="hsin-lab__viewer">
-        <div class="hsin-lab__viewport" data-hsin-viewport role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
+        <div class="hsin-lab__viewport" data-hsin-viewport tabindex="-1" role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
           <p class="hsin-lab__presentation-hint" data-hsin-lab-only hidden>Arraste para explorar. Um toque desperta sua atenção; o resto é com ela.</p>
           <div class="hsin-lab__placeholder" data-hsin-placeholder>Escolha seu GLB para encontrar Hsin.
 O modelo não é enviado a um servidor.</div>
@@ -125,7 +126,7 @@ O modelo não é enviado a um servidor.</div>
           <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-chest-auto checked disabled /> Gesto automático ocasional</label>
           <button type="button" data-hsin-chest-test disabled>Testar mão ao peito</button>
           <p data-hsin-chest-status class="hsin-lab__small" role="status">Aguardando rig.</p>
-          <p class="hsin-lab__small">Candidata geométrica: confirme contato, roupa e cabelo em frente, 3/4 e perfil. O gesto existente do indicador aguarda a conclusão deste movimento.</p>
+          <p class="hsin-lab__small">A trajetória candidata verifica um envelope amostrado do tórax e da manga. Confirme contato, tecido e cabelo em frente, 3/4 e perfil. O gesto existente do indicador aguarda a conclusão deste movimento.</p>
           <details><summary>Diagnóstico do gesto</summary><pre data-hsin-chest-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
         </details>
 
@@ -295,7 +296,7 @@ O modelo não é enviado a um servidor.</div>
       <p>Se o GLB não carregar ou se o aparelho perder o contexto WebGL, anote o erro informado. O laboratório não altera o arquivo selecionado.</p>
     </footer>
   </main>
-</BaseLayout>
+</HsinPresentationLayout>
 
 <script>
   import '../../../scripts/hsin-local-lab';
