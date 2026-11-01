@@ -3,9 +3,14 @@ import {resolveHsinBones} from './hsin-gesture-ik.mjs';
 import {solveSignatureElbow} from './hsin-left-signature.mjs';
 import {measuredGazeAxes} from './hsin-face-rig.mjs';
 import {createPathTiming} from './hsin-path-timing.mjs';
-/** Hsin adapter: per-side geometry; guarded left route, original right reference. */
-export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
- const opposite=side==='L'?'R':'L';
+import {ARM_ROLES,oppositeSide} from './hsin-arm-roles.mjs';
+/** Hsin adapter: the chest gesture belongs to one arm (ARM_ROLES.chest). The right arm keeps the under-chin signature. */
+export function createChestPose({THREE,bones,meshes,head,calibration,side=ARM_ROLES.chest.side}){
+ if(side!==ARM_ROLES.chest.side){
+  const reason=`Papel do braço ${side}: este braço não executa o gesto de peito (${ARM_ROLES.chest.label}); a assinatura ${ARM_ROLES.signature.label} permanece exclusiva.`;
+  return {apply:()=>false,restore:()=>{},atBaseline:()=>false,diagnostics:()=>({ready:false,reason,role:'REFUSED',collision:'VISUAL_QA_PENDING'})};
+ }
+ const opposite=oppositeSide(side);
  const names=['ORG-Bip001Spine2','ORG-Bip001Neck',...['ORG-Bip001UpperArm','ORG-Bip001Forearm','ORG-Bip001Hand','ORG-Bip001Finger1','DEF-Bip001UpperArm','DEF-Bip001Forearm','DEF-Bip001Hand'].map(n=>`${n}.${side}`)];
  const found=resolveHsinBones(bones,names),map=found.resolved;let path=null,timing=null,candidate=null,reason='Rig do braço selecionado ou calibração ausentes.',metrics={};
  const changed=names.slice(2,5).concat(names.slice(6)).map(n=>map.get(n)).filter(Boolean),base=new Map(changed.map(b=>[b,b.quaternion.clone()]));
