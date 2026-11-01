@@ -37,11 +37,11 @@ import '../../../styles/hsin-local-lab.css';
     <section class="hsin-lab__shell" aria-label="Bancada 3D">
       <div class="hsin-lab__viewer">
         <div class="hsin-lab__viewport" data-hsin-viewport role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
-          <p class="hsin-lab__presentation-hint">Arraste para explorar. Um toque desperta sua atenção; o resto é com ela.</p>
+          <p class="hsin-lab__presentation-hint" data-hsin-lab-only hidden>Arraste para explorar. Um toque desperta sua atenção; o resto é com ela.</p>
           <div class="hsin-lab__placeholder" data-hsin-placeholder>Escolha seu GLB para encontrar Hsin.
 O modelo não é enviado a um servidor.</div>
         </div>
-        <div class="hsin-lab__viewerbar">
+        <div class="hsin-lab__viewerbar" data-hsin-lab-only hidden>
           <button data-hsin-full type="button" disabled>Corpo inteiro</button>
           <button data-hsin-face type="button" disabled>Aproximar rosto</button>
           <button data-hsin-upper type="button" disabled>Rosto + mão</button>
@@ -290,7 +290,7 @@ O modelo não é enviado a um servidor.</div>
       </div>
     </section>
 
-    <footer class="hsin-lab__foot">
+    <footer class="hsin-lab__foot" data-hsin-lab-only hidden>
       <p><strong>Critério de aceite:</strong> o aparecimento do rosto no navegador comprova apenas a renderização. O sorriso e o contato do indicador com os lábios precisam ser inspecionados e aprovados visualmente.</p>
       <p>Se o GLB não carregar ou se o aparelho perder o contexto WebGL, anote o erro informado. O laboratório não altera o arquivo selecionado.</p>
     </footer>
