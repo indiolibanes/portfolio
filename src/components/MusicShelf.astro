@@ -141,7 +141,31 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       <div class="music-panorama-shimmer" aria-hidden="true"></div>
       <div class="music-panorama-motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="music-panorama-effects" data-music-effects aria-hidden="true"></div>
-      <span class="music-panorama-hint" aria-hidden="true"><span class="music-panorama-hint__touch">✦ Toque na cena</span><span class="music-panorama-hint__click">✦ Clique na cena</span></span>
+
+      <div
+        class="music-lunar-fox-cameo"
+        data-lunar-fox-cameo
+        aria-hidden="true"
+      >
+        <img
+          src="/assets/hsin-3d-calling-lunar-fox.webp"
+          alt=""
+          width="260"
+          height="305"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <button
+        class="music-lunar-fox-call"
+        data-lunar-fox-call
+        type="button"
+        aria-label="Calling Lunar Fox: mostrar por alguns segundos a Hsin tridimensional em teste"
+      >
+        Calling Lunar Fox
+      </button>
+
       <button
         class="music-panorama-action"
         data-music-effect-toggle
@@ -479,6 +503,29 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   const panorama = shelf?.querySelector('[data-music-panorama]');
   const effectToggle = panorama?.querySelector('[data-music-effect-toggle]');
   const effectLayer = panorama?.querySelector('[data-music-effects]');
+  const lunarFoxButton = panorama?.querySelector('[data-lunar-fox-call]');
+  const lunarFoxCameo = panorama?.querySelector('[data-lunar-fox-cameo]');
+
+  // One small preview per page load. The public portfolio receives only a
+  // derived render; the experimental Hsin GLB remains private.
+  if (lunarFoxButton && lunarFoxCameo) {
+    let lunarFoxUsed = false;
+
+    lunarFoxButton.addEventListener('click', () => {
+      if (lunarFoxUsed) return;
+
+      lunarFoxUsed = true;
+      lunarFoxButton.disabled = true;
+      lunarFoxButton.setAttribute('aria-disabled', 'true');
+      lunarFoxButton.title = 'Recarregue a página para chamar Hsin novamente.';
+
+      lunarFoxCameo.dataset.active = 'true';
+
+      window.setTimeout(() => {
+        lunarFoxCameo.dataset.active = 'false';
+      }, 2550);
+    });
+  }
   if (panorama && effectToggle && effectLayer) {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const hoverPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
