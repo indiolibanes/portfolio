@@ -6,7 +6,8 @@ on:
       - 'experiment/hsin-facial-legibility-pass-b1-*'
   pull_request:
     paths:
-      - 'src/scripts/hsin-face-*.mjs'
+      - 'src/scripts/hsin-*.mjs'
+      - 'scripts/hsin-*.mjs'
       - 'src/scripts/hsin-local-lab.ts'
       - 'src/pages/experimentos/hsin-lab/index.astro'
       - 'tests/hsin-*.test.mjs'
@@ -36,10 +37,16 @@ jobs:
           node tests/hsin-chest.test.mjs
           node tests/hsin-presentation.test.mjs
           node tests/hsin-face-private.test.mjs
-      - name: IK, rig and director regressions
+          node tests/hsin-motion-director.test.mjs
+      - name: IK, rig, arm path and director regressions
         run: |
           node tests/hsin-gesture-ik.test.mjs
           node tests/hsin-acting-director.test.mjs
+          node tests/hsin-arm-clearance.test.mjs
+          node tests/hsin-waypoint-safety.test.mjs
+          node tests/hsin-pose-transition.test.mjs
+          node tests/hsin-clean-presentation.test.mjs
+          node tests/hsin-embedded-texture.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract (existing 97/100 baseline is recorded, not reclassified)

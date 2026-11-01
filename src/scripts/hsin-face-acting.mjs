@@ -21,7 +21,13 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   let nextBlink=presentation?range(5,10):range(3.4,6.8), nextWink=range(18,30);
   let winkFallback=nextWink+(presentation?range(2,5):0);
   let autoWinkSide='wink';
-  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');if(trigger(kind,origin)&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';}
+  // Presentation-only arbiter state. Legacy passes never read or consume it, so their event sequence is unchanged.
+  let lidFreeAt=0,lastOpenAt=0,lastAttendClock=-Infinity,lastAttentionState='neutral',expressionWinkPending=false;
+  // Presentation contract: automatic blinks are 5–10 s apart, measured from the previous complete opening.
+  // A gaze-linked blink may anticipate the due blink, but never breaks that floor.
+  const BLINK_FLOOR=5;
+  const winkSupported=()=>typeof expressions.supportsWink==='function'?expressions.supportsWink():true;
+  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');const ok=trigger(kind,origin);if(ok&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';return ok;}
   function trigger(kind,origin='manual') {
     if(kind==='wink-right')kind='wink';
     if(lid || !['blink','wink','wink-left'].includes(kind))return false;
@@ -48,14 +54,43 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     advance(dt) {
       if(!Number.isFinite(dt)||dt<0)throw Error('Facial dt must be finite and nonnegative.');
       dt=Math.min(dt,.1);clock+=dt;
-      if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {lid=null;nextBlink=clock+blinkDelay();}
-      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){presentation?automaticWink('calendar'):trigger('wink','calendar');}}
+      if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {
+        const ended=lid;lid=null;nextBlink=clock+blinkDelay();
+        // Refractory period: an eyelid event that fell due during this one may not fire back-to-back.
+        if(presentation){lidFreeAt=clock+(ended.kind==='blink'?range(2,3.2):range(1.8,2.8));lastOpenAt=clock;}
+      }
+      const lidReady=!presentation||clock>=lidFreeAt;
+      if(!lid&&lidReady&&!(useB()&&expressions.isLab())){
+        if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');
+        else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){
+          if(!presentation)trigger('wink','calendar');
+          // A calendar wink never fires on a calm face: if the smile does not support it, it is deferred and a supporting context is requested.
+          else if(winkSupported())automaticWink('calendar');
+          // Only the calendar re-check moves; nextWink stays, so an expression-linked wink can still land in the meantime.
+          else{winkFallback=clock+range(2,5);expressions.requestCoy?.();}
+        }
+      }
+      if(presentation&&!lid&&flags.wink&&clock>=nextWink&&!winkSupported())expressions.requestCoy?.();
       if(clock>attentionUntil)target=[0,0,0];
       if(useB()) {
-        extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1,attending:clock<=attentionUntil&&Math.hypot(...target)>.02});
-        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))presentation?automaticWink('expression'):trigger('wink','expression');
+        extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1,attending:clock<=attentionUntil&&Math.hypot(...target)>.02,recent:clock-lastAttendClock<4});
+        // Presentation: a smile-linked wink that arrives during the spacing window is held (not dropped) until its time comes.
+        if(presentation&&extra.wink&&flags.wink)expressionWinkPending=true;
+        else if(extra.wink&&flags.wink)trigger('wink','expression');
+        if(presentation&&expressionWinkPending){
+          if(clock>winkFallback+1)expressionWinkPending=false;
+          else if(clock>=nextWink&&!lid&&clock>=lidFreeAt&&winkSupported()&&automaticWink('expression'))expressionWinkPending=false;
+        }
         if(extra.isolated){attention.reset();gaze=[0,0,0];}
-        else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral'});
+        else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral',calm:presentation&&expressions.isCalm?.()===true});
+        // Blinks cluster with gaze shifts: a blink that is nearly due is released with a glance aside.
+        if(presentation){
+          const state=attention.state();
+          if(state!==lastAttentionState){
+            if(state==='avert'&&!lid&&flags.blink&&clock>=lidFreeAt&&clock>=Math.max(nextBlink-2,lastOpenAt+BLINK_FLOOR)&&!expressions.isLab()&&rng()<.65)trigger('blink','saccade');
+            lastAttentionState=state;
+          }
+        }
       }else {
         const damp=1-Math.exp(-dt/.18);
         gaze=gaze.map((v,i)=>{const next=v+((flags.gaze?target[i]:0)-v)*damp;return Math.abs(next)<1e-7?0:next;});
@@ -66,7 +101,7 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
       if(!Array.isArray(vector)||vector.length!==3||!vector.every(Number.isFinite))return false;
       const length=Math.hypot(...vector), dead=presentation?.035:.08;
       const strength=length<=dead?0:Math.min(1,(length-dead)/(1-dead))*.24;
-      target=vector.map(v=>length? v/length*strength:0);attentionUntil=clock+clamp(seconds,0,presentation?5:2);return true;
+      target=vector.map(v=>length? v/length*strength:0);attentionUntil=clock+clamp(seconds,0,presentation?5:2);if(strength>0)lastAttendClock=clock;return true;
     },
     clearAttention(){target=[0,0,0];attentionUntil=clock;},
     trigger,

@@ -3,6 +3,9 @@ import { createExpressionDirector } from './hsin-face-pass-b.mjs';
 export const PRESENTATION_ATTENTION = Object.freeze({
   acquire:[.075,.12], hold:[2.6,4.1], avert:[.26,.42], returning:[.65,.95],
   cooldown:[.35,.8], retainOnLeave:.65, reacquire:true,
+  // Eye contact that stays with the viewer: glances return to them, small drifts are followed with lag.
+  glanceReturnsToTarget:true, glanceBack:[.16,.30], reacquireDistance:.07, reacquireDwell:.32,
+  pursuit:1.1, calmHoldScale:1.9, longHoldChance:.28, longHoldScale:1.8,
 });
 export function createPresentationExpression({seed,limits={}}={}) {
   const beats=createExpressionDirector({seed,limits});let time=0;

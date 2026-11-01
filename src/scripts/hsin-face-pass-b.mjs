@@ -8,11 +8,15 @@ const limit=v=>{const n=length(v);return n>.24?v.map(x=>x*.24/n):v;};
 function randomSource(seed){let s=seed>>>0;return(a,b)=>{s=(Math.imul(1664525,s)+1013904223)>>>0;return a+(b-a)*s/4294967296;};}
 
 export function createAttentionDirector({seed=1,axes={horizontal:[1,0,0],vertical:[0,1,0]},timing={}}={}) {
-  const config={acquire:[.14,.22],hold:[.55,1.05],avert:[.16,.25],returning:[.4,.65],cooldown:[1.2,2.8],retainOnLeave:0,reacquire:false,...timing};
+  // The trailing keys are opt-in presentation behaviour; their defaults reproduce Pass B exactly.
+  const config={acquire:[.14,.22],hold:[.55,1.05],avert:[.16,.25],returning:[.4,.65],cooldown:[1.2,2.8],retainOnLeave:0,reacquire:false,
+    glanceReturnsToTarget:false,glanceBack:[.16,.28],reacquireDistance:.12,reacquireDwell:.55,pursuit:0,calmHoldScale:1,
+    longHoldChance:0,longHoldScale:1,...timing};
+  const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
   const random=randomSource(seed),span=key=>random(...config[key]);let absent=0;let state='neutral',elapsed=0,duration=0,cooldown=0,from=[0,0,0],focus=[0,0,0],value=[0,0,0],micro=[0,0,0],nextMicro=.2,lastMode='auto',self=false,idleDue=random(2.8,4.8);
   const transition=(next,to,time)=>{state=next;elapsed=0;from=[...value];focus=[...to];duration=time;micro=[0,0,0];nextMicro=random(.18,.4);};
   return {
-    step(dt,input,{closed=false,intensity=.55,mode='auto'}={}){
+    step(dt,input,{closed=false,intensity=.55,mode='auto',calm=false}={}){
       if(mode!==lastMode){transition('return',[0,0,0],.45);lastMode=mode;}
       if(mode==='neutral')input=[0,0,0];
       // No saccades or fixation transitions during eyelid closure.
@@ -30,12 +34,20 @@ export function createAttentionDirector({seed=1,axes={horizontal:[1,0,0],vertica
         }
       }else if(state==='acquire'||state==='avert'){
         value=mix(from,focus,ease(elapsed/duration));
-        if(elapsed>=duration){if(state==='acquire')transition('hold',value,span('hold'));else transition('return',[0,0,0],span('returning'));}
+        if(elapsed>=duration){
+          // Occasional long stare so glances never settle into a fixed cadence (the draw is skipped when disabled).
+          if(state==='acquire')transition('hold',value,span('hold')*(config.longHoldChance>0&&random(0,1)<config.longHoldChance?config.longHoldScale:1));
+          // A glance aside while the viewer is still there returns to the viewer, never through centre.
+          else if(config.glanceReturnsToTarget&&length(input)>.001){self=false;transition('acquire',input,span('glanceBack'));}
+          else transition('return',[0,0,0],span('returning'));
+        }
       }else if(state==='hold'){
-        if(config.reacquire&&length(input)>.001&&elapsed>.55&&length(input.map((v,i)=>v-focus[i]))>.12){self=false;transition('acquire',input,span('acquire'));return [...value];}
+        if(config.reacquire&&length(input)>.001&&elapsed>config.reacquireDwell&&distance(input,focus)>config.reacquireDistance){self=false;transition('acquire',input,span('acquire'));return [...value];}
+        // Fixation follows a slowly drifting viewer with lag instead of staying on a stale point.
+        if(config.pursuit>0&&!self&&length(input)>.001)focus=mix(focus,input,1-Math.exp(-dt/config.pursuit));
         if(elapsed>=nextMicro){const h=random(-.012,.012)*intensity,v=random(-.008,.008)*intensity;micro=axes.horizontal.map((x,i)=>x*h+axes.vertical[i]*v);nextMicro=elapsed+random(.2,.45);}
         value=limit(mix(value,focus.map((v,i)=>v+micro[i]),1-Math.exp(-dt/.035)));
-        if(elapsed>=duration){const h=random(-.016,.016)*intensity;const away=focus.map((v,i)=>v*.32+axes.horizontal[i]*h);transition('avert',away,span('avert'));}
+        if(elapsed>=duration*(calm?config.calmHoldScale:1)){const h=random(-.016,.016)*intensity;const away=focus.map((v,i)=>v*.32+axes.horizontal[i]*h);transition('avert',away,span('avert'));}
       }else if(state==='return'){
         // Horizontal and vertical settle on different clocks; both eyes remain conjugate.
         const h=dot(from,axes.horizontal)*(1-ease(elapsed/(duration*.72)));
@@ -46,6 +58,7 @@ export function createAttentionDirector({seed=1,axes={horizontal:[1,0,0],vertica
       return limit(value).map(v=>Math.abs(v)<1e-7?0:v);
     },
     reset(){state='neutral';elapsed=0;value=[0,0,0];self=false;cooldown=.2;absent=0;},
+    state:()=>state,
     diagnostics(){return {state,elapsed,duration,cooldown,value:[...value]};},
   };
 }
