@@ -1,11 +1,13 @@
 /** Geometry-only candidate audit. Runtime reports stay in the author's browser. */
 export const PASS_B_NAMES = ['B_Cheerful_R','B_Cheerful_L','B_Up_Add_R','B_Up_Add_L',
   'E_Smile_R','E_Smile_L','E_Squint_R','E_Squint_L','M_Smile_R','M_Smile_L','P_Nose_Up','P_Nose_Down'];
-export function auditFacialMorphs(THREE,meshes,head,calibration){
+export const PASS_B1_EXTRA_NAMES = ['M_meow_R','M_meow_L','M_Squint_R','M_Squint_L'];
+export function auditFacialMorphs(THREE,meshes,head,calibration,{includeB1=false}={}){
+  const requested=includeB1?[...PASS_B_NAMES,...PASS_B1_EXTRA_NAMES]:PASS_B_NAMES;
   const rows=[], masks=new Map(), eyeDistance=(calibration.radius??0)/2.5;
-  if(!head)return {rows:PASS_B_NAMES.map(name=>({name,eligible:false,candidateCap:0,reason:'Cabeça ausente ou ambígua.'})),limits:{}};
+  if(!head)return {rows:requested.map(name=>({name,eligible:false,candidateCap:0,reason:'Cabeça ausente ou ambígua.'})),limits:{}};
   head.updateWorldMatrix(true,false);const inverse=head.matrixWorld.clone().invert();
-  for(const name of [...PASS_B_NAMES,'E_Close_R','E_Close_L']){
+  for(const name of [...requested,'E_Close_R','E_Close_L']){
     let affected=0,samples=0,maxDisplacement=0;const parts=[],mask=new Set(),sum=new THREE.Vector3(),center=new THREE.Vector3(),box=new THREE.Box3();
     for(let part=0;part<meshes.length;part++){
       const mesh=meshes[part],i=mesh.morphTargetDictionary?.[name],attribute=mesh.geometry.morphAttributes.position?.[i];
@@ -24,7 +26,7 @@ export function auditFacialMorphs(THREE,meshes,head,calibration){
       }}finally{mesh.morphTargetInfluences[i]=original;}
     }
     masks.set(name,mask);
-    if(!PASS_B_NAMES.includes(name))continue;
+    if(!requested.includes(name))continue;
     const eligible=samples>0&&Number.isFinite(maxDisplacement)&&maxDisplacement>1e-7&&eyeDistance>1e-5;
     // Conservative initial weight caps scaled by measured displacement/inter-eye
     // separation. These are lab candidates, never a visual or anatomical approval.
@@ -37,6 +39,9 @@ export function auditFacialMorphs(THREE,meshes,head,calibration){
       affectedBounds:samples?{min:box.min.toArray(),max:box.max.toArray()}:null,
       maxSampledDisplacement:maxDisplacement,interEyeDistance:eyeDistance,candidateCap,
       presentation:name.startsWith('P_Nose')?'LAB_ONLY_VISUAL_PENDING':'CANDIDATE_VISUAL_PENDING',
+      diagnosticValidRange:[0,1],automaticCap: candidateCap,
+      diagnosticBeyondAutoCap:eligible&&candidateCap<1,
+      automaticNoseEnabled:false,
       reason:eligible?'Deslocamento medido; uso expressivo precisa de QA visual.':'Ausente, degenerado ou escala facial indisponível.'});
   }
   const up=calibration.ready?new THREE.Vector3(...calibration.directions.Pupil_Up_R).add(new THREE.Vector3(...calibration.directions.Pupil_Up_L)).normalize():null;
