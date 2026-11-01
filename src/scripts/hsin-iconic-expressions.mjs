@@ -13,7 +13,12 @@ export function createAutoB1Director({seed=1,limits={}}={}){
  const pick=a=>a[Math.floor(rng()*a.length)];
  const names=[...new Set(Object.values(ALL_FACE_PROFILES).flatMap(p=>Object.keys(p)).filter(n=>n!=='label'))];
  return {
-  signal(event){body=event;manual.signal(event);},
+  signal(event){
+   if((event==='gesture:prepare'||event==='gesture:hold')&&body==='gesture:release'){
+    context='Warm Presence';contextStarted=time;winkAttempted=false;profile=profile==='I3'?'S1':'I3';next=Math.max(next,time+6);
+   }
+   body=event;manual.signal(event);
+  },
   testProfile:(name,strength)=>manual.testProfile(name,strength),testMorph:(name,strength)=>manual.testMorph(name,strength),testBeat:kind=>manual.testBeat(kind),isLab:()=>manual.isLab(),
   step(dt,options={}){
    time+=dt;
