@@ -326,7 +326,7 @@ async function initializeLab(root: HTMLElement) {
       powerPreference: 'low-power',
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setClearColor(0x182237, 1);
+    renderer.setClearColor(0x291814, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // The source declares all character materials as KHR_materials_unlit:
     // ACES tonemapping distorts their base colors and cannot reconstruct absent shaders.
