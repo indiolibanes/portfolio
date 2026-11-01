@@ -1,3 +1,4 @@
+import { ICONIC_PROFILES } from './hsin-iconic-profiles.mjs';
 import { createPresentationExpression } from './hsin-face-presentation.mjs';
 
 /**
@@ -32,7 +33,7 @@ export function createFacialB1Director({seed=2,limits={}}={}) {
   function start(kind,name,strength=1) {
     if(diagnostic||previous.isLab()||!Number.isFinite(strength)||strength<=0)return false;
     if(kind==='morph'&&!allowed(name))return false;
-    if(kind==='smile'&&(!SMILE_PROFILES[name]||!['M_Smile_R','M_Smile_L'].some(allowed)))return false;
+    if(kind==='smile'&&(!(SMILE_PROFILES[name]||ICONIC_PROFILES[name])||!['M_Smile_R','M_Smile_L'].some(allowed)))return false;
     diagnostic={kind,name,start:clock,strength:clamp(strength),duration:2.1};
     return true;
   }
@@ -50,7 +51,7 @@ export function createFacialB1Director({seed=2,limits={}}={}) {
       const t=clock-began;
       const envelope=t<.55?ease(t/.55):t<1.25?1:1-ease((t-1.25)/.85);
       const amount=clamp(envelope*strength*(options.intensity??1));
-      const weights=kind==='smile'?SMILE_PROFILES[name]:{[name]:1};
+      const weights=kind==='smile'?(SMILE_PROFILES[name]??ICONIC_PROFILES[name]):{[name]:1};
       const overlays={};let smileR=0,smileL=0;
       for(const [channel,weight] of Object.entries(weights)) {
         if(channel==='label'||!allowed(channel))continue;
