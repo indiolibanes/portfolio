@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {calibratePupils} from '../src/scripts/hsin-face-rig.mjs';
+import {createBakedPose,createBakedChest} from '../src/scripts/hsin-baked-pose.mjs';
+import {createPoseTransition} from '../src/scripts/hsin-pose-transition.mjs';
+import {createChestDirector} from '../src/scripts/hsin-chest-director.mjs';
+import {createBodyRepertoire} from '../src/scripts/hsin-body-repertoire.mjs';
+import {createRestBreath} from '../src/scripts/hsin-rest-breath.mjs';
+import {createFacialActing} from '../src/scripts/hsin-face-acting.mjs';
+import {snapshotFace,createFaceBinding} from '../src/scripts/hsin-face-binding.mjs';
+const from=p=>new URL('../'+p,import.meta.url);
+const bytes=await readFile(from('public/assets/models/hsin/hsin-v2.0.glb')),profile=JSON.parse(await readFile(from('public/assets/models/hsin/hsin-v2.0-profile.json'))),manifest=JSON.parse(await readFile(from('src/data/hsin-v2-asset.json'))),report=JSON.parse(await readFile(from('docs/hsin-v2-asset-report.json')));
+assert.equal(bytes.length,manifest.bytes);assert.ok(bytes.length<12*1024*1024);assert.equal(createHash('sha256').update(bytes).digest('hex'),manifest.sha256);assert.equal(profile.modelSha256,manifest.sha256);assert.ok(report.baselineMaxPositionError<1e-6);assert.ok(report.estimatedMorphBytesAfter<report.estimatedMorphBytesBefore*.01);assert.ok(profile.validation.maxAngularErrorDegrees<1);
+const size=bytes.readUInt32LE(12),g=JSON.parse(bytes.subarray(20,20+size).toString());assert.equal(bytes.readUInt32LE(8),bytes.length);assert.ok(g.extensionsRequired.includes('EXT_texture_webp'));assert.equal(g.meshes.length,9);assert.ok(g.meshes.every(m=>m.primitives.length===1));assert.ok(!g.meshes.some(m=>m.name==='Sphere'));assert.ok(g.meshes.every(m=>m.primitives.every(p=>!p.targets||p.targets.length<=26)));assert.ok(g.meshes.every(m=>m.primitives.every(p=>(p.targets??[]).every(t=>!('NORMAL'in t)))));
+globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});globalThis.ProgressEvent=class{};
+const gltf=await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'');gltf.scene.updateMatrixWorld(true);
+const meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o)});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))],head=bones.find(b=>b.name==='ORG-Bip001Head'),spine=bones.find(b=>b.name==='ORG-Bip001Spine2');assert.equal(meshes.length,9);assert.equal(bones.length,823);assert.equal(meshes.filter(m=>m.morphTargetInfluences?.length).length,2);
+const calibrated=calibratePupils(THREE,meshes,head);assert.equal(calibrated.ready,true);assert.ok(Math.abs(calibrated.radius-profile.calibration.radius)<1e-7);for(const n of Object.keys(calibrated.directions))assert.ok(new THREE.Vector3(...calibrated.directions[n]).dot(new THREE.Vector3(...profile.calibration.directions[n]))>.999999);
+const baseline=new Map(bones.map(b=>[b,b.quaternion.toArray()]));gltf.scene.traverse(o=>{o.updateMatrix();o.matrixAutoUpdate=false;});
+const signature=createPoseTransition({pose:createBakedPose({THREE,data:profile.poses.signature,bones})}),chest=createChestDirector({pose:createBakedChest({THREE,profile:profile.poses,bones}),seed:2,organic:true}),hair=createChestDirector({pose:createBakedPose({THREE,data:profile.poses.hair,bones}),seed:3,organic:true});
+const body=createBodyRepertoire({seed:77,signature,chest,hair,breath:createRestBreath({THREE,bone:spine,update:()=>spine.updateMatrix()}),capabilities:()=>({signature:true,chest:true,composition:true,hair:true})});
+const face=createFacialActing({pass:'auto-b1',autonomous:true,seed:77,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes}),binding=createFaceBinding(meshes,snapshotFace(meshes),profile.calibration,{limits:profile.limits});
+for(let i=0;i<6000;i++){const state=face.advance(.1);binding.apply(state);body.advance(.1,{enabled:true,context:face.diagnostics().expressions.context});gltf.scene.updateMatrixWorld();assert.ok(!(chest.busy()&&hair.busy()));}
+body.dispose();binding.restore();gltf.scene.updateMatrixWorld();for(const[b,q]of baseline)assert.deepEqual(b.quaternion.toArray(),q,'baked restoration must be exact: '+b.name);
+console.log('V2 production GLB: size/hash/retained live channels, pupil calibration, cached poses on real rig, static-matrix updates, 600 s simulation and exact restoration PASS (not WebGL/FPS QA)');

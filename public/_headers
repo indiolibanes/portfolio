@@ -22,8 +22,17 @@
 # Cloudflare Pages concatenates duplicate CSP headers, so merely adding a
 # second CSP with img-src blob: does not loosen the first policy.
 # Detach the inherited CSP before attaching a route-specific strict CSP.
-# The model itself is never uploaded or served by this site.
+# Files selected in the lab stay local; the V2 stage uses its separate public derivative.
 /experimentos/hsin-lab/*
   X-Robots-Tag: noindex, nofollow, noarchive
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# Public Hsin V2: embedded GLB images need blob:, independent from the local-file lab.
+/experimentos/hsin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+/assets/models/hsin/*
+  Cache-Control: public, max-age=86400
