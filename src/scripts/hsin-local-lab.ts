@@ -1,3 +1,8 @@
+import {createChestPose,createChestDirector} from './hsin-chest-gesture.mjs';
+import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
+import { createPresentationMode } from './hsin-presentation-mode.mjs';
+import { createRightSignaturePose } from './hsin-right-signature.mjs';
+import { createPoseTransition } from './hsin-pose-transition.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
 import { createBehaviorDirector } from './hsin-acting-director.mjs';
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
@@ -92,12 +97,36 @@ async function initializeLab(root: HTMLElement) {
   const facialRun = q<HTMLButtonElement>('[data-hsin-facial-run]');
   const facialBlink = q<HTMLButtonElement>('[data-hsin-facial-blink]');
   const facialWink = q<HTMLButtonElement>('[data-hsin-facial-wink]');
+  const facialWinkLeft = q<HTMLButtonElement>('[data-hsin-facial-wink-left]');
+  const presentationButton=q<HTMLButtonElement>('[data-hsin-mode-presentation]');
+  const labButton=q<HTMLButtonElement>('[data-hsin-mode-lab]');
+  const laboratory=q<HTMLElement>('[data-hsin-laboratory]');
+  const signatureToggle=q<HTMLInputElement>('[data-hsin-signature]');
+  const signatureReport=q<HTMLElement>('[data-hsin-signature-report]');
   const facialAB = q<HTMLButtonElement>('[data-hsin-facial-ab]');
   const facialRestore = q<HTMLButtonElement>('[data-hsin-facial-restore]');
   const facialPresent = q<HTMLButtonElement>('[data-hsin-facial-present]');
   const facialStatus = q<HTMLElement>('[data-hsin-facial-status]');
   const facialDetails = q<HTMLElement>('[data-hsin-facial-details]');
   const facialFlags = [...root.querySelectorAll<HTMLInputElement>('[data-hsin-facial-channel]')];
+  const facialPass = q<HTMLSelectElement>('[data-hsin-facial-pass]');
+  const facialIntensity = q<HTMLInputElement>('[data-hsin-facial-intensity]');
+  const facialAttention = q<HTMLSelectElement>('[data-hsin-facial-attention]');
+  const facialMorph = q<HTMLSelectElement>('[data-hsin-facial-morph]');
+  const facialMorphTest = q<HTMLButtonElement>('[data-hsin-facial-morph-test]');
+  const facialSmileTest = q<HTMLButtonElement>('[data-hsin-facial-smile-test]');
+  const facialNoseTest = q<HTMLButtonElement>('[data-hsin-facial-nose-test]');
+  const facialAudit = q<HTMLElement>('[data-hsin-facial-audit]');
+  const chestAuto=q<HTMLInputElement>('[data-hsin-chest-auto]');
+  const chestTest=q<HTMLButtonElement>('[data-hsin-chest-test]');
+  const chestStatus=q<HTMLElement>('[data-hsin-chest-status]');
+  const chestDetails=q<HTMLElement>('[data-hsin-chest-details]');
+  const b1Auto=q<HTMLInputElement>('[data-hsin-b1-auto]');
+  const atmosphere=q<HTMLSelectElement>('[data-hsin-atmosphere]');
+  const b1Profile=q<HTMLSelectElement>('[data-hsin-b1-profile]');
+  const b1Strength=q<HTMLSelectElement>('[data-hsin-b1-strength]');
+  const b1Test=q<HTMLButtonElement>('[data-hsin-b1-test]');
+  const facialIntensityOut = q<HTMLOutputElement>('[data-hsin-facial-intensity-out]');
   const preset = q<HTMLSelectElement>('[data-hsin-preset]');
   const morphPanel = q<HTMLElement>('[data-hsin-morphs]');
   const btnRestoreFace = q<HTMLButtonElement>('[data-hsin-restore-face]');
@@ -149,6 +178,7 @@ async function initializeLab(root: HTMLElement) {
   let renderer: import('three').WebGLRenderer | null = null;
   let scene: import('three').Scene | null = null;
   let labLights: import('three').Light[] = [];
+  let atmosphereTexture: import('three').Texture | null = null;
   let camera: import('three').PerspectiveCamera | null = null;
   let orbit: import('three/addons/controls/OrbitControls.js').OrbitControls | null = null;
   let loader: import('three/addons/loaders/GLTFLoader.js').GLTFLoader | null = null;
@@ -163,16 +193,19 @@ async function initializeLab(root: HTMLElement) {
   let selectedBone: Bone | null = null;
   let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' | 'face-data' | 'eye-data' = 'original';
   let cameraDirection: 1 | -1 = 1;
-  let viewFocus: 'full' | 'face' | 'upper' = 'full';
+  let viewFocus: 'full' | 'face' | 'upper' | 'presentation' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
   const diagnosticMaterials = new Set<import('three').Material>();
   const diagnosticTextures = new Set<import('three').Texture>();
   let embeddedDiffuse = new Map();
   let gestureLab: ReturnType<typeof createHsinGestureLab> | null = null;
   let faceSession: ReturnType<typeof createFacialSession> | null = null;
-  let facialPresentation = false;
-  const presentationInert = new Map<HTMLElement, boolean>();
+  let signaturePose: ReturnType<typeof createRightSignaturePose> | null = null;
+  let chestDirector: ReturnType<typeof createChestDirector> | null = null;
+  let signatureTransition: ReturnType<typeof createPoseTransition> | null = null;
   let modeRequest = 0;
+  let actingSeed=2718;
+  let pendingBoneRestore=false;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let lastCandidate: PresetName = 'smirk_D';
@@ -188,6 +221,9 @@ async function initializeLab(root: HTMLElement) {
     requestFrame: (fn: FrameRequestCallback) => requestAnimationFrame(fn),
     cancelFrame: (id: number) => cancelAnimationFrame(id),
     onState: (state: string) => {
+      const cue=state==='anticipate'?'gesture:prepare':state==='hold'?'gesture:hold':
+        (state==='release'||state==='stopped')?'gesture:release':null;
+      if(cue)faceSession?.signal(cue);
       directorStatus.textContent = 'Ciclo de QA: ' + state + '.';
       directorButton.textContent = state === 'stopped' ? 'Iniciar ciclo de QA' : 'Parar ciclo de QA';
       directorButton.setAttribute('aria-pressed', String(state !== 'stopped'));
@@ -201,7 +237,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
-    [facialRun,facialBlink,facialWink,facialAB,facialRestore,facialPresent,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
+    [chestAuto,chestTest,b1Auto,atmosphere,facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,b1Profile,b1Strength,b1Test,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -258,13 +294,14 @@ async function initializeLab(root: HTMLElement) {
     document.removeEventListener('visibilitychange', onVisibility);
     root.removeEventListener('input', onFacialAuthorEdit, true);
     root.removeEventListener('change', onFacialAuthorEdit, true);
-    window.removeEventListener('popstate', exitFacialPresentation);
+    window.removeEventListener('popstate', onModePop);
     window.removeEventListener('keydown', presentationKey);
     cancelAnimationFrame(frame);
     cleanupModel();
     gestureLab?.dispose();
     gestureLab = null;
     orbit?.dispose();
+    atmosphereTexture?.dispose();atmosphereTexture=null;
     renderer?.dispose();
     renderer?.forceContextLoss();
     resizeObserver?.disconnect();
@@ -293,13 +330,14 @@ async function initializeLab(root: HTMLElement) {
       powerPreference: 'low-power',
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setClearColor(0x182237, 1);
+    renderer.setClearColor(0x291814, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // The source declares all character materials as KHR_materials_unlit:
     // ACES tonemapping distorts their base colors and cannot reconstruct absent shaders.
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
     scene = new THREE.Scene();
+    applyAtmosphere();
     const ambient = new THREE.AmbientLight(0xffffff, 2.0);
     scene.add(ambient);
     const key = new THREE.DirectionalLight(0xffe3b4, 2.8);
@@ -368,6 +406,18 @@ async function initializeLab(root: HTMLElement) {
     intersectionObserver.observe(viewport);
     resize();
   }
+
+  function applyAtmosphere() {
+    if(!THREE||!scene)return;
+    const next=createAtmosphereTexture(THREE,document,atmosphere.value);
+    if(!next)return;
+    scene.background=next;atmosphereTexture?.dispose();atmosphereTexture=next;invalidate();
+  }
+  atmosphere.addEventListener('change',applyAtmosphere);
+  b1Auto.addEventListener('change',()=>{
+    const next=b1Auto.checked?'auto-b1':'presentation';facialPass.value=next;
+    faceSession?.setPass(next);if(model)startFacial();refreshFacialDiagnostics();
+  });
 
   function setLighting() {
     const levels: Record<string, number[]> = {
@@ -788,9 +838,12 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function cleanupModel() {
+    pendingBoneRestore=false;
+    presentationMode.setLoaded(false);
+    chestDirector?.cancel();chestDirector=null;
     faceSession?.dispose(); faceSession=null;
     facialRun.textContent='Iniciar atuação facial';facialRun.setAttribute('aria-pressed','false');
-    if(facialPresentation)exitFacialPresentation();
+    signatureTransition?.reset();signatureTransition=null;signaturePose?.restore();signaturePose=null;
     if (!THREE || !model || !scene) return;
     clearDiagnosticMaterials();
     scene.remove(model.scene);
@@ -1015,6 +1068,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function setBoneAxis(bone: Bone, axis: 'x' | 'y' | 'z', degrees: number) {
+    if(chestDirector?.busy()&&/bip001(?:upperarm|forearm|hand|finger).*l(?:\d+)?$/i.test(bone.name.replace(/[^a-z0-9]/gi,''))){gestureStatus.textContent='Aguarde o gesto esquerdo terminar.';return;}
     if (!THREE) return;
     gestureLab?.stopMotion();
     const rest = initialQuaternions.get(bone);
@@ -1032,6 +1086,8 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function restoreBones() {
+    chestDirector?.cancel();
+    signatureTransition?.reset();signaturePose?.restore();signatureToggle.checked=false;refreshSignature();
     gestureLab?.stopMotion();
     gestureLab?.cancelTargetSelection();
     initialQuaternions.forEach((quaternion, bone) => { bone.quaternion.copy(quaternion); });
@@ -1041,9 +1097,17 @@ async function initializeLab(root: HTMLElement) {
     invalidate();
   }
 
-  function frameModel(zoom: 'full' | 'face' | 'upper') {
+  function frameModel(zoom: 'full' | 'face' | 'upper' | 'presentation') {
     if (!THREE || !model || !camera || !orbit) return;
     const bounds = new THREE.Box3();
+    if(zoom==='presentation'){
+      const head=bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),cal=faceSession?.diagnostics().calibration;
+      if(head&&cal?.ready){
+        const center=head.localToWorld(new THREE.Vector3(...cal.focusCenter));
+        const span=cal.radius*4.2*head.getWorldScale(new THREE.Vector3()).length()/Math.sqrt(3);
+        bounds.setFromCenterAndSize(center,new THREE.Vector3(span,span,span));
+      }
+    }
     if (zoom === 'upper') {
       const head = bones.find((bone) =>
         canonicalHsinBoneName(bone.name) === canonicalHsinBoneName('ORG-Bip001Head'));
@@ -1087,7 +1151,7 @@ async function initializeLab(root: HTMLElement) {
     const fov = THREE.MathUtils.degToRad(camera.fov);
     const vertical = size / (2 * Math.tan(fov / 2));
     const horizontal = vertical / Math.max(.6, camera.aspect);
-    const distance = Math.max(vertical, horizontal) * (zoom === 'face' ? 1.6 : 1.42);
+    const distance = Math.max(vertical, horizontal) * (zoom==='presentation'?1.15:zoom === 'face' ? 1.6 : 1.42);
     viewFocus = zoom;
     const direction = new THREE.Vector3(0, .08, cameraDirection).normalize();
     camera.position.copy(center).addScaledVector(direction, distance);
@@ -1193,7 +1257,18 @@ async function initializeLab(root: HTMLElement) {
         names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
+      actingSeed=crypto.getRandomValues(new Uint32Array(1))[0];
       startFacial();
+      signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
+      signatureTransition=createPoseTransition({pose:signaturePose,invalidate});
+      if(presentationMode.get()==='presentation'&&!reducedMotionQuery.matches){applySignature();frameModel('presentation');}
+      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:'L'});
+      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
+      chestAuto.disabled=!chestPose.diagnostics().ready;chestTest.disabled=!chestPose.diagnostics().ready||reducedMotionQuery.matches;
+      chestStatus.textContent=chestPose.diagnostics().reason;chestDetails.textContent=JSON.stringify(chestPose.diagnostics(),null,2);
+      refreshSignature();
+      presentationMode.setLoaded(true);
+      setStatus(reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
@@ -1214,9 +1289,27 @@ async function initializeLab(root: HTMLElement) {
     facialWink.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_R');
     facialRun.setAttribute('aria-pressed',String(running));
     facialRun.textContent=reducedMotionQuery.matches?'Movimento reduzido ativo':running?'Pausar no estado atual':'Iniciar / retomar atuação facial';
+    const isB=facialPass.value!=='a', disabled=!model||reducedMotionQuery.matches||!isB;
+    facialWinkLeft.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_L');
+    [facialIntensity,facialAttention].forEach(control=>control.disabled=disabled);
+    [facialMorph,facialMorphTest,facialSmileTest,facialNoseTest].forEach(control=>control.disabled=disabled||Number(facialIntensity.value)<=0);
+    facialIntensityOut.value=Math.round(Number(facialIntensity.value)*100)+'%';
+    for(const c of [b1Profile,b1Strength,b1Test])c.disabled=!model||reducedMotionQuery.matches||!['b1','auto-b1'].includes(facialPass.value);
+    const audit=faceSession?.diagnostics().audit;
+    if(audit) {
+      const selected=facialMorph.value;facialMorph.replaceChildren();
+      audit.rows.forEach((row: {name:string;eligible:boolean;candidateCap:number})=>{
+        const option=new Option(row.name+' · teto auto '+row.candidateCap.toFixed(3)+(['b1','auto-b1'].includes(facialPass.value)?' · teste até 1':'')+(row.eligible?'':' · indisponível'),row.name);
+        option.disabled=!row.eligible;facialMorph.add(option);
+      });
+      if([...facialMorph.options].some(o=>o.value===selected))facialMorph.value=selected;
+      facialAudit.textContent=JSON.stringify(audit,null,2);
+    }
+
   }
   function endFacialForEdit() {
     if(!faceSession)return;
+    chestDirector?.cancel();
     faceSession.dispose({restore:true});faceSession=null;
     facialStatus.textContent='Expressão de referência restaurada. O próximo início capturará seus ajustes.';
     facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();
@@ -1226,20 +1319,58 @@ async function initializeLab(root: HTMLElement) {
     if(!faceSession) {
       const candidates=bones.filter((bone)=>canonicalHsinBoneName(bone.name)==='orgbip001head');
       faceSession=createFacialSession({THREE, meshes:skinned, head:candidates.length===1?candidates[0]:null,
-        camera,canvas:renderer.domElement,invalidate,
-        reducedMotion:reducedMotionQuery.matches,
+        camera,canvas:renderer.domElement,invalidate,seed:actingSeed,
+        reducedMotion:reducedMotionQuery.matches,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
         canAttend:()=>!gestureLab?.getDiagnostics().picking,
+        onFrame:(dt:number,_state:unknown,diagnostics:{expressions?:{context?:string}})=>{
+          signatureTransition?.advance(dt);
+          const legacy=gestureLab?.getDiagnostics();
+          const canStart=director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy();
+          chestDirector?.advance(dt,{automatic:!pendingBoneRestore&&chestAuto.checked&&presentationMode.get()==='presentation',canStart,warm:diagnostics.expressions?.context==='Warm Presence'});
+          if(pendingBoneRestore&&!chestDirector?.busy()&&!signatureTransition?.busy()){pendingBoneRestore=false;restoreBones();}
+        },
         onStatus:(message:string)=>{facialStatus.textContent=message;},
       });
       faceSession.configure(Object.fromEntries(facialFlags.map(c=>[c.dataset.hsinFacialChannel,c.checked])));
+      const bodyState=director.getState().state;
+      faceSession.signal(bodyState==='hold'?'gesture:hold':bodyState==='anticipate'||bodyState==='gesture'?'gesture:prepare':'gesture:release');
     }
     faceSession.setVisible(visible&&!document.hidden&&!lost);
     const result=faceSession.start();facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();return result;
   }
+  facialPass.addEventListener('change',()=>{
+    if(!faceSession)startFacial();else faceSession.setPass(facialPass.value);
+    facialStatus.textContent='Perfil '+facialPass.value.toUpperCase()+' selecionado sobre a mesma referência capturada; compare no mesmo enquadramento.';
+    facialAB.textContent='Comparar A/B facial';refreshFacialDiagnostics();
+  });
+  facialIntensity.addEventListener('input',()=>{faceSession?.configure({intensity:Number(facialIntensity.value)});refreshFacialDiagnostics();});
+  facialAttention.addEventListener('change',()=>{faceSession?.configure({attentionMode:facialAttention.value});refreshFacialDiagnostics();});
+  facialMorphTest.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(!startFacial())return;
+    const isB1=['b1','auto-b1'].includes(facialPass.value);
+    const ok=faceSession?.testMorph(facialMorph.value,isB1?Number(b1Strength.value):undefined);
+    facialStatus.textContent=ok?'Teste isolado: '+facialMorph.value+(isB1?'. Amplitude ampliada SOMENTE no laboratório.':'. Peso limitado pela auditoria.')+' Inspeção visual necessária.':'Aguarde a microexpressão/piscada atual ou selecione um controle disponível.';
+    refreshFacialDiagnostics();
+  });
+  for(const [button,kind] of [[facialSmileTest,'smile'],[facialNoseTest,'nose-smile']] as const)button.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(!startFacial())return;
+    const ok=faceSession?.testBeat(kind);
+    facialStatus.textContent=ok?'Beat de laboratório: '+kind+(kind==='nose-smile'?'. Nariz não é usado na apresentação automática.':'.'):'Aguarde a microexpressão/piscada atual antes de testar.';
+    refreshFacialDiagnostics();
+  });
+  b1Test.addEventListener('click',()=>{
+    director.stop();gestureLab?.stopMotion();
+    if(!['b1','auto-b1'].includes(facialPass.value)||!startFacial())return;
+    const ok=faceSession?.testSmileProfile(b1Profile.value,Number(b1Strength.value));
+    facialStatus.textContent=ok?'Candidata '+b1Profile.value+' em teste local; conferir vistas frontal, 3/4 e lateral.':'Teste indisponível ou expressão ainda em andamento.';
+    refreshFacialDiagnostics();
+  });
   facialRun.addEventListener('click',()=>{
     if(faceSession?.diagnostics().running){faceSession.pause();refreshFacialDiagnostics();}else startFacial();
   });
-  for(const [button,kind] of [[facialBlink,'blink'],[facialWink,'wink']] as const) button.addEventListener('click',()=>{
+  for(const [button,kind] of [[facialBlink,'blink'],[facialWink,'wink'],[facialWinkLeft,'wink-left']] as const) button.addEventListener('click',()=>{
     if(!startFacial())return;
     facialStatus.textContent=faceSession?.test(kind)?'Teste '+kind+' iniciado; confira a anatomia no GLB.':'Há uma piscada em andamento; aguarde antes do próximo teste.';
     refreshFacialDiagnostics();
@@ -1261,26 +1392,49 @@ async function initializeLab(root: HTMLElement) {
     if(element.closest('[data-hsin-morphs]')||element.matches('[data-hsin-preset], [data-hsin-load-pose]'))endFacialForEdit();
   }
   root.addEventListener('input',onFacialAuthorEdit,true);root.addEventListener('change',onFacialAuthorEdit,true);
-  function exitFacialPresentation() {
-    facialPresentation=false;root.removeAttribute('data-facial-presentation');
-    document.body.classList.remove('hsin-facial-presentation');
-    for(const [element,inert] of presentationInert)element.inert=inert;
-    presentationInert.clear();
-    if(!destroyed)facialPresent.focus();window.dispatchEvent(new Event('resize'));
+  function refreshSignature() {
+    const diagnostic=signaturePose?.diagnostics();
+    signatureToggle.disabled=!model||!diagnostic?.ready;
+    signatureReport.textContent=JSON.stringify(diagnostic??{status:'Aguardando rig'},null,2);
   }
-  function presentationKey(event: KeyboardEvent) {if(event.key==='Escape'&&facialPresentation)history.back();}
-  window.addEventListener('popstate',exitFacialPresentation);window.addEventListener('keydown',presentationKey);
-  facialPresent.addEventListener('click',()=>{
-    if(!model||facialPresentation)return;
-    director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
-    startFacial();facialPresentation=true;root.setAttribute('data-facial-presentation','');
-    document.body.classList.add('hsin-facial-presentation');
-    for(const element of document.body.children)if(element instanceof HTMLElement&&element!==root&&!['SCRIPT','STYLE','LINK'].includes(element.tagName)){
-      presentationInert.set(element,element.inert);element.inert=true;
-    }
-    history.pushState({hsinFacialPreview:true},'',location.href);
-    viewport.tabIndex=0;viewport.focus();window.dispatchEvent(new Event('resize'));
+  function applySignature() {
+    if(chestDirector?.busy()){signatureToggle.checked=!!signaturePose?.diagnostics().active;signatureReport.textContent='Aguarde o gesto esquerdo terminar.';return;}
+    if(reducedMotionQuery.matches)return;
+    signatureTransition?.request(signatureToggle.checked?1:0);
+    refreshSignature();invalidate();
+  }
+  signatureToggle.addEventListener('change',applySignature);
+  chestTest.addEventListener('click',()=>{
+    if(!startFacial())return;
+    const legacy=gestureLab?.getDiagnostics();
+    const ok=chestDirector?.start(director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy());
+    chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço esquerdo.';
   });
+  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
+    if(mode==='presentation'){const options=root.querySelector<HTMLDetailsElement>('[data-hsin-options]');if(options)options.open=false;}
+    if(mode==='presentation'&&model){
+      director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
+      const desired=b1Auto.checked?'auto-b1':'presentation';
+      if(facialPass.value!==desired){facialPass.value=desired;faceSession?.setPass(desired);}
+      startFacial();applySignature();frameModel('presentation');
+    }
+    window.dispatchEvent(new Event('resize'));
+  }});
+  root.querySelector('[data-hsin-replace]')?.addEventListener('click',()=>fileInput.click());
+  function openPresentation() {
+    presentationMode.set('presentation');
+    if(history.state?.hsinLabMode)history.back();
+    viewport.focus();
+  }
+  function onModePop() {presentationMode.set('presentation');}
+  function presentationKey(event:KeyboardEvent) {if(event.key==='Escape'&&presentationMode.get()==='lab')openPresentation();}
+  window.addEventListener('popstate',onModePop);window.addEventListener('keydown',presentationKey);
+  labButton.addEventListener('click',()=>{
+    if(presentationMode.get()==='lab')return;
+    presentationMode.set('lab');history.pushState({hsinLabMode:true},'',location.href);
+  });
+  presentationButton.addEventListener('click',openPresentation);
+  facialPresent.addEventListener('click',openPresentation);
 
   preset.addEventListener('change', () => applyPreset(preset.value as PresetName));
   btnCompare.addEventListener('click', () => {
@@ -1289,7 +1443,10 @@ async function initializeLab(root: HTMLElement) {
     else applyPreset('exported');
   });
   btnRestoreFace.addEventListener('click', () => applyPreset('exported'));
-  btnRestoreBones.addEventListener('click', restoreBones);
+  btnRestoreBones.addEventListener('click',()=>{
+    if(reducedMotionQuery.matches){restoreBones();return;}
+    pendingBoneRestore=true;chestDirector?.release();signatureTransition?.request(0);startFacial();
+  });
   btnFull.addEventListener('click', () => frameModel('full'));
   btnFace.addEventListener('click', () => frameModel('face'));
   btnUpper.addEventListener('click', () => frameModel('upper'));
@@ -1335,6 +1492,8 @@ async function initializeLab(root: HTMLElement) {
   boneRegion.addEventListener('change', () => populateBones(boneFilter.value));
   influentialOnly.addEventListener('change', () => populateBones(boneFilter.value));
   directorButton.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
+    if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     if (director.getState().state !== 'stopped') {
       director.stop(); gestureLab?.animateRestore(800); return;
     }
@@ -1344,6 +1503,8 @@ async function initializeLab(root: HTMLElement) {
     if (!director.start({reducedMotion})) directorStatus.textContent = 'Ciclo desativado pela preferência de movimento reduzido.';
   });
   btnPickMouth.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
+    if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab || !model) return;
     // Exit Eye-only isolation before raycasting against the visible Face.
@@ -1356,6 +1517,8 @@ async function initializeLab(root: HTMLElement) {
     gestureStatus.textContent = 'Seleção de alvo ativa: toque no canto dos lábios no viewport à esquerda/acima.';
   });
   btnSolveGesture.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
+    if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab || !model) return;
     try {
@@ -1379,6 +1542,8 @@ async function initializeLab(root: HTMLElement) {
     }
   });
   btnUndoGesture.addEventListener('click', () => {
+    if((signatureTransition?.weight()??0)>0||signatureTransition?.busy()){gestureStatus.textContent='Desative a assinatura da mão direita e aguarde a transição antes de usar o gesto de laboratório.';return;}
+    if(chestDirector?.busy()){gestureStatus.textContent='Aguarde o gesto mão ao peito terminar.';return;}
     director.stop();
     if (!gestureLab) return;
     const duration = Math.max(650, Math.round((Number(motionDuration.value) || 1250) * .75));
@@ -1577,8 +1742,9 @@ async function initializeLab(root: HTMLElement) {
         FACE_NAMES.filter((name) => getMorph(name) !== null).map((name) => [name, getMorph(name)]),
       ),
       bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
-      gesture: gestureLab?.getDiagnostics() ?? null,
+      gesture: gestureLab?.getDiagnostics() ?? null, chestGesture:chestDirector?.diagnostics()??null,
       actingStyle: actingStyle.value,
+      facialActing:faceSession?.diagnostics()??null,signature:signaturePose?.diagnostics()??null,experience:presentationMode.get(),
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
       note: 'Render duration is not FPS or mobile performance verification.',
     };

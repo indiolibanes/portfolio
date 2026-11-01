@@ -1,12 +1,20 @@
+import { auditFacialMorphs } from './hsin-face-morph-audit.mjs';
 import { createFacialActing } from './hsin-face-acting.mjs';
-import { snapshotFace, restoreFace, calibratePupils, cursorHeadOffset, projectGazeOffset, createFaceBinding } from './hsin-face-rig.mjs';
+import { snapshotFace, restoreFace, calibratePupils, cursorHeadOffset, projectGazeOffset, createFaceBinding, measuredGazeAxes } from './hsin-face-rig.mjs';
 
 /** A browser-local session. One owner for controlled facial targets, no bone/material writes. */
 export function createFacialSession({THREE, meshes, head, camera, canvas, invalidate, onStatus=()=>{},
   requestFrame=requestAnimationFrame, cancelFrame=cancelAnimationFrame, reducedMotion=false, seed=2718,
-  canAttend=()=>true}) {
+  canAttend=()=>true, onFrame=()=>{}, pass='a', intensity=.55, attentionMode='auto'}) {
   const baseline=snapshotFace(meshes), calibration=calibratePupils(THREE,meshes,head);
-  const binding=createFaceBinding(meshes,baseline,calibration), acting=createFacialActing({seed});
+  let audit=null,profile=pass,auditHasB1=false,settings={intensity,attentionMode},flags={},bodyCue='gesture:release';
+  const ensureAudit=()=>{const needsB1=['b1','auto-b1'].includes(profile);if(!audit||(needsB1&&!auditHasB1)){
+    audit=auditFacialMorphs(THREE,meshes,head,calibration,{includeB1:needsB1});auditHasB1=needsB1;
+  }};
+  if(profile!=='a')ensureAudit();
+  let binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});
+  const makeActing=()=>createFacialActing({seed,pass:profile,...settings,enabled:flags,morphLimits:audit?.limits??{},gazeAxes:measuredGazeAxes(THREE,calibration)});
+  let acting=makeActing();
   let running=false, visible=true, reduced=!!reducedMotion, disposed=false, frame=0,last=null, pointer=null, touchUntil=0;
   let comparison=null, showingBaseline=false;
   function schedule(){if(running&&visible&&!reduced&&!disposed&&!frame)frame=requestFrame(tick);}
@@ -19,7 +27,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
       const offset=cursorHeadOffset(THREE,ndc,camera,head,calibration.radius,calibration.focusCenter);
       acting.attention(projectGazeOffset(THREE,offset,calibration),pointer.touch?Math.max(0,touchUntil-time):1.3);
     }else if(pointer?.touch&&time>=touchUntil){pointer=null;acting.clearAttention();}
-    binding.apply(acting.advance(dt));invalidate();schedule();
+    const state=acting.advance(dt);binding.apply(state);onFrame(dt,state,acting.diagnostics());invalidate();schedule();
   }
   function pointerInput(event){
     if(!canAttend())return;
@@ -27,7 +35,7 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     if(touch&&event.type!=='pointerdown')return;
     const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
     pointer={x:(event.clientX-rect.left)/rect.width*2-1,y:1-(event.clientY-rect.top)/rect.height*2,touch};
-    if(touch)touchUntil=acting.sample().clock+1.3;
+    if(touch)touchUntil=acting.sample().clock+(['presentation','b1','auto-b1'].includes(profile)?4.2:1.3);
   }
   function leave(event){if(event.pointerType!=='touch'){pointer=null;acting.clearAttention();}}
   canvas.addEventListener('pointermove',pointerInput,{passive:true});
@@ -45,17 +53,34 @@ export function createFacialSession({THREE, meshes, head, camera, canvas, invali
     setVisible(value){visible=!!value;last=null;if(!visible&&frame){cancelFrame(frame);frame=0;}else schedule();},
     setReduced(value){reduced=!!value;last=null;if(reduced&&frame){cancelFrame(frame);frame=0;}else schedule();},
     test(kind){
-      if(reduced||disposed||!binding.channels.includes('E_Close_R')||(kind==='blink'&&!binding.channels.includes('E_Close_L')))return false;
+      const required=kind==='wink-left'?['E_Close_L']:kind==='blink'?['E_Close_R','E_Close_L']:['E_Close_R'];
+      if(reduced||disposed||required.some(name=>!binding.channels.includes(name)))return false;
       return acting.trigger(kind);
     },
-    configure(flags){acting.configure(flags);},
+    configure(next){
+      const {intensity,attentionMode,...channels}=next;flags={...flags,...channels};
+      if(Number.isFinite(intensity))settings.intensity=Math.max(0,Math.min(1,intensity));
+      if(['auto','cursor','neutral'].includes(attentionMode))settings.attentionMode=attentionMode;
+      acting.configure({...flags,...settings});
+    },
+    setPass(next){
+      if(!['a','b','presentation','b1','auto-b1'].includes(next)||disposed)return false;
+      const wasRunning=running;pause();binding.restore();profile=next;if(profile!=='a')ensureAudit();
+      binding=createFaceBinding(meshes,baseline,calibration,audit??{limits:{}});acting=makeActing();acting.signal(bodyCue);
+      showingBaseline=false;comparison?.clear();comparison=null;touchUntil=0;pointer=null;
+      if(wasRunning){running=true;schedule();}invalidate();return true;
+    },
+    signal(event){bodyCue=event;acting.signal(event);},
+    testMorph(name,strength){return !reduced&&!disposed&&acting.testMorph(name,strength);},
+    testSmileProfile(name,strength=1){return !reduced&&!disposed&&['b1','auto-b1'].includes(profile)&&acting.testSmileProfile(name,strength);},
+    testBeat(kind){return !reduced&&!disposed&&acting.testBeat(kind);},
     compare(){
       pause();
       if(!showingBaseline){comparison=snapshotFace(meshes);restoreFace(baseline);showingBaseline=true;}
       else{restoreFace(comparison);showingBaseline=false;}
       invalidate();return showingBaseline?'baseline':'candidate';
     },
-    diagnostics(){return {running,visible,reduced,showingBaseline,channels:binding.channels,calibration,acting:acting.diagnostics()};},
+    diagnostics(){return {running,visible,reduced,showingBaseline,channels:binding.channels,calibration,profile,audit,acting:acting.diagnostics()};},
     dispose({restore=false}={}){
       pause();disposed=true;
       canvas.removeEventListener('pointermove',pointerInput);canvas.removeEventListener('pointerdown',pointerInput);canvas.removeEventListener('pointerleave',leave);

@@ -1,34 +1,48 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HsinPresentationLayout from '../../../layouts/HsinPresentationLayout.astro';
 import '../../../styles/hsin-local-lab.css';
 ---
 
-<BaseLayout
-  title="Hsin · Laboratório de expressões (privado)"
-  description="Bancada experimental local para avaliar deformações faciais e articulações de um modelo GLB sem transferir o arquivo ao servidor."
+<HsinPresentationLayout
+  title="Hsin · The Moon Fox · Apresentação local"
+  description="Hsin, The Moon Fox. Uma apresentação autônoma com arquivo privado local."
 >
-  <main id="conteudo" class="hsin-lab" data-hsin-lab>
+  <main id="conteudo" class="hsin-lab" data-hsin-lab data-experience="presentation">
     <header class="hsin-lab__head">
-      <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
-      <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Facial Acting Pass A · candidata / Android</p>
-      <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
-      <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
+      <h1>Hsin <span>The Moon Fox</span></h1>
     </header>
-
-    <section class="hsin-lab__privacy" aria-label="Privacidade e condições">
-      <p><strong>Arquivo local, sem upload.</strong> Nenhum modelo está incorporado a esta página ou ao repositório. Os resultados e capturas ficam com você até decidir compartilhá-los.</p>
-      <p>Uso experimental privado. Atribuição: recursos da personagem © Kuro Games; adaptação Blender: Lvoxx; re-rig: imblue__; shaders LSCherry. Créditos não representam licença para republicação.</p>
-      <p class="hsin-lab__small" data-hsin-csp-status role="status" aria-live="polite">Permissão de imagens temporárias: verificando...</p>
+    <section class="hsin-lab__experiencebar" aria-label="Arquivo e opções">
+      <div class="hsin-lab__load" data-hsin-load-only>
+        <label for="hsin-input">Escolher Hsin no aparelho</label>
+        <input id="hsin-input" type="file" accept=".glb,model/gltf-binary" data-hsin-file />
+      </div>
+      <details class="hsin-lab__options" data-hsin-options>
+        <summary aria-label="Opções da apresentação">⋯</summary>
+        <div class="hsin-lab__options-content">
+          <div class="hsin-lab__mode-switch" role="group" aria-label="Modo da experiência">
+            <button type="button" data-hsin-mode-presentation aria-pressed="true">Ver apresentação</button>
+            <button type="button" data-hsin-mode-lab aria-pressed="false" aria-controls="hsin-laboratory">Laboratório</button>
+          </div>
+          <button type="button" data-hsin-replace>Trocar arquivo</button>
+          <a href="/experimentos/">Voltar ao terraço</a>
+          <details class="hsin-lab__privacy"><summary>Créditos e arquivo privado</summary>
+            <p>Arquivo local, sem upload. O modelo não está incorporado à página.</p>
+            <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders: LSCherry. Uso experimental privado; créditos não autorizam redistribuição.</p>
+            <p data-hsin-csp-status role="status" aria-live="polite">Verificando imagens locais…</p>
+          </details>
+        </div>
+      </details>
     </section>
+    <p class="hsin-lab__load-status" data-hsin-status role="status" aria-live="polite"></p>
 
     <section class="hsin-lab__shell" aria-label="Bancada 3D">
       <div class="hsin-lab__viewer">
-        <div class="hsin-lab__viewport" data-hsin-viewport role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
-          <p class="hsin-lab__presentation-hint">Arraste para explorar. O olhar reage ao cursor ou a um toque breve. Voltar no aparelho ou Esc encerra a prévia do autor.</p>
-          <div class="hsin-lab__placeholder" data-hsin-placeholder>Selecione o GLB no aparelho para ativar a visualização 3D.</div>
+        <div class="hsin-lab__viewport" data-hsin-viewport tabindex="-1" role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
+          <p class="hsin-lab__presentation-hint" data-hsin-lab-only hidden>Arraste para explorar. Um toque desperta sua atenção; o resto é com ela.</p>
+          <div class="hsin-lab__placeholder" data-hsin-placeholder>Escolha seu GLB para encontrar Hsin.
+O modelo não é enviado a um servidor.</div>
         </div>
-        <div class="hsin-lab__viewerbar">
+        <div class="hsin-lab__viewerbar" data-hsin-lab-only hidden>
           <button data-hsin-full type="button" disabled>Corpo inteiro</button>
           <button data-hsin-face type="button" disabled>Aproximar rosto</button>
           <button data-hsin-upper type="button" disabled>Rosto + mão</button>
@@ -38,25 +52,19 @@ import '../../../styles/hsin-local-lab.css';
         </div>
       </div>
 
-      <div class="hsin-lab__controls">
-        <div class="hsin-lab__group">
-          <h2>01 · Arquivo local</h2>
-          <label class="hsin-lab__filelabel" for="hsin-input">Escolher arquivo .glb (sem upload)</label>
-          <input id="hsin-input" type="file" accept=".glb,model/gltf-binary" data-hsin-file />
-          <p data-hsin-status role="status" aria-live="polite">Nenhum arquivo carregado.</p>
-          <p class="hsin-lab__small" data-hsin-summary>Pronto para inspecionar o modelo local.</p>
-        </div>
-
+      <div id="hsin-laboratory" class="hsin-lab__controls" data-hsin-laboratory hidden>
         <section class="hsin-lab__group" aria-labelledby="hsin-facial-title">
-          <h2 id="hsin-facial-title">02A · Atuação facial — Pass A</h2>
-          <p class="hsin-lab__small">Após carregar o GLB, a candidata usa sua expressão atual como referência. A piscadela usa R do modelo; valide o lado na personagem. Olhar e sorriso têm amplitude limitada e continuam experimentais. Ajustar um morph encerra a candidata e restaura a referência antes do ajuste.</p>
+          <h2 id="hsin-facial-title">Atuação facial · comparação e testes</h2>
+          <p data-hsin-summary class="hsin-lab__small">Carregue o modelo para conferir o inventário privado.</p>
+          <p class="hsin-lab__small">Após carregar o GLB, a candidata usa sua expressão atual como referência. Direita e esquerda são as da personagem; valide os dois lados em vista frontal e oblíqua. Olhar e sorriso têm amplitude limitada e continuam experimentais. Ajustar um morph encerra a candidata e restaura a referência antes do ajuste.</p>
           <div class="hsin-lab__view-actions">
             <button type="button" data-hsin-facial-run aria-pressed="false" disabled>Iniciar atuação facial</button>
             <button type="button" data-hsin-facial-blink disabled>Testar piscada bilateral</button>
-            <button type="button" data-hsin-facial-wink disabled>Testar piscadela direita</button>
+            <button type="button" data-hsin-facial-wink disabled>Piscar olho direito · dela</button>
+            <button type="button" data-hsin-facial-wink-left disabled>Piscar olho esquerdo · dela</button>
             <button type="button" data-hsin-facial-ab disabled>Comparar A/B facial</button>
             <button type="button" data-hsin-facial-restore disabled>Restaurar estado anterior exato</button>
-            <button type="button" data-hsin-facial-present disabled>Ver apresentação local</button>
+            <button type="button" data-hsin-facial-present disabled>Voltar à apresentação</button>
           </div>
           <div class="hsin-lab__facial-channels">
             <label><input type="checkbox" data-hsin-facial-channel="blink" checked disabled /> Piscadas</label>
@@ -67,6 +75,67 @@ import '../../../styles/hsin-local-lab.css';
           <p data-hsin-facial-status role="status" aria-live="polite">Escolha o arquivo local para iniciar. Toque no Android dá atenção temporária; arrastar continua movendo a câmera.</p>
           <details><summary>Diagnóstico da atuação facial</summary><pre data-hsin-facial-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
         </section>
+
+        <details class="hsin-lab__group">
+          <summary>Expressão, atenção e atmosfera</summary>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-b1-auto checked disabled /> Automatizar B.1 na apresentação</label>
+          <label for="hsin-atmosphere">Atmosfera da cena</label>
+          <select id="hsin-atmosphere" data-hsin-atmosphere disabled><option value="gold">Dourado e âmbar</option><option value="scarlet">Escarlate translúcido</option></select>
+          <label for="hsin-facial-pass">Perfil de comparação sobre a mesma referência</label>
+          <select id="hsin-facial-pass" data-hsin-facial-pass disabled>
+            <option value="auto-b1" selected>Automação B.1 · apresentação</option><option value="presentation">Apresentação anterior</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option><option value="b1">Pass B.1 · calibração facial (laboratório)</option>
+          </select>
+          <label for="hsin-facial-intensity">Intensidade facial <output data-hsin-facial-intensity-out>75%</output></label>
+          <input id="hsin-facial-intensity" data-hsin-facial-intensity type="range" min="0" max="1" step=".05" value=".75" disabled />
+          <label for="hsin-facial-attention">Atenção visual</label>
+          <select id="hsin-facial-attention" data-hsin-facial-attention disabled>
+            <option value="auto">Adquirir, fixar, desviar e retornar</option><option value="cursor">Seguimento contínuo · diagnóstico</option><option value="neutral">Centralizar · diagnóstico</option>
+          </select>
+          <label for="hsin-facial-morph">Controle isolado — teto automático e intervalo diagnóstico</label>
+          <select id="hsin-facial-morph" data-hsin-facial-morph disabled><option>Carregue o GLB</option></select>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-facial-morph-test disabled>Testar controle isolado</button>
+            <button type="button" data-hsin-facial-smile-test disabled>Testar sorriso de canto</button>
+            <button type="button" data-hsin-facial-nose-test disabled>Sorriso + nariz · laboratório</button>
+          </div>
+          <div class="hsin-lab__view-actions" aria-label="Pass B.1 — comparação de sorrisos">
+            <label for="hsin-b1-profile">Sorriso em teste
+              <select id="hsin-b1-profile" data-hsin-b1-profile disabled>
+                <option value="S1">S1 · Subtle Smirk</option>
+                <option value="S2">S2 · Playful Smirk</option>
+                <option value="S3">S3 · Signature Smile</option>
+                <option value="I1">I1 · Fox Sentinel Calm</option><option value="I2">I2 · Coy Amusement</option>
+                <option value="I3">I3 · Sacred Warmth</option><option value="I4">I4 · Knowing Gaze</option><option value="I5">I5 · Flirtatious Dominance</option>
+              </select>
+            </label>
+            <label for="hsin-b1-strength">Amplitude diagnóstica
+              <select id="hsin-b1-strength" data-hsin-b1-strength disabled>
+                <option value=".25">25%</option><option value=".5">50%</option>
+                <option value="1" selected>100% da candidata</option>
+              </select>
+            </label>
+            <button type="button" data-hsin-b1-test disabled>Testar expressão selecionada</button>
+          </div>
+          <p class="hsin-lab__small"><strong>Atuação B.1:</strong> S1/S2/S3 e seus testes usam influências acima dos tetos do Pass B, sempre no intervalo 0–1. Os controles P_Nose_Up e P_Nose_Down podem ser comparados separadamente pelo seletor acima. A automação usa S1/S2/S3 e composições candidatas I1–I5; compare frontal, 3/4 e lateral sob a mesma câmera, material e iluminação antes de aprovar qualquer um.</p>
+          <p class="hsin-lab__small">Use A/B facial acima para congelar referência e candidata. A e B preservam seus comportamentos anteriores; intensidade do perfil B em 0% também reproduz A. A apresentação usa intervalos e atenção próprios. A reação nasal fica apenas no laboratório até aprovação visual. O ciclo corporal de QA sinaliza preparação, sustentação e liberação à face; as expressões também funcionam sem o braço.</p>
+          <details><summary>Relatório geométrico dos morphs</summary><pre class="hsin-lab__inventory" data-hsin-facial-audit>Aguardando calibração.</pre></details>
+        </details>
+
+        <details class="hsin-lab__group">
+          <summary>Gesto suave · mão esquerda ao peito</summary>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-chest-auto checked disabled /> Gesto automático ocasional</label>
+          <button type="button" data-hsin-chest-test disabled>Testar mão ao peito</button>
+          <p data-hsin-chest-status class="hsin-lab__small" role="status">Aguardando rig.</p>
+          <p class="hsin-lab__small">A trajetória candidata verifica um envelope amostrado do tórax e da manga. Confirme contato, tecido e cabelo em frente, 3/4 e perfil. O gesto existente do indicador aguarda a conclusão deste movimento.</p>
+          <details><summary>Diagnóstico do gesto</summary><pre data-hsin-chest-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
+        </details>
+
+        <details class="hsin-lab__group">
+          <summary>Pose de assinatura · mão direita</summary>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-signature checked disabled /> Mão direita sob o queixo · candidata</label>
+          <p class="hsin-lab__small">Pose candidata calculada na cadeia direita. Entrada e saída são suaves; desmarcar retorna à pose capturada. Exige comparação visual de mão, rosto, cabelo e roupa.</p>
+          <pre data-hsin-signature-report class="hsin-lab__inventory">Aguardando rig.</pre>
+        </details>
 
         <details class="hsin-lab__group">
           <summary>02 · Expressão facial</summary>
@@ -222,12 +291,12 @@ import '../../../styles/hsin-local-lab.css';
       </div>
     </section>
 
-    <footer class="hsin-lab__foot">
+    <footer class="hsin-lab__foot" data-hsin-lab-only hidden>
       <p><strong>Critério de aceite:</strong> o aparecimento do rosto no navegador comprova apenas a renderização. O sorriso e o contato do indicador com os lábios precisam ser inspecionados e aprovados visualmente.</p>
       <p>Se o GLB não carregar ou se o aparelho perder o contexto WebGL, anote o erro informado. O laboratório não altera o arquivo selecionado.</p>
     </footer>
   </main>
-</BaseLayout>
+</HsinPresentationLayout>
 
 <script>
   import '../../../scripts/hsin-local-lab';
