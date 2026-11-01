@@ -4,7 +4,7 @@ import '../../../styles/hsin-local-lab.css';
 ---
 
 <HsinPresentationLayout
-  title="Hsin · The Moon Fox · Apresentação local"
+  title="Hsin · The Moon Fox"
   description="Hsin, The Moon Fox. Uma apresentação autônoma com arquivo privado local."
 >
   <main id="conteudo" class="hsin-lab" data-hsin-lab data-experience="presentation">
@@ -17,30 +17,41 @@ import '../../../styles/hsin-local-lab.css';
         <input id="hsin-input" type="file" accept=".glb,model/gltf-binary" data-hsin-file />
       </div>
       <details class="hsin-lab__options" data-hsin-options>
-        <summary aria-label="Opções da apresentação">⋯</summary>
+        <summary aria-label="Opções">⋯</summary>
         <div class="hsin-lab__options-content">
-          <div class="hsin-lab__mode-switch" role="group" aria-label="Modo da experiência">
+          <section class="hsin-lab__menu-group" aria-labelledby="hsin-menu-hsin">
+            <h2 id="hsin-menu-hsin">Hsin</h2>
+            <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-b1-auto checked disabled /> Expressões e atenção</label>
+            <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-chest-auto checked disabled /> Gestos ocasionais</label>
+            <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-signature checked disabled /> Mão sob o queixo</label>
+          </section>
+          <section class="hsin-lab__menu-group" aria-labelledby="hsin-menu-scene">
+            <h2 id="hsin-menu-scene">Cena</h2>
+            <label for="hsin-atmosphere">Atmosfera</label>
+            <select id="hsin-atmosphere" data-hsin-atmosphere disabled><option value="gold">Dourado e âmbar</option><option value="scarlet">Escarlate translúcido</option></select>
+          </section>
+          <section class="hsin-lab__menu-group" aria-labelledby="hsin-menu-file">
+            <h2 id="hsin-menu-file">Arquivo</h2>
+            <button type="button" data-hsin-replace>Trocar arquivo</button>
+            <a href="/experimentos/">Voltar ao terraço</a>
+            <details class="hsin-lab__privacy"><summary>Créditos</summary>
+              <p>O arquivo fica neste aparelho: não é enviado nem faz parte da página.</p>
+              <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders: LSCherry. Uso experimental privado; créditos não autorizam redistribuição.</p>
+            </details>
+          </section>
+          <div class="hsin-lab__mode-switch" role="group" aria-label="Modo da experiência" data-hsin-lab-gate hidden>
             <button type="button" data-hsin-mode-presentation aria-pressed="true">Ver apresentação</button>
             <button type="button" data-hsin-mode-lab aria-pressed="false" aria-controls="hsin-laboratory">Laboratório</button>
           </div>
-          <button type="button" data-hsin-replace>Trocar arquivo</button>
-          <a href="/experimentos/">Voltar ao terraço</a>
-          <details class="hsin-lab__privacy"><summary>Créditos e arquivo privado</summary>
-            <p>Arquivo local, sem upload. O modelo não está incorporado à página.</p>
-            <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders: LSCherry. Uso experimental privado; créditos não autorizam redistribuição.</p>
-            <p data-hsin-csp-status role="status" aria-live="polite">Verificando imagens locais…</p>
-          </details>
         </div>
       </details>
     </section>
     <p class="hsin-lab__load-status" data-hsin-status role="status" aria-live="polite"></p>
 
-    <section class="hsin-lab__shell" aria-label="Bancada 3D">
+    <section class="hsin-lab__shell" aria-label="Hsin">
       <div class="hsin-lab__viewer">
-        <div class="hsin-lab__viewport" data-hsin-viewport tabindex="-1" role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
-          <p class="hsin-lab__presentation-hint" data-hsin-lab-only hidden>Arraste para explorar. Um toque desperta sua atenção; o resto é com ela.</p>
-          <div class="hsin-lab__placeholder" data-hsin-placeholder>Escolha seu GLB para encontrar Hsin.
-O modelo não é enviado a um servidor.</div>
+        <div class="hsin-lab__viewport" data-hsin-viewport tabindex="-1" role="img" aria-label="Hsin em três dimensões. Arraste para girar; um toque chama a atenção dela.">
+          <div class="hsin-lab__placeholder" data-hsin-placeholder>Escolha o arquivo de Hsin para começar.</div>
         </div>
         <div class="hsin-lab__viewerbar" data-hsin-lab-only hidden>
           <button data-hsin-full type="button" disabled>Corpo inteiro</button>
@@ -53,6 +64,24 @@ O modelo não é enviado a um servidor.</div>
       </div>
 
       <div id="hsin-laboratory" class="hsin-lab__controls" data-hsin-laboratory hidden>
+        <!-- Internal laboratory, never part of the presentation. Order: the two arm roles, then the face, then everything else. -->
+
+        <details class="hsin-lab__group">
+          <summary>Mão esquerda · gesto suave ao peito</summary>
+          <p class="hsin-lab__small hsin-lab__role">Papel fixo: o braço esquerdo faz o gesto ao peito; o direito mantém a pose sob o queixo. O gesto ocasional liga e desliga no menu ⋯.</p>
+          <button type="button" data-hsin-chest-test disabled>Testar mão ao peito</button>
+          <p data-hsin-chest-status class="hsin-lab__small" role="status">Aguardando rig.</p>
+          <p class="hsin-lab__small">Ombro, antebraço e mão chegam em sequência, com respiração leve ao repousar e duração diferente a cada vez. Com a pose sob o queixo sustentada, a mão pode repousar um pouco mais perto da outra, sem tocá-la. A folga do tórax e da manga é verificada num envelope amostrado; confirme contato, tecido e cabelo em frente, 3/4 e perfil. O gesto do indicador aguarda a conclusão deste movimento.</p>
+          <details><summary>Diagnóstico do gesto</summary><pre data-hsin-chest-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
+        </details>
+
+        <details class="hsin-lab__group">
+          <summary>Mão direita · pose sob o queixo</summary>
+          <p class="hsin-lab__small hsin-lab__role">Pose de assinatura aprovada; exclusiva do braço direito. Liga e desliga no menu ⋯.</p>
+          <p class="hsin-lab__small">Pose candidata calculada na cadeia direita. Entrada e saída são suaves; desligar retorna à pose capturada. Exige comparação visual de mão, rosto, cabelo e roupa.</p>
+          <pre data-hsin-signature-report class="hsin-lab__inventory">Aguardando rig.</pre>
+        </details>
+
         <section class="hsin-lab__group" aria-labelledby="hsin-facial-title">
           <h2 id="hsin-facial-title">Atuação facial · comparação e testes</h2>
           <p data-hsin-summary class="hsin-lab__small">Carregue o modelo para conferir o inventário privado.</p>
@@ -78,9 +107,6 @@ O modelo não é enviado a um servidor.</div>
 
         <details class="hsin-lab__group">
           <summary>Expressão, atenção e atmosfera</summary>
-          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-b1-auto checked disabled /> Automatizar B.1 na apresentação</label>
-          <label for="hsin-atmosphere">Atmosfera da cena</label>
-          <select id="hsin-atmosphere" data-hsin-atmosphere disabled><option value="gold">Dourado e âmbar</option><option value="scarlet">Escarlate translúcido</option></select>
           <label for="hsin-facial-pass">Perfil de comparação sobre a mesma referência</label>
           <select id="hsin-facial-pass" data-hsin-facial-pass disabled>
             <option value="auto-b1" selected>Automação B.1 · apresentação</option><option value="presentation">Apresentação anterior</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option><option value="b1">Pass B.1 · calibração facial (laboratório)</option>
@@ -121,21 +147,38 @@ O modelo não é enviado a um servidor.</div>
           <details><summary>Relatório geométrico dos morphs</summary><pre class="hsin-lab__inventory" data-hsin-facial-audit>Aguardando calibração.</pre></details>
         </details>
 
-        <details class="hsin-lab__group">
-          <summary>Gesto suave · mão esquerda ao peito</summary>
-          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-chest-auto checked disabled /> Gesto automático ocasional</label>
-          <button type="button" data-hsin-chest-test disabled>Testar mão ao peito</button>
-          <p data-hsin-chest-status class="hsin-lab__small" role="status">Aguardando rig.</p>
-          <p class="hsin-lab__small">A trajetória candidata verifica um envelope amostrado do tórax e da manga. Confirme contato, tecido e cabelo em frente, 3/4 e perfil. O gesto existente do indicador aguarda a conclusão deste movimento.</p>
-          <details><summary>Diagnóstico do gesto</summary><pre data-hsin-chest-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
-        </details>
-
-        <details class="hsin-lab__group">
-          <summary>Pose de assinatura · mão direita</summary>
-          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-signature checked disabled /> Mão direita sob o queixo · candidata</label>
-          <p class="hsin-lab__small">Pose candidata calculada na cadeia direita. Entrada e saída são suaves; desmarcar retorna à pose capturada. Exige comparação visual de mão, rosto, cabelo e roupa.</p>
-          <pre data-hsin-signature-report class="hsin-lab__inventory">Aguardando rig.</pre>
-        </details>
+        <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
+          <h2>03A · The Moon Fox’s Secret — atuação</h2>
+          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. <strong>Definir alvo nos lábios</strong> seleciona o contato. A atuação separa antecipação, elevação e acomodação, mantendo a pose labial da v1.0.8 como referência. <strong>Desfazer gesto</strong> anima o retorno. Sem colisões nem validação anatômica definitiva.</p>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
+            <button type="button" data-hsin-solve-gesture disabled>2. Animar gesto</button>
+          </div>
+          <button type="button" data-hsin-director aria-pressed="false" disabled>Iniciar ciclo de QA</button>
+          <p class="hsin-lab__small" data-hsin-director-status role="status">Defina o alvo nos lábios para experimentar o ciclo. O movimento usa a referência v1.0.9; a trajetória com pole vector ainda está em estudo.</p>
+          <label for="hsin-acting-style">Atuação e movimento secundário</label>
+          <select id="hsin-acting-style" data-hsin-acting-style disabled>
+            <option value="spatial">Candidata pré-calculada · CCD sem pole</option>
+            <option value="classic">Referência v1.0.8 · interpolação uniforme</option>
+            <option value="subtle">Discreta · dedos e cabeça (30%)</option>
+            <option value="natural" selected>Natural · três tempos (55%)</option>
+            <option value="theatrical">Teatral · três tempos (85%)</option>
+          </select>
+          <p class="hsin-lab__small">A candidata resolve cinco amostras antes da reprodução, sem pole vector nem colisão; restaure o braço antes de usá-lo. A coreografia de referência separa antecipação, elevação e acomodação; o indicador continua usando o alvo calculado por IK. Pequenas rotações de cabeça e dedos são experimentais e reversíveis. Compare com a referência v1.0.8 antes de aprovar a atuação.</p>
+          <label for="hsin-motion-duration">Ritmo da animação (somente da bancada)</label>
+          <select id="hsin-motion-duration" data-hsin-motion-duration disabled>
+            <option value="800">Rápido · 0,8 s</option>
+            <option value="1250" selected>Natural · 1,25 s</option>
+            <option value="1800">Contemplativo · 1,8 s</option>
+          </select>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-undo-gesture disabled>Desfazer gesto</button>
+            <button type="button" data-hsin-clear-target disabled>Limpar alvo</button>
+          </div>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-show-target checked disabled /> Mostrar marcador dourado do alvo</label>
+          <p class="hsin-lab__mode-feedback" data-hsin-gesture-status role="status" aria-live="polite">Carregue o GLB com o rosto colorido para examinar a cadeia Bip001*.R.</p>
+          <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo interpola as rotações da clavícula, braço, antebraço e punho direitos e atualiza os deformadores DEF durante o movimento. Com movimento reduzido, aplica a pose sem transição. Use <strong>Salvar preset de pose JSON</strong> após a animação para preservar o resultado no próprio Android.</p>
+        </div>
 
         <details class="hsin-lab__group">
           <summary>02 · Expressão facial</summary>
@@ -159,6 +202,19 @@ O modelo não é enviado a um servidor.</div>
         </details>
 
         <details class="hsin-lab__group">
+          <summary>04 · Evidências privadas</summary>
+          <button data-hsin-report type="button" disabled>Exportar diagnóstico JSON</button>
+          <p class="hsin-lab__small">Imagens locais: <span data-hsin-csp-status role="status" aria-live="polite">Verificando…</span></p>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-save-pose disabled>Salvar preset de pose JSON</button>
+            <label for="hsin-load-pose" class="hsin-lab__filelabel">Restaurar preset salvo (local)</label>
+            <input id="hsin-load-pose" type="file" accept=".json,application/json" data-hsin-load-pose disabled />
+          </div>
+          <p class="hsin-lab__small">O preset contém pesos dos morph targets e rotações locais dos ossos, não imagens ou malhas. Escolha um arquivo compatível com a mesma Hsin.</p>
+          <p class="hsin-lab__small">O relatório registra o nome e o tamanho do arquivo, os pesos faciais e a transformação dos ossos modificados. <strong>Não contém malhas nem texturas.</strong> Se preferir, não o compartilhe.</p>
+        </details>
+
+        <details class="hsin-lab__group" data-hsin-internal-only hidden>
           <summary>02B · Diagnóstico visual</summary>
           <p class="hsin-lab__small">Selecione a v1.0.5 no aparelho. Se aparecer apenas uma silhueta ou uma face monocromática, compare os modos abaixo. Eles alteram apenas a visualização, sem editar o arquivo.</p>
           <label for="hsin-render-mode">Modo de materiais</label>
@@ -219,40 +275,7 @@ O modelo não é enviado a um servidor.</div>
           <p class="hsin-lab__small"><strong>Limitação:</strong> a v1.0.5 incorpora mapas de rosto e olhos, mas os shaders de Wuthering Waves não foram exportados. A bancada não reconstrói esses shaders. Compare o contorno do cabelo, a boca e a íris antes de validar.</p>
         </details>
 
-        <div class="hsin-lab__group hsin-lab__gesture" aria-label="Teste de gesto com o indicador">
-          <h2>03A · The Moon Fox’s Secret — atuação</h2>
-          <p class="hsin-lab__small">Cinemática inversa experimental com o rig real. <strong>Definir alvo nos lábios</strong> seleciona o contato. A atuação separa antecipação, elevação e acomodação, mantendo a pose labial da v1.0.8 como referência. <strong>Desfazer gesto</strong> anima o retorno. Sem colisões nem validação anatômica definitiva.</p>
-          <div class="hsin-lab__view-actions">
-            <button type="button" data-hsin-pick-mouth disabled>1. Definir alvo nos lábios</button>
-            <button type="button" data-hsin-solve-gesture disabled>2. Animar gesto</button>
-          </div>
-          <button type="button" data-hsin-director aria-pressed="false" disabled>Iniciar ciclo de QA</button>
-          <p class="hsin-lab__small" data-hsin-director-status role="status">Defina o alvo nos lábios para experimentar o ciclo. O movimento usa a referência v1.0.9; a trajetória com pole vector ainda está em estudo.</p>
-          <label for="hsin-acting-style">Atuação e movimento secundário</label>
-          <select id="hsin-acting-style" data-hsin-acting-style disabled>
-            <option value="spatial">Candidata pré-calculada · CCD sem pole</option>
-            <option value="classic">Referência v1.0.8 · interpolação uniforme</option>
-            <option value="subtle">Discreta · dedos e cabeça (30%)</option>
-            <option value="natural" selected>Natural · três tempos (55%)</option>
-            <option value="theatrical">Teatral · três tempos (85%)</option>
-          </select>
-          <p class="hsin-lab__small">A candidata resolve cinco amostras antes da reprodução, sem pole vector nem colisão; restaure o braço antes de usá-lo. A coreografia de referência separa antecipação, elevação e acomodação; o indicador continua usando o alvo calculado por IK. Pequenas rotações de cabeça e dedos são experimentais e reversíveis. Compare com a referência v1.0.8 antes de aprovar a atuação.</p>
-          <label for="hsin-motion-duration">Ritmo da animação (somente da bancada)</label>
-          <select id="hsin-motion-duration" data-hsin-motion-duration disabled>
-            <option value="800">Rápido · 0,8 s</option>
-            <option value="1250" selected>Natural · 1,25 s</option>
-            <option value="1800">Contemplativo · 1,8 s</option>
-          </select>
-          <div class="hsin-lab__view-actions">
-            <button type="button" data-hsin-undo-gesture disabled>Desfazer gesto</button>
-            <button type="button" data-hsin-clear-target disabled>Limpar alvo</button>
-          </div>
-          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-show-target checked disabled /> Mostrar marcador dourado do alvo</label>
-          <p class="hsin-lab__mode-feedback" data-hsin-gesture-status role="status" aria-live="polite">Carregue o GLB com o rosto colorido para examinar a cadeia Bip001*.R.</p>
-          <p class="hsin-lab__small">O alvo deve ser selecionado tocando diretamente o canto dos lábios no viewport. O algoritmo interpola as rotações da clavícula, braço, antebraço e punho direitos e atualiza os deformadores DEF durante o movimento. Com movimento reduzido, aplica a pose sem transição. Use <strong>Salvar preset de pose JSON</strong> após a animação para preservar o resultado no próprio Android.</p>
-        </div>
-
-        <details class="hsin-lab__group">
+        <details class="hsin-lab__group" data-hsin-internal-only hidden>
           <summary>03B · Articulações individuais</summary>
           <p class="hsin-lab__small">Rotaciona <em>um osso por vez</em> em relação à postura original. Não é um sistema de IK nem uma pose final.</p>
           <label for="hsin-bone-region">Região do rig</label>
@@ -276,23 +299,11 @@ O modelo não é enviado a um servidor.</div>
           </div>
           <button data-hsin-restore-bones type="button" disabled>Restaurar todos os ossos</button>
         </details>
-
-        <details class="hsin-lab__group">
-          <summary>04 · Evidências privadas</summary>
-          <button data-hsin-report type="button" disabled>Exportar diagnóstico JSON</button>
-          <div class="hsin-lab__view-actions">
-            <button type="button" data-hsin-save-pose disabled>Salvar preset de pose JSON</button>
-            <label for="hsin-load-pose" class="hsin-lab__filelabel">Restaurar preset salvo (local)</label>
-            <input id="hsin-load-pose" type="file" accept=".json,application/json" data-hsin-load-pose disabled />
-          </div>
-          <p class="hsin-lab__small">O preset contém pesos dos morph targets e rotações locais dos ossos, não imagens ou malhas. Escolha um arquivo compatível com a mesma Hsin.</p>
-          <p class="hsin-lab__small">O relatório registra o nome e o tamanho do arquivo, os pesos faciais e a transformação dos ossos modificados. <strong>Não contém malhas nem texturas.</strong> Se preferir, não o compartilhe.</p>
-        </details>
       </div>
     </section>
 
     <footer class="hsin-lab__foot" data-hsin-lab-only hidden>
-      <p><strong>Critério de aceite:</strong> o aparecimento do rosto no navegador comprova apenas a renderização. O sorriso e o contato do indicador com os lábios precisam ser inspecionados e aprovados visualmente.</p>
+      <p><strong>Critério de aceite:</strong> o aparecimento do rosto no navegador comprova apenas a renderização. O sorriso, o contato do indicador com os lábios e os dois gestos de braço precisam ser inspecionados e aprovados visualmente com o GLB.</p>
       <p>Se o GLB não carregar ou se o aparelho perder o contexto WebGL, anote o erro informado. O laboratório não altera o arquivo selecionado.</p>
     </footer>
   </main>

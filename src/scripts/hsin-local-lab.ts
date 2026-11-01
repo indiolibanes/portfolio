@@ -1,7 +1,7 @@
 import {createChestPose,createChestDirector} from './hsin-chest-gesture.mjs';
 import {ARM_ROLES,classifyArmSides} from './hsin-arm-roles.mjs';
 import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
-import { createPresentationMode } from './hsin-presentation-mode.mjs';
+import { createPresentationMode, resolveLabAccess } from './hsin-presentation-mode.mjs';
 import { createRightSignaturePose } from './hsin-right-signature.mjs';
 import { createPoseTransition } from './hsin-pose-transition.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
@@ -73,6 +73,7 @@ async function initializeLab(root: HTMLElement) {
 
   // Tiny, original one-pixel PNG: prove whether the deployed HTTP CSP allows
   // local blob: image decoding before loading any third-party GLB.
+  let imagesBlocked = false;
   async function checkBlobImagePermission() {
     const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNw6jkNAAKtAZqQmYllAAAAAElFTkSuQmCC';
     const bytes = Uint8Array.from(atob(png), (character) => character.charCodeAt(0));
@@ -88,6 +89,7 @@ async function initializeLab(root: HTMLElement) {
         (error instanceof Error ? error.message : String(error)) +
         '). Verifique o cabeçalho Content-Security-Policy desta prévia.';
       cspStatus.dataset.state = 'error';
+      imagesBlocked = true;
     } finally {
       URL.revokeObjectURL(url);
     }
@@ -317,7 +319,7 @@ async function initializeLab(root: HTMLElement) {
 
   async function prepare3D() {
     if (renderer) return;
-    setStatus('Preparando Three.js e WebGL…');
+    setStatus('Preparando a cena…');
     const [three, { GLTFLoader }, { OrbitControls }] = await Promise.all([
       import('three'),
       import('three/addons/loaders/GLTFLoader.js'),
@@ -1185,14 +1187,14 @@ async function initializeLab(root: HTMLElement) {
     if (!file) return;
     fileInput.disabled = true;
     enableControls(false);
-    setStatus('Lendo GLB local (' + (file.size / 1048576).toFixed(1) + ' MiB). Nenhum upload será realizado…');
+    setStatus('Abrindo o arquivo neste aparelho…');
     try {
       if (!file.name.toLowerCase().endsWith('.glb')) throw new Error('Selecione um arquivo .glb.');
       const bytes = await file.arrayBuffer();
       validateGlb(bytes);
       await prepare3D();
       if (!loader || !scene || !THREE) throw new Error('Three.js não disponível.');
-      setStatus('Interpretando malhas, rig e texturas incorporadas…');
+      setStatus('Preparando Hsin…');
       const parsed = await new Promise<GLTF>((resolve, reject) => {
         loader!.parse(bytes, '', resolve, reject);
       });
@@ -1258,7 +1260,7 @@ async function initializeLab(root: HTMLElement) {
         ' ossos distintos (' + skinInfluence.size + ' com influência direta) · ' +
         names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
-      setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
+      setStatus(presentationMode.get()==='lab'?'GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.':'');
       actingSeed=crypto.getRandomValues(new Uint32Array(1))[0];
       startFacial();
       signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
@@ -1278,10 +1280,10 @@ async function initializeLab(root: HTMLElement) {
       chestDetails.textContent=JSON.stringify({armRoles:ARM_ROLES,armSideAudit,...chestPose.diagnostics()},null,2);
       refreshSignature();
       presentationMode.setLoaded(true);
-      setStatus(reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
+      setStatus(imagesBlocked?'Este navegador bloqueou imagens locais; Hsin pode aparecer sem cores.':reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
-      setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
+      setStatus(presentationMode.get()==='lab'?'Falha: ' + (error instanceof Error ? error.message : String(error)):'Não foi possível abrir este arquivo. Confira se é o GLB da Hsin e tente de novo.');
       enableControls(Boolean(model));
     } finally {
       fileInput.disabled = false;
@@ -1452,7 +1454,7 @@ async function initializeLab(root: HTMLElement) {
     const ok=chestDirector?.start(director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy());
     chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço esquerdo.';
   });
-  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
+  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,access:resolveLabAccess(window.location.search),onChange:(mode:string)=>{
     if(mode==='presentation'){const options=root.querySelector<HTMLDetailsElement>('[data-hsin-options]');if(options)options.open=false;}
     if(mode==='presentation'&&model){
       director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
@@ -1473,7 +1475,7 @@ async function initializeLab(root: HTMLElement) {
   window.addEventListener('popstate',onModePop);window.addEventListener('keydown',presentationKey);
   labButton.addEventListener('click',()=>{
     if(presentationMode.get()==='lab')return;
-    presentationMode.set('lab');history.pushState({hsinLabMode:true},'',location.href);
+    if(presentationMode.set('lab'))history.pushState({hsinLabMode:true},'',location.href);
   });
   presentationButton.addEventListener('click',openPresentation);
   facialPresent.addEventListener('click',openPresentation);

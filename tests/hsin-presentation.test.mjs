@@ -34,7 +34,7 @@ for(let i=0;i<130;i++)output=a.step(.016,[0,0,0]);assert.deepEqual(output,[0,0,0
 const touch=make({enabled:{blink:false,wink:false}});touch.attention([1,0,0],4.2);for(let i=0;i<150;i++)touch.advance(.02);assert.ok(Math.hypot(...touch.sample().gaze)>.15);for(let i=0;i<250;i++)touch.advance(.02);assert.ok(Math.hypot(...touch.sample().gaze)<.02);
 // Mode boundary never exposes the author panel in the initial presentation.
 const attrs=()=>({values:{},setAttribute(n,v){this.values[n]=v}}),root={dataset:{}},panel={hidden:false},present=attrs(),lab=attrs();
-const modes=createPresentationMode({root,panel,presentationButton:present,labButton:lab});assert.equal(panel.hidden,true);assert.equal(root.dataset.experience,'presentation');modes.set('lab');assert.equal(panel.hidden,false);assert.equal(lab.values['aria-pressed'],'true');modes.set('presentation');assert.equal(panel.hidden,true);assert.equal(modes.set('invalid'),false);
+const modes=createPresentationMode({root,panel,presentationButton:present,labButton:lab,access:'lab'});assert.equal(panel.hidden,true);assert.equal(root.dataset.experience,'presentation');modes.set('lab');assert.equal(panel.hidden,false);assert.equal(lab.values['aria-pressed'],'true');modes.set('presentation');assert.equal(panel.hidden,true);assert.equal(modes.set('invalid'),false);
 // Two-bone geometry respects exact lengths; unreachable and degenerate poles refuse.
 const origin=new THREE.Vector3(),target=new THREE.Vector3(.1,.2,0),solution=solveSignatureElbow(THREE,origin,target,.22,.22,new THREE.Vector3(1,-1,1));assert.ok(solution);assert.ok(Math.abs(solution.elbow.distanceTo(origin)-.22)<1e-10);assert.ok(Math.abs(solution.elbow.distanceTo(target)-.22)<1e-10);assert.equal(solveSignatureElbow(THREE,origin,new THREE.Vector3(1,0,0),.22,.22,new THREE.Vector3(0,1,0)),null);
 const absent=createLeftSignaturePose({THREE,bones:[],meshes:[],head:null,calibration:{ready:false}});assert.equal(absent.apply(),false);assert.equal(absent.diagnostics().ready,false);absent.restore();
@@ -56,5 +56,5 @@ for(const match of source.matchAll(/q<[^;\n]+?>\('(\[data-[^\]]+\])'\)/g)){const
 assert.ok(html.includes('data-hsin-laboratory hidden'));
 console.log('Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch, clean mode boundary and left-chain geometry PASS');
 const labOnly=[{hidden:false},{hidden:false}],structuralRoot={dataset:{},querySelectorAll:selector=>selector==='[data-hsin-lab-only]'?labOnly:[]};
-const structural=createPresentationMode({root:structuralRoot,panel:{hidden:false},presentationButton:attrs(),labButton:attrs()});
+const structural=createPresentationMode({root:structuralRoot,panel:{hidden:false},presentationButton:attrs(),labButton:attrs(),access:'lab'});
 assert.ok(labOnly.every(element=>element.hidden));structural.set('lab');assert.ok(labOnly.every(element=>!element.hidden));structural.set('presentation');assert.ok(labOnly.every(element=>element.hidden));
