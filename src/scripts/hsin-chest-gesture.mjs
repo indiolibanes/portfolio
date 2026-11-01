@@ -2,20 +2,21 @@ import {resolveHsinBones} from './hsin-gesture-ik.mjs';
 import {solveSignatureElbow} from './hsin-left-signature.mjs';
 import {measuredGazeAxes} from './hsin-face-rig.mjs';
 /** Hsin-only right-arm candidate, calculated once; no mesh or GLB edits. */
-export function createChestPose({THREE,bones,meshes,head,calibration}){
- const names=['ORG-Bip001Spine2','ORG-Bip001Neck','ORG-Bip001UpperArm.R','ORG-Bip001Forearm.R','ORG-Bip001Hand.R','ORG-Bip001Finger1.R','DEF-Bip001UpperArm.R','DEF-Bip001Forearm.R','DEF-Bip001Hand.R'];
- const found=resolveHsinBones(bones,names),map=found.resolved;let candidate=null,reason='Rig direito ou calibração ausentes.',metrics={};
+export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
+ const opposite=side==='L'?'R':'L';
+ const names=['ORG-Bip001Spine2','ORG-Bip001Neck',...['ORG-Bip001UpperArm','ORG-Bip001Forearm','ORG-Bip001Hand','ORG-Bip001Finger1','DEF-Bip001UpperArm','DEF-Bip001Forearm','DEF-Bip001Hand'].map(n=>`${n}.${side}`)];
+ const found=resolveHsinBones(bones,names),map=found.resolved;let candidate=null,reason='Rig do braço selecionado ou calibração ausentes.',metrics={};
  const changed=names.slice(2,5).concat(names.slice(6)).map(n=>map.get(n)).filter(Boolean),base=new Map(changed.map(b=>[b,b.quaternion.clone()]));
  const v=()=>new THREE.Vector3(),q=()=>new THREE.Quaternion();
  const restore=()=>{for(const[b,value]of base)b.quaternion.copy(value);changed.forEach(b=>b.updateWorldMatrix(true,true));};
  const diagnostic=()=>({ready:!!candidate,reason,collision:'VISUAL_QA_PENDING',...metrics});
  if(found.missing.length||found.ambiguous.length||!head||!calibration?.ready)return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};
  const spine=map.get(names[0]),neck=map.get(names[1]),upper=map.get(names[2]),fore=map.get(names[3]),hand=map.get(names[4]),finger=map.get(names[5]);
- if(fore.parent!==upper||hand.parent!==fore){reason='Cadeia direita não contígua.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
+ if(fore.parent!==upper||hand.parent!==fore){reason='Cadeia selecionada não contígua.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
  changed.forEach(b=>b.updateWorldMatrix(true,true));const restWorld=new Map(changed.map(b=>[b,b.getWorldQuaternion(q())]));
  const influence=new Map(changed.map(b=>[b,0]));
  for(const mesh of meshes){const j=mesh.geometry.getAttribute('skinIndex'),w=mesh.geometry.getAttribute('skinWeight');if(!j||!w)continue;for(let i=0;i<j.count;i++)for(let k=0;k<4;k++){if(w.getComponent(i,k)<=.001)continue;const bone=mesh.skeleton.bones[j.getComponent(i,k)];for(const branch of changed){let cursor=bone;while(cursor&&cursor!==branch)cursor=cursor.parent;if(cursor===branch)influence.set(branch,influence.get(branch)+1);}}}
- if([names[4],names[6],names[7]].some(n=>!influence.get(map.get(n)))){reason='Cadeia direita sem influência comprovada no skin.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
+ if([names[4],names[6],names[7]].some(n=>!influence.get(map.get(n)))){reason='Cadeia selecionada sem influência comprovada no skin.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
  const spineRest=spine.getWorldQuaternion(q()).normalize();
  const root=spine.getWorldPosition(v()),neckPos=neck.getWorldPosition(v()),shoulder=upper.getWorldPosition(v()),elbow=fore.getWorldPosition(v()),wrist=hand.getWorldPosition(v());
  const up=neckPos.clone().sub(root).normalize(),right=shoulder.clone().sub(root).addScaledVector(up,-shoulder.clone().sub(root).dot(up)).normalize();
@@ -36,13 +37,13 @@ export function createChestPose({THREE,bones,meshes,head,calibration}){
  const knuckleTarget=surface.clone().addScaledVector(forward,eyeSpan*.45),target=knuckleTarget.clone().addScaledVector(desiredLong,-fingerLength);
  const pole=right.clone().multiplyScalar(.9).addScaledVector(up,-1).addScaledVector(forward,.7);
  const solution=solveSignatureElbow(THREE,shoulder,target,shoulder.distanceTo(elbow),elbow.distanceTo(wrist),pole);
- if(!solution){reason='Alvo do peito fora do alcance da cadeia direita.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
+ if(!solution){reason='Alvo do peito fora do alcance da cadeia selecionada.';return {apply:()=>false,restore,atBaseline:()=>false,diagnostics:diagnostic};}
  const orient=(bone,from,to)=>{bone.updateWorldMatrix(true,false);const desired=q().setFromUnitVectors(from.normalize(),to.normalize()).multiply(bone.getWorldQuaternion(q()));bone.quaternion.copy(bone.parent.getWorldQuaternion(q()).invert().multiply(desired)).normalize();bone.updateWorldMatrix(true,true);};
  try{
   orient(upper,fore.getWorldPosition(v()).sub(shoulder),solution.elbow.clone().sub(shoulder));orient(fore,hand.getWorldPosition(v()).sub(fore.getWorldPosition(v())),target.clone().sub(fore.getWorldPosition(v())));orient(hand,fingerLocal.clone().applyQuaternion(hand.getWorldQuaternion(q())),desiredLong.clone());
   for(const[org,def]of [[names[2],names[6]],[names[3],names[7]],[names[4],names[8]]]){const driver=map.get(org),deform=map.get(def);driver.updateWorldMatrix(true,false);const desired=driver.getWorldQuaternion(q()).multiply(restWorld.get(driver).clone().invert()).multiply(restWorld.get(deform));deform.quaternion.copy(deform.parent.getWorldQuaternion(q()).invert().multiply(desired)).normalize();deform.updateWorldMatrix(true,true);}
   const error=hand.getWorldPosition(v()).distanceTo(target),flex=THREE.MathUtils.radToDeg(solution.flexion),wristAngle=THREE.MathUtils.radToDeg(base.get(hand).angleTo(hand.quaternion)),upperAngle=THREE.MathUtils.radToDeg(base.get(upper).angleTo(upper.quaternion));
-  const left=bones.find(b=>b.name.replace(/[^a-z0-9]/gi,'').toLowerCase()==='orgbip001handl'),separation=left?left.getWorldPosition(v()).distanceTo(hand.getWorldPosition(v())):Infinity;
+  const left=bones.find(b=>b.name.replace(/[^a-z0-9]/gi,'').toLowerCase()===`orgbip001hand${opposite.toLowerCase()}`),separation=left?left.getWorldPosition(v()).distanceTo(hand.getWorldPosition(v())):Infinity;
   metrics={samples,weightedBranchReferences:Object.fromEntries([...influence].map(([b,n])=>[b.name,n])),eyeSpan,wristTargetError:error,elbowFlexionDegrees:flex,wristRotationDegrees:wristAngle,upperRotationDegrees:upperAngle,handSeparation:separation,estimatedSurfaceOffset:eyeSpan*.45,fingerRotations:'PRESERVED',matches:found.matches};
   if(error>eyeSpan*.05||flex>148||wristAngle>75||upperAngle>110||separation<eyeSpan*.5||!changed.every(b=>b.quaternion.toArray().every(Number.isFinite)))reason='Limites geométricos excedidos; gesto indisponível.';
   else{candidate=new Map(changed.map(b=>[b,b.quaternion.clone()]));reason='Candidata calculada; colisões, roupas e anatomia aguardam QA visual.';}
@@ -51,8 +52,8 @@ export function createChestPose({THREE,bones,meshes,head,calibration}){
  return {apply,restore,atBaseline(){
    if(!candidate||![...base].every(([b,start])=>b.quaternion.toArray().every((x,i)=>Math.abs(x-start.toArray()[i])<1e-7)))return false;
    if(spine.getWorldPosition(v()).distanceTo(root)>eyeSpan*.1||spine.getWorldQuaternion(q()).normalize().angleTo(spineRest)>0.02)return false;
-   const left=resolveHsinBones(bones,['ORG-Bip001Hand.L']);if(left.missing.length||left.ambiguous.length)return false;
-   const leftPos=left.resolved.get('ORG-Bip001Hand.L').getWorldPosition(v());apply(1);const clear=leftPos.distanceTo(hand.getWorldPosition(v()))>eyeSpan*.8;restore();return clear;
+   const oppositeName=`ORG-Bip001Hand.${opposite}`;const left=resolveHsinBones(bones,[oppositeName]);if(left.missing.length||left.ambiguous.length)return false;
+   const leftPos=left.resolved.get(oppositeName).getWorldPosition(v());apply(1);const clear=leftPos.distanceTo(hand.getWorldPosition(v()))>eyeSpan*.8;restore();return clear;
   },diagnostics:diagnostic};
 }
 /** One clock, injected by the existing visible facial rAF; no timers or extra writers. */
