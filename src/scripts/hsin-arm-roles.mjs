@@ -11,6 +11,10 @@ export const ARM_ROLES = Object.freeze({
 });
 
 export const oppositeSide = (side) => (side === 'L' ? 'R' : 'L');
+/** Only a geometrically confirmed, anatomically correct mapping is safe for automatic choreography.
+ * An indeterminate measurement is not evidence that a rig is correctly oriented. */
+export const isArmRoleVerified = (audit) => audit?.status === 'MATCHES_ROLES';
+
 
 /** The two gestures must never share an arm. Throws so a bad edit fails loudly in tests. */
 export function assertDisjointRoles(roles = ARM_ROLES) {
