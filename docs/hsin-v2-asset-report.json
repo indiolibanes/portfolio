@@ -1,0 +1,282 @@
+{
+  "sourceSha256": "938a86162d5b431638ff46f2d30c78ecea74c95587835e1a8883e2b7f6c740fe",
+  "outputSha256": "63506b0b7a2369722e6429c3b16c5f48764ee01706d1272b4ffd69a45c5e0d2c",
+  "sourceBytes": 69407460,
+  "outputBytes": 9873744,
+  "baselineMaxPositionError": 5.960460569554016e-08,
+  "estimatedMorphBytesBefore": 466807744,
+  "estimatedMorphBytesAfter": 1295616,
+  "meshes": [
+    {
+      "mesh": "R2T1XinMd10011_LOD0_0",
+      "vertices": 5927,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_1",
+      "vertices": 5670,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_2",
+      "vertices": 4320,
+      "sourceMorphs": 169,
+      "liveMorphs": 18,
+      "keptNames": [
+        "B_Cheerful_R",
+        "B_Cheerful_L",
+        "B_Up_Add_R",
+        "B_Up_Add_L",
+        "E_Close_R",
+        "E_Close_L",
+        "E_Smile_R",
+        "E_Smile_L",
+        "E_Squint_R",
+        "E_Squint_L",
+        "M_Smile_R",
+        "M_Smile_L",
+        "M_Squint_R",
+        "M_Squint_L",
+        "M_meow_R",
+        "M_meow_L",
+        "P_Nose_Up",
+        "P_Nose_Down"
+      ]
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_3",
+      "vertices": 13426,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_4",
+      "vertices": 27154,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_5",
+      "vertices": 18257,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_6",
+      "vertices": 10520,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0_7",
+      "vertices": 402,
+      "sourceMorphs": 169,
+      "liveMorphs": 8,
+      "keptNames": [
+        "Pupil_Up_R",
+        "Pupil_Up_L",
+        "Pupil_In_R",
+        "Pupil_In_L",
+        "Pupil_Down_R",
+        "Pupil_Down_L",
+        "Pupil_Out_R",
+        "Pupil_Out_L"
+      ]
+    },
+    {
+      "mesh": "R2T1XinMd10011_LOD0.001_0",
+      "vertices": 642,
+      "sourceMorphs": 169,
+      "liveMorphs": 0,
+      "keptNames": []
+    }
+  ],
+  "textures": [
+    {
+      "name": "Bangs_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 757169,
+      "bytes": 77978,
+      "lossless": false
+    },
+    {
+      "name": "Hair_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 818201,
+      "bytes": 90092,
+      "lossless": false
+    },
+    {
+      "name": "Face_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        2048,
+        2048
+      ],
+      "size": [
+        2048,
+        2048
+      ],
+      "sourceBytes": 514732,
+      "bytes": 130902,
+      "lossless": false
+    },
+    {
+      "name": "Up_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1210012,
+      "bytes": 154268,
+      "lossless": false
+    },
+    {
+      "name": "Up_NORMAL_XY_REPACK_V105",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1206573,
+      "bytes": 917790,
+      "lossless": true
+    },
+    {
+      "name": "Down_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1016113,
+      "bytes": 156758,
+      "lossless": false
+    },
+    {
+      "name": "Down_NORMAL_XY_REPACK_V105",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 645975,
+      "bytes": 507870,
+      "lossless": true
+    },
+    {
+      "name": "Cloth_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1290435,
+      "bytes": 171920,
+      "lossless": false
+    },
+    {
+      "name": "Cloth_NORMAL_XY_REPACK_V105",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1324837,
+      "bytes": 1060892,
+      "lossless": true
+    },
+    {
+      "name": "Tail_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 232315,
+      "bytes": 27966,
+      "lossless": false
+    },
+    {
+      "name": "Tail_NORMAL_XY_REPACK_V105",
+      "sourceSize": [
+        512,
+        512
+      ],
+      "size": [
+        512,
+        512
+      ],
+      "sourceBytes": 43991,
+      "bytes": 32288,
+      "lossless": true
+    },
+    {
+      "name": "Eye_D_RGB_PRIVATE_DIAGNOSTIC",
+      "sourceSize": [
+        2048,
+        2048
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "sourceBytes": 1173336,
+      "bytes": 65858,
+      "lossless": false
+    }
+  ],
+  "joints": [
+    823,
+    498
+  ],
+  "limitations": [
+    "No triangle decimation or KTX2/Draco/Meshopt; no new runtime decoders.",
+    "Active morph normals are frozen at the exported baseline; base normals and normal maps remain.",
+    "Normal maps are WebP lossless; color maps are lossy; Eye is reduced to 1024px, Face stays at 2048px.",
+    "Unused shader UV/color sets and the LSCherry sphere helper are excluded. Original metadata and credits are retained."
+  ]
+}

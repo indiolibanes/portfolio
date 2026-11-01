@@ -1,0 +1,36 @@
+---
+import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
+import '../../../styles/hsin-stage.css';
+---
+<HsinStageLayout>
+  <main class="hsin-stage" data-hsin-stage data-state="waiting" aria-label="Hsin · palco ao luar">
+    <div class="hsin-stage__poster" aria-hidden="true"><img src="/assets/models/hsin/hsin-v2.0-poster.webp" width="800" height="1100" alt="" fetchpriority="high" decoding="async" /></div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin em um palco azul ao luar. Arraste para girar; use a roda do mouse ou dois dedos para aproximar." tabindex="0"></div>
+    <header class="hsin-stage__header">
+      <h1>Hsin <span>The Moon Fox</span></h1>
+      <a href="/experimentos/" aria-label="Voltar aos experimentos">↗</a>
+    </header>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando Hsin…</div>
+    <div class="hsin-stage__error" data-stage-error hidden>
+      <p>A cena não abriu neste navegador.</p>
+      <button type="button" data-stage-retry>Tentar novamente</button>
+    </div>
+    <nav class="hsin-stage__tools" aria-label="Controles da cena">
+      <button type="button" data-stage-out aria-label="Afastar" title="Afastar" disabled>−</button>
+      <button type="button" data-stage-in aria-label="Aproximar" title="Aproximar" disabled>＋</button>
+      <button type="button" data-stage-reset aria-label="Restaurar enquadramento" title="Restaurar enquadramento" disabled>⌂</button>
+      <button type="button" data-stage-pause aria-label="Pausar atuação" title="Pausar atuação" aria-pressed="false" disabled>Ⅱ</button>
+    </nav>
+    <details class="hsin-stage__credits">
+      <summary>Créditos</summary>
+      <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders do asset: LSCherry.</p>
+      <p>Estudo de apresentação e atuação. O cenário usa uma aproximação dos materiais, sem reproduzir os shaders do jogo.</p>
+    </details>
+    <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar a cena.</p></noscript>
+  </main>
+</HsinStageLayout>
+<script>
+  import {mountHsinStage} from '../../../scripts/hsin-stage';
+  const root=document.querySelector<HTMLElement>('[data-hsin-stage]');
+  if(root)mountHsinStage(root);
+</script>

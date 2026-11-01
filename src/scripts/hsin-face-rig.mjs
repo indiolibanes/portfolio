@@ -1,14 +1,6 @@
-import { PASS_B_NAMES, PASS_B1_EXTRA_NAMES } from './hsin-face-morph-audit.mjs';
-/** Morph adapter: no URLs/assets, no changes to bones/materials. THREE is injected. */
-export const PUPIL_NAMES = ['Up','Down','In','Out'].flatMap(axis => ['R','L'].map(side => `Pupil_${axis}_${side}`));
-export const FACE_ACTING_NAMES = ['E_Close_R','E_Close_L','M_Smile_R','M_Smile_L',...PUPIL_NAMES];
-
-export function snapshotFace(meshes) {
-  return new Map(meshes.filter(m=>m.morphTargetInfluences).map(m=>[m,[...m.morphTargetInfluences]]));
-}
-export function restoreFace(snapshot) {
-  for (const [mesh, values] of snapshot) values.forEach((v,i)=>{ mesh.morphTargetInfluences[i]=v; });
-}
+import {PUPIL_NAMES} from './hsin-face-channels.mjs';
+export {PUPIL_NAMES,FACE_ACTING_NAMES} from './hsin-face-channels.mjs';
+export {snapshotFace,restoreFace,createFaceBinding} from './hsin-face-binding.mjs';
 
 /** Measure signed, skinned displacement in head-local space. Names alone do not set gaze signs. */
 export function calibratePupils(THREE, meshes, head) {
@@ -81,38 +73,4 @@ export function projectGazeOffset(THREE, offset, calibration) {
   const axes=measuredGazeAxes(THREE,calibration);if(!axes)return [0,0,0];
   const horizontal=new THREE.Vector3(...axes.horizontal),vertical=new THREE.Vector3(...axes.vertical),desired=new THREE.Vector3(...offset);
   return horizontal.multiplyScalar(desired.dot(horizontal)).addScaledVector(vertical,desired.dot(vertical)).clampLength(0,1).toArray();
-}
-
-export function createFaceBinding(meshes, baseline, calibration, audit={limits:{}}) {
-  const names=[...new Set([...FACE_ACTING_NAMES,...PASS_B_NAMES,...PASS_B1_EXTRA_NAMES])];
-  const channels = new Set();
-  for(const mesh of meshes) for(const name of names) if(mesh.morphTargetDictionary?.[name]!==undefined)channels.add(name);
-  return {
-    channels:[...channels],
-    apply(state) {
-      const gazeMagnitude=Math.hypot(...state.gaze);
-      for(const [mesh,base] of baseline) for(const name of names) {
-        const i=mesh.morphTargetDictionary?.[name];if(i===undefined)continue;
-        const v=base[i];let value=v;
-        if(name==='E_Close_R')value=v+(1-v)*state.closeR;
-        else if(name==='E_Close_L')value=v+(1-v)*state.closeL;
-        else if(name==='M_Smile_R')value=v+(1-v)*Math.min(state.smileR,(['b','b1'].includes(state.policy)&&!state.diagnostic&&!state.authored)?(audit.limits[name]??0):1);
-        else if(name==='M_Smile_L')value=v+(1-v)*Math.min(state.smileL,(['b','b1'].includes(state.policy)&&!state.diagnostic&&!state.authored)?(audit.limits[name]??0):1);
-        else if(audit.limits[name]>0) {
-          // Full 0..1 only for an explicit B.1 lab test; automatic policy stays conservative.
-          const ceiling=state.policy==='b1'&&(state.diagnostic||state.authored)?1:audit.limits[name];
-          let overlay=Math.max(0,Math.min(ceiling,state.overlays?.[name]??0));
-          if(/^E_(Smile|Squint)_/.test(name))overlay*=Math.pow(1-(name.endsWith('_R')?state.closeR:state.closeL),2);
-          value=v+(1-v)*overlay;
-        }
-        else if(calibration.ready && calibration.directions[name]) {
-          const d=calibration.directions[name], weight=Math.max(0,d.reduce((sum,x,j)=>sum+x*state.gaze[j],0));
-          value=v*(1-gazeMagnitude)+(1-v)*weight;
-        }
-        // Exact neutral values remain exact, including nonstandard exported weights.
-        mesh.morphTargetInfluences[i]=value===v ? v : Math.max(Math.min(v,0),Math.min(Math.max(v,1),value));
-      }
-    },
-    restore() { restoreFace(baseline); },
-  };
 }

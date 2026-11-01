@@ -1,13 +1,22 @@
-name: Hsin facial B.1 regressions
+name: Hsin acting and V2 stage regressions
 
 on:
   push:
     branches:
       - 'experiment/hsin-facial-legibility-pass-b1-*'
+      - 'experiment/hsin-v2-*'
   pull_request:
     paths:
       - 'src/scripts/hsin-*.mjs'
       - 'scripts/hsin-*.mjs'
+      - 'src/scripts/hsin-*.ts'
+      - 'src/data/hsin-*.json'
+      - 'src/layouts/HsinStageLayout.astro'
+      - 'src/styles/hsin-stage.css'
+      - 'src/pages/experimentos/hsin/**'
+      - 'public/assets/models/hsin/**'
+      - 'scripts/*hsin-v2*'
+      - 'public/_headers'
       - 'src/scripts/hsin-local-lab.ts'
       - 'src/pages/experimentos/hsin-lab/index.astro'
       - 'tests/hsin-*.test.mjs'
@@ -55,6 +64,10 @@ jobs:
           node tests/hsin-pose-transition.test.mjs
           node tests/hsin-clean-presentation.test.mjs
           node tests/hsin-embedded-texture.test.mjs
+      - name: V2 player budgets and real production GLB
+        run: |
+          node tests/hsin-stage.test.mjs
+          node tests/hsin-stage-asset.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract (existing 97/100 baseline is recorded, not reclassified)
