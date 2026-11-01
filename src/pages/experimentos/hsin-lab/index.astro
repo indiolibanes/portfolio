@@ -76,10 +76,13 @@ O modelo não é enviado a um servidor.</div>
         </section>
 
         <details class="hsin-lab__group">
-          <summary>Expressão e atenção · perfis A / B / apresentação</summary>
+          <summary>Expressão, atenção e atmosfera</summary>
+          <label class="hsin-lab__checkbox"><input type="checkbox" data-hsin-b1-auto checked disabled /> Automatizar B.1 na apresentação</label>
+          <label for="hsin-atmosphere">Atmosfera da cena</label>
+          <select id="hsin-atmosphere" data-hsin-atmosphere disabled><option value="gold">Dourado e âmbar</option><option value="scarlet">Escarlate translúcido</option></select>
           <label for="hsin-facial-pass">Perfil de comparação sobre a mesma referência</label>
           <select id="hsin-facial-pass" data-hsin-facial-pass disabled>
-            <option value="presentation" selected>Apresentação · presença contínua</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option><option value="b1">Pass B.1 · calibração facial (laboratório)</option>
+            <option value="auto-b1" selected>Automação B.1 · apresentação</option><option value="presentation">Apresentação anterior</option><option value="a">Pass A · referência</option><option value="b">Pass B · comparação</option><option value="b1">Pass B.1 · calibração facial (laboratório)</option>
           </select>
           <label for="hsin-facial-intensity">Intensidade facial <output data-hsin-facial-intensity-out>75%</output></label>
           <input id="hsin-facial-intensity" data-hsin-facial-intensity type="range" min="0" max="1" step=".05" value=".75" disabled />
@@ -100,6 +103,8 @@ O modelo não é enviado a um servidor.</div>
                 <option value="S1">S1 · Subtle Smirk</option>
                 <option value="S2">S2 · Playful Smirk</option>
                 <option value="S3">S3 · Signature Smile</option>
+                <option value="I1">I1 · Fox Sentinel Calm</option><option value="I2">I2 · Coy Amusement</option>
+                <option value="I3">I3 · Sacred Warmth</option><option value="I4">I4 · Knowing Gaze</option><option value="I5">I5 · Flirtatious Dominance</option>
               </select>
             </label>
             <label for="hsin-b1-strength">Amplitude diagnóstica
@@ -108,9 +113,9 @@ O modelo não é enviado a um servidor.</div>
                 <option value="1" selected>100% da candidata</option>
               </select>
             </label>
-            <button type="button" data-hsin-b1-test disabled>Executar S1/S2/S3</button>
+            <button type="button" data-hsin-b1-test disabled>Testar expressão selecionada</button>
           </div>
-          <p class="hsin-lab__small"><strong>Somente no Pass B.1, dentro deste laboratório:</strong> S1/S2/S3 e o teste isolado permitem influências maiores que os tetos automáticos, mas sempre limitadas ao intervalo 0–1. Os controles P_Nose_Up e P_Nose_Down podem ser comparados separadamente pelo seletor acima. Esses pesos não entram na apresentação; compare frontal, 3/4 e lateral sob a mesma câmera, material e iluminação antes de aprovar qualquer um.</p>
+          <p class="hsin-lab__small"><strong>Somente no Pass B.1, dentro deste laboratório:</strong> S1/S2/S3 e o teste isolado permitem influências maiores que os tetos automáticos, mas sempre limitadas ao intervalo 0–1. Os controles P_Nose_Up e P_Nose_Down podem ser comparados separadamente pelo seletor acima. A automação usa S1/S2/S3 e composições candidatas I1–I5; compare frontal, 3/4 e lateral sob a mesma câmera, material e iluminação antes de aprovar qualquer um.</p>
           <p class="hsin-lab__small">Use A/B facial acima para congelar referência e candidata. A e B preservam seus comportamentos anteriores; intensidade do perfil B em 0% também reproduz A. A apresentação usa intervalos e atenção próprios. A reação nasal fica apenas no laboratório até aprovação visual. O ciclo corporal de QA sinaliza preparação, sustentação e liberação à face; as expressões também funcionam sem o braço.</p>
           <details><summary>Relatório geométrico dos morphs</summary><pre class="hsin-lab__inventory" data-hsin-facial-audit>Aguardando calibração.</pre></details>
         </details>
