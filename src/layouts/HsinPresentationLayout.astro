@@ -1,0 +1,20 @@
+---
+interface Props { title?: string; description?: string; }
+const {title='Hsin · The Moon Fox',description='Uma apresentação autônoma da Hsin com arquivo privado local.'}=Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="theme-color" content="#29171d" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="hsin-presentation-page">
+    <a class="hsin-skip" href="#conteudo">Pular para Hsin</a>
+    <slot />
+  </body>
+</html>

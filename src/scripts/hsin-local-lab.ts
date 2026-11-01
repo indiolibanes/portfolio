@@ -204,6 +204,8 @@ async function initializeLab(root: HTMLElement) {
   let chestDirector: ReturnType<typeof createChestDirector> | null = null;
   let signatureTransition: ReturnType<typeof createPoseTransition> | null = null;
   let modeRequest = 0;
+  let actingSeed=2718;
+  let pendingBoneRestore=false;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let lastCandidate: PresetName = 'smirk_D';
@@ -836,6 +838,8 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function cleanupModel() {
+    pendingBoneRestore=false;
+    presentationMode.setLoaded(false);
     chestDirector?.cancel();chestDirector=null;
     faceSession?.dispose(); faceSession=null;
     facialRun.textContent='Iniciar atuação facial';facialRun.setAttribute('aria-pressed','false');
@@ -1253,17 +1257,18 @@ async function initializeLab(root: HTMLElement) {
         names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
+      actingSeed=crypto.getRandomValues(new Uint32Array(1))[0];
       startFacial();
       signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
       signatureTransition=createPoseTransition({pose:signaturePose,invalidate});
       if(presentationMode.get()==='presentation'&&!reducedMotionQuery.matches){applySignature();frameModel('presentation');}
       const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:'L'});
-      chestDirector=createChestDirector({pose:chestPose,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
+      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
       chestAuto.disabled=!chestPose.diagnostics().ready;chestTest.disabled=!chestPose.diagnostics().ready||reducedMotionQuery.matches;
       chestStatus.textContent=chestPose.diagnostics().reason;chestDetails.textContent=JSON.stringify(chestPose.diagnostics(),null,2);
       refreshSignature();
-      root.dataset.loaded='true';
-      setStatus(reducedMotionQuery.matches?'Hsin carregada. Movimento reduzido: expressão estável.':'Hsin está aqui. Explore a câmera; a atuação já começou.');
+      presentationMode.setLoaded(true);
+      setStatus(reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
@@ -1314,14 +1319,15 @@ async function initializeLab(root: HTMLElement) {
     if(!faceSession) {
       const candidates=bones.filter((bone)=>canonicalHsinBoneName(bone.name)==='orgbip001head');
       faceSession=createFacialSession({THREE, meshes:skinned, head:candidates.length===1?candidates[0]:null,
-        camera,canvas:renderer.domElement,invalidate,
+        camera,canvas:renderer.domElement,invalidate,seed:actingSeed,
         reducedMotion:reducedMotionQuery.matches,pass:facialPass.value,intensity:Number(facialIntensity.value),attentionMode:facialAttention.value,
         canAttend:()=>!gestureLab?.getDiagnostics().picking,
         onFrame:(dt:number,_state:unknown,diagnostics:{expressions?:{context?:string}})=>{
           signatureTransition?.advance(dt);
           const legacy=gestureLab?.getDiagnostics();
           const canStart=director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy();
-          chestDirector?.advance(dt,{automatic:chestAuto.checked&&presentationMode.get()==='presentation',canStart,warm:diagnostics.expressions?.context==='Warm Presence'});
+          chestDirector?.advance(dt,{automatic:!pendingBoneRestore&&chestAuto.checked&&presentationMode.get()==='presentation',canStart,warm:diagnostics.expressions?.context==='Warm Presence'});
+          if(pendingBoneRestore&&!chestDirector?.busy()&&!signatureTransition?.busy()){pendingBoneRestore=false;restoreBones();}
         },
         onStatus:(message:string)=>{facialStatus.textContent=message;},
       });
@@ -1405,6 +1411,7 @@ async function initializeLab(root: HTMLElement) {
     chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço esquerdo.';
   });
   const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
+    if(mode==='presentation'){const options=root.querySelector<HTMLDetailsElement>('[data-hsin-options]');if(options)options.open=false;}
     if(mode==='presentation'&&model){
       director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
       const desired=b1Auto.checked?'auto-b1':'presentation';
@@ -1413,10 +1420,11 @@ async function initializeLab(root: HTMLElement) {
     }
     window.dispatchEvent(new Event('resize'));
   }});
+  root.querySelector('[data-hsin-replace]')?.addEventListener('click',()=>fileInput.click());
   function openPresentation() {
     presentationMode.set('presentation');
     if(history.state?.hsinLabMode)history.back();
-    presentationButton.focus();
+    viewport.focus();
   }
   function onModePop() {presentationMode.set('presentation');}
   function presentationKey(event:KeyboardEvent) {if(event.key==='Escape'&&presentationMode.get()==='lab')openPresentation();}
@@ -1435,7 +1443,10 @@ async function initializeLab(root: HTMLElement) {
     else applyPreset('exported');
   });
   btnRestoreFace.addEventListener('click', () => applyPreset('exported'));
-  btnRestoreBones.addEventListener('click', restoreBones);
+  btnRestoreBones.addEventListener('click',()=>{
+    if(reducedMotionQuery.matches){restoreBones();return;}
+    pendingBoneRestore=true;chestDirector?.release();signatureTransition?.request(0);startFacial();
+  });
   btnFull.addEventListener('click', () => frameModel('full'));
   btnFace.addEventListener('click', () => frameModel('face'));
   btnUpper.addEventListener('click', () => frameModel('upper'));

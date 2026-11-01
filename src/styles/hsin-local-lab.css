@@ -130,3 +130,56 @@
 
 .hsin-lab [hidden] { display: none !important; }
 .hsin-lab button:focus-visible, .hsin-lab select:focus-visible, .hsin-lab input:focus-visible { outline: 2px solid #f5d7a1; outline-offset: 3px; }
+
+/* Hsin's supplied references: scarlet fabric, wine shadow, ivory fur, rose gray.
+   Warm light follows the lantern reference. No reference bitmap is published. */
+:root {
+  --hsin-scarlet:#992329; --hsin-wine:#4d313e; --hsin-rose:#a7878c;
+  --hsin-ivory:#eee6e4; --hsin-gold:#ddbb99; --hsin-night:#241412;
+}
+.hsin-presentation-page {
+  --ink:var(--hsin-ivory); --ink-soft:#dbced0;
+  --font-ui:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:Georgia,"Times New Roman",serif;
+  margin:0; min-height:100svh; color:var(--ink); font-family:var(--font-ui);
+  background:radial-gradient(ellipse at 15% 5%,#99232940,transparent 55%),
+    radial-gradient(ellipse at 85% 95%,#a75a3d38,transparent 60%),#241412;
+  color-scheme:dark; accent-color:var(--hsin-scarlet);
+}
+.hsin-presentation-page *, .hsin-presentation-page *::before, .hsin-presentation-page *::after { box-sizing:border-box; }
+.hsin-skip { position:fixed;top:1rem;left:1rem;z-index:20;transform:translateY(-200%);padding:.7rem;background:var(--hsin-ivory);color:var(--hsin-night); }
+.hsin-skip:focus { transform:none; }
+.hsin-lab { width:min(1440px,100%);padding:1rem clamp(.7rem,2vw,2rem) 1.5rem; }
+.hsin-lab__head { margin:0 0 .6rem; }
+.hsin-lab__head h1 { font-size:clamp(1.5rem,3vw,2.4rem);margin:0;color:var(--hsin-ivory); }
+.hsin-lab__head h1 span { display:inline-block;margin-left:1rem;font-size:.32em;letter-spacing:.18em;color:var(--hsin-rose); }
+.hsin-lab__experiencebar { align-items:flex-start;gap:.6rem;margin-bottom:.5rem; }
+.hsin-lab__load { max-width:28rem; }
+.hsin-lab__load label { font-size:.85rem;font-weight:500;color:var(--hsin-ivory); }
+.hsin-lab__load input::file-selector-button { background:var(--hsin-scarlet);border-color:var(--hsin-rose);color:var(--hsin-ivory); }
+.hsin-lab__options { margin-left:auto;position:relative;z-index:4; }
+.hsin-lab__options > summary { list-style:none;cursor:pointer;display:grid;place-items:center;min-width:44px;min-height:44px;border:1px solid #a7878c66;border-radius:50%;font-size:1.4rem;color:var(--hsin-gold);background:#4d313e80; }
+.hsin-lab__options > summary::-webkit-details-marker { display:none; }
+.hsin-lab__options-content { position:absolute;right:0;top:calc(100% + .5rem);width:min(340px,85vw);padding:1rem;border:1px solid #a7878c88;border-radius:14px;background:#241412f5;box-shadow:0 12px 48px #0008; }
+.hsin-lab__options-content > a { display:block;margin:1rem 0;color:var(--hsin-gold);font-size:.8rem; }
+.hsin-lab__privacy { padding:.6rem;border-color:var(--hsin-scarlet);background:#4d313e70;color:var(--hsin-ivory);margin:.7rem 0 0; }
+.hsin-lab__mode-switch button { background:var(--hsin-wine);color:var(--hsin-ivory);border-color:var(--hsin-rose); }
+.hsin-lab__mode-switch button[aria-pressed="true"] { background:var(--hsin-scarlet);border-color:var(--hsin-gold); }
+.hsin-lab button, .hsin-lab select, .hsin-lab__group input[type="search"] { color:var(--hsin-ivory);background:#4d313eb3;border-color:#a7878c88; }
+.hsin-lab button:hover:not(:disabled), .hsin-lab button:focus-visible { background:var(--hsin-scarlet);border-color:var(--hsin-gold); }
+.hsin-lab__shell { border:1px solid #a7878c55;background:var(--hsin-night);box-shadow:0 20px 80px #0005; }
+.hsin-lab__group h2,.hsin-lab__group > summary { color:var(--hsin-gold); }
+.hsin-lab__group label,.hsin-lab__small,.hsin-lab__inventory { color:#dbced0; }
+.hsin-lab__viewport { background:radial-gradient(ellipse at 50% 35%,#614945 0%,#4d313e 45%,#241412 100%); }
+.hsin-lab__load-status { font-size:.8rem;line-height:1.5;color:var(--hsin-gold);margin:.4rem 0; }
+.hsin-lab__load-status:empty { display:none; }
+.hsin-lab[data-experience="presentation"] .hsin-lab__viewport { height:calc(100svh - 170px);min-height:440px; }
+.hsin-lab[data-experience="presentation"][data-loaded="true"] .hsin-lab__viewport { height:calc(100svh - 90px);min-height:360px; }
+.hsin-lab[data-experience="presentation"][data-loaded="true"] { padding-top:.65rem; }
+.hsin-lab :focus-visible { outline:2px solid var(--hsin-gold);outline-offset:4px; }
+@media(max-width:600px) {
+ .hsin-lab__load { flex-basis:calc(100% - 55px); }
+ .hsin-lab__head h1 { font-size:1.6rem; }
+ .hsin-lab__viewport { min-height:340px; }
+ .hsin-lab[data-experience="presentation"] .hsin-lab__viewport { min-height:340px; }
+}

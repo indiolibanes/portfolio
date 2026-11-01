@@ -55,6 +55,6 @@ const html=await readFile(new URL('../src/pages/experimentos/hsin-lab/index.astr
 for(const match of source.matchAll(/q<[^;\n]+?>\('(\[data-[^\]]+\])'\)/g)){const attribute=match[1].slice(1,-1);assert.ok(html.includes(attribute),'Required lab element missing: '+attribute);}
 assert.ok(html.includes('data-hsin-laboratory hidden'));
 console.log('Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch, clean mode boundary and left-chain geometry PASS');
-const labOnly=[{hidden:false},{hidden:false}],structuralRoot={dataset:{},querySelectorAll:()=>labOnly};
+const labOnly=[{hidden:false},{hidden:false}],structuralRoot={dataset:{},querySelectorAll:selector=>selector==='[data-hsin-lab-only]'?labOnly:[]};
 const structural=createPresentationMode({root:structuralRoot,panel:{hidden:false},presentationButton:attrs(),labButton:attrs()});
 assert.ok(labOnly.every(element=>element.hidden));structural.set('lab');assert.ok(labOnly.every(element=>!element.hidden));structural.set('presentation');assert.ok(labOnly.every(element=>element.hidden));

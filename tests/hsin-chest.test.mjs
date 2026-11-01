@@ -16,3 +16,4 @@ const frame=()=>{now+=20;const list=[...jobs.values()];jobs.clear();list.forEach
 const {ATMOSPHERES,createAtmosphereTexture}=await import('../src/scripts/hsin-atmosphere.mjs');assert.notDeepEqual(ATMOSPHERES.gold.stops,ATMOSPHERES.scarlet.stops);
 const paint={addColorStop(){}};const fakeDocument={createElement:()=>({getContext:()=>({createLinearGradient:()=>paint,createRadialGradient:()=>paint,fillRect(){}})})};
 for(const mode of ['gold','scarlet']){const texture=createAtmosphereTexture(THREE,fakeDocument,mode);assert.ok(texture);assert.equal(texture.colorSpace,THREE.SRGBColorSpace);texture.dispose();}
+const releaseActor=createChestDirector({pose,seed:5});assert.equal(releaseActor.start(true),true);releaseActor.advance(.7);const beforeRelease=value;releaseActor.release();releaseActor.advance(.01);assert.ok(Math.abs(value-beforeRelease)<.001);for(let i=0;i<200;i++)releaseActor.advance(.02);assert.equal(value,0);assert.equal(releaseActor.busy(),false);

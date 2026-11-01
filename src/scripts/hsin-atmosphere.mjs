@@ -1,6 +1,6 @@
 export const ATMOSPHERES=Object.freeze({
- gold:{stops:['#321716','#9b5425','#3b1919'],light:'rgba(247,178,71,0.38)'},
- scarlet:{stops:['#290d18','#792333','#2e111c'],light:'rgba(220,96,68,0.30)'},
+ gold:{stops:['#241412','#614945','#4d313e'],light:'rgba(221,187,153,0.30)'},
+ scarlet:{stops:['#241412','#992329','#4d313e'],light:'rgba(220,96,68,0.30)'},
 });
 /** Original procedural color only; no asset, external requests or character material edits. */
 export function createAtmosphereTexture(THREE,document,variant='gold'){

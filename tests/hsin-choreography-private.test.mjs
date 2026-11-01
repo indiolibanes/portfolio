@@ -35,6 +35,7 @@ const presenting=createFacialActing({pass:'presentation',intensity:.75,morphLimi
 for(const [b,t]of transforms)assert.deepEqual(b.quaternion.toArray(),t.quaternion);for(const [mesh,values]of baseline)assert.deepEqual(mesh.morphTargetInfluences,values);
 assert.equal(signature.apply(),true);const leftPose=new Map(bones.map(b=>[b,b.quaternion.toArray()]));
 const chest=createChestPose({THREE,bones,meshes,head:heads[0],calibration,side:'L'});assert.equal(chest.diagnostics().ready,true);assert.equal(chest.atBaseline(),true);
+assert.equal(chest.diagnostics().pathGuard.worstViolations.torso,0);assert.equal(chest.diagnostics().pathGuard.worstViolations.sleeve,0);
 for(const [b,values]of leftPose)assert.deepEqual(b.quaternion.toArray(),values,'candidate audit must restore transforms');
 for(const t of [0,.25,.5,.75,1]){assert.equal(chest.apply(t),true);for(const [b,values]of leftPose)if(/R(?:\d+)?$/.test(b.name))assert.deepEqual(b.quaternion.toArray(),values,'left gesture must not overwrite right chain');}
 assert.equal(chest.atBaseline(),false);chest.restore();assert.equal(chest.atBaseline(),true);for(const [b,values]of leftPose)assert.deepEqual(b.quaternion.toArray(),values);
