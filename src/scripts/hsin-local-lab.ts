@@ -1,3 +1,5 @@
+import { createPresentationMode } from './hsin-presentation-mode.mjs';
+import { createLeftSignaturePose } from './hsin-left-signature.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
 import { createBehaviorDirector } from './hsin-acting-director.mjs';
 import { materialFamily, directMaterial, createUvMaterial, inspectBinding } from './hsin-material-debug.mjs';
@@ -92,6 +94,12 @@ async function initializeLab(root: HTMLElement) {
   const facialRun = q<HTMLButtonElement>('[data-hsin-facial-run]');
   const facialBlink = q<HTMLButtonElement>('[data-hsin-facial-blink]');
   const facialWink = q<HTMLButtonElement>('[data-hsin-facial-wink]');
+  const facialWinkLeft = q<HTMLButtonElement>('[data-hsin-facial-wink-left]');
+  const presentationButton=q<HTMLButtonElement>('[data-hsin-mode-presentation]');
+  const labButton=q<HTMLButtonElement>('[data-hsin-mode-lab]');
+  const laboratory=q<HTMLElement>('[data-hsin-laboratory]');
+  const signatureToggle=q<HTMLInputElement>('[data-hsin-signature]');
+  const signatureReport=q<HTMLElement>('[data-hsin-signature-report]');
   const facialAB = q<HTMLButtonElement>('[data-hsin-facial-ab]');
   const facialRestore = q<HTMLButtonElement>('[data-hsin-facial-restore]');
   const facialPresent = q<HTMLButtonElement>('[data-hsin-facial-present]');
@@ -172,15 +180,14 @@ async function initializeLab(root: HTMLElement) {
   let selectedBone: Bone | null = null;
   let renderMode: 'original' | 'color' | 'toon' | 'opaque' | 'clay' | 'normals' | 'uv0' | 'uv1' | 'face-direct' | 'eye-direct' | 'face-data' | 'eye-data' = 'original';
   let cameraDirection: 1 | -1 = 1;
-  let viewFocus: 'full' | 'face' | 'upper' = 'full';
+  let viewFocus: 'full' | 'face' | 'upper' | 'presentation' = 'full';
   const originalMaterials = new Map<Skinned, import('three').Material | import('three').Material[]>();
   const diagnosticMaterials = new Set<import('three').Material>();
   const diagnosticTextures = new Set<import('three').Texture>();
   let embeddedDiffuse = new Map();
   let gestureLab: ReturnType<typeof createHsinGestureLab> | null = null;
   let faceSession: ReturnType<typeof createFacialSession> | null = null;
-  let facialPresentation = false;
-  const presentationInert = new Map<HTMLElement, boolean>();
+  let signaturePose: ReturnType<typeof createLeftSignaturePose> | null = null;
   let modeRequest = 0;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
@@ -213,7 +220,7 @@ async function initializeLab(root: HTMLElement) {
   const buttons = [btnRestoreFace, btnCompare, btnRestoreBones, btnFull, btnFace, btnUpper, btnShot, btnSideBySide, btnSavePose, btnFingerTest, btnPickMouth, btnSolveGesture, btnUndoGesture, btnClearTarget, btnReport, frontButton, rearButton];
   const enableControls = (enabled: boolean) => {
     buttons.forEach((b) => { b.disabled = !enabled; });
-    [facialRun,facialBlink,facialWink,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
+    [facialRun,facialBlink,facialWink,facialWinkLeft,signatureToggle,facialAB,facialRestore,facialPresent,facialPass,facialIntensity,facialAttention,facialMorph,facialMorphTest,facialSmileTest,facialNoseTest,...facialFlags].forEach((control)=>{control.disabled=!enabled;});
     preset.disabled = !enabled;
     renderModeSelect.disabled = !enabled;
     directorButton.disabled = !enabled;
@@ -270,7 +277,7 @@ async function initializeLab(root: HTMLElement) {
     document.removeEventListener('visibilitychange', onVisibility);
     root.removeEventListener('input', onFacialAuthorEdit, true);
     root.removeEventListener('change', onFacialAuthorEdit, true);
-    window.removeEventListener('popstate', exitFacialPresentation);
+    window.removeEventListener('popstate', onModePop);
     window.removeEventListener('keydown', presentationKey);
     cancelAnimationFrame(frame);
     cleanupModel();
@@ -802,7 +809,7 @@ async function initializeLab(root: HTMLElement) {
   function cleanupModel() {
     faceSession?.dispose(); faceSession=null;
     facialRun.textContent='Iniciar atuação facial';facialRun.setAttribute('aria-pressed','false');
-    if(facialPresentation)exitFacialPresentation();
+    signaturePose?.restore();signaturePose=null;
     if (!THREE || !model || !scene) return;
     clearDiagnosticMaterials();
     scene.remove(model.scene);
@@ -1044,6 +1051,7 @@ async function initializeLab(root: HTMLElement) {
   }
 
   function restoreBones() {
+    signaturePose?.restore();signatureToggle.checked=false;refreshSignature();
     gestureLab?.stopMotion();
     gestureLab?.cancelTargetSelection();
     initialQuaternions.forEach((quaternion, bone) => { bone.quaternion.copy(quaternion); });
@@ -1053,9 +1061,17 @@ async function initializeLab(root: HTMLElement) {
     invalidate();
   }
 
-  function frameModel(zoom: 'full' | 'face' | 'upper') {
+  function frameModel(zoom: 'full' | 'face' | 'upper' | 'presentation') {
     if (!THREE || !model || !camera || !orbit) return;
     const bounds = new THREE.Box3();
+    if(zoom==='presentation'){
+      const head=bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),cal=faceSession?.diagnostics().calibration;
+      if(head&&cal?.ready){
+        const center=head.localToWorld(new THREE.Vector3(...cal.focusCenter));
+        const span=cal.radius*4.2*head.getWorldScale(new THREE.Vector3()).length()/Math.sqrt(3);
+        bounds.setFromCenterAndSize(center,new THREE.Vector3(span,span,span));
+      }
+    }
     if (zoom === 'upper') {
       const head = bones.find((bone) =>
         canonicalHsinBoneName(bone.name) === canonicalHsinBoneName('ORG-Bip001Head'));
@@ -1099,7 +1115,7 @@ async function initializeLab(root: HTMLElement) {
     const fov = THREE.MathUtils.degToRad(camera.fov);
     const vertical = size / (2 * Math.tan(fov / 2));
     const horizontal = vertical / Math.max(.6, camera.aspect);
-    const distance = Math.max(vertical, horizontal) * (zoom === 'face' ? 1.6 : 1.42);
+    const distance = Math.max(vertical, horizontal) * (zoom==='presentation'?1.15:zoom === 'face' ? 1.6 : 1.42);
     viewFocus = zoom;
     const direction = new THREE.Vector3(0, .08, cameraDirection).normalize();
     camera.position.copy(center).addScaledVector(direction, distance);
@@ -1206,6 +1222,11 @@ async function initializeLab(root: HTMLElement) {
         'Renderização e articulação ainda exigem revisão visual.';
       setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
       startFacial();
+      signaturePose=createLeftSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
+      if(presentationMode.get()==='presentation'){applySignature();frameModel('presentation');}
+      refreshSignature();
+      root.dataset.loaded='true';
+      setStatus(reducedMotionQuery.matches?'Hsin carregada. Movimento reduzido: expressão estável.':'Hsin está aqui. Explore a câmera; a atuação já começou.');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
@@ -1226,7 +1247,8 @@ async function initializeLab(root: HTMLElement) {
     facialWink.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_R');
     facialRun.setAttribute('aria-pressed',String(running));
     facialRun.textContent=reducedMotionQuery.matches?'Movimento reduzido ativo':running?'Pausar no estado atual':'Iniciar / retomar atuação facial';
-    const isB=facialPass.value==='b', disabled=!model||reducedMotionQuery.matches||!isB;
+    const isB=facialPass.value!=='a', disabled=!model||reducedMotionQuery.matches||!isB;
+    facialWinkLeft.disabled=!model||reducedMotionQuery.matches||!!channels&&!channels.includes('E_Close_L');
     [facialIntensity,facialAttention].forEach(control=>control.disabled=disabled);
     [facialMorph,facialMorphTest,facialSmileTest,facialNoseTest].forEach(control=>control.disabled=disabled||Number(facialIntensity.value)<=0);
     facialIntensityOut.value=Math.round(Number(facialIntensity.value)*100)+'%';
@@ -1289,7 +1311,7 @@ async function initializeLab(root: HTMLElement) {
   facialRun.addEventListener('click',()=>{
     if(faceSession?.diagnostics().running){faceSession.pause();refreshFacialDiagnostics();}else startFacial();
   });
-  for(const [button,kind] of [[facialBlink,'blink'],[facialWink,'wink']] as const) button.addEventListener('click',()=>{
+  for(const [button,kind] of [[facialBlink,'blink'],[facialWink,'wink'],[facialWinkLeft,'wink-left']] as const) button.addEventListener('click',()=>{
     if(!startFacial())return;
     facialStatus.textContent=faceSession?.test(kind)?'Teste '+kind+' iniciado; confira a anatomia no GLB.':'Há uma piscada em andamento; aguarde antes do próximo teste.';
     refreshFacialDiagnostics();
@@ -1311,26 +1333,38 @@ async function initializeLab(root: HTMLElement) {
     if(element.closest('[data-hsin-morphs]')||element.matches('[data-hsin-preset], [data-hsin-load-pose]'))endFacialForEdit();
   }
   root.addEventListener('input',onFacialAuthorEdit,true);root.addEventListener('change',onFacialAuthorEdit,true);
-  function exitFacialPresentation() {
-    facialPresentation=false;root.removeAttribute('data-facial-presentation');
-    document.body.classList.remove('hsin-facial-presentation');
-    for(const [element,inert] of presentationInert)element.inert=inert;
-    presentationInert.clear();
-    if(!destroyed)facialPresent.focus();window.dispatchEvent(new Event('resize'));
+  function refreshSignature() {
+    const diagnostic=signaturePose?.diagnostics();
+    signatureToggle.disabled=!model||!diagnostic?.ready;
+    signatureReport.textContent=JSON.stringify(diagnostic??{status:'Aguardando rig'},null,2);
   }
-  function presentationKey(event: KeyboardEvent) {if(event.key==='Escape'&&facialPresentation)history.back();}
-  window.addEventListener('popstate',exitFacialPresentation);window.addEventListener('keydown',presentationKey);
-  facialPresent.addEventListener('click',()=>{
-    if(!model||facialPresentation)return;
-    director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
-    startFacial();facialPresentation=true;root.setAttribute('data-facial-presentation','');
-    document.body.classList.add('hsin-facial-presentation');
-    for(const element of document.body.children)if(element instanceof HTMLElement&&element!==root&&!['SCRIPT','STYLE','LINK'].includes(element.tagName)){
-      presentationInert.set(element,element.inert);element.inert=true;
+  function applySignature() {
+    if(signatureToggle.checked)signaturePose?.apply();else signaturePose?.restore();
+    refreshSignature();invalidate();
+  }
+  signatureToggle.addEventListener('change',applySignature);
+  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
+    if(mode==='presentation'&&model){
+      director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
+      if(facialPass.value!=='presentation'){facialPass.value='presentation';faceSession?.setPass('presentation');}
+      startFacial();applySignature();frameModel('presentation');
     }
-    history.pushState({hsinFacialPreview:true},'',location.href);
-    viewport.tabIndex=0;viewport.focus();window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('resize'));
+  }});
+  function openPresentation() {
+    presentationMode.set('presentation');
+    if(history.state?.hsinLabMode)history.back();
+    presentationButton.focus();
+  }
+  function onModePop() {presentationMode.set('presentation');}
+  function presentationKey(event:KeyboardEvent) {if(event.key==='Escape'&&presentationMode.get()==='lab')openPresentation();}
+  window.addEventListener('popstate',onModePop);window.addEventListener('keydown',presentationKey);
+  labButton.addEventListener('click',()=>{
+    if(presentationMode.get()==='lab')return;
+    presentationMode.set('lab');history.pushState({hsinLabMode:true},'',location.href);
   });
+  presentationButton.addEventListener('click',openPresentation);
+  facialPresent.addEventListener('click',openPresentation);
 
   preset.addEventListener('change', () => applyPreset(preset.value as PresetName));
   btnCompare.addEventListener('click', () => {
@@ -1629,6 +1663,7 @@ async function initializeLab(root: HTMLElement) {
       bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
       gesture: gestureLab?.getDiagnostics() ?? null,
       actingStyle: actingStyle.value,
+      facialActing:faceSession?.diagnostics()??null,signature:signaturePose?.diagnostics()??null,experience:presentationMode.get(),
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
       note: 'Render duration is not FPS or mobile performance verification.',
     };
