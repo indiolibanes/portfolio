@@ -21,8 +21,9 @@ for(let i=0;i<36000;i++){
  assert.equal(s.closeL,s.closeR);assert.ok(s.smileR>.06&&s.smileR<=.12);assert.ok(s.smileL<s.smileR||s.smileL<=.12);
  assert.equal(s.overlays.P_Nose_Up??0,0);assert.equal(s.overlays.P_Nose_Down??0,0);lastEvent=s.event;
 }assert.ok(count>60);
-function events(seed){const c=make({seed}),out=[];let last=null;for(let i=0;i<36000;i++){const s=c.advance(1/60);if(s.event!==last){if(s.event)out.push([s.clock,s.event]);last=s.event;}if(s.event==='wink')assert.equal(s.closeL,0);if(s.event==='wink-left')assert.equal(s.closeR,0);}return out;}
+function events(seed){const c=make({seed}),out=[];let last=null;for(let i=0;i<36000;i++){const s=c.advance(1/60);if(s.event!==last){if(s.event)out.push([s.clock,s.event,c.diagnostics().event.origin]);last=s.event;}if(s.event==='wink')assert.equal(s.closeL,0);if(s.event==='wink-left')assert.equal(s.closeR,0);}return out;}
 const trace=events(39);assert.deepEqual(trace,events(39));assert.notDeepEqual(trace,events(40));assert.ok(trace.some(([,e])=>e==='wink'));assert.ok(trace.some(([,e])=>e==='wink-left'));
+assert.ok(events(1).some(([,e,origin])=>e!=='blink'&&origin==='expression'),'some seeded winks follow an expression');assert.ok(trace.some(([,e,origin])=>e!=='blink'&&origin==='calendar'),'some winks are independent');
 const winks=trace.filter(([,e])=>e!=='blink');assert.ok(winks.length<trace.length/2);for(let i=1;i<winks.length;i++)assert.ok(winks[i][0]-winks[i-1][0]>=22);
 const manual=make({enabled:{blink:false,wink:false}});assert.equal(manual.trigger('wink-left'),true);assert.equal(manual.trigger('blink'),false);let peak=0;for(let i=0;i<90;i++){const s=manual.advance(1/120);assert.equal(s.closeR,0);peak=Math.max(peak,s.closeL);}assert.equal(peak,1);
 // Faster response, longer fixation, retained attention on leave, bounded return.
