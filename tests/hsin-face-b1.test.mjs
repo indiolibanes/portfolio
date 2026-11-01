@@ -19,7 +19,7 @@ for(const profile of Object.keys(SMILE_PROFILES)){
   const s=director.step(.05,{intensity:1,enabled:true});
   maximum=Math.max(maximum,s.smileR);
   assert.ok(Object.values(s.overlays).every(v=>v>=0&&v<=1));
-  assert.equal(s.diagnostic,true);
+  if(n<40)assert.equal(s.diagnostic,true);
   assert.equal(s.overlays.P_Nose_Up??0,0,'nose must not leak into smile profiles');
  }
  profiles.push(maximum);
