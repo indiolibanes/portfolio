@@ -67,6 +67,16 @@ Validação local: regressões Hsin, teste específico do GLB publicado (600 seg
 
 Limites: testes numéricos, rasterização CPU e tamanho do bundle não substituem inspeção WebGL em desktop/mobile. A meta de 30 FPS é um teto de trabalho, não FPS medido nem garantia em um aparelho. Ainda é necessário conferir iluminação, materiais, orbit/zoom/pinch e gestos ao vivo em hardware real, incluindo memória sustentada e perda de contexto. Não houve redução de triângulos ou do rig nesta etapa.
 
+## Retomada e fechamento da entrega — 2026-11-01
+
+- PR #167, empilhado sobre #166. Implementação inicial: `b13d5fb1c8cf8bf261ca1e73c70966c51e48d752`.
+- Prévia imutável desse commit: https://ddcb38f5.kaue.pages.dev/experimentos/hsin/ . Cloudflare Pages confirmou deploy concluído com sucesso.
+- Reexecutados na retomada: 28 arquivos da suíte Hsin passaram, incluindo o teste do GLB V2 com 600 segundos simulados e restauração exata. Os testes privados sem argumento registram skip interno; não equivalem a auditoria privada executada.
+- Build Astro e verificação OG passaram. UX permanece 97/100, com as mesmas três falhas anteriores listadas acima.
+- Na prévia publicada, conferidos pôster, interface e fallback de falha. O console do navegador do Work informa `WebGL2 unavailable`. **WEBGL_VISUAL_QA_BLOCKED / ANDROID_MOTION_QA_PENDING**: sem render 3D válido, sem medição de FPS, sem aceite artístico.
+- A CI passa a executar também em pushes para `experiment/hsin-v2-*`, além do gatilho de pull request.
+- Entrega de código concluída em draft; manter sem merge automático. Aceite visual pendente em desktop e Samsung Internet: enquadramento, zoom/pinch, órbita, pausa/retomada, materiais, expressões, roupas e estabilidade sustentada.
+
 ## Arquivos e responsabilidades
 
 | Grupo | Arquivos |
