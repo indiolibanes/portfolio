@@ -2,11 +2,12 @@ import {createArmClearanceAudit} from './hsin-arm-clearance.mjs';
 import {resolveHsinBones} from './hsin-gesture-ik.mjs';
 import {solveSignatureElbow} from './hsin-left-signature.mjs';
 import {measuredGazeAxes} from './hsin-face-rig.mjs';
+import {createPathTiming} from './hsin-path-timing.mjs';
 /** Hsin adapter: per-side geometry; guarded left route, original right reference. */
 export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
  const opposite=side==='L'?'R':'L';
  const names=['ORG-Bip001Spine2','ORG-Bip001Neck',...['ORG-Bip001UpperArm','ORG-Bip001Forearm','ORG-Bip001Hand','ORG-Bip001Finger1','DEF-Bip001UpperArm','DEF-Bip001Forearm','DEF-Bip001Hand'].map(n=>`${n}.${side}`)];
- const found=resolveHsinBones(bones,names),map=found.resolved;let path=null,candidate=null,reason='Rig do braço selecionado ou calibração ausentes.',metrics={};
+ const found=resolveHsinBones(bones,names),map=found.resolved;let path=null,timing=null,candidate=null,reason='Rig do braço selecionado ou calibração ausentes.',metrics={};
  const changed=names.slice(2,5).concat(names.slice(6)).map(n=>map.get(n)).filter(Boolean),base=new Map(changed.map(b=>[b,b.quaternion.clone()]));
  const v=()=>new THREE.Vector3(),q=()=>new THREE.Quaternion();
  const restore=()=>{for(const[b,value]of base)b.quaternion.copy(value);changed.forEach(b=>b.updateWorldMatrix(true,true));};
@@ -49,13 +50,12 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
   if(error>eyeSpan*.05||flex>148||wristAngle>75||upperAngle>110||separation<eyeSpan*.5||!changed.every(b=>b.quaternion.toArray().every(Number.isFinite)))reason='Limites geométricos excedidos; gesto indisponível.';
   else{candidate=new Map(changed.map(b=>[b,b.quaternion.clone()]));reason='Candidata calculada; colisões, roupas e anatomia aguardam QA visual.';}
  }finally{restore();}
- const quintic=t=>t*t*t*(t*(t*6-15)+10);
  const apply=t=>{
   if(!candidate)return false;const weight=Math.max(0,Math.min(1,t));
   if(weight===0){restore();return true;}
   if(path){
-   let i=0;while(i<path.length-2&&weight>path[i+1].time)i++;
-   const a=path[i],b=path[i+1],mix=quintic((weight-a.time)/(b.time-a.time));
+   // Same poses and waypoint times as before; speed stays continuous through the waypoints instead of stopping at each.
+   const {index,mix}=timing.sample(weight),a=path[index],b=path[index+1];
    for(const bone of changed)bone.quaternion.copy(a.pose.get(bone)).slerp(b.pose.get(bone),mix);
   }else for(const[b,start]of base)b.quaternion.copy(start).slerp(candidate.get(b),weight);
   changed.forEach(b=>b.updateWorldMatrix(true,true));return true;
@@ -83,6 +83,7 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
    if(!depart||!approach){candidate=null;reason='Trajetória esquerda fora dos limites: gesto suspenso.';}
    else{
     path=[{time:0,pose:base},{time:.28,pose:depart},{time:.68,pose:approach},{time:1,pose:final}];
+    timing=createPathTiming(path.map(p=>p.time),path.slice(1).map((p,i)=>Math.hypot(...changed.map(b=>path[i].pose.get(b).angleTo(p.pose.get(b))))));
     const guard=createArmClearanceAudit({THREE,meshes,side,origin:root,outward:right,up,forward,scale:eyeSpan});
     const worst={torso:0,sleeve:0},clearances={torso:Infinity,sleeve:Infinity};let covered=0;const failures=[];
     for(let i=0;i<=48;i++){
@@ -92,7 +93,7 @@ export function createChestPose({THREE,bones,meshes,head,calibration,side='R'}){
     metrics.pathGuard={...guard.diagnostics(),samples:49,failures,worstViolations:worst,minClearance:Object.fromEntries(Object.entries(clearances).map(([k,n])=>[k,Number.isFinite(n)?n:null]))};
     metrics.staging='DEPART_FORWARD_APPROACH_SETTLE';
     metrics.estimatedSurfaceOffset=eyeSpan*2.1;
-    if(!covered||worst.torso||worst.sleeve){candidate=null;path=null;reason='Folga do tórax/manga reprovada: gesto esquerdo suspenso até revisão.';}
+    if(!covered||worst.torso||worst.sleeve){candidate=null;path=null;timing=null;reason='Folga do tórax/manga reprovada: gesto esquerdo suspenso até revisão.';}
     else reason='Trajetória esquerda passou pelo envelope amostrado; manga, busto e cabelo exigem QA visual.';
    }
   }finally{restore();}
