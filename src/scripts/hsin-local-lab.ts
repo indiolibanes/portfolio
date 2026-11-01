@@ -1,6 +1,7 @@
 import {createChestPose,createChestDirector} from './hsin-chest-gesture.mjs';
+import {ARM_ROLES,classifyArmSides,isArmRoleVerified} from './hsin-arm-roles.mjs';
 import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
-import { createPresentationMode } from './hsin-presentation-mode.mjs';
+import { createPresentationMode, resolveLabAccess } from './hsin-presentation-mode.mjs';
 import { createRightSignaturePose } from './hsin-right-signature.mjs';
 import { createPoseTransition } from './hsin-pose-transition.mjs';
 import { createFacialSession } from './hsin-face-session.mjs';
@@ -72,6 +73,7 @@ async function initializeLab(root: HTMLElement) {
 
   // Tiny, original one-pixel PNG: prove whether the deployed HTTP CSP allows
   // local blob: image decoding before loading any third-party GLB.
+  let imagesBlocked = false;
   async function checkBlobImagePermission() {
     const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNw6jkNAAKtAZqQmYllAAAAAElFTkSuQmCC';
     const bytes = Uint8Array.from(atob(png), (character) => character.charCodeAt(0));
@@ -87,6 +89,7 @@ async function initializeLab(root: HTMLElement) {
         (error instanceof Error ? error.message : String(error)) +
         '). Verifique o cabeçalho Content-Security-Policy desta prévia.';
       cspStatus.dataset.state = 'error';
+      imagesBlocked = true;
     } finally {
       URL.revokeObjectURL(url);
     }
@@ -206,6 +209,7 @@ async function initializeLab(root: HTMLElement) {
   let modeRequest = 0;
   let actingSeed=2718;
   let pendingBoneRestore=false;
+  let armSideAudit: ReturnType<typeof classifyArmSides> | null = null;
   let fileMetadata: { name: string; bytes: number } | null = null;
   let currentPreset: PresetName = 'exported';
   let lastCandidate: PresetName = 'smirk_D';
@@ -315,7 +319,7 @@ async function initializeLab(root: HTMLElement) {
 
   async function prepare3D() {
     if (renderer) return;
-    setStatus('Preparando Three.js e WebGL…');
+    setStatus('Preparando a cena…');
     const [three, { GLTFLoader }, { OrbitControls }] = await Promise.all([
       import('three'),
       import('three/addons/loaders/GLTFLoader.js'),
@@ -330,7 +334,8 @@ async function initializeLab(root: HTMLElement) {
       powerPreference: 'low-power',
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setClearColor(0x291814, 1);
+    // The renderer and lights share the character-derived palette; avoid legacy brown/blue flashes.
+    renderer.setClearColor(0x1a0c0a, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // The source declares all character materials as KHR_materials_unlit:
     // ACES tonemapping distorts their base colors and cannot reconstruct absent shaders.
@@ -343,7 +348,7 @@ async function initializeLab(root: HTMLElement) {
     const key = new THREE.DirectionalLight(0xffe3b4, 2.8);
     key.position.set(2, 6, 8);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0x9dbdf5, 1.8);
+    const fill = new THREE.DirectionalLight(0xedab87, 1.8);
     fill.position.set(-4, 3, -5);
     scene.add(fill);
     labLights = [ambient, key, fill];
@@ -1183,14 +1188,14 @@ async function initializeLab(root: HTMLElement) {
     if (!file) return;
     fileInput.disabled = true;
     enableControls(false);
-    setStatus('Lendo GLB local (' + (file.size / 1048576).toFixed(1) + ' MiB). Nenhum upload será realizado…');
+    setStatus('Abrindo o arquivo neste aparelho…');
     try {
       if (!file.name.toLowerCase().endsWith('.glb')) throw new Error('Selecione um arquivo .glb.');
       const bytes = await file.arrayBuffer();
       validateGlb(bytes);
       await prepare3D();
       if (!loader || !scene || !THREE) throw new Error('Three.js não disponível.');
-      setStatus('Interpretando malhas, rig e texturas incorporadas…');
+      setStatus('Preparando Hsin…');
       const parsed = await new Promise<GLTF>((resolve, reject) => {
         loader!.parse(bytes, '', resolve, reject);
       });
@@ -1256,22 +1261,30 @@ async function initializeLab(root: HTMLElement) {
         ' ossos distintos (' + skinInfluence.size + ' com influência direta) · ' +
         names.size + ' morphs nomeados. ' +
         'Renderização e articulação ainda exigem revisão visual.';
-      setStatus('GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.');
+      setStatus(presentationMode.get()==='lab'?'GLB em memória. Se houver apenas silhueta, teste Opacidade diagnóstica e Argila; experimente Frente/Trás.':'');
       actingSeed=crypto.getRandomValues(new Uint32Array(1))[0];
       startFacial();
       signaturePose=createRightSignaturePose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false}});
       signatureTransition=createPoseTransition({pose:signaturePose,invalidate});
+      // Measured while the right arm is still at rest, through the signature pose's own public API.
+      const signatureHandPoint=measureSignatureHand();
       if(presentationMode.get()==='presentation'&&!reducedMotionQuery.matches){applySignature();frameModel('presentation');}
-      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:'L'});
-      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event)});
-      chestAuto.disabled=!chestPose.diagnostics().ready;chestTest.disabled=!chestPose.diagnostics().ready||reducedMotionQuery.matches;
-      chestStatus.textContent=chestPose.diagnostics().reason;chestDetails.textContent=JSON.stringify(chestPose.diagnostics(),null,2);
+      const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:ARM_ROLES.chest.side,companion:signatureHandPoint});
+      // Organic timing per gesture; the hands may compose only while the signature is fully held.
+      chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event),organic:true,compose:()=>(signatureTransition?.weight()??0)>=.999});
+      armSideAudit=auditArmSides();
+      // A clearly mirrored rig would put the chest gesture on the wrong hand: suspend it rather than perform it.
+      const sidesUsable=isArmRoleVerified(armSideAudit);
+      chestAuto.disabled=!chestPose.diagnostics().ready||!sidesUsable;chestTest.disabled=!chestPose.diagnostics().ready||!sidesUsable||reducedMotionQuery.matches;
+      if(!sidesUsable)chestAuto.checked=false;
+      chestStatus.textContent=sidesUsable?chestPose.diagnostics().reason:'Gesto de peito suspenso: '+armSideAudit.reason;
+      chestDetails.textContent=JSON.stringify({armRoles:ARM_ROLES,armSideAudit,...chestPose.diagnostics()},null,2);
       refreshSignature();
       presentationMode.setLoaded(true);
-      setStatus(reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
+      setStatus(imagesBlocked?'Este navegador bloqueou imagens locais; Hsin pode aparecer sem cores.':!sidesUsable?'Gesto esquerdo desativado: não foi possível confirmar a lateralidade deste modelo.':reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
-      setStatus('Falha: ' + (error instanceof Error ? error.message : String(error)));
+      setStatus(presentationMode.get()==='lab'?'Falha: ' + (error instanceof Error ? error.message : String(error)):'Não foi possível abrir este arquivo. Confira se é o GLB da Hsin e tente de novo.');
       enableControls(Boolean(model));
     } finally {
       fileInput.disabled = false;
@@ -1392,6 +1405,38 @@ async function initializeLab(root: HTMLElement) {
     if(element.closest('[data-hsin-morphs]')||element.matches('[data-hsin-preset], [data-hsin-load-pose]'))endFacialForEdit();
   }
   root.addEventListener('input',onFacialAuthorEdit,true);root.addEventListener('change',onFacialAuthorEdit,true);
+  /** Measure, from the loaded rig, which bone suffix sits on the character's anatomical right. */
+  /** Where the right wrist rests in the approved under-chin pose; the pose is restored before returning. */
+  function measureSignatureHand(): [number, number, number] | null {
+    const hand = bones.find((bone) => canonicalHsinBoneName(bone.name) === 'orgbip001handr');
+    if (!signaturePose || !signaturePose.diagnostics().ready || !hand) return null;
+    try {
+      signaturePose.apply(1);
+      hand.updateWorldMatrix(true, false);
+      const point = hand.getWorldPosition(new THREE!.Vector3()).toArray() as [number, number, number];
+      return point.every(Number.isFinite) ? point : null;
+    } finally {
+      signaturePose.restore();
+    }
+  }
+
+  function auditArmSides(): ReturnType<typeof classifyArmSides> {
+    const find = (name: string) => bones.find((bone) => canonicalHsinBoneName(bone.name) === name);
+    const shoulderR = find('orgbip001upperarmr'), shoulderL = find('orgbip001upperarml');
+    const spine = find('orgbip001spine2'), neck = find('orgbip001neck'), headBone = find('orgbip001head');
+    const calibration = faceSession?.diagnostics().calibration;
+    if (!shoulderR || !shoulderL || !spine || !neck || !headBone || !calibration?.ready) {
+      return { status: 'INDETERMINATE', reason: 'Rig ou calibração ocular indisponíveis para auditar a lateralidade.' };
+    }
+    const position = (bone: Bone) => { bone.updateWorldMatrix(true, false); return bone.getWorldPosition(new THREE!.Vector3()); };
+    const root = position(spine), neckPosition = position(neck), headPosition = position(headBone);
+    const eyes = headBone.localToWorld(new THREE!.Vector3(...(calibration.focusCenter as [number, number, number])));
+    const right = position(shoulderR), left = position(shoulderL);
+    return classifyArmSides({
+      root: root.toArray(), up: neckPosition.clone().sub(root).toArray(), forward: eyes.sub(headPosition).toArray(),
+      shoulderR: right.toArray(), shoulderL: left.toArray(), minSeparation: right.distanceTo(left) * .1,
+    });
+  }
   function refreshSignature() {
     const diagnostic=signaturePose?.diagnostics();
     signatureToggle.disabled=!model||!diagnostic?.ready;
@@ -1410,7 +1455,7 @@ async function initializeLab(root: HTMLElement) {
     const ok=chestDirector?.start(director.getState().state==='stopped'&&!legacy?.animating&&!legacy?.picking&&!signatureTransition?.busy());
     chestStatus.textContent=ok?'Gesto candidato iniciado. Confira frente, 3/4 e lateral.':'Aguarde outro gesto ou restaure primeiro o braço esquerdo.';
   });
-  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,onChange:(mode:string)=>{
+  const presentationMode=createPresentationMode({root,panel:laboratory,presentationButton,labButton,access:resolveLabAccess(window.location.search),onChange:(mode:string)=>{
     if(mode==='presentation'){const options=root.querySelector<HTMLDetailsElement>('[data-hsin-options]');if(options)options.open=false;}
     if(mode==='presentation'&&model){
       director.stop();gestureLab?.stopMotion();gestureLab?.cancelTargetSelection();gestureLab?.setMarkerVisible(false);
@@ -1431,7 +1476,7 @@ async function initializeLab(root: HTMLElement) {
   window.addEventListener('popstate',onModePop);window.addEventListener('keydown',presentationKey);
   labButton.addEventListener('click',()=>{
     if(presentationMode.get()==='lab')return;
-    presentationMode.set('lab');history.pushState({hsinLabMode:true},'',location.href);
+    if(presentationMode.set('lab'))history.pushState({hsinLabMode:true},'',location.href);
   });
   presentationButton.addEventListener('click',openPresentation);
   facialPresent.addEventListener('click',openPresentation);
@@ -1742,7 +1787,7 @@ async function initializeLab(root: HTMLElement) {
         FACE_NAMES.filter((name) => getMorph(name) !== null).map((name) => [name, getMorph(name)]),
       ),
       bones: { total: bones.length, directlyWeighted: skinInfluence.size, changed: changes },
-      gesture: gestureLab?.getDiagnostics() ?? null, chestGesture:chestDirector?.diagnostics()??null,
+      gesture: gestureLab?.getDiagnostics() ?? null, chestGesture:chestDirector?.diagnostics()??null, armRoles:{table:ARM_ROLES,audit:armSideAudit},
       actingStyle: actingStyle.value,
       facialActing:faceSession?.diagnostics()??null,signature:signaturePose?.diagnostics()??null,experience:presentationMode.get(),
       skinnedMeshes: skinned.length, renderFrameMs: renderTime,
