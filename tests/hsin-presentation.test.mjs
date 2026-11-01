@@ -1,3 +1,4 @@
+import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {createFacialActing} from '../src/scripts/hsin-face-acting.mjs';
@@ -34,4 +35,8 @@ const modes=createPresentationMode({root,panel,presentationButton:present,labBut
 // Two-bone geometry respects exact lengths; unreachable and degenerate poles refuse.
 const origin=new THREE.Vector3(),target=new THREE.Vector3(.1,.2,0),solution=solveSignatureElbow(THREE,origin,target,.22,.22,new THREE.Vector3(1,-1,1));assert.ok(solution);assert.ok(Math.abs(solution.elbow.distanceTo(origin)-.22)<1e-10);assert.ok(Math.abs(solution.elbow.distanceTo(target)-.22)<1e-10);assert.equal(solveSignatureElbow(THREE,origin,new THREE.Vector3(1,0,0),.22,.22,new THREE.Vector3(0,1,0)),null);
 const absent=createLeftSignaturePose({THREE,bones:[],meshes:[],head:null,calibration:{ready:false}});assert.equal(absent.apply(),false);assert.equal(absent.diagnostics().ready,false);absent.restore();
+// HTML/TS boundary: the hidden lab still must supply every required controller element.
+const html=await readFile(new URL('../src/pages/experimentos/hsin-lab/index.astro',import.meta.url),'utf8'),source=await readFile(new URL('../src/scripts/hsin-local-lab.ts',import.meta.url),'utf8');
+for(const match of source.matchAll(/q<[^;\n]+?>\('(\[data-[^\]]+\])'\)/g)){const attribute=match[1].slice(1,-1);assert.ok(html.includes(attribute),'Required lab element missing: '+attribute);}
+assert.ok(html.includes('data-hsin-laboratory hidden'));
 console.log('Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch, clean mode boundary and left-chain geometry PASS');
