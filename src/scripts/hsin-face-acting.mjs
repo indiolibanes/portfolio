@@ -1,3 +1,4 @@
+import {createAutoB1Director} from './hsin-iconic-expressions.mjs';
 import { createPresentationExpression, PRESENTATION_ATTENTION } from './hsin-face-presentation.mjs';
 import { createFacialB1Director } from './hsin-face-b1.mjs';
 import { createAttentionDirector, createExpressionDirector } from './hsin-face-pass-b.mjs';
@@ -8,9 +9,9 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   let random=seed>>>0, clock=0, lid=null, gaze=[0,0,0], target=[0,0,0], attentionUntil=0;
   let flags={blink:true,wink:true,smirk:true,gaze:true,...enabled};
   let level=Number.isFinite(intensity)?clamp(intensity,0,1):.55,mode=attentionMode;
-  const presentation=pass==='presentation'||pass==='b1';
+  const presentation=pass==='presentation'||pass==='b1'||pass==='auto-b1';
   const attention=createAttentionDirector({seed:seed^0x5ac3,axes:gazeAxes,timing:presentation?PRESENTATION_ATTENTION:{}});
-  const expressionFactory=pass==='b1'?createFacialB1Director:presentation?createPresentationExpression:createExpressionDirector;
+  const expressionFactory=pass==='auto-b1'?createAutoB1Director:pass==='b1'?createFacialB1Director:presentation?createPresentationExpression:createExpressionDirector;
   const expressions=expressionFactory({seed:seed^0x77ac,limits:morphLimits});
   let extra={smileR:0,smileL:0,overlays:{},isolated:false};
   const useB=()=>(pass==='b'||presentation)&&level>0;
@@ -19,6 +20,8 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   const blinkDelay=()=>presentation?range(5,10):range(3.4,7.8);
   let nextBlink=presentation?range(5,10):range(3.4,6.8), nextWink=range(18,30);
   let winkFallback=nextWink+(presentation?range(2,5):0);
+  let autoWinkSide='wink';
+  function automaticWink(origin){const kind=pass==='auto-b1'?autoWinkSide:(rng()<.5?'wink-left':'wink');if(trigger(kind,origin)&&pass==='auto-b1')autoWinkSide=kind==='wink'?'wink-left':'wink';}
   function trigger(kind,origin='manual') {
     if(kind==='wink-right')kind='wink';
     if(lid || !['blink','wink','wink-left'].includes(kind))return false;
@@ -39,18 +42,18 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     const smile=flags.smirk ? smooth(clock/2)*(.055+.045*Math.sin(clock*.42)) : 0;
     return {closeR:lid?.kind==='wink-left'?0:closure,closeL:lid?.kind==='wink'?0:closure,
       smileR:useB()?extra.smileR:smile,smileL:useB()?extra.smileL:smile*.18,
-      policy:pass==='b1'?'b1':useB()?'b':'a',...(pass==='b1'?{diagnostic:!!extra.diagnostic}:{}),overlays:useB()?extra.overlays:{},gaze:useB()&&extra.isolated?[0,0,0]:[...gaze],clock,event:lid?.kind??null};
+      policy:pass==='b1'||pass==='auto-b1'?'b1':useB()?'b':'a',...(['b1','auto-b1'].includes(pass)?{diagnostic:!!extra.diagnostic,authored:!!extra.authored}:{}),overlays:useB()?extra.overlays:{},gaze:useB()&&extra.isolated?[0,0,0]:[...gaze],clock,event:lid?.kind??null};
   }
   return {
     advance(dt) {
       if(!Number.isFinite(dt)||dt<0)throw Error('Facial dt must be finite and nonnegative.');
       dt=Math.min(dt,.1);clock+=dt;
       if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {lid=null;nextBlink=clock+blinkDelay();}
-      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){trigger(presentation&&rng()<.5?'wink-left':'wink','calendar');}}
+      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink','calendar');else if((!useB()||presentation)&&flags.wink&&clock>=(presentation?winkFallback:nextWink)){presentation?automaticWink('calendar'):trigger('wink','calendar');}}
       if(clock>attentionUntil)target=[0,0,0];
       if(useB()) {
-        extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1});
-        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))trigger(presentation&&rng()<.5?'wink-left':'wink','expression');
+        extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1,attending:clock<=attentionUntil&&Math.hypot(...target)>.02});
+        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))presentation?automaticWink('expression'):trigger('wink','expression');
         if(extra.isolated){attention.reset();gaze=[0,0,0];}
         else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral'});
       }else {
@@ -74,7 +77,7 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     },
     signal(event){if(['gesture:prepare','gesture:hold','gesture:release'].includes(event))expressions.signal(event);},
     testMorph(name,strength){return useB()&&!lid&&expressions.testMorph(name,strength);},
-    testSmileProfile(name,strength=1){return pass==='b1'&&!lid&&expressions.testProfile(name,strength);},
+    testSmileProfile(name,strength=1){return (pass==='b1'||pass==='auto-b1')&&!lid&&expressions.testProfile(name,strength);},
     testBeat(kind){return useB()&&!lid&&expressions.testBeat(kind);},
     sample,
     diagnostics(){return {clock,event:lid?{...lid}:null,nextBlink,nextWink,flags:{...flags},gaze:[...gaze],pass,intensity:level,attentionMode:mode,attention:attention.diagnostics(),expressions:expressions.diagnostics()};},
