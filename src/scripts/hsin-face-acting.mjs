@@ -1,3 +1,4 @@
+import { createPresentationExpression, PRESENTATION_ATTENTION } from './hsin-face-presentation.mjs';
 import { createAttentionDirector, createExpressionDirector } from './hsin-face-pass-b.mjs';
 /** Pure, deterministic facial clock. Eye events share one arbiter; mouth/gaze own separate channels. */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -6,17 +7,20 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   let random=seed>>>0, clock=0, lid=null, gaze=[0,0,0], target=[0,0,0], attentionUntil=0;
   let flags={blink:true,wink:true,smirk:true,gaze:true,...enabled};
   let level=Number.isFinite(intensity)?clamp(intensity,0,1):.55,mode=attentionMode;
-  const attention=createAttentionDirector({seed:seed^0x5ac3,axes:gazeAxes});
-  const expressions=createExpressionDirector({seed:seed^0x77ac,limits:morphLimits});
+  const presentation=pass==='presentation';
+  const attention=createAttentionDirector({seed:seed^0x5ac3,axes:gazeAxes,timing:presentation?PRESENTATION_ATTENTION:{}});
+  const expressions=(presentation?createPresentationExpression:createExpressionDirector)({seed:seed^0x77ac,limits:morphLimits});
   let extra={smileR:0,smileL:0,overlays:{},isolated:false};
-  const useB=()=>pass==='b'&&level>0;
+  const useB=()=>(pass==='b'||presentation)&&level>0;
   const rng=()=>{random=(Math.imul(1664525,random)+1013904223)>>>0;return random/4294967296;};
   const range=(a,b)=>a+(b-a)*rng();
-  let nextBlink=range(3.4,6.8), nextWink=range(18,30);
+  const blinkDelay=()=>presentation?range(5,10):range(3.4,7.8);
+  let nextBlink=presentation?range(5,10):range(3.4,6.8), nextWink=range(18,30);
   function trigger(kind) {
-    if(lid || !['blink','wink'].includes(kind))return false;
-    const wink=kind==='wink';
-    if(wink)nextWink=clock+range(18,32);
+    if(kind==='wink-right')kind='wink';
+    if(lid || !['blink','wink','wink-left'].includes(kind))return false;
+    const wink=kind!=='blink';
+    if(wink)nextWink=clock+(presentation?range(22,44):range(18,32));
     lid={kind,start:clock,close:wink?.12:range(.075,.105),hold:wink?range(.16,.24):range(.022,.042),open:wink?range(.24,.32):range(.145,.205)};
     return true;
   }
@@ -30,7 +34,7 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
   function sample() {
     const closure=useB()&&extra.isolated?0:closureValue();
     const smile=flags.smirk ? smooth(clock/2)*(.055+.045*Math.sin(clock*.42)) : 0;
-    return {closeR:closure,closeL:lid?.kind==='wink'?0:closure,
+    return {closeR:lid?.kind==='wink-left'?0:closure,closeL:lid?.kind==='wink'?0:closure,
       smileR:useB()?extra.smileR:smile,smileL:useB()?extra.smileL:smile*.18,
       policy:useB()?'b':'a',overlays:useB()?extra.overlays:{},gaze:useB()&&extra.isolated?[0,0,0]:[...gaze],clock,event:lid?.kind??null};
   }
@@ -38,12 +42,12 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     advance(dt) {
       if(!Number.isFinite(dt)||dt<0)throw Error('Facial dt must be finite and nonnegative.');
       dt=Math.min(dt,.1);clock+=dt;
-      if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {lid=null;nextBlink=clock+range(3.4,7.8);}
-      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink');else if(!useB()&&flags.wink&&clock>=nextWink){trigger('wink');}}
+      if(lid && clock>=lid.start+lid.close+lid.hold+lid.open) {lid=null;nextBlink=clock+blinkDelay();}
+      if(!lid&&!(useB()&&expressions.isLab())){if(flags.blink&&clock>=nextBlink)trigger('blink');else if((!useB()||presentation)&&flags.wink&&clock>=nextWink){trigger(presentation&&rng()<.5?'wink-left':'wink');}}
       if(clock>attentionUntil)target=[0,0,0];
       if(useB()) {
         extra=expressions.step(dt,{intensity:level,enabled:flags.smirk,closed:closureValue()>.1});
-        if(extra.wink&&flags.wink)trigger('wink');
+        if(extra.wink&&flags.wink&&(!presentation||clock>=nextWink))trigger(presentation&&rng()<.5?'wink-left':'wink');
         if(extra.isolated){attention.reset();gaze=[0,0,0];}
         else gaze=attention.step(dt,flags.gaze?target:[0,0,0],{intensity:level,closed:closureValue()>.1,mode:flags.gaze?mode:'neutral'});
       }else {
@@ -54,9 +58,9 @@ export function createFacialActing({seed=2718,enabled={},pass='a',intensity=.55,
     },
     attention(vector,seconds=1.3) {
       if(!Array.isArray(vector)||vector.length!==3||!vector.every(Number.isFinite))return false;
-      const length=Math.hypot(...vector), dead=.08;
+      const length=Math.hypot(...vector), dead=presentation?.035:.08;
       const strength=length<=dead?0:Math.min(1,(length-dead)/(1-dead))*.24;
-      target=vector.map(v=>length? v/length*strength:0);attentionUntil=clock+clamp(seconds,0,2);return true;
+      target=vector.map(v=>length? v/length*strength:0);attentionUntil=clock+clamp(seconds,0,presentation?5:2);return true;
     },
     clearAttention(){target=[0,0,0];attentionUntil=clock;},
     trigger,
