@@ -11,7 +11,7 @@ import '../../../styles/hsin-local-lab.css';
     <header class="hsin-lab__head">
       <p class="hsin-lab__eyebrow">Experimentos / Hsin / Fase 02 · G1–G2</p>
       <h1>The Moon Fox's Smirk</h1>
-      <p class="hsin-lab__version">Bancada v1.0.9 · Character Acting / Android</p>
+      <p class="hsin-lab__version">Facial Acting Pass A · candidata / Android</p>
       <p>Bancada privada de inspeção facial e esquelética. O GLB é selecionado <strong>no seu aparelho</strong>, lido em memória pelo navegador e nunca enviado ao servidor.</p>
       <p><a href="/experimentos/">← Voltar ao palco 2.5D</a></p>
     </header>
@@ -25,6 +25,7 @@ import '../../../styles/hsin-local-lab.css';
     <section class="hsin-lab__shell" aria-label="Bancada 3D">
       <div class="hsin-lab__viewer">
         <div class="hsin-lab__viewport" data-hsin-viewport role="img" aria-label="Visualização tridimensional do arquivo escolhido. Use os controles para girar, ampliar ou enquadrar o rosto.">
+          <p class="hsin-lab__presentation-hint">Arraste para explorar. O olhar reage ao cursor ou a um toque breve. Voltar no aparelho ou Esc encerra a prévia do autor.</p>
           <div class="hsin-lab__placeholder" data-hsin-placeholder>Selecione o GLB no aparelho para ativar a visualização 3D.</div>
         </div>
         <div class="hsin-lab__viewerbar">
@@ -45,6 +46,27 @@ import '../../../styles/hsin-local-lab.css';
           <p data-hsin-status role="status" aria-live="polite">Nenhum arquivo carregado.</p>
           <p class="hsin-lab__small" data-hsin-summary>Pronto para inspecionar o modelo local.</p>
         </div>
+
+        <section class="hsin-lab__group" aria-labelledby="hsin-facial-title">
+          <h2 id="hsin-facial-title">02A · Atuação facial — Pass A</h2>
+          <p class="hsin-lab__small">Após carregar o GLB, a candidata usa sua expressão atual como referência. A piscadela usa R do modelo; valide o lado na personagem. Olhar e sorriso têm amplitude limitada e continuam experimentais. Ajustar um morph encerra a candidata e restaura a referência antes do ajuste.</p>
+          <div class="hsin-lab__view-actions">
+            <button type="button" data-hsin-facial-run aria-pressed="false" disabled>Iniciar atuação facial</button>
+            <button type="button" data-hsin-facial-blink disabled>Testar piscada bilateral</button>
+            <button type="button" data-hsin-facial-wink disabled>Testar piscadela direita</button>
+            <button type="button" data-hsin-facial-ab disabled>Comparar A/B facial</button>
+            <button type="button" data-hsin-facial-restore disabled>Restaurar estado anterior exato</button>
+            <button type="button" data-hsin-facial-present disabled>Ver apresentação local</button>
+          </div>
+          <div class="hsin-lab__facial-channels">
+            <label><input type="checkbox" data-hsin-facial-channel="blink" checked disabled /> Piscadas</label>
+            <label><input type="checkbox" data-hsin-facial-channel="wink" checked disabled /> Piscadela</label>
+            <label><input type="checkbox" data-hsin-facial-channel="smirk" checked disabled /> Sorriso</label>
+            <label><input type="checkbox" data-hsin-facial-channel="gaze" checked disabled /> Atenção visual</label>
+          </div>
+          <p data-hsin-facial-status role="status" aria-live="polite">Escolha o arquivo local para iniciar. Toque no Android dá atenção temporária; arrastar continua movendo a câmera.</p>
+          <details><summary>Diagnóstico da atuação facial</summary><pre data-hsin-facial-details class="hsin-lab__inventory">Aguardando modelo.</pre></details>
+        </section>
 
         <details class="hsin-lab__group">
           <summary>02 · Expressão facial</summary>
