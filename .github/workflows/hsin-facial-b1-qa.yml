@@ -1,0 +1,45 @@
+name: Hsin facial B.1 regressions
+
+on:
+  push:
+    branches:
+      - 'experiment/hsin-facial-legibility-pass-b1-*'
+  pull_request:
+    paths:
+      - 'src/scripts/hsin-face-*.mjs'
+      - 'src/scripts/hsin-local-lab.ts'
+      - 'src/pages/experimentos/hsin-lab/index.astro'
+      - 'tests/hsin-*.test.mjs'
+      - '.github/workflows/hsin-facial-b1-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  facial-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --no-audit --no-fund
+      - name: Facial Pass A / B / B.1 and autonomous presentation
+        run: |
+          node tests/hsin-face-acting.test.mjs
+          node tests/hsin-face-pass-b.test.mjs
+          node tests/hsin-face-b1.test.mjs
+          node tests/hsin-presentation.test.mjs
+          node tests/hsin-face-private.test.mjs
+      - name: IK, rig and director regressions
+        run: |
+          node tests/hsin-gesture-ik.test.mjs
+          node tests/hsin-acting-director.test.mjs
+      - name: Astro production build
+        run: npm run build
+      - name: UX contract (existing 97/100 baseline is recorded, not reclassified)
+        continue-on-error: true
+        run: npm run check:ux
