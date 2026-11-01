@@ -1,5 +1,5 @@
 import {createChestPose,createChestDirector} from './hsin-chest-gesture.mjs';
-import {ARM_ROLES,classifyArmSides} from './hsin-arm-roles.mjs';
+import {ARM_ROLES,classifyArmSides,isArmRoleVerified} from './hsin-arm-roles.mjs';
 import {createAtmosphereTexture} from './hsin-atmosphere.mjs';
 import { createPresentationMode, resolveLabAccess } from './hsin-presentation-mode.mjs';
 import { createRightSignaturePose } from './hsin-right-signature.mjs';
@@ -334,7 +334,8 @@ async function initializeLab(root: HTMLElement) {
       powerPreference: 'low-power',
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setClearColor(0x291814, 1);
+    // The renderer and lights share the character-derived palette; avoid legacy brown/blue flashes.
+    renderer.setClearColor(0x1a0c0a, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // The source declares all character materials as KHR_materials_unlit:
     // ACES tonemapping distorts their base colors and cannot reconstruct absent shaders.
@@ -347,7 +348,7 @@ async function initializeLab(root: HTMLElement) {
     const key = new THREE.DirectionalLight(0xffe3b4, 2.8);
     key.position.set(2, 6, 8);
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0x9dbdf5, 1.8);
+    const fill = new THREE.DirectionalLight(0xedab87, 1.8);
     fill.position.set(-4, 3, -5);
     scene.add(fill);
     labLights = [ambient, key, fill];
@@ -1273,14 +1274,14 @@ async function initializeLab(root: HTMLElement) {
       chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event),organic:true,compose:()=>(signatureTransition?.weight()??0)>=.999});
       armSideAudit=auditArmSides();
       // A clearly mirrored rig would put the chest gesture on the wrong hand: suspend it rather than perform it.
-      const sidesUsable=armSideAudit.status!=='MIRRORED';
+      const sidesUsable=isArmRoleVerified(armSideAudit);
       chestAuto.disabled=!chestPose.diagnostics().ready||!sidesUsable;chestTest.disabled=!chestPose.diagnostics().ready||!sidesUsable||reducedMotionQuery.matches;
       if(!sidesUsable)chestAuto.checked=false;
       chestStatus.textContent=sidesUsable?chestPose.diagnostics().reason:'Gesto de peito suspenso: '+armSideAudit.reason;
       chestDetails.textContent=JSON.stringify({armRoles:ARM_ROLES,armSideAudit,...chestPose.diagnostics()},null,2);
       refreshSignature();
       presentationMode.setLoaded(true);
-      setStatus(imagesBlocked?'Este navegador bloqueou imagens locais; Hsin pode aparecer sem cores.':reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
+      setStatus(imagesBlocked?'Este navegador bloqueou imagens locais; Hsin pode aparecer sem cores.':!sidesUsable?'Gesto esquerdo desativado: não foi possível confirmar a lateralidade deste modelo.':reducedMotionQuery.matches?'Movimento reduzido ativo.':'');
     } catch (error) {
       console.error('Hsin GLB load failed', error);
       setStatus(presentationMode.get()==='lab'?'Falha: ' + (error instanceof Error ? error.message : String(error)):'Não foi possível abrir este arquivo. Confira se é o GLB da Hsin e tente de novo.');
