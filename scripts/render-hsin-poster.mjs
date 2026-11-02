@@ -3,6 +3,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import sharp from 'sharp';
+import {execFileSync} from 'node:child_process';
 import {MOONLIT,createMoonlitEnvironment} from '../src/scripts/hsin-moonlit-environment.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from '../src/scripts/hsin-cinematic-idle.mjs';
@@ -15,7 +16,8 @@ if(!input||!output)throw Error('Usage: node scripts/render-hsin-poster.mjs MODEL
 const W=Number(width),H=Number(height);
 const options=Object.fromEntries(process.argv.slice(6).map(arg=>arg.replace(/^--/,'').split('=')));
 const cinematic=options.profile==='cinematic';
-const rich=options.terrace==='rich',transparent=options.transparent==='1';
+const rich=options.terrace==='rich',transparent=options.transparent==='1',baseline=options.scene==='baseline',baselineRef='f100ed00b5025f26e83d9fbf63259d0d8d8b59f1';
+const environmentFactory=baseline?(await import('data:text/javascript;base64,'+Buffer.from(execFileSync('git',['show',baselineRef+':src/scripts/hsin-lunar-terrace.mjs'],{encoding:'utf8'}).replace("'./hsin-moonlit-environment.mjs'",JSON.stringify(new URL('../src/scripts/hsin-moonlit-environment.mjs',import.meta.url).href))).toString('base64'))).createLunarTerrace:createLunarTerrace;
 if(!(W>0&&H>0&&W*H<=2500000))throw Error('Invalid CPU preview dimensions');
 globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});globalThis.ProgressEvent=class{};
 const data=await readFile(input),jsSize=data.readUInt32LE(12),json=JSON.parse(data.subarray(20,20+jsSize).toString()),binary=data.subarray(28+jsSize);
@@ -36,11 +38,11 @@ if(options.gesture){
 }
 async function decode(path){return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});}
 const resource=rich?LUNAR_TERRACE:MOONLIT,sky=transparent?null:await decode(new URL('../public'+resource.sky,import.meta.url).pathname);
-async function cpuTexture(url){const t=new T.Texture();t.colorSpace=T.SRGBColorSpace;t.userData.cpu=await decode(new URL('../public'+url,import.meta.url).pathname);return t;}
+async function cpuTexture(url){const t=new T.Texture();t.colorSpace=T.SRGBColorSpace;t.userData.cpu=await decode(baseline?execFileSync('git',['show',baselineRef+':public'+url],{maxBuffer:2e6}):new URL('../public'+url,import.meta.url).pathname);return t;}
 let env={group:new T.Group(),frameSky(){},fog:new T.Fog(0x273b53,10,42)};
 if(!transparent){
  const moonTexture=await cpuTexture(resource.moon);
- env=rich?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),waterTexture:await cpuTexture(LUNAR_TERRACE.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
+ env=rich?environmentFactory({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),waterTexture:baseline?undefined:await cpuTexture(LUNAR_TERRACE.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
  if(options.terrace==='bare'){const floor=new T.Mesh(new T.PlaneGeometry(22,14),new T.MeshBasicMaterial({color:0x354254}));floor.rotation.x=-Math.PI/2;floor.position.z=3;env.group.add(floor);}
  if(!rich&&options.terrace!=='bare'){
   const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;env.group.add(platform);

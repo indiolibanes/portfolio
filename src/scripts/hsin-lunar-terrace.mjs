@@ -50,7 +50,7 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   const outline=[[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0]],rings=[];
   for(const [scale,lift,curve]of [[1,0,.13],[.76,.18,.035],[.34,.86,0]])rings.push(outline.map(([a,b])=>[x+a*w*.5*scale,y+h*lift+curve*Math.abs(a*b),z+b*d*.5*scale]));
   const p=[];for(let r=0;r<2;r++)for(let i=0;i<8;i++){const j=(i+1)%8;for(const v of [rings[r][i],rings[r+1][i],rings[r+1][j],rings[r][i],rings[r+1][j],rings[r][j]])p.push(...v);}
-  for(let i=0;i<8;i++)for(const v of [[x,y+h,z],rings[2][i],rings[2][(i+1)%8]])p.push(...v);
+  for(let i=0;i<8;i++)for(const v of [[x,y+h,z],rings[2][(i+1)%8],rings[2][i]])p.push(...v);
   const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(p,3));roofParts.push({geometry,hex});
   // A thin ridge cap and two dark fascia strips suggest tiles without modelling each tile.
   box(roofParts,x,y+h+.014,z,w*.42,.028,.045,0x7f7457);

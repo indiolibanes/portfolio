@@ -22,6 +22,8 @@ on:
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/generate-hsin-terrace.mjs'
       - 'scripts/render-hsin-terrace-qa.mjs'
+      - 'scripts/render-hsin-refinement-qa.mjs'
+      - 'scripts/bake-hsin-framing.mjs'
       - 'scripts/render-hsin-poster.mjs'
       - 'scripts/bake-hsin-cinematic-idle.mjs'
       - 'public/_headers'
@@ -49,6 +51,8 @@ jobs:
         run: node tests/hsin-cinematic-idle.test.mjs
       - name: Lunar Terrace V2.0.1 root orientation, acting preservation and static budgets
         run: node tests/hsin-lunar-terrace.test.mjs
+      - name: Cinematic profile refinement and five responsive camera aspects
+        run: node tests/hsin-lunar-refinement.test.mjs
       - name: Facial Pass A / B / B.1 and autonomous presentation
         run: |
           node tests/hsin-face-acting.test.mjs
@@ -85,7 +89,9 @@ jobs:
       - name: Astro production build
         run: npm run build
       - name: Built scenery textures remain intact
-        run: HSIN_CHECK_DIST=1 node tests/hsin-lunar-terrace.test.mjs
+        run: |
+          HSIN_CHECK_DIST=1 node tests/hsin-lunar-terrace.test.mjs
+          HSIN_CHECK_DIST=1 node tests/hsin-lunar-refinement.test.mjs
       - name: UX contract (existing 97/100 baseline is recorded, not reclassified)
         continue-on-error: true
         run: npm run check:ux

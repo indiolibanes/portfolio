@@ -1,0 +1,194 @@
+{
+  "studies": [
+    {
+      "bodyApparentYaw": 60,
+      "headApparentYaw": 30,
+      "rootDegrees": -52,
+      "neckDegrees": 4,
+      "headDegrees": 18.8,
+      "cameraAzimuth": 8,
+      "cameraTargetOffset": [
+        0,
+        0,
+        0
+      ],
+      "legacy": false,
+      "measuredFaceYaw": 30.14555339038461
+    },
+    {
+      "bodyApparentYaw": 65,
+      "headApparentYaw": 35,
+      "rootDegrees": -57,
+      "neckDegrees": 4,
+      "headDegrees": 18.8,
+      "cameraAzimuth": 8,
+      "cameraTargetOffset": [
+        0,
+        0,
+        0
+      ],
+      "legacy": false,
+      "measuredFaceYaw": 35.14555339038464
+    },
+    {
+      "bodyApparentYaw": 70,
+      "headApparentYaw": 40,
+      "rootDegrees": -62,
+      "neckDegrees": 4,
+      "headDegrees": 18.8,
+      "cameraAzimuth": 8,
+      "cameraTargetOffset": [
+        0,
+        0,
+        0
+      ],
+      "legacy": false,
+      "measuredFaceYaw": 40.14555339038462
+    },
+    {
+      "bodyApparentYaw": 75,
+      "headApparentYaw": 45,
+      "rootDegrees": -67,
+      "neckDegrees": 4,
+      "headDegrees": 18.8,
+      "cameraAzimuth": 8,
+      "cameraTargetOffset": [
+        0,
+        0,
+        0
+      ],
+      "legacy": false,
+      "measuredFaceYaw": 45.145553390384606
+    }
+  ],
+  "handFace": [
+    {
+      "weight": 0.85,
+      "before": 0.1427203412634669,
+      "after": 0.14127657909601687,
+      "delta": -0.0014437621674500134
+    },
+    {
+      "weight": 1,
+      "before": 0.06091116997751844,
+      "after": 0.0601741974256656,
+      "delta": -0.0007369725518528436
+    }
+  ],
+  "viewports": [
+    {
+      "w": 320,
+      "h": 740,
+      "perspectiveFaceYaw": 41.66145382993993,
+      "distance": 4.65,
+      "target": [
+        0.15844289099865125,
+        0.88,
+        -0.02226769615361047
+      ],
+      "portrait": true,
+      "fullEnvelopeDistance": 5.894920450281174,
+      "peripheralCrop": true
+    },
+    {
+      "w": 393,
+      "h": 852,
+      "perspectiveFaceYaw": 41.66145382993993,
+      "distance": 4.65,
+      "target": [
+        0.15844289099865125,
+        0.88,
+        -0.02226769615361047
+      ],
+      "portrait": true,
+      "fullEnvelopeDistance": 5.541931202078445,
+      "peripheralCrop": true
+    },
+    {
+      "w": 768,
+      "h": 1024,
+      "perspectiveFaceYaw": 42.155284858592,
+      "distance": 3.503991076041115,
+      "target": [
+        0.15844289099865125,
+        0.88,
+        -0.02226769615361047
+      ],
+      "portrait": true,
+      "fullEnvelopeDistance": 3.503991076041115,
+      "peripheralCrop": false
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "perspectiveFaceYaw": 41.19525748720316,
+      "distance": 3.4464244647946964,
+      "target": [
+        0.09902680687415705,
+        0.88,
+        -0.013917310096006545
+      ],
+      "portrait": false,
+      "fullEnvelopeDistance": 3.4464244647946964,
+      "peripheralCrop": false
+    },
+    {
+      "w": 1920,
+      "h": 1080,
+      "perspectiveFaceYaw": 41.19525748720316,
+      "distance": 3.4464244647946964,
+      "target": [
+        0.09902680687415705,
+        0.88,
+        -0.013917310096006545
+      ],
+      "portrait": false,
+      "fullEnvelopeDistance": 3.4464244647946964,
+      "peripheralCrop": false
+    }
+  ],
+  "gpuMeasured": false,
+  "previousFaceYaw": 22.653706303861313,
+  "meshes": 12,
+  "triangles": 4254,
+  "structuralPasses": 22,
+  "textureBytes": 104546,
+  "estimatedTextureMiB": 9.999999999999998,
+  "textures": [
+    {
+      "url": "/assets/scenes/hsin/night-sky-v201.webp",
+      "bytes": 5740,
+      "width": 1024,
+      "height": 512,
+      "sha256": "3d7b07c5413e54b91dad95907561413e2170dd87bb798f1a5e897b908e0d60a6"
+    },
+    {
+      "url": "/assets/scenes/hsin/golden-moon-v201.webp",
+      "bytes": 50000,
+      "width": 512,
+      "height": 512,
+      "sha256": "15a181657219989fc99ad0576c558893f13b9c5afb09a1f8031e13ebcac446fc"
+    },
+    {
+      "url": "/assets/scenes/hsin/stone-v201.webp",
+      "bytes": 28812,
+      "width": 1024,
+      "height": 1024,
+      "sha256": "d1aacad55f07e3fbef18a6f65a19246db942678ae3db05ed64197a6f45244063"
+    },
+    {
+      "url": "/assets/scenes/hsin/terrace-atlas-v201.webp",
+      "bytes": 17692,
+      "width": 512,
+      "height": 256,
+      "sha256": "fa872a26d1d15472bbd259b011c7499d4058417912e7feed21ea9a54151b746b"
+    },
+    {
+      "url": "/assets/scenes/hsin/water-v201.webp",
+      "bytes": 2302,
+      "width": 512,
+      "height": 256,
+      "sha256": "b521188aaa7a2b67be66e3bfa308f5c579e8aa04a95047ea28d87411935f97f1"
+    }
+  ]
+}
