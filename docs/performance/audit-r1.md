@@ -26,6 +26,10 @@ O código-base tem `createStageLoop`, `pixelRatio` e `createStageMetrics`; o PR 
 
 A cadeia de branches contém `shorekeeper-sk-lab.mjs`, módulos `shorekeeper/{stage,inspection,local-model,director}.mjs`, UI `/experimentos/sk/` e carregamento privado pela File API; nada disso aparece como rota na `main` consultada. Executar QA com GLB local autorizado, especialmente listeners, observers, decomposição de resources e cenas após troca de abas. **NOT_TESTED** aqui; não declarar funcionalidade aprovada no Chrome/Samsung Internet sem evidência.
 
+#### Descoberta adicional — scheduler da Shorekeeper (source finding)
+
+Na branch `experiment/shorekeeper-f15-private-runtime-2026-11-02@580deae49860fdcd0350789be69f42f4b17836ee`, `src/scripts/shorekeeper-sk-lab.mjs`, função `frame(now)` (~linha 103), solicita `requestAnimationFrame(frame)` **antes** de verificar `document.hidden || suspended || state.contextLost || !stage`. Assim, o scheduler permanece ativo quando `suspended` for verdadeiro em aba visível; com a cena ativa, `stage.draw()` é chamado após o limitador de FPS mesmo quando `director.state.phase==='idle'`. **Evidência estática de trabalho potencialmente redundante, sem quantificação de CPU/GPU**. A correção pertence a uma revisão da branch da Shorekeeper, preservando o modo de inspeção e reativação na interação, e exige testes de pausa, contexto, entrada/saída e gestos. Não editar esse runtime neste PR.
+
 ### Phrolova e Sophia
 
 `assets/phrolova/` e `public/experimental/sophia-*.glb` permanecem intocados. Não deduzir desuso a partir de ausência de import literal, pois há paths runtime, versões de personagem e trabalhos paralelos.
