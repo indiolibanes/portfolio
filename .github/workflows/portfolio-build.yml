@@ -31,5 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Music → Hsin transition contract
+        run: node tests/music-experimental-transition.test.mjs
+
+      - name: Hsin V2.0.1 lunar runtime
+        run: |
+          node tests/hsin-lunar-terrace.test.mjs
+          node tests/hsin-lunar-refinement.test.mjs
+
       - name: Build production site
         run: npm run build
+
+      - name: Verify built Hsin scenery
+        run: |
+          HSIN_CHECK_DIST=1 node tests/hsin-lunar-terrace.test.mjs
+          HSIN_CHECK_DIST=1 node tests/hsin-lunar-refinement.test.mjs
