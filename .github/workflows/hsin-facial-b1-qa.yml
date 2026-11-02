@@ -87,6 +87,7 @@ jobs:
           node tests/hsin-acting-runtime.test.mjs
           node tests/hsin-stage-metrics.test.mjs
           node tests/hsin-silhouette.test.mjs
+          node tests/hsin-stage-alignment.test.mjs
           node scripts/bench-hsin-acting.mjs
       - name: Astro production build
         run: npm run build
