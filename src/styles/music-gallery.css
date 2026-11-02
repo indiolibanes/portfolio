@@ -447,12 +447,17 @@
   68%  { opacity: .95; transform: translate(var(--sway2), calc(var(--fall) * .72)) perspective(110px) rotateX(-40deg) rotate(calc(var(--turn) * .72)); }
   100% { opacity: 0; transform: translate(calc(var(--sway) * .4), var(--fall)) rotate(var(--turn)) scale(.85); }
 }
-/* Temporary 3D cameo: a single call per page load. */
-.music-shelf .music-heading--gallery .music-lunar-fox-call {
+/* Temporary bridge to the public Hsin 3D experiment. */
+.music-shelf .music-heading--gallery
+.music-experimental-mode {
   position: absolute;
   right: .7rem;
   bottom: .7rem;
   z-index: 9;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   min-height: 32px;
 
@@ -480,24 +485,20 @@
   line-height: 1;
 
   letter-spacing: .02em;
-
-  cursor: pointer;
+  text-decoration: none;
 
   box-shadow:
     0 6px 18px
     rgba(0, 0, 0, .18);
 
   transition:
-    opacity .22s ease,
     border-color .22s ease,
     background-color .22s ease,
     transform .22s ease;
 }
 
-.music-shelf .music-heading--gallery .music-lunar-fox-call[hidden] { display: none; }
-
 .music-shelf .music-heading--gallery
-.music-lunar-fox-call:hover:not(:disabled) {
+.music-experimental-mode:hover {
   border-color:
     #a8832f;
 
@@ -509,7 +510,7 @@
 }
 
 .music-shelf .music-heading--gallery
-.music-lunar-fox-call:focus-visible {
+.music-experimental-mode:focus-visible {
   outline:
     3px solid
     var(--rose);
@@ -518,133 +519,9 @@
     3px;
 }
 
-.music-shelf .music-heading--gallery
-.music-lunar-fox-call:disabled {
-  opacity: .38;
-
-  cursor: default;
-
-  transform: none;
-}
-
-.music-shelf .music-heading--gallery
-.music-lunar-fox-cameo {
-  position: absolute;
-
-  /* Over the 2D Hsin, the central figure of the scene, at the same scale. */
-  left: 45%;
-  top: 1%;
-
-  z-index: 4;
-
-  width: auto;
-  height: 96%;
-
-  overflow: hidden;
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transform:
-    translateX(-50%)
-    translateY(8px)
-    scale(.975);
-
-  transform-origin:
-    50% 72%;
-
-  filter:
-    drop-shadow(
-      0 12px 24px
-      rgba(255, 201, 151, .18)
-    );
-
-  /* The bottom is intentionally clipped at the railing line. */
-  -webkit-mask-image:
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      #000 90%,
-      transparent 100%
-    );
-
-  mask-image:
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      #000 90%,
-      transparent 100%
-    );
-}
-
-.music-shelf .music-heading--gallery
-.music-lunar-fox-cameo img {
-  display: block;
-
-  width: auto;
-  height: 100%;
-
-  object-fit: contain;
-  object-position: center top;
-}
-
-.music-shelf .music-heading--gallery
-.music-lunar-fox-cameo[data-active='true'] {
-  animation:
-    lunar-fox-cameo
-    2.55s
-    ease
-    both;
-}
-
-@keyframes lunar-fox-cameo {
-  0% {
-    opacity: 0;
-
-    transform:
-      translateX(-50%)
-      translateY(9px)
-      scale(.97);
-  }
-
-  12% {
-    opacity: 1;
-
-    transform:
-      translateX(-50%)
-      translateY(0)
-      scale(1);
-  }
-
-  82% {
-    opacity: 1;
-
-    transform:
-      translateX(-50%)
-      translateY(0)
-      scale(1);
-  }
-
-  100% {
-    opacity: 0;
-
-    transform:
-      translateX(-50%)
-      translateY(-4px)
-      scale(1.015);
-  }
-}
-
 @media (max-width: 680px) {
   .music-shelf .music-heading--gallery
-  .music-lunar-fox-cameo {
-    top: 1%;
-    height: 95%;
-  }
-
-  .music-shelf .music-heading--gallery
-  .music-lunar-fox-call {
+  .music-experimental-mode {
     right: .5rem;
     bottom: .5rem;
 
@@ -653,13 +530,9 @@
 }
 
 html[data-serious-mode='true']
-.music-lunar-fox-call,
-html[data-serious-mode='true']
-.music-lunar-fox-cameo,
+.music-experimental-mode,
 html[data-legacy-mode='true']
-.music-lunar-fox-call,
-html[data-legacy-mode='true']
-.music-lunar-fox-cameo {
+.music-experimental-mode {
   display: none !important;
 }
 
@@ -670,27 +543,6 @@ html[data-legacy-mode='true']
   .music-shelf .music-heading--gallery .music-butterfly-sprite,
   .music-shelf .music-heading--gallery .music-baton-sprite {
     animation: none;
-  }
-
-  .music-shelf .music-heading--gallery
-  .music-lunar-fox-cameo[data-active='true'] {
-    animation:
-      lunar-fox-cameo-reduced
-      2.55s
-      ease
-      both;
-  }
-}
-
-@keyframes lunar-fox-cameo-reduced {
-  0%,
-  100% {
-    opacity: 0;
-  }
-
-  12%,
-  82% {
-    opacity: 1;
   }
 }
 
