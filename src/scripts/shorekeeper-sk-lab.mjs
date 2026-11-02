@@ -3,6 +3,19 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createDirector } from '../../tests/shorekeeper-f16/director.mjs';
 
+/** Reject external image/buffer URIs; loading user-provided GLB must not fetch a remote asset. */
+export function assertSelfContainedGLB(buffer) {
+  const d=new DataView(buffer);
+  if(buffer.byteLength<20||d.getUint32(0,true)!==0x46546c67||d.getUint32(4,true)!==2||d.getUint32(8,true)!==buffer.byteLength)throw Error('Arquivo GLB 2.0 inválido.');
+  const len=d.getUint32(12,true),kind=d.getUint32(16,true);
+  if(kind!==0x4e4f534a||len>buffer.byteLength-20)throw Error('GLB sem JSON válido.');
+  const json=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,20,len)));
+  for(const entry of [...(json.buffers||[]),...(json.images||[])]) {
+    if(entry.uri&&!entry.uri.startsWith('data:'))throw Error('GLB contém referência externa e foi recusado por privacidade.');
+  }
+  return json;
+}
+
 /** Private, local-file-only viewer. No asset URL, upload or network request. */
 export function mountShorekeeperLab(root) {
   const get = s => root.querySelector(s);
@@ -151,6 +164,7 @@ export function mountShorekeeperLab(root) {
     try {
       const buffer=await file.arrayBuffer();
       if(token!==generation||disposed)return;
+      assertSelfContainedGLB(buffer);
       const gltf=await new GLTFLoader().parseAsync(buffer,'');
       if(token!==generation||disposed){ // Discard stale parsed assets without mounting them.
         model=gltf.scene;releaseModel();return;
