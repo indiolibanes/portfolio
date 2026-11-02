@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+
+const component=await readFile('src/components/MusicShelf.astro','utf8');
+const css=await readFile('src/styles/music-gallery.css','utf8');
+const js=await readFile('public/scripts/music-experimental-transition.js','utf8');
+
+assert.match(component,/href="\/experimentos\/hsin\//);
+assert.match(component,/data-music-experimental-mode/);
+assert.match(component,/music-experimental-transition\.js/);
+assert.match(js,/const TRANSITION_MS = 1680/);
+assert.match(js,/const REDUCED_MS = 380/);
+assert.match(js,/prefers-reduced-motion: reduce/);
+assert.match(js,/event\.metaKey/);
+assert.match(js,/event\.ctrlKey/);
+assert.match(js,/event\.shiftKey/);
+assert.match(js,/event\.altKey/);
+assert.match(js,/event\.preventDefault\(\)/);
+assert.match(js,/window\.location\.assign\(link\.href\)/);
+assert.match(js,/rect\.width \* \.505/);
+assert.match(css,/music-experimental-transition__afterimage/);
+assert.match(css,/music-experimental-transition__slash--violet/);
+assert.match(css,/music-experimental-transition__slash--blue/);
+assert.match(css,/music-experimental-transition__slash--lunar/);
+assert.match(css,/music-experimental-transition__mote/);
+assert.match(css,/#8a6cff/i);
+assert.match(css,/#48c9ff/i);
+assert.match(css,/#f8f7ff/i);
+assert.match(css,/pointer-events:\s*auto/);
+assert.match(css,/music-hsin-reduced-veil/);
+console.log('Music → Hsin transition contract PASS');

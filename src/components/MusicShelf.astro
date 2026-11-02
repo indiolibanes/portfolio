@@ -144,6 +144,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
       <a
         class="music-experimental-mode"
         href="/experimentos/hsin/"
+        data-music-experimental-mode
         aria-label="Experimental mode: abrir a experiência tridimensional da Hsin"
       >
         Experimental mode
@@ -229,6 +230,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
 <script is:inline src="/scripts/cover-fx.js" defer></script>
 <script is:inline src="/scripts/music-note-cursor.js" defer></script>
+<script is:inline src="/scripts/music-experimental-transition.js" defer></script>
 <script is:inline>
   const shelf = document.querySelector('[data-music-shelf]');
   const recentCard = document.querySelector('[data-recent-card]');
