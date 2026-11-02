@@ -33,10 +33,10 @@ if (!anchorHit) throw Error('no hair surface near the anchor');
 const HEAD_CENTRE = [0, 1.45, -.03], outward = (hit) => { const n = hit.normal; return dot(n, sub(hit.point, HEAD_CENTRE)) < 0 ? scale(n, -1) : n; };
 const nA = unit(outward(anchorHit)), down = [0, -1, 0], tangent = unit(sub(down, scale(nA, dot(down, nA))));
 const hitAt = (p) => { const h = hair.query(p, .08); return {point: h.point, normal: unit(outward(h))}; };
-const sA = hitAt(anchorHit.point), sB = hitAt(add(sA.point, scale(tangent, STROKE)));
+const sA = hitAt(anchorHit.point), sB = hitAt(add(sA.point, scale(tangent, STROKE))), sM = hitAt(add(sA.point, scale(tangent, STROKE / 2)));
 export const keyTargets = {
  hoverIn: add(add(sA.point, scale(tangent, -LEAD)), scale(sA.normal, HOVER + GAP)),
- start: add(sA.point, scale(sA.normal, GAP)), end: add(sB.point, scale(sB.normal, GAP)),
+ start: add(sA.point, scale(sA.normal, GAP)), mid: add(sM.point, scale(sM.normal, GAP)), end: add(sB.point, scale(sB.normal, GAP)),
  hoverOut: add(add(sB.point, scale(tangent, LEAD)), scale(sB.normal, HOVER + GAP)),
 };
 
@@ -53,8 +53,7 @@ export function evaluate(x, goal, {warm = null, warmWeight = 0, full = false} = 
  if (warm) cost += warmWeight * x.reduce((s, v, i) => s + (v - warm[i]) ** 2, 0);
  if (!full && cost > 60) return {cost: cost + 50};
  const report = {dTarget, elbow, wrist};
- const near = (g, key, min, w = 4e4) => { const m = measurePose; return null; };
- const metrics = measurePose(ctx, chain, fingerExtra(x.slice(9, 12)), {groups: ['index', 'otherFingers', 'thumb', 'hand', 'forearm']}).clearance;
+ const metrics = measurePose(ctx, chain, fingerExtra(x.slice(9, 12)), {radius: .045, groups: ['index', 'otherFingers', 'thumb', 'hand', 'forearm']}).clearance;
  const need = [['hand:face', .02], ['forearm:face', .03], ['otherFingers:face', .02], ['thumb:face', .02], ['index:face', .015], ['hand:bangs', .012], ['otherFingers:bangs', .01], ['forearm:bangs', .012],
   ['hand:torso', .015], ['forearm:torso', .012], ['otherFingers:torso', .012], ['thumb:torso', .012], ['otherFingers:hair', .003], ['hand:hair', .006], ['thumb:hair', .004], ['forearm:hair', .006]];
  for (const [key, min] of need) { report[key] = metrics[key]; if (metrics[key] < min) cost += 4e4 * (min - metrics[key]) ** 2; }
@@ -62,18 +61,17 @@ export function evaluate(x, goal, {warm = null, warmWeight = 0, full = false} = 
 }
 
 const solveOne = (goal, start, {warm = null, warmWeight = 0, seeds = [1, 2, 3], generations = 80, sigma = .2} = {}) => multiStart((x) => evaluate(x, goal, {warm, warmWeight}), start, seeds, {generations, sigma}, (seed, cost) => console.log('  seed', seed, 'cost', cost.toFixed(3)));
-export function solveAll(log = console.log) {
- const out = {};
- log('start (contact) …'); out.start = solveOne(keyTargets.start, [0, 0, 0, 0, 0, 0, 0, 0, 0, .1, .1, .05], {seeds: [1, 2, 3, 4]});
- for (const name of ['end', 'hoverIn', 'hoverOut']) { log(name + ' …'); out[name] = solveOne(keyTargets[name], out.start.x, {warm: out.start.x, warmWeight: name === 'end' ? .4 : .25, seeds: [1, 2], generations: 60, sigma: .1}); }
- for (const [name, sol] of Object.entries(out)) { const e = evaluate(sol.x, keyTargets[name], {full: true}); sol.report = e.report; sol.cost = e.cost; }
- return out;
+/** Stages can run in separate processes: `start` first (writes its solution), then end/hoverIn/hoverOut warm-started from it. */
+export function solveStage(name, startSolution = null, seeds = null) {
+ if (name === 'start') return solveOne(keyTargets.start, [0, 0, 0, 0, 0, 0, 0, 0, 0, .1, .1, .05], {seeds: seeds ?? [2], generations: 80});
+ return solveOne(keyTargets[name], startSolution.x, {warm: startSolution.x, warmWeight: name === 'end' || name === 'mid' ? .4 : .25, seeds: seeds ?? [1], generations: 60, sigma: .1});
 }
+const finish = (name, sol) => { const e = evaluate(sol.x, keyTargets[name], {full: true}); return {x: sol.x, cost: e.cost, report: e.report}; };
 
 if (import.meta.url === `file://${process.argv[1]}`) {
- const outPath = process.argv[2];
+ const [stage, outPath, startPath] = process.argv.slice(2), seeds = process.env.HAIR_SEEDS ? process.env.HAIR_SEEDS.split(',').map(Number) : null;
  console.log('targets', JSON.stringify(Object.fromEntries(Object.entries(keyTargets).map(([k, v]) => [k, v.map((n) => +n.toFixed(4))]))), 'normal', nA.map((v) => +v.toFixed(2)), 'tangent', tangent.map((v) => +v.toFixed(2)));
- const solved = solveAll();
- for (const [name, s] of Object.entries(solved)) console.log(name, 'cost', s.cost.toFixed(3), JSON.stringify(Object.fromEntries(Object.entries(s.report).map(([k, v]) => [k, +v.toFixed(4)]))));
- if (outPath) writeFileSync(outPath, JSON.stringify({targets: keyTargets, anchor: ANCHOR, solutions: Object.fromEntries(Object.entries(solved).map(([k, s]) => [k, {x: s.x, cost: s.cost, report: s.report}]))}, null, 1));
+ const startSolution = stage === 'start' ? null : JSON.parse(readFileSync(startPath, 'utf8')), solved = finish(stage, solveStage(stage, startSolution, seeds));
+ console.log(stage, 'cost', solved.cost.toFixed(3), JSON.stringify(Object.fromEntries(Object.entries(solved.report).map(([k, v]) => [k, +v.toFixed(4)]))));
+ writeFileSync(outPath, JSON.stringify({stage, target: keyTargets[stage], ...solved}, null, 1));
 }

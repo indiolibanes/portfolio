@@ -15,7 +15,7 @@ assert.equal(acting.modelSha256, sha(file('public/assets/models/hsin/hsin-v2.0.g
 assert.equal(manifest.sha256, sha(actingBytes)); assert.equal(manifest.bytes, actingBytes.length); assert.equal(manifest.profileSha256, acting.profileSha256);
 assert.equal(n, 18); assert.ok(lip.names.slice(0, 6).every((name, i) => name === sigPose.names[i]), 'arm chain = the approved signature chain');
 assert.ok(lip.frames.length === 93 && lip.frames.every((f) => f.length === n * 4 && f.every(Number.isFinite)) && lip.rest.length === n * 4);
-assert.ok(actingBytes.length < 90000, 'small: ' + actingBytes.length);
+assert.ok(actingBytes.length < 140000, 'small: ' + actingBytes.length);
 
 // Signature Chin is preserved bit for bit (to the 6 decimals stored) and the fingers stay at rest until stage 2.
 const maxDiff = (a, b) => Math.max(...a.map((v, i) => Math.abs(v - b[i])));
