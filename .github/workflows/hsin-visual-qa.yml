@@ -13,7 +13,7 @@ on:
       - 'experiment/hsin-v201-*'
 
 permissions:
-  contents: read
+  contents: write   # only to publish frames to qa-results/*; main and the PR branch are never written
 
 jobs:
   visual-qa:
@@ -44,3 +44,14 @@ jobs:
           path: |
             qa-out
             preview.log
+      - name: Publish frames to qa-results/hsin-visual (never main)
+        if: always()
+        run: |
+          [ -d qa-out ] || exit 0
+          cp preview.log qa-out/ 2>/dev/null || true
+          printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > qa-out/SOURCE.txt
+          mv qa-out "$RUNNER_TEMP/qa-out"
+          git config user.name "hsin-visual-qa"; git config user.email "noreply@github.com"
+          git checkout -q --orphan qa-results && git rm -rqf . && cp -r "$RUNNER_TEMP/qa-out/." . && git add -A
+          git commit -qm "Hsin visual QA frames from $GITHUB_SHA (run $GITHUB_RUN_ID)"
+          git push -f origin qa-results:refs/heads/qa-results/hsin-visual
