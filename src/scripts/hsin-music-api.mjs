@@ -22,7 +22,7 @@ export function attachMusicAPI({provider,iframe,host,source,controller,token,onF
   if(disposed)return;
   if(provider==='youtube'){
    player=new api.Player(iframe,{events:{onReady:event=>{if(disposed)return;player=event.target;report(youtubeReport(player,player.getPlayerState()));},onStateChange:event=>{if(!disposed)report(youtubeReport(event.target,event.data));},onError:unavailable}});
-   poll=interval(()=>{if(disposed||!player?.getPlayerState||document.hidden)return;try{report(youtubeReport(player,player.getPlayerState()));}catch{unavailable();}},500);
+   poll=interval(()=>{if(disposed||document.hidden)return;if(!player?.getPlayerState){if(performance.now()-last>12000)unavailable();return;}try{report(youtubeReport(player,player.getPlayerState()));}catch{unavailable();}},500);
   }else{
    // Spotify's official factory creates its own iframe. Do this once on provider selection, never on camera/info changes.
    api.createController(host,{uri:source,width:'100%',height:152},embed=>{
@@ -32,7 +32,7 @@ export function attachMusicAPI({provider,iframe,host,source,controller,token,onF
     embed.addListener('playback_update',event=>report(spotifyReport(event.data)));
    });
   }
-  watchdog=interval(()=>{if(!disposed&&!document.hidden&&performance.now()-last>12000)unavailable();},3000);
+  if(provider==='spotify')watchdog=interval(()=>{if(!disposed&&!document.hidden&&performance.now()-last>12000)unavailable();},3000);
  }).catch(()=>{if(!disposed)unavailable();});
  return {dispose:stop};
 }
