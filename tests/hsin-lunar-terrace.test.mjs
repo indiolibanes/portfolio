@@ -74,7 +74,7 @@ b.model.updateMatrixWorld(true);const head=b.by.get('ORG-Bip001Head'),local=new 
 old.body.dispose();next.body.dispose();present.restore();b.ref.restore();
 for(const row of b.original){assert.deepEqual(row.bone.quaternion.toArray(),row.q);assert.deepEqual(row.bone.position.toArray(),row.p);assert.deepEqual(row.bone.scale.toArray(),row.s);}assert.deepEqual(b.model.quaternion.toArray(),[0,0,0,1]);
 
-const textures={skyTexture:new T.Texture(),moonTexture:new T.Texture(),stoneTexture:new T.Texture(),atlasTexture:new T.Texture()},env=createLunarTerrace({THREE:T,...textures}),scene=new T.Scene();scene.add(env.group);
+const textures={skyTexture:new T.Texture(),moonTexture:new T.Texture(),stoneTexture:new T.Texture(),atlasTexture:new T.Texture(),waterTexture:new T.Texture()},env=createLunarTerrace({THREE:T,...textures}),scene=new T.Scene();scene.add(env.group);
 const meshes=[];env.group.traverse(o=>{if(o.isMesh)meshes.push(o);});
 metrics.sceneMeshes=meshes.length;metrics.sceneTriangles=meshes.reduce((n,m)=>n+(m.geometry.index?.count??m.geometry.attributes.position.count)/3,0);
 const passes=m=>m.transparent&&m.side===T.DoubleSide&&!m.forceSinglePass?2:1;metrics.scenePassCeiling=meshes.reduce((n,m)=>n+passes(m.material),0);metrics.totalPassCeiling=metrics.scenePassCeiling+a.meshes.reduce((n,m)=>n+passes(m.material),0)+1; // One additional textured-background pass.
@@ -88,11 +88,11 @@ for(const aspect of [393/852,16/9])for(const azimuth of [-2,8,18]){
  const panes=env.group.getObjectByName('Warm windows and lantern panels'),p=panes.geometry.attributes.position;let visible=0;for(let i=0;i<p.count;i++){const v=new T.Vector3().fromBufferAttribute(p,i).applyMatrix4(panes.matrixWorld).project(camera);if(Math.abs(v.x)<1&&Math.abs(v.y)<1&&v.z<1)visible++;}assert.ok(visible>0,'architecture/lanterns must survive small camera rotations');
 }
 metrics.textureBytes=0;metrics.textures=[];
-for(const url of [LUNAR_TERRACE.sky,LUNAR_TERRACE.moon,LUNAR_TERRACE.stone,LUNAR_TERRACE.atlas]){
+for(const url of [LUNAR_TERRACE.sky,LUNAR_TERRACE.moon,LUNAR_TERRACE.stone,LUNAR_TERRACE.atlas,LUNAR_TERRACE.water]){
  const path=file('public'+url),b=await readFile(path),meta=await sharp(path.pathname).metadata();assert.equal(b.readUInt32LE(4)+8,b.length);await sharp(path.pathname).raw().toBuffer();assert.ok(meta.width<=1024&&meta.height<=1024);metrics.textureBytes+=b.length;metrics.textures.push({url,bytes:b.length,width:meta.width,height:meta.height,sha256:hash(b)});
  if(process.env.HSIN_CHECK_DIST==='1')assert.equal(hash(await readFile(file('dist'+url))),hash(b),'build must contain intact scenery textures');
 }assert.ok(metrics.textureBytes<200*1024);
-const geometries=new Set(meshes.map(m=>m.geometry)),materials=new Set(meshes.map(m=>m.material));let disposed=0;for(const resource of [...geometries,...materials,...Object.values(textures)])resource.addEventListener('dispose',()=>disposed++);for(const resource of [...geometries,...materials,...Object.values(textures)])resource.dispose();assert.equal(disposed,geometries.size+materials.size+4);
+const geometries=new Set(meshes.map(m=>m.geometry)),materials=new Set(meshes.map(m=>m.material));let disposed=0;for(const resource of [...geometries,...materials,...Object.values(textures)])resource.addEventListener('dispose',()=>disposed++);for(const resource of [...geometries,...materials,...Object.values(textures)])resource.dispose();assert.equal(disposed,geometries.size+materials.size+5);
 const runtime=await readFile(file('src/scripts/hsin-stage.ts'),'utf8');assert.ok(!runtime.includes('CylinderGeometry')&&!runtime.includes('RingGeometry')&&!runtime.includes('shadowCanvas'));assert.ok(runtime.includes('presentation?.restore()'));assert.equal(HSIN_STAGE.fps,30);assert.equal(HSIN_STAGE.maxPixels,1152000);
 console.log('Lunar Terrace V2.0.1: static root/face studies, unchanged arm trajectories and 600s traces, stone contact, reversible frozen matrices, gaze, framing, disposal, textures and budgets PASS (not GPU/FPS or artistic approval)');console.log(JSON.stringify(metrics));
 if(process.env.HSIN_WRITE_TERRACE_REPORT==='1')await writeFile(file('docs/hsin-v201-validation.json'),JSON.stringify(metrics,null,2)+'\n');

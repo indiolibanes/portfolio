@@ -1,0 +1,54 @@
+{
+  "modelSha256": "63506b0b7a2369722e6429c3b16c5f48764ee01706d1272b4ffd69a45c5e0d2c",
+  "profileSha256": "18fb7e22357ba5a523bcd96f88b1915dcc46786dc47d707d76b97cf05a3327cc",
+  "presentation": {
+    "version": "2.0.1",
+    "bodyApparentYaw": 70,
+    "headApparentYaw": 40,
+    "neckCompensation": 4,
+    "headCompensation": 18.8,
+    "cameraAzimuth": 8,
+    "cameraTargetOffset": [
+      0,
+      0,
+      0
+    ]
+  },
+  "method": "Real skinned vertices at rest and 9 weights of each baked pose; camera-yaw-space envelope, not a continuous collision proof",
+  "world": {
+    "min": [
+      -0.34131196769146954,
+      1.6525951614110301e-16,
+      -0.5933443798122011
+    ],
+    "max": [
+      0.8200134471710484,
+      1.7516986856345336,
+      0.7230572816590741
+    ]
+  },
+  "camera": {
+    "min": [
+      -0.33527101935175097,
+      1.6525951614110301e-16,
+      -0.5785885975871389
+    ],
+    "max": [
+      0.8617412482297045,
+      1.7516986856345336,
+      0.7093070287275678
+    ]
+  },
+  "rest": {
+    "min": [
+      -0.2636221290948072,
+      1.6525951614110301e-16,
+      -0.5933443798122011
+    ],
+    "max": [
+      0.8200134471710484,
+      1.7516986856345336,
+      0.3579736727638294
+    ]
+  }
+}

@@ -14,7 +14,7 @@ const scenarios=[
  ...['signature','chest'].flatMap(name=>[0,.5,1,'return'].map(weight=>[name+'-'+weight,['--orientation=55','--terrace=rich',`--gesture=${name}`,'--shot=upper',weight==='return'?'--return=1':`--weight=${weight}`],name+' / '+(weight==='return'?'returned':`weight ${weight}`)])),
  ...['signature','chest','hair','composition'].map(name=>['gesture-'+name,['--orientation=55','--terrace=rich',`--gesture=${name}`,'--shot=upper'],name+' / held pose']),
 ];
-const jobs=scenarios.map(([name,flags])=>()=>run(process.execPath,['scripts/render-hsin-poster.mjs','public/assets/models/hsin/hsin-v2.0.glb',`${temp}/${name}.webp`,'360','500','--profile=cinematic',...flags]));
+const jobs=scenarios.map(([name,flags])=>()=>run(process.execPath,['scripts/render-hsin-poster.mjs','public/assets/models/hsin/hsin-v2.0.glb',`${temp}/${name}.webp`,'360','500','--profile=cinematic','--legacy=1','--scene=baseline','--framing=legacy',...flags]));
 let index=0;await Promise.all([0,1].map(async()=>{while(index<jobs.length)await jobs[index++]();}));
 function label(value,width=720,height=36){return Buffer.from(`<svg width="${width}" height="${height}"><text x="12" y="24" fill="#ecdfc3" font-family="sans-serif" font-size="13">${value}</text></svg>`);}
 async function sheet(names,out,columns=2){

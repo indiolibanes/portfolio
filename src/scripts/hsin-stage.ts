@@ -1,4 +1,4 @@
-import {HSIN_STAGE,pixelRatio,cameraFit,attentionHeight} from './hsin-stage-config.mjs';
+import {HSIN_STAGE,pixelRatio,attentionHeight} from './hsin-stage-config.mjs';
 import {createStageLoop} from './hsin-stage-loop.mjs';
 import {createBakedPose,createBakedChest} from './hsin-baked-pose.mjs';
 import {createFacialActing} from './hsin-face-acting.mjs';
@@ -9,7 +9,8 @@ import {createPoseTransition} from './hsin-pose-transition.mjs';
 import {createRestBreath} from './hsin-rest-breath.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from './hsin-lunar-terrace.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from './hsin-cinematic-idle.mjs';
-import {createLunarPresentation} from './hsin-lunar-presentation.mjs';
+import {lunarCameraFit} from './hsin-lunar-framing.mjs';
+import {HSIN_LUNAR_PRESENTATION,createLunarPresentation} from './hsin-lunar-presentation.mjs';
 
 /** Public player. The local-file lab, geometry solvers and authoring UI are separate entries. */
 export function mountHsinStage(root:HTMLElement){
@@ -59,33 +60,33 @@ export function mountHsinStage(root:HTMLElement){
    if(!response.ok)throw Error('Model unavailable.');
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
    const textureLoader=new T.TextureLoader();
-   const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url);if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
-   const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas)]);
+   const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url+'?v=lunar-terrace-r2');if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
+   const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas),sceneryTexture(LUNAR_TERRACE.water)]);
    // Attach an immediate rejection handler while GLTF parsing is in flight.
    scenery.catch(()=>{});
    const bytes=await response.arrayBuffer(),gltf=await new GLTFLoader().parseAsync(bytes,'');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
    // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
    scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.add(model);
-   const [skyTexture,moonTexture,stoneTexture,atlasTexture]=await scenery;
+   const [skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture]=await scenery;
    if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
    model.position.y-=profile.bounds.min[1];scene.add(model);scene.updateMatrixWorld(true);
    const meshes:any[]=[];model.traverse((o:any)=>{if(o.isSkinnedMesh)meshes.push(o);});const bones:any[]=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];const byName=new Map(bones.map(b=>[b.name,b])),head:any=byName.get('ORG-Bip001Head');if(!head)throw Error('Head rig missing.');
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
-   presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuthDegrees:cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0});presentation.apply();
-   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
+   presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth});presentation.apply();
+   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
    scene.add(new T.AmbientLight(0xb7c9e3,.95));const key=new T.DirectionalLight(0xf0dec0,1.8);key.position.set(-2,4,5);scene.add(key);const rim=new T.DirectionalLight(0xeac27a,1.15);rim.position.set(-2,4,-5);scene.add(rim);
    // Static transforms, including the root yaw, are frozen only after explicit matrix updates.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
-   let initialDistance=3.5,worldDirty=true,firstFit=true;const fit=()=>{
+   let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];const fit=()=>{
     const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
-    const previousFit=initialDistance;initialDistance=cameraFit(profile.bounds,camera.aspect);orbit.maxDistance=Math.max(5.5,initialDistance*1.55);if(firstFit){firstFit=false;resetCamera();}else{const d=camera.position.distanceTo(orbit.target),next=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,d*initialDistance/previousFit));camera.position.sub(orbit.target).multiplyScalar(next/d).add(orbit.target);orbit.update();}loop?.invalidate();
+    const previousFit=initialDistance;const framing=lunarCameraFit(camera.aspect);initialDistance=framing.distance;initialTarget=framing.target;orbit.maxDistance=Math.max(5.5,initialDistance*1.55);if(firstFit){firstFit=false;resetCamera();}else{const d=camera.position.distanceTo(orbit.target),next=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,d*initialDistance/previousFit));camera.position.sub(orbit.target).multiplyScalar(next/d).add(orbit.target);orbit.update();}loop?.invalidate();
    };
-   resetCamera=()=>{const azimuth=(cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0)*Math.PI/180;orbit.target.set(0,HSIN_STAGE.baseTargetY,0);camera.position.set(Math.sin(azimuth)*initialDistance,HSIN_STAGE.baseTargetY+.23,Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
+   resetCamera=()=>{const azimuth=HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180;orbit.target.fromArray(initialTarget);camera.position.set(orbit.target.x+Math.sin(azimuth)*initialDistance,orbit.target.y+.23,orbit.target.z+Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
    zoom=(factor:number)=>{const current=camera.position.distanceTo(orbit.target),distance=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,current*factor));camera.position.sub(orbit.target).multiplyScalar(distance/current).add(orbit.target);orbit.update();loop?.invalidate();};
    orbit.addEventListener('change',()=>{
-    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance),delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
+    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
    });
    fit();resize=new ResizeObserver(fit);resize.observe(host);
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});

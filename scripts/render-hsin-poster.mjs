@@ -3,18 +3,21 @@ import {readFile,writeFile} from 'node:fs/promises';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import sharp from 'sharp';
+import {execFileSync} from 'node:child_process';
 import {MOONLIT,createMoonlitEnvironment} from '../src/scripts/hsin-moonlit-environment.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from '../src/scripts/hsin-cinematic-idle.mjs';
 import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from '../src/scripts/hsin-lunar-terrace.mjs';
+import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
 import {createLunarPresentation} from '../src/scripts/hsin-lunar-presentation.mjs';
 const [input,output,width='800',height='1100']=process.argv.slice(2);
 if(!input||!output)throw Error('Usage: node scripts/render-hsin-poster.mjs MODEL.glb POSTER.webp [WIDTH HEIGHT]');
 const W=Number(width),H=Number(height);
 const options=Object.fromEntries(process.argv.slice(6).map(arg=>arg.replace(/^--/,'').split('=')));
 const cinematic=options.profile==='cinematic';
-const rich=options.terrace==='rich',transparent=options.transparent==='1';
+const rich=options.terrace==='rich',transparent=options.transparent==='1',baseline=options.scene==='baseline',baselineRef='f100ed00b5025f26e83d9fbf63259d0d8d8b59f1';
+const environmentFactory=baseline?(await import('data:text/javascript;base64,'+Buffer.from(execFileSync('git',['show',baselineRef+':src/scripts/hsin-lunar-terrace.mjs'],{encoding:'utf8'}).replace("'./hsin-moonlit-environment.mjs'",JSON.stringify(new URL('../src/scripts/hsin-moonlit-environment.mjs',import.meta.url).href))).toString('base64'))).createLunarTerrace:createLunarTerrace;
 if(!(W>0&&H>0&&W*H<=2500000))throw Error('Invalid CPU preview dimensions');
 globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});globalThis.ProgressEvent=class{};
 const data=await readFile(input),jsSize=data.readUInt32LE(12),json=JSON.parse(data.subarray(20,20+jsSize).toString()),binary=data.subarray(28+jsSize);
@@ -27,7 +30,7 @@ const meshes=[];gltf.scene.traverse(m=>{if(m.isSkinnedMesh)meshes.push(m);});con
 const poseProfile=JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.'+(cinematic?'1':'0')+'-profile.json',import.meta.url)));
 if(cinematic)createCinematicReference({bones,profile:poseProfile}).apply();
 let presentation;
-if(options.orientation||rich){presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:poseProfile.bounds,cameraAzimuthDegrees:HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees,apparentBodyDegrees:Number(options.orientation??55)});presentation.apply();}
+if(options.orientation||rich){presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:poseProfile.bounds,cameraAzimuthDegrees:HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees,...(options.legacy==='1'?{apparentBodyDegrees:Number(options.orientation??55)}:{bodyApparentYaw:Number(options.orientation??70),neckCompensation:Number(options.neck??4),headCompensation:Number(options.head??18.8)})});presentation.apply();}
 if(options.gesture){
  const weight=Number(options.weight??1);if(!(weight>=0&&weight<=1))throw Error('Invalid gesture weight');
  const signature=['composition','duet'].includes(options.gesture)?createBakedPose({THREE:T,data:poseProfile.poses.signature,bones}):null;signature?.apply(1);
@@ -35,11 +38,11 @@ if(options.gesture){
 }
 async function decode(path){return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});}
 const resource=rich?LUNAR_TERRACE:MOONLIT,sky=transparent?null:await decode(new URL('../public'+resource.sky,import.meta.url).pathname);
-async function cpuTexture(url){const t=new T.Texture();t.colorSpace=T.SRGBColorSpace;t.userData.cpu=await decode(new URL('../public'+url,import.meta.url).pathname);return t;}
+async function cpuTexture(url){const t=new T.Texture();t.colorSpace=T.SRGBColorSpace;t.userData.cpu=await decode(baseline?execFileSync('git',['show',baselineRef+':public'+url],{maxBuffer:2e6}):new URL('../public'+url,import.meta.url).pathname);return t;}
 let env={group:new T.Group(),frameSky(){},fog:new T.Fog(0x273b53,10,42)};
 if(!transparent){
  const moonTexture=await cpuTexture(resource.moon);
- env=rich?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
+ env=rich?environmentFactory({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),waterTexture:baseline?undefined:await cpuTexture(LUNAR_TERRACE.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
  if(options.terrace==='bare'){const floor=new T.Mesh(new T.PlaneGeometry(22,14),new T.MeshBasicMaterial({color:0x354254}));floor.rotation.x=-Math.PI/2;floor.position.z=3;env.group.add(floor);}
  if(!rich&&options.terrace!=='bare'){
   const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;env.group.add(platform);
@@ -47,9 +50,10 @@ if(!transparent){
  }
 }
 const scene=new T.Scene();scene.add(env.group,gltf.scene);
-const distance=options.shot==='upper'?1.55:cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=new T.Vector3(0,options.shot==='upper'?1.3:HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
+const framing=rich&&options.framing!=='legacy'?lunarCameraFit(W/H):null;
+const distance=options.shot==='upper'?1.55:framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=options.shot==='upper'?new T.Vector3(0,1.3,0):framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
 const yaw=Number(options.yaw??(cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0))*Math.PI/180;
-camera.position.set(Math.sin(yaw)*distance,target.y+.23,Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();
+camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();
 const pixels=Buffer.alloc(W*H*4),depth=new Float32Array(W*H).fill(Infinity);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
  if(transparent)continue;const at=(y*W+x)*4,from=(Math.min(sky.info.height-1,Math.floor(y/H*sky.info.height))*sky.info.width+Math.min(sky.info.width-1,Math.floor(x/W*sky.info.width)))*4;
