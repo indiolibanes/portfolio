@@ -4,6 +4,7 @@ import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {musicForStage} from '../src/scripts/hsin-music-state.mjs';
 import {musicEmbed} from '../src/scripts/hsin-music-providers.mjs';
 import {createMusicTower,towerViewport} from '../src/scripts/hsin-music-tower.mjs';
 
@@ -25,7 +26,7 @@ assert.match(musicEmbed('spotify').allow,/encrypted-media/);
 
 class Element {
   constructor(data={}){this.dataset=data;this.hidden=false;this.attrs={};this.events={};this.style={setProperty(){}};this.offsetHeight=300;this.offsetWidth=320;}
-  addEventListener(type,fn){(this.events[type]??=[]).push(fn);}
+  addEventListener(type,fn,options={}){(this.events[type]??=[]).push(fn);options.signal?.addEventListener('abort',()=>{this.events[type]=this.events[type].filter(f=>f!==fn);},{once:true});}
   dispatchEvent(event){for(const fn of this.events[event.type]??[])fn(event);return true;}
   click(){this.dispatchEvent({type:'click'});}
   setAttribute(key,value){this.attrs[key]=value;}
@@ -43,8 +44,8 @@ root.querySelector=key=>map[key];root.querySelectorAll=key=>key==='[data-music-p
 const document=new Element();document.createElement=()=>new Element();
 const window=new Element();
 let playerVisibilityCallback;
-const code=stripTypeScriptTypes(script.replace(/import .*?;\n/,''),{mode:'strip'}).replace('export function','function')+'\nmountHsinSoundtrack(root);';
-vm.runInNewContext(code,{root,document,window,musicEmbed,CustomEvent:class{constructor(type){this.type=type;}},ResizeObserver:class{observe(){}},IntersectionObserver:class{constructor(callback){playerVisibilityCallback=callback;}observe(){}}});
+const code=stripTypeScriptTypes(script.replace(/^import .*?;\n/gm,''),{mode:'strip'}).replace('export function','function')+'\nmountHsinSoundtrack(root);';
+vm.runInNewContext(code,{root,document,window,musicEmbed,musicForStage,AbortController,attachMusicAPI:()=>({dispose(){}}),CustomEvent:class{constructor(type){this.type=type;}},ResizeObserver:class{observe(){}disconnect(){}},IntersectionObserver:class{constructor(callback){playerVisibilityCallback=callback;}observe(){}disconnect(){}}});
 assert.equal(player.children,undefined,'no third-party iframe before opt-in');
 buttons[0].click();const youtube=player.children[0];assert.match(youtube.src,/youtube-nocookie/);
 info.click();assert.equal(options.hidden,false);info.click();side.click();buttons[0].click();
@@ -57,6 +58,7 @@ buttons[2].click();assert.equal(player.children[0],placeholder);assert.equal(roo
 buttons[0].click();document.hidden=true;document.dispatchEvent({type:'visibilitychange'});assert.equal(player.children[0],placeholder);
 buttons[0].click();playerVisibilityCallback([{intersectionRatio:.4}]);assert.equal(player.children[0],placeholder,'offscreen YouTube is stopped');
 buttons[1].click();window.dispatchEvent({type:'pagehide'});assert.equal(player.children[0],placeholder);
+window.dispatchEvent({type:'pageshow',persisted:true});
 starts[1].click();assert.equal(new URL(player.children[0].src).searchParams.get('start'),'66');assert.ok(info.focused);
 
 // Actual Three geometry: no GLB changes, finite matrices, peripheral lane, bounded cost.

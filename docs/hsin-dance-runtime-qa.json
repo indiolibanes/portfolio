@@ -1,0 +1,23 @@
+{
+  "maxStepDegrees": 0.6234638274229393,
+  "maxOrgDefGap": 5.223742557782644e-7,
+  "states": [
+    "CONTEMPLATIVE_IDLE",
+    "DANCE_PREPARATION",
+    "DANCE_SOFT",
+    "DANCE_EXPRESSIVE",
+    "DANCE_RECOVERY",
+    "DANCE_TO_IDLE"
+  ],
+  "phrases": [
+    "moon-breathing",
+    "silk-sway",
+    "fox-invitation",
+    "crescent-turn",
+    "petal-flourish",
+    "lunar-repose",
+    "lunar-step"
+  ],
+  "seconds": 600,
+  "bufferBytes": 3168
+}

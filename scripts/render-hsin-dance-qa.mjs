@@ -1,0 +1,13 @@
+/** Real-GLB CPU pose boards, not WebGL or artistic sign-off. Does not load provider/audio or modify posters. */
+import {mkdir} from 'node:fs/promises';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+import sharp from 'sharp';
+const run=promisify(execFile),dest='docs/qa/hsin-dance',temp='/tmp/hsin-dance-qa';await mkdir(dest,{recursive:true});await mkdir(temp,{recursive:true});
+const cases=[['idle','idle',0],['preparation','moon-breathing',.2],['moon','moon-breathing',.42],['silk','silk-sway',.48],['invitation','fox-invitation',.5],['crescent','crescent-turn',.52],['support','lunar-step',.64],['flourish','petal-flourish',.57],['repose','lunar-repose',.32],['returned','lunar-repose',1]],tasks=cases.map(([id,phrase,phase])=>({id,phrase,phase,w:360,h:500}));
+tasks.push({id:'portrait',phrase:'petal-flourish',phase:.57,w:393,h:852},{id:'landscape',phrase:'silk-sway',phase:.48,w:1280,h:720},{id:'profile',phrase:'fox-invitation',phase:.5,w:800,h:600,yaw:28});
+for(const phase of [.1,.25,.4,.55,.7,.85,1])tasks.push({id:'arc-'+phase,phrase:'petal-flourish',phase,w:240,h:330});
+let i=0;await Promise.all([0,1].map(async()=>{while(i<tasks.length){const t=tasks[i++];await run(process.execPath,['scripts/render-hsin-poster.mjs','public/assets/models/hsin/hsin-v2.0.glb',`${temp}/${t.id}.webp`,String(t.w),String(t.h),`--dance=${t.phrase}`,`--phase=${t.phase}`,...(t.yaw?[`--yaw=${t.yaw}`]:[])]);}}));
+const label=(s,w)=>Buffer.from(`<svg width="${w}" height="32"><text x="9" y="22" fill="#e4dcc8" font-family="sans-serif" font-size="12">${s}</text></svg>`);
+async function board(name,rows,cols,w=360,h=500){const layers=[{input:label('CPU / VISUAL_QA_PENDING - shaders and lighting approximate; no provider/audio',cols*w),left:0,top:0}];for(const [i,[id,title]]of rows.entries()){const left=i%cols*w,top=32+Math.floor(i/cols)*(h+32);layers.push({input:label(title,w),left,top},{input:await sharp(`${temp}/${id}.webp`).resize(w,h,{fit:'contain',background:'#0a172a'}).toBuffer(),left,top:top+32});}await sharp({create:{width:cols*w,height:32+Math.ceil(rows.length/cols)*(h+32),channels:3,background:'#0a172a'}}).composite(layers).webp({quality:88}).toFile(`${dest}/${name}.webp`);}
+await board('phrases',cases.map(([id,p])=>[id,id+': '+p]),4);await board('views',[['portrait','393 x 852 / flourish'],['landscape','1280 x 720 / silk sway'],['profile','camera 28 deg / invitation']],3,400,500);await board('flourish-arc',[.1,.25,.4,.55,.7,.85,1].map(t=>['arc-'+t,'phrase t='+t]),7,240,330);console.log('Dance CPU boards:',dest);

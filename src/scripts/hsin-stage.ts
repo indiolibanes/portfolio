@@ -34,7 +34,7 @@ export function mountHsinStage(root:HTMLElement){
  let viewportVisible=true,destroyed=false,started=false,paused=false,generation=0,lost=false;
  let disposeAttempt=()=>{},loop:ReturnType<typeof createStageLoop>|null=null,zoom=(_factor:number)=>{},resetCamera=()=>{},ensureDance=()=>{};
  const showPause=()=>{const frozen=paused||motion.matches;pause.setAttribute('aria-pressed',String(frozen));pause.textContent=frozen?'▶':'Ⅱ';pause.setAttribute('aria-label',frozen?'Retomar atuação':'Pausar atuação');pause.title=frozen?'Retomar atuação':'Pausar atuação';pause.disabled=root.dataset.state!=='ready'||motion.matches;};
- const policy=()=>{ensureDance();showPause();metrics.gap();loop?.policyChanged();};
+ const policy=()=>{showPause();metrics.gap();ensureDance();loop?.policyChanged();};
  near.addEventListener('click',()=>zoom(.84),{signal:life.signal});far.addEventListener('click',()=>zoom(1.19),{signal:life.signal});home.addEventListener('click',()=>resetCamera(),{signal:life.signal});
  pause.addEventListener('click',()=>{paused=!paused;policy();},{signal:life.signal});
  retry.addEventListener('click',()=>{started=false;start();},{signal:life.signal});

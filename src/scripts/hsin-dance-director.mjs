@@ -12,7 +12,7 @@ export function createDanceDirector({idle,pose,music,transport,seed=1,onEvent=()
  };
  return {
   advance(dt,{enabled=true,context='Neutral Presence'}={}){
-   if(disposed||!Number.isFinite(dt)||dt<0)return;dt=Math.min(dt,.05);
+   if(disposed||!enabled||!Number.isFinite(dt)||dt<0)return;dt=Math.min(dt,.05);
    const clock=transport.advance(dt,music.sample()),playing=enabled&&clock.playing&&pose.ready;
    elapsed+=dt;
    if(state==='CONTEMPLATIVE_IDLE'){
@@ -20,7 +20,7 @@ export function createDanceDirector({idle,pose,music,transport,seed=1,onEvent=()
     idle.release();set('DANCE_PREPARATION');
    }
    if(state==='DANCE_PREPARATION'){
-    if(!owns){idle.advance(dt,{enabled:false,context});if(!playing){set('CONTEMPLATIVE_IDLE');return;}if(idle.busy())return;idle.release();if(!pose.atReference()){set('CONTEMPLATIVE_IDLE');return;}owns=true;elapsed=0;lastRevision=clock.revision;}
+    if(!owns){idle.advance(dt,{enabled:false,context});if(!playing){set('CONTEMPLATIVE_IDLE');return;}if(idle.busy())return;idle.release();if(!pose.atReference()){set('CONTEMPLATIVE_IDLE');return;}pose.restore();owns=true;elapsed=0;lastRevision=clock.revision;}
     if(!playing){recovery();return;}
     pose.apply('moon-breathing',Math.min(1,elapsed/1.6),Math.min(1,elapsed/1.6),.8,dt);
     if(elapsed>=1.6&&(clock.mode!=='mapped'||clock.phase<.05)){pose.restore();choose(clock);}return;
