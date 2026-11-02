@@ -1,0 +1,124 @@
+{
+  "publicVersion": "2.0.1",
+  "visual": "VISUAL_QA_PENDING",
+  "soleVertices": 250,
+  "variants": {
+    "moon-fox-reverie@1": {
+      "amplitude": 1,
+      "maxSlideMm": 0.04489207456748687,
+      "minSoleYmm": 0.028384378013897316,
+      "maxOrgDefGapMm": 0.018233767059803823,
+      "maxHeadForwardCm": 4.084932616713439
+    },
+    "moon-fox-reverie@0.9": {
+      "amplitude": 0.9,
+      "maxSlideMm": 0.04489207456748687,
+      "minSoleYmm": 0.028384378013897316,
+      "maxOrgDefGapMm": 0.018233767059803823,
+      "maxHeadForwardCm": 3.688276820287729
+    },
+    "moon-fox-reverie@0.72": {
+      "amplitude": 0.72,
+      "maxSlideMm": 0.04489207456748687,
+      "minSoleYmm": 0.028384378013897316,
+      "maxOrgDefGapMm": 0.018233767059803823,
+      "maxHeadForwardCm": 3.1952151804390865
+    },
+    "moon-fox-reverie-grand@1": {
+      "amplitude": 1,
+      "maxSlideMm": 0.04731635780267747,
+      "minSoleYmm": 0.015552020952450119,
+      "maxOrgDefGapMm": 0.03261292198030362,
+      "maxHeadForwardCm": 5.419281118391115
+    }
+  },
+  "continuity": {
+    "maxStepDeg": 2.4315915626728044,
+    "maxJumpDeg": 0.5568100474073139,
+    "maxSecondaryStepDeg": 0.5337849993107973,
+    "maxPositionStepMm": 2.2795902891411086,
+    "signFlips": 0
+  },
+  "recovery": {
+    "0.08": {
+      "maxStepDeg": 1.05,
+      "minSoleMm": 0.02
+    },
+    "0.16": {
+      "maxStepDeg": 1.3,
+      "minSoleMm": -0.1
+    },
+    "0.3": {
+      "maxStepDeg": 1.36,
+      "minSoleMm": -0.47
+    },
+    "0.44": {
+      "maxStepDeg": 0.89,
+      "minSoleMm": -0.88
+    },
+    "0.76": {
+      "maxStepDeg": 0.43,
+      "minSoleMm": 0.04
+    },
+    "0.82": {
+      "maxStepDeg": 1.45,
+      "minSoleMm": -0.02
+    },
+    "0.9": {
+      "maxStepDeg": 2.19,
+      "minSoleMm": 0.03
+    },
+    "0.96": {
+      "maxStepDeg": 1.96,
+      "minSoleMm": 0.04
+    }
+  },
+  "cost": {
+    "cpuMsPerApply": {
+      "r2WaltzSpline": 0.0099,
+      "r2WaltzLinear": 0.0096,
+      "reverieWithSecondary": 0.0298
+    },
+    "bytes": {
+      "r2Asset": 511505,
+      "r3Conservative": 205005,
+      "r3Dramatic": 215487
+    },
+    "runtimeBufferBytes": {
+      "r2": 5472,
+      "r3": 20208
+    },
+    "secondaryBones": 215,
+    "note": "CPU Node timings on a CI runner; evidence of relative cost only, not FPS."
+  },
+  "sessions": {
+    "forced": [
+      {
+        "seed": 3,
+        "episodes": 12,
+        "maxStepDeg": 7.28,
+        "minSoleMm": -0.3
+      },
+      {
+        "seed": 5,
+        "episodes": 11,
+        "maxStepDeg": 6.08,
+        "minSoleMm": -0.3
+      },
+      {
+        "seed": 9,
+        "episodes": 13,
+        "maxStepDeg": 6.08,
+        "minSoleMm": -0.3
+      }
+    ],
+    "defaultEpisodesPer600s": [
+      3,
+      3,
+      4,
+      3,
+      3,
+      4
+    ]
+  }
+}

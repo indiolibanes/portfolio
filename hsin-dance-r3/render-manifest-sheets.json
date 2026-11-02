@@ -1,0 +1,12 @@
+{
+  "method": "Actual GLB CPU raster, approximate materials/light/shader; no native player",
+  "fps": 8,
+  "seconds": 13.6,
+  "visual": "VISUAL_QA_PENDING",
+  "phrase": "moon-fox-reverie",
+  "sheets": [
+    "key-poses-front.webp",
+    "key-poses-threeQuarter.webp",
+    "key-poses-side.webp"
+  ]
+}
