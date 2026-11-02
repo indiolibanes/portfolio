@@ -1,0 +1,1 @@
+Moon Fox Reverie R3 PASS {"slide":"0.045 mm","continuity":{"maxStepDeg":2.4315915626728044,"maxJumpDeg":0.5568100474073139,"maxSecondaryStepDeg":0.5337849993107973,"maxPositionStepMm":2.2795902891411086,"signFlips":0},"cost":{"r2WaltzSpline":0.0142,"r2WaltzLinear":0.0138,"reverieWithSecondary":0.0392}}

@@ -1,0 +1,30 @@
+[2m20:20:41[22m [34m[build][39m directory: [34m/home/runner/work/portfolio/portfolio/dist/[39m
+[2m20:20:41[22m [34m[build][39m Collecting build info...
+[2m20:20:41[22m [34m[build][39m [32m✓ Completed in 136ms.[39m
+[2m20:20:41[22m [34m[build][39m Building static entrypoints...
+[2m20:20:42[22m [34m[vite][39m [32m✓ built in 339ms[39m
+[33m[1m20:20:42[22m [WARN] [vite][39m [33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[2m20:20:42[22m [34m[vite][39m [32m✓ built in 539ms[39m
+[2m20:20:42[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m20:20:42[22m   [34m├─[39m [2m/404.html[22m [2m(+44ms)[22m 
+[2m20:20:42[22m   [34m├─[39m [2m/curiosidades/index.html[22m [2m(+7ms)[22m 
+[2m20:20:42[22m   [34m├─[39m [2m/experimentos/index.html[22m [2m(+3ms)[22m 
+[2m20:20:42[22m   [34m├─[39m [2m/modo-experimental/index.html[22m [2m(+6ms)[22m 
+[2m20:20:42[22m   [34m├─[39m [2m/sophia/index.html[22m [2m(+3ms)[22m 
+[2m20:20:42[22m   [34m├─[39m [2m/index.html[22m [2m(+19ms)[22m 
+[2m20:20:42[22m [32m✓ Completed in 97ms.
+[39m
+[2m20:20:42[22m [34m[build][39m [32m✓ Completed in 1.01s.[39m
+[2m20:20:42[22m [34m[build][39m 6 page(s) built in [1m1.15s[22m
+[2m20:20:42[22m [34m[build][39m [1mComplete![22m
+OG source: PASS (editorial Sophia card, PNG 1200x630, metadata wired)
+OG index.html: PASS
+OG sophia/index.html: PASS
+OG curiosidades/index.html: PASS
+OG dist: PASS (JPEG format/dimensions and home/Sophia metadata)
