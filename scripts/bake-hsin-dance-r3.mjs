@@ -90,6 +90,7 @@ function bakeVariant(variantName){
     const coordinate=(p,axis)=>p.dot(axis),lows=[],highs=[];
     for(const axis of [lateral,front]){const values=[restFoot.L,restFoot.R,restToe.L,restToe.R].map(p=>coordinate(p,axis));lows.push(Math.min(...values)-(axis===front?.05:0));highs.push(Math.max(...values));}
     const margin=Math.min(coordinate(comPoint,lateral)-lows[0],highs[0]-coordinate(comPoint,lateral),coordinate(comPoint,front)-lows[1],highs[1]-coordinate(comPoint,front));
+    if(frame===0)metrics.comMarginRest=margin;
     if(margin<metrics.comMarginMin){metrics.comMarginMin=margin;metrics.comMarginMinFrame=frame;}
     metrics.spineDegreesMax=Math.max(metrics.spineDegreesMax,ev.spineDegrees);metrics.hipDropMax=Math.max(metrics.hipDropMax,-ev.hipY);metrics.hipBackMax=Math.max(metrics.hipBackMax,-ev.hipZ);
   }
@@ -120,7 +121,7 @@ function bakeVariant(variantName){
     secondaryTracks[g]={sway:quantise(tracks.sway),pitch:quantise(tracks.pitch)};
   }
   const safe=metrics.comMarginMin>=variant.minComMargin;
-  return {phrase:{seconds,energy:'special',frames,positionFrames,contacts,secondary:secondaryTracks,bow:{degrees:bowDegrees(variant),peakPhase:.58},exits:{unsafe:UNSAFE_WINDOWS},safety:{pass:safe,comMarginMin:+metrics.comMarginMin.toFixed(4),comMarginRequired:variant.minComMargin,estimate:'rough rigid-segment mass model against a rectangle spanned by both locked feet'}},metrics};
+  return {phrase:{seconds,energy:'special',frames,positionFrames,contacts,secondary:secondaryTracks,bow:{degrees:bowDegrees(variant),peakPhase:.58},exits:{unsafe:UNSAFE_WINDOWS},safety:{pass:safe,comMarginRest:+metrics.comMarginRest.toFixed(4),comMarginMin:+metrics.comMarginMin.toFixed(4),comMarginMinFrame:metrics.comMarginMinFrame,comMarginRequired:variant.minComMargin,estimate:'rough rigid-segment mass model against a rectangle spanned by both locked feet'}},metrics};
 }
 
 const rigBytes=r.bytes,profileBytes=r.profileBytes,common={publicVersion:'2.0.1',encoding:'quaternion-i16',modelSha256:hash(rigBytes),profileSha256:hash(profileBytes),names,rest,positionNames,positionRest,lowerStart:upperParts.length*2,secondary:secondaryTable,method:'OFFLINE_AUTHORED_PCHIP_KEYS_TWO_BONE_SUPPORT_LOCK_AND_DAMPED_SECONDARY_TRACKS',visual:'VISUAL_QA_PENDING',frontSign,ownership:{dance:names,translation:positionNames,secondary:secondaryTable.names.length,unchanged:['rig hierarchy','GLB','fingers','morph targets','skirt'],footPolicy:'Both feet locked for the whole phrase; the bow is hips back and down over planted feet with knees absorbing it'}};

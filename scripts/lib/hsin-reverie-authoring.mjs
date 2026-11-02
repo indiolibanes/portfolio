@@ -24,7 +24,7 @@ export const UNSAFE_WINDOWS = Object.freeze([[.46, .76]]);
 /** Two variants share one score. `bow` (0..1) is the inclination profile; `bowHead` lets the head lag the torso. */
 export const VARIANTS = Object.freeze({
   [REVERIE_NAME]: Object.freeze({
-    seconds: 13.6, spine1: 12, spine2: 14, neck: 4, head: 3, hipBack: .040, hipDown: .045, armCounter: .5, minComMargin: .02,
+    seconds: 13.6, spine1: 12, spine2: 14, neck: 4, head: 3, hipBack: .040, hipDown: .045, armCounter: .5, minComMargin: .015,
   }),
   [REVERIE_GRAND_NAME]: Object.freeze({
     seconds: 14.4, spine1: 22, spine2: 26, neck: 8, head: 6, hipBack: .075, hipDown: .070, armCounter: .55, minComMargin: .015,
