@@ -63,20 +63,21 @@ A rota `/experimentos/` usa Three.js diretamente. A V2.0.1 inclui terraço de pe
 
 O runtime limita custo de renderização e pausa quando apropriado. O antigo palco intermediário e o laboratório local de upload de GLB foram removidos; `/experimentos/` é agora a experiência canônica da Hsin.
 
-### Trilha oficial: Ode to Hsin and Moon
+### Pavilhão musical móvel e lua esférica
 
-O palco da Hsin em `/experimentos/` possui um painel **Trilha sonora** (componente `HsinSoundtrack.astro`, controle em `hsin-soundtrack.ts`, estilos isolados). Ele incorpora **exclusivamente o vídeo oficial** de *Ode to Hsin and Moon*, publicado por [Wuthering Waves no YouTube](https://www.youtube.com/watch?v=Yhf9ur3xPQA).
+Em `/experimentos/`, a trilha **Ode to Hsin and Moon** habita um observatório itinerante: telhados curvos em dois níveis, madeira escura, latão, câmaras laterais, conduítes, rodas e quatro naceles de levitação. A entidade Three.js é volumétrica; o iframe oficial permanece HTML, legível e acessível, dentro da abertura frontal. Hsin, GLB, rig, atuação e transição da seção Música são preservados.
 
-- **Refrão:** abre o player no ponto aproximado de **1:06** (`start=66`). O marcador é editorial, baseado na estrutura da canção, e deve ser revisto por audição; não é um corte nem um sample.
-- **Faixa completa:** abre o mesmo vídeo a partir do início.
-- **Silêncio:** remove o iframe e interrompe a reprodução; fechar o painel, mudar de página ou ocultar a aba também destrói o player.
-- **Instrumental:** [álbum oficial no Apple Music](https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103). **Não** há instrumental incorporado sem link de vídeo oficial comprovado.
-- **Privacidade e desempenho:** nenhum contato com o iframe do YouTube antes da seleção explícita do visitante; sem autoplay e sem processamento de áudio local. O visitante usa o botão Play nativo, e o vídeo fica visível (mínimo de 200 × 200 px). O player pode ser bloqueado por políticas regionais, de cookies ou por extensões; links externos permanecem disponíveis.
-- **CSP:** a rota `/experimentos/*` permite somente `https://www.youtube-nocookie.com` e `https://www.youtube.com` em `frame-src`; nenhuma outra rota recebe essa exceção.
+- **YouTube / Spotify / Sem música:** escolha explícita; sem autoplay, áudio hospedado, SDK ou proxy. YouTube usa o vídeo oficial e oferece início completo ou refrão editorial em ≈ 1:06; Spotify usa o álbum oficial compacto de 152 px. O Play é nativo.
+- **Persistência:** orbitar, mudar o lado e abrir/recolher créditos preserva a instância do player. Trocar provedor, escolher silêncio, ocultar a página ou sair encerra a reprodução. YouTube fora da área visível também é encerrado.
+- **Arquitetura adaptativa:** acompanha a órbita com atraso suave numa faixa periférica. Em mobile a construção 3D permanece visível, menor, e o embed ocupa uma baía inferior ou lateral, sem cobrir Hsin nem encolher indevidamente os controles oficiais.
+- **Silêncio:** sigilo lunar vivo e frase contemplativa; slot preparado para um futuro fallback autoral, sem adicionar o pipeline da Sophia agora.
+- **Lua:** esfera fixa no mundo, crateras da textura aprovada, shader estático de volume/relevo aparente e halo discreto. Não gira nem acompanha a câmera; a órbita passa a produzir paralaxe real.
+- **Custo:** pavilhão com cinco lotes e 4.804 triângulos; sem novas texturas, dependências, luzes, sombras dinâmicas, pós-processamento ou segundo ciclo de renderização. Respeita pausa, visibilidade e movimento reduzido.
+- **Plataformas:** Spotify pode limitar a escuta conforme conta/região/navegador; seu álbum compacto ainda precisa de avaliação estética. Apple Music permanece como link externo: não foi adicionado um terceiro embed sujeito a prévias/login. CSP libera os domínios oficiais somente em `/experimentos/*`.
 
-**Créditos musicais:** © 2026 **KURO GAMES** · *Wuthering Waves*. Produção: Wuthering Waves; composição: **Jin Dazhou**; voz: **Jaime Arin**; letras: **SmileL** e **Kat Kennedy**; arranjo: **He Shan**. Créditos também exibidos na interface. A faixa e as marcas pertencem aos respectivos titulares; o portfólio não é afiliado à KURO GAMES. Não há MP3, remix, stem, download, proxy de mídia nem redistribuição da gravação no repositório.
+**Créditos:** © 2026 **KURO GAMES** · Wuthering Waves. Composição: Jin Dazhou; voz: Jaime Arin; letras: SmileL e Kat Kennedy; arranjo: He Shan. Portfólio independente, não afiliado à KURO GAMES. Os créditos e links oficiais permanecem na interface.
 
-Teste de contrato: `npm run check:hsin` inclui `tests/hsin-soundtrack.test.mjs`. A integração visual e a disponibilidade real do embed exigem conferência em navegador após publicação.
+`npm run check` e `npm run build` passam, incluindo regressões da Hsin, estado musical, volume/custo do pavilhão, três formatos móveis e lua estática. **Revisão visual pendente:** o navegador de QA está sem WebGL2. Não há aprovação estética, medição de FPS em Android ou prova de reprodução integral autenticada. Detalhes, fontes e roteiro de aceite em [docs/hsin-music-tower.md](docs/hsin-music-tower.md).
 
 
 ## Sophia

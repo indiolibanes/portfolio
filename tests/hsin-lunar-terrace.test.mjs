@@ -78,13 +78,15 @@ const textures={skyTexture:new T.Texture(),moonTexture:new T.Texture(),stoneText
 const meshes=[];env.group.traverse(o=>{if(o.isMesh)meshes.push(o);});
 metrics.sceneMeshes=meshes.length;metrics.sceneTriangles=meshes.reduce((n,m)=>n+(m.geometry.index?.count??m.geometry.attributes.position.count)/3,0);
 const passes=m=>m.transparent&&m.side===T.DoubleSide&&!m.forceSinglePass?2:1;metrics.scenePassCeiling=meshes.reduce((n,m)=>n+passes(m.material),0);metrics.totalPassCeiling=metrics.scenePassCeiling+a.meshes.reduce((n,m)=>n+passes(m.material),0)+1; // One additional textured-background pass.
-assert.ok(metrics.sceneTriangles<5000);assert.ok(metrics.totalPassCeiling<=30);assert.equal(meshes.length,12);
+assert.ok(metrics.sceneTriangles<9000);assert.ok(metrics.totalPassCeiling<=30);assert.equal(meshes.length,13);
 assert.ok(!meshes.some(m=>['CircleGeometry','RingGeometry'].includes(m.geometry.type)||/pedestal|platform/i.test(m.name)));
 assert.equal(meshes.find(m=>m.name==='Continuous stone terrace').position.y,0);assert.ok(!env.group.children.some(o=>o.isLight));
 for(const aspect of [393/852,16/9])for(const azimuth of [-2,8,18]){
  const camera=new T.PerspectiveCamera(34,aspect,.03,45),distance=cameraFit(profile.bounds,aspect),target=new T.Vector3(0,.88,0),yaw=azimuth*Math.PI/180;camera.position.set(Math.sin(yaw)*distance,1.11,Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
- const moon=env.group.getObjectByName('Full moon · disc and baked halo'),center=moon.getWorldPosition(new T.Vector3()),radius=LUNAR_TERRACE.moonSize*LUNAR_TERRACE.discRatio/2;
- for(const [x,y]of [[radius,0],[-radius,0],[0,radius],[0,-radius]]){const p=new T.Vector3(x,y,0).applyQuaternion(camera.quaternion).add(center).project(camera);assert.ok(Math.abs(p.x)<1&&Math.abs(p.y)<1,'full lunar disc must remain framed');}
+ const moon=env.group.getObjectByName('Full moon · sculpted static sphere'),center=moon.getWorldPosition(new T.Vector3());
+ assert.equal(moon.geometry.type,'SphereGeometry');assert.deepEqual(center.toArray(),[-.42,3.03,-10]);assert.deepEqual(moon.getWorldQuaternion(new T.Quaternion()).toArray(),[0,0,0,1]);
+ assert.ok(!('time' in moon.material.uniforms),'moon never animates or follows the camera');
+ // A world-fixed moon has honest parallax; it is not forced into every orbited viewport.
  const panes=env.group.getObjectByName('Warm windows and lantern panels'),p=panes.geometry.attributes.position;let visible=0;for(let i=0;i<p.count;i++){const v=new T.Vector3().fromBufferAttribute(p,i).applyMatrix4(panes.matrixWorld).project(camera);if(Math.abs(v.x)<1&&Math.abs(v.y)<1&&v.z<1)visible++;}assert.ok(visible>0,'architecture/lanterns must survive small camera rotations');
 }
 metrics.textureBytes=0;metrics.textures=[];

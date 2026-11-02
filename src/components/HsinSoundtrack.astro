@@ -1,60 +1,46 @@
 ---
 import '../styles/hsin-soundtrack.css';
 ---
-
-<aside class="hsin-soundtrack" data-hsin-soundtrack aria-label="Trilha sonora da Hsin">
-  <button
-    class="hsin-soundtrack__toggle"
-    type="button"
-    data-soundtrack-toggle
-    aria-controls="hsin-soundtrack-panel"
-    aria-expanded="false"
-  ><span aria-hidden="true">♫</span> Trilha sonora</button>
-
-  <section id="hsin-soundtrack-panel" class="hsin-soundtrack__panel" aria-label="Seleção musical" hidden>
-    <header class="hsin-soundtrack__heading">
-      <div>
-        <p class="hsin-soundtrack__eyebrow">Wuthering Waves · Hsin</p>
-        <h2>Ode to Hsin and Moon</h2>
+<aside class="hsin-soundtrack hsin-music-tower" data-hsin-soundtrack data-music-tower
+  data-tower-state="idle" data-provider="none" data-soundtrack-side="right"
+  aria-label="Pavilhão lunar · estação musical da Hsin">
+  <div class="hsin-music-tower__crown" aria-hidden="true"><span>✦</span></div>
+  <section class="hsin-music-tower__facade" aria-labelledby="hsin-music-tower-title">
+    <header class="hsin-music-tower__heading">
+      <div><p class="hsin-music-tower__eyebrow">Observatório itinerante · estação 01</p><h2 id="hsin-music-tower-title">Pavilhão lunar</h2></div>
+      <div class="hsin-music-tower__actions">
+        <button type="button" data-soundtrack-side-toggle aria-label="Mover pavilhão para a esquerda" title="Alternar lado">⇄</button>
+        <button type="button" data-soundtrack-options-toggle aria-controls="hsin-soundtrack-options" aria-expanded="false" aria-label="Opções e créditos" title="Opções e créditos">ⓘ</button>
       </div>
-      <button class="hsin-soundtrack__close" type="button" data-soundtrack-close aria-label="Fechar player de música">×</button>
     </header>
-
-    <p class="hsin-soundtrack__description">
-      Escolha como ouvir a gravação oficial. O vídeo só será carregado após sua escolha;
-      a reprodução começa pelo controle do próprio YouTube.
-    </p>
-
-    <div class="hsin-soundtrack__choices" role="group" aria-label="Ponto de início da faixa oficial">
-      <button type="button" data-soundtrack-start="66" aria-pressed="false">Refrão <small>≈ 1:06</small></button>
-      <button type="button" data-soundtrack-start="0" aria-pressed="false">Faixa completa</button>
-      <button type="button" data-soundtrack-silence>Silêncio</button>
+    <div class="hsin-music-tower__providers" role="group" aria-label="Escolher música">
+      <button type="button" data-music-provider="youtube" aria-pressed="false">YouTube</button>
+      <button type="button" data-music-provider="spotify" aria-pressed="false">Spotify</button>
+      <button type="button" data-music-provider="none" aria-pressed="true">Sem música</button>
     </div>
-
-    <div class="hsin-soundtrack__player" data-soundtrack-player>
-      <p class="hsin-soundtrack__placeholder" data-soundtrack-placeholder>
-        Escolha «Refrão» ou «Faixa completa» para abrir o player oficial.
-      </p>
+    <!-- A moldura termina fora do embed: nada cobre ou recorta o player. -->
+    <div class="hsin-music-tower__display" data-soundtrack-player>
+      <div class="hsin-music-tower__idle" data-soundtrack-placeholder data-tower-fallback="lunar-sigil">
+        <div class="hsin-music-tower__sigil" aria-hidden="true"><span>☾</span></div>
+        <p>A lua também sabe ouvir o silêncio.</p>
+        <span class="hsin-music-tower__idle-label">Ode to Hsin and Moon</span>
+      </div>
     </div>
-    <p class="hsin-soundtrack__state" data-soundtrack-status role="status" aria-live="polite">
-      Sem reprodução automática.
-    </p>
-
-    <div class="hsin-soundtrack__links">
-      <a href="https://www.youtube.com/watch?v=Yhf9ur3xPQA" target="_blank" rel="noopener noreferrer">Vídeo oficial no YouTube ↗</a>
-      <a href="https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103" target="_blank" rel="noopener noreferrer">Álbum / instrumentais no Apple Music ↗</a>
+    <p class="hsin-music-tower__status" data-soundtrack-status role="status" aria-live="polite">Escolha uma trilha ou contemple em silêncio.</p>
+    <div class="hsin-music-tower__info" id="hsin-soundtrack-options" data-soundtrack-options hidden>
+      <div class="hsin-music-tower__starts" role="group" aria-label="Ponto de início no YouTube">
+        <button type="button" data-soundtrack-start="0">Faixa completa</button>
+        <button type="button" data-soundtrack-start="66">Refrão ≈ 1:06</button>
+      </div>
+      <p>Use o Play do provedor. No Spotify, a reprodução disponível depende da conta, região e navegador.</p>
+      <p><a href="https://www.youtube.com/watch?v=Yhf9ur3xPQA" target="_blank" rel="noopener noreferrer">YouTube oficial ↗</a> · <a href="https://open.spotify.com/album/0l7zzxlw0HfvGYAJiiWU2F" target="_blank" rel="noopener noreferrer">Spotify ↗</a> · <a href="https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103" target="_blank" rel="noopener noreferrer">Apple Music ↗</a></p>
+      <p>© 2026 <strong>KURO GAMES</strong> · Wuthering Waves. Composição: Jin Dazhou; voz: Jaime Arin; letras: SmileL e Kat Kennedy; arranjo: He Shan. Portfólio independente, não afiliado à KURO GAMES.</p>
     </div>
-
-    <p class="hsin-soundtrack__attribution">
-      © 2026 <strong>KURO GAMES</strong> · Wuthering Waves. Produção: Wuthering Waves.
-      Composição: Jin Dazhou; voz: Jaime Arin; letras: SmileL e Kat Kennedy; arranjo: He Shan.
-      Incorporação do vídeo publicado pelo canal oficial, sem cópia ou redistribuição do áudio.
-      Portfólio independente, não afiliado à KURO GAMES.
-    </p>
+    <noscript><p class="hsin-music-tower__info">As opções musicais precisam de JavaScript. <a href="https://www.youtube.com/watch?v=Yhf9ur3xPQA" target="_blank" rel="noopener noreferrer">Ouvir a faixa oficial no YouTube ↗</a></p></noscript>
   </section>
+  <div class="hsin-music-tower__pedestal" aria-hidden="true"><i></i><span>✧</span><i></i></div>
 </aside>
-
 <script>
-  import { mountHsinSoundtrack } from '../scripts/hsin-soundtrack';
+  import {mountHsinSoundtrack} from '../scripts/hsin-soundtrack';
   document.querySelectorAll<HTMLElement>('[data-hsin-soundtrack]').forEach(mountHsinSoundtrack);
 </script>
