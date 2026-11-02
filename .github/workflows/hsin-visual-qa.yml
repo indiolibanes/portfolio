@@ -46,6 +46,10 @@ jobs:
           QA_VARIANTS: ${{ github.event.inputs.variants }}
           QA_VIEWS: ${{ github.event.inputs.views }}
         run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321
+      - name: Render acting frames (Lip Touch, when the acting profile exists)
+        if: always()
+        run: |
+          if [ -f public/assets/models/hsin/hsin-v2.1-acting.json ]; then node scripts/qa/run-hsin-qa.mjs qa-out/acting --scenario=lip; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:

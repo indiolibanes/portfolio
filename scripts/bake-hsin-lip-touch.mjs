@@ -33,14 +33,13 @@ export function bakeLip(solution, {stage2 = STAGE2_FRAMES} = {}) {
 /** Dense geometric audit of a baked pose: sub-sampled frames, clearance by group, step sizes and the contact track. */
 export function auditLip(baked, subsamples = 4) {
  const n = baked.names.length, q = (f, i) => f.slice(i * 4, i * 4 + 4);
- const report = {frames: baked.frames.length, minClearance: {}, maxStepDegrees: {}, contactTrack: [], accelerationDegrees: 0};
+ const report = {frames: baked.frames.length, minClearance: {}, stage2: {}, maxStepDegrees: {}, contactTrack: [], accelerationDegrees: 0};
  const evalFrame = (f) => ({arm6: ctx.names.map((_, i) => q(f, i)), extra: new Map(baked.names.slice(6).map((name, i) => [name, q(f, 6 + i)]))});
- const mix = (a, b, t) => a.map((v, i) => { const qa = q(a, Math.floor(i / 4)), qb = q(b, Math.floor(i / 4)); return null; });
  for (let i = 0; i < baked.frames.length; i++) for (let s = 0; s < (i === baked.frames.length - 1 ? 1 : subsamples); s++) {
   const t = s / subsamples, a = baked.frames[i], b = baked.frames[Math.min(i + 1, baked.frames.length - 1)];
   const f = []; for (let k = 0; k < n; k++) f.push(...qSlerp(q(a, k), q(b, k), t));
   const {arm6, extra} = evalFrame(f), m = measurePose(ctx, arm6, extra, {groups: ['distalIndex', 'index', 'otherFingers', 'thumb', 'hand', 'forearm', 'upper']});
-  for (const [key, v] of Object.entries(m.clearance)) report.minClearance[key] = Math.min(report.minClearance[key] ?? Infinity, v);
+  for (const [key, v] of Object.entries(m.clearance)) { report.minClearance[key] = Math.min(report.minClearance[key] ?? Infinity, v); if (i > 64) report.stage2[key] = Math.min(report.stage2[key] ?? Infinity, v); }
   if (s === 0) report.contactTrack.push(+nearestTo(ctx, m.world, ctx.groups.distalIndex, target).distance.toFixed(5));
  }
  for (let i = 1; i < baked.frames.length; i++) for (let k = 0; k < n; k++) { const d = qAngle(q(baked.frames[i - 1], k), q(baked.frames[i], k)) * 180 / Math.PI; report.maxStepDegrees[baked.names[k]] = Math.max(report.maxStepDegrees[baked.names[k]] ?? 0, d); }
@@ -51,6 +50,6 @@ export function auditLip(baked, subsamples = 4) {
 if (import.meta.url === `file://${process.argv[1]}`) {
  const [solutionPath, outPath] = process.argv.slice(2), solution = JSON.parse(readFileSync(solutionPath, 'utf8'));
  const baked = bakeLip(solution), audit = auditLip(baked);
- console.log(JSON.stringify({frames: baked.frames.length, stages: baked.stages, contactMin: Math.min(...audit.contactTrack), contactEnd: audit.contactTrack.at(-1), maxStep: Math.max(...Object.values(audit.maxStepDegrees)), accel: audit.accelerationDegrees, clearance: Object.fromEntries(Object.entries(audit.minClearance).map(([k, v]) => [k, +v.toFixed(4)]))}, null, 1));
+ console.log(JSON.stringify({frames: baked.frames.length, stages: baked.stages, contactMin: Math.min(...audit.contactTrack), contactEnd: audit.contactTrack.at(-1), maxStep: Math.max(...Object.values(audit.maxStepDegrees)), accel: audit.accelerationDegrees, clearance_all_vs_stage2: Object.fromEntries(Object.entries(audit.minClearance).map(([k, v]) => [k, [+v.toFixed(4), +(audit.stage2[k] ?? NaN).toFixed(4)]]))}, null, 1));
  if (outPath) writeFileSync(outPath, JSON.stringify({baked, audit, solution}, null, 1));
 }

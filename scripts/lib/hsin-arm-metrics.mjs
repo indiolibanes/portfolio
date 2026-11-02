@@ -1,16 +1,27 @@
 /** Geometric report of one arm pose against the real, posed meshes (offline). */
 import {forward} from './hsin-rig.mjs';
-import {withPose, clearance} from './hsin-arm.mjs';
+import {withPose} from './hsin-arm.mjs';
 import {sub, len} from './hsin-math.mjs';
 
 export const GROUPS = ['distalIndex', 'index', 'otherFingers', 'thumb', 'hand', 'forearm', 'upper'];
 
-/** Minimum signed clearance (m, positive = outside) of every moving group against face, bangs, hair and each torso mesh. */
+/** Smallest distance (m, unsigned) between a moving vertex group and a static surface, within `radius`.
+ * Hair, bangs and clothing are open sheets, so a vertex-normal sign is meaningless there; unsigned distance is the safe test.
+ * `signed` (used for the face) is negative only when a sample is behind the skin. */
+function distances(ctx, world, group, surface, radius) {
+ let min = radius, signed = radius; const p = [0, 0, 0];
+ for (const s of group) { ctx.point(world, s, p); const q = surface.query(p, radius); if (!q) continue; min = Math.min(min, q.distance); signed = Math.min(signed, q.signed); }
+ return {distance: min, signed};
+}
+
+/** Per group and static surface: unsigned distance (all surfaces) and signed distance (face). */
 export function measurePose(ctx, chain6, extra, {radius = .08, groups = GROUPS} = {}) {
  const world = forward(ctx.rig, withPose(ctx, chain6, extra)), out = {};
  for (const g of groups) {
-  for (const key of ['face', 'bangs', 'hair']) out[`${g}:${key}`] = clearance(ctx, world, ctx[g] ?? ctx.groups[g], ctx.surfaces[key], radius).min;
-  out[`${g}:torso`] = Math.min(...ctx.surfaces.torso.map((s) => clearance(ctx, world, ctx.groups[g], s, radius).min));
+  const group = ctx.groups[g], face = distances(ctx, world, group, ctx.surfaces.face, radius);
+  out[`${g}:face`] = face.distance; out[`${g}:face:signed`] = face.signed;
+  for (const key of ['bangs', 'hair']) out[`${g}:${key}`] = distances(ctx, world, group, ctx.surfaces[key], radius).distance;
+  out[`${g}:torso`] = Math.min(...ctx.surfaces.torso.map((surface) => distances(ctx, world, group, surface, radius).distance));
  }
  return {world, clearance: out};
 }

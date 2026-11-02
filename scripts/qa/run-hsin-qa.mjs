@@ -30,7 +30,7 @@ async function shoot(page, variant, options, views) {
  if (!report.renderer) report.renderer = await page.evaluate(() => { const gl = document.createElement('canvas').getContext('webgl2'), e = gl.getExtension('WEBGL_debug_renderer_info'); return e ? gl.getParameter(e.UNMASKED_RENDERER_WEBGL) : 'unknown'; });
  const files = {};
  for (const v of views) {
-  const stats = await page.evaluate(({view, pose}) => { const h = window.hsinHarness; h.pose(pose?.name ?? null, pose?.weight ?? 0); h.view(view); return h.render(); }, {view: v.view, pose: v.pose});
+  const stats = await page.evaluate(({view, pose, morphs}) => { const h = window.hsinHarness; h.pose(pose?.list ?? pose?.name ?? null, pose?.weight ?? 0); h.morphs(morphs ?? null); h.view(view); return h.render(); }, {view: v.view, pose: v.pose, morphs: v.morphs});
   const file = join(out, `${v.id}.${variant}.png`);
   await page.locator('#c').screenshot({path: file});
   files[v.id] = file; report.shots.push({id: v.id, variant, file, ...stats});
@@ -45,6 +45,20 @@ async function sheet(name, variants, views, files) {
   tiles.push({input: await sharp(labelled).resize(cell, h).png().toBuffer(), left: col * cell, top: row * h});
  }
  await sharp({create: {width: cell * variants.length, height: h * views.length, channels: 3, background: '#000'}}).composite(tiles).webp({quality: 88}).toFile(join(out, `${name}.webp`));
+}
+
+/** Gesture frames: rows are views, columns are pose states. Evidence of geometry and look only, never of motion quality. */
+async function gestureSheet(name, columns, views) {
+ const page = await openHarness(), files = {};
+ report.harness[name] = await page.evaluate(() => window.hsinHarness.load({faceSkin: true}));
+ const cell = 400, h = Math.round(cell * 1100 / 800), tiles = [];
+ for (const [row, v] of views.entries()) for (const [col, c] of columns.entries()) {
+  const stats = await page.evaluate(({view, pose, morphs}) => { const hh = window.hsinHarness; hh.pose(pose); hh.morphs(morphs); hh.view(view); return hh.render(); }, {view: v.view, pose: c.pose, morphs: c.morphs ?? null});
+  const file = join(out, `${name}.${v.id}.${c.id}.png`); await page.locator('#c').screenshot({path: file}); report.shots.push({id: `${v.id}.${c.id}`, file, ...stats});
+  tiles.push({input: await sharp(await label(file, `${v.title} · ${c.title}`)).resize(cell, h).png().toBuffer(), left: col * cell, top: row * h});
+ }
+ await sharp({create: {width: cell * columns.length, height: h * views.length, channels: 3, background: '#000'}}).composite(tiles).webp({quality: 88}).toFile(join(out, `${name}.webp`));
+ await page.close(); return files;
 }
 
 try {
@@ -65,6 +79,20 @@ try {
   for (const variant of variants) files[variant.id] = await shoot(page, variant.id, variant.options, picked);
   await sheet('face-before-after', variants, picked, files);
   await page.close();
+ }
+ if (scenario === 'lip') {
+  const w = (weight, extra = []) => [{name: 'lipTouch', weight}, ...extra], chin = 64 / 92;
+  const columns = [
+   {id: 'rest', title: 'repouso', pose: []}, {id: 'chin', title: 'Signature Chin (assinatura)', pose: w(chin)},
+   {id: 'approach', title: 'aproximação', pose: w(.85)}, {id: 'touch', title: 'Lip Touch', pose: w(1)},
+   {id: 'touch-smile', title: 'Lip Touch + sorriso', pose: w(1), morphs: {M_Smile_R: .5, M_Smile_L: .18, E_Smile_R: .22, B_Up_Add_R: .25}},
+  ];
+  const views = [
+   {id: 'three-quarter-face', title: '3/4 (palco)', view: {azimuth: 8, zoom: .86}},
+   {id: 'profile-face', title: 'quase perfil', view: {azimuth: 38, zoom: .86}},
+   {id: 'mouth-close', title: 'boca (perto)', view: {azimuth: 24, zoom: 1}},
+  ];
+  await gestureSheet('lip-touch', columns, views);
  }
  if (stageUrl) {
   const page = await browser.newPage({viewport: {width: 1280, height: 720}, deviceScaleFactor: 1}), stageErrors = [];

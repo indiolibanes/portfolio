@@ -25,6 +25,7 @@ async function load({faceSkin = true, params = null, extraLights = null} = {}) {
   fetch(HSIN_STAGE.cinematicProfile).then((r) => r.json()), fetch(HSIN_STAGE.model).then((r) => r.arrayBuffer()),
   ...[LUNAR_TERRACE.sky, LUNAR_TERRACE.moon, LUNAR_TERRACE.stone, LUNAR_TERRACE.atlas, LUNAR_TERRACE.water].map(texture)]);
  const [skyTexture, moonTexture, stoneTexture, atlasTexture, waterTexture] = textures;
+ const acting = await fetch('/assets/models/hsin/hsin-v2.1-acting.json').then((r) => r.ok ? r.json() : null).catch(() => null);
  const gltf = await new GLTFLoader().parseAsync(buffer, ''), model = gltf.scene, scene = new T.Scene(); scene.matrixWorldAutoUpdate = false; scene.add(model);
  model.position.y -= profile.bounds.min[1]; scene.updateMatrixWorld(true);
  const meshes = []; model.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });
@@ -38,7 +39,7 @@ async function load({faceSkin = true, params = null, extraLights = null} = {}) {
  const skin = createFaceSkin({THREE: T, meshes, config: {...HSIN_FACE_SKIN, ...(params ?? {}), enabled: faceSkin}}); skin.apply();
  scene.traverse((o) => { o.updateMatrix(); o.matrixAutoUpdate = false; }); scene.updateMatrixWorld(true);
  const camera = new T.PerspectiveCamera(HSIN_STAGE.fov, WIDTH / HEIGHT, .03, 45);
- Object.assign(state, {renderer, scene, camera, moonlit, profile, bones, byName, meshes, skin, model, framing: lunarCameraFit(WIDTH / HEIGHT), poses: {}});
+ Object.assign(state, {renderer, scene, camera, moonlit, profile, acting, bones, byName, meshes, skin, model, framing: lunarCameraFit(WIDTH / HEIGHT), poses: {}});
  return {skin: skin.diagnostics(), renderer: renderer.getContext().getParameter(renderer.getContext().VERSION), info: {programs: renderer.info.programs?.length ?? null}};
 }
 
@@ -51,14 +52,26 @@ function view({azimuth = HSIN_LUNAR_PRESENTATION.cameraAzimuth, zoom = 0} = {}) 
  return {distance, target: target.toArray(), position: camera.position.toArray()};
 }
 
+/** One pose by name, or several at once: pose([{name, weight}, ...]). Names come from the approved profile or the acting profile. */
 function pose(name, weight) {
- const {profile, bones, scene} = state;
+ const {profile, acting, bones, scene} = state, list = Array.isArray(name) ? name : name ? [{name, weight}] : [];
  for (const p of Object.values(state.poses)) p.restore();
- if (name && weight > 0) { state.poses[name] ??= createBakedPose({THREE: T, data: profile.poses[name], bones}); state.poses[name].apply(weight); }
+ for (const item of list) if (item.weight > 0) {
+  state.poses[item.name] ??= createBakedPose({THREE: T, data: profile.poses[item.name] ?? acting?.poses[item.name], bones});
+  state.poses[item.name].apply(item.weight);
+ }
  scene.updateMatrixWorld(true);
+}
+
+/** Face morph offsets (names -> added influence) on top of the GLB defaults; pass null to restore. */
+function morphs(offsets) {
+ const face = state.meshes.find((m) => /Face Xin/.test(m.material?.name ?? ''));
+ state.baseMorph ??= [...face.morphTargetInfluences];
+ face.morphTargetInfluences.forEach((_, i) => { face.morphTargetInfluences[i] = state.baseMorph[i]; });
+ if (offsets) for (const [name, value] of Object.entries(offsets)) { const i = face.morphTargetDictionary[name]; if (i !== undefined) face.morphTargetInfluences[i] = Math.min(1, state.baseMorph[i] + value); }
 }
 
 function render() { const {renderer, scene, camera} = state; scene.updateMatrixWorld(); renderer.render(scene, camera); return {calls: renderer.info.render.calls, triangles: renderer.info.render.triangles}; }
 
-window.hsinHarness = {WIDTH, HEIGHT, load, view, pose, render, state};
+window.hsinHarness = {WIDTH, HEIGHT, load, view, pose, morphs, render, state};
 window.hsinHarnessReady = true;
