@@ -24,6 +24,7 @@ on:
       - 'scripts/lib/**'
       - 'scripts/solve-hsin-*.mjs'
       - 'scripts/bake-hsin-*.mjs'
+      - 'scripts/bench-hsin-*.mjs'
       - 'scripts/data/**'
       - 'scripts/audit-hsin-materials.mjs'
       - 'docs/hsin-v201-material-audit.json'
@@ -83,6 +84,7 @@ jobs:
           node tests/hsin-lip-hair.test.mjs
           node tests/hsin-lip-touch-geometry.test.mjs
           node tests/hsin-stage-metrics.test.mjs
+          node scripts/bench-hsin-acting.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract
