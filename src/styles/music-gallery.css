@@ -1,8 +1,7 @@
 /*
  * Sala de escuta — painel editorial e composição panorâmica 16:9.
- * A ilustração panorâmica está versionada em
- * public/assets/music-panorama-16x9.avif.
- * Os retratos existentes oferecem uma alternativa caso a arte não carregue.
+ * A arte principal é declarada em MusicShelf.astro; esta folha cuida
+ * apenas da composição, efeitos e responsividade da cena.
  */
 .music-shelf.music-shelf--gallery {
   position: relative;
