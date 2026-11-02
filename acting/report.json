@@ -1,0 +1,341 @@
+{
+ "scenario": "lip",
+ "renderer": null,
+ "harness": {
+  "lip-touch": {
+   "skin": {
+    "version": "2.0.1-face-r2",
+    "enabled": true,
+    "active": true,
+    "replaced": [
+     "R2T1XinMd10011_LOD0_part_2"
+    ]
+   },
+   "renderer": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "info": {
+    "programs": 0
+   }
+  },
+  "hair-caress": {
+   "skin": {
+    "version": "2.0.1-face-r2",
+    "enabled": true,
+    "active": true,
+    "replaced": [
+     "R2T1XinMd10011_LOD0_part_2"
+    ]
+   },
+   "renderer": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "info": {
+    "programs": 0
+   }
+  },
+  "composition": {
+   "skin": {
+    "version": "2.0.1-face-r2",
+    "enabled": true,
+    "active": true,
+    "replaced": [
+     "R2T1XinMd10011_LOD0_part_2"
+    ]
+   },
+   "renderer": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "info": {
+    "programs": 0
+   }
+  }
+ },
+ "shots": [
+  {
+   "id": "three-quarter-face.rest",
+   "file": "qa-out/acting/lip-touch.three-quarter-face.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.chin",
+   "file": "qa-out/acting/lip-touch.three-quarter-face.chin.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.approach",
+   "file": "qa-out/acting/lip-touch.three-quarter-face.approach.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.touch",
+   "file": "qa-out/acting/lip-touch.three-quarter-face.touch.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.touch-smile",
+   "file": "qa-out/acting/lip-touch.three-quarter-face.touch-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.rest",
+   "file": "qa-out/acting/lip-touch.profile-face.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.chin",
+   "file": "qa-out/acting/lip-touch.profile-face.chin.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.approach",
+   "file": "qa-out/acting/lip-touch.profile-face.approach.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.touch",
+   "file": "qa-out/acting/lip-touch.profile-face.touch.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.touch-smile",
+   "file": "qa-out/acting/lip-touch.profile-face.touch-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.rest",
+   "file": "qa-out/acting/lip-touch.mouth-close.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.chin",
+   "file": "qa-out/acting/lip-touch.mouth-close.chin.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.approach",
+   "file": "qa-out/acting/lip-touch.mouth-close.approach.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.touch",
+   "file": "qa-out/acting/lip-touch.mouth-close.touch.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.touch-smile",
+   "file": "qa-out/acting/lip-touch.mouth-close.touch-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.rest",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.hover",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.hover.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.start",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.start.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.mid",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.mid.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.end",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.end.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.leave",
+   "file": "qa-out/acting/hair-caress.three-quarter-face.leave.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.rest",
+   "file": "qa-out/acting/hair-caress.left-side.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.hover",
+   "file": "qa-out/acting/hair-caress.left-side.hover.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.start",
+   "file": "qa-out/acting/hair-caress.left-side.start.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.mid",
+   "file": "qa-out/acting/hair-caress.left-side.mid.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.end",
+   "file": "qa-out/acting/hair-caress.left-side.end.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "left-side.leave",
+   "file": "qa-out/acting/hair-caress.left-side.leave.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.rest",
+   "file": "qa-out/acting/hair-caress.hair-close.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.hover",
+   "file": "qa-out/acting/hair-caress.hair-close.hover.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.start",
+   "file": "qa-out/acting/hair-caress.hair-close.start.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.mid",
+   "file": "qa-out/acting/hair-caress.hair-close.mid.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.end",
+   "file": "qa-out/acting/hair-caress.hair-close.end.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "hair-close.leave",
+   "file": "qa-out/acting/hair-caress.hair-close.leave.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.rest",
+   "file": "qa-out/acting/composition.three-quarter-face.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.rise",
+   "file": "qa-out/acting/composition.three-quarter-face.rise.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.hold",
+   "file": "qa-out/acting/composition.three-quarter-face.hold.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.hold-smile",
+   "file": "qa-out/acting/composition.three-quarter-face.hold-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "three-quarter-face.left-leaves",
+   "file": "qa-out/acting/composition.three-quarter-face.left-leaves.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.rest",
+   "file": "qa-out/acting/composition.profile-face.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.rise",
+   "file": "qa-out/acting/composition.profile-face.rise.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.hold",
+   "file": "qa-out/acting/composition.profile-face.hold.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.hold-smile",
+   "file": "qa-out/acting/composition.profile-face.hold-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "profile-face.left-leaves",
+   "file": "qa-out/acting/composition.profile-face.left-leaves.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.rest",
+   "file": "qa-out/acting/composition.mouth-close.rest.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.rise",
+   "file": "qa-out/acting/composition.mouth-close.rise.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.hold",
+   "file": "qa-out/acting/composition.mouth-close.hold.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.hold-smile",
+   "file": "qa-out/acting/composition.mouth-close.hold-smile.png",
+   "calls": 22,
+   "triangles": 120985
+  },
+  {
+   "id": "mouth-close.left-leaves",
+   "file": "qa-out/acting/composition.mouth-close.left-leaves.png",
+   "calls": 22,
+   "triangles": 120985
+  }
+ ],
+ "stage": null,
+ "caveat": "Software WebGL: colour and lighting evidence only. Not frame-rate, smoothness or GPU-memory evidence.",
+ "errors": []
+}

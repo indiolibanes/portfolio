@@ -1,0 +1,3 @@
+source=experiment/hsin-v201-arm-silhouette-E-render-2026-11-02
+run=41479420200
+sha=e4dbcda1c9aba294c74d12f26775f0ec11056d8e
