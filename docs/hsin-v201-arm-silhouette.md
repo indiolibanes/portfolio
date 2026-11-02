@@ -72,6 +72,15 @@ Interpretação: para este ponto do cabelo, a posição que tira o braço da fre
 
 ## 6. Visual
 
+Leitura visual do candidato E (quadros do CI, `docs/qa/hsin-v201-arm-silhouette/candidate-E-*.webp`):
+
+- O olho ficou livre no 3/4 e no perfil, como a medição prevê.
+- **Mas a carícia não se lê como carícia.** Na câmera 3/4 e na lateral esquerda, o antebraço fica junto ao corpo, o cotovelo baixo e a mão perto do quadril; em nenhum quadro de contato a mão aparece tocando o cabelo. Ou seja, a folga de 3–5 mm medida no solver não está se traduzindo em um contato legível. Isso é uma discrepância entre a medição e a imagem que precisa ser investigada antes de qualquer conclusão sobre o candidato.
+- A composição (lábio + cabelo) fica legível para o lábio; a mão esquerda não chega ao cabelo de forma visível.
+
+Conclusão visual: o candidato E melhora a silhueta mas **não entrega o gesto**. Não é aprovável.
+
+
 Quadros do conjunto E (renderizados pelo CI no branch descartável `experiment/hsin-v201-arm-silhouette-E-render-2026-11-02`, que **falha os testes de contrato e não deve ser mesclado**) ficam em `docs/qa/hsin-v201-arm-silhouette/` quando disponíveis. Comparação com o PR #181 em `docs/qa/hsin-v201/`.
 
 ## Limites
