@@ -1,30 +1,94 @@
-.hsin-soundtrack{position:absolute;right:clamp(14px,2vw,26px);bottom:max(22px,env(safe-area-inset-bottom));z-index:8;color:#e5edf8;font:400 13px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.hsin-soundtrack [hidden]{display:none!important}
-.hsin-soundtrack__toggle{display:flex;gap:9px;align-items:center;justify-content:center;border:1px solid #bba77975!important;border-radius:28px;background:#0b1b34e8;color:#f1e4ca!important;box-shadow:0 6px 30px #030a1c80;padding:12px 17px;min-height:46px;letter-spacing:.03em}
-.hsin-soundtrack__toggle:hover,.hsin-soundtrack__close:hover,.hsin-soundtrack__choices button:hover{background:#29496e}
-.hsin-soundtrack__toggle span{font-size:21px;line-height:1}
-.hsin-soundtrack__panel{position:absolute;right:0;bottom:calc(100% + 14px);width:min(480px,calc(100vw - 28px));max-height:calc(100dvh - 110px);overflow-y:auto;overscroll-behavior:contain;padding:19px;border-radius:19px;border:1px solid #bdac875e;background:#08162af5;box-shadow:0 12px 55px #020813d9;scrollbar-color:#8097b5 #0b1b34}
-.hsin-soundtrack__heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
-.hsin-soundtrack__eyebrow{margin:0 0 5px;color:#bdcfe7;font-size:10px;letter-spacing:.17em;text-transform:uppercase}
-.hsin-soundtrack__heading h2{margin:0;font:400 clamp(21px,2.7vw,27px)/1.15 Georgia,"Times New Roman",serif;color:#e9dbb9}
-.hsin-soundtrack__close{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px;background:#172c47;border-radius:50%;font-size:25px!important;line-height:1}
-.hsin-soundtrack__description{color:#c8d4e5;font-size:12px;margin:12px 0}
-.hsin-soundtrack__choices{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-.hsin-soundtrack__choices button{font-size:12px!important;padding:9px 11px;border-radius:18px;background:#1b3351;border:1px solid #8ca0be40;color:#e2ebf7;min-height:40px}
-.hsin-soundtrack__choices button[aria-pressed=true]{border-color:#dec58d;background:#384760;color:#fff}
-.hsin-soundtrack__choices small{font-size:10px;opacity:.8}
-.hsin-soundtrack__player{display:grid;place-items:center;width:100%;min-width:200px;min-height:200px;aspect-ratio:16/9;border:1px solid #7f97bb52;border-radius:10px;overflow:hidden;background:#050d19}
-.hsin-soundtrack__player iframe{display:block;width:100%;height:100%;min-height:200px;aspect-ratio:16/9;border:0;background:#050d19}
-.hsin-soundtrack__placeholder{margin:0;padding:18px;text-align:center;color:#b7c9df;font-size:12px}
-.hsin-soundtrack__state{font-size:11px;margin:9px 0;color:#b8c6d9}
-.hsin-soundtrack__links{display:flex;flex-wrap:wrap;column-gap:17px;row-gap:6px;margin:10px 0}
-.hsin-soundtrack__links a{color:#e5d0a0;font-size:11px;text-underline-offset:3px}
-.hsin-soundtrack__attribution{border-top:1px solid #9aafd037;padding-top:10px;margin:11px 0 0;font-size:10px;line-height:1.6;color:#a8bbd2}
-@media(max-width:700px){.hsin-soundtrack{bottom:max(87px,calc(env(safe-area-inset-bottom) + 82px));right:14px}
-.hsin-soundtrack__panel{max-height:calc(100dvh - 154px);padding:14px;bottom:calc(100% + 10px)}
-.hsin-soundtrack__toggle{padding:9px 13px;font-size:12px!important;min-height:41px}
-.hsin-soundtrack__heading h2{font-size:21px}
+/* The native player stays square to the reader, aligned with the 3D brass facade.
+   Decoration is outside its rectangle; iframe contents are never covered or scaled. */
+.hsin-music-tower {
+  --tower-width: clamp(224px, 29vw, 340px);
+  position:absolute; z-index:7; right:20px; top:27%; width:var(--tower-width);
+  color:#e4dac4; font:400 12px/1.4 system-ui,sans-serif; pointer-events:none;
 }
-@media(max-height:500px){.hsin-soundtrack__panel{max-height:calc(100dvh - 80px);bottom:calc(100% + 6px)}
-.hsin-soundtrack{bottom:8px}
+.hsin-music-tower[data-soundtrack-side=left] { left:20px; right:auto; }
+.hsin-music-tower[data-tower-anchor=world] { left:0; top:0; right:auto; transform:translate3d(var(--tower-x),var(--tower-y),0); }
+.hsin-music-tower [hidden] { display:none!important; }
+.hsin-music-tower__crown { height:25px; width:70%; margin:0 auto; text-align:center; position:relative; }
+.hsin-music-tower__crown::before { content:''; position:absolute; inset:9px 0 0; border:1px solid #bfa36c; border-bottom:0; border-radius:90% 90% 0 0; }
+.hsin-music-tower__crown span { position:relative; top:-6px; color:#f0d497; font-size:22px; text-shadow:0 0 10px #dbb76544; }
+.hsin-music-tower__facade {
+  position:relative; pointer-events:auto; padding:10px;
+  border:1px solid #c3a26d; border-radius:5px;
+  background:linear-gradient(130deg,#152631fa,#0c1c29fc 60%,#171f2afa);
+  box-shadow:0 0 0 3px #302e29,0 0 0 4px #a68a5866,0 12px 22px #02071280;
+}
+.hsin-music-tower__heading { display:flex; align-items:center; justify-content:space-between; gap:5px; margin-bottom:9px; }
+.hsin-music-tower__heading h2 { margin:0; color:#ead6ad; font:400 21px/1 Georgia,serif; }
+.hsin-music-tower__eyebrow { font-size:8px; text-transform:uppercase; letter-spacing:.14em; color:#adbdc4; margin:0 0 5px; }
+.hsin-music-tower__actions { display:flex; gap:3px; }
+.hsin-stage .hsin-music-tower button { min-height:34px; border:1px solid #bca37350; background:#1d303a; color:#eee2c8; border-radius:4px; }
+.hsin-music-tower__actions button { width:34px; font-size:17px; }
+.hsin-music-tower__providers { display:flex; gap:4px; margin-bottom:10px; }
+.hsin-music-tower__providers button { flex:1; padding:5px 3px; font-size:11px!important; white-space:nowrap; }
+.hsin-stage .hsin-music-tower button[aria-pressed=true] { color:#fff0ca; background:#4a4132; border-color:#e7c27b; }
+.hsin-stage .hsin-music-tower button:hover { background:#33454e; }
+.hsin-music-tower__display { background:#07131e; width:100%; }
+.hsin-music-tower__display iframe { display:block; width:100%; border:0; min-width:200px; background:#07131e; }
+.hsin-music-tower[data-provider=youtube] iframe { height:200px; min-height:200px; }
+.hsin-music-tower[data-provider=spotify] iframe { height:152px; }
+.hsin-music-tower__idle { min-height:128px; display:grid; justify-items:center; align-content:center; padding:12px 8px; text-align:center; }
+.hsin-music-tower__idle p { margin:8px 0 5px; color:#ddd2bc; font:italic 14px/1.3 Georgia,serif; }
+.hsin-music-tower__idle-label { color:#8ca2ad; font-size:9px; letter-spacing:.06em; }
+.hsin-music-tower__sigil { width:55px; height:55px; border:1px solid #a9905c80; border-radius:50%; display:grid; place-items:center; position:relative; }
+.hsin-music-tower__sigil::before { content:''; position:absolute; inset:6px -5px; border:1px solid #c0a87560; border-radius:50%; transform:rotate(-28deg); }
+.hsin-music-tower__sigil span { font:35px/1 Georgia,serif; color:#e6cd91; animation:tower-lamplight 6s ease-in-out infinite; }
+.hsin-music-tower__status { margin:8px 0 0; color:#b9c7cc; font-size:10px; min-height:14px; }
+.hsin-music-tower__info { margin-top:10px; padding-top:8px; border-top:1px solid #c3a26d50; font-size:11px; max-height:112px; overflow:auto; overscroll-behavior:contain; }
+.hsin-music-tower__info p { margin:6px 0; }
+.hsin-music-tower__info a { color:#f1d69f; text-underline-offset:3px; }
+.hsin-music-tower__starts { display:flex; gap:5px; }
+.hsin-music-tower__starts button { font-size:11px!important; padding:4px 7px; }
+.hsin-music-tower__pedestal { height:28px; display:flex; align-items:center; justify-content:space-evenly; width:80%; margin:auto; color:#c7a767; background:linear-gradient(90deg,transparent,#1d2e37b0,transparent); }
+.hsin-music-tower__pedestal i { display:block; width:2px; height:28px; background:linear-gradient(#c3a26d,#39434a); }
+.hsin-music-tower[data-provider=youtube] .hsin-music-tower__facade,
+.hsin-music-tower[data-provider=spotify] .hsin-music-tower__facade { animation:tower-activation .55s ease-out; }
+@keyframes tower-activation { from { border-color:#f8e3a5; box-shadow:0 0 0 3px #302e29,0 0 20px #ddbc7640; } to { border-color:#c3a26d; } }
+@keyframes tower-lamplight { 0%,100% { opacity:.65; } 50% { opacity:1; } }
+/* On narrow/short screens the same facade sits in a lower architectural bay.
+   The canvas fits ABOVE it, so official player minimums never cover Hsin. */
+@media (max-width:799px), (max-height:540px) {
+  .hsin-stage { --tower-reserved-height:300px; }
+  .hsin-stage .hsin-stage__canvas, .hsin-stage .hsin-stage__poster { bottom:var(--tower-reserved-height); }
+  .hsin-stage .hsin-music-tower, .hsin-stage .hsin-music-tower[data-tower-anchor=world] { width:min(340px,calc(100% - 32px)); left:50%; right:auto; top:auto; bottom:max(8px,env(safe-area-inset-bottom)); transform:translateX(-50%); }
+  .hsin-music-tower__crown { height:15px; }
+  .hsin-music-tower__crown span { top:-9px; font-size:19px; }
+  .hsin-music-tower__pedestal { height:10px; }
+  .hsin-music-tower__pedestal i { height:10px; }
+  .hsin-music-tower__heading { margin-bottom:6px; }
+  .hsin-music-tower__eyebrow { display:none; }
+  .hsin-music-tower__heading h2 { font-size:18px; }
+  .hsin-music-tower__facade { padding:8px; }
+  .hsin-music-tower__providers { margin-bottom:6px; }
+  .hsin-music-tower__idle { min-height:65px; grid-template-columns:40px 1fr; column-gap:10px; padding:7px; }
+  .hsin-music-tower__sigil { grid-row:1/3; width:36px; height:36px; }
+  .hsin-music-tower__sigil span { font-size:27px; }
+  .hsin-music-tower__idle p { font-size:13px; margin:0; }
+  .hsin-music-tower__idle-label { font-size:8px; }
+  .hsin-music-tower__status { margin-top:5px; font-size:9px; }
+  .hsin-stage .hsin-stage__tools { left:auto; right:12px; top:75px; bottom:auto; transform:none; flex-direction:column; }
+  .hsin-stage .hsin-stage__credits { bottom:calc(var(--tower-reserved-height) + 8px); }
+  .hsin-stage .hsin-stage__credits[open] { bottom:calc(var(--tower-reserved-height) + 8px); }
+  .hsin-stage .hsin-stage__status, .hsin-stage .hsin-stage__error { bottom:calc(var(--tower-reserved-height) + 15px); }
+}
+/* Landscape phones keep a side bay and full-height scene instead of a tiny top strip. */
+@media (max-height:540px) and (min-width:600px) {
+  .hsin-stage .hsin-stage__canvas,.hsin-stage .hsin-stage__poster { bottom:0; right:260px; }
+  .hsin-stage .hsin-music-tower,.hsin-stage .hsin-music-tower[data-tower-anchor=world] { width:234px; left:auto; right:12px; bottom:12px; transform:none; }
+  .hsin-music-tower__crown,.hsin-music-tower__pedestal { display:none; }
+  .hsin-music-tower__info { max-height:65px; }
+  .hsin-stage .hsin-stage__tools { right:272px; }
+  .hsin-stage .hsin-stage__credits,.hsin-stage .hsin-stage__credits[open] { bottom:20px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hsin-music-tower *, .hsin-music-tower *::before { animation:none!important; transition:none!important; }
+}
+
+@media (max-width:599px) and (max-height:540px) {
+  body { overflow:auto; }
+  .hsin-stage { height:max(660px,100dvh); }
 }

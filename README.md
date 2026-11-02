@@ -65,18 +65,20 @@ O runtime limita custo de renderização e pausa quando apropriado. O antigo pal
 
 ### Trilha oficial: Ode to Hsin and Moon
 
-O palco da Hsin em `/experimentos/` possui um painel **Trilha sonora** (componente `HsinSoundtrack.astro`, controle em `hsin-soundtrack.ts`, estilos isolados). Ele incorpora **exclusivamente o vídeo oficial** de *Ode to Hsin and Moon*, publicado por [Wuthering Waves no YouTube](https://www.youtube.com/watch?v=Yhf9ur3xPQA).
+O palco em `/experimentos/` agora possui o **Farol lunar**: uma estação musical com moldura, arco de observatório, pilares e base em Three.js, alinhada a uma fachada HTML que contém os players oficiais. Evolui o player persistente do PR #186 sem alterar o GLB, rig ou repertório da Hsin.
 
-- **Refrão:** abre o player no ponto aproximado de **1:06** (`start=66`). O marcador é editorial, baseado na estrutura da canção, e deve ser revisto por audição; não é um corte nem um sample.
-- **Faixa completa:** abre o mesmo vídeo a partir do início.
-- **Silêncio:** remove o iframe e interrompe a reprodução; fechar o painel, mudar de página ou ocultar a aba também destrói o player.
-- **Instrumental:** [álbum oficial no Apple Music](https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103). **Não** há instrumental incorporado sem link de vídeo oficial comprovado.
-- **Privacidade e desempenho:** nenhum contato com o iframe do YouTube antes da seleção explícita do visitante; sem autoplay e sem processamento de áudio local. O visitante usa o botão Play nativo, e o vídeo fica visível (mínimo de 200 × 200 px). O player pode ser bloqueado por políticas regionais, de cookies ou por extensões; links externos permanecem disponíveis.
-- **CSP:** a rota `/experimentos/*` permite somente `https://www.youtube-nocookie.com` e `https://www.youtube.com` em `frame-src`; nenhuma outra rota recebe essa exceção.
+- **YouTube:** vídeo oficial [Ode to Hsin and Moon](https://www.youtube.com/watch?v=Yhf9ur3xPQA), carregado apenas após escolha. Play nativo, sem autoplay; viewport ≥ 200 × 200 px, sem recortes, máscaras ou ornamentos sobre o vídeo. As opções mantêm Faixa completa e Refrão em ≈ 1:06, marcador editorial ainda sujeito à confirmação auditiva.
+- **Spotify:** [álbum oficial](https://open.spotify.com/album/0l7zzxlw0HfvGYAJiiWU2F), embed oficial compacto de 152 px. A experiência real pode ser limitada a prévias conforme conta, navegador, DRM e região; não se promete reprodução integral gratuita.
+- **Sem música:** remove o iframe anterior e mantém um sigilo lunar com a frase “A lua também sabe ouvir o silêncio.” O slot `data-tower-fallback` permite uma futura arte da Sophia, sem implantar outro pipeline agora.
+- **Persistência:** órbita, zoom, alternância de lado e abertura/recolhimento dos créditos preservam o mesmo iframe e a sessão de playback. Trocar provedor, selecionar Sem música, ocultar a página ou sair dela remove o player; não há reprodução oculta. A escolha não é restaurada com carregamento automático ao visitar novamente.
+- **Arquitetura adaptativa:** em desktop, o farol ocupa uma faixa lateral com acompanhamento amortecido da câmera. `⇄` escolhe o outro lado. O vídeo continua plano e legível. Em retrato estreito, a fachada ocupa uma baia inferior e o canvas da Hsin se ajusta acima dela; em celulares na horizontal, ocupa uma baia lateral. Nessas adaptações, a estrutura WebGL é desativada e a moldura HTML preserva a leitura arquitetônica. Não é uma projeção CSS3D literal do iframe.
+- **Custo:** três lotes da fachada, pilares instanciados e base: cinco draws adicionais em desktop. Sem texturas novas, SDKs de playback, áudio local, segundo renderer ou segundo ciclo de animação. O farol acompanha o ciclo limitado já existente e é descartado com o palco. `prefers-reduced-motion` remove o amortecimento e as animações decorativas.
+- **Apple Music:** mantém [link ao álbum/instrumentais](https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103). Há embed oficial público, porém visitantes sem login recebem prévias de 30 segundos; optou-se por não acrescentar um terceiro player nesta fase. [Documentação Apple](https://artists.apple.com/support/1117-apple-music-marketing-tools).
+- **CSP:** apenas `/experimentos/*` acrescenta `https://open.spotify.com` às origens de iframe YouTube já autorizadas. Sem relaxar script-src/connect-src ou adicionar proxy.
 
-**Créditos musicais:** © 2026 **KURO GAMES** · *Wuthering Waves*. Produção: Wuthering Waves; composição: **Jin Dazhou**; voz: **Jaime Arin**; letras: **SmileL** e **Kat Kennedy**; arranjo: **He Shan**. Créditos também exibidos na interface. A faixa e as marcas pertencem aos respectivos titulares; o portfólio não é afiliado à KURO GAMES. Não há MP3, remix, stem, download, proxy de mídia nem redistribuição da gravação no repositório.
+**Créditos musicais:** © 2026 **KURO GAMES** · *Wuthering Waves*. Produção: Wuthering Waves; composição: **Jin Dazhou**; voz: **Jaime Arin**; letras: **SmileL** e **Kat Kennedy**; arranjo: **He Shan**. Créditos preservados na interface. A faixa e as marcas pertencem aos titulares; o portfólio não é afiliado à KURO GAMES. Não há MP3, remix, stem, download ou redistribuição da gravação.
 
-Teste de contrato: `npm run check:hsin` inclui `tests/hsin-soundtrack.test.mjs`. A integração visual e a disponibilidade real do embed exigem conferência em navegador após publicação.
+Implementação: `HsinSoundtrack.astro`, `hsin-soundtrack.ts`, `hsin-music-providers.mjs`, `hsin-music-tower.mjs` e estilos específicos. Testes: `tests/hsin-soundtrack.test.mjs` verificam troca/persistência do iframe, opt-in, descarte, construção e posicionamento do farol. Limites e QA em [docs/hsin-music-tower.md](docs/hsin-music-tower.md).
 
 
 ## Sophia
