@@ -1,129 +1,120 @@
-const OFFICIAL_VIDEO_ID = 'Yhf9ur3xPQA';
-const HIGHLIGHT_START_SECONDS = 66; // Marcador editorial provisório; conferir após audição.
+import {musicEmbed} from './hsin-music-providers.mjs';
+type Provider = 'none' | 'youtube' | 'spotify';
 
-type SoundtrackMode = 'closed' | 'selection' | 'docked' | 'expanded';
-
+/** Keep one live iframe in place across camera changes and information toggles. */
 export function mountHsinSoundtrack(root: HTMLElement): void {
-  const toggle = root.querySelector<HTMLButtonElement>('[data-soundtrack-toggle]');
-  const panel = root.querySelector<HTMLElement>('#hsin-soundtrack-panel');
-  const close = root.querySelector<HTMLButtonElement>('[data-soundtrack-close]');
-  const options = root.querySelector<HTMLElement>('[data-soundtrack-options]');
-  const optionsToggle = root.querySelector<HTMLButtonElement>('[data-soundtrack-options-toggle]');
-  const sideToggle = root.querySelector<HTMLButtonElement>('[data-soundtrack-side-toggle]');
+  if (root.dataset.musicMounted) return;
+  root.dataset.musicMounted = 'true';
+  const stage = root.closest<HTMLElement>('[data-hsin-stage]');
   const player = root.querySelector<HTMLElement>('[data-soundtrack-player]');
   const placeholder = root.querySelector<HTMLElement>('[data-soundtrack-placeholder]');
   const status = root.querySelector<HTMLElement>('[data-soundtrack-status]');
-  const silence = root.querySelector<HTMLButtonElement>('[data-soundtrack-silence]');
-  const choices = [...root.querySelectorAll<HTMLButtonElement>('[data-soundtrack-start]')];
-
-  if (!toggle || !panel || !close || !options || !optionsToggle || !sideToggle ||
-      !player || !placeholder || !status || !silence || choices.length !== 2) return;
-
-  let mode: SoundtrackMode = 'closed';
-  let loaded = false;
-
-  const setMode = (next: SoundtrackMode): void => {
-    mode = next;
-    root.dataset.soundtrackMode = next;
-    panel.hidden = next === 'closed';
-    toggle.hidden = next !== 'closed';
-    options.hidden = next === 'docked';
-    player.hidden = !loaded;
-    optionsToggle.hidden = !loaded;
-    sideToggle.hidden = !loaded;
-    toggle.setAttribute('aria-expanded', String(next !== 'closed'));
-    optionsToggle.setAttribute('aria-expanded', String(next === 'expanded'));
-    optionsToggle.setAttribute('aria-label', next === 'expanded'
-      ? 'Recolher opções e manter música'
-      : 'Mostrar opções e créditos da música');
-  };
-
-  function stop(message: string, next: 'closed' | 'selection' = 'selection'): void {
-    // Apenas silêncio, saída da página/aba e fechamento explícito removem o iframe.
-    // Recolher opções e movimentar o cenário não interrompem o YouTube.
-    player.replaceChildren(placeholder);
-    loaded = false;
-    choices.forEach(choice => choice.setAttribute('aria-pressed', 'false'));
-    status.textContent = message;
-    setMode(next);
-  }
-
-  toggle.addEventListener('click', () => {
-    setMode('selection');
-    close.focus();
+  const options = root.querySelector<HTMLElement>('[data-soundtrack-options]');
+  const info = root.querySelector<HTMLButtonElement>('[data-soundtrack-options-toggle]');
+  const side = root.querySelector<HTMLButtonElement>('[data-soundtrack-side-toggle]');
+  const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-music-provider]')];
+  if (!player || !placeholder || !status || !options || !info || !side || !stage) return;
+  let provider: Provider = 'none';
+  let start = 0;
+  const layout = () => stage.dispatchEvent(new CustomEvent('hsin:tower-layout'));
+  const observe = new ResizeObserver(() => {
+    stage.style.setProperty('--tower-reserved-height', `${Math.ceil(root.offsetHeight) + 18}px`);
+    layout();
   });
+  observe.observe(root);
 
-  close.addEventListener('click', () => {
-    stop('Player fechado. Música interrompida.', 'closed');
-    toggle.focus();
-  });
-
-  optionsToggle.addEventListener('click', () => {
-    if (!loaded) return;
-    setMode(mode === 'expanded' ? 'docked' : 'expanded');
-    // O iframe permanece no mesmo nó DOM: recolher as opções não corta o áudio.
-  });
-
-  sideToggle.addEventListener('click', () => {
-    const movedLeft = root.dataset.soundtrackSide !== 'left';
-    root.dataset.soundtrackSide = movedLeft ? 'left' : 'right';
-    sideToggle.setAttribute('aria-label', movedLeft
-      ? 'Mover player para a direita' : 'Mover player para a esquerda');
-  });
-
-  silence.addEventListener('click', () =>
-    stop('Silêncio ativado. Escolha uma faixa para ouvir novamente.'));
-
-  for (const choice of choices) {
-    choice.addEventListener('click', () => {
-      const seconds = Number(choice.dataset.soundtrackStart);
-      if (seconds !== 0 && seconds !== HIGHLIGHT_START_SECONDS) return;
-
+  function choose(next: Provider, seconds = 0) {
+    // Re-selecting the active source must not reset the native playback session.
+    if (provider === next && (next !== 'youtube' || start === seconds)) {
+      if (next === 'none') root.dataset.towerState = 'no-music-fallback';
+      return;
+    }
+    provider = next;
+    start = seconds;
+    root.dataset.provider = next;
+    root.dataset.towerState = next === 'none' ? 'no-music-fallback' : `${next}-active`;
+    root.dataset.infoExpanded = 'false';
+    options.hidden = true;
+    info.setAttribute('aria-expanded', 'false');
+    const embed = musicEmbed(next, seconds);
+    if (!embed) {
+      // Removing the previous iframe stops that provider before another can play.
+      player.replaceChildren(placeholder);
+      status.textContent = 'Sem música. O farol permanece aceso.';
+    } else {
       const iframe = document.createElement('iframe');
-      const params = new URLSearchParams({
-        rel: '0',
-        playsinline: '1',
-        autoplay: '0',
-        ...(seconds > 0 ? {start: String(seconds)} : {}),
-      });
-      iframe.src = 'https://www.youtube-nocookie.com/embed/' + OFFICIAL_VIDEO_ID + '?' + params.toString();
-      iframe.title = 'Wuthering Waves — Ode to Hsin and Moon (vídeo oficial)';
-      iframe.allow = 'encrypted-media; picture-in-picture; fullscreen';
+      iframe.src = embed.src;
+      iframe.title = embed.title;
+      iframe.allow = embed.allow;
       iframe.allowFullscreen = true;
       iframe.referrerPolicy = 'strict-origin-when-cross-origin';
       iframe.loading = 'eager';
+      iframe.height = String(embed.height);
       player.replaceChildren(iframe);
-      loaded = true;
-      choices.forEach(option => option.setAttribute('aria-pressed', String(option === choice)));
-      status.textContent = seconds > 0
-        ? 'Refrão preparado em aproximadamente 1:06. Dê Play no vídeo; explore a Hsin livremente.'
-        : 'Faixa integral preparada. Dê Play no vídeo; explore a Hsin livremente.';
-      setMode('docked');
-      optionsToggle.focus(); // O botão de escolha ficou oculto; devolver foco ao dock.
-    });
+      status.textContent = next === 'spotify' ? 'Álbum preparado. Use o Play do Spotify.'
+        : seconds ? 'Refrão preparado em ≈ 1:06. Use o Play do YouTube.' : 'Faixa preparada. Use o Play do YouTube.';
+    }
+    layout();
   }
-
-  root.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    if (mode === 'expanded') {
-      setMode('docked');
-      optionsToggle.focus();
-    } else if (mode === 'selection') {
-      stop('Seleção fechada.', 'closed');
-      toggle.focus();
-    }
-    // Escape não desliga a música quando o player está ancorado.
+  buttons.forEach(button => {
+    button.addEventListener('focus', () => {
+      if (root.dataset.towerState === 'idle') root.dataset.towerState = 'provider-selection';
+    });
+    button.addEventListener('click', () => {
+      const next = button.dataset.musicProvider;
+      if (next !== 'none' && next !== 'youtube' && next !== 'spotify') return;
+      choose(next);
+      buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    });
   });
-
+  root.querySelectorAll<HTMLButtonElement>('[data-soundtrack-start]').forEach(button => {
+    button.addEventListener('click', () => {
+      const seconds = Number(button.dataset.soundtrackStart);
+      if (seconds !== 0 && seconds !== 66) return;
+      choose('youtube', seconds);
+      buttons.forEach(item => item.setAttribute('aria-pressed', String(item.dataset.musicProvider === 'youtube')));
+      info.focus();
+    });
+  });
+  info.addEventListener('click', () => {
+    options.hidden = !options.hidden;
+    root.dataset.infoExpanded = String(!options.hidden);
+    info.setAttribute('aria-expanded', String(!options.hidden));
+    // Options live after the video; expanding them never replaces/hides the iframe.
+    layout();
+  });
+  side.addEventListener('click', () => {
+    const left = root.dataset.soundtrackSide !== 'left';
+    root.dataset.soundtrackSide = left ? 'left' : 'right';
+    side.setAttribute('aria-label', left ? 'Mover farol para a direita' : 'Mover farol para a esquerda');
+    layout();
+  });
+  root.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !options.hidden) {
+      options.hidden = true;
+      root.dataset.infoExpanded = 'false';
+      info.setAttribute('aria-expanded', 'false');
+      info.focus();
+      layout();
+    }
+  });
+  const silence = (message: string) => {
+    if (provider === 'none') return;
+    choose('none');
+    buttons.forEach(item => item.setAttribute('aria-pressed', String(item.dataset.musicProvider === 'none')));
+    status.textContent = message;
+  };
   document.addEventListener('visibilitychange', () => {
-    // YouTube não permite um player invisível ou reprodução programática em outra aba.
-    if (document.hidden && loaded) {
-      stop('A página foi ocultada; a reprodução foi encerrada conforme as regras do YouTube.');
-    }
+    if (document.hidden) silence('Página oculta. Escolha o provedor para retomar.');
   });
-  window.addEventListener('pagehide', () => {
-    if (loaded) stop('Reprodução encerrada ao sair da página.');
-  }, {once: true});
-
-  setMode('closed');
+  // A narrow, scrollable viewport must not leave a background YouTube player.
+  const playerVisibility = new IntersectionObserver(entries => {
+    if (provider === 'youtube' && (entries[0]?.intersectionRatio ?? 0) < .5) {
+      silence('Vídeo fora da área visível. Escolha YouTube para retomar.');
+    }
+  }, {threshold:[0,.5]});
+  playerVisibility.observe(player);
+  window.addEventListener('pagehide', () => silence('Reprodução encerrada ao sair da página.'));
+  // Kept across bfcache restoration: nodes and observers are still valid there.
+  layout();
 }
