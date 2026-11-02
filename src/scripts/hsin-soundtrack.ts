@@ -21,7 +21,7 @@ export function mountHsinSoundtrack(root: HTMLElement) {
   const unsubscribe = session.subscribe(state => {
     const key = state.provider + ':' + state.status; if (key === lastStatus) return; lastStatus = key;
     root.dataset.playbackState = state.status;
-    const labels = {ready:'Player preparado. Use o Play do provedor.',playing:'Reproduzindo · movimento ambiental, sem mapa de batidas validado.',paused:'Música pausada.',buffering:'Aguardando a música carregar.',ended:'A música terminou.',unavailable:'Estado do player indisponível. A Hsin permanece contemplativa.',no_music:'Sem música. O pavilhão permanece aceso.'};
+    const labels = {ready:'Player preparado. Use o Play do provedor.',playing:state.provider==='youtube'?'YouTube em reprodução · dança livre disponível com atuação ativa.':'Spotify em reprodução · apenas escuta.',paused:'Música pausada.',buffering:'Aguardando a música carregar.',ended:'A música terminou.',unavailable:'Estado do player indisponível. A Hsin permanece contemplativa.',no_music:'Sem música. O pavilhão permanece aceso.'};
     status.textContent = labels[state.status];
   });
   let provider: Provider = 'none';

@@ -2,6 +2,8 @@ import {musicForStage} from './hsin-music-state.mjs';
 import {createMusicTransport} from './hsin-music-transport.mjs';
 import {createDanceDirector} from './hsin-dance-director.mjs';
 import {createDancePose} from './hsin-dance-pose.mjs';
+import {decodeDanceData} from './hsin-dance-data.mjs';
+import {dancePlaybackEligible,reverieSettings} from './hsin-dance-config.mjs';
 import musicMaps from '../data/hsin-music-map.json';
 import {createMusicTower} from './hsin-music-tower.mjs';
 import {HSIN_STAGE,pixelRatio,attentionHeight} from './hsin-stage-config.mjs';
@@ -57,29 +59,33 @@ export function mountHsinStage(root:HTMLElement){
   const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();musicTower?.dispose();orbit?.dispose();dance?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=dance=null;zoom=()=>{};resetCamera=()=>{};ensureDance=()=>{};};
   metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
-   const [T,{GLTFLoader},{OrbitControls},{mergeGeometries}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js'),import('three/addons/utils/BufferGeometryUtils.js')]);
-   if(attempt.signal.aborted||destroyed)return;
+   // Fail before fetching any asset if this browser cannot create a WebGL2 context. The probe needs no three.js, so it runs first.
    const canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');
-   // Fail before fetching the asset if this browser cannot create a WebGL2 context.
    const context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'low-power',preserveDrawingBuffer:false});if(!context)throw Error('WebGL2 unavailable.');
+   // Loading is one parallel fan-out: three.js modules, the tiny manifests, then profile + 9.9 MB model + acting data start together
+   // (previously the downloads waited for the three.js chunks). Scenery textures start as soon as three is ready, not after the model.
+   const cinematic=HSIN_CINEMATIC_IDLE.enabled;
+   const threeModules=Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js'),import('three/addons/utils/BufferGeometryUtils.js')]);threeModules.catch(()=>{});
+   const [{default:asset},poseManifest,actingManifest]=await Promise.all([import('../data/hsin-v2-asset.json'),cinematic?import('../data/hsin-v21-pose.json').then(m=>m.default):Promise.resolve(null),cinematic?import('../data/hsin-v201-acting.json').then(m=>m.default):Promise.resolve(null)]);
+   if(attempt.signal.aborted||destroyed)return;
+   const version='?v='+asset.sha256.slice(0,12);
+   const profileUrl=cinematic?HSIN_STAGE.cinematicProfile+'?v='+poseManifest!.profileSha256.slice(0,12):HSIN_STAGE.profile+version;
+   // Baked Lip Touch / Hair Caress data (~25 KB compressed). Optional: any failure leaves the approved repertoire exactly as it was.
+   const downloads=Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal}),actingManifest?fetch(HSIN_STAGE.actingProfile+'?v='+actingManifest.sha256.slice(0,12),{signal:attempt.signal}).then(r=>r.ok?r.json():null).catch(()=>null):Promise.resolve(null)]);downloads.catch(()=>{});
+   const [T,{GLTFLoader},{OrbitControls},{mergeGeometries}]=await threeModules;
+   if(attempt.signal.aborted||destroyed)return;
    renderer=new T.WebGLRenderer({canvas,context,alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'low-power'});
    renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;renderer.shadowMap.enabled=false;renderer.setClearColor(HSIN_STAGE.colors.night);host.append(canvas);
    if(metrics.enabled)(window as any).__hsinMetrics={report:()=>({...metrics.report(renderer),music:music.sample(),dance:dance?.diagnostics()??null}),raw:metrics};
-   const {default:asset}=await import('../data/hsin-v2-asset.json');
-   const version='?v='+asset.sha256.slice(0,12);
-   const cinematic=HSIN_CINEMATIC_IDLE.enabled,poseManifest=cinematic?(await import('../data/hsin-v21-pose.json')).default:null;
-   const profileUrl=cinematic?HSIN_STAGE.cinematicProfile+'?v='+poseManifest!.profileSha256.slice(0,12):HSIN_STAGE.profile+version;
-   // Baked Lip Touch / Hair Caress data (~25 KB compressed). Optional: any failure leaves the approved repertoire exactly as it was.
-   const actingManifest=cinematic?(await import('../data/hsin-v201-acting.json')).default:null;
-   const [profileResponse,response,acting]=await Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal}),actingManifest?fetch(HSIN_STAGE.actingProfile+'?v='+actingManifest.sha256.slice(0,12),{signal:attempt.signal}).then(r=>r.ok?r.json():null).catch(()=>null):Promise.resolve(null)]);
-   if(!profileResponse.ok)throw Error('Stage profile unavailable.');const profile=await profileResponse.json();if(profile.modelSha256!==asset.sha256)throw Error('Stage/profile version mismatch.');
-   if(!response.ok)throw Error('Model unavailable.');
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
    const textureLoader=new T.TextureLoader();
    const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url+'?v=lunar-terrace-r2');if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
    const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas),sceneryTexture(LUNAR_TERRACE.water)]);
    // Attach an immediate rejection handler while GLTF parsing is in flight.
    scenery.catch(()=>{});
+   const [profileResponse,response,acting]=await downloads;
+   if(!profileResponse.ok)throw Error('Stage profile unavailable.');const profile=await profileResponse.json();if(profile.modelSha256!==asset.sha256)throw Error('Stage/profile version mismatch.');
+   if(!response.ok)throw Error('Model unavailable.');
    const bytes=await response.arrayBuffer();metrics.mark('modelFetched');const gltf=await new GLTFLoader().parseAsync(bytes,'');metrics.mark('modelParsed');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
    // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
@@ -98,7 +104,7 @@ export function mountHsinStage(root:HTMLElement){
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    const musicElement=root.querySelector<HTMLElement>('[data-music-tower]');
-   if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host});scene.add(musicTower.group);}
+   if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,model,bounds:profile.bounds,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics});scene.add(musicTower.group);}
    root.addEventListener('hsin:tower-layout',()=>{musicTower?.invalidateLayout();loop?.invalidate();},{signal:attempt.signal});
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];const fit=()=>{
     musicTower?.invalidateLayout();const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
@@ -122,17 +128,37 @@ export function mountHsinStage(root:HTMLElement){
    // Choreography is lazy: no download, parsing or dance buffers in the normal silent experience.
    let danceLoading=false;
    ensureDance=()=>{
-    if(dance||danceLoading||paused||motion.matches||!visible()||music.sample().status!=='playing')return;danceLoading=true;
+    if(dance||danceLoading||paused||motion.matches||!visible()||!dancePlaybackEligible(music.sample()))return;danceLoading=true;
     (async()=>{try{
      const {default:manifest}=await import('../data/hsin-dance.json');metrics.mark('danceLoadStart');
      const r=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal:attempt.signal});if(!r.ok)return;
      const text=await r.text(),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
      if(Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('')!==manifest.sha256)return;
-     const data=JSON.parse(text);if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
+     const data=decodeDanceData(JSON.parse(text));if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
      if(data.modelSha256!==asset.sha256||data.profileSha256!==poseManifest?.profileSha256)return;
-     const dancePose=createDancePose({THREE:T,data,bones,metrics});
-     if(dancePose.ready){dance=createDanceDirector({idle:body,pose:dancePose,music,transport:createMusicTransport({maps:musicMaps}),seed:seed^0xdac3,onEvent:face.signal});metrics.mark('danceReady');}
+     const dancePose=createDancePose({THREE:T,data,bones,model,metrics});
+     if(dancePose.ready){
+      dance=createDanceDirector({idle:body,pose:dancePose,music,transport:createMusicTransport({maps:musicMaps}),seed:seed^0xdac3,onEvent:face.signal,reducedMotion:()=>motion.matches});metrics.mark('danceReady');
+      // Moon Fox Reverie (R3): a second, optional asset, fetched at idle after the R2 dance is already running. Failure leaves R2 exactly as it was.
+      const director=dance,later=(fn:()=>void)=>'requestIdleCallback' in window?(window as any).requestIdleCallback(fn,{timeout:5000}):setTimeout(fn,1500);
+      later(()=>{loadReverie(director).catch(()=>{});});
+     }
     }catch{ /* Optional data failure preserves the approved repertoire. */ }})();
+   };
+   const loadReverie=async(director:any)=>{
+    const settings=reverieSettings();if(!settings.enabled||attempt.signal.aborted||destroyed)return;
+    const [{default:m},{createReveriePose,decodeReverieData}]=await Promise.all([import('../data/hsin-dance-r3.json'),import('./hsin-dance-reverie.mjs')]);
+    if(m.modelSha256!==asset.sha256||m.profileSha256!==poseManifest?.profileSha256)return;
+    const fetchPose=async(entry:any)=>{
+     if(!entry)return null;const r=await fetch(entry.url+'?v='+entry.sha256.slice(0,12),{signal:attempt.signal});if(!r.ok)return null;
+     const text=await r.text(),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+     if(Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('')!==entry.sha256)return null;
+     const data=decodeReverieData(JSON.parse(text));if(data.modelSha256!==asset.sha256||data.profileSha256!==poseManifest?.profileSha256)return null;
+     const pose=createReveriePose({THREE:T,data,bones,model,metrics});return pose.ready?pose:null;
+    };
+    const [conservative,dramatic]=await Promise.all([fetchPose((m as any).conservative),settings.dramaticEnabled?fetchPose((m as any).dramatic):Promise.resolve(null)]);
+    if(!conservative&&!dramatic)return;if(attempt.signal.aborted||destroyed||dance!==director)return;
+    director.setSpecial({conservative,dramatic});metrics.mark('reverieReady');
    };
    const unsubscribeMusic=music.subscribe(ensureDance);attempt.signal.addEventListener('abort',unsubscribeMusic,{once:true});ensureDance();
    // Reusable vectors. Pointer projection runs only on input, not in the animation hot path.

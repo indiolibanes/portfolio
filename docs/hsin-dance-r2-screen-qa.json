@@ -1,0 +1,38 @@
+{
+  "frames": 264,
+  "maxFootSurfaceDrift": 0.09029433519342382,
+  "leftForearmScreenIntrusions": 0,
+  "screenTriangleProbes": 744480,
+  "footVertices": 3608,
+  "bounds": {
+    "min": [
+      -0.432241807820009,
+      0.00004023210500612301,
+      -0.7625071985068418
+    ],
+    "max": [
+      0.8617704251773405,
+      1.7516986856345336,
+      0.5368369592078512
+    ]
+  },
+  "limitation": "Surface sampling and screen triangle probes, not continuous cloth/hair collision detection or artistic approval.",
+  "viewports": [
+    {
+      "w": 393,
+      "h": 852,
+      "yaw": 8
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "yaw": 8
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "yaw": 28
+    }
+  ],
+  "minArmBelowEyeCenter": 0.1731087985210915
+}

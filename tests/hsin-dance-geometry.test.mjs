@@ -1,10 +1,12 @@
 /** Actual skinned surface samples and screen-space forearm triangles. Not a continuous cloth collision proof. */
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
+import {decodeDanceData} from '../src/scripts/hsin-dance-data.mjs';
 import {danceRig} from '../scripts/lib/hsin-dance-rig.mjs';
 import {createDancePose} from '../src/scripts/hsin-dance-pose.mjs';
 import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
-const r=await danceRig(),{T}=r,data=JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r1.json')),pose=createDancePose({THREE:T,data,bones:r.bones}),samples=[];
+const r2=process.argv.includes('--r2');
+const r=await danceRig(),{T}=r,data=decodeDanceData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-'+(r2?'r2':'r1')+'.json'))),pose=createDancePose({THREE:T,data,bones:r.bones,model:r.model}),samples=[];
 for(const mesh of r.meshes){const g=mesh.geometry,skin=g.attributes.skinIndex,weight=g.attributes.skinWeight,foot=[],left=[],moving=[];
  for(let i=0;i<g.attributes.position.count;i++){let f=0,l=0,a=0;for(let k=0;k<4;k++){const n=mesh.skeleton.bones[skin.getComponent(i,k)]?.name??'',w=weight.getComponent(i,k);if(/^(ORG|DEF)-Bip001Foot[LR]/.test(n))f+=w;if(/^(ORG|DEF)-Bip001(Forearm|Hand)L/.test(n))l+=w;if(/^(ORG|DEF)-Bip001(Forearm|Hand)[LR]/.test(n))a+=w;}if(f>.75)foot.push(i);if(l>.6)left.push(i);if(a>.6&&i%3===0)moving.push(i);}
  samples.push({mesh,foot,left:new Set(left),moving,baseline:new Map()});mesh.skeleton.update();for(const i of foot)samples.at(-1).baseline.set(i,mesh.getVertexPosition(i,new T.Vector3()).applyMatrix4(mesh.matrixWorld));
@@ -28,5 +30,5 @@ for(const [name,p]of Object.entries(data.phrases))for(let frame=0;frame<=32;fram
  }
  if(frame%8===0)for(const mesh of r.meshes)for(let i=0;i<mesh.geometry.attributes.position.count;i+=4){mesh.getVertexPosition(i,v).applyMatrix4(mesh.matrixWorld);for(let k=0;k<3;k++){metrics.bounds.min[k]=Math.min(metrics.bounds.min[k],v.getComponent(k));metrics.bounds.max[k]=Math.max(metrics.bounds.max[k],v.getComponent(k));}}
 }
-pose.restore();metrics.minArmBelowEyeCenter=minArmFaceHeight;assert.ok(metrics.footVertices>20&&metrics.screenTriangleProbes>1000,'geometry checks cannot be empty');assert.ok(metrics.maxFootSurfaceDrift<1e-10,'actual strongly weighted foot vertices remain planted');assert.equal(metrics.leftForearmScreenIntrusions,0,'left forearm/hand must not cover the face from principal/profile cameras');assert.ok(minArmFaceHeight>.1,'new dance paths keep arms away from the head, without reusing the hair contact pose');assert.ok(metrics.bounds.min[1]>-.001&&metrics.bounds.max[0]<1.1&&metrics.bounds.min[0]>-.8);
-console.log('Dance geometry PASS: actual skinned foot surfaces, sampled silhouette envelope, left forearm/hand screen triangle probes in portrait, landscape and profile. VISUAL_QA_PENDING');console.log(JSON.stringify(metrics));if(process.env.HSIN_DANCE_REPORT)await writeFile('docs/hsin-dance-geometry-qa.json',JSON.stringify(metrics,null,2)+'\n');
+pose.restore();metrics.minArmBelowEyeCenter=minArmFaceHeight;assert.ok(metrics.footVertices>20&&metrics.screenTriangleProbes>1000,'geometry checks cannot be empty');if(!r2)assert.ok(metrics.maxFootSurfaceDrift<1e-10,'R1 strongly weighted foot vertices remain planted');assert.equal(metrics.leftForearmScreenIntrusions,0,'left forearm/hand must not cover the face from principal/profile cameras');assert.ok(minArmFaceHeight>.1,'new dance paths keep arms away from the head, without reusing the hair contact pose');assert.ok(metrics.bounds.min[1]>-.001&&metrics.bounds.max[0]<1.1&&metrics.bounds.min[0]>-.8);
+console.log('Dance geometry PASS: actual skinned foot surfaces, sampled silhouette envelope, left forearm/hand screen triangle probes in portrait, landscape and profile. VISUAL_QA_PENDING');console.log(JSON.stringify(metrics));if(process.env.HSIN_DANCE_REPORT)await writeFile(r2?'docs/hsin-dance-r2-screen-qa.json':'docs/hsin-dance-geometry-qa.json',JSON.stringify(metrics,null,2)+'\n');

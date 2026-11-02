@@ -3,11 +3,16 @@ import {readFile,writeFile} from 'node:fs/promises';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import sharp from 'sharp';
+import {pathToFileURL} from 'node:url';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {createMusicTower} from '../src/scripts/hsin-music-tower.mjs';
 import {createCinematicReference} from '../src/scripts/hsin-cinematic-idle.mjs';
 import {createLunarPresentation,HSIN_LUNAR_PRESENTATION} from '../src/scripts/hsin-lunar-presentation.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from '../src/scripts/hsin-lunar-terrace.mjs';
 import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
+import {decodeDanceData} from '../src/scripts/hsin-dance-data.mjs';
 import {createDancePose} from '../src/scripts/hsin-dance-pose.mjs';
+import {createReveriePose,decodeReverieData} from '../src/scripts/hsin-dance-reverie.mjs';
 import {MOONLIT,createMoonlitEnvironment} from '../src/scripts/hsin-moonlit-environment.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
 const [input,output,width='800',height='1100']=process.argv.slice(2);
@@ -23,13 +28,18 @@ gltf.scene.traverse(m=>{if(!m.isSkinnedMesh)return;m.skeleton.update();for(let i
 gltf.scene.position.y-=bounds.min.y;
 async function decode(path){return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});}
 let presentation;
-if(dance){const profile=JSON.parse(await readFile('public/assets/models/hsin/hsin-v2.1-profile.json')),baked=JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r1.json')),meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];createCinematicReference({bones,profile}).apply();gltf.scene.updateMatrixWorld(true);presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:profile.bounds});presentation.apply();if(dance!=='idle')createDancePose({THREE:T,data:baked,bones}).apply(dance,Number(options.phase??.5),Number(options.weight??1));gltf.scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();}
+if(dance){const profile=JSON.parse(await readFile('public/assets/models/hsin/hsin-v2.1-profile.json')),baked=decodeDanceData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-'+(options.r2?'r2':'r1')+'.json'))),meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];createCinematicReference({bones,profile}).apply();gltf.scene.updateMatrixWorld(true);presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:profile.bounds});presentation.apply();if(options.r3&&dance!=='idle'){const reverie=createReveriePose({THREE:T,data:decodeReverieData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r3'+(options.grand?'-grand':'')+'.json'))),bones,model:gltf.scene});reverie.apply(dance,Number(options.phase??.5),Number(options.weight??1),Number(options.amplitude??1));}else if(dance!=='idle')createDancePose({THREE:T,data:baked,bones,model:gltf.scene}).apply(dance,Number(options.phase??.5),Number(options.weight??1));gltf.scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();}
 const resource=dance?LUNAR_TERRACE:MOONLIT,sky=await decode(new URL('../public'+resource.sky,import.meta.url).pathname);
 async function scenery(url){const t=new T.Texture();t.userData.cpu=await decode(new URL('../public'+url,import.meta.url).pathname);return t;}
 const moonTexture=await scenery(resource.moon),env=dance?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await scenery(resource.stone),atlasTexture:await scenery(resource.atlas),waterTexture:await scenery(resource.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 if(!dance){const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);}
 const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45),yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
 camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
+if(options.pavilion){
+ const factory=options.towerPath?(await import(pathToFileURL(options.towerPath).href)).createMusicTower:createMusicTower;
+ const element={dataset:{soundtrackSide:'right',provider:'youtube'},offsetWidth:Math.min(280,W*.23),offsetHeight:H*.46,style:{setProperty(){},removeProperty(){}},addEventListener(){},removeAttribute(){},closest:()=>({getBoundingClientRect:()=>({width:W,height:H})})};
+ const tower=factory({THREE:T,mergeGeometries,element,host:{clientWidth:W,clientHeight:H}});scene.add(tower.group);tower.update(camera,target,true);scene.updateMatrixWorld(true);
+}
 const pixels=Buffer.alloc(W*H*4),depth=new Float32Array(W*H).fill(Infinity);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
  const at=(y*W+x)*4,from=(Math.min(sky.info.height-1,Math.floor(y/H*sky.info.height))*sky.info.width+Math.min(sky.info.width-1,Math.floor(x/W*sky.info.width)))*4;

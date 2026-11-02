@@ -113,13 +113,17 @@ jobs:
         run: |
           node tests/hsin-soundtrack.test.mjs
           node tests/hsin-music-state.test.mjs
+          node tests/hsin-pavilion-r2.test.mjs
       - name: Dance ownership, geometry and deterministic 600-second sessions
         run: |
           node tests/hsin-dance.test.mjs
+          node tests/hsin-dance-r2.test.mjs
           node tests/hsin-dance-geometry.test.mjs
+          node tests/hsin-dance-geometry.test.mjs --r2
           node tests/hsin-stage.test.mjs
           node tests/hsin-stage-metrics.test.mjs
           node scripts/bench-hsin-dance.mjs
+          node scripts/bench-hsin-dance.mjs --r2
       - name: Build, choreography integrity and UX
         run: |
           npm run build

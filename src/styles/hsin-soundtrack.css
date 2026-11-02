@@ -27,7 +27,12 @@
 .hsin-music-tower__providers button { flex:1; padding:5px 3px; font-size:11px!important; white-space:nowrap; }
 .hsin-stage .hsin-music-tower button[aria-pressed=true] { color:#fff0ca; background:#4a4132; border-color:#e7c27b; }
 .hsin-stage .hsin-music-tower button:hover { background:#4b4638; }
-.hsin-music-tower__display { background:#07131e; width:100%; }
+.hsin-music-tower__display {
+  background:#061119; width:100%; border-radius:2px;
+  outline:1px solid #acedef88; outline-offset:3px;
+  box-shadow:0 0 0 5px #08141bd9,0 0 20px #89dcec19;
+}
+.hsin-music-tower__dance-note { margin:8px 0 0; color:#c2d7dc; font:400 10px/1.45 system-ui,sans-serif; }
 .hsin-music-tower__display iframe { display:block; width:100%; border:0; min-width:200px; background:#07131e; }
 .hsin-music-tower[data-provider=youtube] iframe { height:200px; min-height:200px; }
 .hsin-music-tower[data-provider=spotify] iframe { height:152px; }
@@ -43,8 +48,8 @@
 .hsin-music-tower__info a { color:#f1d69f; text-underline-offset:3px; }
 .hsin-music-tower__starts { display:flex; gap:5px; }
 .hsin-music-tower__starts button { font-size:11px!important; padding:4px 7px; }
-.hsin-music-tower__pedestal { height:28px; display:flex; align-items:center; justify-content:space-evenly; width:80%; margin:auto; color:#c7a767; background:linear-gradient(90deg,transparent,#1d2e37b0,transparent); }
-.hsin-music-tower__pedestal i { display:block; width:2px; height:28px; background:linear-gradient(#c3a26d,#39434a); }
+.hsin-music-tower__propulsion { font-size:8px; letter-spacing:.12em; height:28px; display:flex; align-items:center; justify-content:space-evenly; width:80%; margin:auto; color:#c7a767; background:linear-gradient(90deg,transparent,#1d2e37b0,transparent); }
+.hsin-music-tower__propulsion i { display:block; width:2px; height:28px; background:linear-gradient(#c3a26d,#39434a); }
 .hsin-music-tower[data-provider=youtube] .hsin-music-tower__facade,
 .hsin-music-tower[data-provider=spotify] .hsin-music-tower__facade { animation:tower-activation .55s ease-out; }
 @keyframes tower-activation { from { border-color:#f8e3a5; box-shadow:0 0 0 3px #302e29,0 0 20px #ddbc7640; } to { border-color:#c3a26d; } }
@@ -57,8 +62,8 @@
   .hsin-stage .hsin-music-tower, .hsin-stage .hsin-music-tower[data-tower-anchor=world] { width:min(340px,calc(100% - 32px)); left:50%; right:auto; top:auto; bottom:max(8px,env(safe-area-inset-bottom)); transform:translateX(-50%); }
   .hsin-music-tower__crown { height:15px; }
   .hsin-music-tower__crown span { top:-9px; font-size:19px; }
-  .hsin-music-tower__pedestal { height:10px; }
-  .hsin-music-tower__pedestal i { height:10px; }
+  .hsin-music-tower__propulsion { height:10px; }
+  .hsin-music-tower__propulsion i { height:10px; }
   .hsin-music-tower__heading { margin-bottom:6px; }
   .hsin-music-tower__eyebrow { display:none; }
   .hsin-music-tower__heading h2 { font-size:18px; }
@@ -77,9 +82,10 @@
 }
 /* Landscape phones keep a side bay and full-height scene instead of a tiny top strip. */
 @media (max-height:540px) and (min-width:600px) {
+  .hsin-music-tower__facade { max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; }
   .hsin-stage .hsin-stage__canvas,.hsin-stage .hsin-stage__poster { bottom:0; right:260px; }
   .hsin-stage .hsin-music-tower,.hsin-stage .hsin-music-tower[data-tower-anchor=world] { width:234px; left:auto; right:12px; bottom:12px; transform:none; }
-  .hsin-music-tower__crown,.hsin-music-tower__pedestal { display:none; }
+  .hsin-music-tower__crown,.hsin-music-tower__propulsion { display:none; }
   .hsin-music-tower__info { max-height:65px; }
   .hsin-stage .hsin-stage__tools { right:272px; }
   .hsin-stage .hsin-stage__credits,.hsin-stage .hsin-stage__credits[open] { bottom:20px; }
@@ -96,10 +102,11 @@
 /* The GL architecture supplies the curved roofs, chambers and levitation chassis.
    HTML supplies only the legible aperture; the native embed remains uncovered. */
 .hsin-music-tower[data-tower-anchor=world] .hsin-music-tower__crown,
-.hsin-music-tower[data-tower-anchor=world] .hsin-music-tower__pedestal { display:none; }
+.hsin-music-tower[data-tower-anchor=world] .hsin-music-tower__propulsion { display:none; }
 .hsin-music-tower[data-tower-anchor=world] .hsin-music-tower__facade {
-  border-radius:1px; border-color:#b49a6559;
-  box-shadow:inset 0 0 18px #050c1340;
+  border-radius:3px; border-color:#a6dfe16b;
+  background:linear-gradient(125deg,#152b30eb,#080f18f5 58%,#16262ced);
+  box-shadow:inset 0 0 18px #050c1340,0 0 0 3px #101b20cc;
 }
 .hsin-stage .hsin-music-tower button:focus-visible,
 .hsin-music-tower a:focus-visible { outline:2px solid #f4dea4; outline-offset:3px; }
