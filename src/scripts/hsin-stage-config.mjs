@@ -2,8 +2,8 @@
 export const HSIN_STAGE=Object.freeze({
  version:'2.0',model:'/assets/models/hsin/hsin-v2.0.glb',profile:'/assets/models/hsin/hsin-v2.0-profile.json',
  baseTargetY:.88,fps:30,mobileDpr:1,desktopDpr:1.25,maxPixels:1152000,fov:34,minDistance:1.05,
- rotateSpeed:.38,zoomSpeed:.65,damping:.09,minPolar:.9,maxPolar:Math.PI/2-.025,maxAzimuth:Math.PI*.31,
- colors:{night:0x0a1430,fog:0x162d50,platform:0x1b3657,ring:0x729ac0},
+ rotateSpeed:.34,zoomSpeed:.65,damping:.09,minPolar:1.25,maxPolar:Math.PI/2-.025,maxAzimuth:Math.PI*.22,
+ colors:{night:0x0a1430,fog:0x273b53,platform:0x27374d,ring:0xc6b28b},
 });
 export function pixelRatio(width,height,dpr=1,touch=false,config=HSIN_STAGE){
  if(!(width>0&&height>0))return 1;

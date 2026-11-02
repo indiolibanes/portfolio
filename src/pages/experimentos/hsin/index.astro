@@ -4,8 +4,13 @@ import '../../../styles/hsin-stage.css';
 ---
 <HsinStageLayout>
   <main class="hsin-stage" data-hsin-stage data-state="waiting" aria-label="Hsin · palco ao luar">
-    <div class="hsin-stage__poster" aria-hidden="true"><img src="/assets/models/hsin/hsin-v2.0-poster.webp" width="800" height="1100" alt="" fetchpriority="high" decoding="async" /></div>
-    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin em um palco azul ao luar. Arraste para girar; use a roda do mouse ou dois dedos para aproximar." tabindex="0"></div>
+    <div class="hsin-stage__poster" aria-hidden="true">
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcset="/assets/models/hsin/hsin-v2.0-poster-landscape.webp?v=moonlit-1" width="1280" height="720" />
+        <img src="/assets/models/hsin/hsin-v2.0-poster.webp?v=moonlit-1" width="800" height="1100" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+    </div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin no centro de um terraço sobre um lago noturno, sob a lua cheia. Arraste para girar; use a roda do mouse ou dois dedos para aproximar." tabindex="0"></div>
     <header class="hsin-stage__header">
       <h1>Hsin <span>The Moon Fox</span></h1>
       <a href="/experimentos/" aria-label="Voltar aos experimentos">↗</a>
@@ -25,6 +30,7 @@ import '../../../styles/hsin-stage.css';
       <summary>Créditos</summary>
       <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders do asset: LSCherry.</p>
       <p>Estudo de apresentação e atuação. O cenário usa uma aproximação dos materiais, sem reproduzir os shaders do jogo.</p>
+      <p>Cenário inspirado no terraço noturno da seção Música. Lua e céu procedurais; lago e serras em geometria simples.</p>
     </details>
     <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar a cena.</p></noscript>
   </main>
