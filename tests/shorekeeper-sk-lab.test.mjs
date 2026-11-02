@@ -32,4 +32,16 @@ const clips=partition(T,body,cloth);assert.equal(clips.body.tracks.length,1);ass
 const director=createDirector(T,root,body,cloth);director.start();
 for(let i=0;i<100;i++)director.advance(.02);
 assert.equal(director.state.phase,'idle');director.dispose();
+
+const {assertSelfContainedGLB}=await import('../src/scripts/shorekeeper-sk-lab.mjs');
+const pack=uri=>{
+  const data={asset:{version:'2.0'},buffers:uri?[{byteLength:0,uri}]:[{byteLength:0}],images:[]};
+  const raw=Buffer.from(JSON.stringify(data),'utf8'),pad=(4-(raw.length%4))%4,json=Buffer.concat([raw,Buffer.alloc(pad,32)]);
+  const bytes=Buffer.alloc(20+json.length);bytes.write('glTF',0);bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(bytes.length,8);bytes.writeUInt32LE(json.length,12);bytes.write('JSON',16);json.copy(bytes,20);
+  return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.length);
+};
+assert.doesNotThrow(()=>assertSelfContainedGLB(pack(null)));
+assert.throws(()=>assertSelfContainedGLB(pack('https://example.invalid/secret.glb')),/referência externa/);
+assert.throws(()=>assertSelfContainedGLB(new ArrayBuffer(4)),/inválido/);
+
 console.log('Shorekeeper /experimentos/sk: route privacy, UI controls, shared director, cleanup contract PASS');
