@@ -1271,6 +1271,10 @@ async function initializeLab(root: HTMLElement) {
       const chestPose=createChestPose({THREE,bones,meshes:skinned,head:bones.find(b=>canonicalHsinBoneName(b.name)==='orgbip001head'),calibration:faceSession?.diagnostics().calibration??{ready:false},side:ARM_ROLES.chest.side,companion:signatureHandPoint});
       // Organic timing per gesture; the hands may compose only while the signature is fully held.
       chestDirector=createChestDirector({pose:chestPose,seed:actingSeed^0x51c7,invalidate,onEvent:(event:string)=>faceSession?.signal(event),organic:true,compose:()=>(signatureTransition?.weight()??0)>=.999});
+      // `?pose=cena` (laboratory access only): hold the chest pose from the first frame, the state the public cameo is rendered from.
+      if (resolveLabAccess(window.location.search) !== 'none' && new URLSearchParams(window.location.search).get('pose') === 'cena') {
+        chestPose.apply(1);
+      }
       armSideAudit=auditArmSides();
       // A clearly mirrored rig would put the chest gesture on the wrong hand: suspend it rather than perform it.
       const sidesUsable=armSideAudit.status!=='MIRRORED';
