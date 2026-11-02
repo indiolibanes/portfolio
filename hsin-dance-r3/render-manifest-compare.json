@@ -1,0 +1,11 @@
+{
+  "method": "Actual GLB CPU raster, approximate materials/light/shader; no native player",
+  "fps": 8,
+  "seconds": 13.6,
+  "visual": "VISUAL_QA_PENDING",
+  "phrase": "moon-fox-reverie",
+  "compare": [
+    "r2-vs-r3.webp",
+    "transition-r2-r3.webp"
+  ]
+}
