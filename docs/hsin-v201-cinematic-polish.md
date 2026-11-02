@@ -4,7 +4,7 @@ Status: **candidato**. Esta camada não adiciona feições visíveis novas; ela 
 
 ## Instrumentação opt-in (`?hsin-metrics`)
 
-- `src/scripts/hsin-stage-metrics.mjs`: janelas móveis de 240 amostras com p50/p95/máx para `acting`, `sceneUpdate`, `render` e `frameInterval`; marcos únicos `stageStart → modelFetched → modelParsed → compiled → firstValidFrame`; contadores de `webglcontextlost/restored`. Lacunas > 1 s (pausa, aba oculta, perda de contexto) **não** contam como quadro lento.
+- `src/scripts/hsin-stage-metrics.mjs`: janelas móveis de 240 amostras com média/p50/p95/máx na mesma janela; contador total separado de amostras na janela para `acting`, `sceneUpdate`, `render` e `frameInterval`; marcos únicos `stageStart → modelFetched → modelParsed → compiled → firstValidFrame`; contadores de `webglcontextlost/restored`. Lacunas > 1 s (pausa, aba oculta, perda de contexto) **não** contam como quadro lento.
 - `src/scripts/hsin-stage.ts`: ganchos finos; desligado (padrão) cada chamada é um no-op e o laço paga um teste booleano. Sem UI, sem loop novo, sem rede, sem biblioteca nova. Ativado, expõe `window.__hsinMetrics = {report(), raw()}`; `report()` junta `renderer.info` (chamadas, triângulos, geometrias, texturas, programas), que conta trabalho submetido e objetos vivos, **não VRAM**.
 - Tempos são CPU em milissegundos medidos em torno do trabalho; não são tempos de GPU.
 - Teste: `tests/hsin-stage-metrics.test.mjs` (no-op desligado, percentis, marcos, lacunas excluídas, ligação opt-in sem UI nem laço extra).
@@ -24,7 +24,7 @@ Guarda do script: reprodução somada ≤ 0,25 ms/quadro (falha o CI se passar).
 ## Orçamentos preservados (verificados pelos testes existentes, sem alteração de contrato)
 
 - GLB `hsin-v2.0.glb` intacto (9 873 744 bytes); teto de 30 FPS, relógio pausado/oculto/reduzido, DPR e orçamentos de pixels/câmera: `tests/hsin-stage.test.mjs` passa.
-- Cena lunar: 6 draws, 298 triângulos, 54 752 bytes de textura (`tests/hsin-moonlit-environment.test.mjs`); nenhum passe, textura, luz ou render target novo (o rosto iluminado do PR A reutiliza a mesma textura).
+- Cenário V2.0.1 **refinado**: 12 meshes e 4.254 triângulos no cenário, teto estrutural estimado de 22 passes para cenário + personagem + fundo, 5 texturas WebP (~104.546 bytes comprimidos, ~10,0 MiB RGBA+mips estimados). Esses são resultados dos testes `hsin-lunar-refinement`/`hsin-lunar-terrace` e do relatório V2.0.1, não contagem real de `renderer.info`. Os números de 6 meshes / 298 triângulos / 54.752 bytes se referem apenas ao módulo minimalista legado `hsin-moonlit-environment.test.mjs` e **não** representam a cena pública completa. Nenhum passe, textura, luz ou render target novo foi adicionado pelo PR C.
 - Simulação determinística de 600 s do V2 com restauração exata: passa. O perfil de atuação soma ~111 KB, carregado em paralelo e validado por hash.
 
 ## Fases 7 e 8 (cenário lunar e transição Música → Hsin)
