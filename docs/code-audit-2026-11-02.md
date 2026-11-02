@@ -122,7 +122,6 @@ Principais candidatos à decomposição:
 | Arquivo | Tamanho aproximado |
 | --- | ---: |
 | `src/styles/global.css` | 140,7 KB |
-| `src/scripts/hsin-local-lab.ts` | 96,3 KB |
 | `src/components/SeriousModeToggle.astro` | 72,3 KB |
 | `src/pages/index.astro` | 54,3 KB |
 | `src/pages/404.astro` | 35,2 KB |
@@ -140,6 +139,8 @@ Revisar componentes globais do `BaseLayout` para confirmar que:
 - `document.hidden`, `prefers-reduced-motion` e `saveData` são respeitados.
 
 ### 4. Hsin
+
+A rota canônica é agora `/experimentos/`. O palco 2.5D intermediário e o laboratório local que solicitava um arquivo `.glb` foram removidos, junto aos seus scripts e estilos exclusivos.
 
 A V2.0.1 já possui orçamento explícito de DPR/pixels, limite de FPS, pausa e testes de geometria/framing.
 

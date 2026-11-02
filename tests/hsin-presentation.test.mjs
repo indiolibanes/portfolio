@@ -1,13 +1,11 @@
 import {createFacialSession} from '../src/scripts/hsin-face-session.mjs';
 import {PUPIL_NAMES} from '../src/scripts/hsin-face-rig.mjs';
-import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {createFacialActing} from '../src/scripts/hsin-face-acting.mjs';
 import {createAttentionDirector} from '../src/scripts/hsin-face-pass-b.mjs';
 import {PRESENTATION_ATTENTION} from '../src/scripts/hsin-face-presentation.mjs';
 import {PASS_B_NAMES} from '../src/scripts/hsin-face-morph-audit.mjs';
-import {createPresentationMode} from '../src/scripts/hsin-presentation-mode.mjs';
 import {solveSignatureElbow,createLeftSignaturePose} from '../src/scripts/hsin-left-signature.mjs';
 const limits=Object.fromEntries(PASS_B_NAMES.map(n=>[n,n.startsWith('P_Nose')?.04:n.startsWith('E_')?.08:.12]));
 const axes={horizontal:[1,0,0],vertical:[0,1,0]};
@@ -32,9 +30,6 @@ for(let i=0;i<110;i++)output=a.step(.016,[.2,0,0]);assert.equal(a.diagnostics().
 for(let i=0;i<20;i++)output=a.step(.016,[0,0,0]);assert.ok(output[0]>.18,'leave should not immediately drop fixation');
 for(let i=0;i<130;i++)output=a.step(.016,[0,0,0]);assert.deepEqual(output,[0,0,0]);
 const touch=make({enabled:{blink:false,wink:false}});touch.attention([1,0,0],4.2);for(let i=0;i<150;i++)touch.advance(.02);assert.ok(Math.hypot(...touch.sample().gaze)>.15);for(let i=0;i<250;i++)touch.advance(.02);assert.ok(Math.hypot(...touch.sample().gaze)<.02);
-// Mode boundary never exposes the author panel in the initial presentation.
-const attrs=()=>({values:{},setAttribute(n,v){this.values[n]=v}}),root={dataset:{}},panel={hidden:false},present=attrs(),lab=attrs();
-const modes=createPresentationMode({root,panel,presentationButton:present,labButton:lab,access:'lab'});assert.equal(panel.hidden,true);assert.equal(root.dataset.experience,'presentation');modes.set('lab');assert.equal(panel.hidden,false);assert.equal(lab.values['aria-pressed'],'true');modes.set('presentation');assert.equal(panel.hidden,true);assert.equal(modes.set('invalid'),false);
 // Two-bone geometry respects exact lengths; unreachable and degenerate poles refuse.
 const origin=new THREE.Vector3(),target=new THREE.Vector3(.1,.2,0),solution=solveSignatureElbow(THREE,origin,target,.22,.22,new THREE.Vector3(1,-1,1));assert.ok(solution);assert.ok(Math.abs(solution.elbow.distanceTo(origin)-.22)<1e-10);assert.ok(Math.abs(solution.elbow.distanceTo(target)-.22)<1e-10);assert.equal(solveSignatureElbow(THREE,origin,new THREE.Vector3(1,0,0),.22,.22,new THREE.Vector3(0,1,0)),null);
 const absent=createLeftSignaturePose({THREE,bones:[],meshes:[],head:null,calibration:{ready:false}});assert.equal(absent.apply(),false);assert.equal(absent.diagnostics().ready,false);absent.restore();
@@ -50,11 +45,4 @@ const frame=()=>{now+=20;const q=[...jobs.values()];jobs.clear();q.forEach(fn=>f
 session.start();listeners.get('pointerdown')({type:'pointerdown',pointerType:'touch',clientX:80,clientY:50});for(let i=0;i<125;i++)frame();assert.ok(Math.hypot(...session.diagnostics().acting.gaze)>.15,'presentation touch sustains beyond old 1.3 s expiry');
 for(let i=0;i<300;i++)frame();assert.ok(Math.hypot(...session.diagnostics().acting.gaze)<.02);session.pause();const frozen=[...eyeMesh.morphTargetInfluences];assert.equal(jobs.size,0);session.start();session.setReduced(true);assert.equal(jobs.size,0);assert.equal(session.test('wink-left'),false);assert.deepEqual(eyeMesh.morphTargetInfluences,frozen);session.setReduced(false);session.setVisible(false);const clock=session.diagnostics().acting.clock;now+=20000;session.setVisible(true);frame();assert.equal(session.diagnostics().acting.clock,clock);
 session.setPass('a');assert.deepEqual(eyeMesh.morphTargetInfluences,baseline);session.setPass('b');assert.deepEqual(eyeMesh.morphTargetInfluences,baseline);session.setPass('presentation');assert.deepEqual(eyeMesh.morphTargetInfluences,baseline);session.dispose({restore:true});assert.equal(jobs.size,0);assert.equal(listeners.size,0);assert.deepEqual(eyeMesh.morphTargetInfluences,baseline);geo.dispose();eyeMesh.material.dispose();
-// HTML/TS boundary: the hidden lab still must supply every required controller element.
-const html=await readFile(new URL('../src/pages/experimentos/hsin-lab/index.astro',import.meta.url),'utf8'),source=await readFile(new URL('../src/scripts/hsin-local-lab.ts',import.meta.url),'utf8');
-for(const match of source.matchAll(/q<[^;\n]+?>\('(\[data-[^\]]+\])'\)/g)){const attribute=match[1].slice(1,-1);assert.ok(html.includes(attribute),'Required lab element missing: '+attribute);}
-assert.ok(html.includes('data-hsin-laboratory hidden'));
-console.log('Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch, clean mode boundary and left-chain geometry PASS');
-const labOnly=[{hidden:false},{hidden:false}],structuralRoot={dataset:{},querySelectorAll:selector=>selector==='[data-hsin-lab-only]'?labOnly:[]};
-const structural=createPresentationMode({root:structuralRoot,panel:{hidden:false},presentationButton:attrs(),labButton:attrs(),access:'lab'});
-assert.ok(labOnly.every(element=>element.hidden));structural.set('lab');assert.ok(labOnly.every(element=>!element.hidden));structural.set('presentation');assert.ok(labOnly.every(element=>element.hidden));
+console.log('Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch and left-chain geometry PASS');

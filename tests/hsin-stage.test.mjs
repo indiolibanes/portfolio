@@ -29,9 +29,9 @@ const rest=bones.flatMap(b=>b.quaternion.toArray()),end=bones.flatMap(()=>new TH
 const data={names,rest,frames:[rest,end]},pose=createBakedPose({THREE,data,bones});assert.equal(pose.diagnostics().ready,true);pose.apply(1);assert.ok(!pose.atBaseline());pose.restore();assert.deepEqual(bones.flatMap(b=>b.quaternion.toArray()),rest);
 const chest=createBakedChest({THREE,profile:{chest:data,composition:data},bones});assert.equal(chest.select('composed'),true);chest.apply(.5);chest.restore();assert.ok(chest.atBaseline());
 
-const page=await readFile(new URL('../src/pages/experimentos/hsin/index.astro',import.meta.url),'utf8'),runtime=await readFile(new URL('../src/scripts/hsin-stage.ts',import.meta.url),'utf8'),headers=await readFile(new URL('../public/_headers',import.meta.url),'utf8');
+const page=await readFile(new URL('../src/pages/experimentos/index.astro',import.meta.url),'utf8'),runtime=await readFile(new URL('../src/scripts/hsin-stage.ts',import.meta.url),'utf8'),headers=await readFile(new URL('../public/_headers',import.meta.url),'utf8');
 assert.ok(!page.includes('type="file"'));assert.ok(!page.includes('data-hsin-laboratory'));assert.ok(page.includes('data-stage-in')&&page.includes('data-stage-out')&&page.includes('data-stage-reset'));
 for(const forbidden of ['hsin-local-lab','createChestPose','createHairPose','calibratePupils','auditFacialMorphs','createSleeveIntersectionAudit','Rapier','EffectComposer'])assert.ok(!runtime.includes(forbidden),forbidden+' must not be part of the public player');
 assert.ok(runtime.includes('preserveDrawingBuffer:false'));assert.ok(runtime.includes('shadowMap.enabled=false'));assert.ok(runtime.includes('AbortController'));assert.ok(runtime.includes('body?.dispose()'));assert.ok(runtime.includes('t.image?.close?.()'));
-assert.ok(headers.includes('/experimentos/hsin/*'));assert.ok(headers.includes("img-src 'self' data: blob:"));
+assert.ok(headers.includes('/experimentos/*'));assert.ok(headers.includes("img-src 'self' data: blob:"));
 console.log('Hsin V2 stage: 30 FPS cap, hidden/reduced/paused clock, demand-only camera damping, camera and pixel budgets, exact baked restoration, no upload/authoring runtime PASS');
