@@ -8,6 +8,12 @@ on:
       scenario:
         description: 'face | none'
         default: 'face'
+      views:
+        description: 'comma list of view ids (empty = all)'
+        default: ''
+      variants:
+        description: 'JSON array of {id,title,options} for the face scenario (empty = before/after)'
+        default: ''
   push:
     branches:
       - 'experiment/hsin-v201-*'
@@ -36,7 +42,7 @@ jobs:
           npx astro preview --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/hsin/ >/dev/null && break; sleep 1; done
       - name: Render harness frames and smoke-test the real stage
-        run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321
+        run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321 "--variants=${{ github.event.inputs.variants }}" "--views=${{ github.event.inputs.views }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -46,12 +52,12 @@ jobs:
             preview.log
       - name: Publish frames to qa-results/hsin-visual (never main)
         if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           [ -d qa-out ] || exit 0
           cp preview.log qa-out/ 2>/dev/null || true
           printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > qa-out/SOURCE.txt
-          mv qa-out "$RUNNER_TEMP/qa-out"
-          git config user.name "hsin-visual-qa"; git config user.email "noreply@github.com"
-          git checkout -q --orphan qa-results && git rm -rqf . && cp -r "$RUNNER_TEMP/qa-out/." . && git add -A
-          git commit -qm "Hsin visual QA frames from $GITHUB_SHA (run $GITHUB_RUN_ID)"
-          git push -f origin qa-results:refs/heads/qa-results/hsin-visual
+          cd qa-out && git init -q -b qa-results && git config user.name "hsin-visual-qa" && git config user.email "noreply@github.com"
+          git add -A && git commit -qm "Hsin visual QA frames from $GITHUB_SHA (run $GITHUB_RUN_ID)"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" qa-results:refs/heads/qa-results/hsin-visual

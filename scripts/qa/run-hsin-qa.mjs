@@ -9,7 +9,7 @@ import sharp from 'sharp';
 import {serve} from './serve.mjs';
 
 const [out = 'qa-out', ...rest] = process.argv.slice(2), flag = (name, fallback) => rest.find((a) => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
-const scenario = flag('scenario', 'face'), stageUrl = flag('stage-url', ''), variantsArg = flag('variants', '');
+const scenario = flag('scenario', 'face'), stageUrl = flag('stage-url', ''), variantsArg = flag('variants', ''), viewsArg = flag('views', '');
 await mkdir(out, {recursive: true});
 const {server, url} = await serve();
 const browser = await chromium.launch({args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']});
@@ -60,9 +60,10 @@ try {
    {id: 'three-quarter-face', title: '3/4 (palco) · rosto', view: {azimuth: 8, zoom: .86}},
    {id: 'profile-face', title: 'quase perfil · rosto', view: {azimuth: 38, zoom: .86}},
   ];
+  const picked = viewsArg ? views.filter((v) => viewsArg.split(',').includes(v.id)) : views;
   const page = await openHarness(), files = {};
-  for (const variant of variants) files[variant.id] = await shoot(page, variant.id, variant.options, views);
-  await sheet('face-before-after', variants, views, files);
+  for (const variant of variants) files[variant.id] = await shoot(page, variant.id, variant.options, picked);
+  await sheet('face-before-after', variants, picked, files);
   await page.close();
  }
  if (stageUrl) {
