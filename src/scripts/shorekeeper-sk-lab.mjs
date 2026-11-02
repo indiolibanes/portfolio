@@ -17,6 +17,11 @@ export function mountShorekeeperLab(root) {
   let bones = [], baseQuats = new Map(), meshes = [], morphMeshes = [];
   let clipNames = [], fileSize = 0, generation = 0, userPaused = false, disposed = false;
   let selectedBone = null, center = new T.Vector3(0, .75, 0), extent = 1.6;
+  const boneRotation = {x:0,y:0,z:0};
+  const rotatePanel = document.createElement('div');
+  rotatePanel.className='sk-bone-rotations';
+  rotatePanel.innerHTML=['x','y','z'].map(axis => '<label class="sk-field">Rotação local '+axis.toUpperCase()+' (°)<input data-bone-axis="'+axis+'" type="range" min="-45" max="45" step="1" value="0" disabled /><output data-bone-angle="'+axis+'">0°</output></label>').join('');
+  get('[data-bone-data]').after(rotatePanel);
   let loopId = 0, lastFrame = 0, frameTotal = 0, fpsStart = 0, fps = 0, elapsed = 0;
   const state = {file:'',errors:[],webgl:false,active:false};
   const setStatus = message => { status.textContent = message; };
@@ -108,6 +113,8 @@ export function mountShorekeeperLab(root) {
   }
   function updateRig() {
     selectedBone=bones.find(x=>x.name===control('bone').value) || null;
+    for(const axis of ['x','y','z']){boneRotation[axis]=0;rotatePanel.querySelector('[data-bone-axis="'+axis+'"]').value='0';rotatePanel.querySelector('[data-bone-angle="'+axis+'"]').textContent='0°';}
+    for(const slider of rotatePanel.querySelectorAll('input'))slider.disabled=!selectedBone;
     if(marker) marker.visible=!!selectedBone;
     showBoneData();
   }
@@ -127,7 +134,7 @@ export function mountShorekeeperLab(root) {
       'Skinned meshes: '+meshes.filter(x=>x.isSkinnedMesh).length,
       'Malhas: '+meshes.length,'Triângulos: '+Math.round(triangleCount),
       'Bones únicos: '+bones.length,'Morph instances: '+morphCount,
-      'Clipes: '+clipNames.map(c=>c.name+' ('+c.duration.toFixed(2)+'s)').join(' + '),
+      'Clipes: '+clipNames.filter(Boolean).map(c=>c.name+' ('+c.duration.toFixed(2)+'s)').join(' + '),
       'WebGL2: '+(state.webgl?'sim':'não'),
       'FPS observado: '+(fps||'pendente'),'Draw calls: '+(renderer?.info.render.calls||0),
       'Uploads: nenhum (File API local)','GPU VRAM: não medida'
@@ -195,11 +202,22 @@ export function mountShorekeeperLab(root) {
   get('[data-sk-file]').addEventListener('change',e=>loadFile(e.target.files?.[0]));
   all('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
   control('bone').addEventListener('change',updateRig);
+  for(const slider of rotatePanel.querySelectorAll('input'))slider.addEventListener('input',()=>{
+    if(!selectedBone)return;
+    if(director?.state.phase!=='idle'){setStatus('Interrompa e aguarde o término do gesto antes de girar um bone manualmente.');slider.value=String(boneRotation[slider.dataset.boneAxis]);return;}
+    boneRotation[slider.dataset.boneAxis]=Number(slider.value);
+    rotatePanel.querySelector('[data-bone-angle="'+slider.dataset.boneAxis+'"]').textContent=slider.value+'°';
+    const rad=n=>T.MathUtils.degToRad(n);
+    selectedBone.quaternion.copy(baseQuats.get(selectedBone)).multiply(new T.Quaternion().setFromEuler(new T.Euler(rad(boneRotation.x),rad(boneRotation.y),rad(boneRotation.z),'XYZ')));
+    selectedBone.updateMatrixWorld(true);showBoneData();
+  });
   control('skeleton').addEventListener('change',()=>{if(skeletonHelper)skeletonHelper.visible=control('skeleton').checked;});
   control('axes').addEventListener('change',()=>{if(axes)axes.visible=control('axes').checked;});
   control('wireframe').addEventListener('change',setWireframe);
   control('culling').addEventListener('change',()=>{for(const m of meshes)m.frustumCulled=control('culling').checked;});
-  control('rigreset').addEventListener('click',()=>{director?.interrupt();for(const [b,q] of baseQuats)b.quaternion.copy(q);showBoneData();});
+  control('rigreset').addEventListener('click',()=>{director?.dispose();director=null;for(const [b,q] of baseQuats)b.quaternion.copy(q);
+    for(const axis of ['x','y','z']){boneRotation[axis]=0;rotatePanel.querySelector('[data-bone-axis="'+axis+'"]').value='0';rotatePanel.querySelector('[data-bone-angle="'+axis+'"]').textContent='0°';}
+    rebuildDirector();showBoneData();});
   control('materials').addEventListener('change',setMaterialMode);
   control('background').addEventListener('change',()=>{scene.background=new T.Color(({night:0x111e31,gray:0x707b86,black:0x000000})[control('background').value]);});
   control('light').addEventListener('input',()=>{const {ambient,key,rim}=scene.userData.lights;const k=Number(control('light').value);ambient.intensity=.85*k;key.intensity=k;rim.intensity=.46*k;});
@@ -221,7 +239,7 @@ export function mountShorekeeperLab(root) {
   });
   document.addEventListener('visibilitychange',()=>director?.setPaused(userPaused||document.hidden));
   get('[data-action="report"]').addEventListener('click',async()=>{
-    const data={route:'/experimentos/sk/',file:state.file,fileBytes:fileSize,webgl2:state.webgl,meshes:meshes.length,bones:bones.length,
+    const data={route:'/experimentos/sk/',file:state.file,fileBytes:fileSize,webgl2:state.webgl,meshes:meshes.length,bones:bones.length,selectedBone:selectedBone?.name||null,boneRotation,
       morphInstances:morphMeshes.reduce((n,m)=>n+Object.keys(m.morphTargetDictionary).length,0),
       fpsObserved:fps,drawCalls:renderer.info.render.calls,materialMode:control('materials').value,
       rig:{skeleton:control('skeleton').checked,wireframe:control('wireframe').checked,culling:control('culling').checked},
