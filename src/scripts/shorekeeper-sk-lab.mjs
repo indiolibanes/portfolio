@@ -1,287 +1,113 @@
 import * as T from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createDirector } from '../../tests/shorekeeper-f16/director.mjs';
-
-/** Reject external image/buffer URIs; loading user-provided GLB must not fetch a remote asset. */
-export function assertSelfContainedGLB(buffer) {
-  const d=new DataView(buffer);
-  if(buffer.byteLength<20||d.getUint32(0,true)!==0x46546c67||d.getUint32(4,true)!==2||d.getUint32(8,true)!==buffer.byteLength)throw Error('Arquivo GLB 2.0 inválido.');
-  const len=d.getUint32(12,true),kind=d.getUint32(16,true);
-  if(kind!==0x4e4f534a||len>buffer.byteLength-20)throw Error('GLB sem JSON válido.');
-  const json=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,20,len)));
-  for(const entry of [...(json.buffers||[]),...(json.images||[])]) {
-    if(entry.uri&&!entry.uri.startsWith('data:'))throw Error('GLB contém referência externa e foi recusado por privacidade.');
-  }
-  return json;
-}
-
-/** Private, local-file-only viewer. No asset URL, upload or network request. */
-export function mountShorekeeperLab(root) {
-  const get = s => root.querySelector(s);
-  const all = s => [...root.querySelectorAll(s)];
-  const host = get('[data-sk-canvas]'), status = get('[data-sk-status]'), empty = get('[data-empty]');
-  const control = n => get('[data-control="' + n + '"]');
-  const output = n => get('[data-value="' + n + '"]');
-  const readout = n => get('[data-readout="' + n + '"]');
-  const diagnostics = get('[data-sk-diagnostics]');
-  let renderer, scene, camera, orbit, marker, axes, skeletonHelper;
-  let model = null, director = null, originalMaterials = [], alternatives = new Map();
-  let bones = [], baseQuats = new Map(), meshes = [], morphMeshes = [];
-  let clipNames = [], fileSize = 0, generation = 0, userPaused = false, disposed = false;
-  let selectedBone = null, center = new T.Vector3(0, .75, 0), extent = 1.6;
-  const boneRotation = {x:0,y:0,z:0};
-  const rotatePanel = document.createElement('div');
-  rotatePanel.className='sk-bone-rotations';
-  rotatePanel.innerHTML=['x','y','z'].map(axis => '<label class="sk-field">Rotação local '+axis.toUpperCase()+' (°)<input data-bone-axis="'+axis+'" type="range" min="-45" max="45" step="1" value="0" disabled /><output data-bone-angle="'+axis+'">0°</output></label>').join('');
-  get('[data-bone-data]').after(rotatePanel);
-  let loopId = 0, lastFrame = 0, frameTotal = 0, fpsStart = 0, fps = 0, elapsed = 0;
-  const state = {file:'',errors:[],webgl:false,active:false};
-  const setStatus = message => { status.textContent = message; };
-  const activation = enabled => {
-    all('button[data-view], button[data-action], button[data-preset], button[data-control="rigreset"], input[data-control], select[data-control], input[data-morph]').forEach(el => { if (el.dataset.action !== 'report') el.disabled = !enabled; });
-    const report = get('[data-action="report"]'); if(report) report.disabled = !enabled;
-  };
-  const applyQuality = () => {
-    if (!renderer) return;
-    const b = host.getBoundingClientRect(), w = Math.max(1, b.width), h = Math.max(1,b.height);
-    const max = Number(control('dpr').value) || 1.5;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, max, Math.sqrt(1152000 / (w*h))));
-    renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
-  };
-  function view(preset) {
-    if (!model) return;
-    const target = center.clone(), face = preset === 'face';
-    if (face) target.y += extent * .27;
-    const azimuth = {front:0,quarter:Math.PI/4,side:Math.PI/2,back:Math.PI,face:0,reset:0}[preset] || 0;
-    const dist = extent * (face ? .82 : 1.65);
-    orbit.target.copy(target);
-    camera.position.set(target.x + Math.sin(azimuth)*dist, target.y + (face?0:extent*.06), target.z + Math.cos(azimuth)*dist);
-    camera.near = Math.max(.01, dist/250); camera.far = Math.max(40,dist*40);
-    orbit.minDistance = extent*.38; orbit.maxDistance=extent*4;
-    camera.updateProjectionMatrix(); orbit.update();
-  }
-  function releaseModel() {
-    director?.dispose(); director=null;
-    if (skeletonHelper) {scene.remove(skeletonHelper);skeletonHelper.geometry.dispose();skeletonHelper.material.dispose();skeletonHelper=null;}
-    if (axes) {scene.remove(axes);axes.geometry.dispose();axes.material.dispose();axes=null;}
-    if (marker) {scene.remove(marker);marker.geometry.dispose();marker.material.dispose();marker=null;}
-    if (!model) return;
-    scene.remove(model);
-    for(const obj of alternatives.values()) obj.dispose();
-    alternatives.clear();
-    const geometry=new Set(), material=new Set(), texture=new Set(), skeleton=new Set();
-    model.traverse(o=>{if(!o.isMesh)return;geometry.add(o.geometry);if(o.skeleton)skeleton.add(o.skeleton);
-      for(const m of Array.isArray(o.material)?o.material:[o.material]) {material.add(m);
-        for(const v of Object.values(m)) if(v?.isTexture) texture.add(v);
-      }});
-    for(const row of originalMaterials) for(const m of row.original) {material.add(m); for(const v of Object.values(m)) if(v?.isTexture)texture.add(v);}
-    for(const s of skeleton)s.dispose();
-    for(const g of geometry)g.dispose();
-    for(const m of material)m.dispose();
-    for(const t of texture){t.dispose();t.image?.close?.();}
-    originalMaterials=[];model=null;meshes=[];bones=[];morphMeshes=[];baseQuats.clear();selectedBone=null;clipNames=[];
-  }
-  function setMaterialMode() {
-    if (!model) return;
-    const mode=control('materials').value;
-    for(const row of originalMaterials) {
-      const changed=row.original.map(m=>{
-        if(mode==='original')return m;
-        const key=m.uuid+'-'+mode;
-        if(!alternatives.has(key)){
-          if(mode==='neutral') alternatives.set(key,new T.MeshStandardMaterial({color:0xaec8d8,roughness:.86,metalness:0,side:T.DoubleSide}));
-          else if (/Bangs|Alpha/i.test(m.name)) {const copy=m.clone();copy.transparent=false;copy.alphaTest=.5;copy.depthWrite=true;alternatives.set(key,copy);}
-          else return m;
-        }
-        return alternatives.get(key);
-      });
-      row.mesh.material=row.wasArray?changed:changed[0];
-    }
-    setWireframe();
-  }
-  function setWireframe() {
-    const enabled=control('wireframe').checked;
-    for(const m of originalMaterials) {
-      for(const item of (Array.isArray(m.mesh.material)?m.mesh.material:[m.mesh.material])) if('wireframe' in item)item.wireframe=enabled;
-    }
-  }
-  function updateGazeAndFace() {
-    if(!model)return;
-    const picked=control('morph').value, amount=Number(control('morphWeight').value);
-    const blink=Number(get('[data-morph="E_Close"]').value),gx=Number(control('gazeX').value),gy=Number(control('gazeY').value);
-    output('E_Close').textContent=blink.toFixed(2);output('gazeX').textContent=gx.toFixed(2);output('gazeY').textContent=gy.toFixed(2);output('morphWeight').textContent=amount.toFixed(2);
-    const values={E_Close:blink,Pupil_L:Math.max(0,-gx),Pupil_R:Math.max(0,gx),Pupil_Up:Math.max(0,gy),Pupil_Down:Math.max(0,-gy)};
-    if(picked)values[picked]=amount;
-    for(const mesh of morphMeshes) for(const [name,index] of Object.entries(mesh.morphTargetDictionary))mesh.morphTargetInfluences[index]=values[name]||0;
-  }
-  function rebuildDirector() {
-    director?.dispose(); director=null;
-    if(!model)return;
-    const [body,cloth]=clipNames;
-    if(body&&cloth)try {
-      director=createDirector(T,model,body,cloth,{enter:Number(control('enter').value),transfer:Number(control('transfer').value),exit:Number(control('exit').value)});
-      director.setPaused(userPaused || document.hidden);
-    }catch(err){state.errors.push('Diretor: '+err.message);setStatus('Modelo carregado, mas composição indisponível: '+err.message);}
-  }
-  function updateRig() {
-    selectedBone=bones.find(x=>x.name===control('bone').value) || null;
-    for(const axis of ['x','y','z']){boneRotation[axis]=0;rotatePanel.querySelector('[data-bone-axis="'+axis+'"]').value='0';rotatePanel.querySelector('[data-bone-angle="'+axis+'"]').textContent='0°';}
-    for(const slider of rotatePanel.querySelectorAll('input'))slider.disabled=!selectedBone;
-    if(marker) marker.visible=!!selectedBone;
-    showBoneData();
-  }
-  function showBoneData() {
-    const box=get('[data-bone-data]');if(!selectedBone){box.textContent='Escolha um osso do rig.';return;}
-    const b=selectedBone;
-    const xyz=b.position.toArray().map(v=>v.toFixed(4));
-    const q=b.quaternion.toArray().map(v=>v.toFixed(4));
-    box.textContent=b.name+'\nposição: '+xyz.join(', ')+'\nquaternion: '+q.join(', ');
-  }
-  function showDiagnostics() {
-    if(!model){diagnostics.textContent='Modelo ausente. Nenhum asset remoto será carregado.';return;}
-    const morphCount=morphMeshes.reduce((n,m)=>n+Object.keys(m.morphTargetDictionary).length,0);
-    const triangleCount=meshes.reduce((n,m)=>n+(m.geometry.index?.count||m.geometry.attributes.position.count)/3,0);
-    diagnostics.textContent=[
-      'GLB: '+state.file,'Bytes: '+fileSize.toLocaleString('pt-BR'),
-      'Skinned meshes: '+meshes.filter(x=>x.isSkinnedMesh).length,
-      'Malhas: '+meshes.length,'Triângulos: '+Math.round(triangleCount),
-      'Bones únicos: '+bones.length,'Morph instances: '+morphCount,
-      'Clipes: '+clipNames.filter(Boolean).map(c=>c.name+' ('+c.duration.toFixed(2)+'s)').join(' + '),
-      'WebGL2: '+(state.webgl?'sim':'não'),
-      'FPS observado: '+(fps||'pendente'),'Draw calls: '+(renderer?.info.render.calls||0),
-      'Uploads: nenhum (File API local)','GPU VRAM: não medida'
-    ].join('\n');
-    readout('meshes').textContent='Meshes: '+meshes.length;
-    readout('bones').textContent='Bones: '+bones.length;
-  }
-  async function loadFile(file) {
-    if (!file) return;
-    if(!file.name.toLowerCase().endsWith('.glb') || file.size>130_000_000){setStatus('Selecione um arquivo .glb local de até 130 MB.');return;}
-    const token=++generation;releaseModel();activation(false);empty.hidden=false;
-    state.errors=[];state.active=false;get('[data-sk-file-name]').textContent=file.name;
-    setStatus('Lendo GLB local: '+file.name+'…');
-    try {
-      const buffer=await file.arrayBuffer();
-      if(token!==generation||disposed)return;
-      assertSelfContainedGLB(buffer);
-      const gltf=await new GLTFLoader().parseAsync(buffer,'');
-      if(token!==generation||disposed){ // Discard stale parsed assets without mounting them.
-        model=gltf.scene;releaseModel();return;
-      }
-      model=gltf.scene;fileSize=file.size;state.file=file.name;scene.add(model);model.updateMatrixWorld(true);
-      model.traverse(o=>{if(o.isMesh){meshes.push(o);originalMaterials.push({mesh:o,original:Array.isArray(o.material)?o.material:[o.material],wasArray:Array.isArray(o.material)});if(o.morphTargetDictionary)morphMeshes.push(o);}
-        if(o.isBone)bones.push(o);});
-      bones=[...new Set(bones)];for(const b of bones)baseQuats.set(b,b.quaternion.clone());
-      clipNames=[gltf.animations.find(c=>c.name==='Stand1_Action01_window'),gltf.animations.find(c=>c.name==='Rib_Stand1_ClothLayer')];
-      const box=new T.Box3().setFromObject(model);center=box.getCenter(new T.Vector3());extent=Math.max(1,...box.getSize(new T.Vector3()).toArray());
-      skeletonHelper=new T.SkeletonHelper(model);skeletonHelper.visible=false;scene.add(skeletonHelper);
-      axes=new T.AxesHelper(Math.max(.3,extent*.35));axes.visible=false;scene.add(axes);
-      marker=new T.Mesh(new T.SphereGeometry(Math.max(.006,extent*.007),12,8),new T.MeshBasicMaterial({color:0xffd080,depthTest:false}));marker.visible=false;scene.add(marker);
-      const boneSel=control('bone');boneSel.replaceChildren(new Option('Selecione um osso',''));
-      for(const b of bones)boneSel.add(new Option(b.name,b.name));
-      const morphNames=[...new Set(morphMeshes.flatMap(m=>Object.keys(m.morphTargetDictionary)))].sort();
-      const morphSel=control('morph');morphSel.replaceChildren(new Option('Sem morph adicional',''));
-      for(const name of morphNames)morphSel.add(new Option(name,name));
-      control('materials').value='original';control('wireframe').checked=false;control('skeleton').checked=false;
-      control('axes').checked=false;control('culling').checked=true;get('[data-morph="E_Close"]').value='0';
-      control('gazeX').value='0';control('gazeY').value='0';control('morphWeight').value='0';userPaused=false;
-      get('[data-action="pause"]').textContent='Pausar';activation(true);applyQuality();view('front');updateGazeAndFace();rebuildDirector();
-      empty.hidden=true;state.active=true;setStatus('GLB carregado localmente. Inspecione olhos, rig e gesto; nenhuma aprovação visual é automática.');showDiagnostics();
-    }catch(err){if(token!==generation)return;releaseModel();activation(false);state.errors.push(String(err));setStatus('Falha ao abrir GLB: '+(err?.message||err));console.error(err);}
-  }
-  // The test bench must stay useful without WebGL2: controls remain visible, with an explicit error.
-  try {
-    const canvas=document.createElement('canvas'); const context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'low-power'});
-    if(!context)throw Error('WebGL2 indisponível neste navegador.');
-    renderer=new T.WebGLRenderer({canvas,context,antialias:true,powerPreference:'low-power'});
-    renderer.setClearColor(0x111e31);renderer.outputColorSpace=T.SRGBColorSpace;
-    renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
-    scene=new T.Scene();scene.background=new T.Color(0x111e31);
-    const ambient=new T.HemisphereLight(0xdde9ff,0x364355,1.15),key=new T.DirectionalLight(0xffefd9,1.4),rim=new T.DirectionalLight(0xb3dfff,.65);
-    key.position.set(2,4,4);rim.position.set(-3,2,-2);scene.add(ambient,key,rim);scene.userData.lights={ambient,key,rim};
-    camera=new T.PerspectiveCamera(34,1,.01,60);
-    orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=.085;orbit.rotateSpeed=.55;
-    host.appendChild(canvas);state.webgl=true;
-    canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();setStatus('Contexto WebGL perdido; aguarde restauração ou recarregue a página.');});
-    canvas.addEventListener('webglcontextrestored',()=>{setStatus('WebGL restaurado; confira o modelo e as texturas.');applyQuality();});
-    const ro=new ResizeObserver(applyQuality);ro.observe(host);
-    root._skResizeObserver=ro;applyQuality();
-  }catch(err){state.errors.push(String(err));setStatus(err.message+' O menu permanece disponível, mas não há renderização.');get('[data-sk-file]').disabled=true;diagnostics.textContent=err.message;return;}
-  activation(false);
-  all('[data-tab]').forEach(button=>button.addEventListener('click',()=>{
-    for(const el of all('[data-tab]'))el.setAttribute('aria-selected',String(el===button));
-    for(const pane of all('[data-pane]'))pane.hidden=pane.dataset.pane!==button.dataset.tab;
-  }));
-  get('[data-sk-file]').addEventListener('change',e=>loadFile(e.target.files?.[0]));
-  all('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
-  control('bone').addEventListener('change',updateRig);
-  for(const slider of rotatePanel.querySelectorAll('input'))slider.addEventListener('input',()=>{
-    if(!selectedBone)return;
-    if(director?.state.phase!=='idle'){setStatus('Interrompa e aguarde o término do gesto antes de girar um bone manualmente.');slider.value=String(boneRotation[slider.dataset.boneAxis]);return;}
-    boneRotation[slider.dataset.boneAxis]=Number(slider.value);
-    rotatePanel.querySelector('[data-bone-angle="'+slider.dataset.boneAxis+'"]').textContent=slider.value+'°';
-    const rad=n=>T.MathUtils.degToRad(n);
-    selectedBone.quaternion.copy(baseQuats.get(selectedBone)).multiply(new T.Quaternion().setFromEuler(new T.Euler(rad(boneRotation.x),rad(boneRotation.y),rad(boneRotation.z),'XYZ')));
-    selectedBone.updateMatrixWorld(true);showBoneData();
-  });
-  control('skeleton').addEventListener('change',()=>{if(skeletonHelper)skeletonHelper.visible=control('skeleton').checked;});
-  control('axes').addEventListener('change',()=>{if(axes)axes.visible=control('axes').checked;});
-  control('wireframe').addEventListener('change',setWireframe);
-  control('culling').addEventListener('change',()=>{for(const m of meshes)m.frustumCulled=control('culling').checked;});
-  control('rigreset').addEventListener('click',()=>{director?.dispose();director=null;for(const [b,q] of baseQuats)b.quaternion.copy(q);
-    for(const axis of ['x','y','z']){boneRotation[axis]=0;rotatePanel.querySelector('[data-bone-axis="'+axis+'"]').value='0';rotatePanel.querySelector('[data-bone-angle="'+axis+'"]').textContent='0°';}
-    rebuildDirector();showBoneData();});
-  control('materials').addEventListener('change',setMaterialMode);
-  control('background').addEventListener('change',()=>{scene.background=new T.Color(({night:0x111e31,gray:0x707b86,black:0x000000})[control('background').value]);});
-  control('light').addEventListener('input',()=>{const {ambient,key,rim}=scene.userData.lights;const k=Number(control('light').value);ambient.intensity=.85*k;key.intensity=k;rim.intensity=.46*k;});
-  control('dpr').addEventListener('change',applyQuality);
-  for(const el of [...all('[data-morph]'),control('gazeX'),control('gazeY'),control('morph'),control('morphWeight')])el.addEventListener('input',updateGazeAndFace);
-  all('[data-preset]').forEach(button=>button.addEventListener('click',()=>{
-    const preset=button.dataset.preset;
-    get('[data-morph="E_Close"]').value=preset==='blink'?'1':'0';
-    control('gazeX').value='0';control('gazeY').value='0';
-    control('morph').value=preset==='smile'? (control('morph').querySelector('option[value="M_Smile_L"]')?'M_Smile_L':'') : '';
-    control('morphWeight').value=preset==='smile'?'0.5':'0';
-    updateGazeAndFace();
-  }));
-  get('[data-action="play"]').addEventListener('click',()=>{director?.start();userPaused=false;director?.setPaused(document.hidden);get('[data-action="pause"]').textContent='Pausar';});
-  get('[data-action="interrupt"]').addEventListener('click',()=>director?.interrupt());
-  get('[data-action="pause"]').addEventListener('click',()=>{userPaused=!userPaused;director?.setPaused(userPaused||document.hidden);get('[data-action="pause"]').textContent=userPaused?'Retomar':'Pausar';});
-  for(const k of ['enter','transfer','exit'])control(k).addEventListener('input',()=>{
-    output(k).textContent=Number(control(k).value).toFixed(1);rebuildDirector();
-  });
-  document.addEventListener('visibilitychange',()=>director?.setPaused(userPaused||document.hidden));
-  get('[data-action="report"]').addEventListener('click',async()=>{
-    const data={route:'/experimentos/sk/',file:state.file,fileBytes:fileSize,webgl2:state.webgl,meshes:meshes.length,bones:bones.length,selectedBone:selectedBone?.name||null,boneRotation,
-      morphInstances:morphMeshes.reduce((n,m)=>n+Object.keys(m.morphTargetDictionary).length,0),
-      fpsObserved:fps,drawCalls:renderer.info.render.calls,materialMode:control('materials').value,
-      rig:{skeleton:control('skeleton').checked,wireframe:control('wireframe').checked,culling:control('culling').checked},
-      director:director?.state||null,errors:state.errors,visualQa:'PENDING: requires human inspection',gpuVram:'NOT_MEASURED'};
-    try{await navigator.clipboard.writeText(JSON.stringify(data,null,2));setStatus('Relatório de diagnóstico copiado. Não inclui bytes do GLB.');}
-    catch{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='shorekeeper-local-diagnostics.json';a.click();URL.revokeObjectURL(url);setStatus('Relatório salvo localmente.');}
-  });
-  function frame(now) {
-    if(disposed)return;
-    loopId=requestAnimationFrame(frame);
-    if(document.hidden)return;
-    if(!lastFrame){lastFrame=now;fpsStart=now;return;}
-    const dt=Math.min(.05,Math.max(0,(now-lastFrame)/1000));
-    if(now-lastFrame<1000/30-1)return;
-    lastFrame=now;elapsed+=dt;
-    director?.advance(dt);orbit.update();
-    if(marker?.visible&&selectedBone)selectedBone.getWorldPosition(marker.position);
-    if(skeletonHelper?.visible)skeletonHelper.updateMatrixWorld(true);
-    renderer.render(scene,camera);
-    frameTotal++;
-    if(now-fpsStart>1200){
-      fps=Math.round(frameTotal*1000/(now-fpsStart));fpsStart=now;frameTotal=0;
-      readout('fps').textContent='FPS: '+fps;showDiagnostics();
-      if(selectedBone)showBoneData();
-      if(director)get('[data-acting-state]').textContent=JSON.stringify(director.state,null,2);
-    }
-  }
-  loopId=requestAnimationFrame(frame);
-  const destroy=()=>{if(disposed)return;disposed=true;generation++;cancelAnimationFrame(loopId);root._skResizeObserver?.disconnect();releaseModel();orbit?.dispose();renderer?.dispose();renderer?.forceContextLoss();};
-  window.addEventListener('pagehide',destroy,{once:true});
+import {createDirector} from './shorekeeper/director.mjs';
+import {createLocalLoader,disposeObject,assertSelfContainedGLB} from './shorekeeper/local-model.mjs';
+import {createInspection,boneGroup,morphGroup,FACE_PRESETS} from './shorekeeper/inspection.mjs';
+import {createStage} from './shorekeeper/stage.mjs';
+import {labPhase,permissions} from './shorekeeper/lab-state.mjs';
+export {assertSelfContainedGLB};
+const PHASES={empty:'Sem modelo',loading:'Carregando',ready:'Pronto',animating:'Animando',paused:'Pausado',error:'Erro','context-lost':'WebGL perdido'};
+export function mountShorekeeperLab(root){
+ if(root._skDispose)root._skDispose();
+ const $=s=>root.querySelector(s),all=s=>[...root.querySelectorAll(s)],control=n=>$('[data-control="'+n+'"]'),action=n=>$('[data-action="'+n+'"]');
+ const lifetime=new AbortController(),events={signal:lifetime.signal},on=(el,event,fn)=>el.addEventListener(event,fn,events);
+ const motion=matchMedia('(prefers-reduced-motion: reduce)'),loader=createLocalLoader(),host=$('[data-sk-canvas]');
+ const state={webgl:false,contextLost:false,loading:false,error:false,model:false,phase:'idle',paused:false};
+ let stage=null,model=null,inspection=null,director=null,selected=null,metadata=null,disposed=false,loadId=0,suspended=false,userPaused=false,last=0,raf=0,summaryAt=0,metricsStart=0,frames=0,frameMs=0;
+ let sweep=null,sweepLast=null,lastPhase='',lastDirectorPhase='idle',restError=null,releaseCounts=null;
+ const errors=[],warnings=[],flags=[];let observed={fps:null,frameTimeMs:null};
+ const status=message=>{$('[data-sk-status]').textContent=message;};
+ const log=(message,kind='error')=>{const list=kind==='error'?errors:warnings;list.push({time:new Date().toISOString(),message:String(message)});if(list.length>50)list.shift();};
+ const warn=message=>{log(message,'warning');status(message);};
+ function phase(){state.model=!!model;state.phase=director?.state.phase??'idle';state.paused=!!director?.state.paused&&state.phase!=='idle';return labPhase(state);}
+ function sync(force=false){const p=phase();if(!force&&lastPhase===p)return;lastPhase=p;root.dataset.state=p;$('[data-phase]').textContent=PHASES[p];const can=permissions(p,!!director);
+ for(const el of all('[data-view], [data-preset], [data-morph], [data-control], [data-action]')){const n=el.dataset.control,a=el.dataset.action;
+ if(['panelWidth','dpr','fps'].includes(n)||['panel','retry','cancel','report','errors','copy'].includes(a))continue;
+ if(el.dataset.boneAxis)continue;
+ if(n||el.dataset.morph||el.dataset.view||el.dataset.preset||['capture','config','customPreset','sweep','stopSweep','flag'].includes(a))el.disabled=!can.inspect;
+ if(['bone','boneSearch','rigreset'].includes(n))el.disabled=!can.rig;
+ if(['play','repeat'].includes(a))el.disabled=!can.play;
+ if(a==='pause')el.disabled=!can.pause;
+ if(a==='interrupt')el.disabled=!can.interrupt;
+ if(['enter','transfer','exit','speed'].includes(n))el.disabled=!can.play;
+ }
+ for(const el of all('[data-bone-axis], [data-rig-preset]'))el.disabled=!can.rig||(!selected&&el.dataset.boneAxis!==undefined);
+ const blink=$('[data-morph="E_Close"]');blink.disabled=!can.inspect||!inspection?.names.includes('E_Close');action('sweep').disabled=blink.disabled;
+ action('stopSweep').disabled=!sweep;action('capture').disabled=!can.inspect;
+ $('[data-config-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
+ $('[data-empty]').hidden=!!model;$('[data-rig-status]').textContent=can.rig?'Edição disponível':'Edição bloqueada';action('pause').textContent=userPaused?'Retomar':'Pausar';
+ }
+ function stopSweep(restore=true){if(sweep&&restore)inspection?.setMorph('E_Close',sweep.previous);sweep=null;sweepLast=null;syncFace();sync(true);}
+ function syncFace(){if(!inspection)return;for(const n of ['E_Close','gazeX','gazeY','morphWeight']){const v=n==='E_Close'?(inspection.weights.E_Close??0):n==='morphWeight'?(inspection.weights[control('morph').value]??0):n==='gazeX'?(inspection.weights.Pupil_R??0)-(inspection.weights.Pupil_L??0):(inspection.weights.Pupil_Up??0)-(inspection.weights.Pupil_Down??0);const el=n==='E_Close'?$('[data-morph="E_Close"]'):control(n);el.value=String(v);$('[data-value="'+n+'"]').textContent=Number(v).toFixed(2);}}
+ function fillBones(){const query=control('boneSearch').value.toLowerCase(),sel=control('bone'),current=selected?.name;sel.replaceChildren();const groups=new Map();for(const b of inspection?.bones??[]){const group=boneGroup(b.name);if(!(`${b.name} ${group}`.toLowerCase().includes(query)))continue;if(!groups.has(group)){const opt=document.createElement('optgroup');opt.label=group;groups.set(group,opt);sel.append(opt);}groups.get(group).append(new Option(b.name,b.name));}if(current&&[...sel.options].some(o=>o.value===current))sel.value=current;else sel.selectedIndex=-1;}
+ function fillMorphs(){const sel=control('morph'),current=sel.value,group=control('morphGroup').value;sel.replaceChildren(new Option('Selecione um morph',''));for(const n of inspection?.names??[]){const mesh=inspection.morphMeshes.find(m=>m.morphTargetDictionary[n]!==undefined);if(!group||morphGroup(n,mesh.name)===group)sel.add(new Option(n,n));}sel.value=[...sel.options].some(o=>o.value===current)?current:'';syncFace();}
+ function showBone(){if(!inspection||!selected){$('[data-bone-data]').textContent='Selecione um bone para inspecionar.';return;}const info=inspection.boneInfo(selected);$('[data-bone-data]').textContent=JSON.stringify(info,null,2);const offset=inspection.offsets.get(selected.name)??[0,0,0];all('[data-bone-axis]').forEach((el,i)=>{el.value=String(offset[i]);$('[data-bone-angle="'+el.dataset.boneAxis+'"]').textContent=offset[i]+'°';});}
+ function settings(){return Object.fromEntries(['enter','transfer','exit'].map(k=>[k,Number(control(k).value)]));}
+ function release(){stopSweep(false);director?.dispose();director=null;if(model){stage?.detach(model);releaseCounts=disposeObject(model,inspection?.extraMaterials??[]);}model=null;inspection=null;selected=null;metadata=null;restError=null;}
+ function restoreRig(){if(phase()!=='ready')return;director?.dispose();inspection.restore();buildDirector();showBone();status('Pose original restaurada.');sync(true);}
+ function buildDirector(){const body=model?.userData.skClips?.find(c=>c.name==='Stand1_Action01_window'),cloth=model?.userData.skClips?.find(c=>c.name==='Rib_Stand1_ClothLayer');if(body&&cloth){try{director=createDirector(T,model,body,cloth,settings());director.setSpeed(Number(control('speed').value));}catch(e){log('Composição: '+e.message);}}else warn('Modelo carregado. Os dois clipes esperados não estão disponíveis; inspeção estática permitida.');}
+ function visuals(){if(!stage)return;stage.quality(Number(control('dpr').value));stage.light(Number(control('light').value));stage.background(control('background').value);$('[data-value="light"]').textContent=control('light').value;if(!inspection)return;inspection.materials(control('materials').value,control('wireframe').checked);for(const m of inspection.meshes)m.frustumCulled=control('culling').checked;for(const n of ['skeleton','axes'])stage.overlay(n,control(n).checked);}
+ async function load(file){if(!file||state.contextLost||!stage)return;const id=++loadId;stopSweep();state.loading=true;state.error=false;sync(true);$('[data-load-progress]').hidden=false;$('[data-load-progress]').value=0;status('Lendo arquivo local…');
+ try{const result=await loader.load(file,p=>{if(id!==loadId||disposed)return;$('[data-load-progress]').value=p.value;status(p.stage+'…');});if(!result||id!==loadId||disposed)return;
+ release();model=result.gltf.scene;model.userData.skClips=result.gltf.animations;inspection=createInspection(model);stage.adopt(model);metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version};
+ const missing=result.json.accessors?.filter(a=>a.sparse&&a.type==='VEC3'&&(!a.min||!a.max)).length??0;if(missing)log(missing+' accessors sparse VEC3 sem min/max: inspecionar culling.','warning');
+ userPaused=false;lastDirectorPhase='idle';control('boneSearch').value='';control('materials').value='original';control('wireframe').checked=false;control('skeleton').checked=false;control('axes').checked=false;control('culling').checked=true;control('morphGroup').replaceChildren(new Option('Todas as regiões',''));
+ const groups=new Set(inspection.names.map(n=>morphGroup(n,inspection.morphMeshes.find(m=>m.morphTargetDictionary[n]!==undefined).name)));for(const g of groups)control('morphGroup').add(new Option(g,g));fillBones();fillMorphs();showBone();buildDirector();visuals();
+ $('[data-sk-file-name]').textContent=file.name;$('[data-model-id]').textContent=result.version+'\nSHA-256: '+result.sha256;status('Modelo local carregado. '+result.version+'.');restError=inspection.restError();
+ }catch(e){if(id!==loadId||disposed)return;if(e.name!=='AbortError'){log(e.message);state.error=!model;status('Não foi possível abrir: '+e.message);if(!metadata&&model){release();state.error=true;}}}
+ finally{if(id===loadId&&!disposed){state.loading=false;$('[data-load-progress]').hidden=true;sync(true);diagnostics();}}
+ }
+ function initializeStage(){try{stage=createStage(host,{lost(){state.contextLost=true;state.loading=false;loadId++;loader.cancel();last=0;stopSweep();status('Contexto WebGL perdido. Aguardando restauração do navegador.');sync(true);},restored(){state.contextLost=false;state.error=false;last=0;stage.resize();status('WebGL restaurado. Confira o modelo e as texturas.');sync(true);}});state.webgl=true;state.contextLost=false;state.error=false;if(model)stage.adopt(model);stage.renderer.debug.onShaderError=()=>{log('Falha de compilação de material no WebGL.');status('Erro de shader: consulte o diagnóstico.');};visuals();}catch(e){state.webgl=false;state.error=true;log(e.message);status(e.message);}sync(true);diagnostics();}
+ function report(){return {schema:'shorekeeper-inspection/1.8',route:'/experimentos/sk/',revision:root.dataset.revision,branch:root.dataset.branch,exportedAt:new Date().toISOString(),model:metadata,state:phase(),camera:stage?.cameraConfig()??null,morphs:inspection?{...inspection.weights}:{},bonesAltered:inspection?Object.fromEntries(inspection.offsets):{},animation:director?.state??null,requestedParameters:settings(),returnError:restError,visuals:Object.fromEntries(['materials','background','light','dpr','fps'].map(k=>[k,control(k).value])),overlays:Object.fromEntries(['wireframe','skeleton','axes','culling'].map(k=>[k,control(k).checked])),counts:inspection?.summary()??null,observed,renderer:stage?.info()??null,lastDisposal:releaseCounts,browser:{userAgent:navigator.userAgent,viewport:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio||1,reducedMotion:motion.matches},notes:$('[data-notes]').value,flags,errors,warnings,visualQA:'PENDING_HUMAN_REVIEW'};}
+ function save(data,name,type='application/json'){const blob=data instanceof Blob?data:new Blob([JSON.stringify(data,null,2)],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ function config(){const r=report();return {schema:r.schema,modelSha256:metadata?.sha256,camera:r.camera,morphs:r.morphs,bones:r.bonesAltered,animation:r.requestedParameters,speed:Number(control('speed').value),visuals:r.visuals,overlays:r.overlays};}
+ function diagnostics(){const r=report();$('[data-sk-diagnostics]').textContent=JSON.stringify({state:r.state,counts:r.counts,observed:r.observed,renderer:r.renderer,mixer:r.animation,lastDisposal:r.lastDisposal,errors,warnings},null,2);$('[data-readout="fps"]').textContent='FPS '+(observed.fps??'—')+' · '+(observed.frameTimeMs??'—')+' ms';$('[data-readout="counts"]').textContent=inspection?inspection.bones.length+' bones · '+inspection.summary().morphs+' morphs':'Sem modelo';}
+ function run(){if(!permissions(phase(),!!director).play)return;if(inspection.offsets.size&&director.state.phase==='idle'){director.dispose();inspection.restore();buildDirector();showBone();status('Offsets manuais restaurados para executar o gesto na referência original.');}userPaused=false;director.setPaused(false);director.start();sync(true);}
+ on($('[data-sk-file]'),'change',e=>{load(e.target.files?.[0]);e.target.value='';});
+ on(action('cancel'),'click',()=>{loadId++;loader.cancel();state.loading=false;$('[data-load-progress]').hidden=true;status('Leitura cancelada; o modelo anterior foi mantido.');sync(true);});
+ on(action('retry'),'click',()=>{loadId++;loader.cancel();state.loading=false;stage?.dispose();stage=null;initializeStage();last=0;});
+ on(action('panel'),'click',()=>{const collapsed=root.dataset.panelCollapsed!=='true';root.dataset.panelCollapsed=String(collapsed);action('panel').setAttribute('aria-expanded',String(!collapsed));stage?.resize();});
+ on(control('panelWidth'),'input',()=>root.style.setProperty('--panel-width',control('panelWidth').value+'px'));
+ for(const b of all('[data-tab]'))on(b,'click',()=>{for(const tab of all('[data-tab]')){tab.setAttribute('aria-selected',String(tab===b));tab.tabIndex=tab===b?0:-1;}for(const pane of all('[data-pane]'))pane.hidden=pane.dataset.pane!==b.dataset.tab;});
+ for(const b of all('[data-tab]'))on(b,'keydown',e=>{const tabs=all('[data-tab]'),i=tabs.indexOf(b);let next;if(e.key==='ArrowRight')next=tabs[(i+1)%tabs.length];if(e.key==='ArrowLeft')next=tabs[(i+tabs.length-1)%tabs.length];if(e.key==='Home')next=tabs[0];if(e.key==='End')next=tabs.at(-1);if(next){e.preventDefault();next.click();next.focus();}});
+ for(const b of all('[data-view]'))on(b,'click',()=>{if(!permissions(phase()).inspect)return;stage.view(b.dataset.view);for(const el of all('[data-view]'))el.setAttribute('aria-pressed',String(el===b));});
+ on(control('boneSearch'),'input',fillBones);on(control('bone'),'change',()=>{selected=inspection?.bones.find(b=>b.name===control('bone').value);showBone();sync(true);});
+ for(const el of all('[data-bone-axis]'))on(el,'input',()=>{if(phase()!=='ready'||!selected)return;inspection.rotate(selected,all('[data-bone-axis]').map(x=>Number(x.value)));showBone();});
+ on(control('rigreset'),'click',restoreRig);
+ for(const b of all('[data-rig-preset]'))on(b,'click',()=>{if(phase()!=='ready')return;const patterns={head:/Head/,arm:/LUpperArm|LArm/,hair:/Bone_Hair/};const bone=inspection.bones.find(x=>patterns[b.dataset.rigPreset].test(x.name));if(!bone){warn('Preset indisponível neste rig.');return;}inspection.rotate(bone,b.dataset.rigPreset==='head'?[0,10,0]:[5,0,0]);selected=bone;fillBones();showBone();sync(true);});
+ for(const n of ['skeleton','axes','wireframe','culling','materials','background','light','dpr'])on(control(n),n==='light'?'input':'change',visuals);
+ on(control('morphGroup'),'change',fillMorphs);on(control('morph'),'change',syncFace);
+ on(control('morphWeight'),'input',()=>{if(!inspection)return;const value=Number(control('morphWeight').value);stopSweep();inspection.setMorph(control('morph').value,value);syncFace();});
+ on($('[data-morph="E_Close"]'),'input',e=>{const value=Number(e.target.value);stopSweep();inspection?.setMorph('E_Close',value);syncFace();});
+ for(const [c,positive,negative] of [['gazeX','Pupil_R','Pupil_L'],['gazeY','Pupil_Up','Pupil_Down']])on(control(c),'input',()=>{if(!inspection)return;const value=Number(control(c).value);stopSweep();inspection.setMorph(positive,Math.max(0,value));inspection.setMorph(negative,Math.max(0,-value));syncFace();});
+ for(const b of all('[data-preset]'))on(b,'click',()=>{if(!permissions(phase()).inspect)return;stopSweep();inspection.preset(FACE_PRESETS[b.dataset.preset]);syncFace();const missing=Object.keys(FACE_PRESETS[b.dataset.preset]).filter(n=>!inspection.names.includes(n));status(missing.length?'Preset parcial: morphs ausentes '+missing.join(', '):'Preset aplicado. Confira visualmente o resultado.');});
+ on(action('customPreset'),'click',()=>{try{const values=JSON.parse($('[data-preset-config]').value);if(!values||Array.isArray(values)||typeof values!=='object'||Object.values(values).some(x=>!Number.isFinite(x)||x<0||x>1))throw Error('Use um objeto com pesos entre 0 e 1.');const unknown=Object.keys(values).filter(n=>!inspection.names.includes(n));if(unknown.length)throw Error('Morphs ausentes: '+unknown.join(', '));stopSweep();inspection.preset(values);syncFace();}catch(e){warn(e.message);}});
+ on(action('sweep'),'click',()=>{if(!inspection?.names.includes('E_Close'))return;stopSweep();sweep={index:0,previous:inspection.weights.E_Close??0};inspection.setMorph('E_Close',0);sweepLast=performance.now();syncFace();sync(true);status('Teste bilateral: 0, 0.25, 0.5, 0.75 e 1. Ao terminar, restaura o peso anterior.');});on(action('stopSweep'),'click',()=>stopSweep());
+ for(const a of ['play','repeat'])on(action(a),'click',run);
+ on(action('interrupt'),'click',()=>{if(!director)return;userPaused=false;director.setPaused(false);director.interrupt();sync(true);});
+ on(action('pause'),'click',()=>{if(!director)return;userPaused=!userPaused;director.setPaused(userPaused||document.hidden);sync(true);});
+ for(const k of ['enter','transfer','exit'])on(control(k),'input',()=>{$('[data-value="'+k+'"]').textContent=control(k).value;director?.configure(settings());status(director?.state.phase==='idle'?'Tempos atualizados.':'Novos tempos agendados para o próximo gesto.');});
+ on(control('speed'),'input',()=>{director?.setSpeed(Number(control('speed').value));$('[data-value="speed"]').textContent=control('speed').value+'×';});
+ on(action('capture'),'click',async()=>{try{if(!permissions(phase()).inspect)return;save(await stage.capture(),'shorekeeper-local.png','image/png');status('PNG salvo localmente.');}catch(e){warn(e.message);}});
+ on(action('report'),'click',()=>save(report(),'shorekeeper-local-diagnostics.json'));on(action('config'),'click',()=>save(config(),'shorekeeper-test-config.json'));on(action('errors'),'click',()=>save({errors,warnings,flags,notes:$('[data-notes]').value},'shorekeeper-errors.json'));
+ on(action('copy'),'click',async()=>{try{await navigator.clipboard.writeText(JSON.stringify(report(),null,2));status('Diagnóstico copiado.');}catch{save(report(),'shorekeeper-local-diagnostics.json');}});
+ on(action('flag'),'click',()=>{if(!inspection)return;flags.push({camera:stage.cameraConfig(),morphs:{...inspection.weights},animation:director?.state??null,time:new Date().toISOString()});if(flags.length>30)flags.shift();status('Estado marcado. Descreva o problema em Diagnóstico e exporte o relatório.');$('[data-notes]').closest('details').open=true;$('[data-notes]').focus();});
+ on($('[data-config-file]'),'change',async e=>{try{if(phase()!=='ready')return;const file=e.target.files?.[0];if(!file||file.size>1000000)throw Error('Configuração inválida ou maior que 1 MB.');const c=JSON.parse(await file.text());if(c.schema!=='shorekeeper-inspection/1.8')throw Error('Versão da configuração não suportada.');if(Object.values(c.morphs??{}).some(x=>!Number.isFinite(x)||x<0||x>1))throw Error('Pesos inválidos.');for(const [k,v] of Object.entries(c.animation??{})){if(!['enter','transfer','exit'].includes(k)||!Number.isFinite(v)||v<.2||v>1.5)throw Error('Tempos inválidos.');}for(const xyz of Object.values(c.bones??{}))if(!Array.isArray(xyz)||xyz.length!==3||xyz.some(x=>!Number.isFinite(x)||Math.abs(x)>45))throw Error('Offsets inválidos.');
+ stopSweep();director?.dispose();director=null;inspection.restore();inspection.preset(c.morphs??{});for(const [name,xyz] of Object.entries(c.bones??{})){const bone=inspection.bones.find(b=>b.name===name);if(bone)inspection.rotate(bone,xyz);}for(const [k,v] of Object.entries(c.animation??{})){control(k).value=v;$('[data-value="'+k+'"]').textContent=v;}if(Number.isFinite(c.speed)&&c.speed>=.25&&c.speed<=2)control('speed').value=c.speed;
+ for(const [k,v] of Object.entries(c.visuals??{})){if(!['materials','background','light','dpr','fps'].includes(k))continue;const el=control(k);if(el.tagName==='SELECT'&&![...el.options].some(o=>o.value===String(v)))continue;if(k==='light'&&(!Number.isFinite(Number(v))||Number(v)<.3||Number(v)>3))continue;el.value=v;}
+ for(const k of ['wireframe','skeleton','axes','culling'])if(typeof c.overlays?.[k]==='boolean')control(k).checked=c.overlays[k];buildDirector();visuals();if(c.camera)stage.restoreCamera(c.camera);syncFace();showBone();sync(true);status(c.modelSha256!==metadata.sha256?'Configuração aplicada a um modelo de hash diferente; confira capacidades.':'Configuração aplicada.');
+ }catch(err){warn(err.message);}finally{e.target.value='';}});
+ const resetClock=()=>{last=0;metricsStart=0;frames=0;frameMs=0;};
+ on(document,'visibilitychange',()=>{director?.setPaused(userPaused||document.hidden||suspended);resetClock();if(sweep)sweepLast=performance.now();});
+ on(motion,'change',()=>{if(motion.matches){userPaused=true;director?.setPaused(true);stopSweep();}sync(true);$('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido: nenhuma atuação automática. Use Reproduzir para iniciar explicitamente.':'O gesto começa apenas por comando; não há loop automático.';});
+ $('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido ativo. Atuação começa apenas por comando.':'Atuação começa apenas por comando; não há loop automático.';
+ function frame(now){if(disposed)return;raf=requestAnimationFrame(frame);if(document.hidden||suspended||state.contextLost||!stage){last=0;return;}if(!last){last=now;return;}const delta=now-last,target=1000/Number(control('fps').value);if(delta<target-1)return;last=now;const dt=Math.min(.1,delta/1000);const start=performance.now();director?.advance(dt);
+ if(sweep&&now-sweepLast>=900){sweepLast=now;sweep.index++;if(sweep.index>4)stopSweep();else{inspection.setMorph('E_Close',sweep.index*.25);syncFace();}}
+ stage.draw();frames++;frameMs+=performance.now()-start;if(!metricsStart){metricsStart=now;frames=0;frameMs=0;}
+ const current=director?.state.phase??'idle';if(current==='idle'&&lastDirectorPhase!=='idle'&&inspection){restError=inspection.restError();$('[data-rest-check]').textContent='Retorno à referência · maior diferença: '+restError.toExponential(2)+(restError<1e-5?' · PASS numérico':' · verificar');}lastDirectorPhase=current;sync();
+ if(now-summaryAt>=750){const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuRenderMs:Number((frameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} s · ${d.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
+ }
+ const destroy=()=>{if(disposed)return;disposed=true;loadId++;loader.cancel();lifetime.abort();cancelAnimationFrame(raf);release();stage?.dispose();root._skDispose=null;};
+ on(window,'pagehide',e=>{if(e.persisted){suspended=true;director?.setPaused(true);resetClock();}else destroy();});
+ on(window,'pageshow',e=>{if(e.persisted){suspended=false;director?.setPaused(userPaused||document.hidden);resetClock();if(sweep)sweepLast=performance.now();stage?.resize();sync(true);status(model?'Sessão restaurada do cache; confira a cena.':'Sessão restaurada. Selecione seu GLB local.');}});
+ on(document,'astro:before-swap',destroy);root._skDispose=destroy;initializeStage();raf=requestAnimationFrame(frame);return {dispose:destroy};
 }
