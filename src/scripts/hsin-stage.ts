@@ -5,31 +5,37 @@ import {createFacialActing} from './hsin-face-acting.mjs';
 import {snapshotFace,createFaceBinding} from './hsin-face-binding.mjs';
 import {createChestDirector} from './hsin-chest-director.mjs';
 import {createBodyRepertoire} from './hsin-body-repertoire.mjs';
+import {createHairCaress,createLipHairComposition} from './hsin-lip-hair.mjs';
 import {createPoseTransition} from './hsin-pose-transition.mjs';
 import {createRestBreath} from './hsin-rest-breath.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from './hsin-lunar-terrace.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from './hsin-cinematic-idle.mjs';
 import {lunarCameraFit} from './hsin-lunar-framing.mjs';
 import {HSIN_LUNAR_PRESENTATION,createLunarPresentation} from './hsin-lunar-presentation.mjs';
+import {createStageLights} from './hsin-stage-lighting.mjs';
+import {createFaceSkin} from './hsin-face-skin.mjs';
+import {createStageMetrics,metricsRequested} from './hsin-stage-metrics.mjs';
 
 /** Public player. The local-file lab, geometry solvers and authoring UI are separate entries. */
 export function mountHsinStage(root:HTMLElement){
  const q=<T extends HTMLElement>(s:string)=>{const e=root.querySelector<T>(s);if(!e)throw Error('Missing stage element '+s);return e;};
  const host=q<HTMLDivElement>('[data-stage-canvas]'),status=q<HTMLDivElement>('[data-stage-status]'),errorBox=q<HTMLDivElement>('[data-stage-error]');
  const near=q<HTMLButtonElement>('[data-stage-in]'),far=q<HTMLButtonElement>('[data-stage-out]'),home=q<HTMLButtonElement>('[data-stage-reset]'),pause=q<HTMLButtonElement>('[data-stage-pause]'),retry=q<HTMLButtonElement>('[data-stage-retry]');
+ // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
+ const metrics=createStageMetrics({enabled:metricsRequested(location.search)});
  const life=new AbortController(),motion=matchMedia('(prefers-reduced-motion: reduce)'),touch=matchMedia('(pointer: coarse)').matches;
  let viewportVisible=true,destroyed=false,started=false,paused=false,generation=0,lost=false;
  let disposeAttempt=()=>{},loop:ReturnType<typeof createStageLoop>|null=null,zoom=(_factor:number)=>{},resetCamera=()=>{};
  const showPause=()=>{const frozen=paused||motion.matches;pause.setAttribute('aria-pressed',String(frozen));pause.textContent=frozen?'▶':'Ⅱ';pause.setAttribute('aria-label',frozen?'Retomar atuação':'Pausar atuação');pause.title=frozen?'Retomar atuação':'Pausar atuação';pause.disabled=root.dataset.state!=='ready'||motion.matches;};
- const policy=()=>{showPause();loop?.policyChanged();};
+ const policy=()=>{showPause();metrics.gap();loop?.policyChanged();};
  near.addEventListener('click',()=>zoom(.84),{signal:life.signal});far.addEventListener('click',()=>zoom(1.19),{signal:life.signal});home.addEventListener('click',()=>resetCamera(),{signal:life.signal});
  pause.addEventListener('click',()=>{paused=!paused;policy();},{signal:life.signal});
  retry.addEventListener('click',()=>{started=false;start();},{signal:life.signal});
  motion.addEventListener('change',policy,{signal:life.signal});
  const visible=()=>viewportVisible&&!document.hidden&&!lost&&!destroyed;
- document.addEventListener('visibilitychange',()=>{loop?.setVisible(visible());if(visible()&&!started)start();},{signal:life.signal});
- const intersection=new IntersectionObserver(entries=>{viewportVisible=entries[0]?.isIntersecting??true;loop?.setVisible(visible());if(visible()&&!started)start();},{threshold:.01});intersection.observe(root);
- function teardown(){if(destroyed)return;destroyed=true;generation++;life.abort();intersection.disconnect();disposeAttempt();loop=null;}
+ document.addEventListener('visibilitychange',()=>{if(!visible())metrics.gap();loop?.setVisible(visible());if(visible()&&!started)start();},{signal:life.signal});
+ const intersection=new IntersectionObserver(entries=>{viewportVisible=entries[0]?.isIntersecting??true;if(!visible())metrics.gap();loop?.setVisible(visible());if(visible()&&!started)start();},{threshold:.01});intersection.observe(root);
+ function teardown(){if(destroyed)return;destroyed=true;generation++;life.abort();intersection.disconnect();metrics.gap();disposeAttempt();loop=null;}
  window.addEventListener('pagehide',teardown,{once:true,signal:life.signal});
  // pagehide also fires for bfcache: rebuild resources when returning to this page.
  const resumePage=(event:PageTransitionEvent)=>{if(!event.persisted)return;window.removeEventListener('pageshow',resumePage);if(destroyed)mountHsinStage(root);};
@@ -37,12 +43,12 @@ export function mountHsinStage(root:HTMLElement){
 
  async function start(){
   if(started||destroyed||!visible())return;started=true;const attemptId=++generation;
-  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any;
+  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any,faceSkin:any;
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=null;zoom=()=>{};resetCamera=()=>{};};
-  disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=null;zoom=()=>{};resetCamera=()=>{};};
+  metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    const [T,{GLTFLoader},{OrbitControls}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js')]);
    if(attempt.signal.aborted||destroyed)return;
@@ -51,11 +57,14 @@ export function mountHsinStage(root:HTMLElement){
    const context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'low-power',preserveDrawingBuffer:false});if(!context)throw Error('WebGL2 unavailable.');
    renderer=new T.WebGLRenderer({canvas,context,alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'low-power'});
    renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;renderer.shadowMap.enabled=false;renderer.setClearColor(HSIN_STAGE.colors.night);host.append(canvas);
+   if(metrics.enabled)(window as any).__hsinMetrics={report:()=>metrics.report(renderer),raw:metrics};
    const {default:asset}=await import('../data/hsin-v2-asset.json');
    const version='?v='+asset.sha256.slice(0,12);
    const cinematic=HSIN_CINEMATIC_IDLE.enabled,poseManifest=cinematic?(await import('../data/hsin-v21-pose.json')).default:null;
    const profileUrl=cinematic?HSIN_STAGE.cinematicProfile+'?v='+poseManifest!.profileSha256.slice(0,12):HSIN_STAGE.profile+version;
-   const [profileResponse,response]=await Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal})]);
+   // Baked Lip Touch / Hair Caress data (~25 KB compressed). Optional: any failure leaves the approved repertoire exactly as it was.
+   const actingManifest=cinematic?(await import('../data/hsin-v201-acting.json')).default:null;
+   const [profileResponse,response,acting]=await Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal}),actingManifest?fetch(HSIN_STAGE.actingProfile+'?v='+actingManifest.sha256.slice(0,12),{signal:attempt.signal}).then(r=>r.ok?r.json():null).catch(()=>null):Promise.resolve(null)]);
    if(!profileResponse.ok)throw Error('Stage profile unavailable.');const profile=await profileResponse.json();if(profile.modelSha256!==asset.sha256)throw Error('Stage/profile version mismatch.');
    if(!response.ok)throw Error('Model unavailable.');
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
@@ -64,7 +73,7 @@ export function mountHsinStage(root:HTMLElement){
    const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas),sceneryTexture(LUNAR_TERRACE.water)]);
    // Attach an immediate rejection handler while GLTF parsing is in flight.
    scenery.catch(()=>{});
-   const bytes=await response.arrayBuffer(),gltf=await new GLTFLoader().parseAsync(bytes,'');model=gltf.scene;
+   const bytes=await response.arrayBuffer();metrics.mark('modelFetched');const gltf=await new GLTFLoader().parseAsync(bytes,'');metrics.mark('modelParsed');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
    // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
    scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.add(model);
@@ -75,7 +84,9 @@ export function mountHsinStage(root:HTMLElement){
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
    presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth});presentation.apply();
    const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
-   scene.add(new T.AmbientLight(0xb7c9e3,.95));const key=new T.DirectionalLight(0xf0dec0,1.8);key.position.set(-2,4,5);scene.add(key);const rim=new T.DirectionalLight(0xeac27a,1.15);rim.position.set(-2,4,-5);scene.add(rim);
+   scene.add(...createStageLights(T).all);
+   // Face only: the GLB marks the face unlit, so it ignored every light. Same texture, lit response, reversible; applied before the programs compile.
+   faceSkin=createFaceSkin({THREE:T,meshes});faceSkin.apply();
    // Static transforms, including the root yaw, are frozen only after explicit matrix updates.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
@@ -92,7 +103,12 @@ export function mountHsinStage(root:HTMLElement){
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
    binding=createFaceBinding(meshes,snapshotFace(meshes),profile.calibration,{limits:profile.limits});
    const signature=createPoseTransition({pose:createBakedPose({THREE:T,data:profile.poses.signature,bones})}),chest=createChestDirector({pose:createBakedChest({THREE:T,profile:profile.poses,bones}),seed:seed^0x51c7,organic:true,onEvent:face.signal}),hair=createChestDirector({pose:createBakedPose({THREE:T,data:profile.poses.hair,bones}),seed:seed^0x32b1,organic:true,onEvent:face.signal});
-   const spine:any=byName.get('ORG-Bip001Spine2');body=createBodyRepertoire({seed:seed^0xb041,signature,chest,hair,breath:createRestBreath({THREE:T,bone:spine,update:()=>spine?.updateMatrix()}),capabilities:()=>({signature:!!profile.poses.signature,chest:!!profile.poses.chest,composition:!!profile.poses.composition,hair:!!profile.poses.hair})});
+   // Lip Touch (right) and the refined Hair Caress (left) are enabled only when the acting data matches this exact model and profile and every bone is present.
+   const actingValid=!!acting&&!!poseManifest&&acting.modelSha256===asset.sha256&&acting.profileSha256===poseManifest.profileSha256;
+   const lipPose=actingValid&&acting.poses?.lipTouch?createBakedPose({THREE:T,data:acting.poses.lipTouch,bones}):null,caressPose=actingValid&&acting.poses?.hairCaress?createBakedPose({THREE:T,data:acting.poses.hairCaress,bones}):null;
+   const caress=caressPose?.diagnostics().ready?createHairCaress({pose:caressPose,data:acting.poses.hairCaress,seed:seed^0x7a11,onEvent:face.signal}):null;
+   const lipHair=caress&&lipPose?.diagnostics().ready?createLipHairComposition({lip:lipPose,lipData:acting.poses.lipTouch,hair:caress,seed:seed^0x1b9d,onEvent:face.signal}):null;
+   const spine:any=byName.get('ORG-Bip001Spine2');body=createBodyRepertoire({seed:seed^0xb041,signature,chest,hair:caress??hair,lipHair,breath:createRestBreath({THREE:T,bone:spine,update:()=>spine?.updateMatrix()}),capabilities:()=>({signature:!!profile.poses.signature,chest:!!profile.poses.chest,composition:!!profile.poses.composition,hair:!!(caress??profile.poses.hair),lipHair:!!lipHair})});
    // Reusable vectors. Pointer projection runs only on input, not in the animation hot path.
    const ray=new T.Raycaster(),plane=new T.Plane(),normal=new T.Vector3(),center=new T.Vector3(),hit=new T.Vector3(),inverse=new T.Matrix4(),ndc=new T.Vector2(),localCenter=new T.Vector3(...profile.calibration.focusCenter);
    const horizontal=new T.Vector3(...profile.gazeAxes.horizontal),vertical=new T.Vector3(...profile.gazeAxes.vertical),gaze=[0,0,0];let attending=false,touchUntil=0;
@@ -102,15 +118,15 @@ export function mountHsinStage(root:HTMLElement){
     if(!ray.ray.intersectPlane(plane,hit))return;inverse.copy(head.matrixWorld).invert();hit.applyMatrix4(inverse).sub(localCenter).divideScalar(profile.calibration.radius).clampLength(0,1);const h=hit.dot(horizontal),v=hit.dot(vertical);hit.copy(horizontal).multiplyScalar(h).addScaledVector(vertical,v).clampLength(0,1);gaze[0]=hit.x;gaze[1]=hit.y;gaze[2]=hit.z;attending=true;touchUntil=event.pointerType==='touch'?face.sample().clock+4.2:Infinity;loop?.invalidate();
    };
    canvas.addEventListener('pointermove',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerdown',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerleave',(event:PointerEvent)=>{if(event.pointerType!=='touch'){attending=false;face.clearAttention();}},{passive:true,signal:attempt.signal});
-   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
-   canvas.addEventListener('webglcontextrestored',()=>{lost=false;root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
+   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;metrics.count('contextLost');metrics.gap();loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
+   canvas.addEventListener('webglcontextrestored',()=>{lost=false;metrics.count('contextRestored');metrics.gap();root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
     controlsUpdate:()=>orbit.update(),
-    step:(dt:number)=>{if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);body.advance(dt,{enabled:true,context:face.diagnostics().expressions?.context});worldDirty=true;},
-    draw:()=>{if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}renderer.render(scene,camera);},
+    step:(dt:number)=>{const t0=metrics.now();if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);body.advance(dt,{enabled:true,context:face.diagnostics().expressions?.context});worldDirty=true;if(metrics.enabled)metrics.sample('acting',metrics.now()-t0);},
+    draw:()=>{const t0=metrics.now();if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}if(metrics.enabled)metrics.sample('sceneUpdate',metrics.now()-t0);const t1=metrics.now();renderer.render(scene,camera);if(metrics.enabled){metrics.sample('render',metrics.now()-t1);metrics.frame();}},
    });
    loop.setVisible(false);
-   await renderer.compileAsync(scene,camera);if(attempt.signal.aborted||destroyed||attemptId!==generation){clean();return;}
+   await renderer.compileAsync(scene,camera);metrics.mark('compiled');if(attempt.signal.aborted||destroyed||attemptId!==generation){clean();return;}
    root.dataset.state='ready';root.dataset.modelBytes=String(asset.bytes);status.hidden=true;[near,far,home].forEach(b=>b.disabled=false);showPause();loop.setVisible(visible());loop.invalidate();
   }catch(error){
    if(attempt.signal.aborted||destroyed||attemptId!==generation)return;console.error('Hsin stage failed',error);clean();started=false;lost=false;root.dataset.state='error';status.hidden=true;errorBox.hidden=false;[near,far,home,pause].forEach(b=>b.disabled=true);

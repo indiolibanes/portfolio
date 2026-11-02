@@ -1,7 +1,9 @@
-/** Playback only: no IK, skin sampling, vertex traversal, or geometry audit. */
+/** Playback only: no IK, skin sampling, vertex traversal, or geometry audit.
+ * The chain is whatever `data.names` lists (six arm bones for the approved gestures, arm plus finger bones for Lip Touch);
+ * a pose that owns a bone is its only writer, which the body repertoire guarantees by running one arm actor at a time. */
 export function createBakedPose({THREE,data,bones}){
  const map=new Map(bones.map(b=>[b.name,b])),chain=data?.names.map(n=>map.get(n))??[];
- const ready=!!data&&chain.length===6&&chain.every(Boolean),a=new THREE.Quaternion(),b=new THREE.Quaternion(),c=new THREE.Quaternion(),d=new THREE.Quaternion();
+ const ready=!!data&&chain.length>0&&chain.length===data.names.length&&data.rest?.length===chain.length*4&&chain.every(Boolean),a=new THREE.Quaternion(),b=new THREE.Quaternion(),c=new THREE.Quaternion(),d=new THREE.Quaternion();
  let active='plain';
  const restore=()=>{if(!ready)return;for(let i=0;i<chain.length;i++){chain[i].quaternion.fromArray(data.rest,i*4);chain[i].updateMatrix();}};
  return {

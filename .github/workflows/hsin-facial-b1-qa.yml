@@ -5,6 +5,7 @@ on:
     branches:
       - 'experiment/hsin-facial-legibility-pass-b1-*'
       - 'experiment/hsin-v2-*'
+      - 'experiment/hsin-v201-*'
   pull_request:
     paths:
       - 'src/scripts/hsin-*.mjs'
@@ -19,6 +20,14 @@ on:
       - 'scripts/*hsin-v2*'
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/render-hsin-poster.mjs'
+      - 'scripts/qa/**'
+      - 'scripts/lib/**'
+      - 'scripts/solve-hsin-*.mjs'
+      - 'scripts/bake-hsin-*.mjs'
+      - 'scripts/bench-hsin-*.mjs'
+      - 'scripts/data/**'
+      - 'scripts/audit-hsin-materials.mjs'
+      - 'docs/hsin-v201-material-audit.json'
       - 'public/_headers'
       - 'tests/hsin-*.test.mjs'
       - '.github/workflows/hsin-facial-b1-qa.yml'
@@ -68,6 +77,16 @@ jobs:
           node tests/hsin-stage.test.mjs
           node tests/hsin-stage-asset.test.mjs
           node tests/hsin-moonlit-environment.test.mjs
+          node tests/hsin-material-audit.test.mjs
+          node tests/hsin-face-skin-math.test.mjs
+          node tests/hsin-face-skin.test.mjs
+          node tests/hsin-rig-parity.test.mjs
+          node tests/hsin-lip-hair.test.mjs
+          node tests/hsin-lip-touch-geometry.test.mjs
+          node tests/hsin-hair-caress-geometry.test.mjs
+          node tests/hsin-acting-runtime.test.mjs
+          node tests/hsin-stage-metrics.test.mjs
+          node scripts/bench-hsin-acting.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract
