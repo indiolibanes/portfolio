@@ -1,0 +1,5 @@
+# Canonical Hsin experience. Legacy experiment URLs remain non-breaking.
+/experimentos/hsin/* /experimentos/ 301
+/experimentos/hsin /experimentos/ 301
+/experimentos/hsin-lab/* /experimentos/ 301
+/experimentos/hsin-lab /experimentos/ 301

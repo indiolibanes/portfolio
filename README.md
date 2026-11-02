@@ -30,9 +30,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 | `/` | portfólio principal, com sete seções canônicas |
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
-| `/experimentos/` | índice de experiências visuais |
-| `/experimentos/hsin/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
-| `/experimentos/hsin-lab/` | laboratório local da Hsin, com arquivo GLB escolhido no dispositivo; `noindex` |
+| `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
 | `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
 | `/404` | página de erro com Sophia e Tetris |
 
@@ -61,9 +59,9 @@ A seção Música combina:
 - transição curta em violeta, azul elétrico e branco lunar antes da navegação;
 - versão reduzida da transição para `prefers-reduced-motion`.
 
-A rota `/experimentos/hsin/` usa Three.js diretamente. A V2.0.1 inclui terraço de pedra, água, arquitetura distante, lanternas, lua dourada, flores periféricas, framing responsivo e atuação autônoma da personagem.
+A rota `/experimentos/` usa Three.js diretamente. A V2.0.1 inclui terraço de pedra, água, arquitetura distante, lanternas, lua dourada, flores periféricas, framing responsivo e atuação autônoma da personagem.
 
-O runtime limita custo de renderização, pausa quando apropriado e mantém o laboratório de autoria separado da experiência pública.
+O runtime limita custo de renderização e pausa quando apropriado. O antigo palco intermediário e o laboratório local de upload de GLB foram removidos; `/experimentos/` é agora a experiência canônica da Hsin.
 
 ## Sophia
 
@@ -99,7 +97,7 @@ src/
   components/       componentes Astro e interações de interface
   data/             manifests e dados derivados da Hsin
   layouts/          layouts gerais e layouts isolados das experiências
-  pages/            rotas públicas e experimentais
+  pages/            rotas públicas e experimentais; /experimentos é Hsin
   scripts/          runtimes de cliente, Hsin e Sophia
   styles/           tokens, modos, seções e experiências
 
@@ -166,7 +164,7 @@ check:api               proxy Last.fm com fetch/cache simulados
 check:tetris            regras do Tetris da 404
 check:music-state       estados do widget de música
 check:music-transition  contrato da transição Música → Hsin
-check:hsin              terraço lunar e framing V2.0.1
+check:hsin              rota canônica, terraço lunar e framing V2.0.1
 check:sophia            modelos Sophia atualmente publicados
 ```
 

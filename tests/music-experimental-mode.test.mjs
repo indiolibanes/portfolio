@@ -5,11 +5,11 @@ const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
 
 const shelf = await read('../src/components/MusicShelf.astro');
 const css = await read('../src/styles/music-gallery.css');
-const stage = await read('../src/pages/experimentos/hsin/index.astro');
+const stage = await read('../src/pages/experimentos/index.astro');
 
 const link = shelf.match(/<a\s[\s\S]*?class="music-experimental-mode"[\s\S]*?<\/a>/)?.[0] ?? '';
 assert.ok(link, 'music panorama exposes the experimental mode link');
-assert.match(link, /href="\/experimentos\/hsin\/"/, 'experimental mode opens the public Hsin stage');
+assert.match(link, /href="\/experimentos\/"/, 'experimental mode opens the canonical public Hsin stage');
 assert.match(link, />\s*Experimental mode\s*</, 'visible label is Experimental mode');
 assert.ok(!shelf.includes('data-lunar-fox-cameo'), 'old temporary cameo markup is gone');
 assert.ok(!shelf.includes('data-lunar-fox-call'), 'old one-shot call button is gone');
