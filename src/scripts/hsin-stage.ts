@@ -14,12 +14,15 @@ import {lunarCameraFit} from './hsin-lunar-framing.mjs';
 import {HSIN_LUNAR_PRESENTATION,createLunarPresentation} from './hsin-lunar-presentation.mjs';
 import {createStageLights} from './hsin-stage-lighting.mjs';
 import {createFaceSkin} from './hsin-face-skin.mjs';
+import {createStageMetrics,metricsRequested} from './hsin-stage-metrics.mjs';
 
 /** Public player. The local-file lab, geometry solvers and authoring UI are separate entries. */
 export function mountHsinStage(root:HTMLElement){
  const q=<T extends HTMLElement>(s:string)=>{const e=root.querySelector<T>(s);if(!e)throw Error('Missing stage element '+s);return e;};
  const host=q<HTMLDivElement>('[data-stage-canvas]'),status=q<HTMLDivElement>('[data-stage-status]'),errorBox=q<HTMLDivElement>('[data-stage-error]');
  const near=q<HTMLButtonElement>('[data-stage-in]'),far=q<HTMLButtonElement>('[data-stage-out]'),home=q<HTMLButtonElement>('[data-stage-reset]'),pause=q<HTMLButtonElement>('[data-stage-pause]'),retry=q<HTMLButtonElement>('[data-stage-retry]');
+ // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
+ const metrics=createStageMetrics({enabled:metricsRequested(location.search)});
  const life=new AbortController(),motion=matchMedia('(prefers-reduced-motion: reduce)'),touch=matchMedia('(pointer: coarse)').matches;
  let viewportVisible=true,destroyed=false,started=false,paused=false,generation=0,lost=false;
  let disposeAttempt=()=>{},loop:ReturnType<typeof createStageLoop>|null=null,zoom=(_factor:number)=>{},resetCamera=()=>{};
@@ -45,7 +48,7 @@ export function mountHsinStage(root:HTMLElement){
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
   const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=null;zoom=()=>{};resetCamera=()=>{};};
-  disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
+  metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    const [T,{GLTFLoader},{OrbitControls}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js')]);
    if(attempt.signal.aborted||destroyed)return;
@@ -54,6 +57,7 @@ export function mountHsinStage(root:HTMLElement){
    const context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'low-power',preserveDrawingBuffer:false});if(!context)throw Error('WebGL2 unavailable.');
    renderer=new T.WebGLRenderer({canvas,context,alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'low-power'});
    renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;renderer.shadowMap.enabled=false;renderer.setClearColor(HSIN_STAGE.colors.night);host.append(canvas);
+   if(metrics.enabled)(window as any).__hsinMetrics={report:()=>metrics.report(renderer),raw:metrics};
    const {default:asset}=await import('../data/hsin-v2-asset.json');
    const version='?v='+asset.sha256.slice(0,12);
    const cinematic=HSIN_CINEMATIC_IDLE.enabled,poseManifest=cinematic?(await import('../data/hsin-v21-pose.json')).default:null;
@@ -69,7 +73,7 @@ export function mountHsinStage(root:HTMLElement){
    const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas),sceneryTexture(LUNAR_TERRACE.water)]);
    // Attach an immediate rejection handler while GLTF parsing is in flight.
    scenery.catch(()=>{});
-   const bytes=await response.arrayBuffer(),gltf=await new GLTFLoader().parseAsync(bytes,'');model=gltf.scene;
+   const bytes=await response.arrayBuffer();metrics.mark('modelFetched');const gltf=await new GLTFLoader().parseAsync(bytes,'');metrics.mark('modelParsed');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
    // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
    scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.add(model);
@@ -114,15 +118,15 @@ export function mountHsinStage(root:HTMLElement){
     if(!ray.ray.intersectPlane(plane,hit))return;inverse.copy(head.matrixWorld).invert();hit.applyMatrix4(inverse).sub(localCenter).divideScalar(profile.calibration.radius).clampLength(0,1);const h=hit.dot(horizontal),v=hit.dot(vertical);hit.copy(horizontal).multiplyScalar(h).addScaledVector(vertical,v).clampLength(0,1);gaze[0]=hit.x;gaze[1]=hit.y;gaze[2]=hit.z;attending=true;touchUntil=event.pointerType==='touch'?face.sample().clock+4.2:Infinity;loop?.invalidate();
    };
    canvas.addEventListener('pointermove',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerdown',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerleave',(event:PointerEvent)=>{if(event.pointerType!=='touch'){attending=false;face.clearAttention();}},{passive:true,signal:attempt.signal});
-   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
-   canvas.addEventListener('webglcontextrestored',()=>{lost=false;root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
+   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;metrics.count('contextLost');metrics.gap();loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
+   canvas.addEventListener('webglcontextrestored',()=>{lost=false;metrics.count('contextRestored');metrics.gap();root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
     controlsUpdate:()=>orbit.update(),
-    step:(dt:number)=>{if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);body.advance(dt,{enabled:true,context:face.diagnostics().expressions?.context});worldDirty=true;},
-    draw:()=>{if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}renderer.render(scene,camera);},
+    step:(dt:number)=>{const t0=metrics.now();if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);body.advance(dt,{enabled:true,context:face.diagnostics().expressions?.context});worldDirty=true;if(metrics.enabled)metrics.sample('acting',metrics.now()-t0);},
+    draw:()=>{const t0=metrics.now();if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}if(metrics.enabled)metrics.sample('sceneUpdate',metrics.now()-t0);const t1=metrics.now();renderer.render(scene,camera);if(metrics.enabled){metrics.sample('render',metrics.now()-t1);metrics.frame();}},
    });
    loop.setVisible(false);
-   await renderer.compileAsync(scene,camera);if(attempt.signal.aborted||destroyed||attemptId!==generation){clean();return;}
+   await renderer.compileAsync(scene,camera);metrics.mark('compiled');if(attempt.signal.aborted||destroyed||attemptId!==generation){clean();return;}
    root.dataset.state='ready';root.dataset.modelBytes=String(asset.bytes);status.hidden=true;[near,far,home].forEach(b=>b.disabled=false);showPause();loop.setVisible(visible());loop.invalidate();
   }catch(error){
    if(attempt.signal.aborted||destroyed||attemptId!==generation)return;console.error('Hsin stage failed',error);clean();started=false;lost=false;root.dataset.state='error';status.hidden=true;errorBox.hidden=false;[near,far,home,pause].forEach(b=>b.disabled=true);
