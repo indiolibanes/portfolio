@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {createOriginalIdleDirector,findOriginalClip,ORIGINAL_IDLE_IDS,validateOriginalLibrary} from './shorekeeper/original-idle-director.mjs';
 import {createDirector} from './shorekeeper/director.mjs';
 import {createLocalLoader,disposeObject,assertSelfContainedGLB} from './shorekeeper/local-model.mjs';
 import {createInspection,boneGroup,morphGroup,FACE_PRESETS} from './shorekeeper/inspection.mjs';
@@ -14,7 +15,7 @@ export function mountShorekeeperLab(root){
  const state={webgl:false,contextLost:false,loading:false,error:false,model:false,phase:'idle',paused:false};
  let stage=null,model=null,inspection=null,director=null,selected=null,metadata=null,disposed=false,loadId=0,suspended=false,userPaused=false,last=0,raf=0,summaryAt=0,metricsStart=0,frames=0,frameMs=0;
  let sweep=null,sweepLast=null,lastPhase='',lastDirectorPhase='idle',restError=null,releaseCounts=null;
- const errors=[],warnings=[],flags=[];let observed={fps:null,frameTimeMs:null};
+ const errors=[],warnings=[],flags=[],animationLibraries=[];let libraryGeneration=0;const libraryLoader=createLocalLoader();let observed={fps:null,frameTimeMs:null};
  const status=message=>{$('[data-sk-status]').textContent=message;};
  const log=(message,kind='error')=>{const list=kind==='error'?errors:warnings;list.push({time:new Date().toISOString(),message:String(message)});if(list.length>50)list.shift();};
  const warn=message=>{log(message,'warning');status(message);};
@@ -24,6 +25,7 @@ export function mountShorekeeperLab(root){
  if(['panelWidth','dpr','fps'].includes(n)||['panel','retry','cancel','report','errors','copy'].includes(a))continue;
  if(el.dataset.boneAxis)continue;
  if(n||el.dataset.morph||el.dataset.view||el.dataset.preset||['capture','config','customPreset','sweep','stopSweep','flag'].includes(a))el.disabled=!can.inspect;
+ if(['originalIdle','originalLayer','originalMode'].includes(n))el.disabled=!can.rig;
  if(['bone','boneSearch','rigreset'].includes(n))el.disabled=!can.rig;
  if(['play','repeat'].includes(a))el.disabled=!can.play;
  if(a==='pause')el.disabled=!can.pause;
@@ -32,8 +34,9 @@ export function mountShorekeeperLab(root){
  }
  for(const el of all('[data-bone-axis], [data-rig-preset]'))el.disabled=!can.rig||(!selected&&el.dataset.boneAxis!==undefined);
  const blink=$('[data-morph="E_Close"]');blink.disabled=!can.inspect||!inspection?.names.includes('E_Close');action('sweep').disabled=blink.disabled;
+ if(control('originalIdle').value!=='legacy'){control('transfer').disabled=true;for(const el of all('[data-morph], [data-preset], [data-preset-config]'))el.disabled=true;for(const n of ['gazeX','gazeY','morph','morphWeight','morphGroup'])control(n).disabled=true;action('sweep').disabled=true;action('customPreset').disabled=true;}
  action('stopSweep').disabled=!sweep;action('capture').disabled=!can.inspect;
- $('[data-config-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
+ $('[data-config-file]').disabled=!can.rig;$('[data-original-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
  $('[data-empty]').hidden=!!model;$('[data-rig-status]').textContent=can.rig?'Edição disponível':'Edição bloqueada';action('pause').textContent=userPaused?'Retomar':'Pausar';
  }
  function stopSweep(restore=true){if(sweep&&restore)inspection?.setMorph('E_Close',sweep.previous);sweep=null;sweepLast=null;syncFace();sync(true);}
@@ -42,28 +45,39 @@ export function mountShorekeeperLab(root){
  function fillMorphs(){const sel=control('morph'),current=sel.value,group=control('morphGroup').value;sel.replaceChildren(new Option('Selecione um morph',''));for(const n of inspection?.names??[]){const mesh=inspection.morphMeshes.find(m=>m.morphTargetDictionary[n]!==undefined);if(!group||morphGroup(n,mesh.name)===group)sel.add(new Option(n,n));}sel.value=[...sel.options].some(o=>o.value===current)?current:'';syncFace();}
  function showBone(){if(!inspection||!selected){$('[data-bone-data]').textContent='Selecione um bone para inspecionar.';return;}const info=inspection.boneInfo(selected);$('[data-bone-data]').textContent=JSON.stringify(info,null,2);const offset=inspection.offsets.get(selected.name)??[0,0,0];all('[data-bone-axis]').forEach((el,i)=>{el.value=String(offset[i]);$('[data-bone-angle="'+el.dataset.boneAxis+'"]').textContent=offset[i]+'°';});}
  function settings(){return Object.fromEntries(['enter','transfer','exit'].map(k=>[k,Number(control(k).value)]));}
- function release(){stopSweep(false);director?.dispose();director=null;if(model){stage?.detach(model);releaseCounts=disposeObject(model,inspection?.extraMaterials??[]);}model=null;inspection=null;selected=null;metadata=null;restError=null;}
+ function release(){libraryGeneration++;libraryLoader.cancel();animationLibraries.length=0;stopSweep(false);director?.dispose();director=null;if(model){stage?.detach(model);releaseCounts=disposeObject(model,inspection?.extraMaterials??[]);}model=null;inspection=null;selected=null;metadata=null;restError=null;}
  function restoreRig(){if(phase()!=='ready')return;director?.dispose();inspection.restore();buildDirector();showBone();status('Pose original restaurada.');sync(true);}
- function buildDirector(){const body=model?.userData.skClips?.find(c=>c.name==='Stand1_Action01_window'),cloth=model?.userData.skClips?.find(c=>c.name==='Rib_Stand1_ClothLayer');if(body&&cloth){try{director=createDirector(T,model,body,cloth,settings());director.setSpeed(Number(control('speed').value));}catch(e){log('Composição: '+e.message);}}else warn('Modelo carregado. Os dois clipes esperados não estão disponíveis; inspeção estática permitida.');}
+ function buildDirector(){
+ const selected=control('originalIdle').value;
+ if(selected!=='legacy'){
+  inspection?.preset({});syncFace();
+  const clip=findOriginalClip(model?.userData.skClips??[],selected,control('originalLayer').value);
+  if(clip){director=createOriginalIdleDirector(T,model,clip,{...settings(),onEvent:e=>{if(e.type==='recovery')status('Recuperando a pose inicial…');}});director.setSpeed(Number(control('speed').value));}
+  else status('Sequência indisponível neste GLB. Selecione a cópia privada F2.0-A ou retorne ao gesto F1.6.');
+  return;
+ }
+ const body=model?.userData.skClips?.find(c=>c.name==='Stand1_Action01_window'),cloth=model?.userData.skClips?.find(c=>c.name==='Rib_Stand1_ClothLayer');if(body&&cloth){try{director=createDirector(T,model,body,cloth,settings());director.setSpeed(Number(control('speed').value));}catch(e){log('Composição: '+e.message);}}else warn('Modelo carregado. Os dois clipes esperados não estão disponíveis; inspeção estática permitida.');}
  function visuals(){if(!stage)return;stage.quality(Number(control('dpr').value));stage.light(Number(control('light').value));stage.background(control('background').value);$('[data-value="light"]').textContent=control('light').value;if(!inspection)return;inspection.materials(control('materials').value,control('wireframe').checked);for(const m of inspection.meshes)m.frustumCulled=control('culling').checked;for(const n of ['skeleton','axes'])stage.overlay(n,control(n).checked);}
- async function load(file){if(!file||state.contextLost||!stage)return;const id=++loadId;stopSweep();state.loading=true;state.error=false;sync(true);$('[data-load-progress]').hidden=false;$('[data-load-progress]').value=0;status('Lendo arquivo local…');
+ async function load(file){if(!file||state.contextLost||!stage)return;const id=++loadId;libraryGeneration++;libraryLoader.cancel();stopSweep();state.loading=true;state.error=false;sync(true);$('[data-load-progress]').hidden=false;$('[data-load-progress]').value=0;status('Lendo arquivo local…');
  try{const result=await loader.load(file,p=>{if(id!==loadId||disposed)return;$('[data-load-progress]').value=p.value;status(p.stage+'…');});if(!result||id!==loadId||disposed)return;
  release();model=result.gltf.scene;model.userData.skClips=result.gltf.animations;inspection=createInspection(model);stage.adopt(model);metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version};
  const missing=result.json.accessors?.filter(a=>a.sparse&&a.type==='VEC3'&&(!a.min||!a.max)).length??0;if(missing)log(missing+' accessors sparse VEC3 sem min/max: inspecionar culling.','warning');
- userPaused=false;lastDirectorPhase='idle';control('boneSearch').value='';control('materials').value='original';control('wireframe').checked=false;control('skeleton').checked=false;control('axes').checked=false;control('culling').checked=true;control('morphGroup').replaceChildren(new Option('Todas as regiões',''));
+ userPaused=false;lastDirectorPhase='idle';control('originalIdle').value='legacy';control('originalLayer').value='composed';
+ const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(result.gltf.animations,id));$('[data-original-availability]').textContent=available.length?'Idles disponíveis: '+available.map(id=>id.replace('SK_IDLE_','').replace('_ORIGINAL','')).join(', ')+'. Aprovação visual pendente.':'Idle 01, 02 e 03 indisponíveis neste GLB. O gesto F1.6 e a inspeção continuam disponíveis.';
+ control('boneSearch').value='';control('materials').value='original';control('wireframe').checked=false;control('skeleton').checked=false;control('axes').checked=false;control('culling').checked=true;control('morphGroup').replaceChildren(new Option('Todas as regiões',''));
  const groups=new Set(inspection.names.map(n=>morphGroup(n,inspection.morphMeshes.find(m=>m.morphTargetDictionary[n]!==undefined).name)));for(const g of groups)control('morphGroup').add(new Option(g,g));fillBones();fillMorphs();showBone();buildDirector();visuals();
  $('[data-sk-file-name]').textContent=file.name;$('[data-model-id]').textContent=result.version+'\nSHA-256: '+result.sha256;status('Modelo local carregado. '+result.version+'.');restError=inspection.restError();
  }catch(e){if(id!==loadId||disposed)return;if(e.name!=='AbortError'){log(e.message);state.error=!model;status('Não foi possível abrir: '+e.message);if(!metadata&&model){release();state.error=true;}}}
  finally{if(id===loadId&&!disposed){state.loading=false;$('[data-load-progress]').hidden=true;sync(true);diagnostics();}}
  }
  function initializeStage(){try{stage=createStage(host,{lost(){state.contextLost=true;state.loading=false;loadId++;loader.cancel();last=0;stopSweep();status('Contexto WebGL perdido. Aguardando restauração do navegador.');sync(true);},restored(){state.contextLost=false;state.error=false;last=0;stage.resize();status('WebGL restaurado. Confira o modelo e as texturas.');sync(true);}});state.webgl=true;state.contextLost=false;state.error=false;if(model)stage.adopt(model);stage.renderer.debug.onShaderError=()=>{log('Falha de compilação de material no WebGL.');status('Erro de shader: consulte o diagnóstico.');};visuals();}catch(e){state.webgl=false;state.error=true;log(e.message);status(e.message);}sync(true);diagnostics();}
- function report(){return {schema:'shorekeeper-inspection/1.8',route:'/experimentos/sk/',revision:root.dataset.revision,branch:root.dataset.branch,exportedAt:new Date().toISOString(),model:metadata,state:phase(),camera:stage?.cameraConfig()??null,morphs:inspection?{...inspection.weights}:{},bonesAltered:inspection?Object.fromEntries(inspection.offsets):{},animation:director?.state??null,requestedParameters:settings(),returnError:restError,visuals:Object.fromEntries(['materials','background','light','dpr','fps'].map(k=>[k,control(k).value])),overlays:Object.fromEntries(['wireframe','skeleton','axes','culling'].map(k=>[k,control(k).checked])),counts:inspection?.summary()??null,observed,renderer:stage?.info()??null,lastDisposal:releaseCounts,browser:{userAgent:navigator.userAgent,viewport:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio||1,reducedMotion:motion.matches},notes:$('[data-notes]').value,flags,errors,warnings,visualQA:'PENDING_HUMAN_REVIEW'};}
+ function report(){return {schema:'shorekeeper-inspection/1.8',route:'/experimentos/sk/',revision:root.dataset.revision,branch:root.dataset.branch,exportedAt:new Date().toISOString(),model:metadata,state:phase(),camera:stage?.cameraConfig()??null,morphs:inspection?{...inspection.weights}:{},bonesAltered:inspection?Object.fromEntries(inspection.offsets):{},animation:director?.state??null,requestedParameters:settings(),animationLibraries:[...animationLibraries],originalAnimation:{id:control('originalIdle').value,layer:control('originalLayer').value,mode:control('originalIdle').value==='legacy'?'LEGACY':'REFERENCE_QA',visualQA:'PENDING'},returnError:restError,visuals:Object.fromEntries(['materials','background','light','dpr','fps'].map(k=>[k,control(k).value])),overlays:Object.fromEntries(['wireframe','skeleton','axes','culling'].map(k=>[k,control(k).checked])),counts:inspection?.summary()??null,observed,renderer:stage?.info()??null,lastDisposal:releaseCounts,browser:{userAgent:navigator.userAgent,viewport:[innerWidth,innerHeight],devicePixelRatio:devicePixelRatio||1,reducedMotion:motion.matches},notes:$('[data-notes]').value,flags,errors,warnings,visualQA:'PENDING_HUMAN_REVIEW'};}
  function save(data,name,type='application/json'){const blob=data instanceof Blob?data:new Blob([JSON.stringify(data,null,2)],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
  function config(){const r=report();return {schema:r.schema,modelSha256:metadata?.sha256,camera:r.camera,morphs:r.morphs,bones:r.bonesAltered,animation:r.requestedParameters,speed:Number(control('speed').value),visuals:r.visuals,overlays:r.overlays};}
  function diagnostics(){const r=report();$('[data-sk-diagnostics]').textContent=JSON.stringify({state:r.state,counts:r.counts,observed:r.observed,renderer:r.renderer,mixer:r.animation,lastDisposal:r.lastDisposal,errors,warnings},null,2);$('[data-readout="fps"]').textContent='FPS '+(observed.fps??'—')+' · '+(observed.frameTimeMs??'—')+' ms';$('[data-readout="counts"]').textContent=inspection?inspection.bones.length+' bones · '+inspection.summary().morphs+' morphs':'Sem modelo';}
- function run(){if(!permissions(phase(),!!director).play)return;if(inspection.offsets.size&&director.state.phase==='idle'){director.dispose();inspection.restore();buildDirector();showBone();status('Offsets manuais restaurados para executar o gesto na referência original.');}userPaused=false;director.setPaused(false);director.start();sync(true);}
+ function run(){if(control('originalIdle').value!=='legacy'){stopSweep();inspection?.preset({});syncFace();}if(!permissions(phase(),!!director).play)return;if(inspection.offsets.size&&director.state.phase==='idle'){director.dispose();inspection.restore();buildDirector();showBone();status('Offsets manuais restaurados para executar o gesto na referência original.');}userPaused=false;director.setPaused(false);director.start();sync(true);}
  on($('[data-sk-file]'),'change',e=>{load(e.target.files?.[0]);e.target.value='';});
- on(action('cancel'),'click',()=>{loadId++;loader.cancel();state.loading=false;$('[data-load-progress]').hidden=true;status('Leitura cancelada; o modelo anterior foi mantido.');sync(true);});
+ on(action('cancel'),'click',()=>{loadId++;loader.cancel();libraryGeneration++;libraryLoader.cancel();state.loading=false;$('[data-load-progress]').hidden=true;status('Leitura cancelada; o modelo anterior foi mantido.');sync(true);});
  on(action('retry'),'click',()=>{loadId++;loader.cancel();state.loading=false;stage?.dispose();stage=null;initializeStage();last=0;});
  on(action('panel'),'click',()=>{const collapsed=root.dataset.panelCollapsed!=='true';root.dataset.panelCollapsed=String(collapsed);action('panel').setAttribute('aria-expanded',String(!collapsed));stage?.resize();});
  on(control('panelWidth'),'input',()=>root.style.setProperty('--panel-width',control('panelWidth').value+'px'));
@@ -82,6 +96,20 @@ export function mountShorekeeperLab(root){
  for(const b of all('[data-preset]'))on(b,'click',()=>{if(!permissions(phase()).inspect)return;stopSweep();inspection.preset(FACE_PRESETS[b.dataset.preset]);syncFace();const missing=Object.keys(FACE_PRESETS[b.dataset.preset]).filter(n=>!inspection.names.includes(n));status(missing.length?'Preset parcial: morphs ausentes '+missing.join(', '):'Preset aplicado. Confira visualmente o resultado.');});
  on(action('customPreset'),'click',()=>{try{const values=JSON.parse($('[data-preset-config]').value);if(!values||Array.isArray(values)||typeof values!=='object'||Object.values(values).some(x=>!Number.isFinite(x)||x<0||x>1))throw Error('Use um objeto com pesos entre 0 e 1.');const unknown=Object.keys(values).filter(n=>!inspection.names.includes(n));if(unknown.length)throw Error('Morphs ausentes: '+unknown.join(', '));stopSweep();inspection.preset(values);syncFace();}catch(e){warn(e.message);}});
  on(action('sweep'),'click',()=>{if(!inspection?.names.includes('E_Close'))return;stopSweep();sweep={index:0,previous:inspection.weights.E_Close??0};inspection.setMorph('E_Close',0);sweepLast=performance.now();syncFace();sync(true);status('Teste bilateral: 0, 0.25, 0.5, 0.75 e 1. Ao terminar, restaura o peso anterior.');});on(action('stopSweep'),'click',()=>stopSweep());
+ on($('[data-original-file]'),'change',async e=>{
+ const files=[...(e.target.files??[])],token=++libraryGeneration;libraryLoader.cancel();
+ try{
+  if(phase()!=='ready'||files.length>3)throw Error('Adicione até três bibliotecas em repouso.');
+  state.loading=true;sync(true);status('Lendo biblioteca local de animações…');
+  for(const file of files){
+   const result=await libraryLoader.load(file);if(!result)return;if(token!==libraryGeneration||disposed){disposeObject(result.gltf.scene);return;}
+   try{const clips=validateOriginalLibrary(T,model,result);director?.dispose();director=null;inspection.restore();const incoming=new Set(clips.map(c=>c.name));model.userData.skClips=[...model.userData.skClips.filter(c=>!incoming.has(c.name)),...clips];if(!animationLibraries.some(x=>x.sha256===result.sha256))animationLibraries.push({file:file.name,sha256:result.sha256,clips:clips.map(c=>c.name)});if(animationLibraries.length>9)animationLibraries.shift();buildDirector();}
+   finally{disposeObject(result.gltf.scene);}
+  }
+  const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model.userData.skClips,id));$('[data-original-availability]').textContent='Disponíveis: '+available.join(', ')+'. Arquivos lidos localmente; QA visual pendente.';status('Bibliotecas privadas adicionadas. Selecione um idle para inspecionar.');sync(true);
+ }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;sync(true);}e.target.value='';}
+ });
+ for(const c of ['originalIdle','originalLayer'])on(control(c),'change',()=>{if(!inspection||phase()!=='ready')return;stopSweep();director?.dispose();director=null;inspection.restore();if(control('originalIdle').value!=='legacy'){inspection.preset({});syncFace();}buildDirector();showBone();sync(true);status(director?(control('originalIdle').value==='legacy'?'Gesto F1.6 selecionado.':'Reference QA: reprodução sem atuação facial adicional.'): 'Animação selecionada indisponível neste arquivo.');});
  for(const a of ['play','repeat'])on(action(a),'click',run);
  on(action('interrupt'),'click',()=>{if(!director)return;userPaused=false;director.setPaused(false);director.interrupt();sync(true);});
  on(action('pause'),'click',()=>{if(!director)return;userPaused=!userPaused;director.setPaused(userPaused||document.hidden);sync(true);});
@@ -104,9 +132,9 @@ export function mountShorekeeperLab(root){
  if(sweep&&now-sweepLast>=900){sweepLast=now;sweep.index++;if(sweep.index>4)stopSweep();else{inspection.setMorph('E_Close',sweep.index*.25);syncFace();}}
  stage.draw();frames++;frameMs+=performance.now()-start;if(!metricsStart){metricsStart=now;frames=0;frameMs=0;}
  const current=director?.state.phase??'idle';if(current==='idle'&&lastDirectorPhase!=='idle'&&inspection){restError=inspection.restError();$('[data-rest-check]').textContent='Retorno à referência · maior diferença: '+restError.toExponential(2)+(restError<1e-5?' · PASS numérico':' · verificar');}lastDirectorPhase=current;sync();
- if(now-summaryAt>=750){const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuRenderMs:Number((frameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} s · ${d.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
+ if(now-summaryAt>=750){const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuRenderMs:Number((frameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} / ${d.duration.toFixed(2)} s · ${d.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
  }
- const destroy=()=>{if(disposed)return;disposed=true;loadId++;loader.cancel();lifetime.abort();cancelAnimationFrame(raf);release();stage?.dispose();root._skDispose=null;};
+ const destroy=()=>{if(disposed)return;disposed=true;loadId++;loader.cancel();libraryLoader.cancel();lifetime.abort();cancelAnimationFrame(raf);release();stage?.dispose();root._skDispose=null;};
  on(window,'pagehide',e=>{if(e.persisted){suspended=true;director?.setPaused(true);resetClock();}else destroy();});
  on(window,'pageshow',e=>{if(e.persisted){suspended=false;director?.setPaused(userPaused||document.hidden);resetClock();if(sweep)sweepLast=performance.now();stage?.resize();sync(true);status(model?'Sessão restaurada do cache; confira a cena.':'Sessão restaurada. Selecione seu GLB local.');}});
  on(document,'astro:before-swap',destroy);root._skDispose=destroy;initializeStage();raf=requestAnimationFrame(frame);return {dispose:destroy};
