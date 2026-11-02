@@ -8,10 +8,10 @@ export function towerViewport(width,height,panelWidth,panelHeight,side='right') 
 export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
   const group=new T.Group();group.name='HsinLunarMusicTower';
   const hull=new T.Group();hull.name='Travelling pavilion · dimensional architecture';group.add(hull);
-  const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x83bec8,light:0xe7d49c};
+  const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x93c8bd,hydrogenL:0x8de2ee,hydrogenR:0x8de2ee};
   const materials={},batches={},resources=[];
   for(const [key,color] of Object.entries(palette)) {
-    materials[key]=key==='light'||key==='glass'?new T.MeshBasicMaterial({color}):new T.MeshStandardMaterial({color,roughness:key==='brass'?.38:.72,metalness:key==='wood'?.1:.65});
+    materials[key]=key.startsWith('hydrogen')||key==='glass'?new T.MeshBasicMaterial({color}):new T.MeshStandardMaterial({color,roughness:key==='brass'?.38:.72,metalness:key==='wood'?.1:.65});
     batches[key]=[];
   }
   materials.roof.side=T.DoubleSide;
@@ -63,18 +63,20 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
       box('brass',.15,.025,.16,x,top-.31,.015);
       const pipe=new T.TorusGeometry(.10,.018,6,12,Math.PI);pipe.rotateY(Math.PI/2);add('brass',pipe,x,bottom+.19,-.19);
       column('brass',.018,height*.55,x,height*.02,-.37);
-      // Four antigravity nacelles: material glow, no costly dynamic point lights.
-      for(const z of [.05,-.43]) {
-        column('iron',.075,.16,x*.78,bottom-.28,z);
-        column('glass',.049,.09,x*.78,bottom-.37,z);
-        const torus=new T.TorusGeometry(.08,.012,5,16);torus.rotateX(Math.PI/2);add('brass',torus,x*.78,bottom-.36,z);
-      }
     }
-    // Wheel housings remain readable even when the levitation shoes are active.
-    for(const x of [-.49,.49])for(const z of [.22,-.52]) {
-      const wheel=new T.CylinderGeometry(.112,.112,.055,16);wheel.rotateX(Math.PI/2);add('iron',wheel,x,bottom-.25,z);
-      ring('brass',.087,.012,x,bottom-.25,z+.033);column('brass',.017,.06,x,bottom-.24,z);
-      for(let i=0;i<6;i++){const a=i*Math.PI/3,g=new T.BoxGeometry(.155,.009,.018);g.rotateZ(a);add('brass',g,x,bottom-.25,z+.034);}
+    // Four hydrogen confinement chambers, separate from the facade and batched by side.
+    for(const x of [-.68,.68])for(const z of [.11,-.48]) {
+      const side=x<0?'hydrogenL':'hydrogenR';
+      box('iron',.13,.10,.16,x,bottom-.15,z);
+      box('brass',.20,.025,.22,x,bottom-.21,z);
+      add('iron',new T.CylinderGeometry(.075,.105,.17,10),x,bottom-.30,z);
+      column('brass',.108,.025,x,bottom-.38,z);
+      column(side,.061,.085,x,bottom-.40,z);
+      const confinement=new T.TorusGeometry(.083,.009,5,16);confinement.rotateX(Math.PI/2);add(side,confinement,x,bottom-.42,z);
+      column('iron',.025,.13,x,bottom-.25,z);
+      // Stabilizer fins and insulated fuel feeds: no exhaust particles or point lights.
+      for(const dx of [-.095,.095])box('iron',.014,.12,.18,x+dx,bottom-.27,z);
+      column('brass',.012,.20,x*.83,bottom-.20,z);
     }
     // Crown observatory / static armillary. Idle motion belongs only to the small ring.
     column('brass',.025,.18,0,top+.54,-.17);
