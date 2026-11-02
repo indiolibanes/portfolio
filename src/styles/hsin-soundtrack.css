@@ -82,6 +82,7 @@
 }
 /* Landscape phones keep a side bay and full-height scene instead of a tiny top strip. */
 @media (max-height:540px) and (min-width:600px) {
+  .hsin-music-tower__facade { max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; }
   .hsin-stage .hsin-stage__canvas,.hsin-stage .hsin-stage__poster { bottom:0; right:260px; }
   .hsin-stage .hsin-music-tower,.hsin-stage .hsin-music-tower[data-tower-anchor=world] { width:234px; left:auto; right:12px; bottom:12px; transform:none; }
   .hsin-music-tower__crown,.hsin-music-tower__propulsion { display:none; }

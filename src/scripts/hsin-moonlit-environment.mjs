@@ -2,7 +2,7 @@ import {createLunarMoon} from './hsin-lunar-moon.mjs';
 /** A static terrace, lake and celestial layer. No clock or post-processing; the moon owns a static relief shader. */
 export const MOONLIT=Object.freeze({
  sky:'/assets/scenes/hsin/night-sky-v1.webp',moon:'/assets/scenes/hsin/full-moon-v1.webp',
- moonPosition:[-.42,2.15,-10],moonSize:4.8,discRatio:292/512,
+ moonPosition:[-.8,1.87,-10],moonSize:4.8,discRatio:292/512,
  fog:0x273b53,terrace:0x1b293d,lake:0x1b3049,
 });
 
@@ -23,7 +23,7 @@ export function createMoonlitEnvironment({THREE:T,skyTexture,moonTexture,include
  const vertices=[],colors=[];let seed=732;
  const random=()=>((seed=Math.imul(seed,1664525)+1013904223>>>0)/4294967296);
  for(let i=0;i<46;i++){
-  const z=-13+i*.235,width=.24+(13+z)*.12+random()*.26,x=-.42+(random()-.5)*width*.6,depth=.012+random()*.025;
+  const z=-13+i*.235,width=.24+(13+z)*.12+random()*.26,x=MOONLIT.moonPosition[0]+(random()-.5)*width*.6,depth=.012+random()*.025;
   vertices.push(x-width,-.099,z,x+width,-.099,z,x+width,-.099,z+depth,x-width,-.099,z,x+width,-.099,z+depth,x-width,-.099,z+depth);
   const c=new T.Color().setHex(i%4===0?0xd4c5a0:0x849bad);for(let k=0;k<6;k++)colors.push(c.r,c.g,c.b);
  }

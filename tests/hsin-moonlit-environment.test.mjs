@@ -4,27 +4,33 @@ import * as THREE from 'three';
 import sharp from 'sharp';
 import {MOONLIT,createMoonlitEnvironment} from '../src/scripts/hsin-moonlit-environment.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
+import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
+import {HSIN_LUNAR_PRESENTATION} from '../src/scripts/hsin-lunar-presentation.mjs';
 
 const skyTexture=new THREE.Texture(),moonTexture=new THREE.Texture();
 const env=createMoonlitEnvironment({THREE,skyTexture,moonTexture}),scene=new THREE.Scene();scene.add(env.group);
 const meshes=[];env.group.traverse(o=>{if(o.isMesh)meshes.push(o);});
 const triangles=meshes.reduce((n,m)=>n+(m.geometry.index?.count??m.geometry.attributes.position.count)/3,0);
-assert.equal(meshes.length,6,'one moon/halo, two ridges, one lake, one reflection, one terrace');
-assert.ok(triangles<600,`scenery triangles: ${triangles}`);
-assert.ok(meshes.every(m=>m.material.isMeshBasicMaterial&&!m.castShadow));
+assert.equal(meshes.length,7,'solid spherical moon AND halo, two ridges, lake, reflection, terrace');
+assert.ok(triangles<3400,`sphere-inclusive scenery budget: ${triangles}`);
+assert.ok(meshes.every(m=>!m.castShadow));
 assert.equal(env.background,skyTexture);
 const moon=meshes.find(m=>m.name.startsWith('Full moon'));
-assert.equal(moon.material.map,moonTexture);assert.equal(moon.material.depthWrite,false);assert.equal(moon.material.fog,false);
+assert.ok(moon.geometry.type==='SphereGeometry'&&moon.material.isShaderMaterial);assert.equal(moon.material.uniforms.lunarMap.value,moonTexture);assert.equal(moon.material.depthWrite,true);assert.equal(moon.material.fog,false);
+const halo=meshes.find(m=>m.name.includes('atmospheric halo'));assert.equal(halo.material.map,moonTexture);assert.equal(halo.material.depthWrite,false);
+assert.ok(meshes.filter(m=>m!==moon).every(m=>m.material.isMeshBasicMaterial));
 const ridges=meshes.filter(m=>m.name.startsWith('Distant shore'));assert.notEqual(ridges[0].position.z,ridges[1].position.z);
 const profile=JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.0-profile.json',import.meta.url)));
-// The full disc stays inside the initial view and the azimuth limits on phone/desktop.
-for(const aspect of [393/852,320/740,16/9])for(const azimuth of [-HSIN_STAGE.maxAzimuth,0,HSIN_STAGE.maxAzimuth]){
- const camera=new THREE.PerspectiveCamera(HSIN_STAGE.fov,aspect,.03,45),target=new THREE.Vector3(0,HSIN_STAGE.baseTargetY,0),distance=cameraFit(profile.bounds,aspect);
- camera.position.set(Math.sin(azimuth)*distance,HSIN_STAGE.baseTargetY+.23,Math.cos(azimuth)*distance);camera.lookAt(target);camera.updateMatrixWorld();
+// The real public reset camera frames the sphere. Orbit exposes parallax; it must NOT billboard/follow the camera.
+scene.updateMatrixWorld(true);const fixed=moon.matrixWorld.clone();
+for(const aspect of [393/852,320/740,768/1024,844/390,16/9])for(const azimuth of [-HSIN_STAGE.maxAzimuth,HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180,HSIN_STAGE.maxAzimuth]){
+ const fit=lunarCameraFit(aspect),camera=new THREE.PerspectiveCamera(HSIN_STAGE.fov,aspect,.03,45),target=new THREE.Vector3(...fit.target),distance=fit.distance;
+ camera.position.set(target.x+Math.sin(azimuth)*distance,target.y+.23,target.z+Math.cos(azimuth)*distance);camera.lookAt(target);camera.updateMatrixWorld();
  env.frameSky(camera,target);scene.updateMatrixWorld(true);
- const center=moon.getWorldPosition(new THREE.Vector3()),radius=MOONLIT.moonSize*MOONLIT.discRatio/2;
- for(const [x,y]of [[-radius,0],[radius,0],[0,-radius],[0,radius]]){
-  const point=new THREE.Vector3(x,y,0).applyQuaternion(camera.quaternion).add(center).project(camera);
+ assert.deepEqual(moon.matrixWorld.elements,fixed.elements,'moon remains fixed during orbit');
+ const positions=moon.geometry.attributes.position;
+ if(azimuth===HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180)for(let i=0;i<positions.count;i++){
+  const point=new THREE.Vector3().fromBufferAttribute(positions,i).applyMatrix4(moon.matrixWorld).project(camera);
   assert.ok(Math.abs(point.x)<1&&Math.abs(point.y)<1,`full moon clipped: aspect=${aspect}, azimuth=${azimuth}, ndc=${point.toArray()}`);
  }
  const focus=target.clone().project(camera);assert.ok(Math.hypot(focus.x,focus.y)<1e-10,'Hsin target stays at image center');

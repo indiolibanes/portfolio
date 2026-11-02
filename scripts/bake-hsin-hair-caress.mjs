@@ -7,8 +7,8 @@ import {ctx, rig, hairRest, chainFrom, fingerBones, fingerAngles, restQ, hinge, 
 import {measurePose, nearestTo} from './lib/hsin-arm-metrics.mjs';
 import {qMul, qConj, qLog, qExp, qAxisAngle, qNorm, qAngle, sub, len} from './lib/hsin-math.mjs';
 
-export const TIMES = [0, 34, 44, 51, 58, 68, 88, 108]; // rest, hoverIn, start, mid, end, hoverOut, homeMid, rest
-const APPROACH = [0, 34]; // the validated approach segment; the way home passes through its midpoint
+export const TIMES = [0, 26, 36, 43, 50, 60, 73, 86]; // rest, hoverIn, start, mid, end, hoverOut, homeMid, rest
+const APPROACH = [0, 26]; // the validated approach segment; the way home passes through its midpoint
 const names = [...ctx.names, ...fingerBones.flat()], armLag = [0, 1.5, 3, 0, 1.5, 3], fingerLag = [4, 5.5, 7];
 const rest6 = [0, 1, 2, 3, 4, 5].map((i) => hairRest.slice(i * 4, i * 4 + 4));
 const clamp = (v) => Math.max(0, Math.min(TIMES.at(-1), v));
@@ -19,11 +19,11 @@ function hermite(values, t, times = TIMES) { // values: array of vectors at `tim
  const h = times[k + 1] - times[k], u = (t - TIMES[k]) / h, u2 = u * u, u3 = u2 * u, m0 = slope(k), m1 = slope(k + 1);
  return values[k].map((_, c) => (2 * u3 - 3 * u2 + 1) * values[k][c] + (u3 - 2 * u2 + u) * h * m0[c] + (-2 * u3 + 3 * u2) * values[k + 1][c] + (u3 - u2) * h * m1[c]);
 }
-const approachMid = (values) => hermite([values[0], values[1]], 17, APPROACH);
+const approachMid = (values) => hermite([values[0], values[1]], 13, APPROACH);
 /** Follow-through lag acts on the approach from rest and on the way home, and is zero from hover-in to hover-out, so every joint
  * reaches the solved waypoints together (a lagging wrist would drag the pad off the hair). Slope stays below 1, so time never runs backwards. */
 const smooth = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
-const lagScale = (f) => f <= TIMES[1] ? smooth((TIMES[1] - f) / 12) : f >= TIMES[5] ? smooth((f - TIMES[5]) / 12) * smooth((TIMES.at(-1) - f) / 14) : 0; // zero from hover-in to hover-out and at the very end
+const lagScale = (f) => f <= 26 ? smooth((26 - f) / 12) : f >= 60 ? smooth((f - 60) / 12) * smooth((TIMES.at(-1) - f) / 14) : 0; // zero from hover-in to hover-out and at the very end
 const rotVec = (q, base) => { const d = qMul(q, qConj(base)); return qLog(d); }; // rotation from rest, as a vector
 const fromVec = (v, base) => qNorm(qMul(qExp(v), base));
 

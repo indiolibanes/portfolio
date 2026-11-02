@@ -1,3 +1,4 @@
+// R1 asset regression remains exercised alongside the R2 support tests.
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -11,7 +12,7 @@ import {createBakedPose,createBakedChest} from '../src/scripts/hsin-baked-pose.m
 import {createPoseTransition} from '../src/scripts/hsin-pose-transition.mjs';
 import {createChestDirector} from '../src/scripts/hsin-chest-director.mjs';
 import {createRestBreath} from '../src/scripts/hsin-rest-breath.mjs';
-const text=await readFile('public/assets/animations/hsin/lunar-dance-r1.json','utf8'),data=JSON.parse(text),manifest=JSON.parse(await readFile('src/data/hsin-dance.json')),hash=b=>createHash('sha256').update(b).digest('hex');assert.equal(hash(text),manifest.sha256);assert.equal(Buffer.byteLength(text),manifest.bytes);
+const text=await readFile('public/assets/animations/hsin/lunar-dance-r1.json','utf8'),data=JSON.parse(text),manifest={sha256:'c54479e595ea57553ff0e765b65ef66abd9fd2c13672c9039ed4df2933f8f376',bytes:394188},hash=b=>createHash('sha256').update(b).digest('hex');assert.equal(hash(text),manifest.sha256);assert.equal(Buffer.byteLength(text),manifest.bytes);
 assert.equal(Object.keys(data.phrases).length,7);assert.ok(data.names.every(n=>!/Foot|Calf|Thigh|Pelvis|Finger|root/.test(n)));for(const p of Object.values(data.phrases)){assert.deepEqual(p.frames[0],data.rest);assert.deepEqual(p.frames.at(-1),data.rest);assert.ok(p.frames.flat().every(Number.isFinite));}
 function idleActor(r,seed){const signature=createPoseTransition({pose:createBakedPose({THREE:r.T,data:r.profile.poses.signature,bones:r.bones})}),chest=createChestDirector({pose:createBakedChest({THREE:r.T,profile:r.profile.poses,bones:r.bones}),seed:seed^2}),hair=createChestDirector({pose:createBakedPose({THREE:r.T,data:r.profile.poses.hair,bones:r.bones}),seed:seed^3});return createBodyRepertoire({signature,chest,hair,seed,breath:createRestBreath({THREE:r.T,bone:r.by.get('ORG-Bip001Spine2'),update:()=>r.by.get('ORG-Bip001Spine2').updateMatrix()}),capabilities:()=>({signature:true,chest:true,hair:true,composition:true})});}
 async function session(seed){

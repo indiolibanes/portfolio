@@ -1,0 +1,33 @@
+{
+  "method": "Actual GLB CPU raster, approximate materials/light/shader; no native player",
+  "fps": 8,
+  "durationSeconds": 20.25,
+  "frames": 162,
+  "timeline": [
+    [
+      "moon-breathing",
+      0.8
+    ],
+    [
+      "silk-sway",
+      4.2
+    ],
+    [
+      "lunar-waltz",
+      5.6
+    ],
+    [
+      "ballet-flourish",
+      4.6
+    ],
+    [
+      "petal-flourish",
+      3.7
+    ],
+    [
+      "lunar-repose",
+      1.3
+    ]
+  ],
+  "visual": "VISUAL_QA_PENDING"
+}

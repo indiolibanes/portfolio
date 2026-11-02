@@ -6,7 +6,7 @@ export function towerViewport(width,height,panelWidth,panelHeight,side='right') 
   return {compact,x:side==='left'?margin+panelWidth/2:width-margin-panelWidth/2,
     y:Math.max(80+panelHeight/2,Math.min(height-panelHeight/2-95,height*.52))};
 }
-export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],moon=null,metrics:instrument=null}) {
+export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],model=null,bounds=null,moon=null,metrics:instrument=null,clock=()=>performance.now()}) {
   const group=new T.Group();group.name='HsinLunarMusicTower';
   const hull=new T.Group();hull.name='Travelling pavilion · dimensional architecture';group.add(hull);
   const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x93c8bd,hydrogenL:0x8de2ee,hydrogenR:0x8de2ee};
@@ -21,8 +21,8 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
   const ring=(key,r,t,x,y,z=0)=>add(key,new T.TorusGeometry(r,t,5,24),x,y,z);
   const column=(key,r,h,x,y,z=0)=>add(key,new T.CylinderGeometry(r,r,h,8),x,y,z);
   // Geometry is rebuilt ONLY on facade aspect changes, never while orbiting.
-  let aspect=0;
-  function build(height) {
+  let aspect=0,decorationScale=1;
+  function build(height,ornamentScale=1) {
     for(const child of [...hull.children])hull.remove(child);
     resources.splice(0).forEach(g=>g.dispose());for(const key in batches)batches[key]=[];
     const top=height/2,bottom=-height/2;
@@ -101,6 +101,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
       const pieces=batches[key];if(!pieces.length)continue;
       // All primitive normals/UVs are present; indexed/non-indexed shapes are normalized.
       const normalized=pieces.map(g=>g.index?g.toNonIndexed():g);
+      if(ornamentScale!==1)for(const g of normalized){const p=g.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);if(y>top)p.setY(i,top+(y-top)*ornamentScale);else if(y<bottom)p.setY(i,bottom+(y-bottom)*ornamentScale);}g.computeVertexNormals();}
       const merged=mergeGeometries(normalized);resources.push(merged);
       for(const g of new Set([...pieces,...normalized]))g.dispose();
       const mesh=new T.Mesh(merged,materials[key]);mesh.name='Pavilion · '+key;hull.add(mesh);
@@ -110,12 +111,13 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
   const center=new T.Vector3(),direction=new T.Vector3(),normal=new T.Vector3(),up=new T.Vector3(),projection=new T.Vector3();
   const motion=createPavilionMotion(),by=new Map(bones.map(b=>[b.name,b]));
   const subjects={face:null,hands:[],moon:null,character:null,controls:null};
-  const rects=[{},{},{},{}];let layoutAt=-Infinity,cameraSignature='',interacting=false,disposed=false;
+  const characterRect={x:0,y:0,w:0,h:0};
+  const rects=[{},{},{},{}];let layoutAt=-Infinity,cameraSignature='',hovering=false,focused=false,disposed=false;
   const interaction=new AbortController();
-  element.addEventListener('pointerenter',()=>{interacting=true;},{signal:interaction.signal});
-  element.addEventListener('pointerleave',()=>{interacting=false;layoutDirty=true;},{signal:interaction.signal});
-  element.addEventListener('focusin',()=>{interacting=true;},{signal:interaction.signal});
-  element.addEventListener('focusout',()=>{interacting=false;layoutDirty=true;},{signal:interaction.signal});
+  element.addEventListener('pointerenter',()=>{hovering=true;},{signal:interaction.signal});
+  element.addEventListener('pointerleave',()=>{hovering=false;layoutDirty=true;},{signal:interaction.signal});
+  element.addEventListener('focusin',()=>{focused=true;},{signal:interaction.signal});
+  element.addEventListener('focusout',event=>{focused=!!event.relatedTarget&&element.contains(event.relatedTarget);layoutDirty=true;},{signal:interaction.signal});
   function projectSubject(object,radius,w,h,out){
     if(!object)return null;object.updateWorldMatrix(true,false);object.getWorldPosition(projection);const distance=projection.distanceTo(cameraForProjection.position);projection.project(cameraForProjection);
     if(projection.z>1||projection.z< -1)return null;
@@ -126,14 +128,15 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
   let last=0,smoothedYaw=null,layoutDirty=true,metrics=null,provider=null,activation=0;
   const restingGlass=new T.Color(palette.glass),activeGlass=new T.Color(0xc5e7ed);
   function update(camera,target,reduced=false,idle=false) {
-    if(disposed)return false;const started=instrument?.enabled?instrument.now():0;
+    if(disposed)return false;const started=instrument?.enabled?instrument.now():0,interacting=hovering||focused;
     if(layoutDirty){const bounds=element.closest('[data-hsin-stage]').getBoundingClientRect();metrics={w:host.clientWidth,h:host.clientHeight,pw:element.offsetWidth,ph:element.offsetHeight,sw:bounds.width,sh:bounds.height};layoutDirty=false;}
     const {w,h,pw,ph,sw,sh}=metrics;if(!w||!h||!pw||!ph)return false;
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
     element.dataset.towerAnchor=layout.compact?'bay':'world';
     const paneW=layout.compact?Math.min(110,w*.26):pw,paneH=layout.compact?paneW*.9:ph;
-    const nextAspect=paneH/paneW;if(Math.abs(aspect-nextAspect)>.005){aspect=nextAspect;build(aspect);}
-    camera.updateMatrixWorld();const now=performance.now(),dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
+    const nextAspect=paneH/paneW,nextDecoration=layout.compact?1:Math.max(.35,Math.min(1,(h-ph-60)/(paneW*1.35)));
+    if(Math.abs(aspect-nextAspect)>.005||Math.abs(decorationScale-nextDecoration)>.01){aspect=nextAspect;decorationScale=nextDecoration;build(aspect,decorationScale);}
+    camera.updateMatrixWorld();const now=clock(),dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
     const yaw=Math.atan2(camera.position.x-target.x,camera.position.z-target.z),side=element.dataset.soundtrackSide==='left'?-1:1;
     if(smoothedYaw===null||reduced)smoothedYaw=yaw;
     const delta=Math.atan2(Math.sin(yaw-smoothedYaw),Math.cos(yaw-smoothedYaw));smoothedYaw+=delta*(1-Math.exp(-dt*5));
@@ -145,21 +148,26 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
       subjects.face=projectSubject(by.get('ORG-Bip001Head'),.15,w,h,rects[0]);
       subjects.hands.length=0;for(const [i,s]of ['L','R'].entries()){const rect=projectSubject(by.get('ORG-Bip001Hand'+s),.11,w,h,rects[i+1]);if(rect)subjects.hands.push(rect);}
       subjects.moon=projectSubject(moon,1.37,w,h,rects[3]);
+      if(model&&bounds){
+        let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+        for(let i=0;i<8;i++){projection.set(bounds[i&1?'max':'min'][0],bounds[i&2?'max':'min'][1],bounds[i&4?'max':'min'][2]);model.localToWorld(projection);projection.project(camera);const px=(projection.x+1)*w/2,py=(1-projection.y)*h/2;minX=Math.min(minX,px);minY=Math.min(minY,py);maxX=Math.max(maxX,px);maxY=Math.max(maxY,py);}
+        Object.assign(characterRect,{x:minX-16,y:minY-16,w:maxX-minX+32,h:maxY-minY+32});subjects.character=characterRect;
+      }
       subjects.controls={x:sw/2-100,y:sh-86,w:200,h:74};
-      motion.retarget({width:sw,height:sh,panelWidth:pw,panelHeight:ph,preferred:element.dataset.soundtrackSide,...subjects},{now:now/1000,interacting,reduced});
+      motion.retarget({width:sw,height:sh,panelWidth:pw,panelHeight:ph,paddingX:pw*.36,paddingTop:pw*.88*decorationScale,paddingBottom:pw*.47*decorationScale,preferred:element.dataset.soundtrackSide,...subjects},{now:now/1000,interacting,reduced});
     }
-    const movement=motion.advance(dt,reduced);
+    motion.setInteracting(interacting);const movement=motion.advance(dt,reduced);
     if(!layout.compact){x=movement.x;y=movement.y;element.dataset.adaptiveSide=movement.side;element.dataset.layoutConstrained=String(movement.constrained);}
-    const distance=camera.position.distanceTo(target)*.96,worldHeight=2*distance*Math.tan(camera.fov*Math.PI/360),scale=worldHeight*paneW/w*camera.aspect;
+    const distance=camera.position.distanceTo(target)*.96,worldHeight=2*distance*Math.tan(camera.fov*Math.PI/360);let scale=worldHeight*paneW/w*camera.aspect;
     camera.getWorldDirection(normal);direction.set(x/w*2-1,1-y/h*2,0).unproject(camera).sub(camera.position).normalize();
     center.copy(camera.position).addScaledVector(direction,distance/direction.dot(normal));
     up.set(0,1,0).applyQuaternion(camera.quaternion);
-    const lowest=center.y-scale*(aspect/2+.43)*up.y;
-    if(lowest<.08&&up.y>.2){const lift=(.08-lowest)/up.y;center.addScaledVector(up,lift);y-=lift/worldHeight*h;}
+    const lowest=center.y-scale*(aspect/2+.47*decorationScale)*up.y;
+    if(lowest<.08&&camera.position.y>.08){const depthScale=(camera.position.y-.08)/(camera.position.y-lowest);center.sub(camera.position).multiplyScalar(depthScale).add(camera.position);scale*=depthScale;}
     group.position.copy(center);group.rotation.set(0,yaw,0);group.scale.setScalar(scale);
     // Visible physical depth, including rear chambers, eaves, chassis and nacelles.
     // A fixed slight yaw exposes the side architecture; the native front aperture stays clear.
-    hull.rotation.y=side*-.10;hull.rotation.z=movement.tilt;
+    hull.rotation.y=(movement.side==='left'?-1:1)*-.10;hull.rotation.z=movement.tilt;
     if(!reduced&&idle)hull.position.y=Math.sin(now*.0008)*.008;else hull.position.y=0;
     if(provider!==element.dataset.provider){provider=element.dataset.provider;activation=now;}
     const activating=!reduced&&now-activation<650;

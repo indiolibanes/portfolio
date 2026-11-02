@@ -5,8 +5,8 @@ export function createDanceDirector({idle,pose,music,transport,seed=1,onEvent=()
  let state='CONTEMPLATIVE_IDLE',owns=false,elapsed=0,phrase=null,phase=0,duration=8,amplitude=1,random=seed>>>0,disposed=false,lastRevision=-1,episodes=0,region=null,lastMode='unavailable';
  const rng=()=>{random=(Math.imul(random,1664525)+1013904223)>>>0;return random/4294967296;};
  const set=next=>{state=next;elapsed=0;};
- let clockSeconds=0,recoveryPhase=0,finishBaked=false;const recent=[],lastPlayed=new Map();
- const recovery=()=>{if(!owns){set('DANCE_TO_IDLE');return;}finishBaked=pose.lowerBody===true&&!!phrase;recoveryPhase=phase;if(!finishBaked)pose.beginRecovery();set('DANCE_RECOVERY');onEvent('gesture:release');};
+ let clockSeconds=0,recoveryPhase=0,recoveryAmplitude=1,recoveryGainVelocity=0,finishBaked=false;const recent=[],lastPlayed=new Map();
+ const recovery=()=>{if(!owns){set('DANCE_TO_IDLE');return;}finishBaked=pose.lowerBody===true&&!!phrase;recoveryPhase=phase;recoveryAmplitude=state==='DANCE_PREPARATION'?phase*.8:amplitude;recoveryGainVelocity=state==='DANCE_PREPARATION'?.8/DANCE_R2.preparationSeconds:0;if(!finishBaked)pose.beginRecovery();set('DANCE_RECOVERY');onEvent('gesture:release');};
  const choose=(clock)=>{
   if(phrase==='fox-invitation')onEvent('gesture:release');lastMode=clock.mode;
   const r2=pose.has('lunar-waltz'),level=DANCE_R2.levels[intensity]??DANCE_R2.levels.flowing;
@@ -48,7 +48,8 @@ export function createDanceDirector({idle,pose,music,transport,seed=1,onEvent=()
      // Hermite time starts at the phrase's nominal phase velocity and ends stationary at its reference.
      const slope=Math.min(2,DANCE_R2.recoverySeconds/Math.max(.001,(1-recoveryPhase)*duration));
      const u=(-2*t*t*t+3*t*t)+(t*t*t-2*t*t+t)*slope;
-     pose.apply(phrase,recoveryPhase+(1-recoveryPhase)*u,1,amplitude,dt);
+     const gain=recoveryAmplitude+recoveryGainVelocity*DANCE_R2.recoverySeconds*(t-2*t*t+t*t*t);
+     pose.apply(phrase,recoveryPhase+(1-recoveryPhase)*u,1,gain,dt);
     }else pose.recover(t,DANCE_R2.recoverySeconds);
     if(t>=1){pose.restore();set('DANCE_TO_IDLE');}return;
    }
