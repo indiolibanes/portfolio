@@ -65,19 +65,13 @@ assert.equal(classifyArmSides({root: [0, 0, 0], up: [0, 1, 0], forward: [0, 0, 1
 assert.equal(classifyArmSides({}).status, 'INDETERMINATE');
 
 // ---------------------------------------------------------------------------------------------
-// 4. Static ownership: each arm's module names only its own bones, and the lab wires the table.
+// 4. Static ownership: each arm's runtime module names only its own bones.
 // ---------------------------------------------------------------------------------------------
 const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
 const signatureSource = await read('../src/scripts/hsin-right-signature.mjs');
 const chestSource = await read('../src/scripts/hsin-chest-gesture.mjs');
-const labSource = await read('../src/scripts/hsin-local-lab.ts');
 assert.ok(!/Bip001\w*\.L\b/.test(signatureSource), 'the signature module must name only .R bones');
 assert.ok(/Bip001\w*\.R\b/.test(signatureSource));
 assert.ok(!/side\s*=\s*'R'/.test(chestSource), 'the chest pose must not default to the right arm');
 assert.ok(chestSource.includes('ARM_ROLES.chest.side'));
-const chestCall = labSource.replace(/\s+/g, ' ').match(/createChestPose\(.{0,600}?\}\)/)?.[0] ?? '';
-assert.ok(chestCall.includes('side:ARM_ROLES.chest.side'), 'the lab must pass the chest role side explicitly');
-assert.ok(!chestCall.includes("side:'R'") && !chestCall.includes("side:'L'"), 'no literal side in the lab call');
-assert.match(labSource, /const sidesUsable=isArmRoleVerified\(armSideAudit\)/, 'runtime should block ambiguous rig mapping');
-
 console.log('Arm roles: right=under-chin, left=chest, disjoint, chest refuses the signature arm, anatomical side classified from geometry PASS');

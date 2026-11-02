@@ -20,6 +20,8 @@ for (const removed of [
   'src/scripts/hsin-local-lab.ts',
   'src/styles/hsin-local-lab.css',
   'src/layouts/HsinPresentationLayout.astro',
+  'src/scripts/hsin-presentation-mode.mjs',
+  'tests/hsin-clean-presentation.test.mjs',
 ]) {
   await assert.rejects(access(removed), undefined, removed + ' must stay removed');
 }

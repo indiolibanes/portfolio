@@ -63,7 +63,6 @@ jobs:
           node tests/hsin-arm-clearance.test.mjs
           node tests/hsin-waypoint-safety.test.mjs
           node tests/hsin-pose-transition.test.mjs
-          node tests/hsin-clean-presentation.test.mjs
           node tests/hsin-embedded-texture.test.mjs
       - name: V2 player budgets and real production GLB
         run: |
