@@ -15,11 +15,12 @@
  * reversible with restore(). Eyes, hair, clothing and scenery are not touched.
  */
 export const HSIN_FACE_SKIN = Object.freeze({
- version: '2.0.1-face-r1',
+ version: '2.0.1-face-r2',
  enabled: true,
- // Linear multipliers. tint scales the lit response, floor is the warm shadow floor.
- tint: Object.freeze([.72, .84, .92]),
- floor: Object.freeze([.34, .28, .17]),
+ // Linear multipliers, chosen by looking at real WebGL frames of four candidates (r1 and its cooler siblings read grey;
+ // a rosier variant drifted toward artificial pink). tint scales the lit response, floor is the warm shadow floor.
+ tint: Object.freeze([.76, .83, .81]),
+ floor: Object.freeze([.50, .35, .21]),
 });
 
 export const srgbToLinear = (v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;

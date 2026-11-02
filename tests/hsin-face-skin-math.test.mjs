@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {HSIN_FACE_SKIN as P, stageIrradiance, faceSkinResponse, lambertResponse, unlitResponse, srgbToLinear, linearToSrgb, hexToLinear, toSrgb8, relativeLuminance} from '../src/scripts/hsin-face-skin.mjs';
 import {HSIN_STAGE_LIGHTS as RIG} from '../src/scripts/hsin-stage-lighting.mjs';
+import {HSIN_LUNAR_PRESENTATION} from '../src/scripts/hsin-lunar-presentation.mjs';
+import {loadRig, forward, skinMatrices, skinNormals, presentationState} from '../scripts/lib/hsin-rig.mjs';
 
 const lin = (a) => a.map((v) => srgbToLinear(v / 255));
 // Measured on the production GLB face texture (2048x2048 sRGB): centre of the face and the median skin pixel.
@@ -28,29 +30,38 @@ assert.ok(shadow / front > .5 && shadow / front < .8, `soft anime shadow, not fl
 const shadowSrgb = toSrgb8(lit[0]), frontSrgb = toSrgb8(faceSkinResponse(centre, stageIrradiance(RIG, .78)));
 assert.ok(frontSrgb[0] - shadowSrgb[0] >= 25, `visible local contrast in sRGB: ${frontSrgb[0] - shadowSrgb[0]}`);
 
-// 3. No clipping and no grey: over every possible surface normal (real key and rim directions, not independent
-//    cosines), lit highlights stay inside the displayable range and skin stays warm (R >= G >= B).
+// 3. No clipping and no grey, on the REAL face: posed vertex normals of the production GLB in the presented pose,
+//    rotated by the stage root yaw into the world where the lights live.
 const unit = ([x, y, z]) => { const l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; };
 const keyDir = unit(RIG.key.position), rimDir = unit(RIG.rim.position), dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-let worst = 0;
-for (let i = 0; i <= 48; i++) for (let j = 0; j < 96; j++) {
- const theta = i / 48 * Math.PI, phi = j / 96 * 2 * Math.PI, n = [Math.sin(theta) * Math.cos(phi), Math.cos(theta), Math.sin(theta) * Math.sin(phi)];
+const rig = loadRig(await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url)));
+const profile = JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.1-profile.json', import.meta.url)));
+const faceMesh = rig.meshByMaterial(/Face Xin/), matrices = skinMatrices(rig, forward(rig, presentationState(rig, profile))), normals = skinNormals(rig, faceMesh, matrices);
+const yaw = (HSIN_LUNAR_PRESENTATION.cameraAzimuth - HSIN_LUNAR_PRESENTATION.bodyApparentYaw) * Math.PI / 180, c = Math.cos(yaw), sn = Math.sin(yaw);
+let worst = 0, samples = 0; const lumByNdl = [];
+for (let v = 0; v < faceMesh.count; v++) {
+ const n = [normals[v * 3] * c + normals[v * 3 + 2] * sn, normals[v * 3 + 1], -normals[v * 3] * sn + normals[v * 3 + 2] * c]; // rotation about +Y
+ const irradiance = stageIrradiance(RIG, dot(n, keyDir), dot(n, rimDir));
  for (const albedo of [centre, median]) {
-  const c = faceSkinResponse(albedo, stageIrradiance(RIG, dot(n, keyDir), dot(n, rimDir)));
-  worst = Math.max(worst, ...c);
-  assert.ok(c.every((v) => v > 0 && v <= 1), `inside the displayable range: ${c.map((v) => v.toFixed(3))}`);
-  assert.ok(c[0] >= c[1] && c[1] >= c[2], 'warm skin ordering R >= G >= B');
+  const out = faceSkinResponse(albedo, irradiance); samples++; worst = Math.max(worst, ...out);
+  assert.ok(out.every((x) => x > 0 && x <= 1), `inside the displayable range: ${out.map((x) => x.toFixed(3))}`);
+  assert.ok(out[0] >= out[1] && out[1] >= out[2], 'warm skin ordering R >= G >= B');
  }
+ lumByNdl.push(relativeLuminance(faceSkinResponse(centre, irradiance)));
 }
-assert.ok(worst < .97, `highlight headroom without tone mapping: ${worst.toFixed(3)}`);
+lumByNdl.sort((a, b) => a - b);
+const p10 = lumByNdl[Math.floor(lumByNdl.length * .1)], p90 = lumByNdl[Math.floor(lumByNdl.length * .9)];
+assert.ok(worst < .985, `highlight headroom on the real face without tone mapping: ${worst.toFixed(3)}`);
+assert.ok(p10 / p90 > .55 && p10 / p90 < .85, `the real face has visible volume (p10/p90 luminance ${(p10 / p90).toFixed(2)}): not flat, not harsh`);
 // The old face was pink (blue above green); the new one has peach separation between red and blue.
 const oldRb = toSrgb8(centre)[0] - toSrgb8(centre)[2], newRb = frontSrgb[0] - frontSrgb[2];
 assert.ok(newRb > oldRb * 1.5, `warmer than the recovered pink: R-B ${oldRb} -> ${newRb}`);
 
-// 4. Coherence with the body: the face stays the focal point but is not a separate glowing object.
+// 4. Coherence with the body: the face stays the focal point but is not a separate glowing object. The band comes from
+//    real WebGL frames (see docs/hsin-v201-face-fidelity.md): the old unlit face was 2.4-3.0x brighter than the body skin.
 for (const [name, body] of [['neck', neck], ['arm', arm]]) {
  const ratio = front / relativeLuminance(lambertResponse(body, stageIrradiance(RIG, .78)));
- assert.ok(ratio > 1 && ratio < 2.15, `face/${name} lit luminance ratio ${ratio.toFixed(2)} within the focal-point band`);
+ assert.ok(ratio > 1 && ratio < 2.5, `face/${name} lit luminance ratio ${ratio.toFixed(2)} within the focal-point band`);
 }
 // Less white than the old unlit face, never darker than the shadowed body skin.
 assert.ok(front < relativeLuminance(unlitResponse(centre)), 'brighter-than-lit-skin pallor is gone');

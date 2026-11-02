@@ -78,6 +78,7 @@ jobs:
           node tests/hsin-material-audit.test.mjs
           node tests/hsin-face-skin-math.test.mjs
           node tests/hsin-face-skin.test.mjs
+          node tests/hsin-rig-parity.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract (existing 97/100 baseline is recorded, not reclassified)

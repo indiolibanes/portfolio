@@ -83,6 +83,29 @@ export function skinVertices(rig, mesh, matrices, subset = null, morphWeights = 
  void p; return out;
 }
 
+/** One posed vertex from world matrices, without building every skin matrix. */
+export function skinVertexAt(rig, mesh, v, world, morphWeights = null, out = [0, 0, 0]) {
+ let x = mesh.positions[v * 3], y = mesh.positions[v * 3 + 1], z = mesh.positions[v * 3 + 2];
+ if (morphWeights) for (const [name, w] of Object.entries(morphWeights)) { const mi = mesh.morphNames.indexOf(name); if (mi >= 0 && w) { x += mesh.morphs[mi][v * 3] * w; y += mesh.morphs[mi][v * 3 + 1] * w; z += mesh.morphs[mi][v * 3 + 2] * w; } }
+ const m = new Float64Array(16), a = [0, 0, 0]; let rx = 0, ry = 0, rz = 0;
+ for (let k = 0; k < 4; k++) {
+  const w = mesh.weights[v * 4 + k]; if (!w) continue; const j = mesh.jointIds[v * 4 + k];
+  mul(world.subarray(rig.joints[j] * 16, rig.joints[j] * 16 + 16), rig.ibm.subarray(j * 16, j * 16 + 16), m); transformPoint(m, x, y, z, a); rx += a[0] * w; ry += a[1] * w; rz += a[2] * w;
+ }
+ out[0] = rx; out[1] = ry; out[2] = rz; return out;
+}
+
+/** Posed vertex normals (linear blend of the rotated normals, renormalised). */
+export function skinNormals(rig, mesh, matrices, subset = null) {
+ const ids = subset ?? Array.from({length: mesh.count}, (_, i) => i), out = new Float64Array(mesh.count * 3), a = [0, 0, 0];
+ for (const v of ids) {
+  let rx = 0, ry = 0, rz = 0;
+  for (let k = 0; k < 4; k++) { const w = mesh.weights[v * 4 + k]; if (!w) continue; transformDir(matrices.subarray(mesh.jointIds[v * 4 + k] * 16, mesh.jointIds[v * 4 + k] * 16 + 16), mesh.normals[v * 3], mesh.normals[v * 3 + 1], mesh.normals[v * 3 + 2], a); rx += a[0] * w; ry += a[1] * w; rz += a[2] * w; }
+  const l = Math.hypot(rx, ry, rz) || 1; out[v * 3] = rx / l; out[v * 3 + 1] = ry / l; out[v * 3 + 2] = rz / l;
+ }
+ return out;
+}
+
 /** Vertices whose weight on the named skin joints is at least `threshold`. */
 export function verticesInfluencedBy(rig, mesh, jointNodeNames, threshold = .25) {
  const wanted = new Set(jointNodeNames.map((nm) => rig.joints.indexOf(rig.bone(nm)))), out = [];
