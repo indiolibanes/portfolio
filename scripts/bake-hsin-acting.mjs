@@ -4,7 +4,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {bakeLip, auditLip} from './bake-hsin-lip-touch.mjs';
-import {bakeHair, auditHair} from './bake-hsin-hair-caress.mjs';
+import {bakeHair, auditHair, TIMES} from './bake-hsin-hair-caress.mjs';
 
 const root = new URL('../', import.meta.url).pathname, sha = (path) => createHash('sha256').update(readFileSync(root + path)).digest('hex');
 const solution = JSON.parse(readFileSync(root + 'scripts/data/hsin-lip-touch-solution.json', 'utf8'));
@@ -18,7 +18,7 @@ const acting = {
  method: 'OFFLINE_SOLVE_AND_BAKE', visual: 'PENDING',
  poses: {
   hairCaress: {
-   ...hair, stageFrames: {rest: 0, hoverIn: 26, start: 36, mid: 43, end: 50, hoverOut: 60, homeMid: 73, home: 86},
+   ...hair, stageFrames: {rest: 0, hoverIn: TIMES[1], start: TIMES[2], mid: TIMES[3], end: TIMES[4], hoverOut: TIMES[5], homeMid: TIMES[6], home: TIMES[7]},
    validation: {
     strokeToHairSurfaceMm: {min: +(Math.min(...hairAudit.contactStroke) * 1000).toFixed(1), max: +(Math.max(...hairAudit.contactStroke) * 1000).toFixed(1), targetGapMm: 3, surface: 'left side hair, 5 cm tangential stroke, index finger pad'},
     pathMinDistanceMm: Object.fromEntries(hairKeys.map((k) => [k, +(hairAudit.minClearance[k] * 1000).toFixed(1)])), note: 'Torso minima of 0 mm occur at the rest pose (the hand hangs against the dress) and are inherited, not introduced.',
