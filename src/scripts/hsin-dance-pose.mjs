@@ -7,7 +7,7 @@ export function createDancePose({THREE:T,data,bones}){
  const read=q=>{for(let i=0;i<chain.length;i++)chain[i].quaternion.toArray(q,i*4);};read(current);prior.set(current);
  function restore(){if(!ready)return;for(let i=0;i<chain.length;i++){chain[i].quaternion.fromArray(data.rest,i*4);chain[i].updateMatrix();}current.set(data.rest);prior.set(data.rest);}
  function log(q,out,i,scale=1){if(q.w<0)q.set(-q.x,-q.y,-q.z,-q.w);const s=Math.hypot(q.x,q.y,q.z),k=s>1e-10?2*Math.atan2(s,q.w)/s*scale:2*scale;out[i]=q.x*k;out[i+1]=q.y*k;out[i+2]=q.z*k;}
- return {ready,duration:name=>data.phrases[name]?.seconds??9,
+ return {ready,has:name=>!!data.phrases[name],duration:name=>data.phrases[name]?.seconds??9,
   apply(name,t,weight=1,amplitude=1,dt=1/30){if(!ready)return;const p=data.phrases[name];if(!p)return;lastDt=dt>0?dt:lastDt;prior.set(current);t=Math.max(0,Math.min(1,t));const x=t*(p.frames.length-1),i=Math.min(p.frames.length-2,Math.floor(x)),mix=x-i,amount=Math.max(0,Math.min(1,weight*amplitude));
    for(let k=0;k<chain.length;k++){a.fromArray(p.frames[i],k*4).normalize();b.fromArray(p.frames[i+1],k*4).normalize();c.fromArray(data.rest,k*4);a.slerp(b,mix);c.slerp(a,amount);chain[k].quaternion.copy(c);chain[k].updateMatrix();c.toArray(current,k*4);}
   },
