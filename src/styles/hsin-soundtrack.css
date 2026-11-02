@@ -83,6 +83,14 @@
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0
 }
+.hsin-soundtrack[data-soundtrack-mode=expanded] .hsin-soundtrack__heading{
+  position:sticky;top:-12px;z-index:2;padding:8px 0;
+  background:#0b1d33
+}
+.hsin-soundtrack[data-soundtrack-mode=expanded] .hsin-soundtrack__player{
+  position:sticky;top:38px;z-index:1;
+  box-shadow:0 5px 16px #010712aa
+}
 @media(max-width:700px){
   .hsin-soundtrack{right:10px;bottom:max(87px,calc(env(safe-area-inset-bottom) + 80px))}
   .hsin-soundtrack[data-soundtrack-side=left]{left:10px}
