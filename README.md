@@ -63,6 +63,22 @@ A rota `/experimentos/` usa Three.js diretamente. A V2.0.1 inclui terraço de pe
 
 O runtime limita custo de renderização e pausa quando apropriado. O antigo palco intermediário e o laboratório local de upload de GLB foram removidos; `/experimentos/` é agora a experiência canônica da Hsin.
 
+### Trilha oficial: Ode to Hsin and Moon
+
+O palco da Hsin em `/experimentos/` possui um painel **Trilha sonora** (componente `HsinSoundtrack.astro`, controle em `hsin-soundtrack.ts`, estilos isolados). Ele incorpora **exclusivamente o vídeo oficial** de *Ode to Hsin and Moon*, publicado por [Wuthering Waves no YouTube](https://www.youtube.com/watch?v=Yhf9ur3xPQA).
+
+- **Refrão:** abre o player no ponto aproximado de **1:06** (`start=66`). O marcador é editorial, baseado na estrutura da canção, e deve ser revisto por audição; não é um corte nem um sample.
+- **Faixa completa:** abre o mesmo vídeo a partir do início.
+- **Silêncio:** remove o iframe e interrompe a reprodução; fechar o painel, mudar de página ou ocultar a aba também destrói o player.
+- **Instrumental:** [álbum oficial no Apple Music](https://music.apple.com/us/album/ode-to-hsin-and-moon-original-game-soundtrack/6812959103). **Não** há instrumental incorporado sem link de vídeo oficial comprovado.
+- **Privacidade e desempenho:** nenhum contato com o iframe do YouTube antes da seleção explícita do visitante; sem autoplay e sem processamento de áudio local. O visitante usa o botão Play nativo, e o vídeo fica visível (mínimo de 200 × 200 px). O player pode ser bloqueado por políticas regionais, de cookies ou por extensões; links externos permanecem disponíveis.
+- **CSP:** a rota `/experimentos/*` permite somente `https://www.youtube-nocookie.com` e `https://www.youtube.com` em `frame-src`; nenhuma outra rota recebe essa exceção.
+
+**Créditos musicais:** © 2026 **KURO GAMES** · *Wuthering Waves*. Produção: Wuthering Waves; composição: **Jin Dazhou**; voz: **Jaime Arin**; letras: **SmileL** e **Kat Kennedy**; arranjo: **He Shan**. Créditos também exibidos na interface. A faixa e as marcas pertencem aos respectivos titulares; o portfólio não é afiliado à KURO GAMES. Não há MP3, remix, stem, download, proxy de mídia nem redistribuição da gravação no repositório.
+
+Teste de contrato: `npm run check:hsin` inclui `tests/hsin-soundtrack.test.mjs`. A integração visual e a disponibilidade real do embed exigem conferência em navegador após publicação.
+
+
 ## Sophia
 
 Sophia é a mascote/personagem autoral do portfólio.

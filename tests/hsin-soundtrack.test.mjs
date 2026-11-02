@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+
+const page = await readFile('src/pages/experimentos/index.astro', 'utf8');
+const component = await readFile('src/components/HsinSoundtrack.astro', 'utf8');
+const script = await readFile('src/scripts/hsin-soundtrack.ts', 'utf8');
+const css = await readFile('src/styles/hsin-soundtrack.css', 'utf8');
+const headers = await readFile('public/_headers', 'utf8');
+const readme = await readFile('README.md', 'utf8');
+
+assert.match(page, /import HsinSoundtrack from/);
+assert.match(page, /<HsinSoundtrack\s*\/>/);
+assert.match(page, /The Moon Fox · V2\.0\.1/);
+assert.match(component, /data-hsin-soundtrack/);
+assert.match(component, /data-soundtrack-toggle/);
+assert.match(component, /data-soundtrack-start="66"/);
+assert.match(component, /data-soundtrack-start="0"/);
+assert.match(component, /data-soundtrack-silence/);
+assert.match(component, /© 2026 <strong>KURO GAMES<\/strong>/);
+assert.match(component, /Jaime Arin/);
+assert.match(component, /music\.apple\.com\/us\/album\/ode-to-hsin-and-moon/);
+assert.match(component, /youtube\.com\/watch\?v=Yhf9ur3xPQA/);
+assert.match(script, /OFFICIAL_VIDEO_ID = 'Yhf9ur3xPQA'/);
+assert.match(script, /HIGHLIGHT_START_SECONDS = 66/);
+assert.match(script, /'https:\/\/www\.youtube-nocookie\.com\/embed\/'/);
+assert.match(script, /autoplay: '0'/);
+assert.match(script, /replaceChildren\(placeholder!\)/);
+assert.match(script, /visibilitychange/);
+assert.match(script, /pagehide/);
+assert.match(css, /min-height:200px/);
+assert.match(css, /\[hidden\]\{display:none!important\}/);
+assert.match(headers, /frame-src https:\/\/www\.youtube-nocookie\.com https:\/\/www\.youtube\.com/);
+assert.match(readme, /### Trilha oficial: Ode to Hsin and Moon/);
+assert.doesNotMatch(component, /<audio\b|<video\b|\.mp3\b|\.ogg\b|\.wav\b/);
+assert.doesNotMatch(script, /fetch\(|AudioContext|new Audio\(/);
+console.log('Hsin soundtrack: opt-in official video, visible frame, full/highlight/silence, attribution, CSP, no hosted audio PASS');

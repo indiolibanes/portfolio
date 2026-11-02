@@ -1,5 +1,6 @@
 ---
 import HsinStageLayout from '../../layouts/HsinStageLayout.astro';
+import HsinSoundtrack from '../../components/HsinSoundtrack.astro';
 import '../../styles/hsin-stage.css';
 const posterVersion='2.0.1';
 const posterCache='lunar-terrace-r2';
@@ -34,6 +35,7 @@ const posterCache='lunar-terrace-r2';
       <p>Estudo de apresentação e atuação. O cenário usa uma aproximação dos materiais, sem reproduzir os shaders do jogo.</p>
       <p>Terraço lunar: pedra, balustrada, vila iluminada, lanternas e flores. Lua dourada e céu procedurais.</p>
     </details>
+    <HsinSoundtrack />
     <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar a cena.</p></noscript>
   </main>
 </HsinStageLayout>
