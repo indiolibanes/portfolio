@@ -13,15 +13,13 @@ on:
       - 'src/data/hsin-*.json'
       - 'src/layouts/HsinStageLayout.astro'
       - 'src/styles/hsin-stage.css'
-      - 'src/pages/experimentos/hsin/**'
+      - 'src/pages/experimentos/index.astro'
       - 'public/assets/models/hsin/**'
       - 'public/assets/scenes/hsin/**'
       - 'scripts/*hsin-v2*'
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/render-hsin-poster.mjs'
       - 'public/_headers'
-      - 'src/scripts/hsin-local-lab.ts'
-      - 'src/pages/experimentos/hsin-lab/index.astro'
       - 'tests/hsin-*.test.mjs'
       - '.github/workflows/hsin-facial-b1-qa.yml'
   workflow_dispatch:
@@ -74,6 +72,5 @@ jobs:
           node tests/hsin-moonlit-environment.test.mjs
       - name: Astro production build
         run: npm run build
-      - name: UX contract (existing 97/100 baseline is recorded, not reclassified)
-        continue-on-error: true
+      - name: UX contract
         run: npm run check:ux
