@@ -99,6 +99,7 @@ export function mountHsinSoundtrack(root: HTMLElement): void {
         ? 'Refrão preparado em aproximadamente 1:06. Dê Play no vídeo; explore a Hsin livremente.'
         : 'Faixa integral preparada. Dê Play no vídeo; explore a Hsin livremente.';
       setMode('docked');
+      optionsToggle.focus(); // O botão de escolha ficou oculto; devolver foco ao dock.
     });
   }
 
