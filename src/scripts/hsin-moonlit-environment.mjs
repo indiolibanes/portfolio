@@ -5,7 +5,7 @@ export const MOONLIT=Object.freeze({
  fog:0x273b53,terrace:0x1b293d,lake:0x1b3049,
 });
 
-export function createMoonlitEnvironment({THREE:T,skyTexture,moonTexture}){
+export function createMoonlitEnvironment({THREE:T,skyTexture,moonTexture,includeTerrace=true}){
  skyTexture.generateMipmaps=false;skyTexture.minFilter=T.LinearFilter;
  const group=new T.Group();group.name='Hsin · moonlit lake';
  const basic=(color,extra={})=>new T.MeshBasicMaterial({color,...extra});
@@ -33,7 +33,7 @@ export function createMoonlitEnvironment({THREE:T,skyTexture,moonTexture}){
  }
  const reflection=new T.BufferGeometry();reflection.setAttribute('position',new T.Float32BufferAttribute(vertices,3));reflection.setAttribute('color',new T.Float32BufferAttribute(colors,3));
  mesh('Moon path · painted reflection',reflection,basic(0xffffff,{vertexColors:true,transparent:true,opacity:.36,depthWrite:false,side:T.DoubleSide}));
- horizontal(mesh('Terrace · stone landing',new T.CircleGeometry(2.65,64),basic(MOONLIT.terrace)),-.083);
+ if(includeTerrace)horizontal(mesh('Terrace · stone landing',new T.CircleGeometry(2.65,64),basic(MOONLIT.terrace)),-.083);
  const celestial=new T.Group();celestial.name='Celestial depth · camera-facing';group.add(celestial);
  const moon=new T.Mesh(new T.PlaneGeometry(MOONLIT.moonSize,MOONLIT.moonSize),basic(0xffffff,{map:moonTexture,transparent:true,depthWrite:false,fog:false,toneMapped:false}));
  moon.name='Full moon · disc and baked halo';moon.position.fromArray(MOONLIT.moonPosition);celestial.add(moon);
