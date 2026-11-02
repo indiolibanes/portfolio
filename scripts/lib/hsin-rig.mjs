@@ -40,7 +40,10 @@ export function loadRig(buffer) {
   const positions = view(p.attributes.POSITION).data, uv = view(p.attributes.TEXCOORD_0).data, normals = view(p.attributes.NORMAL).data;
   const jointIds = view(p.attributes.JOINTS_0).data, weights = view(p.attributes.WEIGHTS_0).data, indices = view(p.indices).data;
   const morphs = (p.targets ?? []).map((t) => view(t.POSITION).data), morphNames = mesh.extras?.targetNames ?? [];
-  return {nodeIndex, name, material, positions, uv, normals, jointIds, weights, indices, morphs, morphNames, count: positions.length / 3};
+  // glTF default morph weights (mesh.weights) are what three.js loads into morphTargetInfluences: the face mesh of the
+  // production GLB ships six non-zero ones, worth up to ~4 mm, so the offline evaluator must start from them too.
+  const defaultMorph = Object.fromEntries((mesh.weights ?? []).flatMap((w, i) => w && morphNames[i] ? [[morphNames[i], w]] : []));
+  return {nodeIndex, name, material, positions, uv, normals, jointIds, weights, indices, morphs, morphNames, defaultMorph, count: positions.length / 3};
  });
  const rig = {json, n, parent, byName, rest, order, joints, ibm, meshes, bone: (name) => { const i = byName.get(name); if (i === undefined) throw Error('Unknown bone ' + name); return i; }};
  rig.meshByMaterial = (re) => meshes.find((m) => re.test(m.material));
@@ -65,8 +68,9 @@ export function skinMatrices(rig, world, only = null) {
  return out;
 }
 
-/** Posed positions (model space) of a subset of vertices (or all). `morphWeights`: {name: weight}. Returns Float64Array(3*count). */
+/** Posed positions (model space) of a subset of vertices (or all). `morphWeights`: {name: weight}, laid over the GLB default weights. Returns Float64Array(3*count). */
 export function skinVertices(rig, mesh, matrices, subset = null, morphWeights = null) {
+ morphWeights = {...mesh.defaultMorph, ...morphWeights};
  const ids = subset ?? Array.from({length: mesh.count}, (_, i) => i), out = new Float64Array(mesh.count * 3), p = [0, 0, 0], a = [0, 0, 0];
  const morphIndex = morphWeights ? Object.entries(morphWeights).map(([name, w]) => [mesh.morphNames.indexOf(name), w]).filter(([i, w]) => i >= 0 && w) : [];
  for (const v of ids) {
@@ -85,6 +89,7 @@ export function skinVertices(rig, mesh, matrices, subset = null, morphWeights = 
 
 /** One posed vertex from world matrices, without building every skin matrix. */
 export function skinVertexAt(rig, mesh, v, world, morphWeights = null, out = [0, 0, 0]) {
+ morphWeights = {...mesh.defaultMorph, ...morphWeights};
  let x = mesh.positions[v * 3], y = mesh.positions[v * 3 + 1], z = mesh.positions[v * 3 + 2];
  if (morphWeights) for (const [name, w] of Object.entries(morphWeights)) { const mi = mesh.morphNames.indexOf(name); if (mi >= 0 && w) { x += mesh.morphs[mi][v * 3] * w; y += mesh.morphs[mi][v * 3 + 1] * w; z += mesh.morphs[mi][v * 3 + 2] * w; } }
  const m = new Float64Array(16), a = [0, 0, 0]; let rx = 0, ry = 0, rz = 0;

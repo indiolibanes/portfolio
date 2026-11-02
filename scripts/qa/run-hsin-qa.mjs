@@ -69,7 +69,7 @@ try {
  if (stageUrl) {
   const page = await browser.newPage({viewport: {width: 1280, height: 720}, deviceScaleFactor: 1}), stageErrors = [];
   page.on('console', (m) => { if (m.type() === 'error') stageErrors.push(m.text()); }); page.on('pageerror', (e) => stageErrors.push(String(e)));
-  await page.goto(`${stageUrl}/experimentos/hsin/`);
+  await page.goto(`${stageUrl}/experimentos/`);
   await page.waitForSelector('[data-hsin-stage][data-state="ready"]', {timeout: 180000});
   await page.click('[data-stage-pause]'); await page.waitForTimeout(800);
   const root = await page.evaluate(() => { const r = document.querySelector('[data-hsin-stage]'); return {state: r.dataset.state, pixelRatio: r.dataset.pixelRatio, modelBytes: r.dataset.modelBytes}; });
