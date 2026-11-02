@@ -1,4 +1,5 @@
-/** A static terrace, lake and celestial layer. No clock, shaders or post-processing. */
+import {createLunarMoon} from './hsin-lunar-moon.mjs';
+/** A static terrace, lake and celestial layer. No clock or post-processing; the moon owns a static relief shader. */
 export const MOONLIT=Object.freeze({
  sky:'/assets/scenes/hsin/night-sky-v1.webp',moon:'/assets/scenes/hsin/full-moon-v1.webp',
  moonPosition:[-.42,2.15,-10],moonSize:4.8,discRatio:292/512,
@@ -34,13 +35,16 @@ export function createMoonlitEnvironment({THREE:T,skyTexture,moonTexture,include
  const reflection=new T.BufferGeometry();reflection.setAttribute('position',new T.Float32BufferAttribute(vertices,3));reflection.setAttribute('color',new T.Float32BufferAttribute(colors,3));
  mesh('Moon path · painted reflection',reflection,basic(0xffffff,{vertexColors:true,transparent:true,opacity:.36,depthWrite:false,side:T.DoubleSide}));
  if(includeTerrace)horizontal(mesh('Terrace · stone landing',new T.CircleGeometry(2.65,64),basic(MOONLIT.terrace)),-.083);
- const celestial=new T.Group();celestial.name='Celestial depth · camera-facing';group.add(celestial);
- const moon=new T.Mesh(new T.PlaneGeometry(MOONLIT.moonSize,MOONLIT.moonSize),basic(0xffffff,{map:moonTexture,transparent:true,depthWrite:false,fog:false,toneMapped:false}));
- moon.name='Full moon · disc and baked halo';moon.position.fromArray(MOONLIT.moonPosition);celestial.add(moon);
+ const celestial=new T.Group();celestial.name='Celestial depth · world-fixed';group.add(celestial);
+ const moon=createLunarMoon(T,moonTexture,MOONLIT.moonSize*MOONLIT.discRatio/2);
+ moon.position.set(MOONLIT.moonPosition[0],MOONLIT.moonPosition[1]+.88,MOONLIT.moonPosition[2]);celestial.add(moon);
+ // The approved baked glow lives behind the solid sphere, never rotates to the camera.
+ const halo=new T.Mesh(new T.PlaneGeometry(MOONLIT.moonSize,MOONLIT.moonSize),basic(0xffffff,{map:moonTexture,transparent:true,depthWrite:false,fog:false,toneMapped:false,opacity:.3}));
+ halo.name='Moon · restrained atmospheric halo';halo.position.copy(moon.position);halo.position.z-=.025;celestial.add(halo);
+
  return {
   group,background:skyTexture,fog:new T.Fog(MOONLIT.fog,10,42),
-  // A distant sky has negligible parallax. Track the viewing direction only on camera changes;
-  // the terrace, lake and shores stay world-fixed. No celestial updates in the acting loop.
-  frameSky(camera,target){celestial.position.copy(target);celestial.quaternion.copy(camera.quaternion);celestial.updateMatrix();},
+  // Intentionally static. Orbit changes expose real parallax and spherical volume.
+  frameSky(_camera,_target){},
  };
 }
