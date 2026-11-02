@@ -60,20 +60,20 @@ export function mountHsinStage(root:HTMLElement){
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
    const textureLoader=new T.TextureLoader();
    const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url);if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
-   const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas)]);
+   const scenery=Promise.all([sceneryTexture(LUNAR_TERRACE.sky),sceneryTexture(LUNAR_TERRACE.moon),sceneryTexture(LUNAR_TERRACE.stone),sceneryTexture(LUNAR_TERRACE.atlas),sceneryTexture(LUNAR_TERRACE.water)]);
    // Attach an immediate rejection handler while GLTF parsing is in flight.
    scenery.catch(()=>{});
    const bytes=await response.arrayBuffer(),gltf=await new GLTFLoader().parseAsync(bytes,'');model=gltf.scene;
    if(attempt.signal.aborted||destroyed||attemptId!==generation){collect(model);releaseCollected();if(!cleaned)clean();return;}
    // Adopt the model before awaiting scenery so failure/teardown also releases its GPU resources.
    scene=new T.Scene();scene.matrixWorldAutoUpdate=false;scene.add(model);
-   const [skyTexture,moonTexture,stoneTexture,atlasTexture]=await scenery;
+   const [skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture]=await scenery;
    if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
    model.position.y-=profile.bounds.min[1];scene.add(model);scene.updateMatrixWorld(true);
    const meshes:any[]=[];model.traverse((o:any)=>{if(o.isSkinnedMesh)meshes.push(o);});const bones:any[]=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];const byName=new Map(bones.map(b=>[b.name,b])),head:any=byName.get('ORG-Bip001Head');if(!head)throw Error('Head rig missing.');
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
    presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuthDegrees:cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0});presentation.apply();
-   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
+   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
    scene.add(new T.AmbientLight(0xb7c9e3,.95));const key=new T.DirectionalLight(0xf0dec0,1.8);key.position.set(-2,4,5);scene.add(key);const rim=new T.DirectionalLight(0xeac27a,1.15);rim.position.set(-2,4,-5);scene.add(rim);
    // Static transforms, including the root yaw, are frozen only after explicit matrix updates.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);

@@ -39,7 +39,7 @@ async function cpuTexture(url){const t=new T.Texture();t.colorSpace=T.SRGBColorS
 let env={group:new T.Group(),frameSky(){},fog:new T.Fog(0x273b53,10,42)};
 if(!transparent){
  const moonTexture=await cpuTexture(resource.moon);
- env=rich?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
+ env=rich?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await cpuTexture(LUNAR_TERRACE.stone),atlasTexture:await cpuTexture(LUNAR_TERRACE.atlas),waterTexture:await cpuTexture(LUNAR_TERRACE.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture,includeTerrace:options.terrace!=='bare'});
  if(options.terrace==='bare'){const floor=new T.Mesh(new T.PlaneGeometry(22,14),new T.MeshBasicMaterial({color:0x354254}));floor.rotation.x=-Math.PI/2;floor.position.z=3;env.group.add(floor);}
  if(!rich&&options.terrace!=='bare'){
   const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;env.group.add(platform);
