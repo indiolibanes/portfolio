@@ -20,7 +20,7 @@ export function decodeReverieData(data) {
 /**
  * Baked special-phrase player. Same contract as the R2 pose (has/duration/apply/restore/beginRecovery/recover/atReference),
  * plus offline secondary motion for hair, sleeves and tail. No physics, no IK and no per-frame allocation.
- * Every channel scales with amplitude, so the support path (hip + legs) and the torso stay mutually consistent.
+ * Intensity scales the upper body and the secondary motion; the support path (hip translation + legs) always plays in full, as in R2, so the feet remain locked.
  */
 export function createReveriePose({THREE: T, data, bones, model = null, metrics = null, smoothing = 'catmull'}) {
   const by = new Map(bones.map(b => [b.name, b])), chain = data.names.map(n => by.get(n)), size = chain.length * 4;
@@ -105,14 +105,15 @@ export function createReveriePose({THREE: T, data, bones, model = null, metrics 
       for (let k = 0; k < chain.length; k++) {
         if (spline && k < lowerStart) { splineQuaternion(p.frames, i, mix, k, scratch); a.set(scratch[0], scratch[1], scratch[2], scratch[3]); }
         else { a.fromArray(p.frames[i], k * 4).normalize(); b.fromArray(p.frames[i + 1], k * 4).normalize(); a.slerp(b, mix); }
-        c.fromArray(data.rest, k * 4); c.slerp(a, amount);
+        // Like R2, only the upper body scales with intensity: hips and legs stay full so the planted feet stay planted (scaling them broke the lock by ~4 mm).
+        c.fromArray(data.rest, k * 4); c.slerp(a, k < lowerStart ? amount : 1);
         chain[k].quaternion.copy(c); chain[k].updateMatrix(); c.toArray(current, k * 4);
       }
       for (let k = 0; k < positions.length; k++) {
         const f = p.positionFrames[i], g = p.positionFrames[i + 1], r = data.positionRest;
         for (let axisIndex = 0; axisIndex < 3; axisIndex++) {
           const value = f[k * 3 + axisIndex] + (g[k * 3 + axisIndex] - f[k * 3 + axisIndex]) * mix;
-          posCurrent[k * 3 + axisIndex] = r[k * 3 + axisIndex] + (value - r[k * 3 + axisIndex]) * amount;
+          posCurrent[k * 3 + axisIndex] = value;
         }
         positions[k].position.set(posCurrent[k * 3], posCurrent[k * 3 + 1], posCurrent[k * 3 + 2]); positions[k].updateMatrix();
       }

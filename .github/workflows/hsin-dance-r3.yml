@@ -38,16 +38,19 @@ jobs:
         run: node scripts/bake-hsin-dance-r3.mjs
       - name: Real-GLB tests (feet, continuity, restitution, cost, 600 s sessions)
         id: r3test
+        shell: bash
         continue-on-error: true
         env:
           HSIN_DANCE_REPORT: '1'
         run: node tests/hsin-dance-r3.test.mjs 2>&1 | tee docs/qa/hsin-dance-r3/test-output.txt
       - name: R2 regression (the eight phrases keep their timing and support)
         id: r2test
+        shell: bash
         continue-on-error: true
         run: node tests/hsin-dance-r2.test.mjs 2>&1 | tee docs/qa/hsin-dance-r3/r2-test-output.txt
       - name: Hsin suite and build
         id: suite
+        shell: bash
         continue-on-error: true
         run: |
           npm run check:hsin 2>&1 | tee docs/qa/hsin-dance-r3/check-hsin-output.txt

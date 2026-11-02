@@ -1,4 +1,14 @@
 {
-  "modelSha256": "pending-bake",
-  "profileSha256": "pending-bake"
+  "modelSha256": "63506b0b7a2369722e6429c3b16c5f48764ee01706d1272b4ffd69a45c5e0d2c",
+  "profileSha256": "18fb7e22357ba5a523bcd96f88b1915dcc46786dc47d707d76b97cf05a3327cc",
+  "conservative": {
+    "url": "/assets/animations/hsin/lunar-dance-r3.json",
+    "sha256": "efba1a610e0bb45ab6606e78df997e4b5818b772be6c4cf62c4a708992fd7d38",
+    "bytes": 205005
+  },
+  "dramatic": {
+    "url": "/assets/animations/hsin/lunar-dance-r3-grand.json",
+    "sha256": "d57e03c0dd18674e6b487e6777354ba5c6d3308ff5e390ea69c775c5dda5eced",
+    "bytes": 215487
+  }
 }

@@ -47,7 +47,7 @@ function measure(poseObject,name,amplitude,samples=240){
 const limit=DANCE_R3.reverie.footSlideLimitMm;
 for(const amplitude of [1,.9,.72]){
   const m=measure(pose,REVERIE,amplitude);report.variants[REVERIE+'@'+amplitude]=m;
-  assert.ok(m.maxSlideMm<=limit,'feet stay planted at intensity '+amplitude+': '+m.maxSlideMm.toFixed(3)+' mm (limit '+limit+')');
+  assert.ok(m.maxSlideMm<1,'feet stay planted (<1 mm) at intensity '+amplitude+': '+m.maxSlideMm.toFixed(3)+' mm (limit '+limit+')');
   assert.ok(m.minSoleYmm>-1,'no floor penetration at '+amplitude+': '+m.minSoleYmm.toFixed(3)+' mm');assert.ok(m.maxOrgDefGapMm<.2,'ORG/DEF in step');
 }
 assert.ok(report.variants[REVERIE+'@1'].maxSlideMm<1,'full intensity keeps the soles within 1 mm: '+report.variants[REVERIE+'@1'].maxSlideMm);
