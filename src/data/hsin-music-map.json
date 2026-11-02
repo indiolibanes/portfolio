@@ -1,0 +1,19 @@
+{
+  "version": "music-map-r1",
+  "recordings": [{
+    "title": "Ode to Hsin and Moon",
+    "ids": ["youtube:Yhf9ur3xPQA"],
+    "durationSeconds": null,
+    "bpm": null,
+    "firstBeatSeconds": null,
+    "beats": [],
+    "phrases": [],
+    "verification": {
+      "status": "unverified",
+      "sources": ["https://www.youtube.com/watch?v=Yhf9ur3xPQA"],
+      "method": "Recording identified from the existing official pavilion link. No authorized audio or verified beat/section analysis was available. Arrangement/MIDI tempo listings are not evidence for this recording.",
+      "navigationOnlySeconds": 66,
+      "note": "66 seconds is a navigation choice, not a verified chorus or beat boundary. No audio is stored."
+    }
+  }]
+}

@@ -1,0 +1,114 @@
+{
+  "frontSign": 1,
+  "secondaryBones": 215,
+  "secondaryByGroup": {
+    "hair": 102,
+    "sleeveL": 52,
+    "sleeveR": 51,
+    "tail": 10
+  },
+  "maxSecondaryDepth": 9,
+  "movements": [
+    {
+      "id": "A",
+      "name": "Fox's Prelude",
+      "from": 0,
+      "to": 0.16
+    },
+    {
+      "id": "B",
+      "name": "Silk Spiral",
+      "from": 0.16,
+      "to": 0.44
+    },
+    {
+      "id": "C",
+      "name": "Lunar Bow",
+      "from": 0.44,
+      "to": 0.66
+    },
+    {
+      "id": "D",
+      "name": "Moonlit Recovery",
+      "from": 0.66,
+      "to": 0.78
+    },
+    {
+      "id": "E",
+      "name": "Foxfire Finale",
+      "from": 0.78,
+      "to": 1
+    }
+  ],
+  "faceCues": [
+    {
+      "id": "smile",
+      "event": "gesture:prepare",
+      "at": 0.03,
+      "alternativeAt": 0.18,
+      "chance": 0.85
+    },
+    {
+      "id": "hold",
+      "event": "gesture:hold",
+      "at": 0.88,
+      "alternativeAt": 0.8,
+      "chance": 0.75
+    },
+    {
+      "id": "neutral",
+      "event": "gesture:release",
+      "at": 0.975,
+      "alternativeAt": 0.94,
+      "chance": 1
+    }
+  ],
+  "variants": {
+    "moon-fox-reverie": {
+      "footTargetErrorMax": 1.7794169448983618e-7,
+      "orgDefGapMax": 2.3415122874311987e-7,
+      "comMarginMin": 0.01942082895182423,
+      "comMarginMinFrame": 50,
+      "spineDegreesMax": 32.96369468706437,
+      "hipDropMax": 0.05271011145645995,
+      "hipBackMax": 0.04,
+      "stepDegreesMax": 4.833479393645782,
+      "accelerationJumpDegreesMax": 1.8345569888087878,
+      "quaternionSignFlips": 16,
+      "comMarginRest": 0.021460652513034993,
+      "seconds": 13.6,
+      "samples": 205,
+      "safety": {
+        "pass": true,
+        "comMarginRest": 0.0215,
+        "comMarginMin": 0.0194,
+        "comMarginMinFrame": 50,
+        "comMarginRequired": 0.015,
+        "estimate": "rough rigid-segment mass model against a rectangle spanned by both locked feet"
+      }
+    },
+    "moon-fox-reverie-grand": {
+      "footTargetErrorMax": 1.9311970980852072e-7,
+      "orgDefGapMax": 2.33625238881905e-7,
+      "comMarginMin": 0.019420702544388643,
+      "comMarginMinFrame": 53,
+      "spineDegreesMax": 61.927315727016676,
+      "hipDropMax": 0.0777173900969073,
+      "hipBackMax": 0.075,
+      "stepDegreesMax": 4.581854723270804,
+      "accelerationJumpDegreesMax": 1.6833918652642217,
+      "quaternionSignFlips": 16,
+      "comMarginRest": 0.021460652513034993,
+      "seconds": 14.4,
+      "samples": 217,
+      "safety": {
+        "pass": true,
+        "comMarginRest": 0.0215,
+        "comMarginMin": 0.0194,
+        "comMarginMinFrame": 53,
+        "comMarginRequired": 0.015,
+        "estimate": "rough rigid-segment mass model against a rectangle spanned by both locked feet"
+      }
+    }
+  }
+}

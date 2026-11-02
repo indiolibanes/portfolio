@@ -1,0 +1,17 @@
+{
+  "environment": "Node v24.22.1 CPU microbench; not browser, phone, GPU or FPS",
+  "bytes": 394188,
+  "gzipBytes": 69115,
+  "brotliBytes": 41506,
+  "bones": 22,
+  "phrases": 7,
+  "decodedQuaternionBytes": 320320,
+  "runtimeBufferBytes": 3168,
+  "sceneGeometryDelta": 0,
+  "sceneTextureDelta": 0,
+  "renderTargetsDelta": 0,
+  "parseMs": 1.6366752299999985,
+  "playbackMs": 0.011015437333333333,
+  "directorAndPlaybackMs": 0.012907229666666657,
+  "worldMatricesMs": 0.121686581
+}

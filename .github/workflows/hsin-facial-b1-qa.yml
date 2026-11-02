@@ -6,6 +6,7 @@ on:
       - 'experiment/hsin-facial-legibility-pass-b1-*'
       - 'experiment/hsin-v2-*'
       - 'experiment/hsin-v201-*'
+      - 'experiment/hsin-lunar-dance-*'
   pull_request:
     paths:
       - 'src/scripts/hsin-*.mjs'
@@ -16,6 +17,12 @@ on:
       - 'src/styles/hsin-stage.css'
       - 'src/pages/experimentos/index.astro'
       - 'public/assets/models/hsin/**'
+      - 'public/assets/animations/hsin/**'
+      - 'scripts/bake-hsin-dance.mjs'
+      - 'scripts/bench-hsin-dance.mjs'
+      - 'scripts/render-hsin-dance-qa.mjs'
+      - 'scripts/lib/hsin-dance-rig.mjs'
+      - 'public/_headers'
       - 'public/assets/scenes/hsin/**'
       - 'scripts/*hsin-v2*'
       - 'scripts/generate-hsin-moonlit.mjs'
@@ -91,3 +98,34 @@ jobs:
         run: npm run build
       - name: UX contract
         run: npm run check:ux
+
+  lunar-dance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --no-audit --no-fund
+      - name: Official provider contract and persistent pavilion
+        run: |
+          node tests/hsin-soundtrack.test.mjs
+          node tests/hsin-music-state.test.mjs
+          node tests/hsin-pavilion-r2.test.mjs
+      - name: Dance ownership, geometry and deterministic 600-second sessions
+        run: |
+          node tests/hsin-dance.test.mjs
+          node tests/hsin-dance-r2.test.mjs
+          node tests/hsin-dance-geometry.test.mjs
+          node tests/hsin-dance-geometry.test.mjs --r2
+          node tests/hsin-stage.test.mjs
+          node tests/hsin-stage-metrics.test.mjs
+          node scripts/bench-hsin-dance.mjs
+          node scripts/bench-hsin-dance.mjs --r2
+      - name: Build, choreography integrity and UX
+        run: |
+          npm run build
+          node --input-type=module -e "import{readFileSync}from'node:fs';import{createHash}from'node:crypto';const m=JSON.parse(readFileSync('src/data/hsin-dance.json'));if(createHash('sha256').update(readFileSync('dist'+m.url)).digest('hex')!==m.sha256)throw Error('Built choreography hash mismatch');"
+          npm run check:ux

@@ -84,7 +84,7 @@ assert.equal(meshes.find(m=>m.name==='Continuous stone terrace').position.y,0);a
 for(const aspect of [393/852,16/9])for(const azimuth of [-2,8,18]){
  const camera=new T.PerspectiveCamera(34,aspect,.03,45),distance=cameraFit(profile.bounds,aspect),target=new T.Vector3(0,.88,0),yaw=azimuth*Math.PI/180;camera.position.set(Math.sin(yaw)*distance,1.11,Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
  const moon=env.group.getObjectByName('Full moon · sculpted static sphere'),center=moon.getWorldPosition(new T.Vector3());
- assert.equal(moon.geometry.type,'SphereGeometry');assert.deepEqual(center.toArray(),[-.42,3.03,-10]);assert.deepEqual(moon.getWorldQuaternion(new T.Quaternion()).toArray(),[0,0,0,1]);
+ assert.equal(moon.geometry.type,'SphereGeometry');assert.deepEqual(center.toArray(),[LUNAR_TERRACE.moonPosition[0],LUNAR_TERRACE.moonPosition[1]+.88,LUNAR_TERRACE.moonPosition[2]]);assert.deepEqual(moon.getWorldQuaternion(new T.Quaternion()).toArray(),[0,0,0,1]);
  assert.ok(!('time' in moon.material.uniforms),'moon never animates or follows the camera');
  // A world-fixed moon has honest parallax; it is not forced into every orbited viewport.
  const panes=env.group.getObjectByName('Warm windows and lantern panels'),p=panes.geometry.attributes.position;let visible=0;for(let i=0;i<p.count;i++){const v=new T.Vector3().fromBufferAttribute(p,i).applyMatrix4(panes.matrixWorld).project(camera);if(Math.abs(v.x)<1&&Math.abs(v.y)<1&&v.z<1)visible++;}assert.ok(visible>0,'architecture/lanterns must survive small camera rotations');

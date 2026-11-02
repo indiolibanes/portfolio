@@ -1,0 +1,39 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createMusicState,youtubeReport,spotifyReport} from '../src/scripts/hsin-music-state.mjs';
+import {attachMusicAPI} from '../src/scripts/hsin-music-api.mjs';
+import {createMusicTransport,verifiedMap} from '../src/scripts/hsin-music-transport.mjs';
+let now=0;const music=createMusicState({now:()=>now});assert.equal(music.sample().status,'no_music');let token=music.select('youtube');assert.equal(music.sample().playbackConfirmed,false);
+assert.equal(music.sample().positionSeconds,null);const yt={getVideoData:()=>({video_id:'test'}),getCurrentTime:()=>12,getDuration:()=>100};
+for(const [code,status]of [[-1,'ready'],[5,'ready'],[1,'playing'],[2,'paused'],[3,'buffering'],[0,'ended']]){music.observe(token,youtubeReport(yt,code));assert.equal(music.sample().status,status);}
+assert.equal(spotifyReport({playingURI:'spotify:track:x',position:1500,duration:100000,isPaused:false,isBuffering:false}).positionSeconds,1.5);
+assert.equal(spotifyReport({isPaused:false,isBuffering:true}).status,'buffering');assert.equal(spotifyReport({isPaused:true,position:100000,duration:100000}).status,'ended');assert.equal(spotifyReport({}).status,'unavailable');
+const stale=token;token=music.select('spotify');assert.equal(music.observe(stale,{status:'playing',positionSeconds:4}),false);assert.equal(music.sample().trackId,null);
+const transport=createMusicTransport({now:()=>now});assert.equal(transport.advance(0,music.sample()).playing,false);
+music.observe(token,{status:'playing',trackId:'spotify:track:other',positionSeconds:20,durationSeconds:100});let clock=transport.advance(0,music.sample());assert.equal(clock.mode,'ambient');const rev=clock.revision;
+now+=500;music.observe(token,{status:'playing',trackId:'spotify:track:other',positionSeconds:20.5,durationSeconds:100});clock=transport.advance(.05,music.sample());assert.ok(clock.position<20.1,'small timing corrections are gradual');assert.equal(clock.revision,rev);
+music.observe(token,{status:'playing',trackId:'spotify:track:other',positionSeconds:50,durationSeconds:100});clock=transport.advance(0,music.sample());assert.ok(clock.revision>rev);assert.equal(clock.position,50);
+music.observe(token,{status:'buffering',positionSeconds:50,trackId:'spotify:track:other'});const stopped=transport.advance(.05,music.sample()).position;assert.equal(transport.advance(.05,music.sample()).position,stopped);
+now+=13000;assert.equal(transport.advance(.05,music.sample()).playing,false);
+const maps=JSON.parse(await readFile('src/data/hsin-music-map.json'));assert.ok(maps.recordings.every(m=>!verifiedMap(m)&&m.bpm===null&&m.beats.length===0),'no invented production beat map');
+// Synthetic timing fixture only; not shipped as a claim about the recording.
+const synthetic={ids:['youtube:fixture'],durationSeconds:10,beats:[0,1,2,3,4,5,6,7,8,9],phrases:[{time:0,seconds:5,phrase:'silk-sway',intensity:.3},{time:5,seconds:5,phrase:'petal-flourish',intensity:.8}],verification:{status:'verified',method:'Synthetic test fixture',sources:['https://example.invalid/test-only']}};
+assert.ok(verifiedMap(synthetic));const mapped=createMusicTransport({maps:{recordings:[synthetic]},now:()=>now});token=music.select('youtube');music.observe(token,{status:'playing',trackId:'fixture',positionSeconds:6,durationSeconds:10});clock=mapped.advance(0,music.sample());assert.equal(clock.mode,'mapped');assert.equal(clock.phase,.2);assert.equal(clock.phraseId,'petal-flourish');
+// Official adapters with deterministic SDK mocks: no autoplay, current-time polling, stale callbacks and teardown.
+globalThis.document={hidden:false};let next=0,callbacks=new Map(),destroyed=0,events;
+const interval=fn=>{callbacks.set(++next,fn);return next;},cancel=id=>callbacks.delete(id),load=async()=>({Player:class{constructor(node,opts){events=opts.events;Object.assign(this,yt,{getPlayerState:()=>1,destroy:()=>destroyed++});opts.events.onReady({target:this});}}});
+token=music.select('youtube');let api=attachMusicAPI({provider:'youtube',iframe:{},host:{},controller:music,token,load,interval,cancel});await Promise.resolve();await Promise.resolve();assert.equal(music.sample().status,'playing');assert.equal(callbacks.size,1);events.onStateChange({target:yt,data:3});assert.equal(music.sample().status,'buffering');api.dispose();api.dispose();assert.equal(callbacks.size,0);assert.equal(destroyed,1);
+let resolve;const pending=new Promise(r=>resolve=r);token=music.select('youtube');api=attachMusicAPI({provider:'youtube',controller:music,token,load:()=>pending,interval,cancel});api.dispose();music.select('none');resolve({Player:class{constructor(){throw Error('late callback created an iframe');}}});await Promise.resolve();assert.equal(music.sample().provider,'none');
+let handlers={};token=music.select('spotify');api=attachMusicAPI({provider:'spotify',host:{querySelector:()=>({})},source:'spotify:album:collection',controller:music,token,interval,cancel,load:async()=>({createController(host,opts,cb){assert.equal(opts.uri,'spotify:album:collection');cb({addListener:(n,fn)=>handlers[n]=fn,destroy:()=>destroyed++,play(){throw Error('autoplay forbidden');}});}})});await Promise.resolve();handlers.ready();assert.equal(music.sample().trackId,null);handlers.playback_started({data:{playingURI:'spotify:track:actual'}});assert.equal(music.sample().trackId,'spotify:track:actual');handlers.playback_update({data:{playingURI:'spotify:track:actual',position:3000,duration:90000,isPaused:true,isBuffering:false}});assert.equal(music.sample().status,'paused');api.dispose();assert.equal(callbacks.size,0);
+token=music.select('youtube');api=attachMusicAPI({provider:'youtube',controller:music,token,interval,cancel,load:async()=>{throw Error('blocked SDK fixture');}});await Promise.resolve();await Promise.resolve();assert.equal(music.sample().status,'unavailable');api.dispose();assert.equal(callbacks.size,0);
+// Cached getters must not keep a silent/broken iframe confirmed, or undo onError without new evidence.
+let adapterNow=0,ytPosition=20,ytEvents,ytPlayer;
+token=music.select('youtube');api=attachMusicAPI({provider:'youtube',iframe:{},controller:music,token,interval,cancel,now:()=>adapterNow,load:async()=>({Player:class{constructor(node,opts){ytEvents=opts.events;ytPlayer=this;Object.assign(this,yt,{getPlayerState:()=>1,getCurrentTime:()=>ytPosition,destroy:()=>destroyed++});opts.events.onReady({target:this});}}})});await Promise.resolve();await Promise.resolve();
+for(adapterNow=500;adapterNow<=30000;adapterNow+=500)for(const poll of callbacks.values())poll();
+assert.equal(music.sample().status,'unavailable','30s of unchanged cached playing getters is not playback evidence');
+ytPosition=21;for(const poll of callbacks.values())poll();assert.equal(music.sample().status,'playing','real playhead progress permits recovery');
+ytEvents.onError({target:ytPlayer,data:100});for(const poll of callbacks.values())poll();assert.equal(music.sample().status,'unavailable','cached playing cannot erase an official error');
+ytEvents.onStateChange({target:ytPlayer,data:1});assert.equal(music.sample().status,'playing','a fresh official event can confirm playback again');
+api.dispose();assert.equal(callbacks.size,0);
+const csp=await readFile('public/_headers','utf8');assert.match(csp,/https:\/\/embed-cdn.spotifycdn.com/);music.dispose();assert.equal(music.sample().status,'no_music');
+console.log('Music state/API/transport PASS: selection != playback, official states, positions, track identity, seek, buffering, stale epochs, synthetic verified-map gate, cleanup; production map remains unverified.');

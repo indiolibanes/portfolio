@@ -7,7 +7,7 @@ import {qAngle} from '../scripts/lib/hsin-math.mjs';
 
 const acting = JSON.parse(readFileSync(new URL('../public/assets/models/hsin/hsin-v2.1-acting.json', import.meta.url))), hair = acting.poses.hairCaress, n = hair.names.length, q = (f, i) => f.slice(i * 4, i * 4 + 4);
 assert.equal(n, 18); assert.ok(hair.names.slice(0, 6).every((name, i) => name === hairPose.names[i]), 'arm chain = the approved left chain'); assert.ok(hair.names.every((name) => /L$/.test(name)), 'left side only');
-assert.equal(hair.frames.length, 87); assert.ok(hair.frames.every((f) => f.length === n * 4 && f.every(Number.isFinite)));
+assert.ok(hair.frames.length >= 3, 'sampled trajectory, independent of historical frame count'); assert.ok(hair.frames.every((f) => f.length === n * 4 && f.every(Number.isFinite)));
 const maxDiff = (a, b) => Math.max(...a.map((v, i) => Math.abs(v - b[i])));
 assert.ok(maxDiff(hair.frames[0], hair.rest) < 2e-6 && maxDiff(hair.frames.at(-1), hair.rest) < 2e-6, 'starts and ends exactly at rest');
 assert.ok(maxDiff(hair.rest.slice(0, 24), hairPose.rest) < 1e-9, 'rest = the approved left rest');
@@ -22,12 +22,15 @@ assert.ok(step < 7 && accel < 3, `smooth: max step ${step.toFixed(2)}°/frame, m
 const first = Math.max(...Array.from({length: n}, (_, k) => qAngle(q(hair.frames[0], k), q(hair.frames[1], k)))) * 180 / Math.PI; assert.ok(first < 1.2, 'gentle departure from rest: ' + first.toFixed(2));
 
 const at = (i) => { const f = hair.frames[i], m = measurePose(ctx, ctx.names.map((_, k) => q(f, k)), new Map(hair.names.slice(6).map((name, k) => [name, q(f, 6 + k)])), {radius: .06, groups: ['distalIndex', 'index', 'otherFingers', 'thumb', 'hand', 'forearm']}); return {...m.clearance, toTarget: (name) => nearestTo(ctx, m.world, ctx.groups.distalIndex, keyTargets[name]).distance}; };
-const rest = at(0), hoverFrame = at(26), frames = Object.fromEntries([34, 36, 39, 43, 46, 50, 54, 60, 70, 80].map((i) => [i, at(i)]));
-// Contact: the index pad rides on the hair surface from start to end (distance to the real hair mesh), and is at the solved target at the key poses.
-for (const i of [36, 39, 43, 46, 50]) assert.ok(frames[i]['distalIndex:hair'] > .0008 && frames[i]['distalIndex:hair'] < .006, `pad on the hair surface at frame ${i}: ${(frames[i]['distalIndex:hair'] * 1000).toFixed(1)} mm`);
-assert.ok(frames[36].toTarget('start') < .004 && frames[50].toTarget('end') < .005 && hoverFrame.toTarget('hoverIn') < .004, 'key poses reach their solved targets');
-assert.ok(hoverFrame['distalIndex:hair'] > .006, 'the approach hovers off the hair before it touches: ' + (hoverFrame['distalIndex:hair'] * 1000).toFixed(1));
-assert.ok(frames[60]['distalIndex:hair'] > .006 || frames[70]['distalIndex:hair'] > .015, 'it leaves the hair afterwards');
+const frameAt = phase => Math.round(phase * (hair.frames.length - 1));
+const strokeFrames = [0,.2,.5,.8,1].map(u=>frameAt(start+(end-start)*u));
+// Preserve the legacy sample coverage as normalized phases, then add semantic boundaries.
+const samples = [...new Set([0,26,34,36,39,43,46,50,54,60,70,80].map(f=>frameAt(f/86)).concat(strokeFrames,frameAt(hoverIn),frameAt(hoverOut)))];
+const rest=at(0),hoverFrame=at(frameAt(hoverIn)),frames=Object.fromEntries(samples.map(i=>[i,at(i)]));
+for(const i of strokeFrames) assert.ok(frames[i]['distalIndex:hair'] > .0008 && frames[i]['distalIndex:hair'] < .006, `pad on hair during semantic stroke at ${i}`);
+assert.ok(at(frameAt(start)).toTarget('start') < .004 && at(frameAt(end)).toTarget('end') < .005 && hoverFrame.toTarget('hoverIn') < .004, 'semantic contact and hover boundaries reach solved targets');
+assert.ok(hoverFrame['distalIndex:hair'] > .006, 'approach hovers before contact');
+assert.ok(at(frameAt(hoverOut))['distalIndex:hair'] > .006 || at(frameAt(hoverOut+(1-hoverOut)*.4))['distalIndex:hair'] > .015, 'semantic release leaves the hair');
 // Safety on every sampled frame: face, bangs, torso, curled fingers off the hair.
 for (const [i, m] of Object.entries({0: rest, 26: hoverFrame, ...frames})) {
  assert.ok(m['hand:face'] > .035 && m['forearm:face'] > .035 && m['thumb:face'] > .025 && m['otherFingers:face'] > .02 && m['distalIndex:face'] > .015, `clear of the face at frame ${i}`);

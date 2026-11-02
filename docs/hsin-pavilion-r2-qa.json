@@ -1,0 +1,58 @@
+{
+  "viewports": [
+    {
+      "width": 320,
+      "height": 740,
+      "mode": "reserved native-player bay"
+    },
+    {
+      "width": 393,
+      "height": 852,
+      "mode": "reserved native-player bay"
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "mode": "reserved native-player bay"
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "mode": "projected world facade",
+      "selected": {
+        "x": 1112,
+        "y": 360,
+        "side": "right",
+        "score": 0,
+        "hard": 0
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "mode": "projected world facade",
+      "selected": {
+        "x": 1752,
+        "y": 540,
+        "side": "right",
+        "score": 0,
+        "hard": 0
+      }
+    }
+  ],
+  "maxVelocity": 380,
+  "policyMs": 0.0012083403999999986,
+  "dampingMs": 0.0002265584700000001,
+  "baseline": {
+    "meshes": 5,
+    "triangles": 4804
+  },
+  "r2": {
+    "meshes": 7,
+    "triangles": 4132
+  },
+  "newTextures": 0,
+  "newLights": 0,
+  "newRenderTargets": 0,
+  "limitation": "Node policy/math/geometry tests, not GPU/browser iframe or artistic QA. In impossible frames automatic side crossing is deferred and constrained layout is reported."
+}

@@ -4,6 +4,7 @@ import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {musicForStage} from '../src/scripts/hsin-music-state.mjs';
 import {musicEmbed} from '../src/scripts/hsin-music-providers.mjs';
 import {createMusicTower,towerViewport} from '../src/scripts/hsin-music-tower.mjs';
 
@@ -24,8 +25,8 @@ assert.equal(new URL(musicEmbed('youtube').src).searchParams.get('autoplay'),'0'
 assert.match(musicEmbed('spotify').allow,/encrypted-media/);
 
 class Element {
-  constructor(data={}){this.dataset=data;this.hidden=false;this.attrs={};this.events={};this.style={setProperty(){}};this.offsetHeight=300;this.offsetWidth=320;}
-  addEventListener(type,fn){(this.events[type]??=[]).push(fn);}
+  constructor(data={}){this.dataset=data;this.hidden=false;this.attrs={};this.events={};this.style={setProperty(key,value){this[key]=value;}};this.offsetHeight=300;this.offsetWidth=320;}
+  addEventListener(type,fn,options={}){(this.events[type]??=[]).push(fn);options.signal?.addEventListener('abort',()=>{this.events[type]=this.events[type].filter(f=>f!==fn);},{once:true});}
   dispatchEvent(event){for(const fn of this.events[event.type]??[])fn(event);return true;}
   click(){this.dispatchEvent({type:'click'});}
   setAttribute(key,value){this.attrs[key]=value;}
@@ -43,8 +44,8 @@ root.querySelector=key=>map[key];root.querySelectorAll=key=>key==='[data-music-p
 const document=new Element();document.createElement=()=>new Element();
 const window=new Element();
 let playerVisibilityCallback;
-const code=stripTypeScriptTypes(script.replace(/import .*?;\n/,''),{mode:'strip'}).replace('export function','function')+'\nmountHsinSoundtrack(root);';
-vm.runInNewContext(code,{root,document,window,musicEmbed,CustomEvent:class{constructor(type){this.type=type;}},ResizeObserver:class{observe(){}},IntersectionObserver:class{constructor(callback){playerVisibilityCallback=callback;}observe(){}}});
+const code=stripTypeScriptTypes(script.replace(/^import .*?;\n/gm,''),{mode:'strip'}).replace('export function','function')+'\nmountHsinSoundtrack(root);';
+vm.runInNewContext(code,{root,document,window,musicEmbed,musicForStage,AbortController,attachMusicAPI:()=>({dispose(){}}),CustomEvent:class{constructor(type){this.type=type;}},ResizeObserver:class{observe(){}disconnect(){}},IntersectionObserver:class{constructor(callback){playerVisibilityCallback=callback;}observe(){}disconnect(){}}});
 assert.equal(player.children,undefined,'no third-party iframe before opt-in');
 buttons[0].click();const youtube=player.children[0];assert.match(youtube.src,/youtube-nocookie/);
 info.click();assert.equal(options.hidden,false);info.click();side.click();buttons[0].click();
@@ -57,12 +58,13 @@ buttons[2].click();assert.equal(player.children[0],placeholder);assert.equal(roo
 buttons[0].click();document.hidden=true;document.dispatchEvent({type:'visibilitychange'});assert.equal(player.children[0],placeholder);
 buttons[0].click();playerVisibilityCallback([{intersectionRatio:.4}]);assert.equal(player.children[0],placeholder,'offscreen YouTube is stopped');
 buttons[1].click();window.dispatchEvent({type:'pagehide'});assert.equal(player.children[0],placeholder);
+window.dispatchEvent({type:'pageshow',persisted:true});
 starts[1].click();assert.equal(new URL(player.children[0].src).searchParams.get('start'),'66');assert.ok(info.focused);
 
 // Actual Three geometry: no GLB changes, finite matrices, peripheral lane, bounded cost.
 const element=new Element({soundtrackSide:'right'});element.closest=()=>({getBoundingClientRect:()=>({width:1280,height:800})});element.removeAttribute=()=>{};element.style.removeProperty=()=>{};
 const host={clientWidth:1280,clientHeight:800};
-const tower=createMusicTower({THREE,mergeGeometries,element,host});
+let towerNow=1000;const tower=createMusicTower({THREE,mergeGeometries,element,host,clock:()=>towerNow});
 const camera=new THREE.PerspectiveCamera(35,1280/800,.03,45),target=new THREE.Vector3(0,1,0);camera.position.set(0,1.3,4);camera.lookAt(target);
 for(const side of ['left','right'])for(const angle of [-.65,0,.65]){
   element.dataset.soundtrackSide=side;camera.position.set(Math.sin(angle)*4,1.3,Math.cos(angle)*4);camera.lookAt(target);tower.update(camera,target,true);
@@ -71,9 +73,16 @@ for(const side of ['left','right'])for(const angle of [-.65,0,.65]){
   tower.group.traverse(o=>assert.ok(o.matrixWorld.elements.every(Number.isFinite)));
 }
 let draws=0,triangles=0;tower.group.traverse(o=>{if(o.isMesh){draws++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);}});
-assert.ok(draws<=6);assert.ok(triangles<6500);
+assert.equal(draws,7,'wood/iron/brass/roof/glass and independently driven hydrogen sides');assert.ok(triangles<4804,'wheel removal compensates the new architecture and thrusters');
 const volume=new THREE.Box3().setFromObject(tower.group);
 assert.ok(volume.getSize(new THREE.Vector3()).z>.3,'pavilion has real architectural depth');
+// Hover and keyboard focus own independent holds. Leaving one cannot release the other.
+element.contains=node=>node===info;
+element.dispatchEvent({type:'focusin'});element.dispatchEvent({type:'pointerenter'});element.dispatchEvent({type:'pointerleave'});
+const heldCenter=parseFloat(element.style['--tower-y'])+element.offsetHeight/2;element.offsetHeight=500;tower.invalidateLayout();towerNow+=1000/30;tower.update(camera,target,false);assert.ok(Math.abs(parseFloat(element.style['--tower-y'])+element.offsetHeight/2-heldCenter)<.01,'keyboard focus holds after pointer leaves');
+element.dispatchEvent({type:'focusout',relatedTarget:info});towerNow+=1000/30;tower.update(camera,target,false);assert.ok(Math.abs(parseFloat(element.style['--tower-y'])+element.offsetHeight/2-heldCenter)<.01,'focus moving within the facade holds');
+element.dispatchEvent({type:'focusout',relatedTarget:null});
+element.offsetHeight=300;tower.invalidateLayout();
 for(const [width,height] of [[320,740],[393,852],[844,390]]){
  host.clientWidth=width;host.clientHeight=height;tower.invalidateLayout();
  element.closest=()=>({getBoundingClientRect:()=>({width,height})});

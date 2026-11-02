@@ -1,0 +1,24 @@
+{
+  "base": "32801974d95ae458d94d72d81e874df3be4e7529",
+  "branch": "experiment/hsin-lunar-dance-r2-2026-11-02",
+  "hsinTestFiles": 44,
+  "hsinFileFailures": 0,
+  "privateAuditSkips": "Three existing private-GLB dependent audits remain; no new skips",
+  "npmCheck": "PASS",
+  "astroBuild": "PASS",
+  "ux": "100/100 PASS",
+  "lipTouchUnchanged": true,
+  "glbSha256": "63506b0b7a2369722e6429c3b16c5f48764ee01706d1272b4ffd69a45c5e0d2c",
+  "visual": "VISUAL_QA_PENDING",
+  "gpuContextLossRestore": "NOT_TESTED_NO_WEBGL2",
+  "audit": {
+    "model": "GPT-6 Astra",
+    "effort": "high",
+    "P0P1": 0,
+    "P2Fixed": [
+      "preparation gain continuity",
+      "independent hover/focus hold",
+      "hysteresis cancellation and return cooldown"
+    ]
+  }
+}

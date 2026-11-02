@@ -1,0 +1,25 @@
+{
+  "frames": 1928,
+  "soleVertices": 250,
+  "maxSupportDrift": 0.0003096661010296254,
+  "minSoleY": -0.0002639011563902033,
+  "maxOrgDefGap": 0.00004194518542019112,
+  "maxStepDegrees": 6.2238980307482255,
+  "seconds": 600,
+  "publicVersion": "2.0.1",
+  "visual": "VISUAL_QA_PENDING",
+  "footToleranceMeters": 0.0005,
+  "sessions": 2,
+  "phrases": [
+    "moon-breathing",
+    "silk-sway",
+    "crescent-turn",
+    "fox-invitation",
+    "ballet-flourish",
+    "petal-flourish",
+    "lunar-waltz",
+    "lunar-repose"
+  ],
+  "traceHash": "2bf533a9aa11299f9081c709448039ca08b42613c307a14a64f1bad4c5847071",
+  "runtimeBufferBytes": 5472
+}
