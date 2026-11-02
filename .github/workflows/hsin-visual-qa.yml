@@ -42,7 +42,10 @@ jobs:
           npx astro preview --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/hsin/ >/dev/null && break; sleep 1; done
       - name: Render harness frames and smoke-test the real stage
-        run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321 "--variants=${{ github.event.inputs.variants }}" "--views=${{ github.event.inputs.views }}"
+        env:
+          QA_VARIANTS: ${{ github.event.inputs.variants }}
+          QA_VIEWS: ${{ github.event.inputs.views }}
+        run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321
       - uses: actions/upload-artifact@v4
         if: always()
         with:

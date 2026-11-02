@@ -9,7 +9,7 @@ import sharp from 'sharp';
 import {serve} from './serve.mjs';
 
 const [out = 'qa-out', ...rest] = process.argv.slice(2), flag = (name, fallback) => rest.find((a) => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
-const scenario = flag('scenario', 'face'), stageUrl = flag('stage-url', ''), variantsArg = flag('variants', ''), viewsArg = flag('views', '');
+const scenario = flag('scenario', 'face'), stageUrl = flag('stage-url', ''), variantsArg = flag('variants', process.env.QA_VARIANTS ?? ''), viewsArg = flag('views', process.env.QA_VIEWS ?? '');
 await mkdir(out, {recursive: true});
 const {server, url} = await serve();
 const browser = await chromium.launch({args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']});
