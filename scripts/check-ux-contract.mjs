@@ -71,8 +71,8 @@ check('music: error/fallback containers', music.includes('data-music-loading') &
 check('music: playback state available', music.includes('track.nowPlaying'));
 check('music: polling and visibility pause', music.includes('setInterval(') && music.includes('visibilitychange') && music.includes('document.hidden'));
 check('music: only announce track change', music.includes('trackKey !== lastTrackKey') && music.includes("aria-live', 'polite'"));
-check('nav: lab label aligned', header.includes('data-nav-section="lab">Laboratório</a>'));
-check('nav: music static link', header.includes('href="/#musica"'));
+check('nav: lab label aligned', header.includes("{ href: '/#lab', id: 'lab', label: 'Laboratório' }"));
+check('nav: music static link', header.includes("{ href: '/#musica', id: 'musica', label: 'Música' }"));
 check('nav: scrollspy state', header.includes("setAttribute('aria-current', 'true')"));
 check('hero: actions follow manifesto', home.indexOf('class="hero-actions"') > home.indexOf('class="hero-statement"'));
 check('hero: download action', home.includes('class="cv-download-button"') && home.includes('download="Kaue-Alencar-Curriculo.pdf"'));
@@ -100,7 +100,7 @@ check('curiosidades: creative process content kept in the data file',
   curiositiesData.includes('export const CREATIVE_PROCESS') && (curiositiesData.match(/label: '/g) || []).length >= 7);
 check('curiosidades: creative process steps animate nothing (no motion to gate)',
   !/animation|transition/.test(read('src/styles/curiosidades.css').split('Creative process')[1]?.split('Return links')[0] ?? ''));
-check('curiosidades: header link', header.includes('href="/curiosidades/"'));
+check('curiosidades: header link', header.includes("{ href: '/curiosidades/', id: '', label: 'Curiosidades' }"));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));
 check('modes: preserve three-state control',
