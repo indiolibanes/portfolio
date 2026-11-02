@@ -27,7 +27,7 @@ const meshes=[];gltf.scene.traverse(m=>{if(m.isSkinnedMesh)meshes.push(m);});con
 const poseProfile=JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.'+(cinematic?'1':'0')+'-profile.json',import.meta.url)));
 if(cinematic)createCinematicReference({bones,profile:poseProfile}).apply();
 let presentation;
-if(options.orientation||rich){presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:poseProfile.bounds,cameraAzimuthDegrees:HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees,apparentBodyDegrees:Number(options.orientation??55)});presentation.apply();}
+if(options.orientation||rich){presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:poseProfile.bounds,cameraAzimuthDegrees:HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees,...(options.legacy==='1'?{apparentBodyDegrees:Number(options.orientation??55)}:{bodyApparentYaw:Number(options.orientation??70),neckCompensation:Number(options.neck??4),headCompensation:Number(options.head??18.8)})});presentation.apply();}
 if(options.gesture){
  const weight=Number(options.weight??1);if(!(weight>=0&&weight<=1))throw Error('Invalid gesture weight');
  const signature=['composition','duet'].includes(options.gesture)?createBakedPose({THREE:T,data:poseProfile.poses.signature,bones}):null;signature?.apply(1);
