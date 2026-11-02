@@ -1,3 +1,4 @@
+import {createPavilionMotion} from './hsin-pavilion-layout.mjs';
 /** A batched, volumetric travelling pavilion. Only the native display is HTML.
  * Uses the stage's existing loop; no new renderer, textures, lights or timers. */
 export function towerViewport(width,height,panelWidth,panelHeight,side='right') {
@@ -5,7 +6,7 @@ export function towerViewport(width,height,panelWidth,panelHeight,side='right') 
   return {compact,x:side==='left'?margin+panelWidth/2:width-margin-panelWidth/2,
     y:Math.max(80+panelHeight/2,Math.min(height-panelHeight/2-95,height*.52))};
 }
-export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
+export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],moon=null,metrics:instrument=null}) {
   const group=new T.Group();group.name='HsinLunarMusicTower';
   const hull=new T.Group();hull.name='Travelling pavilion · dimensional architecture';group.add(hull);
   const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x93c8bd,hydrogenL:0x8de2ee,hydrogenR:0x8de2ee};
@@ -106,10 +107,26 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
     }
     group.updateMatrixWorld(true);
   }
-  const center=new T.Vector3(),direction=new T.Vector3(),normal=new T.Vector3(),up=new T.Vector3();
+  const center=new T.Vector3(),direction=new T.Vector3(),normal=new T.Vector3(),up=new T.Vector3(),projection=new T.Vector3();
+  const motion=createPavilionMotion(),by=new Map(bones.map(b=>[b.name,b]));
+  const subjects={face:null,hands:[],moon:null,character:null,controls:null};
+  const rects=[{},{},{},{}];let layoutAt=-Infinity,cameraSignature='',interacting=false,disposed=false;
+  const interaction=new AbortController();
+  element.addEventListener('pointerenter',()=>{interacting=true;},{signal:interaction.signal});
+  element.addEventListener('pointerleave',()=>{interacting=false;layoutDirty=true;},{signal:interaction.signal});
+  element.addEventListener('focusin',()=>{interacting=true;},{signal:interaction.signal});
+  element.addEventListener('focusout',()=>{interacting=false;layoutDirty=true;},{signal:interaction.signal});
+  function projectSubject(object,radius,w,h,out){
+    if(!object)return null;object.updateWorldMatrix(true,false);object.getWorldPosition(projection);const distance=projection.distanceTo(cameraForProjection.position);projection.project(cameraForProjection);
+    if(projection.z>1||projection.z< -1)return null;
+    const pixels=radius/distance*h/(2*Math.tan(cameraForProjection.fov*Math.PI/360));
+    out.x=(projection.x+1)*w/2-pixels;out.y=(1-projection.y)*h/2-pixels;out.w=out.h=pixels*2;return out;
+  }
+  let cameraForProjection;
   let last=0,smoothedYaw=null,layoutDirty=true,metrics=null,provider=null,activation=0;
   const restingGlass=new T.Color(palette.glass),activeGlass=new T.Color(0xc5e7ed);
   function update(camera,target,reduced=false,idle=false) {
+    if(disposed)return false;const started=instrument?.enabled?instrument.now():0;
     if(layoutDirty){const bounds=element.closest('[data-hsin-stage]').getBoundingClientRect();metrics={w:host.clientWidth,h:host.clientHeight,pw:element.offsetWidth,ph:element.offsetHeight,sw:bounds.width,sh:bounds.height};layoutDirty=false;}
     const {w,h,pw,ph,sw,sh}=metrics;if(!w||!h||!pw||!ph)return false;
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
@@ -121,8 +138,18 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
     if(smoothedYaw===null||reduced)smoothedYaw=yaw;
     const delta=Math.atan2(Math.sin(yaw-smoothedYaw),Math.cos(yaw-smoothedYaw));smoothedYaw+=delta*(1-Math.exp(-dt*5));
     // Small lag inside a hard safe lane. No teleport on side toggle: that is an explicit move.
-    let x=layout.compact?w-paneW*.85:layout.x+side*Math.max(-8,Math.min(8,Math.sin(yaw-smoothedYaw)*25));
-    let y=layout.compact?h*.66:layout.y;
+    let x=layout.compact?w-paneW*.85:layout.x,y=layout.compact?h*.66:layout.y;
+    const signature=camera.position.x+camera.position.y*13+camera.position.z*31+camera.quaternion.y*71+pw*3+ph;
+    if(!layout.compact&&(signature!==cameraSignature||now-layoutAt>250)){
+      cameraSignature=signature;layoutAt=now;cameraForProjection=camera;
+      subjects.face=projectSubject(by.get('ORG-Bip001Head'),.15,w,h,rects[0]);
+      subjects.hands.length=0;for(const [i,s]of ['L','R'].entries()){const rect=projectSubject(by.get('ORG-Bip001Hand'+s),.11,w,h,rects[i+1]);if(rect)subjects.hands.push(rect);}
+      subjects.moon=projectSubject(moon,1.37,w,h,rects[3]);
+      subjects.controls={x:sw/2-100,y:sh-86,w:200,h:74};
+      motion.retarget({width:sw,height:sh,panelWidth:pw,panelHeight:ph,preferred:element.dataset.soundtrackSide,...subjects},{now:now/1000,interacting,reduced});
+    }
+    const movement=motion.advance(dt,reduced);
+    if(!layout.compact){x=movement.x;y=movement.y;element.dataset.adaptiveSide=movement.side;element.dataset.layoutConstrained=String(movement.constrained);}
     const distance=camera.position.distanceTo(target)*.96,worldHeight=2*distance*Math.tan(camera.fov*Math.PI/360),scale=worldHeight*paneW/w*camera.aspect;
     camera.getWorldDirection(normal);direction.set(x/w*2-1,1-y/h*2,0).unproject(camera).sub(camera.position).normalize();
     center.copy(camera.position).addScaledVector(direction,distance/direction.dot(normal));
@@ -132,14 +159,19 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
     group.position.copy(center);group.rotation.set(0,yaw,0);group.scale.setScalar(scale);
     // Visible physical depth, including rear chambers, eaves, chassis and nacelles.
     // A fixed slight yaw exposes the side architecture; the native front aperture stays clear.
-    hull.rotation.y=side*-.10;
+    hull.rotation.y=side*-.10;hull.rotation.z=movement.tilt;
     if(!reduced&&idle)hull.position.y=Math.sin(now*.0008)*.008;else hull.position.y=0;
     if(provider!==element.dataset.provider){provider=element.dataset.provider;activation=now;}
     const activating=!reduced&&now-activation<650;
     materials.glass.color.copy(restingGlass).lerp(activeGlass,activating?Math.sin((now-activation)/650*Math.PI)*.65:0);
+    const thrust=Math.min(1,(Math.abs(movement.vx)+Math.abs(movement.vy))/240);
+    materials.hydrogenL.color.setRGB(.22+thrust*.35,.55+thrust*.25,.65+thrust*.3);
+    materials.hydrogenR.color.copy(materials.hydrogenL.color);
+    if(movement.vx>1)materials.hydrogenL.color.multiplyScalar(1.2);else if(movement.vx< -1)materials.hydrogenR.color.multiplyScalar(1.2);
     group.updateMatrixWorld(true);
     if(!layout.compact){element.style.setProperty('--tower-x',`${(x-pw/2).toFixed(2)}px`);element.style.setProperty('--tower-y',`${(y-ph/2).toFixed(2)}px`);}
-    return Math.abs(delta)>.002||activating;
+    if(instrument?.enabled)instrument.sample('pavilionUpdate',instrument.now()-started);
+    return Math.abs(delta)>.002||activating||movement.moving;
   }
-  return {group,update,invalidateLayout(){layoutDirty=true;},dispose(){group.removeFromParent();resources.forEach(g=>g.dispose());Object.values(materials).forEach(m=>m.dispose());element.removeAttribute('data-tower-anchor');element.style.removeProperty('--tower-x');element.style.removeProperty('--tower-y');}};
+  return {group,update,invalidateLayout(){layoutDirty=true;layoutAt=-Infinity;},dispose(){if(disposed)return;disposed=true;interaction.abort();group.removeFromParent();resources.forEach(g=>g.dispose());Object.values(materials).forEach(m=>m.dispose());element.removeAttribute('data-tower-anchor');element.style.removeProperty('--tower-x');element.style.removeProperty('--tower-y');}};
 }

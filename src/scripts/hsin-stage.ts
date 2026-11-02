@@ -100,7 +100,7 @@ export function mountHsinStage(root:HTMLElement){
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    const musicElement=root.querySelector<HTMLElement>('[data-music-tower]');
-   if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host});scene.add(musicTower.group);}
+   if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics});scene.add(musicTower.group);}
    root.addEventListener('hsin:tower-layout',()=>{musicTower?.invalidateLayout();loop?.invalidate();},{signal:attempt.signal});
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];const fit=()=>{
     musicTower?.invalidateLayout();const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
