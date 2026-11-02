@@ -93,6 +93,24 @@ try {
    {id: 'mouth-close', title: 'boca (perto)', view: {azimuth: 24, zoom: 1}},
   ];
   await gestureSheet('lip-touch', columns, views);
+  const stages = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../../public/assets/models/hsin/hsin-v2.1-acting.json', import.meta.url), 'utf8')).poses.hairCaress.stages, h = (weight) => [{name: 'hairCaress', weight}];
+  const hairColumns = [
+   {id: 'rest', title: 'repouso', pose: []}, {id: 'hover', title: 'aproximação', pose: h(stages.hoverIn)}, {id: 'start', title: 'contato (início)', pose: h(stages.start)},
+   {id: 'mid', title: 'carícia (meio)', pose: h((stages.start + stages.end) / 2)}, {id: 'end', title: 'contato (fim)', pose: h(stages.end)}, {id: 'leave', title: 'saída', pose: h(stages.hoverOut)},
+  ];
+  const hairViews = [
+   {id: 'three-quarter-face', title: '3/4 (palco)', view: {azimuth: 8, zoom: .86}},
+   {id: 'left-side', title: 'lado esquerdo', view: {azimuth: 70, zoom: .86}},
+   {id: 'hair-close', title: 'cabelo (perto)', view: {azimuth: 55, zoom: 1}},
+  ];
+  await gestureSheet('hair-caress', hairColumns, hairViews);
+  const both = [{name: 'lipTouch', weight: 1}, {name: 'hairCaress', weight: stages.end}], smile = {M_Smile_R: .5, M_Smile_L: .18, E_Smile_R: .22, B_Up_Add_R: .25};
+  const compositionColumns = [
+   {id: 'rest', title: 'repouso', pose: []}, {id: 'rise', title: 'mão direita sobe', pose: [{name: 'lipTouch', weight: 64 / 92}, {name: 'hairCaress', weight: stages.hoverIn * .6}]},
+   {id: 'hold', title: 'composição (pausa)', pose: both}, {id: 'hold-smile', title: 'pausa + sorriso', pose: both, morphs: smile},
+   {id: 'left-leaves', title: 'esquerda sai primeiro', pose: [{name: 'lipTouch', weight: 1}, {name: 'hairCaress', weight: stages.hoverOut}], morphs: smile},
+  ];
+  await gestureSheet('composition', compositionColumns, views);
  }
  if (stageUrl) {
   const page = await browser.newPage({viewport: {width: 1280, height: 720}, deviceScaleFactor: 1}), stageErrors = [];

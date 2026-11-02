@@ -82,6 +82,8 @@ jobs:
           node tests/hsin-rig-parity.test.mjs
           node tests/hsin-lip-hair.test.mjs
           node tests/hsin-lip-touch-geometry.test.mjs
+          node tests/hsin-hair-caress-geometry.test.mjs
+          node tests/hsin-acting-runtime.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract
