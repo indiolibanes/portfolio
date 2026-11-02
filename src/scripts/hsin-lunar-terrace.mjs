@@ -40,10 +40,10 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   g.computeBoundingSphere();const mesh=new T.Mesh(g,material);mesh.name=name;parent.add(mesh);return mesh;
  }
  const box=(parts,x,y,z,w,h,d,hex=0x667081)=>parts.push({geometry:new T.BoxGeometry(w,h,d).translate(x,y,z),hex});
- function plane(parts,x,y,z,w,h,cell,{horizontal=false,yaw=0}={}){
+ function plane(parts,x,y,z,w,h,cell,{horizontal=false,yaw=0,tint=0xffffff}={}){
   const g=new T.PlaneGeometry(w,h),uv=g.attributes.uv,cx=(cell%4)*128,cy=Math.floor(cell/4)*128;
   for(let i=0;i<uv.count;i++){uv.setXY(i,(cx+uv.getX(i)*128)/512,1-(cy+(1-uv.getY(i))*128)/256);}
-  if(horizontal)g.rotateX(-Math.PI/2);if(yaw)g.rotateY(yaw);g.translate(x,y,z);parts.push({geometry:g,hex:0xffffff,shade:false});
+  if(horizontal)g.rotateX(-Math.PI/2);if(yaw)g.rotateY(yaw);g.translate(x,y,z);parts.push({geometry:g,hex:tint,shade:false});
  }
  function roof(x,y,z,w,d,h,hex=0x344552){
   // Three hipped bands bend upward at the eaves, with a shallow horizontal ridge.
@@ -114,11 +114,11 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   g.applyMatrix4(new T.Matrix4().compose(from.add(to).multiplyScalar(.5),new T.Quaternion().setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize()),new T.Vector3(1,1,1)));branchParts.push({geometry:g,hex:0x62454b});
  }
  for(const side of [-1,1]){
-  const a=[side*1.14,.02,.75],b=[side*.99,.38,.66],c=[side*1.30,.66,.64];branch(a,b,.024);branch(b,c,.017);branch(b,[side*.8,.57,.61],.013);
-  for(const [i,p]of [[side*1.22,.62,.65],[side*.9,.5,.62],[side*1.1,.38,.66]].entries())plane(flowerParts,...p,.36,.36,2+i%2,{yaw:side*.2});
+  const a=[side*1.14,.02,.75],b=[side*.99,.38,.66],c=[side*1.30,.66,.64];branch(a,b,.014);branch(b,c,.009);branch(b,[side*.8,.57,.61],.006);
+  for(const [i,p]of [[side*1.22,.62,.65],[side*.9,.5,.62],[side*1.1,.38,.66],[side*1.28,.50,.65]].entries()){const size=[.24,.20,.28,.14][i];plane(flowerParts,...p,size,size,2+i%2,{yaw:side*.2,tint:[0xffffff,0xf0cece,0xffd3bb,0xe6acb5][i]});}
  }
- branch([-1.95,1.83,-.5],[-1.34,2.12,-.6],.026);branch([-1.34,2.12,-.6],[-.8,2.19,-.66],.018);branch([-1.5,2.04,-.56],[-1.30,1.89,-.5],.013);
- for(const p of [[-1.72,1.94,-.52],[-1.36,2.1,-.6],[-1.03,2.18,-.66],[-1.29,1.9,-.49]])plane(flowerParts,...p,.33,.33,3);
+ branch([-1.95,1.83,-.5],[-1.34,2.12,-.6],.014);branch([-1.34,2.12,-.6],[-.8,2.19,-.66],.009);branch([-1.5,2.04,-.56],[-1.30,1.89,-.5],.006);
+ for(const p of [[-1.72,1.94,-.52],[-1.36,2.1,-.6],[-1.03,2.18,-.66],[-1.29,1.9,-.49]])plane(flowerParts,...p,.24,.24,3);
  batch('Batched stone balustrade and village',stoneParts,solid);batch('Batched pagoda roofs and lantern frames',roofParts,solid);
  batch('Warm windows and lantern panels',paneParts,cutout);batch('Lantern halos and separate foot contacts',glowParts,blended);
  batch('Blossom branches',branchParts,solid,flowers);batch('Red blossom clusters',flowerParts,cutout,flowers);

@@ -8,6 +8,7 @@ import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from '../src/scripts/hsin-cinematic-idle.mjs';
 import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from '../src/scripts/hsin-lunar-terrace.mjs';
+import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
 import {createLunarPresentation} from '../src/scripts/hsin-lunar-presentation.mjs';
 const [input,output,width='800',height='1100']=process.argv.slice(2);
 if(!input||!output)throw Error('Usage: node scripts/render-hsin-poster.mjs MODEL.glb POSTER.webp [WIDTH HEIGHT]');
@@ -47,9 +48,10 @@ if(!transparent){
  }
 }
 const scene=new T.Scene();scene.add(env.group,gltf.scene);
-const distance=options.shot==='upper'?1.55:cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=new T.Vector3(0,options.shot==='upper'?1.3:HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
+const framing=rich&&options.framing!=='legacy'?lunarCameraFit(W/H):null;
+const distance=options.shot==='upper'?1.55:framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=options.shot==='upper'?new T.Vector3(0,1.3,0):framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
 const yaw=Number(options.yaw??(cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0))*Math.PI/180;
-camera.position.set(Math.sin(yaw)*distance,target.y+.23,Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();
+camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();
 const pixels=Buffer.alloc(W*H*4),depth=new Float32Array(W*H).fill(Infinity);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
  if(transparent)continue;const at=(y*W+x)*4,from=(Math.min(sky.info.height-1,Math.floor(y/H*sky.info.height))*sky.info.width+Math.min(sky.info.width-1,Math.floor(x/W*sky.info.width)))*4;
