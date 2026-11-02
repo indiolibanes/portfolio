@@ -11,15 +11,17 @@
     "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia",
     "check:ux": "node scripts/check-ux-contract.mjs",
     "check:api": "node scripts/test-music-api.mjs",
+    "check:tetris": "node scripts/test-tetris.mjs",
     "check:og": "node scripts/verify-og.mjs",
-    "check:tetris": "node scripts/test-tetris.mjs"
+    "check:music-state": "node scripts/test-music-state.mjs",
+    "check:music-transition": "node tests/music-experimental-transition.test.mjs",
+    "check:hsin": "node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs",
+    "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.2",
-    "@react-three/rapier": "^2.2.0",
     "@types/three": "^0.186.0",
     "astro": "^7.3.1",
     "sharp": "^0.35.4",

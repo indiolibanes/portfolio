@@ -2,248 +2,264 @@
 
 # Kauê Alencar — Portfólio
 
-**Escrita · Documentação · Organização da informação · Publicação digital**
+**Escrita · documentação · arquitetura da informação · experimentação digital**
 
-[kaue.pages.dev](https://kaue.pages.dev) &nbsp;·&nbsp; Astro 7 &nbsp;·&nbsp; Cloudflare Pages &nbsp;·&nbsp; pt-BR
+[kaue.pages.dev](https://kaue.pages.dev) &nbsp;·&nbsp; Astro 7 &nbsp;·&nbsp; Three.js &nbsp;·&nbsp; Cloudflare Pages &nbsp;·&nbsp; pt-BR
 
 </div>
 
 ---
 
-Portfólio pessoal e, ao mesmo tempo, laboratório de **arquitetura de conteúdo, interfaces editoriais e pequenos experimentos de integração**. É um site estático, sem framework de UI, em que cada decisão visual tenta servir à leitura antes de servir ao enfeite.
+Portfólio pessoal e laboratório de interfaces editoriais. O projeto combina conteúdo estático, três modos de leitura, cenas 2D em canvas, integrações com Last.fm e experiências 3D isoladas — sem transformar a página principal em uma SPA.
 
-## Sumário
+A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa e custo de execução previsível** mesmo quando o site incorpora movimento e WebGL.
 
-- [O que há no site](#o-que-há-no-site)
-- [Três modos de leitura](#três-modos-de-leitura)
-- [Cenas animadas](#cenas-animadas)
-- [Sophia: personagem e laboratório 3D](#sophia-personagem-e-laboratório-3d)
-- [Página 404 interativa](#página-404-interativa)
-- [Princípios de interface](#princípios-de-interface)
-- [Stack](#stack)
-- [Estrutura](#estrutura)
-- [Desenvolvimento](#desenvolvimento)
-- [Verificações](#verificações)
-- [Tipografia e fontes](#tipografia-e-fontes)
-- [Last.fm](#lastfm)
-- [Currículo](#currículo)
-- [Publicação](#publicação)
-- [Documentação](#documentação)
-- [Decisões preservadas](#decisões-preservadas)
+## Estado atual
 
-## O que há no site
+- produção: branch `main`, publicada pelo Cloudflare Pages;
+- build: Astro estático, Node.js 22.12+;
+- experiência 3D pública atual: **Hsin · The Moon Fox V2.0.1**;
+- personagem autoral do portfólio: **Sophia**, presente em `/sophia/`, na 404 e em protótipos isolados;
+- Música: nova composição centrada na Hsin, com transição cinematográfica para o palco 3D;
+- QA: resultados gerados não são versionados em `main`; evidências volumosas devem permanecer como artifacts de CI.
 
-Uma página principal com sete seções numeradas (ordem canônica em `src/section-order.ts`) e algumas páginas auxiliares.
+## Rotas principais
 
-| # | Seção | Âncora | Destaque |
-| --- | --- | --- | --- |
-| 01 | Sobre | `#sobre` | apresentação sóbria, botão de currículo em PDF |
-| 02 | Laboratório | `#lab` | cinco projetos (tradução, reflexão, arquitetura, projeto integrador, documentação) sobre um colisor de neutrinos |
-| 03 | Método | `#metodo` | brief de UX Writing escrito à mão, bloco de sketches em paisagem e quatro etapas em fluxograma |
-| 04 | Bastidores | `#bastidores` | o repositório à vista, sobre sinapses |
-| 05 | Percurso | `#percurso` | trajetória, com a equação de Dirac em zoom ao fundo |
-| 06 | Música | `#musica` | atividade recente via Last.fm |
-| 07 | Contato | `#contato` | céu profundo com estrelas, planetas e cometas |
+| Rota | Papel |
+| --- | --- |
+| `/` | portfólio principal, com sete seções canônicas |
+| `/curiosidades/` | notas e curiosidades do autor |
+| `/sophia/` | registro narrativo da Sophia |
+| `/experimentos/` | índice de experiências visuais |
+| `/experimentos/hsin/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
+| `/experimentos/hsin-lab/` | laboratório local da Hsin, com arquivo GLB escolhido no dispositivo; `noindex` |
+| `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
+| `/404` | página de erro com Sophia e Tetris |
 
-Páginas extras: `/curiosidades`, `/sophia/` (a personagem, seu sigilo e fragmentos), e a **404 interativa com Tetris**. A rota `/modo-experimental/` é um **protótipo isolado**, sem link na navegação, marcado `noindex` e fora do sitemap; não constitui um quarto modo publicado.
-
-### Menu em tabela periódica
-
-A gaveta de navegação escreve cada destino com **símbolos de elementos químicos** (Sobre = S·O·B·Re). A segmentação é calculada no build a partir dos 118 elementos, maximizando as letras cobertas; as letras sem símbolo ficam soltas ao lado dos azulejos, no estilo do logotipo de *Breaking Bad*. Os azulejos aparecem com efeitos aleatórios (giro, queda, zoom, desfoque) e um elemento se "reacende" de tempos em tempos. O texto acessível do link permanece o nome normal.
+A ordem das sete seções da página principal é definida em `src/section-order.ts`.
 
 ## Três modos de leitura
 
-Um único botão alterna entre três estados. O rótulo mostra o modo atual e o próximo; a escolha fica salva e pode ser forçada por `?mode=editorial` ou `?mode=legacy`.
+O portfólio preserva três estados visuais:
 
-| Modo | Ideia |
+| Modo | Característica |
 | --- | --- |
-| **Autoral** | papel quente, cor, cenas animadas e ilustrações. É o modo padrão. |
-| **Editorial** | princípio *e-ink*, menos é mais: papel branco, tinta preta, filetes finos, sem ilustrações, sem cenas, sem sombras; rodapé sem navegação nem currículo. |
-| **Legacy · 1998** | Windows 95/98: área de trabalho verde-azulada, cada seção é uma janela com barra de título, botões e menu cinza; cabeçalho como barra de menus, rodapé como barra de tarefas; fontes de sistema da época (Tahoma, Arial, Times New Roman, Courier New). |
+| **Autoral** | papel quente, cor, ilustrações, cenas e movimento |
+| **Editorial** | leitura e-ink, contraste alto e redução de ornamentação |
+| **Legacy · 1998** | interface inspirada em Windows 95/98 |
 
-Tokens e regras: `mode-tokens.css`, `serious.css` (Editorial), `eink.css`, `mono-modes.css`, `legacy.css` e `legacy-win98.css`. Não há modo escuro, de propósito (por enquanto).
+A preferência é persistida no navegador. Movimento decorativo respeita `prefers-reduced-motion`, visibilidade da página e modos que pedem uma apresentação mais quieta.
 
-## Cenas animadas
+## Música e Hsin
 
-`public/scripts/scenes.js` é um motor de canvas único (um só `requestAnimationFrame`, sem dependências). Cada elemento com `data-scene="…"` recebe um `<canvas aria-hidden>` atrás do conteúdo.
+A seção Música combina:
 
-| Cena | Seção | O que mostra |
-| --- | --- | --- |
-| `supernova` | Tradução | estrela que colapsa, explode e deixa um remanescente |
-| `spacetime` | Reflexão | grade do espaço-tempo curvada por duas massas e o paradoxo de Andrômeda |
-| `network` | Arquitetura | "segundo cérebro": rede de notas com ondas de ativação |
-| `clockwork` | Arquitetura | relógio desmontado |
-| `matrix` | Documentação | chuva de glifos com o fluxo de publicação |
-| `collider` | Laboratório | colisor de neutrinos |
-| `flipbook` | Método | brief de UX Writing à mão → sketch → wireframe → protótipo do app de astrofísica |
-| `synapses` | Bastidores | neurônios e espelhamento entre duas mentes |
-| `zoom` | Percurso | da tinta no papel ao átomo, aos quarks e ao mar de Dirac |
-| `cosmos` | Contato | estrelas, nebulosas, planetas, asteroides, cometas |
+- atividade recente via Last.fm;
+- composição `public/assets/music-hsin-stage-2026-11-02.avif`;
+- Hsin como a única personagem atualmente acessível na composição;
+- botão **Experimental mode** com fallback de link HTML direto;
+- transição curta em violeta, azul elétrico e branco lunar antes da navegação;
+- versão reduzida da transição para `prefers-reduced-motion`.
 
-Regras do motor: só desenha o que está na tela e com a aba visível; com `prefers-reduced-motion` pinta **um único quadro estático**; nos modos Editorial e Legacy fica desligado. Para inspecionar um quadro fixo: `window.PortfolioScenes.renderAt(host, t)`.
+A rota `/experimentos/hsin/` usa Three.js diretamente. A V2.0.1 inclui terraço de pedra, água, arquitetura distante, lanternas, lua dourada, flores periféricas, framing responsivo e atuação autônoma da personagem.
 
-## Sophia: personagem e laboratório 3D
+O runtime limita custo de renderização, pausa quando apropriado e mantém o laboratório de autoria separado da experiência pública.
 
-**Sophia** é a personagem-escriba do portfólio. Sua presença atravessa componentes e cenas do site; a página [`/sophia/`](https://kaue.pages.dev/sophia/) reúne um pequeno registro narrativo, um sigilo interativo e fragmentos alternáveis. A personagem também aparece na página 404.
+## Sophia
 
-O trabalho 3D tem **dois contextos distintos**:
+Sophia é a mascote/personagem autoral do portfólio.
 
-- **Experiência corrente do portfólio:** componentes e modelos já associados ao site. O desenvolvimento visual experimental não deve substituir silenciosamente os assets ativos ou alterar suas animações sem revisão.
-- **Protótipo `/modo-experimental/`:** página deliberadamente não indexada nem integrada à navegação. Utiliza `public/experimental/sophia-alpha.glb`, `sophia-scene.js`, `gltf-gl.js` e `gltf-skel.js` para testar Sophia num cenário WebGL2. A cena inclui observação/giro da personagem, aproximação e deslocamento; o carregamento 3D falha de modo não fatal quando WebGL2 ou o modelo não estão disponíveis.
+O site mantém dois modelos 3D porque possuem funções diferentes:
 
-O contrato técnico documentado para as candidatas da Sophia inclui **101 joints**, cinco animações (`Idle`, `Write`, `Point`, `Wave`, `Walk`) e quatro morph targets (`Blink`, `Smile`, `BrowRaise`, `MouthOpen`). A existência de um GLB válido ou de um protótipo funcional **não equivale à aprovação artística, à ausência de colisões ou à liberação para substituir o modelo do site**. Em particular, a auditoria 6H registra uma candidata parcial, não aprovada, com pendências de inspeção visual e de geometria.
+- `public/experimental/sophia-alpha.glb` — protótipo rigado usado em `/modo-experimental/` e no retrato 3D progressivo da 404;
+- `public/experimental/sophia-7b-e1-latest.glb` — modelo usado no lounge 3D da 404.
 
-Os registros de testes e limitações ficam em `qa-results/sophia6g/` e `qa-results/sophia6h/`, incluindo [relatório 6H](./qa-results/sophia6h/Relatorio_6H.md) e [veredicto estruturado](./qa-results/sophia6h/Verdict.json). Os testes de runtime não dispensam inspeção humana e validação no navegador de destino.
+A 404 sempre possui fallback 2D. WebGL, redução de movimento, economia de dados ou falha de carregamento não impedem o acesso às ações de recuperação nem ao Tetris.
 
-## Página 404 interativa
-
-A página `src/pages/404.astro` combina as ilustrações da Sophia e um **Tetris jogável**, com pontuação, linhas, níveis, próxima peça e controles de jogo. Os links de recuperação para o portfólio e para o Laboratório permanecem visíveis independentemente do jogo. A lógica central é exercitada por `npm run check:tetris`; isso não substitui testes de acessibilidade, teclado e mobile no navegador.
-
-## Princípios de interface
-
-- nada essencial depende de JavaScript: a âncora de Música existe no HTML estático e há `<noscript>` com link para o Last.fm;
-- movimento decorativo respeita `prefers-reduced-motion`, a visibilidade da página e a viewport; GIFs e WebP animados ganham primeiro quadro estático no build;
-- botões em destaque (currículo, alternador de modo) animam apenas fora do Legacy e se calam com movimento reduzido;
-- links e controles de navegação têm alvo mínimo de 44 px; links que abrem em nova aba avisam no texto acessível;
-- diagramas decorativos são `aria-hidden`; os fluxogramas do Método têm `aria-label` descrevendo as etapas;
-- cards sem destino não fingem ser links.
+O parecer textual da antiga fase 6H foi preservado de forma compacta em `docs/archive/sophia6h/`; screenshots, cópias de `dist/` e outros resultados gerados não permanecem mais na árvore principal.
 
 ## Stack
 
-- [Astro](https://astro.build/) 7 (saída estática, sem framework de UI)
-- CSS puro em camadas (sem aninhamento, ordem de importação definida em `src/layouts/BaseLayout.astro`)
-- Canvas 2D e JavaScript sem dependências para as cenas
-- WebGL2 e leitor glTF próprio na rota experimental; pacotes Three.js, React Three Fiber, drei e Rapier também constam das dependências para experimentos 3D, mas o site principal não é uma SPA React
-- [sharp](https://sharp.pixelplumbing.com/) para imagens Open Graph, quadros estáticos e recortes
-- Cloudflare Pages e uma Pages Function (`functions/api/music/recent.js`) para o Last.fm
-- Node.js 22.12 ou superior
+- **Astro 7** — geração estática;
+- **TypeScript / JavaScript** — interações e runtimes;
+- **CSS puro** — modos, layout, cenas e tipografia;
+- **Three.js** — Hsin e cenas 3D progressivas da Sophia;
+- **Canvas 2D** — cenas decorativas e Tetris;
+- **Sharp** — OG, quadros estáticos e recortes derivados;
+- **Cloudflare Pages** — hospedagem e deploy;
+- **Cloudflare Pages Functions** — proxy do Last.fm;
+- **Node.js 22.12+**.
+
+React Three Fiber, Drei e React Three Rapier não fazem parte do runtime atual e foram removidos das dependências.
 
 ## Estrutura
 
 ```text
 src/
-  components/      cabeçalho (menu periódico), rodapé, música, modos, Sophia, animações
-  layouts/         BaseLayout (ordem das folhas de estilo)
-  pages/           index, curiosidades, sophia, 404 (Tetris), modo-experimental (noindex)
-  scripts/         máquina de escrever e utilitários de cliente
-  styles/          tokens, tipografia, modos, cenas, e-ink, Win98, mobile
-  config.ts        site, perfil, redes e música
-  section-order.ts ordem canônica das seções
+  components/       componentes Astro e interações de interface
+  data/             manifests e dados derivados da Hsin
+  layouts/          layouts gerais e layouts isolados das experiências
+  pages/            rotas públicas e experimentais
+  scripts/          runtimes de cliente, Hsin e Sophia
+  styles/           tokens, modos, seções e experiências
 
 public/
-  scripts/         scenes.js (motor de cenas) e reveal.js (entrada ao rolar)
-  experimental/    Sophia alpha, runtime WebGL2/glTF e controlador da cena isolada
-  …                imagens, PDF do currículo, robots, sitemap, _headers
-assets/fonts/      fontes locais e suas licenças
-functions/api/music/recent.js   proxy do Last.fm (Cloudflare Pages Function)
-scripts/           geração de assets, currículo, contrato de UX, testes
-docs/              decisões, auditorias e fluxo de publicação
-qa/ e qa-results/  harness de QA, evidências e auditorias da Sophia (6G/6H)
-.github/workflows/ QA temporário e sincronização de assets externos
+  assets/           imagens, modelos e texturas publicados
+  experimental/     runtime/modelos ainda usados pelos protótipos da Sophia
+  scripts/          scripts estáticos de página
+  _headers          cache e cabeçalhos do Pages
+
+assets/
+  about/            fontes de geração do Sobre
+  fonts/            fontes locais e licenças
+  phrolova/         material de referência preservado
+  og-portfolio.png  fonte canônica para geração da OG
+
+functions/
+  api/music/recent.js  proxy Last.fm
+
+scripts/            geração, validação e ferramentas de autoria
+tests/              regressões Hsin e contratos da seção Música
+docs/               decisões, auditorias e documentação técnica
+.github/workflows/  build, regressões Hsin e sincronização manual de assets
 ```
 
 ## Desenvolvimento
 
+Use o lockfile:
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-`dev` e `build` executam antes os scripts de geração (imagem Open Graph, quadros estáticos de movimento e recortes do Sobre).
+`dev` gera os assets derivados necessários antes de iniciar o Astro.
+
+Build de produção:
 
 ```bash
-npm run build     # produção, com verificação das imagens OG
-npm run preview   # serve o resultado
+npm run build
+npm run preview
 ```
+
+O build executa:
+
+1. geração da imagem Open Graph;
+2. geração dos primeiros quadros estáticos das mídias animadas;
+3. geração dos recortes da Shorekeeper;
+4. `astro build`;
+5. verificação das imagens OG no `dist/`.
 
 ## Verificações
 
+O conjunto recomendado é:
+
 ```bash
-npm run check:ux      # contrato estático de UX sobre o código-fonte
-npm run check:og      # imagens Open Graph
-npm run check:api     # API de música
-npm run check:tetris  # regras da página 404
-node scripts/test-music-state.mjs        # estados do widget de música
-node scripts/test-sophia-morph-runtime.mjs # morphs no runtime experimental
+npm run check
 ```
 
-Essas verificações são testes estáticos ou de lógica/runtime conforme cada script; **não substituem** teste em navegador real, leitor de tela, medição de contraste ou comparação visual. Ao mexer em cenas ou modos, confira os três modos, a largura de desktop (≈1440 px) e a de celular (≈390 px) e o movimento reduzido. As auditorias mais recentes estão em `qa-results/` e `docs/`.
+Ele agrega:
 
-## Tipografia e fontes
+```text
+check:ux                contrato estático de UX
+check:api               proxy Last.fm com fetch/cache simulados
+check:tetris            regras do Tetris da 404
+check:music-state       estados do widget de música
+check:music-transition  contrato da transição Música → Hsin
+check:hsin              terraço lunar e framing V2.0.1
+check:sophia            modelos Sophia atualmente publicados
+```
 
-As fontes são locais (`assets/fonts`), declaradas em `src/styles/typography.css` e `type-hierarchy.css`:
+Verificação específica de OG:
 
-| Família | Uso |
-| --- | --- |
-| Bookman, Benguiat, Garamond | títulos e texto editorial |
-| Latin Modern Mono (*Portfolio Typewriter*) | etiquetas e máquina de escrever |
-| Roguepunk | destaques do Laboratório |
-| Heart Breaking Bad (*Portfolio Hand*) | assinatura e letras em azulejo (somente letras e dígitos) |
-| Caveat (*Portfolio Script*, SIL OFL) | caligrafia do brief e dos fluxogramas do Método |
+```bash
+npm run check:og
+```
 
-Cada fonte mantém sua licença original ao lado do arquivo quando houver. No modo Legacy, as fontes anexadas são substituídas por fontes de sistema da época.
+Os testes automatizados não substituem revisão visual em navegador, interação por toque, leitor de tela ou inspeção artística dos modelos 3D.
+
+## Pipeline
+
+### `portfolio-build.yml`
+
+Executado em pull requests e pushes para `main`:
+
+1. `npm ci`;
+2. `npm run check`;
+3. `npm run build`;
+4. verificação pós-build das texturas do terraço lunar.
+
+### `hsin-facial-b1-qa.yml`
+
+Executa a regressão especializada da Hsin quando os arquivos relacionados à atuação/rig são alterados. Mantém testes de face, braços, gestos, diretor de movimento, GLB e build.
+
+### `sync-external-assets.yml`
+
+Workflow manual para ingestão/otimização controlada de assets externos.
+
+Resultados de browser QA, screenshots e cópias de build devem ser anexados como **artifacts** do workflow. `qa-results/` está ignorado pelo Git.
+
+## Política de assets
+
+- fonte necessária para geração deve permanecer versionada;
+- derivado reproduzível pode ser gerado no build;
+- modelo grande só permanece em `public/` quando existe rota/runtime que o consome;
+- screenshots, `dist/` copiado, relatórios repetidos e saídas temporárias não entram em `main`;
+- assets de terceiros mantêm seus créditos e não implicam transferência de direitos;
+- nenhuma credencial é versionada.
+
+Essa política evita repetir o problema em que a remoção acidental de `assets/og-portfolio.png` interrompeu builds do Pages.
 
 ## Last.fm
 
-A seção musical usa uma Cloudflare Pages Function como intermediária, com o método público `user.getRecentTracks`.
+A seção Música consulta uma Pages Function em `functions/api/music/recent.js`.
 
-Variáveis necessárias no Cloudflare (**Settings → Variables and Secrets**):
+Variáveis necessárias no Cloudflare:
 
 ```text
 LASTFM_USERNAME
 LASTFM_API_KEY
 ```
 
-A chave não deve ser commitada. Detalhes de players, scrobblers e playlists em [`LASTFM_SETUP.md`](./LASTFM_SETUP.md).
+A chave permanece apenas no ambiente do Pages. Mais detalhes em [`LASTFM_SETUP.md`](./LASTFM_SETUP.md).
 
 ## Currículo
 
-O PDF em `public/curriculo-kaue-alencar.pdf` é gerado de forma determinística:
+O PDF publicado fica em `public/curriculo-kaue-alencar.pdf` e pode ser reconstruído com:
 
 ```bash
 pip install reportlab
 python3 scripts/build-resume.py
 ```
 
-Edite o conteúdo no script, nunca o PDF. A data de atualização exibida no rodapé (modo Autoral e Legacy) deve acompanhar a do PDF.
-
-## Publicação
-
-Fluxo mínimo: Obsidian → Git/GitHub → Astro → Cloudflare Pages, com `main` como branch de produção. Detalhes em [`docs/publishing-workflow.md`](./docs/publishing-workflow.md).
-
-Workflows do GitHub atualmente no repositório:
-
-- `portfolio-browser-qa.yml` — harness **temporário** de QA no navegador; só roda em branches `qa/portfolio-browser-audit-*`, constrói cada ref localmente, não faz deploy e não usa segredos;
-- `sync-external-assets.yml` — execução manual que baixa e otimiza assets externos para `public/assets`.
-
-Ainda não há workflow de build/verificação para pull requests nem lockfile de dependências commitado.
+A fonte de verdade é o script, não o PDF editado manualmente.
 
 ## Documentação
 
-| Arquivo | Assunto |
-| --- | --- |
-| `docs/publishing-workflow.md` | fluxo de publicação |
-| `docs/auditoria-gui-ux-implementacao-2026-10-08.md` | reconciliação da auditoria de GUI/UX |
-| `docs/ui-audit-followup.md` | mudanças feitas após a auditoria estática |
-| `docs/section-refinements.md` | refinamentos por seção |
-| `docs/method-scene.md` | cena “Sophia apresenta o método” |
-| `docs/music-scene-v2.md`, `docs/music-scene-generation-prompt.md` | cena da seção Música |
-| `docs/contact-orbits.md` | composição do Contato |
-| `docs/og-audit-2026-10-12.md` | auditoria das imagens Open Graph |
-| `docs/phrolova-vector-reference.md` | referência vetorial de uma ilustração |
-| `qa-results/sophia6g/` | evidências e ferramentas de auditoria da fase 6G |
-| `qa-results/sophia6h/Relatorio_6H.md`, `Verdict.json` | resultados da candidata parcial 6H e limites da aprovação |
+Pontos de entrada recomendados:
 
-## Decisões preservadas
+- [`docs/publishing-workflow.md`](./docs/publishing-workflow.md) — publicação;
+- [`docs/code-audit-2026-11-02.md`](./docs/code-audit-2026-11-02.md) — auditoria e backlog de otimização;
+- [`docs/hsin-v2-stage.md`](./docs/hsin-v2-stage.md) — base do palco Hsin;
+- [`docs/hsin-v2-moonlit-stage.md`](./docs/hsin-v2-moonlit-stage.md) — ambiente ao luar;
+- [`docs/hsin-autonomous-presentation.md`](./docs/hsin-autonomous-presentation.md) — atuação autônoma;
+- [`docs/sophia-404-3d.md`](./docs/sophia-404-3d.md) — 404 3D;
+- [`docs/archive/sophia6h/`](./docs/archive/sophia6h/) — parecer histórico compacto da Sophia 6H.
 
-Ao mexer no projeto, preserve: paleta, fontes, ilustrações e texturas; os três modos (e a ausência de modo escuro); a composição da seção Música; as cenas e personagens existentes; e o conteúdo textual da seção Método. Mudanças editoriais, substituição de URLs pessoais e remoção de materiais de terceiros dependem de confirmação. O protótipo `/modo-experimental/` permanece fora da navegação e não implica a aprovação de versões experimentais da Sophia; a evolução do GLB deve manter gates de geometria, rig, animações, morphs e revisão visual. Nenhuma credencial entra no repositório. Trabalho em branch dedicada, sem merge sem autorização.
+## Próximas otimizações
 
-## Princípios
+A limpeza de repositório e dependências é a fase de baixo risco. A próxima rodada deve ser feita com comparação visual e métricas de bundle:
 
-Clareza antes de ornamentação.  
-Estrutura antes de ferramenta.  
-Documentação deve sobreviver a quem a escreveu.
+1. separar CSS específico de Música, homepage e Curiosidades do `BaseLayout`;
+2. decompor `SeriousModeToggle.astro`, `global.css` e `index.astro` em unidades menores;
+3. revisar listeners e scripts globais para inicialização somente quando o DOM correspondente existir;
+4. medir CSS/JS por rota antes e depois;
+5. manter Hsin V2.0.1 fora de refactors genéricos de animação até existir QA WebGL equivalente.
+
+Detalhes e números estão em `docs/code-audit-2026-11-02.md`.
 
 ---
+
+**Princípio:** clareza antes de ornamentação; estrutura antes de ferramenta; documentação deve sobreviver a quem a escreveu.
 
 © Kauê Alencar. Código e conteúdo sem licença aberta declarada. Imagens, personagens e marcas de terceiros pertencem aos seus respectivos titulares.
