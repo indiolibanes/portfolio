@@ -1,3 +1,4 @@
+import {createMusicTower} from './hsin-music-tower.mjs';
 import {HSIN_STAGE,pixelRatio,attentionHeight} from './hsin-stage-config.mjs';
 import {createStageLoop} from './hsin-stage-loop.mjs';
 import {createBakedPose,createBakedChest} from './hsin-baked-pose.mjs';
@@ -37,14 +38,14 @@ export function mountHsinStage(root:HTMLElement){
 
  async function start(){
   if(started||destroyed||!visible())return;started=true;const attemptId=++generation;
-  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any;
+  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any,tower:any;
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=null;zoom=()=>{};resetCamera=()=>{};};
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();tower?.dispose();tower=null;body?.dispose();presentation?.restore();reference?.restore();binding?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=null;zoom=()=>{};resetCamera=()=>{};};
   disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
-   const [T,{GLTFLoader},{OrbitControls}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js')]);
+   const [T,{GLTFLoader},{OrbitControls},{mergeGeometries}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js'),import('three/addons/utils/BufferGeometryUtils.js')]);
    if(attempt.signal.aborted||destroyed)return;
    const canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');
    // Fail before fetching the asset if this browser cannot create a WebGL2 context.
@@ -80,7 +81,7 @@ export function mountHsinStage(root:HTMLElement){
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];const fit=()=>{
-    const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
+    const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);tower?.invalidateLayout();
     const previousFit=initialDistance;const framing=lunarCameraFit(camera.aspect);initialDistance=framing.distance;initialTarget=framing.target;orbit.maxDistance=Math.max(5.5,initialDistance*1.55);if(firstFit){firstFit=false;resetCamera();}else{const d=camera.position.distanceTo(orbit.target),next=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,d*initialDistance/previousFit));camera.position.sub(orbit.target).multiplyScalar(next/d).add(orbit.target);orbit.update();}loop?.invalidate();
    };
    resetCamera=()=>{const azimuth=HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180;orbit.target.fromArray(initialTarget);camera.position.set(orbit.target.x+Math.sin(azimuth)*initialDistance,orbit.target.y+.23,orbit.target.z+Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
@@ -88,7 +89,11 @@ export function mountHsinStage(root:HTMLElement){
    orbit.addEventListener('change',()=>{
     const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
    });
-   fit();resize=new ResizeObserver(fit);resize.observe(host);
+   const towerElement=root.querySelector<HTMLElement>('[data-music-tower]');
+   if(towerElement){tower=createMusicTower({THREE:T,mergeGeometries,element:towerElement,host});scene.add(tower.group);}
+   const updateTower=()=>{const moving=tower?.update(camera,orbit.target,motion.matches)??false;if(tower)worldDirty=true;return moving;};
+   root.addEventListener('hsin:tower-layout',()=>{tower?.invalidateLayout();updateTower();loop?.invalidate();},{signal:attempt.signal});
+   fit();updateTower();resize=new ResizeObserver(fit);resize.observe(host);
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
    binding=createFaceBinding(meshes,snapshotFace(meshes),profile.calibration,{limits:profile.limits});
    const signature=createPoseTransition({pose:createBakedPose({THREE:T,data:profile.poses.signature,bones})}),chest=createChestDirector({pose:createBakedChest({THREE:T,profile:profile.poses,bones}),seed:seed^0x51c7,organic:true,onEvent:face.signal}),hair=createChestDirector({pose:createBakedPose({THREE:T,data:profile.poses.hair,bones}),seed:seed^0x32b1,organic:true,onEvent:face.signal});
@@ -105,7 +110,7 @@ export function mountHsinStage(root:HTMLElement){
    canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
    canvas.addEventListener('webglcontextrestored',()=>{lost=false;root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
-    controlsUpdate:()=>orbit.update(),
+    controlsUpdate:()=>{const moving=orbit.update();return updateTower()||moving;},
     step:(dt:number)=>{if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);body.advance(dt,{enabled:true,context:face.diagnostics().expressions?.context});worldDirty=true;},
     draw:()=>{if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}renderer.render(scene,camera);},
    });
