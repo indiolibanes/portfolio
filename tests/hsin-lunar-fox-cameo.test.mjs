@@ -54,7 +54,7 @@ assert.ok(!/rgba\(\s*(157|210|10|17)\s*,/.test(callRules) && !/#9de6ff|#e6f6ff/i
 
 // The frame sits over the 2D Hsin at her scale: nearly the full panel height, not the old half-height strip.
 const cameo = css.split('}').filter((r) => /music-lunar-fox-cameo\s*\{/.test(r) && !/\[data-active/.test(r)).join('}');
-assert.ok(/height:\s*94%/.test(cameo) && /top:\s*3%/.test(cameo), 'cameo spans the panel height over the central figure');
+assert.ok(/height:\s*96%/.test(cameo) && /top:\s*1%/.test(cameo), 'cameo spans the panel height over the central figure');
 assert.ok(!/height:\s*49%/.test(cameo), 'the old half-height frame is gone');
 
 // ---------------------------------------------------------------------------------------------

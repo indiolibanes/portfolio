@@ -533,12 +533,12 @@
 
   /* Over the 2D Hsin, the central figure of the scene, at the same scale. */
   left: 45%;
-  top: 3%;
+  top: 1%;
 
   z-index: 4;
 
   width: auto;
-  height: 94%;
+  height: 96%;
 
   overflow: hidden;
 
@@ -639,8 +639,8 @@
 @media (max-width: 680px) {
   .music-shelf .music-heading--gallery
   .music-lunar-fox-cameo {
-    top: 3%;
-    height: 92%;
+    top: 1%;
+    height: 95%;
   }
 
   .music-shelf .music-heading--gallery
