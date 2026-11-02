@@ -27,15 +27,15 @@ export function mountHsinStage(root:HTMLElement){
  let viewportVisible=true,destroyed=false,started=false,paused=false,generation=0,lost=false;
  let disposeAttempt=()=>{},loop:ReturnType<typeof createStageLoop>|null=null,zoom=(_factor:number)=>{},resetCamera=()=>{};
  const showPause=()=>{const frozen=paused||motion.matches;pause.setAttribute('aria-pressed',String(frozen));pause.textContent=frozen?'▶':'Ⅱ';pause.setAttribute('aria-label',frozen?'Retomar atuação':'Pausar atuação');pause.title=frozen?'Retomar atuação':'Pausar atuação';pause.disabled=root.dataset.state!=='ready'||motion.matches;};
- const policy=()=>{showPause();loop?.policyChanged();};
+ const policy=()=>{showPause();metrics.gap();loop?.policyChanged();};
  near.addEventListener('click',()=>zoom(.84),{signal:life.signal});far.addEventListener('click',()=>zoom(1.19),{signal:life.signal});home.addEventListener('click',()=>resetCamera(),{signal:life.signal});
  pause.addEventListener('click',()=>{paused=!paused;policy();},{signal:life.signal});
  retry.addEventListener('click',()=>{started=false;start();},{signal:life.signal});
  motion.addEventListener('change',policy,{signal:life.signal});
  const visible=()=>viewportVisible&&!document.hidden&&!lost&&!destroyed;
- document.addEventListener('visibilitychange',()=>{loop?.setVisible(visible());if(visible()&&!started)start();},{signal:life.signal});
- const intersection=new IntersectionObserver(entries=>{viewportVisible=entries[0]?.isIntersecting??true;loop?.setVisible(visible());if(visible()&&!started)start();},{threshold:.01});intersection.observe(root);
- function teardown(){if(destroyed)return;destroyed=true;generation++;life.abort();intersection.disconnect();disposeAttempt();loop=null;}
+ document.addEventListener('visibilitychange',()=>{if(!visible())metrics.gap();loop?.setVisible(visible());if(visible()&&!started)start();},{signal:life.signal});
+ const intersection=new IntersectionObserver(entries=>{viewportVisible=entries[0]?.isIntersecting??true;if(!visible())metrics.gap();loop?.setVisible(visible());if(visible()&&!started)start();},{threshold:.01});intersection.observe(root);
+ function teardown(){if(destroyed)return;destroyed=true;generation++;life.abort();intersection.disconnect();metrics.gap();disposeAttempt();loop=null;}
  window.addEventListener('pagehide',teardown,{once:true,signal:life.signal});
  // pagehide also fires for bfcache: rebuild resources when returning to this page.
  const resumePage=(event:PageTransitionEvent)=>{if(!event.persisted)return;window.removeEventListener('pageshow',resumePage);if(destroyed)mountHsinStage(root);};
@@ -47,7 +47,7 @@ export function mountHsinStage(root:HTMLElement){
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=null;zoom=()=>{};resetCamera=()=>{};};
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=null;zoom=()=>{};resetCamera=()=>{};};
   metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    const [T,{GLTFLoader},{OrbitControls}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js')]);
