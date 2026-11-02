@@ -195,14 +195,6 @@
 }
 
 /* A arte 16:9 ocupa toda a área, sem sobrepor os controles editoriais. */
-.music-shelf .music-heading--gallery .music-panorama::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  background: url('/assets/music-panorama-16x9.avif') center / cover no-repeat;
-  pointer-events: none;
-}
 
 .music-shelf .music-heading--gallery .music-panorama::before {
   content: "";
