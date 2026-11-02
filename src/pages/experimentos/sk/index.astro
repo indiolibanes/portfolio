@@ -1,117 +1,234 @@
 ---
 import '../../../styles/shorekeeper-sk-lab.css';
+const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
+const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspection-studio-20261102';
 ---
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow,noarchive" />
-  <meta name="description" content="Laboratório privado de inspeção local da Shorekeeper em Three.js, sem upload do modelo." />
-  <title>Shorekeeper · Laboratório 3D</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="robots" content="noindex,nofollow,noarchive"/>
+<meta name="description" content="Inspection Studio da Shorekeeper: inspeção local de rig, rosto, materiais e atuação sem envio do modelo."/>
+<title>Shorekeeper · Inspection Studio</title>
 </head>
 <body class="sk-page">
-<main class="sk-lab" data-sk-lab>
-  <header class="sk-top">
-    <div><a href="/experimentos/" class="sk-back">← Experimentos</a><p class="sk-eyebrow">CHARACTER ENGINEERING · LAB F1.6</p><h1>Shorekeeper <span>Inspection Studio</span></h1></div>
-    <div class="sk-privacy">LAB · Sem assets incorporados<br/><small>O GLB é lido no navegador. Não é enviado ao servidor.</small></div>
-  </header>
-
-  <div class="sk-workspace">
-    <section class="sk-viewport" aria-label="Visualização Three.js da Shorekeeper">
-      <div class="sk-viewbar" aria-label="Câmeras">
-        <button type="button" data-view="front" disabled>Frente</button>
-        <button type="button" data-view="quarter" disabled>¾</button>
-        <button type="button" data-view="side" disabled>Perfil</button>
-        <button type="button" data-view="back" disabled>Costas</button>
-        <button type="button" data-view="face" disabled>Rosto</button>
-        <button type="button" data-view="reset" disabled>Restaurar</button>
-      </div>
-      <div class="sk-canvas-host" data-sk-canvas tabindex="0" role="img" aria-label="Cena 3D manipulável por arrasto e zoom"></div>
-      <div class="sk-empty" data-empty>
-        <div class="sk-orbit" aria-hidden="true">◎</div>
-        <strong>Uma personagem, um arquivo privado.</strong>
-        <p>Selecione o GLB experimental para inspecionar rig, animações, visuais e expressões. A página não possui modelo embutido.</p>
-      </div>
-      <div class="sk-readouts"><span data-readout="fps">FPS: —</span><span data-readout="meshes">Meshes: —</span><span data-readout="bones">Bones: —</span></div>
-      <p class="sk-status" data-sk-status role="status" aria-live="polite">Aguardando arquivo. WebGL2 será verificado neste dispositivo.</p>
-    </section>
-
-    <aside class="sk-panel" aria-label="Controles de inspeção">
-      <div class="sk-file">
-        <label for="sk-file"><strong>01 · Modelo de teste</strong><small>GLB local · preferencialmente a cópia com morph bounds corrigidos</small></label>
-        <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary" />
-        <p data-sk-file-name class="sk-filename">Nenhum arquivo selecionado</p>
-      </div>
-      <nav class="sk-tabs" role="tablist" aria-label="Áreas de inspeção">
-        <button type="button" role="tab" id="sk-tab-rig" aria-controls="sk-panel-rig" aria-selected="true" data-tab="rig">Rig</button>
-        <button type="button" role="tab" id="sk-tab-visual" aria-controls="sk-panel-visual" aria-selected="false" data-tab="visual">Visuais</button>
-        <button type="button" role="tab" id="sk-tab-face" aria-controls="sk-panel-face" aria-selected="false" data-tab="face">Expressões</button>
-        <button type="button" role="tab" id="sk-tab-acting" aria-controls="sk-panel-acting" aria-selected="false" data-tab="acting">Atuação</button>
-      </nav>
-
-      <section id="sk-panel-rig" role="tabpanel" aria-labelledby="sk-tab-rig" data-pane="rig" class="sk-pane">
-        <h2>Esqueleto & deformação</h2>
-        <label class="sk-toggle"><input type="checkbox" data-control="skeleton" disabled /> Exibir skeleton overlay</label>
-        <label class="sk-toggle"><input type="checkbox" data-control="axes" disabled /> Eixos de orientação</label>
-        <label class="sk-toggle"><input type="checkbox" data-control="wireframe" disabled /> Malhas wireframe</label>
-        <label class="sk-toggle"><input type="checkbox" data-control="culling" checked disabled /> Frustum culling ativo</label>
-        <label class="sk-field">Bone selecionado <select data-control="bone" disabled><option value="">Escolha um GLB</option></select></label>
-        <div class="sk-mono" data-bone-data>Selecione um osso para inspecionar rotação e posição locais.</div>
-        <button type="button" data-control="rigreset" disabled>Restaurar pose de referência</button>
-        <p class="sk-help">Os controles de rig são diagnósticos. Não alteram o arquivo original.</p>
-      </section>
-
-      <section id="sk-panel-visual" role="tabpanel" aria-labelledby="sk-tab-visual" data-pane="visual" class="sk-pane" hidden>
-        <h2>Materiais & enquadramento</h2>
-        <label class="sk-field">Materiais <select data-control="materials" disabled>
-          <option value="original">Originais (PBR simplificado)</option>
-          <option value="neutral">Neutros · geometria</option>
-          <option value="mask">Máscara experimental · Bangs/Alpha</option>
-        </select></label>
-        <label class="sk-field">Fundo <select data-control="background" disabled>
-          <option value="night">Azul noturno</option><option value="gray">Cinza de inspeção</option><option value="black">Preto</option>
-        </select></label>
-        <label class="sk-field">Intensidade de luz <input type="range" data-control="light" min="0.3" max="3" step="0.1" value="1.4" disabled /></label>
-        <label class="sk-field">DPR máximo <select data-control="dpr" disabled><option value="1">1.0 · econômico</option><option value="1.5" selected>1.5 · equilibrado</option><option value="2">2.0 · detalhado</option></select></label>
-        <p class="sk-help">O modo MASK é experimental: alfa do jogo pode codificar máscaras e não transparência.</p>
-      </section>
-
-      <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
-        <h2>Expressões & olhar</h2>
-        <label class="sk-field">Fechamento bilateral · E_Close <input type="range" data-morph="E_Close" min="0" max="1" step="0.05" value="0" disabled /><output data-value="E_Close">0.00</output></label>
-        <label class="sk-field">Olhar horizontal <input type="range" data-control="gazeX" min="-0.45" max="0.45" step="0.025" value="0" disabled /><output data-value="gazeX">0.00</output></label>
-        <label class="sk-field">Olhar vertical <input type="range" data-control="gazeY" min="-0.4" max="0.4" step="0.025" value="0" disabled /><output data-value="gazeY">0.00</output></label>
-        <label class="sk-field">Morph individual <select data-control="morph" disabled><option value="">Escolha um GLB</option></select></label>
-        <label class="sk-field">Peso do morph <input type="range" data-control="morphWeight" min="0" max="1" step="0.05" value="0" disabled /><output data-value="morphWeight">0.00</output></label>
-        <div class="sk-actions"><button type="button" data-preset="neutral" disabled>Neutro</button><button type="button" data-preset="blink" disabled>Piscar</button><button type="button" data-preset="smile" disabled>Sorriso</button></div>
-        <p class="sk-help">A piscada independente ainda não existe; os limites de gaze são provisórios, para inspeção visual.</p>
-      </section>
-
-      <section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane" hidden>
-        <h2>Clipes & transições</h2>
-        <div class="sk-actions"><button type="button" data-action="play" disabled>Executar gesto</button><button type="button" data-action="interrupt" disabled>Interromper</button><button type="button" data-action="pause" disabled>Pausar</button></div>
-        <label class="sk-field">Duração de entrada (s) <input type="range" data-control="enter" min="0.2" max="1.2" step="0.1" value="0.5" disabled /><output data-value="enter">0.5</output></label>
-        <label class="sk-field">Transição do tecido (s) <input type="range" data-control="transfer" min="0.2" max="1.5" step="0.1" value="0.8" disabled /><output data-value="transfer">0.8</output></label>
-        <label class="sk-field">Retorno (s) <input type="range" data-control="exit" min="0.2" max="1.5" step="0.1" value="0.5" disabled /><output data-value="exit">0.5</output></label>
-        <p class="sk-mono" data-acting-state>Diretor: não iniciado.</p>
-        <p class="sk-help">O diretor F1.6 compartilha um mixer entre corpo e tecido. Não garante ainda continuidade perceptiva nem atuação autônoma.</p>
-      </section>
-
-      <div class="sk-diagnostics">
-        <h2>Diagnóstico</h2><pre data-sk-diagnostics>GLB: não carregado
-GPU: aguardando WebGL2
-F1.6: testes em andamento</pre>
-        <button type="button" data-action="report" disabled>Copiar relatório de inspeção</button>
-      </div>
-    </aside>
-  </div>
-  <footer class="sk-footer">Laboratório experimental · Kuro Games (personagem original) · Testes locais sem redistribuição do asset · <a href="/experimentos/">Voltar à Hsin</a></footer>
+<main class="sk-lab" data-sk-lab data-revision={revision} data-branch={branch} data-state="empty">
+<header class="sk-top">
+<a href="/experimentos/" class="sk-back" aria-label="Voltar aos experimentos">←</a>
+<div>
+<p class="sk-eyebrow">CHARACTER STUDIES · F1.8</p>
+<h1>Shorekeeper <span>Inspection Studio</span>
+</h1>
+</div>
+<span class="sk-state" data-phase>Sem modelo</span>
+<button data-action="panel" aria-expanded="true" aria-controls="sk-controls">Controles <span aria-hidden="true">⌃</span>
+</button>
+</header>
+<div class="sk-workspace">
+<section class="sk-viewport" aria-label="Visualizador 3D">
+<nav class="sk-viewbar" aria-label="Câmeras">
+<button data-view="front" disabled>Frente</button>
+<button data-view="quarter" disabled>¾</button>
+<button data-view="side" disabled>Perfil</button>
+<button data-view="back" disabled>Costas</button>
+<button data-view="face" disabled>Rosto</button>
+<button data-view="reset" disabled>Recentrar</button>
+</nav>
+<div class="sk-canvas-host" data-sk-canvas tabindex="0" role="img" aria-label="Personagem 3D. Arraste para orbitar; use dois dedos ou a roda para zoom.">
+</div>
+<div class="sk-empty" data-empty>
+<span aria-hidden="true">◎</span>
+<p class="sk-eyebrow">UM ESTUDO EM MOVIMENTO</p>
+<h2>Seu modelo.<br/>Seu espaço de inspeção.</h2>
+<p>Abra o GLB no painel para explorar rosto, rig e atuação. O arquivo permanece neste navegador.</p>
+</div>
+<div class="sk-readouts">
+<span data-readout="fps">FPS —</span>
+<span data-readout="counts">Sem modelo</span>
+<button data-action="capture" disabled>↓ PNG</button>
+</div>
+<p class="sk-status" data-sk-status role="status" aria-live="polite">Selecione um arquivo GLB local.</p>
+</section>
+<aside class="sk-panel" id="sk-controls" aria-label="Controles de inspeção">
+<div class="sk-panel-grip">
+<span>INSPEÇÃO LOCAL</span>
+<label>Largura <input data-control="panelWidth" type="range" min="300" max="500" step="10" value="360" aria-label="Largura do painel em pixels"/>
+</label>
+</div>
+<div class="sk-file">
+<label for="sk-file">Modelo GLB <small>Arquivo local · até 130 MB</small>
+</label>
+<input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
+<p class="sk-filename" data-sk-file-name>Nenhum arquivo selecionado</p>
+<progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
+</progress>
+<div class="sk-actions">
+<button data-action="cancel" hidden>Cancelar leitura</button>
+<button data-action="retry" hidden>Tentar WebGL novamente</button>
+</div>
+<details>
+<summary>Privacidade e identificação</summary>
+<p class="sk-help">Esta página de preview pode ser pública. O GLB é lido pela File API e não é enviado ao servidor. Noindex não é controle de acesso.</p>
+<pre data-model-id>SHA-256: aguardando arquivo</pre>
+</details>
+</div>
+<nav class="sk-tabs" role="tablist" aria-label="Áreas de inspeção">{[['rig','Rig'],['visual','Visuais'],['face','Expressões'],['acting','Atuação']].map(([id,label],i)=>
+<button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
+<section id="sk-panel-rig" role="tabpanel" aria-labelledby="sk-tab-rig" data-pane="rig" class="sk-pane">
+<div class="sk-section-title">
+<h2>Estrutura & pose</h2>
+<span data-rig-status>Repouso</span>
+</div>
+<label class="sk-field">Buscar bone<input type="search" data-control="boneSearch" placeholder="Nome ou função…" disabled/>
+</label>
+<label class="sk-field">Hierarquia<select data-control="bone" size="7" disabled>
+<option value="">Selecione um modelo</option>
+</select>
+</label>
+<pre data-bone-data>Selecione um bone para ver pai, filhos e influência nas malhas.</pre>
+<div class="sk-bone-rotations">{['x','y','z'].map(axis=>
+<label class="sk-field sk-slider">Rotação {axis.toUpperCase()} <input data-bone-axis={axis} type="range" min="-45" max="45" step="1" value="0" disabled/>
+<output data-bone-angle={axis}>0°</output>
+</label>)}</div>
+<div class="sk-actions">
+<button data-control="rigreset" disabled>Restaurar pose</button>
+</div>
+<details>
+<summary>Presets de teste</summary>
+<p class="sk-help">Offsets modestos e reversíveis. Disponíveis apenas no repouso; não alteram o bind pose do arquivo.</p>
+<div class="sk-actions">
+<button data-rig-preset="head" disabled>Cabeça</button>
+<button data-rig-preset="arm" disabled>Braço</button>
+<button data-rig-preset="hair" disabled>Cabelo</button>
+</div>
+</details>
+</section>
+<section id="sk-panel-visual" role="tabpanel" aria-labelledby="sk-tab-visual" data-pane="visual" class="sk-pane" hidden>
+<h2>Superfície & luz</h2>
+<label class="sk-field">Comparação de material<select data-control="materials" disabled>
+<option value="original">Original · PBR simplificado</option>
+<option value="neutral">Neutro · geometria</option>
+<option value="mask">Experimental · MASK Bangs/Alpha</option>
+</select>
+</label>
+<p class="sk-help">O modo original mantém os materiais exportados. A variante MASK é um teste de recorte, sujeito a artefatos.</p>
+<label class="sk-field">Fundo<select data-control="background" disabled>
+<option value="night">Azul noturno</option>
+<option value="gray">Cinza de inspeção</option>
+<option value="black">Preto</option>
+</select>
+</label>
+<label class="sk-field sk-slider">Luz<input type="range" data-control="light" min="0.3" max="3" step="0.1" value="1.4" disabled/>
+<output data-value="light">1.4</output>
+</label>
+<label class="sk-toggle">
+<input type="checkbox" data-control="wireframe" disabled/> Wireframe</label>
+<label class="sk-toggle">
+<input type="checkbox" data-control="skeleton" disabled/> Esqueleto sobreposto</label>
+<label class="sk-toggle">
+<input type="checkbox" data-control="axes" disabled/> Eixos</label>
+<details>
+<summary>Qualidade & opções experimentais</summary>
+<label class="sk-field">DPR máximo<select data-control="dpr">
+<option value="1">1 · econômico</option>
+<option value="1.5" selected>1,5 · equilibrado</option>
+<option value="2">2 · detalhado</option>
+</select>
+</label>
+<label class="sk-field">Frequência máxima<select data-control="fps">
+<option value="30" selected>30 quadros/s</option>
+<option value="60">60 quadros/s</option>
+</select>
+</label>
+<label class="sk-toggle">
+<input type="checkbox" data-control="culling" checked disabled/> Frustum culling</label>
+<p class="sk-help">Desative apenas para comparação. O padrão permanece ativo.</p>
+</details>
+</section>
+<section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
+<h2>Expressão & atenção</h2>
+<p class="sk-help">E_Close é bilateral. Os pesos servem à inspeção; não representam limites faciais aprovados.</p>
+<label class="sk-field sk-slider">E_Close · ambos os olhos<input data-morph="E_Close" type="range" min="0" max="1" step="0.25" value="0" disabled/>
+<output data-value="E_Close">0</output>
+</label>
+<div class="sk-actions">
+<button data-action="sweep" disabled>Testar 0 → 1 em cinco passos</button>
+<button data-action="stopSweep" disabled>Parar teste</button>
+</div>
+<label class="sk-field sk-slider">Olhar horizontal<input data-control="gazeX" type="range" min="-0.45" max="0.45" step="0.025" value="0" disabled/>
+<output data-value="gazeX">0</output>
+</label>
+<label class="sk-field sk-slider">Olhar vertical<input data-control="gazeY" type="range" min="-0.4" max="0.4" step="0.025" value="0" disabled/>
+<output data-value="gazeY">0</output>
+</label>
+<div class="sk-actions">{[['neutral','Neutro'],['blink','Fechar olhos'],['smile','Sorriso'],['sad','Tristeza'],['attention','Atenção'],['lateral','Olhar lateral']].map(([id,label])=>
+<button data-preset={id} disabled>{label}</button>)}</div>
+<label class="sk-field">Região<select data-control="morphGroup" disabled>
+<option value="">Todas</option>
+</select>
+</label>
+<label class="sk-field">Morph individual<select data-control="morph" disabled>
+<option value="">Selecione um modelo</option>
+</select>
+</label>
+<label class="sk-field sk-slider">Peso<input data-control="morphWeight" type="range" min="0" max="1" step="0.05" value="0" disabled/>
+<output data-value="morphWeight">0</output>
+</label>
+<details>
+<summary>Configurar preset reproduzível</summary>
+<label class="sk-field">Mapa de morphs → pesos<textarea data-preset-config rows="3" spellcheck="false">{JSON.stringify({E_Close:.5})}</textarea>
+</label>
+<button data-action="customPreset" disabled>Aplicar mapa</button>
+</details>
+<button data-action="flag" disabled>Marcar problema observado</button>
+<p class="sk-help">Registre defeitos de cílios, pálpebras ou íris no diagnóstico. A interface não decide se o fechamento está correto.</p>
+</section>
+<section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane" hidden>
+<h2>Corpo & tecido</h2>
+<div class="sk-actions">
+<button data-action="play" disabled>Reproduzir</button>
+<button data-action="pause" disabled>Pausar</button>
+<button data-action="interrupt" disabled>Interromper</button>
+<button data-action="repeat" disabled>Repetir</button>
+</div>
+<label class="sk-field">Execução<progress data-timeline max="1" value="0" aria-label="Progresso do gesto">
+</progress>
+</label>
+<p data-acting-state class="sk-mono">Diretor: aguardando modelo.</p>
+<label class="sk-field sk-slider">Velocidade<input data-control="speed" type="range" min="0.25" max="2" step="0.25" value="1" disabled/>
+<output data-value="speed">1×</output>
+</label>
+<details open>
+<summary>Transições</summary>{[['enter','Entrada',.5],['transfer','Transferência do tecido',.8],['exit','Retorno',.5]].map(([id,label,value])=>
+<label class="sk-field sk-slider">{label} (s)<input data-control={id} type="range" min="0.2" max="1.5" step="0.1" value={value} disabled/>
+<output data-value={id}>{value}</output>
+</label>)}<p class="sk-help">Durante um gesto, novos tempos ficam agendados para a próxima execução. A velocidade pode mudar ao vivo.</p>
+</details>
+<p class="sk-help" data-rest-check>Retorno à referência: ainda não medido.</p>
+<p class="sk-help" data-motion-policy>
+</p>
+</section>
+<details class="sk-diagnostics">
+<summary>Diagnóstico & exportação</summary>
+<pre data-sk-diagnostics>WebGL2: aguardando inicialização.</pre>
+<label class="sk-field">Observações<textarea data-notes rows="3" placeholder="Ex.: cílios atravessam a pálpebra em E_Close=0.75">
+</textarea>
+</label>
+<div class="sk-actions">
+<button data-action="report">↓ Relatório JSON</button>
+<button data-action="config" disabled>↓ Configuração</button>
+<button data-action="errors">↓ Erros</button>
+<button data-action="copy">Copiar resumo</button>
+</div>
+<label class="sk-field">Restaurar configuração local<input type="file" data-config-file accept=".json,application/json" disabled/>
+</label>
+<p class="sk-help">Capturas e relatórios são salvos somente quando você solicita. Contagens do Three.js não são uma medição de VRAM.</p>
+</details>
+<footer class="sk-panel-footer">Kuro Games · personagem original<br/>Laboratório experimental · aprovação visual pendente</footer>
+</aside>
+</div>
 </main>
-<script>
-  import { mountShorekeeperLab } from '../../../scripts/shorekeeper-sk-lab.mjs';
-  const root = document.querySelector('[data-sk-lab]');
-  if (root) mountShorekeeperLab(root);
-</script>
+<script>import {mountShorekeeperLab} from '../../../scripts/shorekeeper-sk-lab.mjs';const root=document.querySelector('[data-sk-lab]');if(root)mountShorekeeperLab(root);</script>
 </body>
 </html>
