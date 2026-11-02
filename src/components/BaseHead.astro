@@ -15,6 +15,8 @@ const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
+// Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
+const hasLandingScenes = Astro.url.pathname === '/';
 ---
 
 <meta charset="UTF-8" />
@@ -63,7 +65,7 @@ const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos
   })();
 </script>
 <script is:inline src="/scripts/reveal.js"></script>
-<script is:inline src="/scripts/scenes.js" defer></script>
+{hasLandingScenes && <script is:inline src="/scripts/scenes.js" defer></script>}
 
 <link rel="canonical" href={canonicalUrl} />
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
