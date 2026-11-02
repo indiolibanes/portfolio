@@ -25,5 +25,7 @@ const acting = {
   },
  },
 };
-writeFileSync(root + 'public/assets/models/hsin/hsin-v2.1-acting.json', JSON.stringify(acting) + '\n');
+const text = JSON.stringify(acting) + '\n';
+writeFileSync(root + 'public/assets/models/hsin/hsin-v2.1-acting.json', text);
+writeFileSync(root + 'src/data/hsin-v201-acting.json', JSON.stringify({version: acting.version, sha256: createHash('sha256').update(text).digest('hex'), bytes: Buffer.byteLength(text), modelSha256: acting.modelSha256, profileSha256: acting.profileSha256}, null, 2) + '\n');
 console.log('acting profile written', JSON.stringify(acting.poses.lipTouch.validation));

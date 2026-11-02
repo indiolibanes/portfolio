@@ -27,7 +27,7 @@ export function bakeLip(solution, {stage2 = STAGE2_FRAMES} = {}) {
  for (let i = 0; i < total; i++) { const u = i <= 64 ? 0 : (i - 64) / stage2; frames.push(qNorm2([...armAt(i, u), ...(i <= 64 ? fingerBones.flat().map((n) => restQ(n)) : fingerAt(u))])); }
  return {names: NAMES, rest: rest0(), frames, stages: {signature: 64 / (total - 1), contact: 1}};
  function rest0() { return [...ctx.names.map((n) => sigPose.rest.slice(ctx.names.indexOf(n) * 4, ctx.names.indexOf(n) * 4 + 4)), ...fingerBones.flat().map((n) => restQ(n))].flat(); }
- function qNorm2(list) { return list.flat().map((v) => +v.toFixed(7)); }
+ function qNorm2(list) { return list.flat().map((v) => +v.toFixed(6)); }
 }
 
 /** Dense geometric audit of a baked pose: sub-sampled frames, clearance by group, step sizes and the contact track. */

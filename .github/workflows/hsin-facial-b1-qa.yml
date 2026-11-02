@@ -21,6 +21,10 @@ on:
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/render-hsin-poster.mjs'
       - 'scripts/qa/**'
+      - 'scripts/lib/**'
+      - 'scripts/solve-hsin-*.mjs'
+      - 'scripts/bake-hsin-*.mjs'
+      - 'scripts/data/**'
       - 'scripts/audit-hsin-materials.mjs'
       - 'docs/hsin-v201-material-audit.json'
       - 'public/_headers'
@@ -76,6 +80,8 @@ jobs:
           node tests/hsin-face-skin-math.test.mjs
           node tests/hsin-face-skin.test.mjs
           node tests/hsin-rig-parity.test.mjs
+          node tests/hsin-lip-hair.test.mjs
+          node tests/hsin-lip-touch-geometry.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract

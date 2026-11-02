@@ -5,6 +5,7 @@ import {createFacialActing} from './hsin-face-acting.mjs';
 import {snapshotFace,createFaceBinding} from './hsin-face-binding.mjs';
 import {createChestDirector} from './hsin-chest-director.mjs';
 import {createBodyRepertoire} from './hsin-body-repertoire.mjs';
+import {createHairCaress,createLipHairComposition} from './hsin-lip-hair.mjs';
 import {createPoseTransition} from './hsin-pose-transition.mjs';
 import {createRestBreath} from './hsin-rest-breath.mjs';
 import {LUNAR_TERRACE,createLunarTerrace} from './hsin-lunar-terrace.mjs';
@@ -57,7 +58,9 @@ export function mountHsinStage(root:HTMLElement){
    const version='?v='+asset.sha256.slice(0,12);
    const cinematic=HSIN_CINEMATIC_IDLE.enabled,poseManifest=cinematic?(await import('../data/hsin-v21-pose.json')).default:null;
    const profileUrl=cinematic?HSIN_STAGE.cinematicProfile+'?v='+poseManifest!.profileSha256.slice(0,12):HSIN_STAGE.profile+version;
-   const [profileResponse,response]=await Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal})]);
+   // Baked Lip Touch / Hair Caress data (~25 KB compressed). Optional: any failure leaves the approved repertoire exactly as it was.
+   const actingManifest=cinematic?(await import('../data/hsin-v201-acting.json')).default:null;
+   const [profileResponse,response,acting]=await Promise.all([fetch(profileUrl,{signal:attempt.signal}),fetch(HSIN_STAGE.model+version,{signal:attempt.signal}),actingManifest?fetch(HSIN_STAGE.actingProfile+'?v='+actingManifest.sha256.slice(0,12),{signal:attempt.signal}).then(r=>r.ok?r.json():null).catch(()=>null):Promise.resolve(null)]);
    if(!profileResponse.ok)throw Error('Stage profile unavailable.');const profile=await profileResponse.json();if(profile.modelSha256!==asset.sha256)throw Error('Stage/profile version mismatch.');
    if(!response.ok)throw Error('Model unavailable.');
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
@@ -96,7 +99,12 @@ export function mountHsinStage(root:HTMLElement){
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
    binding=createFaceBinding(meshes,snapshotFace(meshes),profile.calibration,{limits:profile.limits});
    const signature=createPoseTransition({pose:createBakedPose({THREE:T,data:profile.poses.signature,bones})}),chest=createChestDirector({pose:createBakedChest({THREE:T,profile:profile.poses,bones}),seed:seed^0x51c7,organic:true,onEvent:face.signal}),hair=createChestDirector({pose:createBakedPose({THREE:T,data:profile.poses.hair,bones}),seed:seed^0x32b1,organic:true,onEvent:face.signal});
-   const spine:any=byName.get('ORG-Bip001Spine2');body=createBodyRepertoire({seed:seed^0xb041,signature,chest,hair,breath:createRestBreath({THREE:T,bone:spine,update:()=>spine?.updateMatrix()}),capabilities:()=>({signature:!!profile.poses.signature,chest:!!profile.poses.chest,composition:!!profile.poses.composition,hair:!!profile.poses.hair})});
+   // Lip Touch (right) and the refined Hair Caress (left) are enabled only when the acting data matches this exact model and profile and every bone is present.
+   const actingValid=!!acting&&!!poseManifest&&acting.modelSha256===asset.sha256&&acting.profileSha256===poseManifest.profileSha256;
+   const lipPose=actingValid&&acting.poses?.lipTouch?createBakedPose({THREE:T,data:acting.poses.lipTouch,bones}):null,caressPose=actingValid&&acting.poses?.hairCaress?createBakedPose({THREE:T,data:acting.poses.hairCaress,bones}):null;
+   const caress=caressPose?.diagnostics().ready?createHairCaress({pose:caressPose,data:acting.poses.hairCaress,seed:seed^0x7a11,onEvent:face.signal}):null;
+   const lipHair=caress&&lipPose?.diagnostics().ready?createLipHairComposition({lip:lipPose,lipData:acting.poses.lipTouch,hair:caress,seed:seed^0x1b9d,onEvent:face.signal}):null;
+   const spine:any=byName.get('ORG-Bip001Spine2');body=createBodyRepertoire({seed:seed^0xb041,signature,chest,hair:caress??hair,lipHair,breath:createRestBreath({THREE:T,bone:spine,update:()=>spine?.updateMatrix()}),capabilities:()=>({signature:!!profile.poses.signature,chest:!!profile.poses.chest,composition:!!profile.poses.composition,hair:!!(caress??profile.poses.hair),lipHair:!!lipHair})});
    // Reusable vectors. Pointer projection runs only on input, not in the animation hot path.
    const ray=new T.Raycaster(),plane=new T.Plane(),normal=new T.Vector3(),center=new T.Vector3(),hit=new T.Vector3(),inverse=new T.Matrix4(),ndc=new T.Vector2(),localCenter=new T.Vector3(...profile.calibration.focusCenter);
    const horizontal=new T.Vector3(...profile.gazeAxes.horizontal),vertical=new T.Vector3(...profile.gazeAxes.vertical),gaze=[0,0,0];let attending=false,touchUntil=0;
