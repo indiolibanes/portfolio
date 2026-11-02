@@ -1,5 +1,6 @@
 ---
 import '../../../styles/shorekeeper-sk-lab.css';
+import '../../../styles/shorekeeper-material3.css';
 const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
 const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspection-studio-20261102';
 ---
@@ -9,7 +10,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="noindex,nofollow,noarchive"/>
-<meta name="description" content="Inspection Studio da Shorekeeper: inspeção local de rig, rosto, materiais e atuação sem envio do modelo."/>
+<meta name="description" content="Shorekeeper Inspection Studio: laboratório 3D de tons claros, com controles locais de rig, rosto, materiais e atuação."/>
 <title>Shorekeeper · Inspection Studio</title>
 </head>
 <body class="sk-page">
@@ -17,8 +18,8 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <header class="sk-top">
 <a href="/experimentos/" class="sk-back" aria-label="Voltar aos experimentos">←</a>
 <div>
-<p class="sk-eyebrow">CHARACTER STUDIES · F1.8</p>
-<h1>Shorekeeper <span>Inspection Studio</span>
+<p class="sk-eyebrow">SHOREKEEPER · AETHER LAB / F1.8</p>
+<h1>Shorekeeper <span>Inspection Studio · Material 3</span>
 </h1>
 </div>
 <span class="sk-state" data-phase>Sem modelo</span>
@@ -39,9 +40,9 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </div>
 <div class="sk-empty" data-empty>
 <span aria-hidden="true">◎</span>
-<p class="sk-eyebrow">UM ESTUDO EM MOVIMENTO</p>
-<h2>Seu modelo.<br/>Seu espaço de inspeção.</h2>
-<p>Abra o GLB no painel para explorar rosto, rig e atuação. O arquivo permanece neste navegador.</p>
+<p class="sk-eyebrow">AETHER · INSPEÇÃO 3D</p>
+<h2>Um espaço feito<br/>para a Shorekeeper.</h2>
+<p>Selecione seu GLB no painel para explorar o rig, as expressões e a atuação. O modelo não é enviado ao servidor.</p>
 </div>
 <div class="sk-readouts">
 <span data-readout="fps">FPS —</span>
@@ -52,7 +53,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </section>
 <aside class="sk-panel" id="sk-controls" aria-label="Controles de inspeção">
 <div class="sk-panel-grip">
-<span>INSPEÇÃO LOCAL</span>
+<span>CONTROLES · ESTÚDIO</span>
 <label>Largura <input data-control="panelWidth" type="range" min="300" max="500" step="10" value="360" aria-label="Largura do painel em pixels"/>
 </label>
 </div>
@@ -114,7 +115,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </label>
 <p class="sk-help">O modo original mantém os materiais exportados. A variante MASK é um teste de recorte, sujeito a artefatos.</p>
 <label class="sk-field">Fundo<select data-control="background" disabled>
-<option value="night">Azul noturno</option>
+<option value="night">Azul-gelo · estúdio</option>
 <option value="gray">Cinza de inspeção</option>
 <option value="black">Preto</option>
 </select>
