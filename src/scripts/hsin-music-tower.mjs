@@ -33,6 +33,18 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
       for(const y of [bottom,top])box('brass',.12,.055,.44,x,y,-.15);
     }
     for(const y of [bottom-.05,top+.035])box('brass',1.22,.055,.46,0,y,-.15);
+    // Interlocking bracket sets and celadon lattice live OUTSIDE the native display aperture.
+    for(const side of [-1,1]){
+      for(const level of [0,1,2]){
+        box('wood',.15+level*.035,.026,.34,side*.56,top+.025+level*.035,-.17);
+        box('brass',.026,.025,.39,side*(.54+level*.02),top+.04+level*.035,-.17);
+      }
+      for(let row=0;row<4;row++){
+        const y=bottom+.13+(height-.26)*row/3;
+        for(const sign of [-1,1]){const slat=new T.BoxGeometry(.012,.12,.014);slat.rotateZ(sign*.63);add('brass',slat,side*.62,y,-.02);}
+      }
+      add('glass',new T.OctahedronGeometry(.032),side*.62,top-.07,.025);
+    }
     box('iron',1.42,.12,.72,0,bottom-.16,-.17);
     box('wood',1.29,.065,.64,0,bottom-.065,-.17);
     box('brass',1.47,.025,.75,0,bottom-.105,-.17);
@@ -40,7 +52,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
     for(const [level,span,y,depth] of [[0,.8,top+.12,.84],[1,.53,top+.43,.63]]) {
       const vertices=[],indices=[];
       for(let i=0;i<=16;i++) {
-        const x=(i/8-1)*span,curve=.17*Math.pow(Math.abs(x/span),3)-.10*Math.pow(Math.abs(x/span),1);
+        const x=(i/8-1)*span,u=Math.abs(x/span),curve=.14*(1-u)+.16*u**5-.05;
         vertices.push(x,y+curve,-.17+depth/2,x,y+curve,-.17-depth/2);
         if(i<16){const a=i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2);}
       }
@@ -49,7 +61,8 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host}) {
       batches.roof.push(g);const underside=g.clone();underside.scale(1,-1,1);underside.translate(0,2*y-.022,0);batches.roof.push(underside);
       for(const z of [-.17-depth/2,-.17+depth/2])for(let i=0;i<16;i++) {
         const a=(i/8-1)*span,b=((i+1)/8-1)*span;
-        const ya=y+.17*Math.abs(a/span)**3-.10*Math.abs(a/span),yb=y+.17*Math.abs(b/span)**3-.10*Math.abs(b/span);
+        const roofCurve=u=>.14*(1-Math.abs(u))+.16*Math.abs(u)**5-.05;
+        const ya=y+roofCurve(a/span),yb=y+roofCurve(b/span);
         const rail=new T.BoxGeometry(Math.hypot(b-a,yb-ya)+.005,.018,.023);rail.rotateZ(Math.atan2(yb-ya,b-a));add('brass',rail,(a+b)/2,(ya+yb)/2,z);
       }
       if(level===1)box('wood',.60,.27,.38,0,top+.25,-.17);
