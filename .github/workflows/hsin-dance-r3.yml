@@ -104,6 +104,12 @@ jobs:
         run: |
           cp baked/public/assets/animations/hsin/lunar-dance-r3*.json public/assets/animations/hsin/
           cp baked/src/data/hsin-dance-r3.json src/data/hsin-dance-r3.json
+      - name: Install ffmpeg for video encoding
+        if: matrix.part == 'video'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -n 1
       - name: Render ${{ matrix.part }}
         run: node scripts/render-hsin-dance-r3-qa.mjs --only=${{ matrix.part }} --workers=3
       - uses: actions/upload-artifact@v4
