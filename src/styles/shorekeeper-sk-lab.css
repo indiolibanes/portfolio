@@ -1,0 +1,48 @@
+:root{color-scheme:dark}*{box-sizing:border-box}[hidden]{display:none!important}
+.sk-page{margin:0;min-height:100vh;background:#0a1321;color:#eaf0f5;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+.sk-page button,.sk-page select,.sk-page input{font:inherit}.sk-page button,.sk-page select{background:#17263b;color:#e5eef8;border:1px solid #42536a;border-radius:7px;padding:9px 11px}
+.sk-page button{cursor:pointer;transition:background .15s,border-color .15s}.sk-page button:hover:not(:disabled){background:#264260;border-color:#9daac0}
+.sk-page button:focus-visible,.sk-page input:focus-visible,.sk-page select:focus-visible,.sk-page a:focus-visible{outline:2px solid #f0c780;outline-offset:3px}
+.sk-page button:disabled,.sk-page select:disabled,.sk-page input:disabled{opacity:.45;cursor:not-allowed}
+.sk-page a{color:#b8dafa;text-decoration:none}.sk-page a:hover{text-decoration:underline}
+.sk-lab{max-width:1900px;margin:0 auto;padding:20px 24px 12px}
+.sk-top{display:flex;justify-content:space-between;gap:16px;align-items:end;padding:0 3px 21px;border-bottom:1px solid #35445a}
+.sk-back{font-size:12px}.sk-eyebrow{color:#d6b67a;letter-spacing:.17em;font-size:10px;font-weight:700;margin:14px 0 5px}
+.sk-top h1{font-size:clamp(25px,3vw,40px);font-family:Georgia,serif;font-weight:400;line-height:1.1;margin:0;color:#f3f1ec}
+.sk-top h1 span{font-family:system-ui,sans-serif;font-weight:400;color:#9cbbd5;font-size:13px;margin-left:12px;letter-spacing:.07em}
+.sk-privacy{font-size:12px;text-align:right;color:#d3b47d;line-height:1.6}.sk-privacy small{color:#98abc2;font-size:11px}
+.sk-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,390px);gap:16px;align-items:start;padding:16px 0}
+.sk-viewport{position:relative;min-height:min(78vh,760px);border-radius:13px;border:1px solid #36475b;background:radial-gradient(ellipse at 50% 42%,#243f63,#0d1b30 65%,#0a1423);overflow:hidden;display:flex;flex-direction:column}
+.sk-canvas-host{position:absolute;inset:0;z-index:1}.sk-canvas-host canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.sk-viewbar{position:relative;z-index:3;display:flex;gap:6px;padding:12px;overflow-x:auto;max-width:100%;pointer-events:auto}
+.sk-viewbar button{font-size:11px;white-space:nowrap;padding:8px 10px;background:#101d2fdb;backdrop-filter:blur(10px)}
+.sk-empty{position:absolute;z-index:2;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:380px;margin:auto;text-align:center;padding:24px;pointer-events:none}
+.sk-orbit{font-size:95px;line-height:1.2;color:#c2d9ee;font-weight:100;opacity:.6}
+.sk-empty strong{font-family:Georgia,serif;font-size:24px;font-weight:400}.sk-empty p{color:#9db4c9;line-height:1.65}
+.sk-readouts{position:absolute;z-index:3;bottom:48px;left:12px;display:flex;flex-wrap:wrap;gap:7px;pointer-events:none}
+.sk-readouts span{border:1px solid #415574aa;background:#08172dd9;border-radius:20px;padding:6px 10px;font-size:10px;color:#d1dfed;font-variant-numeric:tabular-nums}
+.sk-status{position:absolute;z-index:3;left:0;right:0;bottom:0;margin:0;padding:12px 14px;color:#d7e1eb;background:#071421eb;min-height:43px;font-size:11px}
+.sk-panel{background:#101c2c;border:1px solid #33465b;border-radius:13px;max-height:calc(100vh - 140px);overflow:auto;scrollbar-color:#405e75 transparent}
+.sk-file{padding:18px 17px 15px;border-bottom:1px solid #35455b}.sk-file label{display:block}
+.sk-file strong{display:block;font-size:14px;color:#f1d59a}.sk-file small{display:block;color:#a4b5c9;font-size:11px;margin:6px 0 12px;line-height:1.6}
+.sk-file input{width:100%;font-size:11px;max-width:100%}.sk-file input::file-selector-button{border:1px solid #51657d;border-radius:6px;background:#233b56;color:#fff;padding:8px;margin-right:8px;cursor:pointer}
+.sk-filename{font:11px ui-monospace,Consolas,monospace;color:#8eabbf;overflow-wrap:anywhere;margin:9px 0 0}
+.sk-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:7px;gap:4px;border-bottom:1px solid #334559}
+.sk-tabs button{padding:10px 2px;background:none;border:1px solid transparent;border-radius:6px;color:#a9bad0;font-size:12px}
+.sk-tabs button[aria-selected=true]{border-color:#8faabf;background:#24374a;color:#fff}
+.sk-pane{padding:14px 17px 18px}.sk-pane h2,.sk-diagnostics h2{font-size:13px;font-weight:700;color:#ebf4fa;margin:0 0 15px;letter-spacing:.02em}
+.sk-field{display:flex;flex-direction:column;gap:7px;color:#b9c9da;font-size:12px;margin:0 0 16px}
+.sk-field select{width:100%;max-width:100%;font-size:12px;min-height:36px}
+.sk-field input[type=range]{width:100%;accent-color:#d4b16e;cursor:pointer}
+.sk-field output{align-self:end;color:#f0d398;font:12px ui-monospace,Consolas,monospace}
+.sk-toggle{display:flex;gap:10px;align-items:center;margin:0 0 16px;color:#d1dbe5;font-size:12px;cursor:pointer}
+.sk-toggle input{accent-color:#e0c085}
+.sk-mono,.sk-diagnostics pre{background:#0a1728;border:1px solid #283d53;border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;color:#bbd4e5;max-height:190px;overflow-y:auto}
+.sk-pane>button{width:100%;margin-top:14px}
+.sk-actions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}.sk-actions button{flex:1;font-size:12px;min-width:78px}
+.sk-help{font-size:11px;color:#91a7ba;line-height:1.65;margin:10px 0 0}
+.sk-diagnostics{border-top:1px solid #34485b;padding:16px 17px 18px}.sk-diagnostics pre{max-height:280px;margin:0 0 12px}.sk-diagnostics button{width:100%;font-size:12px}
+.sk-footer{text-align:center;color:#869ab0;font-size:11px;border-top:1px solid #2b3b4e;padding:16px 4px;line-height:1.7}
+@media(max-width:930px){.sk-lab{padding:12px}.sk-workspace{grid-template-columns:1fr}.sk-panel{max-height:none}.sk-viewport{min-height:56vh}.sk-top{align-items:start}.sk-privacy{max-width:180px}}
+@media(max-width:560px){.sk-top{display:block}.sk-privacy{text-align:left;max-width:none;margin-top:11px}.sk-top h1 span{display:block;margin:7px 0 0}.sk-viewport{min-height:52svh}.sk-viewbar{padding:8px}.sk-readouts{bottom:58px}.sk-panel{border-radius:9px}.sk-pane{padding:14px}}
+@media(prefers-reduced-motion:reduce){.sk-page button{transition:none}}
