@@ -6,6 +6,16 @@ import {assertSelfContainedGLB,createLocalLoader,disposeObject} from '../src/scr
 import {createInspection,boneGroup,morphGroup,FACE_PRESETS} from '../src/scripts/shorekeeper/inspection.mjs';
 import {labPhase,permissions} from '../src/scripts/shorekeeper/lab-state.mjs';
 const page=await readFile('src/pages/experimentos/sk/index.astro','utf8'),script=await readFile('src/scripts/shorekeeper-sk-lab.mjs','utf8');
+const materialTheme=await readFile('src/styles/shorekeeper-material3.css','utf8');
+const stageCode=await readFile('src/scripts/shorekeeper/stage.mjs','utf8');
+assert(page.includes('shorekeeper-material3.css'),'The light theme must be imported by the SK route');
+assert(materialTheme.includes('color-scheme: light'));
+for(const token of ['--sk-primary','--sk-on-primary','--sk-primary-container','--sk-surface','--sk-on-surface','--sk-outline'])assert(materialTheme.includes(token),'Missing Material 3 tonal token: '+token);
+assert(materialTheme.includes('.sk-tabs button[aria-selected=true]'));
+assert(materialTheme.includes('@media(max-width:930px)'));
+assert(materialTheme.includes('prefers-reduced-motion:reduce'));
+assert(stageCode.includes('scene.background=new T.Color(0xd6e9f5)'));
+assert.match(page,/Azul-gelo · estúdio/);
 assert.match(page,/noindex,nofollow,noarchive/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);assert.doesNotMatch(page+script,/fetch\s*\(|XMLHttpRequest|sendBeacon|FormData\s*\(/);
 for(const pane of ['rig','visual','face','acting'])assert.match(page,new RegExp('data-pane="'+pane+'"'));
 const pack=uri=>{const data={asset:{version:'2.0'},buffers:uri?[{byteLength:0,uri}]:[{byteLength:0}],images:[]};const raw=Buffer.from(JSON.stringify(data)),json=Buffer.concat([raw,Buffer.alloc((4-raw.length%4)%4,32)]),bytes=Buffer.alloc(20+json.length);bytes.write('glTF');bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(bytes.length,8);bytes.writeUInt32LE(json.length,12);bytes.write('JSON',16);json.copy(bytes,20);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
