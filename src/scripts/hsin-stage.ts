@@ -2,6 +2,8 @@ import {musicForStage} from './hsin-music-state.mjs';
 import {createMusicTransport} from './hsin-music-transport.mjs';
 import {createDanceDirector} from './hsin-dance-director.mjs';
 import {createDancePose} from './hsin-dance-pose.mjs';
+import {decodeDanceData} from './hsin-dance-data.mjs';
+import {dancePlaybackEligible} from './hsin-dance-config.mjs';
 import musicMaps from '../data/hsin-music-map.json';
 import {createMusicTower} from './hsin-music-tower.mjs';
 import {HSIN_STAGE,pixelRatio,attentionHeight} from './hsin-stage-config.mjs';
@@ -122,15 +124,15 @@ export function mountHsinStage(root:HTMLElement){
    // Choreography is lazy: no download, parsing or dance buffers in the normal silent experience.
    let danceLoading=false;
    ensureDance=()=>{
-    if(dance||danceLoading||paused||motion.matches||!visible()||music.sample().status!=='playing')return;danceLoading=true;
+    if(dance||danceLoading||paused||motion.matches||!visible()||!dancePlaybackEligible(music.sample()))return;danceLoading=true;
     (async()=>{try{
      const {default:manifest}=await import('../data/hsin-dance.json');metrics.mark('danceLoadStart');
      const r=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal:attempt.signal});if(!r.ok)return;
      const text=await r.text(),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
      if(Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('')!==manifest.sha256)return;
-     const data=JSON.parse(text);if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
+     const data=decodeDanceData(JSON.parse(text));if(attempt.signal.aborted||destroyed||attemptId!==generation)return;
      if(data.modelSha256!==asset.sha256||data.profileSha256!==poseManifest?.profileSha256)return;
-     const dancePose=createDancePose({THREE:T,data,bones,metrics});
+     const dancePose=createDancePose({THREE:T,data,bones,model,metrics});
      if(dancePose.ready){dance=createDanceDirector({idle:body,pose:dancePose,music,transport:createMusicTransport({maps:musicMaps}),seed:seed^0xdac3,onEvent:face.signal});metrics.mark('danceReady');}
     }catch{ /* Optional data failure preserves the approved repertoire. */ }})();
    };
