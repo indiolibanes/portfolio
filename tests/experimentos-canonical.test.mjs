@@ -22,6 +22,7 @@ for (const removed of [
   'src/layouts/HsinPresentationLayout.astro',
   'src/scripts/hsin-presentation-mode.mjs',
   'tests/hsin-clean-presentation.test.mjs',
+  'tests/hsin-palette.test.mjs',
 ]) {
   await assert.rejects(access(removed), undefined, removed + ' must stay removed');
 }
