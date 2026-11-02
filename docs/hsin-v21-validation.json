@@ -1,0 +1,22 @@
+{
+  "maxHandDriftMetres": {
+    "signature": 0.020681313327665447,
+    "chest": 0.029722267894206903,
+    "composition": 0.029722260770236476,
+    "hair": 0.02972085389294715
+  },
+  "maxOrgDefWristGap": 4.342818304652677e-7,
+  "maxOrgDefRelativeOrientationErrorRadians": 2.3841857910156266e-7,
+  "maxLateHandDrift": 0,
+  "maxAddedAngularStep": 0.003004219651832781,
+  "maxFadeKnotAddedSpeedPerWeight": 0.0006387038911047477,
+  "actionSamplesAt1Hz": {
+    "signature": 115,
+    "composition": 80,
+    "hair": 35,
+    "chest": 61
+  },
+  "profileExtraBytes": 5241,
+  "eyeAnchorShift": 0.0057956979387090365,
+  "quaternionAllocationsPer600Seconds": 9231
+}
