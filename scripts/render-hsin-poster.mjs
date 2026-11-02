@@ -5,9 +5,13 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import sharp from 'sharp';
 import {MOONLIT,createMoonlitEnvironment} from '../src/scripts/hsin-moonlit-environment.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
+import {HSIN_CINEMATIC_IDLE,createCinematicReference} from '../src/scripts/hsin-cinematic-idle.mjs';
+import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 const [input,output,width='800',height='1100']=process.argv.slice(2);
 if(!input||!output)throw Error('Usage: node scripts/render-hsin-poster.mjs MODEL.glb POSTER.webp [WIDTH HEIGHT]');
 const W=Number(width),H=Number(height);
+const options=Object.fromEntries(process.argv.slice(6).map(arg=>arg.replace(/^--/,'').split('=')));
+const cinematic=options.profile==='cinematic';
 if(!(W>0&&H>0&&W*H<=2500000))throw Error('Invalid CPU preview dimensions');
 globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});globalThis.ProgressEvent=class{};
 const data=await readFile(input),jsSize=data.readUInt32LE(12),json=JSON.parse(data.subarray(20,20+jsSize).toString()),binary=data.subarray(28+jsSize);
@@ -16,14 +20,23 @@ gltf.scene.updateMatrixWorld(true);
 const bounds=new T.Box3(),v=new T.Vector3();
 gltf.scene.traverse(m=>{if(!m.isSkinnedMesh)return;m.skeleton.update();for(let i=0;i<m.geometry.attributes.position.count;i++)bounds.expandByPoint(m.getVertexPosition(i,v).applyMatrix4(m.matrixWorld));});
 gltf.scene.position.y-=bounds.min.y;
+const meshes=[];gltf.scene.traverse(m=>{if(m.isSkinnedMesh)meshes.push(m);});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];
+const poseProfile=JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.'+(cinematic?'1':'0')+'-profile.json',import.meta.url)));
+if(cinematic)createCinematicReference({bones,profile:poseProfile}).apply();
+if(options.gesture){
+ const weight=Number(options.weight??1);if(!(weight>=0&&weight<=1))throw Error('Invalid gesture weight');
+ const signature=options.gesture==='composition'?createBakedPose({THREE:T,data:poseProfile.poses.signature,bones}):null;signature?.apply(1);
+ const actor=createBakedPose({THREE:T,data:poseProfile.poses[options.gesture],bones});actor.apply(weight);if(options.return==='1'){actor.restore();signature?.restore();}
+}
 async function decode(path){return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});}
 const sky=await decode(new URL('../public'+MOONLIT.sky,import.meta.url).pathname),moonPixels=await decode(new URL('../public'+MOONLIT.moon,import.meta.url).pathname);
 const moonTexture=new T.Texture();moonTexture.userData.cpu=moonPixels;
 const env=createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);
 const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);
-const distance=cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
-camera.position.set(0,HSIN_STAGE.baseTargetY+.23,distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
+const distance=options.shot==='upper'?1.55:cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=new T.Vector3(0,options.shot==='upper'?1.3:HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);
+const yaw=Number(options.yaw??(cinematic?HSIN_CINEMATIC_IDLE.cameraAzimuthDegrees:0))*Math.PI/180;
+camera.position.set(Math.sin(yaw)*distance,target.y+.23,Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();
 const pixels=Buffer.alloc(W*H*4),depth=new Float32Array(W*H).fill(Infinity);
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
  const at=(y*W+x)*4,from=(Math.min(511,Math.floor(y/H*512))*512+Math.min(511,Math.floor(x/W*512)))*4;

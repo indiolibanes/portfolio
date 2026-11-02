@@ -5,6 +5,7 @@ on:
     branches:
       - 'experiment/hsin-facial-legibility-pass-b1-*'
       - 'experiment/hsin-v2-*'
+      - 'experiment/hsin-v21-*'
   pull_request:
     paths:
       - 'src/scripts/hsin-*.mjs'
@@ -19,6 +20,7 @@ on:
       - 'scripts/*hsin-v2*'
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/render-hsin-poster.mjs'
+      - 'scripts/bake-hsin-cinematic-idle.mjs'
       - 'public/_headers'
       - 'src/scripts/hsin-local-lab.ts'
       - 'src/pages/experimentos/hsin-lab/index.astro'
@@ -40,6 +42,8 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci --no-audit --no-fund
+      - name: Cinematic V2.1 reference, world-space compatibility and 600-second trace
+        run: node tests/hsin-cinematic-idle.test.mjs
       - name: Facial Pass A / B / B.1 and autonomous presentation
         run: |
           node tests/hsin-face-acting.test.mjs
