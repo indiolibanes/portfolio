@@ -42,7 +42,7 @@
 .music-shelf .music-heading--gallery .music-panorama {
   grid-area: scene;
   width: 100%;
-  aspect-ratio: 1264 / 848;
+  aspect-ratio: 16 / 9;
   min-height: 0;
   border-radius: 12px;
   border-color: #e4ce9e66;
@@ -52,6 +52,16 @@
 .music-shelf .music-heading--gallery .music-panorama::after { display: none; }
 .music-scene-art { position: absolute; inset: 0; display: block; }
 .music-scene-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+.music-panorama--hsin-stage .music-scene-art img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.music-panorama--hsin-stage .music-panorama-sky,
+.music-panorama--hsin-stage .music-panorama-glows {
+  display: none;
+}
 .music-shelf .music-heading--gallery .music-panorama::before {
   border-color: #fff6e622;
   box-shadow: none;
