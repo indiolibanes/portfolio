@@ -1,0 +1,100 @@
+name: Hsin Lunar Dance R3 (bake, tests, QA frames)
+
+# three.js is not installable in every authoring environment; the bake and the three-based tests run here.
+# QA frames come from the CPU raster of the real GLB: geometry and pose evidence, never FPS or material approval.
+on:
+  workflow_dispatch:
+    inputs:
+      render:
+        description: 'Render the QA video and sheets (slow)'
+        default: 'true'
+  push:
+    branches:
+      - 'experiment/hsin-lunar-dance-r3-*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hsin-dance-r3-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bake-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Plain-Node contracts (score, secondary maths, spline, director)
+        run: |
+          node tests/hsin-dance-r3-authoring.test.mjs
+          node tests/hsin-dance-r3-director.test.mjs
+      - name: Bake Moon Fox Reverie
+        run: node scripts/bake-hsin-dance-r3.mjs
+      - name: Real-GLB tests (feet, continuity, restitution, cost, 600 s sessions)
+        id: r3test
+        continue-on-error: true
+        env:
+          HSIN_DANCE_REPORT: '1'
+        run: node tests/hsin-dance-r3.test.mjs 2>&1 | tee docs/qa/hsin-dance-r3/test-output.txt
+      - name: R2 regression (the eight phrases keep their timing and support)
+        id: r2test
+        continue-on-error: true
+        run: node tests/hsin-dance-r2.test.mjs 2>&1 | tee docs/qa/hsin-dance-r3/r2-test-output.txt
+      - name: Hsin suite and build
+        id: suite
+        continue-on-error: true
+        run: |
+          npm run check:hsin 2>&1 | tee docs/qa/hsin-dance-r3/check-hsin-output.txt
+          npm run build 2>&1 | tail -n 30 | tee docs/qa/hsin-dance-r3/build-output.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-dance-r3-assets
+          path: |
+            public/assets/animations/hsin/lunar-dance-r3.json
+            public/assets/animations/hsin/lunar-dance-r3-grand.json
+            src/data/hsin-dance-r3.json
+            docs/qa/hsin-dance-r3
+      - name: Fail the job if a test step failed
+        if: steps.r3test.outcome == 'failure' || steps.r2test.outcome == 'failure' || steps.suite.outcome == 'failure'
+        run: |
+          echo "r3test=${{ steps.r3test.outcome }} r2test=${{ steps.r2test.outcome }} suite=${{ steps.suite.outcome }}"
+          exit 1
+
+  render:
+    needs: bake-and-test
+    if: always() && needs.bake-and-test.result != 'cancelled' && (github.event_name == 'push' || github.event.inputs.render != 'false')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [video, sheets, compare]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: hsin-dance-r3-assets
+          path: baked
+      - name: Place the baked assets
+        run: |
+          cp baked/public/assets/animations/hsin/lunar-dance-r3*.json public/assets/animations/hsin/
+          cp baked/src/data/hsin-dance-r3.json src/data/hsin-dance-r3.json
+      - name: Render ${{ matrix.part }}
+        run: node scripts/render-hsin-dance-r3-qa.mjs --only=${{ matrix.part }} --workers=3
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-dance-r3-qa-${{ matrix.part }}
+          path: docs/qa/hsin-dance-r3
