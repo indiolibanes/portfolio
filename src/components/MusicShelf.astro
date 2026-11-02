@@ -148,6 +148,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         aria-hidden="true"
       >
         <img
+          data-lunar-fox-image
           src="/assets/hsin-3d-calling-lunar-fox.webp"
           alt=""
           width="260"
@@ -157,11 +158,13 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         />
       </div>
 
+      <!-- Hidden until the render decodes: a missing or damaged file must never leave an empty frame behind. -->
       <button
         class="music-lunar-fox-call"
         data-lunar-fox-call
         type="button"
         aria-label="Calling Lunar Fox: mostrar por alguns segundos a Hsin tridimensional em teste"
+        hidden
       >
         Calling Lunar Fox
       </button>
@@ -510,8 +513,26 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   // derived render; the experimental Hsin GLB remains private.
   if (lunarFoxButton && lunarFoxCameo) {
     let lunarFoxUsed = false;
+    const lunarFoxImage = lunarFoxCameo.querySelector('[data-lunar-fox-image]');
+
+    // The call exists only when the render actually decoded. Otherwise both the
+    // button and the frame stay out of the page, and nothing empty is shown.
+    const revealLunarFox = () => {
+      if (!lunarFoxImage || lunarFoxImage.naturalWidth === 0) return false;
+      lunarFoxButton.hidden = false;
+      return true;
+    };
+    if (lunarFoxImage) {
+      if (!revealLunarFox()) {
+        lunarFoxImage.addEventListener('load', revealLunarFox, { once: true });
+        lunarFoxImage.addEventListener('error', () => {
+          console.warn('Calling Lunar Fox: a imagem da Hsin tridimensional não pôde ser decodificada.');
+        }, { once: true });
+      }
+    }
 
     lunarFoxButton.addEventListener('click', () => {
+      if (lunarFoxButton.hidden) return;
       if (lunarFoxUsed) return;
 
       lunarFoxUsed = true;

@@ -462,15 +462,15 @@
 
   border:
     1px solid
-    rgba(157, 230, 255, .38);
+    #c3a95f;
 
   border-radius: 999px;
 
   background:
-    rgba(10, 14, 32, .72);
+    var(--sun-soft);
 
   color:
-    #e6f6ff;
+    #5d4b25;
 
   font-family:
     var(--font-ui);
@@ -487,12 +487,6 @@
     0 6px 18px
     rgba(0, 0, 0, .18);
 
-  backdrop-filter:
-    blur(6px);
-
-  -webkit-backdrop-filter:
-    blur(6px);
-
   transition:
     opacity .22s ease,
     border-color .22s ease,
@@ -500,13 +494,15 @@
     transform .22s ease;
 }
 
+.music-shelf .music-heading--gallery .music-lunar-fox-call[hidden] { display: none; }
+
 .music-shelf .music-heading--gallery
 .music-lunar-fox-call:hover:not(:disabled) {
   border-color:
-    rgba(210, 244, 255, .68);
+    #a8832f;
 
   background:
-    rgba(17, 25, 53, .88);
+    var(--gold-block-light);
 
   transform:
     translateY(-1px);
@@ -516,7 +512,7 @@
 .music-lunar-fox-call:focus-visible {
   outline:
     3px solid
-    #9de6ff;
+    var(--rose);
 
   outline-offset:
     3px;
@@ -535,19 +531,14 @@
 .music-lunar-fox-cameo {
   position: absolute;
 
-  left: 50%;
-  top: 14.5%;
+  /* Over the 2D Hsin, the central figure of the scene, at the same scale. */
+  left: 45%;
+  top: 3%;
 
   z-index: 4;
 
-  width:
-    clamp(
-      145px,
-      22.5%,
-      255px
-    );
-
-  height: 49%;
+  width: auto;
+  height: 94%;
 
   overflow: hidden;
 
@@ -591,8 +582,8 @@
 .music-lunar-fox-cameo img {
   display: block;
 
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
 
   object-fit: contain;
   object-position: center top;
@@ -648,16 +639,8 @@
 @media (max-width: 680px) {
   .music-shelf .music-heading--gallery
   .music-lunar-fox-cameo {
-    top: 15%;
-
-    width:
-      clamp(
-        118px,
-        27%,
-        185px
-      );
-
-    height: 48%;
+    top: 3%;
+    height: 92%;
   }
 
   .music-shelf .music-heading--gallery
