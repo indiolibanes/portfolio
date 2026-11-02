@@ -13,16 +13,25 @@ function sdk(kind){
  });loads.set(kind,promise);promise.catch(()=>loads.delete(kind));return promise;
 }
 /** Owns the selected provider only. Late SDK callbacks carry the session epoch and cannot revive an old player. */
-export function attachMusicAPI({provider,iframe,host,source,controller,token,onFrame=()=>{},load=sdk,interval=setInterval,cancel=clearInterval}){
- let disposed=false,player=null,poll=null,watchdog=null,last=performance.now();
- const report=value=>{if(disposed)return;last=performance.now();controller.observe(token,value);};
+export function attachMusicAPI({provider,iframe,host,source,controller,token,onFrame=()=>{},load=sdk,interval=setInterval,cancel=clearInterval,now=()=>performance.now()}){
+ let disposed=false,player=null,poll=null,watchdog=null,last=now(),youtubeSample=null,youtubeProgress=last,youtubeFailed=false;
+ const report=value=>{if(disposed)return;last=now();controller.observe(token,value);};
  const unavailable=()=>report({status:'unavailable',trackId:null});
+ // Getter calls can return cached data after the iframe stops reporting. Re-reading them is not fresh playback evidence.
+ const observeYoutube=(value,event=false)=>{
+  const changed=!youtubeSample||value.status!==youtubeSample.status||value.trackId!==youtubeSample.trackId;
+  const progressed=Number.isFinite(value.positionSeconds)&&youtubeSample&&value.positionSeconds!==youtubeSample.positionSeconds;
+  if(event||changed||progressed){youtubeProgress=now();youtubeFailed=false;}
+  youtubeSample=value;
+  if(youtubeFailed||value.status==='playing'&&now()-youtubeProgress>12000){unavailable();return;}
+  report(value);
+ };
  const stop=()=>{if(disposed)return;disposed=true;if(poll!==null)cancel(poll);if(watchdog!==null)cancel(watchdog);player?.destroy?.();};
  load(provider).then(api=>{
   if(disposed)return;
   if(provider==='youtube'){
-   player=new api.Player(iframe,{events:{onReady:event=>{if(disposed)return;player=event.target;report(youtubeReport(player,player.getPlayerState()));},onStateChange:event=>{if(!disposed)report(youtubeReport(event.target,event.data));},onError:unavailable}});
-   poll=interval(()=>{if(disposed||document.hidden)return;if(!player?.getPlayerState){if(performance.now()-last>12000)unavailable();return;}try{report(youtubeReport(player,player.getPlayerState()));}catch{unavailable();}},500);
+   player=new api.Player(iframe,{events:{onReady:event=>{if(disposed)return;player=event.target;observeYoutube(youtubeReport(player,player.getPlayerState()),true);},onStateChange:event=>{if(!disposed)observeYoutube(youtubeReport(event.target,event.data),true);},onError:()=>{youtubeFailed=true;unavailable();}}});
+   poll=interval(()=>{if(disposed||document.hidden)return;if(!player?.getPlayerState){if(now()-last>12000)unavailable();return;}try{observeYoutube(youtubeReport(player,player.getPlayerState()));}catch{youtubeFailed=true;unavailable();}},500);
   }else{
    // Spotify's official factory creates its own iframe. Do this once on provider selection, never on camera/info changes.
    api.createController(host,{uri:source,width:'100%',height:152},embed=>{
@@ -32,7 +41,7 @@ export function attachMusicAPI({provider,iframe,host,source,controller,token,onF
     embed.addListener('playback_update',event=>report(spotifyReport(event.data)));
    });
   }
-  if(provider==='spotify')watchdog=interval(()=>{if(!disposed&&!document.hidden&&performance.now()-last>12000)unavailable();},3000);
+  if(provider==='spotify')watchdog=interval(()=>{if(!disposed&&!document.hidden&&now()-last>12000)unavailable();},3000);
  }).catch(()=>{if(!disposed)unavailable();});
  return {dispose:stop};
 }

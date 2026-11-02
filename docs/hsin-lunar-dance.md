@@ -19,6 +19,7 @@ GLB preservado: `public/assets/models/hsin/hsin-v2.0.glb`, 9.873.744 bytes, SHA-
 - YouTube IFrame Player API no iframe visível existente, com `enablejsapi=1`, `origin` da página e `autoplay=0`. Observa estados e consulta `getCurrentTime`, `getDuration` e identidade de vídeo. Uma observação a cada 500 ms; nenhuma chamada a `playVideo`/Play programático.
 - Spotify iFrame API: inicializa uma única vez por seleção, substituindo o iframe inicial por aquele que o SDK oficial cria. Depois disso, câmera, posição do pavilhão e opções não remontam o player. Observa `ready`, `playback_started`, `playback_update`, `playingURI`, `isPaused`, `isBuffering` e posição/duração em milissegundos, convertidas para segundos. A seleção do álbum nunca é tratada como identidade da faixa.
 - Timeout do SDK ou ausência de observações confiáveis por 12 s leva a `unavailable`. Não há dança nesse estado; o embed nativo permanece disponível quando o SDK não carrega. Um watchdog de 3 s é usado somente no Spotify. Timers de observação são descartados com o provedor; não são loops de animação.
+- Getters YouTube podem estar em cache. Polling com posição/estado/identidade congelados por mais de 12 s não sustenta `playing`; `onError` também permanece indisponível até progresso real ou nova evidência de estado/evento. Um relógio injetável testa 30 s de dados congelados, erro e recuperação, sem adicionar timer.
 - A política anterior de silêncio em aba oculta e vídeo YouTube fora da área visível permanece. Pagehide cancela callbacks/observers; bfcache remonta listeners uma única vez. Atuação pausada/reduced motion não avança a dança nem inicia seu download.
 
 CSP mantém frame-src restrito aos três hosts anteriores. Script-src da rota experimental acrescenta apenas YouTube, ytimg, Spotify e `embed-cdn.spotifycdn.com` (host para o qual o bootstrap oficial do Spotify carrega seu script). Sem áudio entre origens, AudioContext, extração de streams, tokens ou nova interface de reprodução.
@@ -125,12 +126,20 @@ npm run check:ux
 
 ## Arquivos e próximos passos
 
+### Conferência publicada e auditoria posterior
+
+PR draft [#194](https://github.com/indiolibanes/portfolio/pull/194), sem merge. Na primeira publicação, head `849929a0c7ccaf5af32cafa9f73f06fe120fb5f1`: job `lunar-dance` PASS no push e no PR, build PASS e Cloudflare PASS. O job antigo `facial-regression` interrompe em `hsin-moonlit-environment.test.mjs:12`, `7 !== 6`, a mesma falha reproduzida na base; testes seguintes nesse step não executam. A suíte local completa documenta separadamente as duas falhas herdadas.
+
+Prévia dessa publicação conferida em `/experimentos/`: `WebGL2 unavailable`, poster e fallback presentes, versão pública V2.0.1. **VISUAL_QA_PENDING** para GLB animado, GPU/FPS, câmera e Samsung Internet. YouTube carrega o iframe, seleção produz `ready` sem autoplay e Play nativo produz `buffering`; reprodução sustentada não confirmada nesta sessão. Spotify exibe o embed, mas o SDK oficial `iframe_api.b14cb21cf7e4cfe54860.js` tenta `eval` bloqueado pela CSP. O estado passa corretamente para `unavailable`; **Spotify musical não está aprovado nesta CSP**. Não foi permitido `unsafe-eval`. Mover o pavilhão preservou embed/URL; Sem música removeu o iframe e restaurou `no_music`.
+
+Auditoria posterior com GPT-6 Astra, esforço alto: um P2 encontrado no polling YouTube, que renovava confirmação com getters congelados e apagava erro no próximo poll. Corrigido com a observação de progresso/estado descrita acima e teste determinístico. Nenhum outro P0/P1/P2 concreto relatado nos focos de ownership, referência, teardown, preferências e transport; isso não substitui QA visual ou validação dos provedores reais.
+
 - Contrato/provedores: `hsin-music-state.mjs`, `hsin-music-api.mjs`, `hsin-music-providers.mjs`, soundtrack TS, componente e CSP.
 - Direção/playback/tempo: `hsin-dance-director.mjs`, `hsin-dance-pose.mjs`, `hsin-music-transport.mjs`, integração pontual no stage.
 - Assets/manifests: `hsin-dance.json`, `hsin-music-map.json`, `lunar-dance-r1.json`.
 - Offline: bake, fixture do rig, benchmark, renderer/gerador de QA; três novos testes, harness de soundtrack e job CI.
 - Relatórios e três pranchas, sem áudio nem modelo privado.
 
-Próximos passos para consolidar V2.1: auditoria posterior com Astra, QA real do GLB animado e provedores em Chromium/Samsung Internet, resolver os dois testes da base com suas respectivas alterações de atuação/lua, obter mapa rítmico autorizado/verificado da gravação exata e então habilitar o Nível 1. Passos e deslocamento de quadril exigem uma etapa própria de suporte/joelhos/tornozelos.
+Próximos passos para consolidar V2.1: QA real do GLB animado e provedores em Chromium/Samsung Internet, compatibilidade segura da API Spotify com a CSP, resolver os dois testes da base com suas respectivas alterações de atuação/lua, obter mapa rítmico autorizado/verificado da gravação exata e então habilitar o Nível 1. Passos e deslocamento de quadril exigem uma etapa própria de suporte/joelhos/tornozelos.
 
 Documentação primária consultada: [YouTube IFrame API](https://developers.google.com/youtube/iframe_api_reference), [Spotify iFrame API](https://developer.spotify.com/documentation/embeds/references/iframe-api), [Spotify SDK oficial](https://open.spotify.com/embed/iframe-api/v1). Não se inferiu BPM a partir dessas APIs.
