@@ -23,7 +23,8 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
    const p=g.attributes.position,n=g.attributes.normal,uv=g.attributes.uv,c=color(hex);
    for(let i=0;i<p.count;i++){
     positions.push(p.getX(i),p.getY(i),p.getZ(i));normals.push(n.getX(i),n.getY(i),n.getZ(i));uvs.push(uv?.getX(i)??0,uv?.getY(i)??0);
-    const s=shade?(.76+.24*Math.max(0,n.getX(i)*light.x+n.getY(i)*light.y+n.getZ(i)*light.z)):1;colors.push(c.r*s,c.g*s,c.b*s);
+    const orientation=.49+.51*Math.max(0,n.getX(i)*light.x+n.getY(i)*light.y+n.getZ(i)*light.z);
+    const groundAO=.72+.28*Math.min(1,Math.max(0,p.getY(i))/.65),s=shade?orientation*groundAO:1;colors.push(c.r*s,c.g*s,c.b*s);
    }
    if(g!==geometry)g.dispose();geometry.dispose();
   }
@@ -44,7 +45,15 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
  }
  // Continuous rectangular paving, on the actual foot plane. No disc, cylinder, ring or elevated stand.
  stoneTexture.wrapS=stoneTexture.wrapT=T.RepeatWrapping;stoneTexture.repeat.set(4,3);stoneTexture.anisotropy=1;
- const floor=new T.Mesh(new T.PlaneGeometry(22,14),new T.MeshBasicMaterial({map:stoneTexture,color:0xc1cad4}));floor.name='Continuous stone terrace';floor.rotation.x=-Math.PI/2;floor.position.set(0,0,3);group.add(floor);
+ const paving=new T.PlaneGeometry(22,14,22,14),tones=[];
+ // Sparse vertex gradients: rail occlusion and warm pools painted into the stone, once at mount.
+ for(let i=0;i<paving.attributes.position.count;i++){
+  const x=paving.attributes.position.getX(i),z=3-paving.attributes.position.getY(i),rail=Math.exp(-(((z+3.25)/.7)**2)),shade=1-.30*rail;
+  let warmth=0;for(const lamp of [-4.5,-1,1,4.5])warmth+=Math.exp(-(((x-lamp)/.7)**2)-((z+2.8)/1.3)**2)*.10;
+  const c=new T.Color(.58*shade+warmth,.66*shade+warmth*.53,.79*shade+warmth*.14);tones.push(c.r,c.g,c.b);
+ }
+ paving.setAttribute('color',new T.Float32BufferAttribute(tones,3));
+ const floor=new T.Mesh(paving,new T.MeshBasicMaterial({map:stoneTexture,vertexColors:true,color:0xffffff}));floor.name='Continuous stone terrace';floor.rotation.x=-Math.PI/2;floor.position.set(0,0,3);group.add(floor);
  box(stoneParts,0,-.10,-4,22,.20,.20,0x48566a);
  // A low rear balustrade and short side returns. Its open bays frame, rather than occlude, Hsin.
  for(const x of [-8,-6,-4,-2,0,2,4,6,8]){
