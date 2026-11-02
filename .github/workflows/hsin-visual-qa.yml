@@ -1,0 +1,46 @@
+name: Hsin visual QA (software WebGL)
+
+# Renders the real scene in headless Chromium with SwiftShader and uploads PNGs + a report as an artifact.
+# Colour and lighting evidence only. Never frame-rate, smoothness or GPU-memory evidence.
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'face | none'
+        default: 'face'
+  push:
+    branches:
+      - 'experiment/hsin-v201-*'
+
+permissions:
+  contents: read
+
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install Playwright (not saved to package.json)
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Build and serve the real site
+        run: |
+          npm run build
+          npx astro preview --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/hsin/ >/dev/null && break; sleep 1; done
+      - name: Render harness frames and smoke-test the real stage
+        run: node scripts/qa/run-hsin-qa.mjs qa-out --scenario=${{ github.event.inputs.scenario || 'face' }} --stage-url=http://127.0.0.1:4321
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-visual-qa
+          path: |
+            qa-out
+            preview.log

@@ -1,0 +1,359 @@
+{
+ "sha256": "63506b0b7a2369722e6429c3b16c5f48764ee01706d1272b4ffd69a45c5e0d2c",
+ "bytes": 9873744,
+ "generator": "Khronos glTF Blender I/O v5.0.21",
+ "extensionsRequired": [
+  "EXT_texture_webp"
+ ],
+ "extensionsUsed": [
+  "EXT_texture_webp",
+  "KHR_materials_unlit"
+ ],
+ "skins": [
+  {
+   "name": "RIG-R2T1XinMd10011_LOD0_Skeleton",
+   "joints": 823
+  },
+  {
+   "name": "R2T1XinMd10011_LOD0_Skeleton",
+   "joints": 498
+  }
+ ],
+ "nodes": 1463,
+ "animations": 0,
+ "images": [
+  {
+   "index": 0,
+   "name": "Bangs_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 77978,
+   "slot": "baseColor"
+  },
+  {
+   "index": 1,
+   "name": "Hair_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 90092,
+   "slot": "baseColor"
+  },
+  {
+   "index": 2,
+   "name": "Face_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 130902,
+   "slot": "baseColor"
+  },
+  {
+   "index": 3,
+   "name": "Up_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 154268,
+   "slot": "baseColor"
+  },
+  {
+   "index": 4,
+   "name": "Up_NORMAL_XY_REPACK_V105_V2",
+   "mime": "image/webp",
+   "bytes": 917790,
+   "slot": "normal"
+  },
+  {
+   "index": 5,
+   "name": "Down_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 156758,
+   "slot": "baseColor"
+  },
+  {
+   "index": 6,
+   "name": "Down_NORMAL_XY_REPACK_V105_V2",
+   "mime": "image/webp",
+   "bytes": 507870,
+   "slot": "normal"
+  },
+  {
+   "index": 7,
+   "name": "Cloth_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 171920,
+   "slot": "baseColor"
+  },
+  {
+   "index": 8,
+   "name": "Cloth_NORMAL_XY_REPACK_V105_V2",
+   "mime": "image/webp",
+   "bytes": 1060892,
+   "slot": "normal"
+  },
+  {
+   "index": 9,
+   "name": "Tail_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 27966,
+   "slot": "baseColor"
+  },
+  {
+   "index": 10,
+   "name": "Tail_NORMAL_XY_REPACK_V105_V2",
+   "mime": "image/webp",
+   "bytes": 32288,
+   "slot": "normal"
+  },
+  {
+   "index": 11,
+   "name": "Eye_D_RGB_PRIVATE_DIAGNOSTIC_V2",
+   "mime": "image/webp",
+   "bytes": 65858,
+   "slot": "baseColor"
+  }
+ ],
+ "materials": [
+  {
+   "index": 0,
+   "name": "Gathering Wives - Bangs Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.89,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 0
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_0"
+   ]
+  },
+  {
+   "index": 1,
+   "name": "Gathering Wives - Hair Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.86,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 1
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_1"
+   ]
+  },
+  {
+   "index": 2,
+   "name": "Gathering Wives - Face Xin",
+   "unlit": true,
+   "threeMaterial": "MeshBasicMaterial",
+   "respondsToLights": false,
+   "baseColorFactor": null,
+   "roughness": 0.92,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 2
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_2"
+   ]
+  },
+  {
+   "index": 3,
+   "name": "Gathering Wives - Up Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.74,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 3,
+    "normal": 4
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_3"
+   ]
+  },
+  {
+   "index": 4,
+   "name": "Gathering Wives - Down Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.74,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 5,
+    "normal": 6
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_4"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "Gathering Wives - Cloth Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.74,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 7,
+    "normal": 8
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_5"
+   ]
+  },
+  {
+   "index": 6,
+   "name": "Gathering Wives - Tail Xin",
+   "unlit": false,
+   "threeMaterial": "MeshStandardMaterial",
+   "respondsToLights": true,
+   "baseColorFactor": null,
+   "roughness": 0.82,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 9,
+    "normal": 10
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_6",
+    "R2T1XinMd10011_LOD0.001_0"
+   ]
+  },
+  {
+   "index": 7,
+   "name": "Wuwa - Eye Xin",
+   "unlit": true,
+   "threeMaterial": "MeshBasicMaterial",
+   "respondsToLights": false,
+   "baseColorFactor": null,
+   "roughness": 0.74,
+   "metalness": 0,
+   "alphaMode": "OPAQUE",
+   "doubleSided": true,
+   "textures": {
+    "baseColor": 11
+   },
+   "usedBy": [
+    "R2T1XinMd10011_LOD0_7"
+   ]
+  },
+  {
+   "index": 8,
+   "name": "lscherry.LSCherry",
+   "unlit": true,
+   "threeMaterial": "MeshBasicMaterial",
+   "respondsToLights": false,
+   "baseColorFactor": null,
+   "roughness": 0.9,
+   "metalness": 0,
+   "alphaMode": "BLEND",
+   "doubleSided": true,
+   "textures": {},
+   "usedBy": []
+  }
+ ],
+ "meshes": [
+  {
+   "mesh": "R2T1XinMd10011_LOD0_0",
+   "material": "Gathering Wives - Bangs Xin",
+   "vertices": 5927,
+   "triangles": 8037,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_1",
+   "material": "Gathering Wives - Hair Xin",
+   "vertices": 5670,
+   "triangles": 9025,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_2",
+   "material": "Gathering Wives - Face Xin",
+   "vertices": 4320,
+   "triangles": 5758,
+   "morphTargets": 18,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_3",
+   "material": "Gathering Wives - Up Xin",
+   "vertices": 13426,
+   "triangles": 21714,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_4",
+   "material": "Gathering Wives - Down Xin",
+   "vertices": 27154,
+   "triangles": 33309,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_5",
+   "material": "Gathering Wives - Cloth Xin",
+   "vertices": 18257,
+   "triangles": 24542,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_6",
+   "material": "Gathering Wives - Tail Xin",
+   "vertices": 10520,
+   "triangles": 12702,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0_7",
+   "material": "Wuwa - Eye Xin",
+   "vertices": 402,
+   "triangles": 476,
+   "morphTargets": 8,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  },
+  {
+   "mesh": "R2T1XinMd10011_LOD0.001_0",
+   "material": "Gathering Wives - Tail Xin",
+   "vertices": 642,
+   "triangles": 1166,
+   "morphTargets": 0,
+   "morphNormals": false,
+   "vertexColorMinimum": 1
+  }
+ ],
+ "totalTriangles": 116729
+}

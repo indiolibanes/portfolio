@@ -11,6 +11,8 @@ import {LUNAR_TERRACE,createLunarTerrace} from './hsin-lunar-terrace.mjs';
 import {HSIN_CINEMATIC_IDLE,createCinematicReference} from './hsin-cinematic-idle.mjs';
 import {lunarCameraFit} from './hsin-lunar-framing.mjs';
 import {HSIN_LUNAR_PRESENTATION,createLunarPresentation} from './hsin-lunar-presentation.mjs';
+import {createStageLights} from './hsin-stage-lighting.mjs';
+import {createFaceSkin} from './hsin-face-skin.mjs';
 
 /** Public player. The local-file lab, geometry solvers and authoring UI are separate entries. */
 export function mountHsinStage(root:HTMLElement){
@@ -37,11 +39,11 @@ export function mountHsinStage(root:HTMLElement){
 
  async function start(){
   if(started||destroyed||!visible())return;started=true;const attemptId=++generation;
-  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any;
+  disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any,faceSkin:any;
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=null;zoom=()=>{};resetCamera=()=>{};};
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;resize?.disconnect();orbit?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=null;zoom=()=>{};resetCamera=()=>{};};
   disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    const [T,{GLTFLoader},{OrbitControls}]=await Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js')]);
@@ -75,7 +77,9 @@ export function mountHsinStage(root:HTMLElement){
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
    presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth});presentation.apply();
    const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
-   scene.add(new T.AmbientLight(0xb7c9e3,.95));const key=new T.DirectionalLight(0xf0dec0,1.8);key.position.set(-2,4,5);scene.add(key);const rim=new T.DirectionalLight(0xeac27a,1.15);rim.position.set(-2,4,-5);scene.add(rim);
+   scene.add(...createStageLights(T).all);
+   // Face only: the GLB marks the face unlit, so it ignored every light. Same texture, lit response, reversible; applied before the programs compile.
+   faceSkin=createFaceSkin({THREE:T,meshes});faceSkin.apply();
    // Static transforms, including the root yaw, are frozen only after explicit matrix updates.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;

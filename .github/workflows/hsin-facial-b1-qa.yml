@@ -19,6 +19,9 @@ on:
       - 'scripts/*hsin-v2*'
       - 'scripts/generate-hsin-moonlit.mjs'
       - 'scripts/render-hsin-poster.mjs'
+      - 'scripts/qa/**'
+      - 'scripts/audit-hsin-materials.mjs'
+      - 'docs/hsin-v201-material-audit.json'
       - 'public/_headers'
       - 'src/scripts/hsin-local-lab.ts'
       - 'src/pages/experimentos/hsin-lab/index.astro'
@@ -72,6 +75,9 @@ jobs:
           node tests/hsin-stage.test.mjs
           node tests/hsin-stage-asset.test.mjs
           node tests/hsin-moonlit-environment.test.mjs
+          node tests/hsin-material-audit.test.mjs
+          node tests/hsin-face-skin-math.test.mjs
+          node tests/hsin-face-skin.test.mjs
       - name: Astro production build
         run: npm run build
       - name: UX contract (existing 97/100 baseline is recorded, not reclassified)

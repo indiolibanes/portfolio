@@ -18,7 +18,7 @@
     "check:og": "node scripts/verify-og.mjs",
     "check:music-state": "node scripts/test-music-state.mjs",
     "check:music-transition": "node tests/music-experimental-transition.test.mjs",
-    "check:hsin": "node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs",
+    "check:hsin": "node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs && node tests/hsin-material-audit.test.mjs && node tests/hsin-face-skin-math.test.mjs && node tests/hsin-face-skin.test.mjs",
     "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb"
   },
   "dependencies": {
