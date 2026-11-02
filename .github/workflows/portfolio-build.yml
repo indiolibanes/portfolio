@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
 
     steps:
       - name: Checkout
@@ -29,15 +29,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Music → Hsin transition contract
-        run: node tests/music-experimental-transition.test.mjs
-
-      - name: Hsin V2.0.1 lunar runtime
-        run: |
-          node tests/hsin-lunar-terrace.test.mjs
-          node tests/hsin-lunar-refinement.test.mjs
+      - name: Source and runtime regression checks
+        run: npm run check
 
       - name: Build production site
         run: npm run build
