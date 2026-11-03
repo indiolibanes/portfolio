@@ -45,3 +45,39 @@ export function createRebasedBurstClip(T,model,original){
  const radians=2*Math.acos(Math.min(1,Math.abs(first.dot(rest))));
  return {clip:output,diagnostic:Object.freeze({source:original.name,variant:output.name,bindDeltaDegrees:Number((radians*180/Math.PI).toFixed(2)),rootKeyframes:track.values.length/4,changedTracks:['Root.quaternion'],visualQA:'PENDING'})};
 }
+
+
+/** CL.1.1: diagnostic alternative, NOT a replacement for the original or CL.1.
+ * Keep the model's bind-space Root rotation throughout Burst, while leaving
+ * Bip001 and every other original body/Rib track untouched.
+ * The first frame of Burst02 can face away from camera; visual QA is mandatory.
+ */
+export const BURST_BODY_OWNED_IDS=Object.freeze(BURST_ORIGINAL_IDS.map(id=>id.replace('_ORIGINAL','_ROOT_BODY_OWNED')));
+
+export function createBindRootBurstClip(T,model,original){
+ if(!original||!BURST_ORIGINAL_IDS.includes(original.name))throw Error('CL bind Root is restricted to original Burst candidates');
+ if(!model?.traverse||!Array.isArray(original.tracks)||!Number.isFinite(original.duration)||original.duration<=0)throw Error('CL invalid model or animation');
+ const roots=[];
+ model.traverse(o=>{if(o.isBone&&o.name==='Root')roots.push(o)});
+ if(roots.length!==1)throw Error('CL requires exactly one Root bone');
+ const bindings=original.tracks.filter(track=>{
+  const p=T.PropertyBinding.parseTrackName(track.name);
+  return p.nodeName==='Root'&&p.propertyName==='quaternion'&&!p.objectName&&p.propertyIndex===undefined;
+ });
+ if(bindings.length!==1)throw Error('CL requires one Root.quaternion track');
+ const source=bindings[0];
+ if(source.values.length<8||source.values.length%4!==0||!source.validate()||!Array.from(source.values).every(Number.isFinite))throw Error('CL invalid Root quaternion curve');
+ const rest=roots[0].quaternion.clone();
+ if(![rest.x,rest.y,rest.z,rest.w].every(Number.isFinite)||rest.lengthSq()<1e-12)throw Error('CL invalid Root bind quaternion');
+ rest.normalize();
+ const clip=original.clone();
+ clip.name=original.name.replace('_ORIGINAL','_ROOT_BODY_OWNED');
+ const i=clip.tracks.findIndex(t=>t.name===source.name);
+ if(i<0)throw Error('CL missing Root track after clone');
+ const q=rest.toArray(),times=[0,original.duration],values=[...q,...q];
+ const track=new T.QuaternionKeyframeTrack(source.name,times,values);
+ if(!track.validate())throw Error('CL bind Root track is invalid');
+ clip.tracks[i]=track;
+ const diagnostics=Object.freeze({source:original.name,variant:clip.name,changedTracks:['Root.quaternion'],rootKeyframes:2,rootMode:'BIND_STATIC',visualQA:'PENDING'});
+ return {clip,diagnostic:diagnostics};
+}

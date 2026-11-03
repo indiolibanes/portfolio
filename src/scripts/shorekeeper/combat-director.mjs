@@ -1,5 +1,5 @@
 import {createOriginalIdleDirector} from './original-idle-director.mjs';
-import {BURST_REBASED_IDS} from './liberation-rotation.mjs';
+import {BURST_REBASED_IDS,BURST_BODY_OWNED_IDS} from './liberation-rotation.mjs';
 
 export const ORIGINAL_ATTACK_IDS = Object.freeze([1,2,3,4].map(n=>`SK_ATTACK_0${n}_ORIGINAL`));
 /** Advanced moves use original ActorX sources; they are not visually approved. */
@@ -7,7 +7,7 @@ export const ADVANCED_COMBAT_IDS = Object.freeze(['SK_ATTACK_L02_ORIGINAL','SK_S
 /** Raw Burst source names are verified, but mapping to the exact cutscene Liberation remains pending WebGL/gameplay comparison. */
 export const BURST_COMBAT_IDS = Object.freeze(['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL']);
 export const SOURCE_COMBAT_IDS = Object.freeze([...ORIGINAL_ATTACK_IDS,...ADVANCED_COMBAT_IDS,...BURST_COMBAT_IDS]);
-export const COMBAT_CLIP_IDS = Object.freeze([...SOURCE_COMBAT_IDS,...BURST_REBASED_IDS]);
+export const COMBAT_CLIP_IDS = Object.freeze([...SOURCE_COMBAT_IDS,...BURST_REBASED_IDS,...BURST_BODY_OWNED_IDS]);
 
 /** Accept only self-contained animation-only libraries with body TRS tracks. */
 export function validateCombatLibrary(T, root, result) {
