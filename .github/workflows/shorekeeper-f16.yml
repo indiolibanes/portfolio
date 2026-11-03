@@ -8,6 +8,8 @@ on:
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
       - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-hosted-asset.test.mjs'
+      - 'functions/api/shorekeeper/**'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -23,6 +25,8 @@ on:
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
       - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-hosted-asset.test.mjs'
+      - 'functions/api/shorekeeper/**'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -49,3 +53,4 @@ jobs:
       - run: node tests/shorekeeper-expression-library.test.mjs
 
       - run: node tests/shorekeeper-b5.test.mjs
+      - run: node tests/shorekeeper-hosted-asset.test.mjs
