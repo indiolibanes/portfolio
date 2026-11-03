@@ -14,3 +14,11 @@ public/assets/about-shorekeeper-wings.webp
 
 # Generated browser/visual QA artifacts belong in CI artifacts, not Git.
 qa-results/
+
+# Private/rights-restricted 3D sources are never part of the public portfolio tree.
+private-assets/
+r2-private-staging/
+transfer-private/
+**/PRIVATE_*.glb
+*.psa
+*.psk

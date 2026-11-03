@@ -93,7 +93,7 @@ try {
    {id: 'mouth-close', title: 'boca (perto)', view: {azimuth: 24, zoom: 1}},
   ];
   await gestureSheet('lip-touch', columns, views);
-  const stages = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../../public/assets/models/hsin/hsin-v2.1-acting.json', import.meta.url), 'utf8')).poses.hairCaress.stages, h = (weight) => [{name: 'hairCaress', weight}];
+  const stages = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../../public/assets/characters/hsin/models/hsin-v2.1-acting.json', import.meta.url), 'utf8')).poses.hairCaress.stages, h = (weight) => [{name: 'hairCaress', weight}];
   const hairColumns = [
    {id: 'rest', title: 'repouso', pose: []}, {id: 'hover', title: 'aproximação', pose: h(stages.hoverIn)}, {id: 'start', title: 'contato (início)', pose: h(stages.start)},
    {id: 'mid', title: 'carícia (meio)', pose: h((stages.start + stages.end) / 2)}, {id: 'end', title: 'contato (fim)', pose: h(stages.end)}, {id: 'leave', title: 'saída', pose: h(stages.hoverOut)},

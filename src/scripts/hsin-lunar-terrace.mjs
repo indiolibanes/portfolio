@@ -1,7 +1,7 @@
 import {MOONLIT,createMoonlitEnvironment} from './hsin-moonlit-environment.mjs';
 export const LUNAR_TERRACE=Object.freeze({
- ...MOONLIT,sky:'/assets/scenes/hsin/night-sky-v201.webp',moon:'/assets/scenes/hsin/golden-moon-v201.webp',
- water:'/assets/scenes/hsin/water-v201.webp',stone:'/assets/scenes/hsin/stone-v201.webp',atlas:'/assets/scenes/hsin/terrace-atlas-v201.webp',floorY:0,
+ ...MOONLIT,sky:'/assets/characters/hsin/scenes/night-sky-v201.webp',moon:'/assets/characters/hsin/scenes/golden-moon-v201.webp',
+ water:'/assets/characters/hsin/scenes/water-v201.webp',stone:'/assets/characters/hsin/scenes/stone-v201.webp',atlas:'/assets/characters/hsin/scenes/terrace-atlas-v201.webp',floorY:0,
 });
 
 /** Static, batched stone architecture. No animation clock, render targets or extra lights. */

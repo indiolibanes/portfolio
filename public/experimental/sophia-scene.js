@@ -12,7 +12,7 @@ import { Renderer, fetchGLB, hex, quat } from './gltf-gl.js';
 const canvas = document.querySelector('[data-xm-sophia]');
 const spinBtn = document.querySelector('[data-xm-spin]');
 const hint = document.querySelector('.xm-hint');
-const GLB_URL = '/experimental/sophia-alpha.glb';
+const GLB_URL = '/assets/characters/sophia/models/sophia-alpha.glb';
 // O alpha tem ~1,1 m de altura (o modelo de peças tinha ~0,5). A escala fica na cena: pose.scale e a conversão de coordenadas.
 const SC = 0.46;
 

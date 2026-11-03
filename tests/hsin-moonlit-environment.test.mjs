@@ -20,7 +20,7 @@ assert.ok(moon.geometry.type==='SphereGeometry'&&moon.material.isShaderMaterial)
 const halo=meshes.find(m=>m.name.includes('atmospheric halo'));assert.equal(halo.material.map,moonTexture);assert.equal(halo.material.depthWrite,false);
 assert.ok(meshes.filter(m=>m!==moon).every(m=>m.material.isMeshBasicMaterial));
 const ridges=meshes.filter(m=>m.name.startsWith('Distant shore'));assert.notEqual(ridges[0].position.z,ridges[1].position.z);
-const profile=JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.0-profile.json',import.meta.url)));
+const profile=JSON.parse(await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0-profile.json',import.meta.url)));
 // The real public reset camera frames the sphere. Orbit exposes parallax; it must NOT billboard/follow the camera.
 scene.updateMatrixWorld(true);const fixed=moon.matrixWorld.clone();
 for(const aspect of [393/852,320/740,768/1024,844/390,16/9])for(const azimuth of [-HSIN_STAGE.maxAzimuth,HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180,HSIN_STAGE.maxAzimuth]){

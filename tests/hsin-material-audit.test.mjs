@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {auditGlb} from '../scripts/audit-hsin-materials.mjs';
 
-const glb = await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url));
+const glb = await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb', import.meta.url));
 const audit = auditGlb(glb), manifest = JSON.parse(await readFile(new URL('../src/data/hsin-v2-asset.json', import.meta.url)));
 assert.equal(audit.sha256, manifest.sha256); assert.equal(audit.bytes, manifest.bytes);
 const byName = (re) => audit.materials.find((m) => re.test(m.name));

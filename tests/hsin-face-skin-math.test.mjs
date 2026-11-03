@@ -34,8 +34,8 @@ assert.ok(frontSrgb[0] - shadowSrgb[0] >= 25, `visible local contrast in sRGB: $
 //    rotated by the stage root yaw into the world where the lights live.
 const unit = ([x, y, z]) => { const l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; };
 const keyDir = unit(RIG.key.position), rimDir = unit(RIG.rim.position), dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-const rig = loadRig(await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url)));
-const profile = JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.1-profile.json', import.meta.url)));
+const rig = loadRig(await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb', import.meta.url)));
+const profile = JSON.parse(await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.1-profile.json', import.meta.url)));
 const faceMesh = rig.meshByMaterial(/Face Xin/), matrices = skinMatrices(rig, forward(rig, presentationState(rig, profile))), normals = skinNormals(rig, faceMesh, matrices);
 const yaw = (HSIN_LUNAR_PRESENTATION.cameraAzimuth - HSIN_LUNAR_PRESENTATION.bodyApparentYaw) * Math.PI / 180, c = Math.cos(yaw), sn = Math.sin(yaw);
 let worst = 0, samples = 0; const lumByNdl = [];

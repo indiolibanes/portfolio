@@ -4,7 +4,7 @@
     pip install pillow numpy scipy opencv-python-headless
     python3 scripts/build-og-card.py
 
-Inputs : public/images/sophia/lab-single-tail.webp  (the lab-section Sophia)
+Inputs : public/assets/characters/sophia/art/lab-single-tail.webp  (the lab-section Sophia)
 Outputs: assets/og-portfolio.png            (1200x630, picked up by scripts/generate-og.mjs)
          public/og-portfolio-animated.gif   (800x420, only with --gif)
 
@@ -36,7 +36,7 @@ INTER = '/usr/share/fonts/opentype/inter/Inter-{}.otf'
 
 # ---------------------------------------------------------------- Sophia head
 def load_head():
-    sp = Image.open(ROOT / 'public/images/sophia/lab-single-tail.webp').convert('RGBA')
+    sp = Image.open(ROOT / 'public/assets/characters/sophia/art/lab-single-tail.webp').convert('RGBA')
     rgb = cv2.cvtColor(np.array(sp.convert('RGB')), cv2.COLOR_RGB2BGR)
     a = np.array(sp.getchannel('A'))
     mask = np.zeros(a.shape, np.uint8)             # the pen: remove it, the paw stays

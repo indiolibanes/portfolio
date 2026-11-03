@@ -10,8 +10,8 @@ import {qMul, qExp, qAxisAngle, qAngle, sub, len, add, scale, dot, unit} from '.
 import {multiStart, optimise} from './lib/hsin-solve.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
-export const rig = loadRig(readFileSync(root + 'public/assets/models/hsin/hsin-v2.0.glb'));
-export const profile = JSON.parse(readFileSync(root + 'public/assets/models/hsin/hsin-v2.1-profile.json'));
+export const rig = loadRig(readFileSync(root + 'public/assets/characters/hsin/models/hsin-v2.0.glb'));
+export const profile = JSON.parse(readFileSync(root + 'public/assets/characters/hsin/models/hsin-v2.1-profile.json'));
 export const ctx = createArmContext(rig, profile, 'L');
 export const hairPose = profile.poses.hair, hairRest = hairPose.rest;
 const startArm = [0, 1, 2].map((i) => hairPose.frames[64].slice(i * 4, i * 4 + 4));

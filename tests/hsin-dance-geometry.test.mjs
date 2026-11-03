@@ -6,7 +6,7 @@ import {danceRig} from '../scripts/lib/hsin-dance-rig.mjs';
 import {createDancePose} from '../src/scripts/hsin-dance-pose.mjs';
 import {lunarCameraFit} from '../src/scripts/hsin-lunar-framing.mjs';
 const r2=process.argv.includes('--r2');
-const r=await danceRig(),{T}=r,data=decodeDanceData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-'+(r2?'r2':'r1')+'.json'))),pose=createDancePose({THREE:T,data,bones:r.bones,model:r.model}),samples=[];
+const r=await danceRig(),{T}=r,data=decodeDanceData(JSON.parse(await readFile('public/assets/characters/hsin/animations/lunar-dance-'+(r2?'r2':'r1')+'.json'))),pose=createDancePose({THREE:T,data,bones:r.bones,model:r.model}),samples=[];
 for(const mesh of r.meshes){const g=mesh.geometry,skin=g.attributes.skinIndex,weight=g.attributes.skinWeight,foot=[],left=[],moving=[];
  for(let i=0;i<g.attributes.position.count;i++){let f=0,l=0,a=0;for(let k=0;k<4;k++){const n=mesh.skeleton.bones[skin.getComponent(i,k)]?.name??'',w=weight.getComponent(i,k);if(/^(ORG|DEF)-Bip001Foot[LR]/.test(n))f+=w;if(/^(ORG|DEF)-Bip001(Forearm|Hand)L/.test(n))l+=w;if(/^(ORG|DEF)-Bip001(Forearm|Hand)[LR]/.test(n))a+=w;}if(f>.75)foot.push(i);if(l>.6)left.push(i);if(a>.6&&i%3===0)moving.push(i);}
  samples.push({mesh,foot,left:new Set(left),moving,baseline:new Map()});mesh.skeleton.update();for(const i of foot)samples.at(-1).baseline.set(i,mesh.getVertexPosition(i,new T.Vector3()).applyMatrix4(mesh.matrixWorld));

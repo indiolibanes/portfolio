@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
 const base = process.env.QA_BASE_URL || 'http://127.0.0.1:4321';
-const has7B = existsSync('public/experimental/sophia-7b-e1-latest.glb');
+const has7B = existsSync('public/assets/characters/sophia/models/sophia-7b-e1.glb');
 await mkdir('qa-results/sophia-404', { recursive: true });
 const browser = await chromium.launch({
   headless: true,
@@ -69,7 +69,7 @@ try {
       }));
       console.log('3D room', width, JSON.stringify(modern));
       if (has7B) {
-        if (modern.ready !== 'true' || modern.model !== '7B-E1-unrigged' || modern.tail !== 'authored-7b' || modern.motion !== 'procedural-root' || modern.source !== '/experimental/sophia-7b-e1-latest.glb') {
+        if (modern.ready !== 'true' || modern.model !== '7B-E1-unrigged' || modern.tail !== 'authored-7b' || modern.motion !== 'procedural-root' || modern.source !== '/assets/characters/sophia/models/sophia-7b-e1.glb') {
           failed = true; console.error('FAIL 7B integration', modern);
         }
       } else if (modern.failed !== 'true' || modern.originalArtVisible !== 'visible') {

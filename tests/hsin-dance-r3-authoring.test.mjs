@@ -82,7 +82,7 @@ assert.equal(classifySecondary('ORG-Bone_Skirt001_R',['ORG-Bip001Pelvis']),null)
 
 // Real GLB names (read from the file, sanitised like GLTFLoader does): every owned bone exists, secondary chains classify as expected.
 {
-  const bytes=await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb',import.meta.url)),json=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)).toString());
+  const bytes=await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb',import.meta.url)),json=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)).toString());
   const names=json.nodes.map(n=>sanitize(n.name??'')),set=new Set(names),parent=new Array(names.length).fill(-1);json.nodes.forEach((n,i)=>(n.children??[]).forEach(c=>parent[c]=i));
   const upper=['Spine1','Spine2','Neck','Head','ClavicleR','ClavicleL','UpperArmR','ForearmR','HandR','UpperArmL','ForearmL','HandL'],lower=['ThighL','CalfL','FootL','Toe0L','ThighR','CalfR','FootR','Toe0R'];
   for(const p of [...upper,...lower])for(const prefix of ['ORG-Bip001','DEF-Bip001'])assert.ok(set.has(prefix+p),'rig has '+prefix+p);

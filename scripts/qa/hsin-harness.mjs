@@ -25,7 +25,7 @@ async function load({faceSkin = true, params = null, extraLights = null} = {}) {
   fetch(HSIN_STAGE.cinematicProfile).then((r) => r.json()), fetch(HSIN_STAGE.model).then((r) => r.arrayBuffer()),
   ...[LUNAR_TERRACE.sky, LUNAR_TERRACE.moon, LUNAR_TERRACE.stone, LUNAR_TERRACE.atlas, LUNAR_TERRACE.water].map(texture)]);
  const [skyTexture, moonTexture, stoneTexture, atlasTexture, waterTexture] = textures;
- const acting = await fetch('/assets/models/hsin/hsin-v2.1-acting.json').then((r) => r.ok ? r.json() : null).catch(() => null);
+ const acting = await fetch('/assets/characters/hsin/models/hsin-v2.1-acting.json').then((r) => r.ok ? r.json() : null).catch(() => null);
  const gltf = await new GLTFLoader().parseAsync(buffer, ''), model = gltf.scene, scene = new T.Scene(); scene.matrixWorldAutoUpdate = false; scene.add(model);
  model.position.y -= profile.bounds.min[1]; scene.updateMatrixWorld(true);
  const meshes = []; model.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });

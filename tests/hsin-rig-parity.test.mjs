@@ -10,7 +10,7 @@ import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 import {loadRig, forward, skinMatrices, skinVertices, presentationState} from '../scripts/lib/hsin-rig.mjs';
 
 globalThis.self = globalThis; globalThis.createImageBitmap = async () => ({width: 1, height: 1, close() {}}); globalThis.ProgressEvent = class {};
-const bytes = await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url)), profile = JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.1-profile.json', import.meta.url)));
+const bytes = await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb', import.meta.url)), profile = JSON.parse(await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.1-profile.json', import.meta.url)));
 const gltf = await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), ''), model = gltf.scene;
 model.updateMatrixWorld(true);
 const meshes = []; model.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });

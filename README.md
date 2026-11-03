@@ -18,7 +18,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 
 - produção: branch `main`, publicada pelo Cloudflare Pages;
 - build: Astro estático, Node.js 22.12+;
-- experiência 3D pública atual: **Hsin · The Moon Fox V2.0.1**;
+- experiências 3D públicas: **Hsin · The Moon Fox V2.0.1** e **Shorekeeper · laboratório de inspeção** (`/experimentos/sk/`, GLB e animações carregados localmente);
 - personagem autoral do portfólio: **Sophia**, presente em `/sophia/`, na 404 e em protótipos isolados;
 - Música: nova composição centrada na Hsin, com transição cinematográfica para o palco 3D;
 - QA: resultados gerados não são versionados em `main`; evidências volumosas devem permanecer como artifacts de CI.
@@ -31,6 +31,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
 | `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
+| `/experimentos/sk/` | Laboratório Shorekeeper: interface pública, modelo e animações privados carregados pelo visitante |
 | `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
 | `/404` | página de erro com Sophia e Tetris |
 
@@ -86,8 +87,8 @@ Sophia é a mascote/personagem autoral do portfólio.
 
 O site mantém dois modelos 3D porque possuem funções diferentes:
 
-- `public/experimental/sophia-alpha.glb` — protótipo rigado usado em `/modo-experimental/` e no retrato 3D progressivo da 404;
-- `public/experimental/sophia-7b-e1-latest.glb` — modelo usado no lounge 3D da 404.
+- `public/assets/characters/sophia/models/sophia-alpha.glb` — protótipo rigado usado em `/modo-experimental/` e no retrato 3D progressivo da 404;
+- `public/assets/characters/sophia/models/sophia-7b-e1.glb` — modelo usado no lounge 3D da 404.
 
 A 404 sempre possui fallback 2D. WebGL, redução de movimento, economia de dados ou falha de carregamento não impedem o acesso às ações de recuperação nem ao Tetris.
 
@@ -119,8 +120,11 @@ src/
   styles/           tokens, modos, seções e experiências
 
 public/
-  assets/           imagens, modelos e texturas publicados
-  experimental/     runtime/modelos ainda usados pelos protótipos da Sophia
+  assets/characters/hsin/          modelos, animações, cenário e arte da Hsin
+  assets/characters/shorekeeper/   VFX autorais e ilustrações da Shorekeeper
+  assets/characters/phrolova/      vetores e ilustrações da Phrolova
+  assets/characters/sophia/        modelos, 2D e ilustrações da Sophia
+  experimental/     scripts experimentais da Sophia (sem modelos binários)
   scripts/          scripts estáticos de página
   _headers          cache e cabeçalhos do Pages
 
@@ -214,6 +218,25 @@ Workflow manual para ingestão/otimização controlada de assets externos.
 
 Resultados de browser QA, screenshots e cópias de build devem ser anexados como **artifacts** do workflow. `qa-results/` está ignorado pelo Git.
 
+## Acervo por personagem e armazenamento protegido
+
+O acervo público é organizado em `public/assets/characters/{hsin,shorekeeper,phrolova,sophia}/`. Os formatos `models/`, `animations/`, `scenes/`, `vfx/`, `2d/` e `art/` são separados quando pertinentes. URLs antigas de assets recebem redirecionamento de compatibilidade em `public/_redirects`. A mudança é de caminhos e nomes: **não reconstrói nem modifica os GLBs**. O modelo Sophia 7B E1 agora se chama `sophia-7b-e1.glb` (sem `latest`).
+
+**Regra de proteção:** arquivos privados, fontes não licenciadas para redistribuição e materiais sujeitos a restrições autorais têm como **destino de arquivamento** um bucket Cloudflare R2 privado e/ou um acervo pessoal no Google Drive. Não devem ser enviados automaticamente para `public/`, `dist/`, GitHub Releases ou para um bucket público. Um repositório público não oferece pastas privadas; créditos não substituem autorização de distribuição.
+
+**Estado efetivamente verificado neste repositório (2026-11-03):**
+
+| Personagem | Onde está hoje | Carregamento pelo portfólio |
+| --- | --- | --- |
+| **Hsin** | GLB e coreografias atualmente **públicos**, sob `public/assets/characters/hsin/` | **Sim**, via fetch/GLTFLoader do Cloudflare Pages; mover arquivos não os torna privados |
+| **Shorekeeper** | GLB F2.0-A e bibliotecas privadas **não incluídos** neste Git; apenas interface/VFX autorais são públicos | **Somente local**, por seleção de arquivo e IndexedDB; **sem carregamento R2 confirmado** |
+| **Phrolova** | Vetores e imagens públicos no acervo da personagem | **Sem GLB público canônico** |
+| **Sophia** | Dois GLBs no acervo público; personagens de autoria do projeto | **Sim**, nas rotas que utilizam Sophia |
+
+**Cloudflare R2: ACESSO AINDA NÃO VERIFICADO.** Não há binding R2 configurado em código nem Pages Function de modelos privados em `main`; esta auditoria do repositório **não** equivale a acessar as configurações reais da conta Cloudflare. É necessário verificar em Cloudflare Pages → Settings → Bindings, criar/associar o bucket e testar a leitura sob autenticação. Nenhuma credencial R2 deve aparecer no front-end. O R2 usa prefixos de chave, não pastas físicas. A organização prevista está em [`docs/assets/private-r2-layout.json`](docs/assets/private-r2-layout.json); ver [`docs/assets/character-storage.md`](docs/assets/character-storage.md).
+
+**Importante:** o GLB público da Hsin e quaisquer outros recursos de terceiros acessíveis no site **não estão protegidos** por esta declaração. Antes de migrá-los para entrega autenticada a partir do R2, verificar licença/permissões e o impacto de não disponibilizar o arquivo a visitantes anônimos. Arquivos privados no R2 não devem ser expostos por endpoints sem autorização. Mesmo um usuário autenticado pode salvar bytes entregues ao navegador.
+
 ## Política de assets
 
 - fonte necessária para geração deve permanecer versionada;
@@ -221,7 +244,9 @@ Resultados de browser QA, screenshots e cópias de build devem ser anexados como
 - modelo grande só permanece em `public/` quando existe rota/runtime que o consome;
 - screenshots, `dist/` copiado, relatórios repetidos e saídas temporárias não entram em `main`;
 - assets de terceiros mantêm seus créditos e não implicam transferência de direitos;
-- nenhuma credencial é versionada.
+- nenhuma credencial é versionada;
+- não declarar como privado o que continua servido publicamente pelo Pages;
+- preservar as licenças/créditos de KURO GAMES para Hsin, Shorekeeper e Phrolova; o trabalho é independente e não oficial.
 
 Essa política evita repetir o problema em que a remoção acidental de `assets/og-portfolio.png` interrompeu builds do Pages.
 

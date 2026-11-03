@@ -15,7 +15,7 @@ import {createRestBreath} from '../src/scripts/hsin-rest-breath.mjs';
 import {createFacialActing} from '../src/scripts/hsin-face-acting.mjs';
 import {HSIN_STAGE,cameraFit} from '../src/scripts/hsin-stage-config.mjs';
 const file=p=>new URL('../'+p,import.meta.url),hash=b=>createHash('sha256').update(b).digest('hex');
-const bytes=await readFile(file('public/assets/models/hsin/hsin-v2.0.glb')),profileBytes=await readFile(file('public/assets/models/hsin/hsin-v2.1-profile.json')),profile=JSON.parse(profileBytes),manifest=JSON.parse(await readFile(file('src/data/hsin-v21-pose.json')));
+const bytes=await readFile(file('public/assets/characters/hsin/models/hsin-v2.0.glb')),profileBytes=await readFile(file('public/assets/characters/hsin/models/hsin-v2.1-profile.json')),profile=JSON.parse(profileBytes),manifest=JSON.parse(await readFile(file('src/data/hsin-v21-pose.json')));
 assert.equal(hash(bytes),manifest.modelSha256);assert.equal(hash(profileBytes),manifest.profileSha256);assert.equal(HSIN_STAGE.version,'2.0.1');
 globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});globalThis.ProgressEvent=class{};
 async function rig(){

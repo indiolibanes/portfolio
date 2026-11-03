@@ -9,8 +9,8 @@ import {qMul, qExp, qAxisAngle, qLog, qAngle, sub, len, add, scale} from './lib/
 import {rng, gauss, optimise as strategy} from './lib/hsin-solve.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
-export const rig = loadRig(readFileSync(root + 'public/assets/models/hsin/hsin-v2.0.glb'));
-export const profile = JSON.parse(readFileSync(root + 'public/assets/models/hsin/hsin-v2.1-profile.json'));
+export const rig = loadRig(readFileSync(root + 'public/assets/characters/hsin/models/hsin-v2.0.glb'));
+export const profile = JSON.parse(readFileSync(root + 'public/assets/characters/hsin/models/hsin-v2.1-profile.json'));
 export const ctx = createArmContext(rig, profile, 'R');
 export const sigPose = profile.poses.signature;
 export const sigFinal = [0, 1, 2, 3, 4, 5].map((i) => sigPose.frames[64].slice(i * 4, i * 4 + 4));

@@ -160,7 +160,7 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   top: 23.3333%;
   width: 50%;
   aspect-ratio: 640 / 704;
-  background: url('/images/sophia/method-presenter.webp') 0 0 / 400% 100% no-repeat;
+  background: url('/assets/characters/sophia/art/method-presenter.webp') 0 0 / 400% 100% no-repeat;
   animation: sophia-method-present 4.8s steps(1, end) infinite;
 }
 .method-presenter__node {
@@ -324,7 +324,7 @@ html[data-legacy-mode='true'] .method-section { background: #abc5b2; color: #142
 @media (prefers-reduced-motion: reduce) {
   .method-presenter__sophia {
     animation: none;
-    background-image: url('/images/sophia/method-presenter-still.webp');
+    background-image: url('/assets/characters/sophia/art/method-presenter-still.webp');
     background-size: 100% 100%;
     background-position: 0 0;
   }

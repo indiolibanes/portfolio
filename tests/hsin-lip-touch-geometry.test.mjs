@@ -7,11 +7,11 @@ import {measurePose, nearestTo} from '../scripts/lib/hsin-arm-metrics.mjs';
 import {qAngle} from '../scripts/lib/hsin-math.mjs';
 
 const file = (path) => readFileSync(new URL('../' + path, import.meta.url)), sha = (buffer) => createHash('sha256').update(buffer).digest('hex');
-const actingBytes = file('public/assets/models/hsin/hsin-v2.1-acting.json'), acting = JSON.parse(actingBytes), manifest = JSON.parse(file('src/data/hsin-v201-acting.json'));
+const actingBytes = file('public/assets/characters/hsin/models/hsin-v2.1-acting.json'), acting = JSON.parse(actingBytes), manifest = JSON.parse(file('src/data/hsin-v201-acting.json'));
 const lip = acting.poses.lipTouch, q = (f, i) => f.slice(i * 4, i * 4 + 4), n = lip.names.length;
 
 // Provenance: this data belongs to exactly this model and this approved profile, and the manifest matches the file.
-assert.equal(acting.modelSha256, sha(file('public/assets/models/hsin/hsin-v2.0.glb'))); assert.equal(acting.profileSha256, sha(file('public/assets/models/hsin/hsin-v2.1-profile.json')));
+assert.equal(acting.modelSha256, sha(file('public/assets/characters/hsin/models/hsin-v2.0.glb'))); assert.equal(acting.profileSha256, sha(file('public/assets/characters/hsin/models/hsin-v2.1-profile.json')));
 assert.equal(manifest.sha256, sha(actingBytes)); assert.equal(manifest.bytes, actingBytes.length); assert.equal(manifest.profileSha256, acting.profileSha256);
 assert.equal(n, 18); assert.ok(lip.names.slice(0, 6).every((name, i) => name === sigPose.names[i]), 'arm chain = the approved signature chain');
 assert.ok(lip.frames.length === 93 && lip.frames.every((f) => f.length === n * 4 && f.every(Number.isFinite)) && lip.rest.length === n * 4);

@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {danceRig} from './lib/hsin-dance-rig.mjs';
 import {createLowerSolver} from './lib/hsin-dance-lower.mjs';
 const r=await danceRig(),{T,model,bones,by}=r,support=createLowerSolver(r),hash=b=>createHash('sha256').update(b).digest('hex');
-const original=JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r1.json'));
+const original=JSON.parse(await readFile('public/assets/characters/hsin/animations/lunar-dance-r1.json'));
 const upperParts=['Spine2','Neck','Head','ClavicleR','ClavicleL','UpperArmR','ForearmR','HandR','UpperArmL','ForearmL','HandL'];
 const lowerParts=['ThighL','CalfL','FootL','Toe0L','ThighR','CalfR','FootR','Toe0R'];
 const names=[...upperParts,...lowerParts].flatMap(p=>['ORG-Bip001'+p,'DEF-Bip001'+p]),owned=names.map(n=>by.get(n)),rest=owned.flatMap(b=>b.quaternion.toArray());
@@ -67,5 +67,5 @@ for(const [name,def]of Object.entries(definitions)){
 }
 support.reset();
 const data={version:'lunar-dance-experimental-r2',publicVersion:'2.0.1',encoding:'quaternion-i16',modelSha256:hash(r.bytes),profileSha256:hash(r.profileBytes),names,rest,positionNames,positionRest,lowerStart:upperParts.length*2,phrases,method:'OFFLINE_TWO_BONE_SUPPORT_LOCK_AND_AUTHORED_UPPER_KEYS',visual:'VISUAL_QA_PENDING',authoredKeys:definitions,ownership:{dance:names,translation:positionNames,unchanged:['rig hierarchy','GLB','fingers','morph targets'],footPolicy:'Four small lateral/closing/return swings in Lunar Waltz; other phrases lock both feet; no releve or pirouette'}};
-const text=JSON.stringify(data)+'\n';await writeFile('public/assets/animations/hsin/lunar-dance-r2.json',text);await writeFile('src/data/hsin-dance.json',JSON.stringify({url:'/assets/animations/hsin/lunar-dance-r2.json',sha256:hash(text),bytes:Buffer.byteLength(text),modelSha256:data.modelSha256,profileSha256:data.profileSha256},null,2)+'\n');
+const text=JSON.stringify(data)+'\n';await writeFile('public/assets/characters/hsin/animations/lunar-dance-r2.json',text);await writeFile('src/data/hsin-dance.json',JSON.stringify({url:'/assets/characters/hsin/animations/lunar-dance-r2.json',sha256:hash(text),bytes:Buffer.byteLength(text),modelSha256:data.modelSha256,profileSha256:data.profileSha256},null,2)+'\n');
 console.log(JSON.stringify({bones:names.length,phrases:Object.keys(phrases),bytes:Buffer.byteLength(text)}));

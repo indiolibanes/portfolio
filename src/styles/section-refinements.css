@@ -57,7 +57,7 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero
 .sophia-animation--lab .sophia-animation__frame {
   position: relative;
   z-index: 1;
-  background-image: url('/images/sophia/lab-oriental.webp');
+  background-image: url('/assets/characters/sophia/art/lab-oriental.webp');
   background-size: 400% 100%;
   background-position: 0 0;
   transform-origin: 50% 92%;
