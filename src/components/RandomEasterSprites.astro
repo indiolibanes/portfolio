@@ -15,8 +15,7 @@
     const sprite = document.querySelector('[data-random-easter-sprite]');
     if (!sprite) return;
 
-    // aemeath-pixel-05.webp is a truncated upload (RIFF size 6712 B, file
-    // 5802 B) that decodes to an empty frame, so it stays out of rotation.
+    // Only validated sprites participate in rotation.
     const assets = [
       '/assets/easter/aemeath-pixel-01.webp',
       '/assets/easter/aemeath-pixel-02.webp',

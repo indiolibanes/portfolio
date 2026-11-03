@@ -49,7 +49,7 @@ Princípios:
 O Astro compila a página estática e executa o script que gera a imagem Open Graph.
 
 ```bash
-npm install
+npm ci
 npm run build
 ```
 

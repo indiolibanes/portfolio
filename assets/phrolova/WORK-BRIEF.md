@@ -6,13 +6,13 @@
 
 ## Tarefa curta para colar no Work
 
-> Trabalhe apenas na **reconstrução vetorial estática do Bastonete Carmesim da Phrolova**. Antes de pesquisar algo, abra `assets/phrolova/references.json` e `assets/phrolova/reference-board.svg`; ambos já estão indexados. Use como geometria principal `public/phrolova-baton.webp` (a imagem realmente presente no portfólio), validada com as quatro fotografias angulares linkadas no JSON e os esboços publicados pelos desenvolvedores indicados ali. **Crimson Baton é o item de missão da Phrolova, não Lethean Elegy (o violino)**. Trace *manualmente* haste, junções, coroas de pétalas, estames e ornamentos em **grupos SVG independentes**, preservando a forma e a proporção do original. Não faça `image trace` sem inspeção, não trate as notas musicais como haste e não invente laços. Entregue `assets/phrolova/crimson-baton-vector-draft.svg` e uma sobreposição lado a lado sobre a imagem original. **Pare nessa etapa**: não altere `HeroMicroInteractions.astro`, CSS, Shorekeeper, Música, nem implemente animação. Somente depois de verificar visualmente o SVG, comite os arquivos de estudo e apresente a comparação para aprovação. Se o material não permitir fidelidade, descreva o que falta em vez de improvisar.
+> Trabalhe apenas na **reconstrução vetorial estática do Bastonete Carmesim da Phrolova**. Antes de pesquisar algo, abra `assets/phrolova/references.json` e `assets/phrolova/reference-board.svg`; ambos já estão indexados. Use como geometria principal `public/assets/characters/phrolova/ui/baton-bow.webp` (a imagem realmente presente no portfólio), validada com as quatro fotografias angulares linkadas no JSON e os esboços publicados pelos desenvolvedores indicados ali. **Crimson Baton é o item de missão da Phrolova, não Lethean Elegy (o violino)**. Trace *manualmente* haste, junções, coroas de pétalas, estames e ornamentos em **grupos SVG independentes**, preservando a forma e a proporção do original. Não faça `image trace` sem inspeção, não trate as notas musicais como haste e não invente laços. Entregue `assets/phrolova/crimson-baton-vector-draft.svg` e uma sobreposição lado a lado sobre a imagem original. **Pare nessa etapa**: não altere `HeroMicroInteractions.astro`, CSS, Shorekeeper, Música, nem implemente animação. Somente depois de verificar visualmente o SVG, comite os arquivos de estudo e apresente a comparação para aprovação. Se o material não permitir fidelidade, descreva o que falta em vez de improvisar.
 
 ## Onde está tudo
 
 - `assets/phrolova/references.json` — índice estruturado de **7 referências externas** (4 fotos + ícone canônico + esboços + showcase), procedência e limitações.
 - `assets/phrolova/reference-board.svg` — prancha 1460 × 950, **autocontida**, que mostra a arte local completa e detalhes ampliados da flor e haste.
-- `public/phrolova-baton.webp` — imagem já presente no portfólio, **principal referência da aparência no site**.
+- `public/assets/characters/phrolova/ui/baton-bow.webp` — imagem já presente no portfólio, **principal referência da aparência no site**.
 - `docs/phrolova-vector-reference.md` — contexto anterior e critérios de fidelidade.
 - `src/components/HeroMicroInteractions.astro` — **NÃO EDITAR** na etapa de vetorização: a Phrolova deve ficar estática e a Shorekeeper intacta.
 
@@ -34,7 +34,7 @@
 
 ## Origem e direitos
 
-Os quatro links de fotografias comerciais e as imagens do jogo são **fontes externas de consulta**. Não estão copiadas para `assets/` e não devem ser republicadas sem direitos de uso. A prancha SVG contém apenas uma cópia autocontida do `public/phrolova-baton.webp` que já estava no repositório.
+Os quatro links de fotografias comerciais e as imagens do jogo são **fontes externas de consulta**. Não estão copiadas para `assets/` e não devem ser republicadas sem direitos de uso. A prancha SVG contém apenas uma cópia autocontida do `public/assets/characters/phrolova/ui/baton-bow.webp` que já estava no repositório.
 
 ## Nota sobre o modelo
 
