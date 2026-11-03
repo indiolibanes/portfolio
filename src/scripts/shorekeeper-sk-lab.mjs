@@ -23,7 +23,7 @@ export function mountShorekeeperLab(root){
  const log=(message,kind='error')=>{const list=kind==='error'?errors:warnings;list.push({time:new Date().toISOString(),message:String(message)});if(list.length>50)list.shift();};
  const warn=message=>{log(message,'warning');status(message);};
  function phase(){state.model=!!model;state.phase=director?.state.phase??'idle';state.paused=!!model&&(userPaused||(!!director?.state.paused&&state.phase!=='idle'));return labPhase(state);}
- function sync(force=false){const p=phase();const key=p+':'+control('originalMode').value+':'+control('actingAuto').checked+':'+!!face?.state.busy;if(!force&&lastPhase===key)return;lastPhase=key;root.dataset.state=p;$('[data-phase]').textContent=PHASES[p];const can=permissions(p,!!director);if(control('actingAuto').checked&&control('originalMode').value==='expressive')can.rig=false;root.dataset.motionPaused=String(userPaused||suspended||outOfView||document.hidden||state.contextLost||!model);
+ function sync(force=false){const p=phase();const key=p+':'+control('originalMode').value+':'+control('actingAuto').checked+':'+!!face?.state.busy;if(!force&&lastPhase===key)return;lastPhase=key;root.dataset.state=p;$('[data-phase]').textContent=PHASES[p];const can=permissions(p,!!director);if(control('actingAuto').checked&&control('originalMode').value==='expressive')can.rig=false;root.dataset.motionPaused=String(userPaused||suspended||outOfView||document.hidden||state.contextLost||state.loading||!model);
  for(const el of all('[data-view], [data-preset], [data-morph], [data-control], [data-action]')){const n=el.dataset.control,a=el.dataset.action;
  if(['panelWidth','dpr','fps','butterflies'].includes(n)||['panel','retry','cancel','report','errors','copy'].includes(a))continue;
  if(el.dataset.boneAxis)continue;
@@ -42,6 +42,7 @@ export function mountShorekeeperLab(root){
  const expressive=control('originalMode').value==='expressive';
  control('actingAuto').disabled=!can.inspect||!expressive||motion.matches;
  if(expressive&&can.inspect&&(face?.state.busy||scheduler?.state.enabled||userPaused)){action('pause').disabled=false;action('interrupt').disabled=false;}
+ if(can.inspect&&userPaused)action('pause').disabled=false;
  control('expressionIntensity').disabled=!can.inspect||!expressive;
  for(const button of all('[data-expression]')){const id=button.dataset.expression,support=id==='blink'?{available:inspection?.names.includes('E_Close'),missing:['E_Close']}:face?.support(id);button.disabled=!can.inspect||!expressive||!support?.available;button.title=support&&!support.available?'Indisponível: '+support.missing.join(', '):'';}
  for(const option of control('originalIdle').options)if(option.value!=='legacy')option.disabled=!findOriginalClip(model?.userData.skClips??[],option.value,control('originalLayer').value);

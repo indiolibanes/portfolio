@@ -67,10 +67,12 @@ Para desktop e Android/Samsung Internet: carregar localmente, selecionar Express
 | Pausa, reduced motion e scheduler | PASS sintético | Sessões determinísticas de 600 s, não sobreposição corporal, meme excluído, expressões manuais protegidas e temporizadores pausados. |
 | Botões e capacidades | PASS sintético | A mesma função usada na UI recebe click, valida modo/disabled e dispara todos os presets; morph ausente falha de modo explícito. |
 | Suítes anteriores e build | PASS local | Testes do laboratório, F1.6, diretor original, npm check (inclui Hsin/Sophia) e build Astro. |
-| Interface no navegador | PENDENTE até publicação | Conferir aba real, menu avançado, estado sem modelo e bloqueio WebGL seguro. Testes sintéticos não são inspeção renderizada. |
+| Interface no navegador | PASS limitado | Prévia inicial cbde79d aberta: abas, oito botões, menus técnicos recolhidos e acessíveis; bloqueio seguro sem WebGL2. Não houve teste visual do modelo. |
 | Aparência facial e Android | VISUAL_QA_PENDING | Sem renderização WebGL2 comprovada nesta execução. Nenhum FPS/VRAM, validade artística ou estabilidade móvel é afirmado. |
 
-Arquivos alterados: biblioteca nova, controlador facial/scheduler, runtime do laboratório, câmera de stage, rota Astro, CSS de apresentação, testes faciais/laboratório e workflow sintético. Nenhuma alteração em Hsin, Phrolova, Sophia, rig/GLB ou diretor original. As suspeitas anteriores sobre auxiliares dos idles continuam separadas da aprovação visual informada pelo usuário.
+O primeiro CI de build usou Node 22.23.3, abaixo do mínimo 22.23.4 do Astro instalado. `.node-version` passa a 24 (mesma família do runtime local), e o workflow sintético da Shorekeeper usa esse arquivo. Não houve mudança de dependências, lockfile ou testes da Hsin.
+
+Arquivos alterados: configuração Node, biblioteca nova, controlador facial/scheduler, runtime do laboratório, câmera de stage, rota Astro, CSS de apresentação, testes faciais/laboratório e workflow sintético. Nenhuma alteração em Hsin, Phrolova, Sophia, rig/GLB ou diretor original. As suspeitas anteriores sobre auxiliares dos idles continuam separadas da aprovação visual informada pelo usuário.
 
 Próximo passo necessário: calibrar os pesos no modelo em WebGL2, usando os GIFs como direção de atuação. Priorizar My Star, Amor e Olhadinha; verificar cílios/pálpebras durante piscadas sobrepostas e legibilidade em celular. Ajustar somente pesos/tempos a partir da evidência, sem reconstrução geométrica automática.
 
