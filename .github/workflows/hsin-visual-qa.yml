@@ -49,7 +49,7 @@ jobs:
       - name: Render acting frames (Lip Touch, when the acting profile exists)
         if: always()
         run: |
-          if [ -f public/assets/models/hsin/hsin-v2.1-acting.json ]; then node scripts/qa/run-hsin-qa.mjs qa-out/acting --scenario=lip; fi
+          if [ -f public/assets/characters/hsin/models/hsin-v2.1-acting.json ]; then node scripts/qa/run-hsin-qa.mjs qa-out/acting --scenario=lip; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
