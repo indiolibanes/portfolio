@@ -123,7 +123,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
     <figure class="music-panorama music-panorama--hsin-stage" aria-labelledby="music-panorama-caption" data-music-panorama>
       <picture class="music-scene-art">
-        <img src="/assets/music-hsin-stage-2026-11-02.avif" alt="" width="1024" height="576" loading="lazy" decoding="async" />
+        <img src="/assets/characters/hsin/music/music-stage-2026-11-02.avif" alt="" width="1024" height="576" loading="lazy" decoding="async" />
       </picture>
       <div class="music-panorama-sky" aria-hidden="true">
         <span class="music-moonglow"></span>
@@ -537,7 +537,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     };
 
     const sprites = {
-      butterfly: '/assets/shorekeeper-butterfly.webp',
+      butterfly: '/assets/characters/shorekeeper/ui/butterfly.webp',
     };
     Object.values(sprites).forEach((src) => {
       const preload = new Image();
@@ -591,7 +591,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     // aparece, flutua e se desfaz devagar: a flor é corroída do centro para
     // fora enquanto solta pétalas de higanbana, uma a uma, que caem
     // balançando. Dura cerca de nove segundos, de propósito.
-    const batonSrc = '/assets/phrolova/crimson-baton.svg';
+    const batonSrc = '/assets/characters/phrolova/ui/crimson-baton.svg';
     const canErode = Boolean(window.CSS?.registerProperty);
     const petalMarkup = '<path class="music-petal-body" d="M8 68C1 42 7 14 31 3C26 21 22 46 14 68C12 70 9 70 8 68Z" /><path class="music-petal-vein" d="M10 64C11 44 16 22 28 8" />';
 

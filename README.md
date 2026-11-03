@@ -18,7 +18,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 
 - produção: branch `main`, publicada pelo Cloudflare Pages;
 - build: Astro estático, Node.js 22.12+;
-- experiência 3D pública atual: **Hsin · The Moon Fox V2.0.1**;
+- experiências 3D públicas: **Hsin · The Moon Fox V2.0.1** e **Shorekeeper · laboratório de inspeção 3D** (modelo privado, importação local);
 - personagem autoral do portfólio: **Sophia**, presente em `/sophia/`, na 404 e em protótipos isolados;
 - Música: nova composição centrada na Hsin, com transição cinematográfica para o palco 3D;
 - QA: resultados gerados não são versionados em `main`; evidências volumosas devem permanecer como artifacts de CI.
@@ -31,6 +31,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
 | `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
+| `/experimentos/sk/` | laboratório técnico Shorekeeper; modelo e animações importados localmente |
 | `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
 | `/404` | página de erro com Sophia e Tetris |
 
@@ -53,7 +54,7 @@ A preferência é persistida no navegador. Movimento decorativo respeita `prefer
 A seção Música combina:
 
 - atividade recente via Last.fm;
-- composição `public/assets/music-hsin-stage-2026-11-02.avif`;
+- composição `public/assets/characters/hsin/music/music-stage-2026-11-02.avif`;
 - Hsin como a única personagem atualmente acessível na composição;
 - botão **Experimental mode** com fallback de link HTML direto;
 - transição curta em violeta, azul elétrico e branco lunar antes da navegação;
@@ -119,8 +120,13 @@ src/
   styles/           tokens, modos, seções e experiências
 
 public/
-  assets/           imagens, modelos e texturas publicados
-  experimental/     runtime/modelos ainda usados pelos protótipos da Sophia
+  assets/characters/  acervo visual público separado por Hsin, Shorekeeper, Phrolova e Sophia
+  assets/models/hsin/  modelo/poses Hsin usados por URLs antigas do runtime (manter compatibilidade)
+  assets/animations/hsin/  coreografias públicas da Hsin (manter compatibilidade)
+  assets/scenes/hsin/  texturas do terraço lunar (manter compatibilidade)
+  assets/about/   derivados gerados no build, inclusive motivos da Shorekeeper
+  assets/        outras imagens e texturas publicados
+  experimental/     modelos 3D da Sophia ainda consumidos pelo runtime legado (migração separada)
   scripts/          scripts estáticos de página
   _headers          cache e cabeçalhos do Pages
 
@@ -213,6 +219,16 @@ Executa a regressão especializada da Hsin quando os arquivos relacionados à at
 Workflow manual para ingestão/otimização controlada de assets externos.
 
 Resultados de browser QA, screenshots e cópias de build devem ser anexados como **artifacts** do workflow. `qa-results/` está ignorado pelo Git.
+
+## Acervo de personagens e armazenamento privado
+
+O catálogo público mantém recursos visuais de cada personagem em `public/assets/characters/{hsin,shorekeeper,phrolova,sophia}/`. As imagens e os sprites podem ser públicos; isso **não** constitui licença para redistribuir arquivos de terceiros. Os modelos e as animações **extraídos de jogos e protegidos por direitos autorais** devem ficar em armazenamento privado, fora deste repositório e fora de `public/`, até existir autorização apropriada para eventual distribuição. Os créditos aos titulares devem acompanhar cada apresentação.
+
+O GLB canônico da Shorekeeper (F2.0-A, SHA-256 `4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30`) e as bibliotecas de combate não estão versionados aqui. A rota `/experimentos/sk/` usa importação local do visitante e armazenamento IndexedDB opcional; **não existe binding R2 ou leitura autenticada da Shorekeeper configurado no runtime atual**. Um bucket Cloudflare R2 privado com prefixo `characters/shorekeeper/` é a estrutura proposta, **não provisionada nem comprovada**. A presença de um objeto num bucket R2 não fornece acesso automático ao navegador: é necessário um Worker com autenticação e autorização, observados os direitos do titular.
+
+As imagens Hsin e Sophia já existentes em diretórios de runtime (`public/assets/models/hsin`, `public/assets/animations/hsin`, `public/assets/scenes/hsin`, `public/experimental/`) permanecem em seus caminhos funcionais até auditoria de todos os consumidores. Em especial, o modelo Hsin atualmente servido por Pages é **público**, e não deve ser descrito como privado. A reorganização dos arquivos visuais não o transforma em privado. Uma futura migração de GLBs deve ocorrer em PR isolado, após análise de licenças, integridade, carga e URLs.
+
+Ver `docs/asset-storage/README.md` para o catálogo e o contrato de armazenamento.
 
 ## Política de assets
 
