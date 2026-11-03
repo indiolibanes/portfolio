@@ -138,7 +138,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <h2>Presença & contemplação</h2>
 <p class="sk-help">Animações originais em um espaço privado. A piscada acompanha a contemplação.</p>
 <div data-original-section>
-<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 são movimentos originais candidatos à Resonance Liberation; as câmeras e os efeitos especiais da ultimate não acompanham os PSA. O modelo e as animações permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
+<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 permanecem originais. As variantes CL · eixo reancorado alinham apenas o Root inicial à pose do modelo, preservando a rotação relativa. Compare as versões com câmera fixa; efeitos especiais não acompanham os PSA. GLBs permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
 <option value="legacy" hidden>Sequência indisponível</option>
 <option value="SK_IDLE_01_ORIGINAL">Idle 01 · original</option>
@@ -157,6 +157,10 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <optgroup label="Resonance Liberation · movimentos Burst (QA pendente)">
 <option value="SK_BURST_01_ORIGINAL" hidden>Burst 01 · candidato à Liberation</option>
 <option value="SK_BURST_02_ORIGINAL" hidden>Burst 02 · candidato à Liberation</option>
+<option value="SK_BURST_01_REBASED" hidden>Burst 01 · eixo reancorado (CL QA)</option>
+<option value="SK_BURST_02_REBASED" hidden>Burst 02 · eixo reancorado (CL QA)</option>
+<option value="SK_BURST_01_ROOT_BODY_OWNED" hidden>Burst 01 · Root fixo no bind (CL.1.1 QA)</option>
+<option value="SK_BURST_02_ROOT_BODY_OWNED" hidden>Burst 02 · Root fixo no bind (CL.1.1 QA; início de costas)</option>
 </optgroup>
 </select></label>
 

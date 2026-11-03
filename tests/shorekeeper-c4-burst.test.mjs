@@ -7,7 +7,8 @@ assert.deepEqual(ORIGINAL_ATTACK_IDS,[
  'SK_ATTACK_01_ORIGINAL','SK_ATTACK_02_ORIGINAL','SK_ATTACK_03_ORIGINAL','SK_ATTACK_04_ORIGINAL'
 ]);
 assert.deepEqual(BURST_COMBAT_IDS,['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL']);
-assert.equal(COMBAT_CLIP_IDS.length,10);
+assert(COMBAT_CLIP_IDS.length>=10,'all 10 original source combat clips must remain available');
+for(const id of [...ORIGINAL_ATTACK_IDS,...BURST_COMBAT_IDS])assert(COMBAT_CLIP_IDS.includes(id),'missing approved source id: '+id);
 const root=new T.Group(),bone=new T.Bone();bone.name='Root';root.add(bone);
 const clipFor=(name)=>new T.AnimationClip(name,.75,[new T.VectorKeyframeTrack('Root.position',[0,.75],[0,0,0,.5,0,0])]);
 for(const id of BURST_COMBAT_IDS){
