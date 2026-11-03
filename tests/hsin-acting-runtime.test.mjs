@@ -9,8 +9,8 @@ import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 import {createHairCaress, createLipHairComposition} from '../src/scripts/hsin-lip-hair.mjs';
 
 globalThis.self = globalThis; globalThis.createImageBitmap = async () => ({width: 1, height: 1, close() {}}); globalThis.ProgressEvent = class {};
-const read = async (p) => readFile(new URL('../' + p, import.meta.url)), bytes = await read('public/assets/models/hsin/hsin-v2.0.glb');
-const profile = JSON.parse(await read('public/assets/models/hsin/hsin-v2.1-profile.json')), acting = JSON.parse(await read('public/assets/models/hsin/hsin-v2.1-acting.json'));
+const read = async (p) => readFile(new URL('../' + p, import.meta.url)), bytes = await read('public/assets/characters/hsin/models/hsin-v2.0.glb');
+const profile = JSON.parse(await read('public/assets/characters/hsin/models/hsin-v2.1-profile.json')), acting = JSON.parse(await read('public/assets/characters/hsin/models/hsin-v2.1-acting.json'));
 const gltf = await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), ''), model = gltf.scene; model.updateMatrixWorld(true);
 const meshes = []; model.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); }); const bones = [...new Set(meshes.flatMap((m) => m.skeleton.bones))];
 createCinematicReference({bones, profile}).apply(); createLunarPresentation({THREE, model, bones, bounds: profile.bounds}).apply();
