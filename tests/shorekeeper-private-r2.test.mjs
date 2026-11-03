@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {generateKeyPairSync,sign} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {validateManifest,verifyAccessJwt,MANIFEST_KEY} from '../functions/_lib/shorekeeper-private.mjs';
 import {onRequestGet as manifestGet} from '../functions/api/shorekeeper/manifest.js';
 import {onRequestGet as assetGet,onRequestHead as assetHead} from '../functions/api/shorekeeper/asset.js';
@@ -58,4 +62,19 @@ test('Authenticated manifest and models remain private and no-store',async()=>{
  const data=await assetGet({request:req('/api/shorekeeper/asset?kind=library&id=combat',token()),env});
  assert.equal(data.status,200);assert.equal((await data.arrayBuffer()).byteLength,24);
  assert.equal((await assetGet({request:req('/api/shorekeeper/asset?kind=library&id=..',token()),env})).status,404);
+});
+
+test('Wrangler publisher parses GLB and dry-runs without contacting Cloudflare',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'sk-r2-test-'));
+ try{
+  const source=Buffer.from(JSON.stringify({asset:{version:'2.0'}}));
+  const chunk=Buffer.concat([source,Buffer.alloc((4-source.length%4)%4,32)]);
+  const data=Buffer.alloc(20+chunk.length);
+  data.write('glTF',0);data.writeUInt32LE(2,4);data.writeUInt32LE(data.length,8);
+  data.writeUInt32LE(chunk.length,12);data.writeUInt32LE(0x4e4f534a,16);chunk.copy(data,20);
+  const path=join(dir,'test.glb');await writeFile(path,data);
+  const run=spawnSync(process.execPath,['scripts/shorekeeper/publish-private-to-r2.mjs','--model',path,'--allow-model-update','--dry-run'],{encoding:'utf8'});
+  assert.equal(run.status,0,run.stderr);
+  assert.match(run.stdout,/DRY RUN/);
+ }finally{await rm(dir,{recursive:true,force:true});}
 });

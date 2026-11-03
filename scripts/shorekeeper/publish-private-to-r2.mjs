@@ -38,12 +38,21 @@ async function inspect(file){
  const path=resolve(file??''),data=await readFile(path);
  if(data.byteLength<20||data.byteLength>130000000||data.subarray(0,4).toString()!=='glTF'||data.readUInt32LE(4)!==2||data.readUInt32LE(8)!==data.byteLength)
   throw Error('Arquivo GLB 2.0 inválido: '+path);
+ const jsonBytes=data.readUInt32LE(12);
+ if(data.readUInt32LE(16)!==0x4e4f534a||jsonBytes<4||20+jsonBytes>data.length||jsonBytes%4!==0)throw Error('Chunk JSON inválido no GLB.');
+ let json;try{json=JSON.parse(data.subarray(20,20+jsonBytes).toString('utf8'));}catch{throw Error('Manifesto glTF inválido.');}
+ if(json.asset?.version!=='2.0')throw Error('GLB incompatível: asset.version precisa ser 2.0.');
+ const hasExternalUri=nodes=>{
+  if(!nodes||typeof nodes!=='object')return false;
+  return Object.entries(nodes).some(([key,value])=>key==='uri'&&typeof value==='string'&&!/^data:(?:image\/(?:png|jpeg|webp)|application\/(?:octet-stream|gltf-buffer));base64,/i.test(value)||hasExternalUri(value));
+ };
+ if(hasExternalUri(json))throw Error('GLB com recurso externo; publique apenas GLBs autocontidos.');
  return {path,sha256:createHash('sha256').update(data).digest('hex'),bytes:data.byteLength};
 }
 function entry(item,kind,id=''){
  const name=(kind==='model'?'shorekeeper-f20a':id)+'-'+item.sha256.slice(0,16)+'.glb';
  const key=ROOT+'/'+(kind==='model'?'models':'animations/combat')+'/'+name;
- return {...kind==='library'?{id}:{},key,name,sha256:item.sha256,bytes:item.bytes};
+ return {...(kind==='library'?{id}:{}),key,name,sha256:item.sha256,bytes:item.bytes};
 }
 async function remoteGet(key,file,allowFail=false){
  return wrangler(['get',BUCKET+'/'+key,'--file',file],{allowFail});
