@@ -1,4 +1,4 @@
-/** Assembles public/assets/models/hsin/hsin-v2.1-acting.json: baked Lip & Hair acting data, guarded by the hash of the
+/** Assembles public/assets/characters/hsin/models/hsin-v2.1-acting.json: baked Lip & Hair acting data, guarded by the hash of the
  * approved profile and of the GLB. The approved profile (hsin-v2.1-profile.json) is never modified.
  * Usage: node scripts/bake-hsin-acting.mjs */
 import {readFileSync, writeFileSync} from 'node:fs';
@@ -14,7 +14,7 @@ const hairSolutions = Object.fromEntries(['start', 'mid', 'end', 'hoverIn', 'hov
 const hair = bakeHair(hairSolutions), hairAudit = auditHair(hair), hairKeys = ['distalIndex:face', 'index:face', 'otherFingers:face', 'thumb:face', 'hand:face', 'distalIndex:hair', 'otherFingers:hair', 'hand:bangs', 'distalIndex:bangs', 'hand:torso', 'forearm:torso'];
 const acting = {
  version: '2.0.1-acting-r1',
- modelSha256: sha('public/assets/models/hsin/hsin-v2.0.glb'), profileSha256: sha('public/assets/models/hsin/hsin-v2.1-profile.json'),
+ modelSha256: sha('public/assets/characters/hsin/models/hsin-v2.0.glb'), profileSha256: sha('public/assets/characters/hsin/models/hsin-v2.1-profile.json'),
  method: 'OFFLINE_SOLVE_AND_BAKE', visual: 'PENDING',
  poses: {
   hairCaress: {
@@ -37,6 +37,6 @@ const acting = {
  },
 };
 const text = JSON.stringify(acting) + '\n';
-writeFileSync(root + 'public/assets/models/hsin/hsin-v2.1-acting.json', text);
+writeFileSync(root + 'public/assets/characters/hsin/models/hsin-v2.1-acting.json', text);
 writeFileSync(root + 'src/data/hsin-v201-acting.json', JSON.stringify({version: acting.version, sha256: createHash('sha256').update(text).digest('hex'), bytes: Buffer.byteLength(text), modelSha256: acting.modelSha256, profileSha256: acting.profileSha256}, null, 2) + '\n');
 console.log('acting profile written', JSON.stringify(acting.poses.lipTouch.validation));
