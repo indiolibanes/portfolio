@@ -11,7 +11,7 @@
     "build": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance",
+    "check": "npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance && npm run check:shorekeeper-r2",
     "check:ux": "node scripts/check-ux-contract.mjs",
     "check:api": "node scripts/test-music-api.mjs",
     "check:tetris": "node scripts/test-tetris.mjs",
@@ -20,7 +20,9 @@
     "check:music-transition": "node tests/music-experimental-mode.test.mjs && node tests/music-experimental-transition.test.mjs",
     "check:hsin": "node tests/experimentos-canonical.test.mjs && node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs && node tests/hsin-soundtrack.test.mjs",
     "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb",
-    "check:performance": "node tests/performance-route-isolation.test.mjs"
+    "check:performance": "node tests/performance-route-isolation.test.mjs",
+    "publish:shorekeeper": "node scripts/shorekeeper/publish-private-to-r2.mjs",
+    "check:shorekeeper-r2": "node --test tests/shorekeeper-private-r2.test.mjs"
   },
   "dependencies": {
     "@types/three": "^0.186.0",
