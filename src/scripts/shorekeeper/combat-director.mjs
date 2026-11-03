@@ -1,11 +1,13 @@
 import {createOriginalIdleDirector} from './original-idle-director.mjs';
+import {BURST_REBASED_IDS} from './liberation-rotation.mjs';
 
 export const ORIGINAL_ATTACK_IDS = Object.freeze([1,2,3,4].map(n=>`SK_ATTACK_0${n}_ORIGINAL`));
 /** Advanced moves use original ActorX sources; they are not visually approved. */
 export const ADVANCED_COMBAT_IDS = Object.freeze(['SK_ATTACK_L02_ORIGINAL','SK_SKILL_01_ORIGINAL','SK_SKILL_QTE_01_ORIGINAL','SK_AIR_SKILL_01_ORIGINAL']);
 /** Raw Burst source names are verified, but mapping to the exact cutscene Liberation remains pending WebGL/gameplay comparison. */
 export const BURST_COMBAT_IDS = Object.freeze(['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL']);
-export const COMBAT_CLIP_IDS = Object.freeze([...ORIGINAL_ATTACK_IDS,...ADVANCED_COMBAT_IDS,...BURST_COMBAT_IDS]);
+export const SOURCE_COMBAT_IDS = Object.freeze([...ORIGINAL_ATTACK_IDS,...ADVANCED_COMBAT_IDS,...BURST_COMBAT_IDS]);
+export const COMBAT_CLIP_IDS = Object.freeze([...SOURCE_COMBAT_IDS,...BURST_REBASED_IDS]);
 
 /** Accept only self-contained animation-only libraries with body TRS tracks. */
 export function validateCombatLibrary(T, root, result) {
@@ -15,7 +17,7 @@ export function validateCombatLibrary(T, root, result) {
  if(!result.gltf.animations.length) throw Error('Biblioteca sem animações.');
  for(const clip of result.gltf.animations){
   const clipId=clip.name.replace(/_(?:BODY|RIB)$/,'');
-  if(!COMBAT_CLIP_IDS.includes(clipId)||!Number.isFinite(clip.duration)||clip.duration<=0||clip.duration>60) throw Error('Identificador ou duração inválidos.');
+  if(!SOURCE_COMBAT_IDS.includes(clipId)||!Number.isFinite(clip.duration)||clip.duration<=0||clip.duration>60) throw Error('Identificador ou duração inválidos.');
   const seen=new Set();
   for(const track of clip.tracks){
    const p=T.PropertyBinding.parseTrackName(track.name);
