@@ -1,0 +1,48 @@
+{
+  "schema": "portfolio-r2-private-keys/v1",
+  "status": "NOT_CONNECTED_NOT_VERIFIED",
+  "bucketName": null,
+  "requiredBinding": "PORTFOLIO_PROTECTED_R2",
+  "acl": "PRIVATE_AUTHENTICATED_ONLY",
+  "note": "Object keys are proposed logical prefixes. No bucket or R2 objects were created, and the site has no verified binding. Copyright/license check before any distribution.",
+  "prefixes": {
+    "hsin": "characters/hsin/",
+    "shorekeeper": "characters/shorekeeper/",
+    "phrolova": "characters/phrolova/",
+    "sophia": "characters/sophia/"
+  },
+  "proposedObjects": [
+    {
+      "character": "shorekeeper",
+      "key": "characters/shorekeeper/models/shorekeeper-f20a-original-idles.glb",
+      "sourceFilename": "PRIVATE_shorekeeper_f20a_original_idles.glb",
+      "bytes": 39487548,
+      "sha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+      "state": "LOCAL_ONLY_NOT_UPLOADED",
+      "distribution": "AUTHORIZED_USERS_ONLY"
+    },
+    {
+      "character": "shorekeeper",
+      "key": "characters/shorekeeper/animations/approved-idles.animations.glb",
+      "state": "UNCONFIRMED_SEPARATE_FILE",
+      "note": "Three approved idles are already embedded in canonical F2.0-A GLB; avoid duplicate upload."
+    },
+    {
+      "character": "shorekeeper",
+      "key": "characters/shorekeeper/animations/combat-candidates/",
+      "state": "NOT_UPLOADED_VISUAL_QA_PENDING",
+      "note": "Attack and Burst originals/derived variants require independent visual QA; prefix only."
+    },
+    {
+      "character": "hsin",
+      "key": "characters/hsin/models/hsin-v2.0.glb",
+      "state": "CURRENTLY_PUBLIC_PAGES_NO_R2_COPY",
+      "licenseCheckRequired": true
+    },
+    {
+      "character": "sophia",
+      "key": "characters/sophia/models/",
+      "state": "CURRENTLY_PUBLIC_PAGES_OPTIONAL_BACKUP"
+    }
+  ]
+}

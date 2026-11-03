@@ -1,0 +1,274 @@
+{
+  "schema": "portfolio-characters/public-asset-migration-v1",
+  "date": "2026-11-03",
+  "sourceCommit": "cc80c9b45cf30f7117e731044496e2278c31ddd2",
+  "note": "Git blob IDs preserved exactly; no change to file bytes. Assets under public/ remain publicly accessible.",
+  "fileCount": 44,
+  "totalBytes": 53056464,
+  "migrations": [
+    {
+      "source": "public/assets/animations/hsin/lunar-dance-r1.json",
+      "destination": "public/assets/characters/hsin/animations/lunar-dance-r1.json",
+      "size": 394188,
+      "gitBlobSha": "95df4225520c0cd35d918a83d565f671cac109ed"
+    },
+    {
+      "source": "public/assets/animations/hsin/lunar-dance-r2.json",
+      "destination": "public/assets/characters/hsin/animations/lunar-dance-r2.json",
+      "size": 511505,
+      "gitBlobSha": "26a4f5e360073dc31e6797bc81aaa3b6fa1957cd"
+    },
+    {
+      "source": "public/assets/animations/hsin/lunar-dance-r3-grand.json",
+      "destination": "public/assets/characters/hsin/animations/lunar-dance-r3-grand.json",
+      "size": 215487,
+      "gitBlobSha": "39e66cfbeb28d32345599cd99c27058daaf0a0f3"
+    },
+    {
+      "source": "public/assets/animations/hsin/lunar-dance-r3.json",
+      "destination": "public/assets/characters/hsin/animations/lunar-dance-r3.json",
+      "size": 205005,
+      "gitBlobSha": "8c9a3e1522391201d6eb4b0c3163f7cd0f83231c"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0-poster-landscape.webp",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0-poster-landscape.webp",
+      "size": 46802,
+      "gitBlobSha": "8a6efc047c652daeb8c457d6f5ca2b977608260c"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0-poster.webp",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0-poster.webp",
+      "size": 79802,
+      "gitBlobSha": "aba7e778fecd8d58027e40240c446b0822db9279"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0-profile.json",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0-profile.json",
+      "size": 149792,
+      "gitBlobSha": "8a95ce3c61e29288321b6481cbbf92cbbb9f5bfe"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0.1-poster-landscape.webp",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0.1-poster-landscape.webp",
+      "size": 81560,
+      "gitBlobSha": "60ef082d011377f63ce1a242b551219663566aee"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0.1-poster.webp",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0.1-poster.webp",
+      "size": 116350,
+      "gitBlobSha": "be30ec6b3700fac21f1015b775a9dab33fe196a0"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.0.glb",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.0.glb",
+      "size": 9873744,
+      "gitBlobSha": "b764ee682fb77043af99c7a4b088e556e5a10789"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.1-acting.json",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.1-acting.json",
+      "size": 108485,
+      "gitBlobSha": "46ddc62f04f9baffedbfb1939dc7b2e821b77873"
+    },
+    {
+      "source": "public/assets/models/hsin/hsin-v2.1-profile.json",
+      "destination": "public/assets/characters/hsin/models/hsin-v2.1-profile.json",
+      "size": 155033,
+      "gitBlobSha": "2d5cfce5d3c592199d1eb248146752c6d770c064"
+    },
+    {
+      "source": "public/assets/music-hsin-stage-2026-11-02.avif",
+      "destination": "public/assets/characters/hsin/art/music-hsin-stage-2026-11-02.avif",
+      "size": 50469,
+      "gitBlobSha": "535946634d679ae190cdf2e9cc0104c422ae0c7b"
+    },
+    {
+      "source": "public/assets/phrolova-baton-bow.webp",
+      "destination": "public/assets/characters/phrolova/art/baton-bow.webp",
+      "size": 8938,
+      "gitBlobSha": "c46dadec3582765c3c57cd41118b0307cf3f6d2a"
+    },
+    {
+      "source": "public/assets/phrolova/crimson-baton.svg",
+      "destination": "public/assets/characters/phrolova/vfx/crimson-baton.svg",
+      "size": 18072,
+      "gitBlobSha": "90c74aadbf049a4e35f132fdca10c30965e8b085"
+    },
+    {
+      "source": "public/assets/scenes/hsin/full-moon-v1.webp",
+      "destination": "public/assets/characters/hsin/scenes/full-moon-v1.webp",
+      "size": 51756,
+      "gitBlobSha": "6c80380df7b488cef9e81bde628c37559cf526f5"
+    },
+    {
+      "source": "public/assets/scenes/hsin/golden-moon-v201.webp",
+      "destination": "public/assets/characters/hsin/scenes/golden-moon-v201.webp",
+      "size": 50000,
+      "gitBlobSha": "9eb36c59c790f4d13d1cbfa67675eb5f111c4c0a"
+    },
+    {
+      "source": "public/assets/scenes/hsin/night-sky-v1.webp",
+      "destination": "public/assets/characters/hsin/scenes/night-sky-v1.webp",
+      "size": 2996,
+      "gitBlobSha": "cdcb255bb54dbc210a10171d224055a50adcdfc5"
+    },
+    {
+      "source": "public/assets/scenes/hsin/night-sky-v201.webp",
+      "destination": "public/assets/characters/hsin/scenes/night-sky-v201.webp",
+      "size": 5740,
+      "gitBlobSha": "40923069402b90e0fd13b752bd92262e2ec77283"
+    },
+    {
+      "source": "public/assets/scenes/hsin/stone-v201.webp",
+      "destination": "public/assets/characters/hsin/scenes/stone-v201.webp",
+      "size": 28812,
+      "gitBlobSha": "b5526f403222fc59b870511c2df272542516ed03"
+    },
+    {
+      "source": "public/assets/scenes/hsin/terrace-atlas-v201.webp",
+      "destination": "public/assets/characters/hsin/scenes/terrace-atlas-v201.webp",
+      "size": 17692,
+      "gitBlobSha": "5304577f66dc884d1fe2bf537f7bd5fd4703a4ae"
+    },
+    {
+      "source": "public/assets/scenes/hsin/water-v201.webp",
+      "destination": "public/assets/characters/hsin/scenes/water-v201.webp",
+      "size": 2302,
+      "gitBlobSha": "6d1bb2518e216d69be0abedbecb26f88b7e034cd"
+    },
+    {
+      "source": "public/assets/shorekeeper-butterfly.webp",
+      "destination": "public/assets/characters/shorekeeper/art/butterfly.webp",
+      "size": 6174,
+      "gitBlobSha": "9d3abc956b6061ae2a2e5ab2fe93e6cc8da3309d"
+    },
+    {
+      "source": "public/assets/shorekeeper-vfx/butterfly-ice.svg",
+      "destination": "public/assets/characters/shorekeeper/vfx/butterfly-ice.svg",
+      "size": 746,
+      "gitBlobSha": "92b78c2b14069a84bf6ccb8ea08a106a515f45a4"
+    },
+    {
+      "source": "public/assets/shorekeeper-vfx/butterfly-violet.svg",
+      "destination": "public/assets/characters/shorekeeper/vfx/butterfly-violet.svg",
+      "size": 597,
+      "gitBlobSha": "571ef37377ceb3d208caa782d67b0780b78dc93a"
+    },
+    {
+      "source": "public/assets/shorekeeper-vfx/star-sprite.svg",
+      "destination": "public/assets/characters/shorekeeper/vfx/star-sprite.svg",
+      "size": 464,
+      "gitBlobSha": "731505b455db658bcceff09bf984172c7e7cbcf6"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-gamepad.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-gamepad.webp",
+      "size": 11110,
+      "gitBlobSha": "7d1027b2d767c58d9d61a03e7659d8ce0796d3b4"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-leave.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-leave.webp",
+      "size": 55632,
+      "gitBlobSha": "745d61d5bacde3a35d86947118b8075c67ad5789"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-play.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-play.webp",
+      "size": 50480,
+      "gitBlobSha": "0353eb1cfdb44149974bb83d1e95c57655311b5b"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-run.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-run.webp",
+      "size": 61554,
+      "gitBlobSha": "78539e069a9bdfe6a9beb54d38c337de7ad002c1"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-stress.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-stress.webp",
+      "size": 51922,
+      "gitBlobSha": "5a586774652747ef8508f86ec61724f4db4443be"
+    },
+    {
+      "source": "public/experimental/sophia-2d/sophia-2d-throw.webp",
+      "destination": "public/assets/characters/sophia/2d/sophia-2d-throw.webp",
+      "size": 60884,
+      "gitBlobSha": "caec73ee3ea945527ee9b9c6835252cb6ffef4b3"
+    },
+    {
+      "source": "public/experimental/sophia-7b-e1-latest.glb",
+      "destination": "public/assets/characters/sophia/models/sophia-7b-e1.glb",
+      "size": 17054692,
+      "gitBlobSha": "db5df8c5fd4ea1dfb86be0762ac447e664e63294"
+    },
+    {
+      "source": "public/experimental/sophia-alpha.glb",
+      "destination": "public/assets/characters/sophia/models/sophia-alpha.glb",
+      "size": 20795692,
+      "gitBlobSha": "6b73f0fb818029a9706981cbcfbeec487de1efc6"
+    },
+    {
+      "source": "public/hsin.webp",
+      "destination": "public/assets/characters/hsin/art/hsin.webp",
+      "size": 430606,
+      "gitBlobSha": "a2aaa089af4d290417fcf1749396affa01b18273"
+    },
+    {
+      "source": "public/images/sophia/lab-oriental.webp",
+      "destination": "public/assets/characters/sophia/art/lab-oriental.webp",
+      "size": 154614,
+      "gitBlobSha": "c0e489a0b958089bb97c64ab591d194c2c958eaf"
+    },
+    {
+      "source": "public/images/sophia/lab-single-tail.webp",
+      "destination": "public/assets/characters/sophia/art/lab-single-tail.webp",
+      "size": 98178,
+      "gitBlobSha": "6f0e347a17cab019784276b3f0ffcb333c9f895d"
+    },
+    {
+      "source": "public/images/sophia/method-presenter-still.webp",
+      "destination": "public/assets/characters/sophia/art/method-presenter-still.webp",
+      "size": 61826,
+      "gitBlobSha": "4345d4477bcd69e41df2e2672198951d6d84bc65"
+    },
+    {
+      "source": "public/images/sophia/method-presenter.webp",
+      "destination": "public/assets/characters/sophia/art/method-presenter.webp",
+      "size": 224082,
+      "gitBlobSha": "a614e952d69fe94eafb11b5f44fcf79621f0ec82"
+    },
+    {
+      "source": "public/images/sophia/music-dance.webp",
+      "destination": "public/assets/characters/sophia/art/music-dance.webp",
+      "size": 206660,
+      "gitBlobSha": "5485764669e06fbf8ab299a5128cd0fb8a93be2c"
+    },
+    {
+      "source": "public/phrolova-baton.webp",
+      "destination": "public/assets/characters/phrolova/art/phrolova-baton.webp",
+      "size": 7382,
+      "gitBlobSha": "fc2218dbd2fc53ec2559b40b8db7da65b8dc788f"
+    },
+    {
+      "source": "public/phrolova.jpg",
+      "destination": "public/assets/characters/phrolova/art/phrolova.jpg",
+      "size": 41492,
+      "gitBlobSha": "df97953c23a58b830b6aed664c1598cbf2232153"
+    },
+    {
+      "source": "public/shorekeeper-black-shores.png",
+      "destination": "public/assets/characters/shorekeeper/art/shorekeeper-black-shores.png",
+      "size": 1402157,
+      "gitBlobSha": "c1fa1953cb9f077abd02615dc050f4de2ba46563"
+    },
+    {
+      "source": "public/shorekeeper.jpg",
+      "destination": "public/assets/characters/shorekeeper/art/shorekeeper.jpg",
+      "size": 104990,
+      "gitBlobSha": "31d3ee0d261d8ce02528c2b72dd88fc0ec00f8d2"
+    }
+  ]
+}
