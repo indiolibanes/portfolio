@@ -16,6 +16,7 @@ export function mountShorekeeperLab(root){
  if(root._skDispose)root._skDispose();
  const $=s=>root.querySelector(s),all=s=>[...root.querySelectorAll(s)],control=n=>$('[data-control="'+n+'"]'),action=n=>$('[data-action="'+n+'"]');
  const lifetime=new AbortController(),events={signal:lifetime.signal},on=(el,event,fn)=>el.addEventListener(event,fn,events);
+ const facialQA=true; // Manual, explicit candidates in the Expressions tab; never scheduled automatically.
  const motion=matchMedia('(prefers-reduced-motion: reduce)'),loader=createLocalLoader(),host=$('[data-sk-canvas]');
  const state={webgl:false,contextLost:false,loading:false,error:false,model:false,phase:'idle',paused:false};
  let stage=null,model=null,inspection=null,director=null,selected=null,metadata=null,disposed=false,loadId=0,suspended=false,userPaused=false,last=0,raf=0,summaryAt=0,metricsStart=0,frames=0,frameMs=0;
@@ -51,6 +52,14 @@ export function mountShorekeeperLab(root){
  if(can.inspect&&userPaused)action('pause').disabled=false;
  control('expressionIntensity').disabled=!can.inspect||!expressive;
  for(const button of all('[data-expression]')){const id=button.dataset.expression,support=id==='blink'?{available:inspection?.names.includes('E_Close'),missing:['E_Close']}:face?.support(id);button.disabled=!can.inspect||!expressive||!support?.available;button.title=support&&!support.available?'Indisponível: '+support.missing.join(', '):'';}
+ for(const button of all('[data-facial-candidate]')){
+  const id=button.dataset.facialCandidate;
+  const available=id==='NEUTRAL'||face?.qaSupport(id)?.available;
+  button.disabled=!facialQA||!can.inspect||!expressive||control('presentationMode').value==='combat'||!available;
+  button.title=available?'Candidato experimental · sem aprovação visual':'Morphs necessários indisponíveis neste GLB';
+ }
+ for(const button of all('[data-facial-camera], [data-facial-capture]'))button.disabled=!can.inspect;
+
  for(const option of control('originalIdle').options){if(option.value==='legacy')continue;const combat=COMBAT_CLIP_IDS.includes(option.value);option.hidden=(control('presentationMode').value==='combat')!==combat;option.disabled=combat?!model?.userData.skClips?.some(c=>c.name===option.value):!findOriginalClip(model?.userData.skClips??[],option.value,control('originalLayer').value);}
  action('stopSweep').disabled=!sweep;action('capture').disabled=!can.inspect;
  $('[data-config-file]').disabled=!can.rig;$('[data-original-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
@@ -69,7 +78,7 @@ export function mountShorekeeperLab(root){
  if(selected==='legacy'&&control('presentationMode').value==='combat'){status('Ataques indisponíveis: adicione as bibliotecas privadas em repouso.');return;}
  if(selected!=='legacy'){
   const clip=COMBAT_CLIP_IDS.includes(selected)?model?.userData.skClips?.find(c=>c.name===selected):findOriginalClip(model?.userData.skClips??[],selected,control('originalLayer').value);
-  if(clip){director=createOriginalIdleDirector(T,model,clip,{...settings(),onEvent:e=>{scheduler?.onEvent(e);if(e.type==='recovery')status('Recuperando a pose inicial…');}});director.setSpeed(Number(control('speed').value));}
+  if(clip){director=createOriginalIdleDirector(T,model,clip,{...settings(),onEvent:e=>{face?.onAnimationEvent(e);scheduler?.onEvent(e);if(e.type==='recovery')status('Recuperando a pose inicial…');}});director.setSpeed(Number(control('speed').value));}
   else status('Sequência indisponível neste GLB. Selecione a cópia privada F2.0-A ou retorne ao gesto F1.6.');
   return;
  }
@@ -144,6 +153,24 @@ export function mountShorekeeperLab(root){
  for(const c of ['originalIdle','originalLayer'])on(control(c),'change',()=>{if(!inspection||phase()!=='ready')return;stopSweep();scheduler?.setEnabled(false);control('actingAuto').checked=false;director?.dispose();director=null;inspection.restore();if(control('originalMode').value==='reference'){face?.reset();inspection.preset({});syncFace();}buildDirector();showBone();sync(true);status(director?(control('originalIdle').value==='legacy'?'Gesto F1.6 selecionado.':(control('originalMode').value==='expressive'?'Expressive Acting selecionado.':'Reference QA: reprodução sem atuação facial adicional.')): 'Animação selecionada indisponível neste arquivo.');});
  on(control('originalMode'),'change',()=>{if(!inspection||!permissions(phase()).inspect)return;stopSweep();scheduler?.setEnabled(false);control('actingAuto').checked=false;face?.reset();inspection.preset({});syncFace();status(control('originalMode').value==='reference'?'Reference QA: rosto neutro; o movimento corporal continua.':'Expressive Acting: escolha uma expressão ou ative a contemplação.');sync(true);diagnostics();});
  on(control('actingAuto'),'change',()=>{if(!inspection||control('originalMode').value!=='expressive')return;scheduler?.setEnabled(control('actingAuto').checked&&!motion.matches);sync(true);});
+ for(const b of all('[data-facial-candidate]'))on(b,'click',()=>{
+  if(b.disabled||!inspection||control('presentationMode').value!=='contemplation'||control('originalMode').value!=='expressive')return;
+  const id=b.dataset.facialCandidate;
+  if(face?.triggerQA(id)){
+   const label=id==='NEUTRAL'?'Retornando ao neutro':id.replaceAll('_',' ')+' · teste visual manual, não aprovado';
+   $('[data-facial-state]').textContent=label;
+   status(label);
+   sync(true);
+  }
+ });
+ for(const b of all('[data-facial-camera]'))on(b,'click',()=>{
+  if(!b.disabled&&stage)stage.view(b.dataset.facialCamera);
+ });
+ on($('[data-facial-capture]'),'click',async()=>{
+  if(!model||!stage)return;
+  try{save(await stage.capture(),'shorekeeper-facial-test-PRIVATE.png','image/png');}
+  catch(e){warn(e.message);}
+ });
  bindExpressionButtons(all('[data-expression]'),{face:()=>face,allowed:()=>!!inspection&&permissions(phase()).inspect&&control('originalMode').value==='expressive',signal:lifetime.signal,onTrigger:id=>{status(id==='blink'?'Piscada bilateral.':EXPRESSION_LIBRARY[id].label+' · retorno automático ao repouso.');diagnostics();sync(true);}});
  on(control('expressionIntensity'),'input',()=>{const v=Number(control('expressionIntensity').value);face?.setIntensity(v);$('[data-value="expressionIntensity"]').textContent=Math.round(v*100)+'%';});
  for(const a of ['play','repeat'])on(action(a),'click',run);
@@ -164,7 +191,7 @@ export function mountShorekeeperLab(root){
  on(document,'visibilitychange',()=>{sync(true);director?.setPaused(userPaused||document.hidden||suspended||outOfView);face?.setPaused(userPaused||document.hidden||suspended||outOfView);scheduler?.setPaused(userPaused||document.hidden||suspended||outOfView);resetClock();if(sweep)sweepLast=performance.now();});
  on(motion,'change',()=>{scheduler?.setReducedMotion(motion.matches);if(motion.matches){control('actingAuto').checked=false;scheduler?.setEnabled(false);}if(motion.matches){userPaused=true;director?.setPaused(true);face?.setPaused(true);scheduler?.setPaused(true);stopSweep();}sync(true);$('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido: nenhuma atuação automática. Use Reproduzir para iniciar explicitamente.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';});
  $('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido ativo. Atuação começa apenas por comando.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';
- function frame(now){if(disposed)return;raf=requestAnimationFrame(frame);if(document.hidden||suspended||outOfView||state.contextLost||state.loading||!stage){last=0;return;}if(!last){last=now;return;}const delta=now-last,target=1000/Number(control('fps').value);if(delta<target-1)return;last=now;const dt=Math.min(.1,delta/1000);const start=performance.now();director?.advance(dt);if(control('originalMode').value==='expressive')scheduler?.advance(dt);
+ function frame(now){if(disposed)return;raf=requestAnimationFrame(frame);if(document.hidden||suspended||outOfView||state.contextLost||state.loading||!stage){last=0;return;}if(!last){last=now;return;}const delta=now-last,target=1000/Number(control('fps').value);if(delta<target-1)return;last=now;const dt=Math.min(.1,delta/1000);const start=performance.now();director?.advance(dt);face?.advance(dt);if(control('originalMode').value==='expressive')scheduler?.advance(dt,{advanceFace:false});
  if(sweep&&now-sweepLast>=900){sweepLast=now;sweep.index++;if(sweep.index>4)stopSweep();else{inspection.setMorph('E_Close',sweep.index*.25);syncFace();}}
  stage.draw();frames++;frameMs+=performance.now()-start;if(!metricsStart){metricsStart=now;frames=0;frameMs=0;}
  const current=director?.state.phase??'idle';if(current==='idle'&&lastDirectorPhase!=='idle'&&inspection){restError=inspection.restError();$('[data-rest-check]').textContent='Retorno à referência · maior diferença: '+restError.toExponential(2)+(restError<1e-5?' · PASS numérico':' · verificar');}lastDirectorPhase=current;sync();
