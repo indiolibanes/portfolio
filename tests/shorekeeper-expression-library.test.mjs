@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {EXPRESSION_LIBRARY,EXPRESSION_IDS,EXPRESSION_MORPHS,bindExpressionButtons} from '../src/scripts/shorekeeper/expression-library.mjs';
+import {createGentleFace,createContemplativeScheduler} from '../src/scripts/shorekeeper/gentle-acting.mjs';
+const fixture=names=>{const weights={};return {weights,names,setMorphs(values){for(const [n,v]of Object.entries(values)){assert(names.includes(n),'No nonexistent morph writes');assert(Number.isFinite(v)&&v>=0&&v<=1);if(n.startsWith('Pupil_'))assert(v<=.3);weights[n]=v;}}};};
+for(const id of EXPRESSION_IDS)for(const strength of [.25,.5,.75,1]){
+ const i=fixture(EXPRESSION_MORPHS),f=createGentleFace(i);f.setIntensity(strength);assert(f.trigger(id));for(let n=0;n<100;n++)f.advance(.1);assert(!f.state.busy);assert(Object.values(i.weights).every(v=>v===0),'Automatic exact neutral');
+}
+// Crossing phase boundaries gives the same pose for coarse and fine timesteps.
+for(const id of EXPRESSION_IDS){const a=createGentleFace(fixture(EXPRESSION_MORPHS)),b=createGentleFace(fixture(EXPRESSION_MORPHS));a.trigger(id);b.trigger(id);a.advance(3.4);for(let i=0;i<340;i++)b.advance(.01);for(const n of EXPRESSION_MORPHS)assert(Math.abs(a.state.weights[n]-b.state.weights[n])<1e-8);}
+const data=fixture(EXPRESSION_MORPHS),face=createGentleFace(data);face.trigger('LOVE');face.advance(1.2);const smile=face.state.weights.M_Smile_R;face.trigger('blink');face.advance(.13);assert(face.state.weights.E_Close>.99);assert(face.state.weights.E_Smile_R<1e-8);face.advance(.3);assert.equal(face.state.weights.M_Smile_R,smile,'Blink preserves smile');assert.equal(face.state.weights.E_Close,0);
+face.trigger('PERFECT_GLANCE');face.advance(.1);assert(face.state.weights.Pupil_L>0);const frozen=face.state;face.setPaused(true);face.advance(10);assert.deepEqual(face.state.weights,frozen.weights);face.setPaused(false);
+assert.equal(face.trigger('WORRIED',{automatic:true}),false,'Scheduler cannot replace a manual expression');face.trigger('WORRIED');face.advance(10);assert(!face.state.busy);
+const missing=createGentleFace(fixture(['E_Close']));assert(!missing.support('LOVE').available);assert.equal(missing.trigger('LOVE'),false);assert(missing.trigger('blink'));missing.advance(1);
+// The same click handler used in the real studio invokes every preset, and respects disabled/reference mode.
+class Button extends EventTarget{constructor(id){super();this.dataset={expression:id};this.disabled=false;}click(){this.dispatchEvent(new Event('click'));}}
+const buttons=[...EXPRESSION_IDS,'blink'].map(id=>new Button(id));let permitted=true,seen=[];const controller=new AbortController();bindExpressionButtons(buttons,{face:()=>face,allowed:()=>permitted,onTrigger:id=>seen.push(id),signal:controller.signal});for(const b of buttons)b.click();assert.equal(seen.length,buttons.length);permitted=false;buttons[0].click();assert.equal(seen.length,buttons.length);permitted=true;buttons[0].disabled=true;buttons[0].click();assert.equal(seen.length,buttons.length);controller.abort();buttons[1].click();assert.equal(seen.length,buttons.length);
+// Ten minutes of contemplative expression selection: never schedules the manual-only meme or LOVE.
+let seed=71;const random=()=>((seed=(1664525*seed+1013904223)>>>0)/2**32),chosen=[],proxy={...face,trigger(id,options){chosen.push(id);return face.trigger(id,options);}};Object.defineProperty(proxy,'state',{get:()=>face.state});
+const scheduler=createContemplativeScheduler({face:proxy,available:()=>[],start:()=>{throw Error('No clips');},random});scheduler.setEnabled(true);for(let n=0;n<6000;n++)scheduler.advance(.1);assert(chosen.includes('MY_STAR')&&chosen.includes('PERFECT_GLANCE'));assert(!chosen.includes('MEME_OPTIONAL'));scheduler.setReducedMotion(true);let count=chosen.length;for(let n=0;n<100;n++)scheduler.advance(.1);assert.equal(chosen.length,count);scheduler.setPaused(true);const paused=face.state.weights;scheduler.advance(10);assert.deepEqual(face.state.weights,paused);
+assert.throws(()=>face.setIntensity(NaN));assert.throws(()=>face.advance(Infinity));assert.throws(()=>face.trigger('invented'));
+console.log('Expression library PASS: all presets/intensities, real button bindings, exact recovery, timestep invariance, blink composition, capabilities, reduced motion and 600s session.');
