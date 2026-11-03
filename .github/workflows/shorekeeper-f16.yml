@@ -4,6 +4,8 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-combat.test.mjs'
+      - 'tests/shorekeeper-presentation-combat.test.mjs'
       - 'tests/shorekeeper-original-idles.test.mjs'
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
@@ -22,6 +24,8 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-combat.test.mjs'
+      - 'tests/shorekeeper-presentation-combat.test.mjs'
       - 'tests/shorekeeper-original-idles.test.mjs'
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
@@ -59,3 +63,6 @@ jobs:
       - run: node tests/shorekeeper-private-model-cache.test.mjs
 
       - run: node tests/shorekeeper-b7.test.mjs
+
+      - run: node tests/shorekeeper-combat.test.mjs
+      - run: node tests/shorekeeper-presentation-combat.test.mjs

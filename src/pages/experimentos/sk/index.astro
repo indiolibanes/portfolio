@@ -12,15 +12,15 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="noindex,nofollow,noarchive"/>
-<meta name="description" content="Shorekeeper Inspection Studio: laboratório 3D de tons claros, com expressões e animações originais, com carregamento local e privado."/>
-<title>Shorekeeper · Inspection Studio</title>
+<meta name="description" content="Apresentação privada da Shorekeeper com animações locais."/>
+<title>Shorekeeper · Apresentação</title>
 </head>
 <body class="sk-page">
 <main class="sk-lab" data-sk-lab data-revision={revision} data-branch={branch} data-state="empty">
 <header class="sk-top">
 <a href="/experimentos/" class="sk-back" aria-label="Voltar aos experimentos">←</a>
 <div>
-<p class="sk-eyebrow">SHOREKEEPER · AETHER STUDIO / F2.0-B.2</p>
+<p class="sk-eyebrow">SHOREKEEPER · APRESENTAÇÃO</p>
 <h1>Shorekeeper <span>A moment with you</span>
 </h1>
 </div>
@@ -33,7 +33,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <nav class="sk-viewbar" aria-label="Câmeras">
 <button data-view="quarter" disabled>¾</button>
 <button data-view="face" disabled>Rosto</button>
-<button data-view="peek" disabled>Aproximar</button>
+
 <button data-view="reset" disabled>Recentrar</button>
 </nav>
 <div class="sk-canvas-host" data-sk-canvas tabindex="0" role="img" aria-label="Personagem 3D. Arraste para orbitar; use dois dedos ou a roda para zoom.">
@@ -47,7 +47,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <div class="sk-readouts">
 <span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
-<button data-action="capture" disabled>↓ PNG</button>
+<button data-action="capture" disabled hidden>↓ PNG</button>
 </div>
 <p class="sk-status" data-sk-status role="status" aria-live="polite">Selecione um arquivo GLB local.</p>
 </section>
@@ -136,33 +136,37 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </section>
 <section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane">
 <h2>Presença & contemplação</h2>
-<p class="sk-help">Três animações originais preservadas, com piscadas bilaterais ocasionais em modo expressivo. O sorrisinho V2 permanece em teste manual na aba Expressões.</p>
+<p class="sk-help">Animações originais em um espaço privado. A piscada acompanha a contemplação.</p>
 <div data-original-section>
-<details class="sk-library-import"><summary>Adicionar bibliotecas privadas de animação</summary><label class="sk-field">Até três arquivos locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
+<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import"><summary>Adicionar ataques privados</summary><p class="sk-help">Selecione os quatro arquivos de animação gerados localmente. Os ataques ainda aguardam validação visual.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
-<option value="legacy">Gesto experimental F1.6 · existente</option>
+<option value="legacy" hidden>Sequência indisponível</option>
 <option value="SK_IDLE_01_ORIGINAL">Idle 01 · original</option>
 <option value="SK_IDLE_02_ORIGINAL">Idle 02 · original</option>
 <option value="SK_IDLE_03_ORIGINAL">Idle 03 · original</option>
+<option value="SK_ATTACK_01_ORIGINAL" hidden>Ataque 01 · experimental</option>
+<option value="SK_ATTACK_02_ORIGINAL" hidden>Ataque 02 · experimental</option>
+<option value="SK_ATTACK_03_ORIGINAL" hidden>Ataque 03 · experimental</option>
+<option value="SK_ATTACK_04_ORIGINAL" hidden>Ataque 04 · experimental</option>
 </select></label>
 
-<label class="sk-field">Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive">Expressive Acting · experimental</option></select></label>
+<label class="sk-field" hidden>Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive">Expressive Acting · experimental</option></select></label>
 <label class="sk-toggle"><input type="checkbox" data-control="actingAuto" disabled/> Contemplação automática</label>
 
-<p class="sk-help">Reference QA preserva o movimento de origem. Expressive Acting acrescenta a biblioteca facial. A aprovação visual dos novos presets continua pendente.</p>
+
 <p class="sk-help" data-original-availability>Selecione o GLB privado com os novos clipes. O GLB F1.6 continua aceito.</p>
 </div>
 <div class="sk-actions">
 <button data-action="play" disabled>Reproduzir</button>
 <button data-action="pause" disabled>Pausar</button>
 <button data-action="interrupt" disabled>Interromper</button>
-<button data-action="repeat" disabled>Repetir</button>
+<button data-action="repeat" disabled hidden>Repetir</button>
 </div>
 <label class="sk-field">Execução<progress data-timeline max="1" value="0" aria-label="Progresso do gesto">
 </progress>
 </label>
-<p data-acting-state class="sk-mono">Diretor: aguardando modelo.</p>
-<p class="sk-help" data-motion-policy>
+<p data-acting-state class="sk-mono" hidden>Diretor: aguardando modelo.</p>
+<p class="sk-help" data-motion-policy hidden>
 </p>
 </section>
 <details class="sk-qa-tools" hidden aria-hidden="true"><summary>Ferramentas de inspeção (somente testes internos)</summary>
