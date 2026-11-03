@@ -11,6 +11,7 @@ export function createInspection(model){
  let materialMode='original',wireframe=false;
  return {bones,meshes,morphMeshes,names,rest,weights,offsets,
  setMorph(name,value){if(!names.includes(name))return false;if(!Number.isFinite(value)||value<0||value>1)throw Error('Peso fora de 0–1');weights[name]=value;applyMorphs();return true;},
+ setMorphs(values){for(const [name,value] of Object.entries(values)){if(!names.includes(name))continue;if(!Number.isFinite(value)||value<0||value>1)throw Error('Peso fora de 0–1');weights[name]=value;}applyMorphs();},
  preset(config){for(const n of names)weights[n]=0;for(const [n,v] of Object.entries(config))if(names.includes(n))weights[n]=Math.max(0,Math.min(1,v));applyMorphs();},
  rotate(bone,xyz){if(!rest.has(bone)||xyz.some(x=>!Number.isFinite(x)||Math.abs(x)>45))throw Error('Rotação inválida');bone.quaternion.copy(rest.get(bone).quaternion).multiply(new T.Quaternion().setFromEuler(new T.Euler(...xyz.map(T.MathUtils.degToRad),'XYZ')));offsets.set(bone.name,[...xyz]);model.updateMatrixWorld(true);},
  restore(){for(const [bone,r] of rest){bone.position.copy(r.position);bone.quaternion.copy(r.quaternion);bone.scale.copy(r.scale);}offsets.clear();model.updateMatrixWorld(true);},

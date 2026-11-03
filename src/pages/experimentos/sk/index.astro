@@ -188,7 +188,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane" hidden>
 <h2>Corpo & tecido</h2>
 <details open data-original-section>
-<summary>Original Animations · Reference QA</summary>
+<summary>Original Animations</summary>
 <label class="sk-field">Adicionar animações privadas ao GLB atual<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
 <option value="legacy">Gesto experimental F1.6 · existente</option>
@@ -199,7 +199,10 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <label class="sk-field">Camada em inspeção<select data-control="originalLayer" disabled>
 <option value="composed">Composição corpo + Rib</option><option value="body">Corpo isolado</option><option value="rib">Rib completo isolado · diagnóstico</option>
 </select></label>
-<label class="sk-field">Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive" disabled>Expressive Acting · aguardando gate visual</option></select></label>
+<label class="sk-field">Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive">Expressive Acting · experimental</option></select></label>
+<label class="sk-field"><input type="checkbox" data-control="actingAuto" disabled/> Alternância contemplativa automática</label>
+<div class="sk-actions"><button data-action="gentleSmile" disabled>Sorriso delicado</button><button data-action="gentleBlink" disabled>Piscada bilateral</button><button data-action="gentleLook" disabled>Olhar discreto</button><button data-action="gentleNeutral" disabled>Retornar ao neutro</button></div>
+<p class="sk-help">Expressive Acting usa morphs experimentais; avalie visualmente. A alternância automática respeita movimento reduzido. Reference QA remove a atuação facial.</p>
 <p class="sk-help" data-original-availability>Selecione o GLB privado com os novos clipes. O GLB F1.6 continua aceito.</p>
 <p class="sk-help">A entrada e o retorno ficam fora do tempo da sequência. 1× preserva o timing original; velocidades diferentes são experimentais. Não há versão otimizada aprovada. A transferência de tecido do gesto F1.6 não se aplica aos clipes originais, que já têm ownership composto.</p>
 </details>
