@@ -11,7 +11,7 @@ const run=promisify(execFile),options=Object.fromEntries(process.argv.slice(2).m
 await mkdir(dir,{recursive:true});await mkdir(temp,{recursive:true});
 const fps=Number(options.fps??8),seconds=13.6,W=640,H=400,workers=Number(options.workers??3),only=options.only??'all';
 const REV='moon-fox-reverie',views={front:{yaw:0,label:'front'},threeQuarter:{yaw:null,label:'3/4 (stage camera)'},side:{yaw:90,label:'side'}};
-const render=(out,args)=>run(process.execPath,['scripts/render-hsin-poster.mjs','public/assets/models/hsin/hsin-v2.0.glb',out,String(W),String(H),'--r2=1',...args]);
+const render=(out,args)=>run(process.execPath,['scripts/render-hsin-poster.mjs','public/assets/characters/hsin/models/hsin-v2.0.glb',out,String(W),String(H),'--r2=1',...args]);
 const label=(text,w=W)=>Buffer.from(`<svg width="${w}" height="40"><rect width="100%" height="100%" fill="#08131c"/><text x="10" y="15" font-family="sans-serif" font-size="11" fill="#ddded2">CPU raster / VISUAL_QA_PENDING / no audio, no native iframe, no cloth physics beyond baked tracks</text><text x="10" y="32" font-family="sans-serif" font-size="11" fill="#b9dfe3">${text}</text></svg>`);
 async function pool(tasks,fn){let next=0;await Promise.all(Array.from({length:workers},async()=>{while(next<tasks.length)await fn(tasks[next++]);}));}
 const frame=async(path,args,text)=>{await render(path,args);await sharp(path).composite([{input:label(text),top:0,left:0}]).png().toFile(path+'.l.png');return path+'.l.png';};
