@@ -49,7 +49,7 @@ export async function verifyAccessJwt(token,domain,audience,fetcher=fetch){
   if(header.alg!=='RS256'||typeof header.kid!=='string')return false;
   const now=Math.floor(Date.now()/1000);
   if(payload.iss!==domain||!(Array.isArray(payload.aud)?payload.aud.includes(audience):payload.aud===audience)||
-    typeof payload.exp!=='number'||payload.exp<=now||payload.exp>now+86400||
+    typeof payload.exp!=='number'||payload.exp<=now||
     (typeof payload.nbf==='number'&&payload.nbf>now)||
     (typeof payload.iat==='number'&&payload.iat>now+60))return false;
   let list=cache.get(domain);

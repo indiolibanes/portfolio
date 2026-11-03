@@ -17,7 +17,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 ## Estado atual
 
 - produção: branch `main`, publicada pelo Cloudflare Pages;
-- build: Astro estático, Node.js 22.12+;
+- build: Astro estático, Node.js 22.23.4+;
 - experiências 3D públicas: **Hsin · The Moon Fox V2.0.1** e **Shorekeeper · laboratório de inspeção 3D** (modelo privado, importação local);
 - personagem autoral do portfólio: **Sophia**, presente em `/sophia/`, na 404 e em protótipos isolados;
 - Música: nova composição centrada na Hsin, com transição cinematográfica para o palco 3D;
@@ -104,7 +104,7 @@ O parecer textual da antiga fase 6H foi preservado de forma compacta em `docs/ar
 - **Sharp** — OG, quadros estáticos e recortes derivados;
 - **Cloudflare Pages** — hospedagem e deploy;
 - **Cloudflare Pages Functions** — proxy do Last.fm;
-- **Node.js 22.12+**.
+- **Node.js 22.23.4+**.
 
 React Three Fiber, Drei e React Three Rapier não fazem parte do runtime atual e foram removidos das dependências.
 
