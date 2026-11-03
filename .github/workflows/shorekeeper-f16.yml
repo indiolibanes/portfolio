@@ -1,0 +1,41 @@
+name: Shorekeeper synthetic and inspection lab
+on:
+  pull_request:
+    paths:
+      - 'tests/shorekeeper-f16/**'
+      - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
+      - 'tests/shorekeeper-gentle-acting.test.mjs'
+      - 'src/pages/experimentos/sk/**'
+      - 'src/scripts/shorekeeper-sk-lab.mjs'
+      - 'src/scripts/shorekeeper/**'
+      - 'src/styles/shorekeeper-sk-lab.css'
+      - 'src/styles/shorekeeper-material3.css'
+      - '.github/workflows/shorekeeper-f16.yml'
+  push:
+    paths:
+      - 'tests/shorekeeper-f16/**'
+      - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
+      - 'tests/shorekeeper-gentle-acting.test.mjs'
+      - 'src/pages/experimentos/sk/**'
+      - 'src/scripts/shorekeeper-sk-lab.mjs'
+      - 'src/scripts/shorekeeper/**'
+      - 'src/styles/shorekeeper-sk-lab.css'
+      - 'src/styles/shorekeeper-material3.css'
+      - '.github/workflows/shorekeeper-f16.yml'
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node tests/shorekeeper-f16/synthetic-test.mjs
+      - run: node tests/shorekeeper-sk-lab.test.mjs
+
+      - run: node tests/shorekeeper-original-idles.test.mjs
+      - run: node tests/shorekeeper-gentle-acting.test.mjs
