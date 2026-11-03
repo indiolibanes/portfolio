@@ -14,7 +14,7 @@ export function createGentleFace(inspection){
 
  function write(){weights={...base};for(const [a,b]of [['Pupil_L','Pupil_R'],['Pupil_Up','Pupil_Down']]){const signed=(weights[a]??0)-(weights[b]??0);if(a in weights)weights[a]=Math.max(0,signed);if(b in weights)weights[b]=Math.max(0,-signed);}const closure=Math.max(blink?.value??0,external?recovered.getEyeClosureRequest():0);if(names.includes('E_Close'))weights.E_Close=Math.max(base.E_Close??0,closure);for(const n of ['E_Smile_L','E_Smile_R'])if(n in weights)weights[n]*=1-closure;
   if(external){const r=recovered.state;for(const [n,v] of Object.entries(r.weights))weights[n]=v;weights.E_Close=Math.max(weights.E_Close??0,r.eyeClosure);}
-  if(inspection.setMorphs)inspection.setMorphs(weights);else for(const n of names)inspection.setMorph(n,weights[n]);
+  if(inspection.setFacialMorphs)inspection.setFacialMorphs(weights);else if(inspection.setMorphs)inspection.setMorphs(weights);else for(const n of names)inspection.setMorph(n,weights[n]);
  }
  function recover(){from={...base};target={};phase='exit';elapsed=0;}
  function advanceExpression(dt){let remaining=dt;for(let transitions=0;transitions<4&&phase!=='idle';transitions++){
