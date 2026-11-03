@@ -4,9 +4,14 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
       - 'tests/shorekeeper-original-idles.test.mjs'
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
+      - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-b7/**'
+      - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -18,9 +23,14 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
       - 'tests/shorekeeper-original-idles.test.mjs'
       - 'tests/shorekeeper-gentle-acting.test.mjs'
       - 'tests/shorekeeper-expression-library.test.mjs'
+      - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-b7/**'
+      - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -45,3 +55,11 @@ jobs:
       - run: node tests/shorekeeper-gentle-acting.test.mjs
 
       - run: node tests/shorekeeper-expression-library.test.mjs
+
+      - run: node tests/shorekeeper-b5.test.mjs
+
+      - run: node tests/shorekeeper-private-model-cache.test.mjs
+
+      - run: node tests/shorekeeper-b7.test.mjs
+
+      - run: node --test tests/shorekeeper-facial-runtime.test.mjs

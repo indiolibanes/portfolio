@@ -38,7 +38,6 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </nav>
 <div class="sk-canvas-host" data-sk-canvas tabindex="0" role="img" aria-label="Personagem 3D. Arraste para orbitar; use dois dedos ou a roda para zoom.">
 </div>
-<div class="sk-butterflies" aria-hidden="true"><span class="sk-butterfly"></span><span class="sk-butterfly"></span><span class="sk-butterfly"></span><span class="sk-butterfly"></span></div>
 <div class="sk-empty" data-empty>
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
@@ -46,7 +45,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <p>Selecione seu modelo local e deixe as animações e os pequenos gestos acontecerem. Seu arquivo permanece no dispositivo.</p>
 </div>
 <div class="sk-readouts">
-<span data-readout="fps">FPS —</span>
+<span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
 <button data-action="capture" disabled>↓ PNG</button>
 </div>
@@ -62,8 +61,13 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <label for="sk-file">Modelo privado <small>GLB local · até 130 MB</small>
 </label>
 <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
-<p class="sk-help">Referência local: shorekeeper-f20-original-idles.private.glb</p>
+<p class="sk-help">Versão canônica: <code>PRIVATE_shorekeeper_f20a_original_idles.glb</code> · os três idles originais.</p>
 <p class="sk-filename" data-sk-file-name>Nenhum arquivo selecionado</p>
+<div class="sk-actions sk-private-cache-actions">
+<button type="button" data-action="rememberPrivate" disabled>Guardar neste navegador</button>
+<button type="button" data-action="forgetPrivate" disabled>Esquecer cópia local</button>
+</div>
+<p class="sk-help" data-private-cache-status role="status" aria-live="polite">O modelo não é hospedado. Selecione uma vez e guarde-o neste navegador, se desejar.</p>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
 <div class="sk-actions">
@@ -80,18 +84,24 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
 
 
+<details data-facial-qa hidden class="sk-pane"><summary>F2.1-F.1 · QA facial manual · aprovação pendente</summary>
+<p>Receitas experimentais; nenhuma aprovação artística. Compare sem mover a câmera ou a iluminação. Neutro retorna suavemente à base.</p>
+<div class="sk-actions">{['MY_STAR','LITTLE_SMILE','LOVE','HELLO','HOPE','NEUTRAL'].map(id=><button data-facial-candidate={id} disabled>{id}</button>)}</div>
+<div class="sk-actions">{[['front','Frontal'],['quarter','¾'],['face','Rosto'],['eyes','Olhos'],['mouth','Boca']].map(([id,label])=><button data-facial-camera={id} disabled>{label}</button>)}</div>
+<button data-facial-capture disabled>Salvar PNG local</button>
+<pre data-facial-state>Carregue o modelo privado.</pre>
+</details>
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
-<h2>Pequenos gestos, muitas nuances.</h2>
-<p class="sk-help sk-face-guide">Escolha uma expressão. Ela surge, permanece por um instante e retorna suavemente ao repouso. Disponível em Expressive Acting.</p>
-<div class="sk-expressions" aria-label="Biblioteca de expressões">
-{['MY_STAR','LOVE','LITTLE_SMILE','PERFECT_GLANCE','WORRIED','HOPE','SURPRISE_SOFT','HELLO'].map(id=>
-<button data-expression={id} aria-pressed="false" disabled><strong>{EXPRESSION_LIBRARY[id].label}</strong><small>{EXPRESSION_LIBRARY[id].description}</small></button>)}
+<h2>Expressão.</h2>
+<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
+<div class="sk-expressions" aria-label="Gestos faciais disponíveis">
+<button data-expression="LITTLE_SMILE" disabled hidden>Teste interno · Sorrisinho V2</button>
+<button data-expression="blink" aria-pressed="false" disabled><strong>Piscar</strong><small>Fechamento bilateral · movimento original do morph</small></button>
 </div>
-<div class="sk-actions"><button data-expression="blink" disabled>Piscada suave · bilateral</button></div>
-<label class="sk-field sk-slider">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
+<label class="sk-field sk-slider" hidden aria-hidden="true">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
 <p class="sk-help" data-expression-state role="status">Aguardando modelo local.</p>
-<details class="sk-easter-egg"><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
-<details class="sk-face-qa"><summary>Inspeção facial avançada</summary>
+<details class="sk-easter-egg" hidden><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
+<details class="sk-face-qa" hidden aria-hidden="true"><summary>Inspeção facial avançada (somente testes internos)</summary>
 
 
 <p class="sk-help">E_Close é bilateral. Os pesos servem à inspeção; não representam limites faciais aprovados.</p>
@@ -133,7 +143,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </section>
 <section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane">
 <h2>Presença & contemplação</h2>
-<p class="sk-help">Três animações originais, pontuadas por olhares e expressões. Explore a biblioteca na aba Expressões.</p>
+<p class="sk-help">Três animações originais preservadas, com piscadas bilaterais ocasionais em modo expressivo. O sorrisinho V2 permanece em teste manual na aba Expressões.</p>
 <div data-original-section>
 <details class="sk-library-import"><summary>Adicionar bibliotecas privadas de animação</summary><label class="sk-field">Até três arquivos locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
@@ -145,7 +155,6 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 
 <label class="sk-field">Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive">Expressive Acting · experimental</option></select></label>
 <label class="sk-toggle"><input type="checkbox" data-control="actingAuto" disabled/> Contemplação automática</label>
-<label class="sk-toggle"><input type="checkbox" data-control="butterflies" checked/> Borboletas</label>
 
 <p class="sk-help">Reference QA preserva o movimento de origem. Expressive Acting acrescenta a biblioteca facial. A aprovação visual dos novos presets continua pendente.</p>
 <p class="sk-help" data-original-availability>Selecione o GLB privado com os novos clipes. O GLB F1.6 continua aceito.</p>
@@ -163,7 +172,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <p class="sk-help" data-motion-policy>
 </p>
 </section>
-<details class="sk-qa-tools"><summary>Ferramentas de inspeção</summary>
+<details class="sk-qa-tools" hidden aria-hidden="true"><summary>Ferramentas de inspeção (somente testes internos)</summary>
 <section id="sk-panel-rig" role="region" aria-label="Diagnóstico de rig preservado" data-pane="rig" class="sk-qa-pane">
 <div class="sk-section-title">
 <h2>Estrutura & pose</h2>
@@ -226,8 +235,8 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </select>
 </label>
 <label class="sk-field">Frequência máxima<select data-control="fps">
-<option value="30" selected>30 quadros/s</option>
-<option value="60">60 quadros/s</option>
+<option value="30">30 quadros/s</option>
+<option value="60" selected>60 quadros/s</option>
 </select>
 </label>
 <label class="sk-toggle">
