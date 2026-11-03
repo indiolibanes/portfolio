@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {existsSync,readFileSync} from 'node:fs';
+import {SK_VFX_PRESETS} from '../src/scripts/shorekeeper/vfx-presets.mjs';
+const page=readFileSync('src/pages/experimentos/sk/index.astro','utf8');
+const lab=readFileSync('src/scripts/shorekeeper-sk-lab.mjs','utf8');
+assert(page.includes('© KURO GAMES'));
+assert(!page.includes('noindex,nofollow'));
+assert(page.includes('Nenhum arquivo do jogo é hospedado aqui'));
+assert(lab.includes('readPrivateModel()'));
+assert(lab.includes('libraryLoader.load(file)'));
+for(const p of Object.values(SK_VFX_PRESETS))assert.equal(p.mode,'NOT_IMPLEMENTED');
+for(const name of ['butterfly-ice.svg','butterfly-violet.svg','star-sprite.svg'])assert(existsSync('public/assets/shorekeeper-vfx/'+name));
+console.log('SK isolated route / local asset path / attribution / dormant procedural VFX PASS');
