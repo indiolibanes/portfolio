@@ -84,6 +84,13 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
 
 
+<details data-facial-qa hidden class="sk-pane"><summary>F2.1-F.1 · QA facial manual · aprovação pendente</summary>
+<p>Receitas experimentais; nenhuma aprovação artística. Compare sem mover a câmera ou a iluminação. Neutro retorna suavemente à base.</p>
+<div class="sk-actions">{['MY_STAR','LITTLE_SMILE','LOVE','HELLO','HOPE','NEUTRAL'].map(id=><button data-facial-candidate={id} disabled>{id}</button>)}</div>
+<div class="sk-actions">{[['front','Frontal'],['quarter','¾'],['face','Rosto'],['eyes','Olhos'],['mouth','Boca']].map(([id,label])=><button data-facial-camera={id} disabled>{label}</button>)}</div>
+<button data-facial-capture disabled>Salvar PNG local</button>
+<pre data-facial-state>Carregue o modelo privado.</pre>
+</details>
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
 <h2>Expressão.</h2>
 <p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
