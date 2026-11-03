@@ -20,3 +20,12 @@
 .sk-page .sk-viewport{isolation:isolate}
 /* Butterfly overlays intentionally removed: faithful facial presentation remains unobstructed. */
 @media(max-width:600px){.sk-page .sk-file{padding:14px 17px}.sk-page .sk-top h1 span{font-size:10px}.sk-page .sk-qa-tools{padding:14px 17px}}
+/* Presentation: compact controls, with the viewport remaining the focus. */
+.sk-page .sk-panel{max-width:360px}
+.sk-page .sk-top{gap:12px}
+.sk-page [data-original-section]{display:grid;gap:8px}
+.sk-page [data-control=presentationMode],.sk-page [data-control=originalIdle]{min-height:44px}
+.sk-page .sk-library-import{border:1px solid #dbe8f3;border-radius:16px;padding:11px 13px;background:#f7fbff}
+.sk-page .sk-library-import summary{cursor:pointer;color:#355d7a}
+.sk-page .sk-viewport button:focus-visible,.sk-page .sk-panel button:focus-visible,.sk-page .sk-panel select:focus-visible{outline:3px solid #709fc5;outline-offset:2px}
+@media(max-width:930px){.sk-page .sk-panel{max-width:none}}
