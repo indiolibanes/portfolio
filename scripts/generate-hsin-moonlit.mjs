@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import {mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
-const dir=new URL('../public/assets/scenes/hsin/',import.meta.url);
+const dir=new URL('../public/assets/characters/hsin/scenes/',import.meta.url);
 await mkdir(dir,{recursive:true});
 let seed=1701;
 const random=()=>((seed=Math.imul(seed,1664525)+1013904223>>>0)/4294967296);

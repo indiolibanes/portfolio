@@ -2,7 +2,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 
-const file = 'public/experimental/sophia-7b-e1-latest.glb';
+const file = 'public/assets/characters/sophia/models/sophia-7b-e1.glb';
 if (!existsSync(file)) throw Error('Sophia 7B E1 missing: ' + file);
 const data = readFileSync(file);
 if (data.length < 500_000 || data.toString('ascii', 0, 4) !== 'glTF') throw Error('Invalid GLB file');

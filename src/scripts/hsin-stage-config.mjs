@@ -1,6 +1,6 @@
 /** All presentation, camera and GPU budgets live here; no Three/DOM dependency. */
 export const HSIN_STAGE=Object.freeze({
- version:'2.0.1',model:'/assets/models/hsin/hsin-v2.0.glb',profile:'/assets/models/hsin/hsin-v2.0-profile.json',cinematicProfile:'/assets/models/hsin/hsin-v2.1-profile.json',actingProfile:'/assets/models/hsin/hsin-v2.1-acting.json',
+ version:'2.0.1',model:'/assets/characters/hsin/models/hsin-v2.0.glb',profile:'/assets/characters/hsin/models/hsin-v2.0-profile.json',cinematicProfile:'/assets/characters/hsin/models/hsin-v2.1-profile.json',actingProfile:'/assets/characters/hsin/models/hsin-v2.1-acting.json',
  baseTargetY:.88,fps:30,mobileDpr:1,desktopDpr:1.25,maxPixels:1152000,fov:34,minDistance:1.05,
  rotateSpeed:.34,zoomSpeed:.65,damping:.09,minPolar:1.25,maxPolar:Math.PI/2-.025,maxAzimuth:Math.PI*.22,
  colors:{night:0x0a1430,fog:0x273b53,platform:0x27374d,ring:0xc6b28b},

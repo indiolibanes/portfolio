@@ -14,8 +14,8 @@ import { applyConstellationTail } from './sophia-404-tail.js';
 // GLB provided by the author; it must be checked into the exact path below.
 // Never silently substitute the 6H for the missing 7B in the lounge.
 const MODEL_PATHS = {
-  portrait: '/experimental/sophia-alpha.glb',
-  lounge: '/experimental/sophia-7b-e1-latest.glb',
+  portrait: '/assets/characters/sophia/models/sophia-alpha.glb',
+  lounge: '/assets/characters/sophia/models/sophia-7b-e1.glb',
 };
 const models = new Map();
 function sourceModel(kind) {
