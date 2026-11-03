@@ -16,6 +16,9 @@ face.trigger('blink');scheduler.advance(.13);assert(weights.E_Close>.99);schedul
 face.trigger('smile');scheduler.advance(.8);assert(weights.M_Smile_L>.2);face.trigger('neutral');scheduler.advance(.65);assert(weights.M_Smile_L<1e-8);
 face.trigger('look');scheduler.advance(.8);assert(weights.Pupil_L<=.3&&weights.Pupil_L>0);face.setPaused(true);const before=weights.Pupil_L;scheduler.advance(2);assert.equal(weights.Pupil_L,before);face.setPaused(false);
 scheduler.setEnabled(true);for(let i=0;i<6000;i++){director?.advance(.1);scheduler.advance(.1);}assert(started.length>8);assert(clips.every(c=>started.includes(c.name)));assert(active<=1);
+scheduler.setPaused(true);const beforePause=scheduler.state.rest;for(let i=0;i<50;i++)scheduler.advance(.1);assert.equal(scheduler.state.rest,beforePause);scheduler.setPaused(false);
+scheduler.setEnabled(false);face.trigger('neutral');scheduler.advance(1);assert(Object.values(weights).every(x=>x<1e-8));const countReference=started.length;for(let i=0;i<100;i++)scheduler.advance(.1);assert.equal(started.length,countReference);
 scheduler.setReducedMotion(true);const count=started.length;scheduler.advance(100);assert.equal(started.length,count);scheduler.setEnabled(false);face.trigger('neutral');scheduler.advance(1);assert(Object.values(weights).every(x=>x<1e-8));
+const emptyScheduler=createContemplativeScheduler({face,available:()=>[],start:()=>{throw Error('must not start missing clip');},random:()=>0});emptyScheduler.setEnabled(true);for(let i=0;i<500;i++)emptyScheduler.advance(.1);assert.equal(emptyScheduler.state.active,false);
 const missingFace=createGentleFace({names:[],setMorph(){throw Error('unexpected write');}});missingFace.trigger('smile');missingFace.advance(2);assert.equal(missingFace.state.missing.length,GENTLE_MORPHS.length);
 console.log('Gentle acting: three idles, ownership, pause, recovery, reduced motion and 10-minute deterministic session passed.');
