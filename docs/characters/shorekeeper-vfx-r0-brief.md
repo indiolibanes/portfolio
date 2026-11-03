@@ -24,9 +24,9 @@ Collapsed Core: 12–40 small motes arranged along a verified choreography envel
 - Burst01 and Burst02 are still candidate Liberation animations, with CL.1 / CL.1.1 orientation QA pending. Do not claim canonical timing or camera until verified.
 
 ## Assets in this bundle
-- \`public/assets/shorekeeper-vfx/butterfly-ice.svg\`: original ice-blue butterfly with transparent wings.
-- \`public/assets/shorekeeper-vfx/butterfly-violet.svg\`: original violet-tinted butterfly.
-- \`public/assets/shorekeeper-vfx/star-sprite.svg\`: original soft spectral star sprite.
+- \`public/assets/characters/shorekeeper/vfx/butterfly-ice.svg\`: original ice-blue butterfly with transparent wings.
+- \`public/assets/characters/shorekeeper/vfx/butterfly-violet.svg\`: original violet-tinted butterfly.
+- \`public/assets/characters/shorekeeper/vfx/star-sprite.svg\`: original soft spectral star sprite.
 - \`src/scripts/shorekeeper/vfx-presets.mjs\`: dormant VFX budgets, NO active effect code.
 
 Asset hunt found the private \`T_StarrySkyNoise_D.png\` as a possible in-game mask, not a complete VFX system. **Do not upload or embed it.** These SVGs are newly authored and are not game files.
