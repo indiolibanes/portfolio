@@ -1,6 +1,7 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {LoadingManager} from 'three';
 export const F16_HASH='39a45609b86699a49200cc1931227e3e4ae6ec15af8ed4ddc87d3dd982e7af61';
+export const F20A_HASH='4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30';
 export function assertSelfContainedGLB(buffer){
  if(!(buffer instanceof ArrayBuffer)||buffer.byteLength<20)throw Error('Arquivo GLB 2.0 inválido.');
  const d=new DataView(buffer);
@@ -30,6 +31,6 @@ export function createLocalLoader({parse,read=readLocal,hash=async b=>Array.from
  const buffer=await read(file,signal,v=>{if(current())progress({stage:'Leitura local',value:v*.65});});if(!current())return null;
  const json=assertSelfContainedGLB(buffer);progress({stage:'Identificação SHA-256',value:.7});const sha256=await hash(buffer);if(!current())return null;
  progress({stage:'Preparando malhas e texturas',value:.85});const gltf=await parse(buffer);if(!current()){dispose(gltf);return null;}
- progress({stage:'Concluído',value:1});return {gltf,sha256,json,version:sha256===F16_HASH?'F1.6 · bounds corrigidos':'Versão diferente · inspeção permitida'};
+ progress({stage:'Concluído',value:1});return {gltf,sha256,json,version:sha256===F20A_HASH?'F2.0-A · três idles originais':sha256===F16_HASH?'F1.6 · bounds corrigidos':'Versão diferente · inspeção permitida'};
  }};
 }
