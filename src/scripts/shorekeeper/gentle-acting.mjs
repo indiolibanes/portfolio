@@ -38,7 +38,7 @@ export function createContemplativeScheduler({available,start,face,random=Math.r
   setEnabled(v){enabled=!!v;rest=wait(12,24);},setPaused(v){paused=!!v;},setReducedMotion(v){reduced=!!v;},
   onEvent(e){if(!['start','execution','recovery','end'].includes(e.type))return;events.push(e.type);if(events.length>12)events.shift();if(e.type==='start'){active=true;if(available().includes(e.clip))last=e.clip;}if(e.type==='end'){active=false;rest=wait(18,38);}},
   advance(dt){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(paused||!dt)return;face.advance(dt);if(reduced||!enabled)return;
-   blink-=dt;expression-=dt;if(blink<=0){blink=wait(4,8);}if(expression<=0&&!face.state.busy){const id=chooseExpression();if(id&&face.trigger(id,{automatic:true})){lastExpression=id;expression=wait(9,17);}else expression=2;}
+   blink-=dt;expression-=dt;if(blink<=0){face.trigger('blink',{automatic:true});blink=wait(4,8);}if(expression<=0&&!face.state.busy){const id=chooseExpression();if(id&&face.trigger(id,{automatic:true})){lastExpression=id;expression=wait(9,17);}else expression=2;}
    if(!active){rest-=dt;if(rest<=0){const ids=available(),options=ids.filter(x=>x!==last),candidates=options.length?options:ids;if(candidates.length){const id=candidates[Math.floor(rng()*candidates.length)];if(start(id)!==false){last=id;active=true;}}rest=wait(18,38);}}
   },
   get state(){return {enabled,paused,reduced,active,last,lastExpression,rest,events:[...events]};}

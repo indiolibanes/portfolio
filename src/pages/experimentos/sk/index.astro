@@ -80,15 +80,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 
 
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
-<h2>Pequenos gestos, muitas nuances.</h2>
-<p class="sk-help sk-face-guide">Nenhuma expressão facial recebeu aprovação visual WebGL nesta etapa. O sorriso V2 permanece disponível apenas para teste experimental.</p>
-<details><summary>Candidato de laboratório · validação visual pendente</summary><div class="sk-expressions" aria-label="Biblioteca de expressões">
+<h2>Olhar e sorriso.</h2>
+<p class="sk-help sk-face-guide">A piscada bilateral funciona com o morph E_Close. O sorrisinho V2 é uma tentativa geométrica: teste o rosto em close e confira o efeito antes de considerá-lo aprovado.</p>
+<div class="sk-expressions" aria-label="Gestos faciais disponíveis">
 {['LITTLE_SMILE'].map(id=>
-<button data-expression={id} aria-pressed="false" disabled><strong>{EXPRESSION_LIBRARY[id].label}</strong><small>{EXPRESSION_LIBRARY[id].description}</small></button>)}
+<button data-expression={id} aria-pressed="false" disabled><strong>Testar sorrisinho V2</strong><small>Experimental · retorno automático ao neutro</small></button>)}
+<button data-expression="blink" aria-pressed="false" disabled><strong>Piscar</strong><small>Fechamento bilateral · movimento original do morph</small></button>
 </div>
-</details>
-<div class="sk-actions" hidden><button data-expression="blink" disabled>Piscada suave · bilateral</button></div>
-<label class="sk-field sk-slider">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
+<label class="sk-field sk-slider" hidden aria-hidden="true">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
 <p class="sk-help" data-expression-state role="status">Aguardando modelo local.</p>
 <details class="sk-easter-egg" hidden><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
 <details class="sk-face-qa" hidden aria-hidden="true"><summary>Inspeção facial avançada (somente testes internos)</summary>
@@ -133,7 +132,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </section>
 <section id="sk-panel-acting" role="tabpanel" aria-labelledby="sk-tab-acting" data-pane="acting" class="sk-pane">
 <h2>Presença & contemplação</h2>
-<p class="sk-help">Três animações originais, pontuadas por olhares e expressões. Explore a biblioteca na aba Expressões.</p>
+<p class="sk-help">Três animações originais preservadas, com piscadas bilaterais ocasionais em modo expressivo. O sorrisinho V2 permanece em teste manual na aba Expressões.</p>
 <div data-original-section>
 <details class="sk-library-import"><summary>Adicionar bibliotecas privadas de animação</summary><label class="sk-field">Até três arquivos locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
