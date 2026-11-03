@@ -7,6 +7,7 @@ on:
       - 'tests/shorekeeper-combat.test.mjs'
       - 'tests/shorekeeper-c3-advanced.test.mjs'
       - 'tests/shorekeeper-c4-burst.test.mjs'
+      - 'tests/shorekeeper-cl1-root-rebase.test.mjs'
       - 'scripts/shorekeeper/convert-burst.py'
       - 'scripts/shorekeeper/convert-advanced-combat.py'
       - 'tests/shorekeeper-presentation-combat.test.mjs'
@@ -31,6 +32,7 @@ on:
       - 'tests/shorekeeper-combat.test.mjs'
       - 'tests/shorekeeper-c3-advanced.test.mjs'
       - 'tests/shorekeeper-c4-burst.test.mjs'
+      - 'tests/shorekeeper-cl1-root-rebase.test.mjs'
       - 'scripts/shorekeeper/convert-burst.py'
       - 'scripts/shorekeeper/convert-advanced-combat.py'
       - 'tests/shorekeeper-presentation-combat.test.mjs'
@@ -76,5 +78,6 @@ jobs:
       - run: node tests/shorekeeper-presentation-combat.test.mjs
       - run: node tests/shorekeeper-c3-advanced.test.mjs
       - run: node tests/shorekeeper-c4-burst.test.mjs
+      - run: node tests/shorekeeper-cl1-root-rebase.test.mjs
       - run: python3 -m py_compile scripts/shorekeeper/convert-burst.py
       - run: python3 -m py_compile scripts/shorekeeper/convert-advanced-combat.py
