@@ -38,7 +38,7 @@ assert.equal(rig.key.intensity, HSIN_STAGE_LIGHTS.key.intensity); assert.deepEqu
 
 // --- Production GLB: the real face mesh is unlit before, lit after, with skinning, morph targets and base normals intact.
 globalThis.self = globalThis; globalThis.createImageBitmap = async () => ({width: 1, height: 1, close() {}}); globalThis.ProgressEvent = class {};
-const bytes = await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url));
+const bytes = await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb', import.meta.url));
 const gltf = await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '');
 const meshes = []; gltf.scene.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });
 const before = auditFaceMaterials(meshes), faceBefore = before.find((r) => /Face Xin/.test(r.material));
