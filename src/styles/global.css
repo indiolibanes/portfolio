@@ -6889,14 +6889,14 @@ html[data-serious-mode='true'] .sophia-404__panel {
 .sophia-animation:focus-visible { outline: 2px solid #c99738; outline-offset: 5px; }
 .sophia-animation__frame { display: block; width: 100%; height: 100%; background-repeat: no-repeat; background-position: 0 0; }
 .sophia-animation--music .sophia-animation__frame {
-  background-image: url('/images/sophia/music-dance.webp');
+  background-image: url('/assets/characters/sophia/art/music-dance.webp');
   background-size: 400% 100%;
   transform-origin: 50% 90%;
   animation: sophia-music-poses 1.2s steps(1, end) infinite;
 }
 .sophia-animation--music { width: clamp(220px, 27vw, 320px); animation: sophia-music-hop 1.2s ease-in-out infinite; }
 .sophia-animation--lab .sophia-animation__frame {
-  background-image: url('/images/sophia/lab-oriental.webp');
+  background-image: url('/assets/characters/sophia/art/lab-oriental.webp');
   background-size: 400% 100%; animation: sophia-notes 3.2s steps(1, end) infinite;
 }
 .lab-title-with-sophia {
