@@ -12,7 +12,7 @@ export const EXPRESSION_LIBRARY=Object.freeze({
  MEME_OPTIONAL:preset('Modo meme','Brincadeira estilizada; o rig não reproduz as bochechas do desenho.',{E_Close:.34,B_Flat:.28,M_Ennui_L:.18,M_Ennui_R:.18,Pupil_Down:.08},.5,1.3,.8,['E_Close','B_Flat'],0),
  RETURN_TO_BASE:preset('Retorno','Recuperação suave ao repouso facial.',{},.8,0,.8,[],0)
 });
-export const FACIAL_VALIDATION=Object.freeze({LITTLE_SMILE:'EXPERIMENTAL',PERFECT_GLANCE:'EXPERIMENTAL',SURPRISE_SOFT:'EXPERIMENTAL',MY_STAR:'UNSUPPORTED',LOVE:'UNSUPPORTED',WORRIED:'UNSUPPORTED',HOPE:'UNSUPPORTED',HELLO:'UNSUPPORTED',MEME_OPTIONAL:'UNSUPPORTED',RETURN_TO_BASE:'VALIDATED'});
+export const FACIAL_VALIDATION=Object.freeze({LITTLE_SMILE:'VISUAL_FAIL_OR_UNCONFIRMED',PERFECT_GLANCE:'EXPERIMENTAL',SURPRISE_SOFT:'EXPERIMENTAL',MY_STAR:'UNSUPPORTED',LOVE:'UNSUPPORTED',WORRIED:'UNSUPPORTED',HOPE:'UNSUPPORTED',HELLO:'UNSUPPORTED',MEME_OPTIONAL:'UNSUPPORTED',RETURN_TO_BASE:'VALIDATED'});
 export const EXPRESSION_IDS=Object.freeze(Object.keys(EXPRESSION_LIBRARY));
 export const EXPRESSION_MORPHS=Object.freeze([...new Set(['E_Close',...Object.values(EXPRESSION_LIBRARY).flatMap(p=>Object.keys(p.weights)), 'Pupil_R','Pupil_L','Pupil_Up','Pupil_Down'])]);
 export const EXPRESSION_ALIASES=Object.freeze({neutral:'RETURN_TO_BASE',smile:'LITTLE_SMILE',myStar:'MY_STAR',look:'PERFECT_GLANCE',wonder:'SURPRISE_SOFT'});

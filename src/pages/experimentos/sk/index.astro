@@ -85,11 +85,10 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 
 
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
-<h2>Olhar e sorriso.</h2>
-<p class="sk-help sk-face-guide">A piscada bilateral funciona com o morph E_Close. O sorrisinho V2 é uma tentativa geométrica: teste o rosto em close e confira o efeito antes de considerá-lo aprovado.</p>
+<h2>Expressão.</h2>
+<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
 <div class="sk-expressions" aria-label="Gestos faciais disponíveis">
-{['LITTLE_SMILE'].map(id=>
-<button data-expression={id} aria-pressed="false" disabled><strong>Testar sorrisinho V2</strong><small>Experimental · retorno automático ao neutro</small></button>)}
+<button data-expression="LITTLE_SMILE" disabled hidden>Teste interno · Sorrisinho V2</button>
 <button data-expression="blink" aria-pressed="false" disabled><strong>Piscar</strong><small>Fechamento bilateral · movimento original do morph</small></button>
 </div>
 <label class="sk-field sk-slider" hidden aria-hidden="true">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
