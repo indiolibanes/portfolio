@@ -12,7 +12,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="noindex,nofollow,noarchive"/>
-<meta name="description" content="Shorekeeper Inspection Studio: laboratório 3D de tons claros, com expressões e animações originais, com carregamento local e privado."/>
+<meta name="description" content="Shorekeeper: três animações originais e expressões em um estúdio 3D. Modelo integrado quando o armazenamento está habilitado, com fallback local."/>
 <title>Shorekeeper · Inspection Studio</title>
 </head>
 <body class="sk-page">
@@ -42,14 +42,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
 <h2>Um espaço feito<br/>para a Shorekeeper.</h2>
-<p>Selecione seu modelo local e deixe as animações e os pequenos gestos acontecerem. Seu arquivo permanece no dispositivo.</p>
+<p>Quando o modelo integrado estiver disponível, a experiência começa automaticamente. Caso contrário, escolha seu GLB local.</p>
 </div>
 <div class="sk-readouts">
 <span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
 <button data-action="capture" disabled>↓ PNG</button>
 </div>
-<p class="sk-status" data-sk-status role="status" aria-live="polite">Selecione um arquivo GLB local.</p>
+<p class="sk-status" data-sk-status role="status" aria-live="polite">Verificando modelo integrado…</p>
 </section>
 <aside class="sk-panel" id="sk-controls" aria-label="Controles de inspeção">
 <div class="sk-panel-grip">
@@ -61,7 +61,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <label for="sk-file">Modelo privado <small>GLB local · até 130 MB</small>
 </label>
 <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
-<p class="sk-help">Referência local: shorekeeper-f20-original-idles.private.glb</p>
+<p class="sk-help">O modelo com três idles é carregado automaticamente quando publicado no armazenamento dedicado. A escolha local continua opcional.</p>
 <p class="sk-filename" data-sk-file-name>Nenhum arquivo selecionado</p>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
@@ -71,7 +71,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </div>
 <details>
 <summary>Privacidade e identificação</summary>
-<p class="sk-help">Esta página de preview pode ser pública. O GLB é lido pela File API e não é enviado ao servidor. Noindex não é controle de acesso.</p>
+<p class="sk-help">O GLB integrado, quando habilitado, é servido por R2 via uma rota do site. Arquivos escolhidos localmente não são enviados ao servidor. Noindex não restringe acesso.</p>
 <pre data-model-id>SHA-256: aguardando arquivo</pre>
 </details>
 </div>
