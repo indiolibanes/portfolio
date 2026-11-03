@@ -8,7 +8,7 @@ import {createBakedPose} from '../src/scripts/hsin-baked-pose.mjs';
 import {createWeightPath, createHairCaress, createLipHairComposition} from '../src/scripts/hsin-lip-hair.mjs';
 
 globalThis.self = globalThis; globalThis.createImageBitmap = async () => ({width: 1, height: 1, close() {}}); globalThis.ProgressEvent = class {};
-const bytes = await readFile(new URL('../public/assets/models/hsin/hsin-v2.0.glb', import.meta.url)), acting = JSON.parse(await readFile(new URL('../public/assets/models/hsin/hsin-v2.1-acting.json', import.meta.url)));
+const bytes = await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.0.glb', import.meta.url)), acting = JSON.parse(await readFile(new URL('../public/assets/characters/hsin/models/hsin-v2.1-acting.json', import.meta.url)));
 const gltf = await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), ''), scene = new THREE.Scene(); scene.matrixWorldAutoUpdate = false; scene.add(gltf.scene);
 const meshes = []; gltf.scene.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); }); const bones = [...new Set(meshes.flatMap((m) => m.skeleton.bones))];
 scene.updateMatrixWorld(true);
