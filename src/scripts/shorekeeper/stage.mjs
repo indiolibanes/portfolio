@@ -2,14 +2,14 @@ import * as T from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {disposeObject} from './local-model.mjs';
 export function createStage(host,{lost,restored}={}){
- const canvas=document.createElement('canvas'),context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'low-power'});
+ const canvas=document.createElement('canvas'),context=canvas.getContext('webgl2',{alpha:false,antialias:true,powerPreference:'high-performance'});
  if(!context)throw Error('WebGL2 indisponível. Ative a aceleração gráfica ou teste outro navegador.');
- const renderer=new T.WebGLRenderer({canvas,context,antialias:true,powerPreference:'low-power'});renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;
+ const renderer=new T.WebGLRenderer({canvas,context,antialias:true,powerPreference:'high-performance'});renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;
  const scene=new T.Scene();scene.background=new T.Color(0xd6e9f5);const ambient=new T.HemisphereLight(0xe8efff,0x383b46,1.2),key=new T.DirectionalLight(0xfff0da,1.4),rim=new T.DirectionalLight(0xaccfff,.6);key.position.set(2,4,4);rim.position.set(-3,2,-2);scene.add(ambient,key,rim);
  const camera=new T.PerspectiveCamera(34,1,.01,100),orbit=new OrbitControls(camera,canvas);camera.position.set(0,1,4);orbit.target.set(0,1,0);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=.1;orbit.rotateSpeed=.6;orbit.update();host.replaceChildren(canvas);
- let model=null,helpers=null,box=new T.Box3(),center=new T.Vector3(0,1,0),extent=2,dpr=1.5,preset='front';
+ let model=null,helpers=null,box=new T.Box3(),center=new T.Vector3(0,1,0),extent=2,dpr=2,preset='front';
  const onLost=e=>{e.preventDefault();lost?.();},onRestore=()=>restored?.();canvas.addEventListener('webglcontextlost',onLost);canvas.addEventListener('webglcontextrestored',onRestore);
- function resize(){const r=host.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);renderer.setPixelRatio(Math.min(devicePixelRatio||1,dpr,Math.sqrt(1600000/(w*h))));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+ function resize(){const r=host.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);renderer.setPixelRatio(Math.min(devicePixelRatio||1,dpr,Math.sqrt(3000000/(w*h))));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
  const ro=new ResizeObserver(resize);ro.observe(host);resize();
  function removeHelpers(){if(helpers){scene.remove(helpers);disposeObject(helpers);helpers=null;}}
  function view(name){preset=name;if(!model)return;const face=name==='face'||name==='peek',target=center.clone();if(face){const head=model.getObjectByName('Bip001Head');if(head)head.getWorldPosition(target);else target.y+=extent*.28;}
