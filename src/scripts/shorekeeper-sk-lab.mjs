@@ -10,6 +10,7 @@ import {createInspection,boneGroup,morphGroup,FACE_PRESETS} from './shorekeeper/
 import {createStage} from './shorekeeper/stage.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel,savePrivateModel,forgetPrivateModel} from './shorekeeper/private-model-cache.mjs';
 import {labPhase,permissions} from './shorekeeper/lab-state.mjs';
+import {getPrivateManifest,getPrivateFile} from './shorekeeper/remote-private-model.mjs';
 export {assertSelfContainedGLB};
 const PHASES={empty:'Sem modelo',loading:'Carregando',ready:'Pronto',animating:'Animando',paused:'Pausado',error:'Erro','context-lost':'WebGL perdido'};
 export function mountShorekeeperLab(root){
@@ -20,7 +21,7 @@ export function mountShorekeeperLab(root){
  const state={webgl:false,contextLost:false,loading:false,error:false,model:false,phase:'idle',paused:false};
  let stage=null,model=null,inspection=null,director=null,selected=null,metadata=null,disposed=false,loadId=0,suspended=false,userPaused=false,last=0,raf=0,summaryAt=0,metricsStart=0,frames=0,frameMs=0;
  let face=null,scheduler=null,outOfView=false;
- let activePrivateFile=null,cachedPrivateSha=null,manualFileChosen=false;
+ let activePrivateFile=null,cachedPrivateSha=null,manualFileChosen=false,remoteAttempt=null;
  let sweep=null,sweepLast=null,lastPhase='',lastDirectorPhase='idle',restError=null,releaseCounts=null;
  const errors=[],warnings=[],flags=[],animationLibraries=[];let libraryGeneration=0;const libraryLoader=createLocalLoader();let observed={fps:null,frameTimeMs:null};
  const status=message=>{$('[data-sk-status]').textContent=message;};
@@ -75,16 +76,16 @@ export function mountShorekeeperLab(root){
  }
  const body=model?.userData.skClips?.find(c=>c.name==='Stand1_Action01_window'),cloth=model?.userData.skClips?.find(c=>c.name==='Rib_Stand1_ClothLayer');if(body&&cloth){try{director=createDirector(T,model,body,cloth,settings());director.setSpeed(Number(control('speed').value));}catch(e){log('Composição: '+e.message);}}else warn('Modelo carregado. Os dois clipes esperados não estão disponíveis; inspeção estática permitida.');}
  function visuals(){if(!stage)return;stage.quality(Number(control('dpr').value));stage.light(Number(control('light').value));stage.background(control('background').value);$('[data-value="light"]').textContent=control('light').value;if(!inspection)return;inspection.materials(control('materials').value,control('wireframe').checked);for(const m of inspection.meshes)m.frustumCulled=control('culling').checked;for(const n of ['skeleton','axes'])stage.overlay(n,control(n).checked);}
- async function load(file){if(!file||state.contextLost||!stage)return;const id=++loadId;libraryGeneration++;libraryLoader.cancel();stopSweep();state.loading=true;state.error=false;sync(true);$('[data-load-progress]').hidden=false;$('[data-load-progress]').value=0;status('Lendo arquivo local…');
+ async function load(file,source='local'){if(!file||state.contextLost||!stage)return;const id=++loadId;libraryGeneration++;libraryLoader.cancel();stopSweep();state.loading=true;state.error=false;sync(true);$('[data-load-progress]').hidden=false;$('[data-load-progress]').value=0;status(source==='r2'?'Preparando GLB privado autenticado…':'Lendo arquivo local…');
  try{const result=await loader.load(file,p=>{if(id!==loadId||disposed)return;$('[data-load-progress]').value=p.value;status(p.stage+'…');});if(!result||id!==loadId||disposed)return;
- release();model=result.gltf.scene;model.userData.skClips=result.gltf.animations;inspection=createInspection(model);face=createGentleFace(inspection);face.reset();control('expressionIntensity').value='1';$('[data-value="expressionIntensity"]').textContent='100%';scheduler=createContemplativeScheduler({face,available:()=>ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model?.userData.skClips??[],id,'composed')),start:id=>{if(!model||(director&&director.state.phase!=='idle')||control('originalMode').value!=='expressive')return false;director?.dispose();director=null;control('originalIdle').value=id;control('originalLayer').value='composed';buildDirector();if(!director)return false;director.setSpeed(1);control('speed').value='1';$('[data-value="speed"]').textContent='1×';director.start();sync(true);return true;}});scheduler.setReducedMotion(motion.matches);control('actingAuto').checked=false;control('originalMode').value='expressive';stage.adopt(model);metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version};activePrivateFile=file;
+ release();model=result.gltf.scene;model.userData.skClips=result.gltf.animations;inspection=createInspection(model);face=createGentleFace(inspection);face.reset();control('expressionIntensity').value='1';$('[data-value="expressionIntensity"]').textContent='100%';scheduler=createContemplativeScheduler({face,available:()=>ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model?.userData.skClips??[],id,'composed')),start:id=>{if(!model||(director&&director.state.phase!=='idle')||control('originalMode').value!=='expressive')return false;director?.dispose();director=null;control('originalIdle').value=id;control('originalLayer').value='composed';buildDirector();if(!director)return false;director.setSpeed(1);control('speed').value='1';$('[data-value="speed"]').textContent='1×';director.start();sync(true);return true;}});scheduler.setReducedMotion(motion.matches);control('actingAuto').checked=false;control('originalMode').value='expressive';stage.adopt(model);metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version,origin:source};activePrivateFile=file;
  privateStatus(result.sha256===SHOREKEEPER_CANONICAL.sha256?'GLB canônico F2.0-A verificado · três idles originais. '+(cachedPrivateSha===result.sha256?'Cópia guardada neste navegador.':'Você pode guardá-lo neste navegador.'):'GLB alternativo carregado · verifique as animações antes de guardar.');
  const missing=result.json.accessors?.filter(a=>a.sparse&&a.type==='VEC3'&&(!a.min||!a.max)).length??0;if(missing)log(missing+' accessors sparse VEC3 sem min/max: inspecionar culling.','warning');
  userPaused=false;lastDirectorPhase='idle';control('presentationMode').value='contemplation';control('originalIdle').value='legacy';control('originalLayer').value='composed';
  const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(result.gltf.animations,id));if(available.length)control('originalIdle').value=available[0];if(available.length===3&&!motion.matches){control('originalIdle').value=available[0];control('originalMode').value='expressive';control('actingAuto').checked=true;scheduler?.setEnabled(true);} $('[data-original-availability]').textContent=available.length?'Idles disponíveis: '+available.map(id=>id.replace('SK_IDLE_','').replace('_ORIGINAL','')).join(', ')+'. Atuação facial experimental.':'Idle 01, 02 e 03 indisponíveis neste GLB. O gesto F1.6 e a inspeção continuam disponíveis.';
  control('boneSearch').value='';control('materials').value='original';control('wireframe').checked=false;control('skeleton').checked=false;control('axes').checked=false;control('culling').checked=true;control('morphGroup').replaceChildren(new Option('Todas as regiões',''));
  const groups=new Set(inspection.names.map(n=>morphGroup(n,inspection.morphMeshes.find(m=>m.morphTargetDictionary[n]!==undefined).name)));for(const g of groups)control('morphGroup').add(new Option(g,g));fillBones();fillMorphs();showBone();buildDirector();visuals();if(available.length===3&&!motion.matches&&director){director.start();}
- $('[data-sk-file-name]').textContent=file.name;$('[data-model-id]').textContent=result.version+'\nSHA-256: '+result.sha256;status('Modelo local carregado. '+result.version+'.');restError=inspection.restError();
+ $('[data-sk-file-name]').textContent=file.name;$('[data-model-id]').textContent=result.version+'\nSHA-256: '+result.sha256;status((source==='r2'?'Modelo privado do R2 carregado. ':'Modelo local carregado. ')+result.version+'.');restError=inspection.restError();
  }catch(e){if(id!==loadId||disposed)return;if(e.name!=='AbortError'){log(e.message);state.error=!model;status('Não foi possível abrir: '+e.message);if(!metadata&&model){release();state.error=true;}}}
  finally{if(id===loadId&&!disposed){state.loading=false;$('[data-load-progress]').hidden=true;sync(true);diagnostics();}}
  }
@@ -94,7 +95,7 @@ export function mountShorekeeperLab(root){
  function config(){const r=report();return {schema:r.schema,modelSha256:metadata?.sha256,camera:r.camera,morphs:r.morphs,bones:r.bonesAltered,animation:r.requestedParameters,speed:Number(control('speed').value),visuals:r.visuals,overlays:r.overlays};}
  function diagnostics(){const r=report();const f=face?.state,id=f?.id,preset=EXPRESSION_LIBRARY[id];$('[data-expression-state]').textContent=!inspection?'Selecione o modelo local.':control('originalMode').value!=='expressive'?'Reference QA · atuação facial desativada.':userPaused?'Atuação pausada.':f?.busy?((preset?.label??'Repouso')+(f.blink>0?' · piscada bilateral':'')+' · '+({entry:'entrada',hold:'presença',exit:'retorno',idle:'repouso'}[f.phase])):'Repouso · escolha um pequeno gesto.';for(const b of all('[data-expression][aria-pressed]'))b.setAttribute('aria-pressed',String(f?.busy&&b.dataset.expression===id));$('[data-sk-diagnostics]').textContent=JSON.stringify({state:r.state,counts:r.counts,observed:r.observed,renderer:r.renderer,mixer:r.animation,lastDisposal:r.lastDisposal,errors,warnings},null,2);$('[data-readout="fps"]').textContent='FPS '+(observed.fps??'—')+' · '+(observed.frameTimeMs??'—')+' ms';$('[data-readout="counts"]').textContent=inspection?inspection.bones.length+' bones · '+inspection.summary().morphs+' morphs':'Sem modelo';}
  function run(){if(control('originalIdle').value!=='legacy'){stopSweep();if(control('originalMode').value==='reference'){face?.reset();inspection?.preset({});syncFace();}}if(!permissions(phase(),!!director).play)return;if(inspection.offsets.size&&director.state.phase==='idle'){director.dispose();inspection.restore();buildDirector();showBone();status('Offsets manuais restaurados para executar o gesto na referência original.');}userPaused=false;director.setPaused(false);face?.setPaused(false);scheduler?.setPaused(false);director.start();sync(true);}
- on($('[data-sk-file]'),'change',e=>{manualFileChosen=true;load(e.target.files?.[0]);e.target.value='';});
+ on($('[data-sk-file]'),'change',e=>{manualFileChosen=true;remoteAttempt?.abort();load(e.target.files?.[0]);e.target.value='';});
  on(action('rememberPrivate'),'click',async()=>{
   const file=activePrivateFile,sha=metadata?.sha256;if(!file||!sha||state.loading)return;
   action('rememberPrivate').disabled=true;privateStatus('Guardando GLB somente neste navegador…');
@@ -108,7 +109,7 @@ export function mountShorekeeperLab(root){
   catch(e){if(!disposed)privateStatus('Não foi possível apagar a cópia local: '+e.message);}
   if(!disposed)syncPrivateButtons();
  });
- on(action('cancel'),'click',()=>{loadId++;loader.cancel();libraryGeneration++;libraryLoader.cancel();state.loading=false;$('[data-load-progress]').hidden=true;status('Leitura cancelada; o modelo anterior foi mantido.');sync(true);});
+ on(action('cancel'),'click',()=>{remoteAttempt?.abort();loadId++;loader.cancel();libraryGeneration++;libraryLoader.cancel();state.loading=false;$('[data-load-progress]').hidden=true;status('Leitura cancelada; o modelo anterior foi mantido.');sync(true);});
  on(action('retry'),'click',()=>{loadId++;loader.cancel();state.loading=false;stage?.dispose();stage=null;initializeStage();last=0;});
  on(action('panel'),'click',()=>{const collapsed=root.dataset.panelCollapsed!=='true';root.dataset.panelCollapsed=String(collapsed);action('panel').setAttribute('aria-expanded',String(!collapsed));stage?.resize();});
  on(control('panelWidth'),'input',()=>root.style.setProperty('--panel-width',control('panelWidth').value+'px'));
@@ -127,19 +128,21 @@ export function mountShorekeeperLab(root){
  for(const b of all('[data-preset]'))on(b,'click',()=>{if(!permissions(phase()).inspect)return;stopSweep();inspection.preset(FACE_PRESETS[b.dataset.preset]);syncFace();const missing=Object.keys(FACE_PRESETS[b.dataset.preset]).filter(n=>!inspection.names.includes(n));status(missing.length?'Preset parcial: morphs ausentes '+missing.join(', '):'Preset aplicado. Confira visualmente o resultado.');});
  on(action('customPreset'),'click',()=>{try{const values=JSON.parse($('[data-preset-config]').value);if(!values||Array.isArray(values)||typeof values!=='object'||Object.values(values).some(x=>!Number.isFinite(x)||x<0||x>1))throw Error('Use um objeto com pesos entre 0 e 1.');const unknown=Object.keys(values).filter(n=>!inspection.names.includes(n));if(unknown.length)throw Error('Morphs ausentes: '+unknown.join(', '));stopSweep();inspection.preset(values);syncFace();}catch(e){warn(e.message);}});
  on(action('sweep'),'click',()=>{if(!inspection?.names.includes('E_Close'))return;stopSweep();sweep={index:0,previous:inspection.weights.E_Close??0};inspection.setMorph('E_Close',0);sweepLast=performance.now();syncFace();sync(true);status('Teste bilateral: 0, 0.25, 0.5, 0.75 e 1. Ao terminar, restaura o peso anterior.');});on(action('stopSweep'),'click',()=>stopSweep());
- on($('[data-original-file]'),'change',async e=>{
- const files=[...(e.target.files??[])],token=++libraryGeneration;libraryLoader.cancel();
+ async function importPrivateLibraries(files,source='local'){
+ const token=++libraryGeneration;libraryLoader.cancel();
  try{
-  if(phase()!=='ready'||files.length>4)throw Error('Adicione até quatro bibliotecas em repouso; interrompa a animação antes de carregar.');
-  state.loading=true;sync(true);status('Lendo biblioteca local de animações…');
+  if((phase()!=='ready'&&source!=='r2')||files.length>4)throw Error('Adicione até quatro bibliotecas em repouso; interrompa a animação antes de carregar.');
+  state.loading=true;sync(true);status(source==='r2'?'Validando bibliotecas privadas do R2…':'Lendo biblioteca local de animações…');
+  const resumeAuto=source==='r2'&&control('actingAuto').checked&&!motion.matches;
   for(const file of files){
    const result=await libraryLoader.load(file);if(!result)return;if(token!==libraryGeneration||disposed){disposeObject(result.gltf.scene);return;}
    try{const clips=result.json.asset?.extras?.skCombatLibrary==='2.1-c'?validateCombatLibrary(T,model,result):validateOriginalLibrary(T,model,result);director?.dispose();director=null;inspection.restore();const originalBursts=clips.filter(c=>BURST_ORIGINAL_IDS.includes(c.name));const rebased=originalBursts.map(c=>createRebasedBurstClip(T,model,c));const rootOwned=originalBursts.map(c=>createBindRootBurstClip(T,model,c));const allClips=[...clips,...rebased.map(row=>row.clip),...rootOwned.map(row=>row.clip)];for(const row of rebased)log('CL.1 QA · '+row.diagnostic.source+' · Root delta '+row.diagnostic.bindDeltaDegrees+'° · reancorada disponível.','warning');for(const row of rootOwned)log('CL.1.1 QA · '+row.diagnostic.source+' · Root no bind · variante opcional para A/B, sem aprovação visual.','warning');const incoming=new Set(allClips.map(c=>c.name));model.userData.skClips=[...model.userData.skClips.filter(c=>!incoming.has(c.name)),...allClips];if(!animationLibraries.some(x=>x.sha256===result.sha256))animationLibraries.push({file:file.name,sha256:result.sha256,clips:allClips.map(c=>c.name)});if(animationLibraries.length>9)animationLibraries.shift();if(control('originalIdle').value==='legacy'){const ids=control('presentationMode').value==='combat'?COMBAT_CLIP_IDS:ORIGINAL_IDLE_IDS;control('originalIdle').value=ids.find(id=>model.userData.skClips.some(c=>c.name===id))??'legacy';}buildDirector();}
    finally{disposeObject(result.gltf.scene);}
   }
-  const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model.userData.skClips,id));$('[data-original-availability]').textContent='Disponíveis: '+available.join(', ')+'. Arquivos lidos localmente; QA visual pendente.';status('Bibliotecas privadas adicionadas. Habilidades aéreas e ataques longos podem deslocar a personagem: mantenha câmera aberta e avalie a recuperação. QA visual pendente.');sync(true);
- }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;sync(true);}e.target.value='';}
- });
+  const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model.userData.skClips,id));$('[data-original-availability]').textContent='Disponíveis: '+available.join(', ')+'. Arquivos lidos localmente; QA visual pendente.';status('Bibliotecas privadas adicionadas. Habilidades aéreas e ataques longos podem deslocar a personagem: mantenha câmera aberta e avalie a recuperação. QA visual pendente.');if(resumeAuto&&director)director.start();sync(true);
+ }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;sync(true);}}
+ }
+ on($('[data-original-file]'),'change',e=>{const files=[...(e.target.files??[])];e.target.value='';void importPrivateLibraries(files);});
  on(control('presentationMode'),'change',()=>{if(!inspection||phase()!=='ready')return;const combat=control('presentationMode').value==='combat';scheduler?.setEnabled(false);control('actingAuto').checked=false;control('originalMode').value=combat?'reference':'expressive';if(combat)face?.reset();const ids=combat?COMBAT_CLIP_IDS:ORIGINAL_IDLE_IDS;control('originalIdle').value=ids.find(id=>model.userData.skClips.some(c=>c.name===id))??'legacy';control('originalIdle').dispatchEvent(new Event('change'));status(combat?'Combate experimental: selecione as bibliotecas privadas para testar os ataques.':'Contemplação selecionada.');sync(true);});
  for(const c of ['originalIdle','originalLayer'])on(control(c),'change',()=>{if(!inspection||phase()!=='ready')return;stopSweep();scheduler?.setEnabled(false);control('actingAuto').checked=false;director?.dispose();director=null;inspection.restore();if(control('originalMode').value==='reference'){face?.reset();inspection.preset({});syncFace();}buildDirector();showBone();sync(true);status(director?(control('originalIdle').value==='legacy'?'Gesto F1.6 selecionado.':(control('originalMode').value==='expressive'?'Expressive Acting selecionado.':'Reference QA: reprodução sem atuação facial adicional.')): 'Animação selecionada indisponível neste arquivo.');});
  on(control('originalMode'),'change',()=>{if(!inspection||!permissions(phase()).inspect)return;stopSweep();scheduler?.setEnabled(false);control('actingAuto').checked=false;face?.reset();inspection.preset({});syncFace();status(control('originalMode').value==='reference'?'Reference QA: rosto neutro; o movimento corporal continua.':'Expressive Acting: escolha uma expressão ou ative a contemplação.');sync(true);diagnostics();});
@@ -171,18 +174,45 @@ export function mountShorekeeperLab(root){
  if(now-summaryAt>=750){const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuRenderMs:Number((frameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} / ${d.duration.toFixed(2)} s · ${d.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
  }
  const viewportObserver=typeof IntersectionObserver==='undefined'?null:new IntersectionObserver(entries=>{outOfView=!entries[0].isIntersecting;const paused=userPaused||document.hidden||suspended||outOfView;director?.setPaused(paused);face?.setPaused(paused);scheduler?.setPaused(paused);resetClock();sync(true);},{threshold:0});viewportObserver?.observe(host);
- const destroy=()=>{if(disposed)return;disposed=true;loadId++;loader.cancel();libraryLoader.cancel();lifetime.abort();viewportObserver?.disconnect();cancelAnimationFrame(raf);release();stage?.dispose();root._skDispose=null;};
+ const destroy=()=>{if(disposed)return;disposed=true;remoteAttempt?.abort();loadId++;loader.cancel();libraryLoader.cancel();lifetime.abort();viewportObserver?.disconnect();cancelAnimationFrame(raf);release();stage?.dispose();root._skDispose=null;};
  on(window,'pagehide',e=>{if(e.persisted){suspended=true;director?.setPaused(true);face?.setPaused(true);scheduler?.setPaused(true);resetClock();sync(true);}else destroy();});
  on(window,'pageshow',e=>{if(e.persisted){suspended=false;director?.setPaused(userPaused||document.hidden);face?.setPaused(userPaused||document.hidden);scheduler?.setPaused(userPaused||document.hidden);resetClock();if(sweep)sweepLast=performance.now();stage?.resize();sync(true);status(model?'Sessão restaurada do cache; confira a cena.':'Sessão restaurada. Selecione seu GLB local.');}});
  on(document,'astro:before-swap',destroy);root._skDispose=destroy;initializeStage();raf=requestAnimationFrame(frame);
  if(state.webgl)void (async()=>{
-  try{
-   const cached=await readPrivateModel();if(disposed||manualFileChosen||state.loading)return;
-   if(!cached){privateStatus('Nenhum GLB guardado neste navegador. Selecione o arquivo e use “Guardar neste navegador”.');return;}
-   cachedPrivateSha=cached.sha256;privateStatus('Abrindo cópia privada guardada neste navegador…');syncPrivateButtons();
-   await load(cached.file);
-   if(!disposed&&!model)privateStatus('Cópia guardada inválida ou indisponível. Selecione o GLB manualmente ou apague a cópia local.');
-  }catch(e){if(!disposed)privateStatus('Armazenamento local indisponível: '+e.message+' Você ainda pode selecionar o GLB manualmente.');}
+  remoteAttempt=new AbortController();
+  const signal=remoteAttempt.signal;
+  let cached=null;
+  try{cached=await readPrivateModel();if(cached)cachedPrivateSha=cached.sha256;}catch(e){log('Cache local: '+e.message,'warning');}
+  if(disposed||manualFileChosen||signal.aborted)return;
+  const manifest=await getPrivateManifest({signal});
+  if(disposed||manualFileChosen||signal.aborted)return;
+  let loadedFromRemote=false;
+  if(manifest&&(!cached||cached.sha256!==manifest.model.sha256)){
+   try{
+    privateStatus('Buscando modelo autenticado no R2…');
+    const file=await getPrivateFile(manifest.model,{signal});
+    if(disposed||manualFileChosen||signal.aborted)return;
+    await load(file,'r2');
+    loadedFromRemote=!!model&&metadata?.sha256===manifest.model.sha256;
+   }catch(e){if(!signal.aborted)log('R2: '+e.message,'warning');}
+  }
+  if(!loadedFromRemote&&cached&&!disposed&&!manualFileChosen&&!signal.aborted){
+   privateStatus('Abrindo cópia guardada neste navegador…');syncPrivateButtons();
+   await load(cached.file,'cache');
+  }
+  if(disposed||manualFileChosen||signal.aborted)return;
+  if(!model){privateStatus('Sem modelo remoto autorizado ou cópia local. Selecione o GLB e, se desejar, guarde-o neste navegador.');return;}
+  if(manifest&&metadata?.sha256===manifest.model.sha256&&manifest.libraries.length){
+   const libraries=[];
+   for(const lib of manifest.libraries){
+    if(disposed||manualFileChosen||signal.aborted)return;
+    try{libraries.push(await getPrivateFile(lib,{kind:'library',signal}));}
+    catch(e){if(!signal.aborted)log('Biblioteca R2 '+lib.id+': '+e.message,'warning');}
+   }
+   if(libraries.length&&!disposed&&!manualFileChosen&&!signal.aborted)await importPrivateLibraries(libraries,'r2');
+  }
+  if(!disposed&&!manualFileChosen&&metadata?.origin==='r2')
+   privateStatus('GLB carregado de armazenamento R2 autenticado, com SHA-256 conferido. Você também pode guardar uma cópia neste navegador.');
  })();
  return {dispose:destroy};
 }

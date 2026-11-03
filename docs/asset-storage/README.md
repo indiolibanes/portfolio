@@ -1,5 +1,5 @@
 # Acervo visual / personagens — contrato de armazenamento
-**Estado:** PUBLIC_VISUAL_ASSETS_REORGANIZED / R2_NOT_PROVISIONED / AUTHENTICATED_RUNTIME_NOT_CONFIGURED
+**Estado:** PUBLIC_VISUAL_ASSETS_REORGANIZED / R2_CODE_READY / CLOUD_ACCOUNT_QA_PENDING
 **Repositório:** indiolibanes/portfolio. Os arquivos desta árvore são visíveis ao público.
 
 ## Publicação pública (URLs)
@@ -19,8 +19,8 @@ Os artefatos acima foram movidos com os **mesmos blobs SHA do Git**, sem transco
 - Sophia: \`public/experimental/sophia-alpha.glb\` e \`sophia-7b-e1-latest.glb\` alimentam rotas e testes, então permanecem nos caminhos verificados. O nome definitivo da Sophia 7B não foi aprovado; não renomear retroativamente.
 - Shorekeeper: derivados gerados em \`public/assets/about/\` são controlados por \`scripts/generate-about-cutouts.mjs\`, e não devem ser migrados sem atualizar esse pipeline.
 
-## Cloudflare R2 (modelo futuro, NÃO criado)
-Proposta: bucket privado \`portfolio-character-private\` (nome ilustrativo, não é um bucket verificado).
+## Cloudflare R2 (bucket e binding informados pelo usuário; conta não verificada)
+Bucket informado: \`private-assets\`, binding informado: \`SHOREKEEPER_ASSETS_R2\`; veja \`docs/asset-storage/shorekeeper-r2.md\`.
 
 \`\`\`text
 characters/

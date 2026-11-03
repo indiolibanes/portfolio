@@ -12,7 +12,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="index,follow"/>
-<meta name="description" content="Laboratório 3D independente da Shorekeeper, com modelos e animações carregados localmente."/>
+<meta name="description" content="Laboratório 3D independente da Shorekeeper, com importação local ou acesso privado autenticado via R2."/>
 <title>Shorekeeper · Laboratório 3D</title>
 </head>
 <body class="sk-page">
@@ -42,7 +42,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
 <h2>Um espaço feito<br/>para a Shorekeeper.</h2>
-<p>Selecione seu modelo local e deixe as animações e os pequenos gestos acontecerem. Seu arquivo permanece no dispositivo.</p>
+<p>Carregamento privado autenticado quando disponível. Alternativamente, selecione seu modelo local para contemplação e inspeção.</p>
 </div>
 <div class="sk-readouts">
 <span data-readout="fps" hidden>FPS —</span>
@@ -67,7 +67,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <button type="button" data-action="rememberPrivate" disabled>Guardar neste navegador</button>
 <button type="button" data-action="forgetPrivate" disabled>Esquecer cópia local</button>
 </div>
-<p class="sk-help" data-private-cache-status role="status" aria-live="polite">O modelo não é hospedado. Selecione uma vez e guarde-o neste navegador, se desejar.</p>
+<p class="sk-help" data-private-cache-status role="status" aria-live="polite">Verificando acesso privado autenticado e cópia local; o modelo não é distribuído publicamente.</p>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
 <div class="sk-actions">
@@ -76,7 +76,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 </div>
 <details>
 <summary>Privacidade e identificação</summary>
-<p class="sk-help">Esta página de preview pode ser pública. O GLB é lido pela File API e não é enviado ao servidor. Noindex não é controle de acesso.</p>
+<p class="sk-help">A interface é pública, mas downloads privados exigem Cloudflare Access válido. O modelo enviado pelo seletor local não é transferido ao servidor. Cópias em cache ficam neste navegador.</p>
 <pre data-model-id>SHA-256: aguardando arquivo</pre>
 </details>
 </div>
