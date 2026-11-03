@@ -93,6 +93,22 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </div>
 <label class="sk-field sk-slider" hidden aria-hidden="true">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
 <p class="sk-help" data-expression-state role="status">Aguardando modelo local.</p>
+<details data-facial-qa class="sk-facial-recovery" open>
+<summary>Expressões recuperadas pelo Claude <small>teste manual</small></summary>
+<p class="sk-help">Estas receitas usam os morphs do F2.0-A. São candidatas visuais, não expressões canônicas aprovadas. Os três idles e a piscada permanecem inalterados.</p>
+<div class="sk-facial-recovery-grid" aria-label="Expressões faciais experimentais">
+{[['MY_STAR','My Star'],['LITTLE_SMILE','Sorrisinho'],['LOVE','Ternura'],['HELLO','Olá'],['HOPE','Esperança']].map(([id,label])=><button type="button" data-facial-candidate={id} disabled>{label}</button>)}
+</div>
+<details class="sk-facial-extra"><summary>Mais três candidatos geométricos</summary>
+<div class="sk-facial-recovery-grid">{[['SURPRISE_SOFT','Surpresa suave'],['WORRIED','Preocupada'],['GLANCE','Olhar lateral']].map(([id,label])=><button type="button" data-facial-candidate={id} disabled>{label}</button>)}</div>
+</details>
+<div class="sk-actions"><button type="button" data-facial-candidate="NEUTRAL" disabled>Retorno ao neutro</button></div>
+<p class="sk-help" data-facial-state role="status" aria-live="polite">Abra o modelo e selecione Contemplação para experimentar.</p>
+<details class="sk-facial-extra"><summary>Câmera e captura para comparação</summary>
+<div class="sk-actions">{[['front','Frontal'],['quarter','¾'],['face','Rosto']].map(([id,label])=><button type="button" data-facial-camera={id} disabled>{label}</button>)}</div>
+<button type="button" data-facial-capture disabled>Salvar captura PNG local</button>
+</details>
+</details>
 <details class="sk-easter-egg" hidden><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
 <details class="sk-face-qa" hidden aria-hidden="true"><summary>Inspeção facial avançada (somente testes internos)</summary>
 

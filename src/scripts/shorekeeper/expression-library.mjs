@@ -1,3 +1,4 @@
+import {RECIPES} from './shorekeeper-face-expressions.mjs';
 /** Authored acting candidates inspired by references, never extracted animation data. */
 const preset=(label,description,weights,enter,hold,exit,required,automatic=0)=>Object.freeze({label,description,weights:Object.freeze(weights),enter,hold,exit,required:Object.freeze(required),automatic});
 export const EXPRESSION_LIBRARY=Object.freeze({
@@ -22,3 +23,6 @@ export function expressionSupport(names,id){const p=EXPRESSION_LIBRARY[expressio
 export function bindExpressionButtons(buttons,{face,allowed,onTrigger=()=>{},signal}){
  for(const button of buttons)button.addEventListener('click',()=>{if(button.disabled||!allowed())return;const id=button.dataset.expression,controller=face();if(controller&&controller.trigger(id)!==false)onTrigger(id);},{signal});
 }
+
+/** Recovered recipes are manual QA only, independently of archived B-stage recipes. */
+export const FACIAL_RECOVERY=Object.freeze(Object.fromEntries(['MY_STAR','LITTLE_SMILE','LOVE','HELLO','HOPE'].map(id=>[id,Object.freeze({status:'EXPERIMENTAL',visualQA:'PENDING',automatic:false,required:Object.keys(RECIPES[id].weights)})])));

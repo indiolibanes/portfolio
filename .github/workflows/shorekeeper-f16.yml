@@ -17,6 +17,8 @@ on:
       - 'tests/shorekeeper-expression-library.test.mjs'
       - 'tests/shorekeeper-b5.test.mjs'
       - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
+      - 'tests/shorekeeper-f2-facial-release.test.mjs'
       - 'tests/shorekeeper-b7/**'
       - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'src/pages/experimentos/sk/**'
@@ -43,6 +45,8 @@ on:
       - 'tests/shorekeeper-expression-library.test.mjs'
       - 'tests/shorekeeper-b5.test.mjs'
       - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
+      - 'tests/shorekeeper-f2-facial-release.test.mjs'
       - 'tests/shorekeeper-b7/**'
       - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'src/pages/experimentos/sk/**'
@@ -75,6 +79,8 @@ jobs:
       - run: node tests/shorekeeper-private-model-cache.test.mjs
 
       - run: node tests/shorekeeper-b7.test.mjs
+      - run: node --test tests/shorekeeper-facial-runtime.test.mjs
+      - run: node tests/shorekeeper-f2-facial-release.test.mjs
 
       - run: node tests/shorekeeper-combat.test.mjs
       - run: node tests/shorekeeper-presentation-combat.test.mjs
