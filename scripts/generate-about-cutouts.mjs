@@ -14,7 +14,7 @@ const OUTPUT_WIDTH = 740;
 const OUTPUT_WEBP = { nearLossless: true, quality: 60, effort: 6 };
 await mkdir(outputDir, { recursive: true });
 
-const source = await sharp('public/shorekeeper-black-shores.png')
+const source = await sharp('public/assets/characters/shorekeeper/art/shorekeeper-black-shores.png')
   .ensureAlpha()
   .raw()
   .toBuffer({ resolveWithObject: true });
