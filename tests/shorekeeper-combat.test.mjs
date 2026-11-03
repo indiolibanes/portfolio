@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import * as T from 'three';
+import {createCombatDirector,validateCombatLibrary,ORIGINAL_ATTACK_IDS} from '../src/scripts/shorekeeper/combat-director.mjs';
+const root=new T.Group(),bone=new T.Bone();bone.name='Joint';root.add(bone);
+const clip=new T.AnimationClip(ORIGINAL_ATTACK_IDS[0],1,[new T.VectorKeyframeTrack('Joint.position',[0,1],[0,0,0,1,0,0])]);
+const result={json:{asset:{extras:{skCombatLibrary:'2.1-c'}}},gltf:{animations:[clip]}};
+assert.deepEqual(validateCombatLibrary(T,root,result),[clip]);
+assert.throws(()=>validateCombatLibrary(T,root,{...result,json:{...result.json,images:[{}]}}));
+const invalid=new T.AnimationClip(ORIGINAL_ATTACK_IDS[0],1,[new T.NumberKeyframeTrack('Joint.morphTargetInfluences[0]',[0,1],[0,1])]);
+assert.throws(()=>validateCombatLibrary(T,root,{...result,gltf:{animations:[invalid]}}));
+const dupe=new T.AnimationClip(ORIGINAL_ATTACK_IDS[0],1,[clip.tracks[0],clip.tracks[0]]);assert.throws(()=>validateCombatLibrary(T,root,{...result,gltf:{animations:[dupe]}}));
+let updates=0;const d=createCombatDirector(T,root,[clip],{enter:.1,exit:.1,mixerFactory:r=>{const m=new T.AnimationMixer(r),u=m.update.bind(m);m.update=t=>{updates++;u(t)};return m;}});
+assert(d.playAttack(ORIGINAL_ATTACK_IDS[0]));assert.equal(d.playAttack(ORIGINAL_ATTACK_IDS[0]),false);d.advance(.1);d.advance(.3);d.pause();const t=d.getState().animation.clock,n=updates;d.advance(1);assert.equal(d.getState().animation.clock,t);assert.equal(updates,n);d.resume();d.interrupt();d.advance(.1);assert.equal(d.getState().animation.phase,'idle');assert.equal(bone.position.x,0);
+for(let i=0;i<100;i++){assert(d.playAttack(ORIGINAL_ATTACK_IDS[0]));for(let j=0;j<30;j++)d.advance(.05);assert.equal(d.getState().animation.phase,'idle');}d.dispose();assert.equal(bone.position.x,0);console.log('combat synthetic tests passed');
