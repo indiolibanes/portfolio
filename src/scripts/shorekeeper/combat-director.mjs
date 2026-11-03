@@ -1,6 +1,9 @@
 import {createOriginalIdleDirector} from './original-idle-director.mjs';
 
 export const ORIGINAL_ATTACK_IDS = Object.freeze([1,2,3,4].map(n=>`SK_ATTACK_0${n}_ORIGINAL`));
+/** Advanced moves use original ActorX sources; they are not visually approved. */
+export const ADVANCED_COMBAT_IDS = Object.freeze(['SK_ATTACK_L02_ORIGINAL','SK_SKILL_01_ORIGINAL','SK_SKILL_QTE_01_ORIGINAL','SK_AIR_SKILL_01_ORIGINAL']);
+export const COMBAT_CLIP_IDS = Object.freeze([...ORIGINAL_ATTACK_IDS,...ADVANCED_COMBAT_IDS]);
 
 /** Accept only self-contained animation-only libraries with body TRS tracks. */
 export function validateCombatLibrary(T, root, result) {
@@ -9,7 +12,8 @@ export function validateCombatLibrary(T, root, result) {
  const bones=new Set();root.traverse(o=>{if(o.isBone)bones.add(o.name);});
  if(!result.gltf.animations.length) throw Error('Biblioteca sem animações.');
  for(const clip of result.gltf.animations){
-  if(!/^SK_ATTACK_0[1-4]_ORIGINAL(?:_BODY|_RIB)?$/.test(clip.name)||!Number.isFinite(clip.duration)||clip.duration<=0||clip.duration>60) throw Error('Identificador ou duração inválidos.');
+  const clipId=clip.name.replace(/_(?:BODY|RIB)$/,'');
+  if(!COMBAT_CLIP_IDS.includes(clipId)||!Number.isFinite(clip.duration)||clip.duration<=0||clip.duration>60) throw Error('Identificador ou duração inválidos.');
   const seen=new Set();
   for(const track of clip.tracks){
    const p=T.PropertyBinding.parseTrackName(track.name);
@@ -26,7 +30,7 @@ export function createCombatDirector(T,root,clips,options={}){
  const disposeCurrent=()=>{current?.dispose();current=null;};
  return {
   playAttack(id){
-   if(!ORIGINAL_ATTACK_IDS.includes(id)) throw Error('Ataque desconhecido.');
+   if(!COMBAT_CLIP_IDS.includes(id)) throw Error('Ataque desconhecido.');
    if(current&&current.state.phase!=='idle') return false;
    const clip=clips.find(c=>c.name===id); if(!clip) return false;
    if(clip.tracks.some(t=>!/^.*\.(?:position|quaternion|scale)$/.test(t.name))) throw Error('Canal não corporal.');
