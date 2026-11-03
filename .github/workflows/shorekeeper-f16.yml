@@ -4,6 +4,7 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'tests/shorekeeper-f16/**'
       - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
       - 'src/pages/experimentos/sk/**'
       - 'src/scripts/shorekeeper-sk-lab.mjs'
       - 'src/scripts/shorekeeper/**'
@@ -32,3 +34,5 @@ jobs:
       - run: npm ci
       - run: node tests/shorekeeper-f16/synthetic-test.mjs
       - run: node tests/shorekeeper-sk-lab.test.mjs
+
+      - run: node tests/shorekeeper-original-idles.test.mjs
