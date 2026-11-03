@@ -48,7 +48,7 @@ export async function readPrivateModel(){
  return {file,sha256:record.sha256??null,savedAt:record.savedAt??null};
 }
 export async function savePrivateModel(file,sha256){
- if(!file||typeof file.size!=='number'||!(/\\.glb$/i).test(file.name??''))throw Error('Selecione um arquivo GLB local válido.');
+ if(!file||typeof file.size!=='number'||!(/\.glb$/i).test(file.name??''))throw Error('Selecione um arquivo GLB local válido.');
  if(file.size<20||file.size>MAX_BYTES)throw Error('O GLB excede o limite de 130 MB ou está vazio.');
  if(!(/^[0-9a-f]{64}$/i).test(sha256??''))throw Error('O arquivo precisa ter SHA-256 verificado pelo carregador.');
  const savedAt=Date.now();
