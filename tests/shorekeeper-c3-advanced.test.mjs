@@ -9,7 +9,9 @@ assert.deepEqual(ORIGINAL_ATTACK_IDS,[
 assert.deepEqual(ADVANCED_COMBAT_IDS,[
  'SK_ATTACK_L02_ORIGINAL','SK_SKILL_01_ORIGINAL','SK_SKILL_QTE_01_ORIGINAL','SK_AIR_SKILL_01_ORIGINAL'
 ]);
-assert.equal(COMBAT_CLIP_IDS.length,8);
+assert(COMBAT_CLIP_IDS.length>=8,'C.3 attack IDs remain available in future phases');
+assert(COMBAT_CLIP_IDS.length===new Set(COMBAT_CLIP_IDS).size,'No duplicate combat identifiers');
+for(const id of [...ORIGINAL_ATTACK_IDS,...ADVANCED_COMBAT_IDS])assert(COMBAT_CLIP_IDS.includes(id),'C.3 movement must remain: '+id);
 const root=new T.Group(),bone=new T.Bone();bone.name='Root';root.add(bone);
 const clipFor=(name)=>new T.AnimationClip(name,.75,[new T.VectorKeyframeTrack('Root.position',[0,.75],[0,0,0,.5,0,0])]);
 for(const id of ADVANCED_COMBAT_IDS){
