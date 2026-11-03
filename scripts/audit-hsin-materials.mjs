@@ -36,7 +36,7 @@ export function auditGlb(buffer) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
- const [input = 'public/assets/models/hsin/hsin-v2.0.glb', output] = process.argv.slice(2);
+ const [input = 'public/assets/characters/hsin/models/hsin-v2.0.glb', output] = process.argv.slice(2);
  const report = auditGlb(await readFile(input)), text = JSON.stringify(report, null, 1) + '\n';
  if (output) await writeFile(output, text); else process.stdout.write(text);
 }

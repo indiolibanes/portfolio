@@ -9,5 +9,5 @@ assert(page.includes('Nenhum arquivo do jogo é hospedado aqui'));
 assert(lab.includes('readPrivateModel()'));
 assert(lab.includes('libraryLoader.load(file)'));
 for(const p of Object.values(SK_VFX_PRESETS))assert.equal(p.mode,'NOT_IMPLEMENTED');
-for(const name of ['butterfly-ice.svg','butterfly-violet.svg','star-sprite.svg'])assert(existsSync('public/assets/shorekeeper-vfx/'+name));
+for(const name of ['butterfly-ice.svg','butterfly-violet.svg','star-sprite.svg'])assert(existsSync('public/assets/characters/shorekeeper/vfx/'+name));
 console.log('SK isolated route / local asset path / attribution / dormant procedural VFX PASS');

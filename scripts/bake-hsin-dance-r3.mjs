@@ -139,8 +139,8 @@ for(const [variantName,file,key] of [[REVERIE_NAME,'lunar-dance-r3.json','conser
   if(variantName===REVERIE_NAME&&!phrase.safety.pass)throw Error('Conservative Lunar Bow fails the centre-of-mass margin: '+JSON.stringify(phrase.safety));
   if(!phrase.safety.pass){console.warn('Dramatic variant rejected, not written:',JSON.stringify(phrase.safety));report.variants[variantName].rejected=true;continue;}
   const data={version:'lunar-dance-experimental-r3',variant:key,...common,phrases:{[variantName]:phrase},authoredKeys:{keys:KEYS,hip:HIP_KEYS}};
-  const text=JSON.stringify(data)+'\n';await writeFile('public/assets/animations/hsin/'+file,text);
-  manifest[key]={url:'/assets/animations/hsin/'+file,sha256:hash(text),bytes:Buffer.byteLength(text)};
+  const text=JSON.stringify(data)+'\n';await writeFile('public/assets/characters/hsin/animations/'+file,text);
+  manifest[key]={url:'/assets/characters/hsin/animations/'+file,sha256:hash(text),bytes:Buffer.byteLength(text)};
 }
 await writeFile('src/data/hsin-dance-r3.json',JSON.stringify(manifest,null,2)+'\n');
 await writeFile('docs/qa/hsin-dance-r3/bake-metrics.json',JSON.stringify(report,null,2)+'\n');
