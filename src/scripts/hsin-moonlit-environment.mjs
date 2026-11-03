@@ -1,7 +1,7 @@
 import {createLunarMoon} from './hsin-lunar-moon.mjs';
 /** A static terrace, lake and celestial layer. No clock or post-processing; the moon owns a static relief shader. */
 export const MOONLIT=Object.freeze({
- sky:'/assets/scenes/hsin/night-sky-v1.webp',moon:'/assets/scenes/hsin/full-moon-v1.webp',
+ sky:'/assets/characters/hsin/scenes/night-sky-v1.webp',moon:'/assets/characters/hsin/scenes/full-moon-v1.webp',
  moonPosition:[-.8,1.87,-10],moonSize:4.8,discRatio:292/512,
  fog:0x273b53,terrace:0x1b293d,lake:0x1b3049,
 });
