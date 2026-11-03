@@ -92,7 +92,7 @@ export function mountShorekeeperLab(root){
   try{
    if(!stage||disposed)return;
    const head=await fetch(HOSTED_MODEL_ROUTE,{method:'HEAD',signal,cache:'no-store'});
-   if(!head.ok)return; // Feature not enabled: preserve the local-only studio.
+   if(!head.ok){if(attempt===hostedAttempt&&!model)status('Modelo integrado não publicado. Selecione um GLB local.');return;}
    if(head.headers.get('X-Asset-SHA256')!==F20A_HASH||Number(head.headers.get('Content-Length'))!==HOSTED_MODEL_SIZE)
     throw Error('Manifesto do modelo hospedado diverge da versão F2.0-A.');
    if(signal.aborted||disposed||attempt!==hostedAttempt)return;
