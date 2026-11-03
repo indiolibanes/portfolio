@@ -14,3 +14,11 @@ public/assets/about-shorekeeper-wings.webp
 
 # Generated browser/visual QA artifacts belong in CI artifacts, not Git.
 qa-results/
+
+# Reproducible build output and local authoring state.
+/public/og-portfolio.jpg
+/.wrangler/
+/qa-out/
+/preview.log
+/local-private/
+**/PRIVATE_*.glb

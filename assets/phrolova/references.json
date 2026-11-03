@@ -23,7 +23,7 @@
   "local_assets": [
     {
       "id": "original",
-      "path": "public/phrolova-baton.webp",
+      "path": "public/assets/characters/phrolova/ui/baton-bow.webp",
       "size": "448 x 448",
       "role": "canonical original site appearance, hue, music notes and composition",
       "status": "present in repository",

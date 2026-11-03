@@ -7,7 +7,7 @@ on:
       - .github/workflows/sync-external-assets.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync-assets:
@@ -20,7 +20,7 @@ jobs:
       - name: Install project dependencies
         shell: bash
         run: |
-          npm install --no-audit --no-fund
+          npm ci --no-audit --no-fund
 
       - name: Download external visual assets
         shell: bash
@@ -166,20 +166,12 @@ jobs:
         run: |
           npm run build
 
-      - name: Commit optimized assets
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add public/assets src/pages/index.astro src/config.ts
-
-          if git diff --cached --quiet; then
-            echo "No asset changes to commit."
-            exit 0
-          fi
-
-          git commit -m "perf: optimize locally served portfolio visuals"
-          git push
+      - name: Save optimized assets for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimized-external-assets
+          retention-days: 30
+          path: |
+            public/assets
+            src/pages/index.astro
+            src/config.ts

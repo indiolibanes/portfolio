@@ -18,7 +18,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 
 - produção: branch `main`, publicada pelo Cloudflare Pages;
 - build: Astro estático, Node.js 22.12+;
-- experiências 3D públicas: **Hsin · The Moon Fox V2.0.1** e **Shorekeeper · laboratório de inspeção 3D** (modelo privado, importação local);
+- experiências 3D públicas: **Hsin · The Moon Fox V2.0.1** e **Shorekeeper · laboratório de inspeção 3D** (entrega autenticada com alternativa de importação local);
 - personagem autoral do portfólio: **Sophia**, presente em `/sophia/`, na 404 e em protótipos isolados;
 - Música: nova composição centrada na Hsin, com transição cinematográfica para o palco 3D;
 - QA: resultados gerados não são versionados em `main`; evidências volumosas devem permanecer como artifacts de CI.
@@ -31,7 +31,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
 | `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
-| `/experimentos/sk/` | laboratório técnico Shorekeeper; modelo e animações importados localmente |
+| `/experimentos/sk/` | laboratório Shorekeeper; entrega autenticada e importação local |
 | `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
 | `/404` | página de erro com Sophia e Tetris |
 
@@ -64,21 +64,15 @@ A rota `/experimentos/` usa Three.js diretamente. A V2.0.1 inclui terraço de pe
 
 O runtime limita custo de renderização e pausa quando apropriado. O antigo palco intermediário e o laboratório local de upload de GLB foram removidos; `/experimentos/` é agora a experiência canônica da Hsin.
 
-### Pavilhão musical móvel e lua esférica
+### Pavilhão musical e atuação
 
-Em `/experimentos/`, a trilha **Ode to Hsin and Moon** habita um observatório itinerante: telhados curvos em dois níveis, madeira escura, latão, câmaras laterais, conduítes, rodas e quatro naceles de levitação. A entidade Three.js é volumétrica; o iframe oficial permanece HTML, legível e acessível, dentro da abertura frontal. Hsin, GLB, rig, atuação e transição da seção Música são preservados.
+O pavilhão tridimensional combina arquitetura chinesa com propulsores de hidrogênio e acompanha o enquadramento da câmera. O player oficial continua em HTML para manter controles legíveis e acessíveis.
 
-- **YouTube / Spotify / Sem música:** escolha explícita; sem autoplay, áudio hospedado, SDK ou proxy. YouTube usa o vídeo oficial e oferece início completo ou refrão editorial em ≈ 1:06; Spotify usa o álbum oficial compacto de 152 px. O Play é nativo.
-- **Persistência:** orbitar, mudar o lado e abrir/recolher créditos preserva a instância do player. Trocar provedor, escolher silêncio, ocultar a página ou sair encerra a reprodução. YouTube fora da área visível também é encerrado.
-- **Arquitetura adaptativa:** acompanha a órbita com atraso suave numa faixa periférica. Em mobile a construção 3D permanece visível, menor, e o embed ocupa uma baía inferior ou lateral, sem cobrir Hsin nem encolher indevidamente os controles oficiais.
-- **Silêncio:** sigilo lunar vivo e frase contemplativa; slot preparado para um futuro fallback autoral, sem adicionar o pipeline da Sophia agora.
-- **Lua:** esfera fixa no mundo, crateras da textura aprovada, shader estático de volume/relevo aparente e halo discreto. Não gira nem acompanha a câmera; a órbita passa a produzir paralaxe real.
-- **Custo:** pavilhão com cinco lotes e 4.804 triângulos; sem novas texturas, dependências, luzes, sombras dinâmicas, pós-processamento ou segundo ciclo de renderização. Respeita pausa, visibilidade e movimento reduzido.
-- **Plataformas:** Spotify pode limitar a escuta conforme conta/região/navegador; seu álbum compacto ainda precisa de avaliação estética. Apple Music permanece como link externo: não foi adicionado um terceiro embed sujeito a prévias/login. CSP libera os domínios oficiais somente em `/experimentos/*`.
+A escolha entre YouTube, Spotify e silêncio é explícita. As APIs oficiais observam o estado do player; selecionar um provedor sem confirmar reprodução não inicia dança. A coreografia experimental depende de reprodução YouTube confirmada. Spotify permanece como opção de escuta; não se declara sincronização exata com batidas de uma gravação. Os diretores e dados de coreografia são mantidos separadamente do rig e do modelo.
+
+A lua permanece fixa no mundo. Limites de renderização, pausa e movimento reduzido estão no runtime; sua existência não comprova desempenho em hardware real. Revisão artística, players externos e Android exigem QA específico.
 
 **Créditos:** © 2026 **KURO GAMES** · Wuthering Waves. Composição: Jin Dazhou; voz: Jaime Arin; letras: SmileL e Kat Kennedy; arranjo: He Shan. Portfólio independente, não afiliado à KURO GAMES. Os créditos e links oficiais permanecem na interface.
-
-`npm run check` e `npm run build` passam, incluindo regressões da Hsin, estado musical, volume/custo do pavilhão, três formatos móveis e lua estática. **Revisão visual pendente:** o navegador de QA está sem WebGL2. Não há aprovação estética, medição de FPS em Android ou prova de reprodução integral autenticada. Detalhes, fontes e roteiro de aceite em [docs/hsin-music-tower.md](docs/hsin-music-tower.md).
 
 
 ## Sophia
@@ -137,7 +131,9 @@ assets/
   og-portfolio.png  fonte canônica para geração da OG
 
 functions/
-  api/music/recent.js  proxy Last.fm
+  api/music/         proxy Last.fm e capas
+  api/shorekeeper/   entrega privada autenticada
+  _lib/             validação de acesso/manifesto
 
 scripts/            geração, validação e ferramentas de autoria
 tests/              regressões Hsin e contratos da seção Música
@@ -165,11 +161,10 @@ npm run preview
 
 O build executa:
 
-1. geração da imagem Open Graph;
-2. geração dos primeiros quadros estáticos das mídias animadas;
-3. geração dos recortes da Shorekeeper;
-4. `astro build`;
-5. verificação das imagens OG no `dist/`.
+1. limpeza do diretório de saída `dist/`;
+2. geração da imagem Open Graph, stills e recortes derivados;
+3. `astro build`;
+4. verificação de OG e rejeição de arquivos privados/temporários no output.
 
 ## Verificações
 
@@ -189,6 +184,8 @@ check:music-state       estados do widget de música
 check:music-transition  contrato da transição Música → Hsin
 check:hsin              rota canônica, terraço lunar e framing V2.0.1
 check:sophia            modelos Sophia atualmente publicados
+check:performance       isolamento do runtime Canvas por rota
+check:shorekeeper-r2    contrato de autenticação e entrega privada
 ```
 
 Verificação específica de OG:
@@ -210,13 +207,15 @@ Executado em pull requests e pushes para `main`:
 3. `npm run build`;
 4. verificação pós-build das texturas do terraço lunar.
 
+Os workflows de evidência visual e bake publicam artifacts com retenção de 30 dias, sem criar branches nem usar credenciais de escrita.
+
 ### `hsin-facial-b1-qa.yml`
 
 Executa a regressão especializada da Hsin quando os arquivos relacionados à atuação/rig são alterados. Mantém testes de face, braços, gestos, diretor de movimento, GLB e build.
 
 ### `sync-external-assets.yml`
 
-Workflow manual para ingestão/otimização controlada de assets externos.
+Workflow de ingestão/otimização de assets externos. Entrega artifacts para revisão por PR; não escreve na branch de execução.
 
 Resultados de browser QA, screenshots e cópias de build devem ser anexados como **artifacts** do workflow. `qa-results/` está ignorado pelo Git.
 
@@ -224,7 +223,7 @@ Resultados de browser QA, screenshots e cópias de build devem ser anexados como
 
 O catálogo público mantém recursos visuais de cada personagem em `public/assets/characters/{hsin,shorekeeper,phrolova,sophia}/`. As imagens e os sprites podem ser públicos; isso **não** constitui licença para redistribuir arquivos de terceiros. Os modelos e as animações **extraídos de jogos e protegidos por direitos autorais** devem ficar em armazenamento privado, fora deste repositório e fora de `public/`, até existir autorização apropriada para eventual distribuição. Os créditos aos titulares devem acompanhar cada apresentação.
 
-O GLB canônico da Shorekeeper (F2.0-A, SHA-256 `4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30`) e as bibliotecas de combate **não estão versionados aqui**. A rota `/experimentos/sk/` tenta carregar um manifesto autenticado por Cloudflare Access do R2 `private-assets` via binding `SHOREKEEPER_ASSETS_R2` e verifica SHA-256 antes de abrir o GLB. Caso não haja autorização, utiliza IndexedDB ou importação local. O usuário informa que configurou o binding no projeto `kaue`, mas a configuração real e os objetos não puderam ser verificados nesta sessão. O endpoint falha fechado e exige `SK_ACCESS_TEAM_DOMAIN` e `SK_ACCESS_AUD`, com JWT assinado válido. O script `npm run publish:shorekeeper -- --init --model CAMINHO.glb` verifica os bytes enviados e atualiza o manifesto por último. Nenhuma credencial ou GLB privado deve entrar no Git.
+Os modelos e as bibliotecas privados da Shorekeeper ficam fora do Git e de `public/`. A rota tenta carregar o manifesto autenticado, verifica a integridade dos bytes e mantém importação local como alternativa. O publicador local atualiza o manifesto depois de verificar os uploads. A configuração e os objetos da conta de hospedagem exigem validação administrativa separada; não estão comprovados por um build local.
 
 As imagens Hsin e Sophia já existentes em diretórios de runtime (`public/assets/models/hsin`, `public/assets/animations/hsin`, `public/assets/scenes/hsin`, `public/experimental/`) permanecem em seus caminhos funcionais até auditoria de todos os consumidores. Em especial, o modelo Hsin atualmente servido por Pages é **público**, e não deve ser descrito como privado. A reorganização dos arquivos visuais não o transforma em privado. Uma futura migração de GLBs deve ocorrer em PR isolado, após análise de licenças, integridade, carga e URLs.
 
@@ -269,6 +268,7 @@ A fonte de verdade é o script, não o PDF editado manualmente.
 
 Pontos de entrada recomendados:
 
+- [`docs/security/repository-audit-s1.md`](./docs/security/repository-audit-s1.md) — auditoria de higiene e seus limites;
 - [`docs/publishing-workflow.md`](./docs/publishing-workflow.md) — publicação;
 - [`docs/code-audit-2026-11-02.md`](./docs/code-audit-2026-11-02.md) — auditoria e backlog de otimização;
 - [`docs/hsin-v2-stage.md`](./docs/hsin-v2-stage.md) — base do palco Hsin;
