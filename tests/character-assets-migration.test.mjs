@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {existsSync,readFileSync,statSync} from 'node:fs';
+import {existsSync,readFileSync,statSync,readdirSync} from 'node:fs';
 const manifest=JSON.parse(readFileSync('docs/assets/public-character-migration.json','utf8'));
 const redirects=readFileSync('public/_redirects','utf8');
 assert.equal(manifest.fileCount,44);
@@ -23,4 +23,24 @@ assert(music.includes('/assets/characters/phrolova/vfx/'));
 const privateR2=JSON.parse(readFileSync('docs/assets/private-r2-layout.json','utf8'));
 assert.equal(privateR2.status,'NOT_CONNECTED_NOT_VERIFIED');
 assert(!existsSync('public/assets/characters/shorekeeper/models/shorekeeper-f20a-original-idles.glb'),'Shorekeeper private GLB accidentally published');
+
+const stalePrefixes=[
+ 'assets/models/hsin/','assets/animations/hsin/','assets/scenes/hsin/',
+ 'assets/shorekeeper-vfx/','assets/shorekeeper-butterfly.webp',
+ 'assets/music-hsin-stage-2026-11-02.avif','assets/phrolova-baton-bow.webp',
+ 'experimental/sophia-alpha.glb','experimental/sophia-7b-e1-latest.glb',
+ 'experimental/sophia-2d/','images/sophia/'
+];
+const staleExact=['public/shorekeeper-black-shores.png','public/shorekeeper.jpg','public/phrolova.jpg','public/phrolova-baton.webp','public/hsin.webp'];
+const walked=(dir)=>readdirSync(dir,{withFileTypes:true}).flatMap(row=>{
+ const file=dir+'/'+row.name;
+ if(row.isDirectory())return walked(file);
+ return /\.(?:js|mjs|ts|astro|css|json|py|sh|yml)$/.test(file)&&file!=='tests/character-assets-migration.test.mjs'?[file]:[];
+});
+for(const file of [...walked('src'),...walked('scripts'),...walked('tests'),...walked('public/experimental')]){
+ const content=readFileSync(file,'utf8');
+ for(const prefix of stalePrefixes)assert(!content.includes(prefix),'Stale public asset reference '+prefix+' in '+file);
+ for(const prefix of staleExact)assert(!content.includes(prefix),'Stale root media source '+prefix+' in '+file);
+}
+
 console.log('Asset reorganized: '+manifest.fileCount+' paths; bytes preserved by stat; legacy redirects and truthful R2 gate PASS');
