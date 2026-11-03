@@ -29,3 +29,17 @@
 .sk-page .sk-library-import summary{cursor:pointer;color:#355d7a}
 .sk-page .sk-viewport button:focus-visible,.sk-page .sk-panel button:focus-visible,.sk-page .sk-panel select:focus-visible{outline:3px solid #709fc5;outline-offset:2px}
 @media(max-width:930px){.sk-page .sk-panel{max-width:none}}
+
+/* R1: manual, scene-owned celestial preview. */
+.sk-page .sk-vfx-controls{margin:12px 16px;padding:16px;border:1px solid #cfdfec;border-radius:24px;background:linear-gradient(140deg,#f4fbff,#f4f0fd);color:#293d52}
+.sk-page .sk-vfx-controls>summary{font-weight:650;cursor:pointer;min-height:28px}
+.sk-page .sk-vfx-controls>summary small{font-weight:400;color:#635b80;margin-left:6px}
+.sk-page .sk-vfx-phases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:12px 0}
+.sk-page .sk-vfx-phases button{min-height:44px;padding:9px 7px;border-radius:18px;background:#fafdff;border:1px solid #d3e1ee;color:#3f5770;font-size:12px}
+.sk-page .sk-vfx-phases button[aria-pressed=true]{background:#dee7f7;color:#293b61;border-color:#9babcc}
+.sk-page .sk-vfx-systems{display:grid;gap:8px;font-size:12px;margin:14px 0}
+.sk-page .sk-vfx-systems label{display:flex;align-items:center;gap:9px;min-height:32px}
+.sk-page .sk-vfx-systems input{accent-color:#696d9d}
+.sk-page .sk-vfx-qa{margin-top:12px}
+.sk-page .sk-vfx-qa .sk-actions{flex-wrap:wrap;margin:12px 0}
+.sk-page .sk-vfx-controls button:focus-visible{outline:3px solid #7b8eb8;outline-offset:2px}

@@ -80,6 +80,18 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <pre data-model-id>SHA-256: aguardando arquivo</pre>
 </details>
 </div>
+<details class="sk-vfx-controls" open>
+<summary>Atmosfera celestial <small>prévia manual</small></summary>
+<p class="sk-help">Borboletas, domínio estelar e núcleos de luz autorais. Selecione uma fase; os efeitos permanecem independentes das animações.</p>
+<div class="sk-vfx-phases" aria-label="Fases dos efeitos">{[['OFF','Desligado'],['AMBIENT','Ambiente'],['PREPARATION','Preparação'],['STELLAREALM','Stellarealm'],['RESONANCE_PEAK','Ápice'],['RECOVERY','Recuperação']].map(([id,label])=><button type="button" data-vfx-state={id} aria-pressed={id==='OFF'?'true':'false'}>{label}</button>)}</div>
+<div class="sk-vfx-systems">{[['butterflies','Borboletas'],['stellarealm','Domínio estelar'],['collapsedCore','Núcleo de luz']].map(([id,label])=><label><input type="checkbox" data-vfx-system={id} checked/>{label}</label>)}</div>
+<p data-vfx-status class="sk-help" role="status" aria-live="polite">Desligado · QA visual pendente</p>
+<button type="button" data-vfx-pause>Pausar efeitos</button>
+<details class="sk-vfx-qa"><summary>Comparar e registrar</summary>
+<div class="sk-actions"><button type="button" data-vfx-view="front">Frontal</button><button type="button" data-vfx-view="quarter">Três quartos</button><button type="button" data-vfx-capture>↓ Captura local</button><button type="button" data-vfx-report>↓ Métricas locais</button><button type="button" data-vfx-context>Testar restauração WebGL</button></div>
+<p class="sk-help">A prévia funciona sem modelo. Capturas e métricas ficam no seu dispositivo. A confirmação artística e o teste no Samsung Internet estão pendentes.</p>
+</details>
+</details>
 <nav class="sk-tabs" role="tablist" aria-label="Áreas de inspeção">{[['acting','Apresentação'],['face','Expressões']].map(([id,label],i)=>
 <button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
 

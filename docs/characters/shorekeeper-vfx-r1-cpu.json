@@ -1,0 +1,56 @@
+{
+  "runtime": "v24.22.1",
+  "platform": "linux",
+  "architecture": "x64",
+  "scope": "CPU-only director update, no model, no WebGL renderer/GPU/Android measurements",
+  "results": [
+    {
+      "state": "RECOVERY",
+      "manualOnly": true,
+      "visualQA": "VISUAL_QA_PENDING",
+      "profile": "mobile",
+      "counts": {
+        "butterflies": 8,
+        "stars": 110,
+        "energy": 12
+      },
+      "reducedMotion": false,
+      "suspended": false,
+      "seconds": 599.999999999783,
+      "samples": 36000,
+      "cpuMeanMs": 0.00414109747222237,
+      "cpuP95RecentMs": 0.0026239999999688735,
+      "cpuMaxMs": 1.1057579999999803,
+      "estimatedAdditionalDrawCalls": 1,
+      "maxAdditionalDrawCalls": 5,
+      "gpuTiming": "NOT_MEASURED",
+      "wallTimeMs": 157.627306,
+      "rendering": "NOT_EXECUTED",
+      "session": "600 seconds simulated at 60Hz, NOT a 600s browser session"
+    },
+    {
+      "state": "RECOVERY",
+      "manualOnly": true,
+      "visualQA": "VISUAL_QA_PENDING",
+      "profile": "desktop",
+      "counts": {
+        "butterflies": 18,
+        "stars": 320,
+        "energy": 40
+      },
+      "reducedMotion": false,
+      "suspended": false,
+      "seconds": 599.999999999783,
+      "samples": 36000,
+      "cpuMeanMs": 0.008405851722222224,
+      "cpuP95RecentMs": 0.0060409999999819775,
+      "cpuMaxMs": 2.4987090000000194,
+      "estimatedAdditionalDrawCalls": 1,
+      "maxAdditionalDrawCalls": 5,
+      "gpuTiming": "NOT_MEASURED",
+      "wallTimeMs": 307.97180499999996,
+      "rendering": "NOT_EXECUTED",
+      "session": "600 seconds simulated at 60Hz, NOT a 600s browser session"
+    }
+  ]
+}
