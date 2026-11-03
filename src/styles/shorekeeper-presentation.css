@@ -1,0 +1,70 @@
+/* Shorekeeper B.1: presentation-first overlay. Diagnostics remain in DOM for legacy runtime/QA. */
+.sk-page .sk-panel-grip label{display:none}
+.sk-page .sk-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sk-page .sk-technical-only{display:none!important}
+.sk-page .sk-advanced-face > :not(h2):not(.sk-face-guide){display:none!important}
+.sk-page .sk-face-guide{max-width:29rem;line-height:1.75}
+.sk-page .sk-expressions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.sk-page .sk-expressions button{border-radius:19px;min-width:0;min-height:49px;font-size:12px;text-wrap:balance}
+.sk-page .sk-expressions [data-action=gentleStar]{
+  grid-column:1 / -1;min-height:54px;
+  background:linear-gradient(125deg,#d4eafa,#eae9ff 65%,#f9edfc);
+  color:#415b83;border:1px solid #c8d7ed;
+  font-size:14px;letter-spacing:.02em
+}
+.sk-page .sk-expressions [data-action=gentleStar]:hover:not(:disabled){
+  background:linear-gradient(125deg,#c7e4fa,#dedfff 65%,#f5e6fb);border-color:#b3c6e5
+}
+.sk-page [data-original-section] > summary{font-size:13px}
+.sk-page [data-pane=acting] > h2{margin-bottom:17px}
+.sk-page .sk-viewport{isolation:isolate}
+.sk-butterflies{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;contain:layout paint}
+.sk-butterfly{
+  position:absolute;left:-8%;top:24%;
+  width:7px;height:16px;opacity:0;
+  background:linear-gradient(#ffffff,#96bde5);
+  border-radius:100% 100% 70% 70%;
+  box-shadow:0 0 12px 3px rgba(140,193,246,.32);
+  animation:sk-butterfly-flight 26s linear infinite;
+  will-change:transform
+}
+.sk-butterfly::before,.sk-butterfly::after{
+  content:"";position:absolute;top:-7px;width:17px;height:22px;
+  background:linear-gradient(135deg,rgba(251,255,255,.93),rgba(110,169,225,.75) 65%,rgba(159,141,213,.45));
+  border:1px solid rgba(145,187,224,.6);
+  box-shadow:0 0 9px rgba(122,172,236,.18)
+}
+.sk-butterfly::before{
+  right:3px;border-radius:93% 14% 68% 22%;
+  transform-origin:right bottom;animation:sk-wing-left .46s ease-in-out infinite alternate
+}
+.sk-butterfly::after{
+  left:3px;border-radius:14% 93% 22% 68%;
+  transform-origin:left bottom;animation:sk-wing-right .46s ease-in-out infinite alternate
+}
+.sk-butterfly:nth-child(2){top:62%;animation-delay:-13s;animation-duration:32s;scale:.7;filter:hue-rotate(30deg)}
+.sk-butterfly:nth-child(3){top:42%;animation-delay:-23s;animation-duration:37s;scale:1.15;filter:hue-rotate(-20deg)}
+.sk-butterfly:nth-child(4){top:73%;animation-delay:-31s;animation-duration:28s;scale:.55;filter:hue-rotate(50deg)}
+@keyframes sk-butterfly-flight{
+  0%{left:-8%;opacity:0;transform:translate3d(0,13px,0) rotate(-11deg)}
+  7%{opacity:.82}
+  26%{transform:translate3d(0,-13px,0) rotate(9deg)}
+  53%{transform:translate3d(0,8px,0) rotate(-13deg)}
+  75%{transform:translate3d(0,-12px,0) rotate(8deg);opacity:.72}
+  93%{opacity:.6}
+  100%{left:105%;opacity:0;transform:translate3d(0,7px,0) rotate(-7deg)}
+}
+@keyframes sk-wing-left{
+  from{transform:rotate(-33deg) scaleX(.64)}to{transform:rotate(22deg) scaleX(1)}
+}
+@keyframes sk-wing-right{
+  from{transform:rotate(33deg) scaleX(.64)}to{transform:rotate(-22deg) scaleX(1)}
+}
+@media(max-width:600px){
+  .sk-butterfly:nth-child(4){display:none}
+  .sk-page .sk-expressions button{font-size:11px;min-height:46px}
+}
+@media(prefers-reduced-motion:reduce){
+  .sk-butterflies{display:none}
+  .sk-butterfly,.sk-butterfly::before,.sk-butterfly::after{animation:none!important}
+}
