@@ -11,6 +11,7 @@ on:
       - 'src/scripts/shorekeeper/**'
       - 'src/styles/shorekeeper-sk-lab.css'
       - 'src/styles/shorekeeper-material3.css'
+      - 'src/styles/shorekeeper-presentation.css'
       - '.github/workflows/shorekeeper-f16.yml'
   push:
     paths:
@@ -23,6 +24,7 @@ on:
       - 'src/scripts/shorekeeper/**'
       - 'src/styles/shorekeeper-sk-lab.css'
       - 'src/styles/shorekeeper-material3.css'
+      - 'src/styles/shorekeeper-presentation.css'
       - '.github/workflows/shorekeeper-f16.yml'
 jobs:
   synthetic:
