@@ -18,7 +18,7 @@ assert(stageCode.includes('scene.background=new T.Color(0xd6e9f5)'));
 assert.match(page,/Azul-gelo · estúdio/);
 const presentationCss=await readFile('src/styles/shorekeeper-presentation.css','utf8');
 assert(page.includes('shorekeeper-presentation.css'),'SK presentation CSS is imported');
-assert(page.includes("'LITTLE_SMILE'")&&page.includes('data-expression={id}'),'Curated expression buttons exist');
+assert(page.includes('data-expression="LITTLE_SMILE" disabled hidden')&&page.includes('data-expression="blink"'),'Curated expression buttons exist');
 assert(!page.includes('sk-butterflies')&&!presentationCss.includes('.sk-butterfly'),'Decorative butterflies must be removed');
 assert(page.includes('<option value="60" selected>60 quadros/s</option>'),'60 FPS must be the default');
 assert(page.includes('<option value="2" selected>2 · detalhado</option>'),'DPR 2 must be the default');
