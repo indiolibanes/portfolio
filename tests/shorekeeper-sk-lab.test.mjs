@@ -27,7 +27,13 @@ assert(stageCode.includes('dpr=2')&&stageCode.includes('powerPreference:\'high-p
 assert(page.includes('data-pane="rig"')&&page.includes('data-pane="visual"'),'Legacy runtime DOM hooks remain for QA');
 assert(page.includes("['acting','Apresentação']")&&page.includes("['face','Expressões']"),'Presentation-first tab layout');
 assert(!page.includes('data-view="front"')&&!page.includes('data-view="back"'),'Redundant viewport actions removed');
-assert.match(page,/noindex,nofollow,noarchive/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);assert.doesNotMatch(page+script,/fetch\s*\(|XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.match(page,/noindex,nofollow,noarchive/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);
+// A hosted GET/HEAD is now intentionally allowed, but user-selected files are still parsed locally.
+assert.doesNotMatch(page+script,/XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert(script.includes("HOSTED_MODEL_ROUTE='/api/shorekeeper/model'"),'Fixed same-origin model route');
+assert(script.includes('fetch(HOSTED_MODEL_ROUTE'),'Hosted model must be opt-in via the server endpoint');
+assert(script.includes('result.sha256!==expectedHash'),'Downloaded GLB must be verified before adoption');
+assert(page.includes('modelo integrado'),'Hosted-model fallback text exists');
 for(const pane of ['rig','visual','face','acting'])assert.match(page,new RegExp('data-pane="'+pane+'"'));
 const pack=uri=>{const data={asset:{version:'2.0'},buffers:uri?[{byteLength:0,uri}]:[{byteLength:0}],images:[]};const raw=Buffer.from(JSON.stringify(data)),json=Buffer.concat([raw,Buffer.alloc((4-raw.length%4)%4,32)]),bytes=Buffer.alloc(20+json.length);bytes.write('glTF');bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(bytes.length,8);bytes.writeUInt32LE(json.length,12);bytes.write('JSON',16);json.copy(bytes,20);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
 assert.doesNotThrow(()=>assertSelfContainedGLB(pack(null)));assert.doesNotThrow(()=>assertSelfContainedGLB(pack('data:application/octet-stream;base64,AAAA')));
