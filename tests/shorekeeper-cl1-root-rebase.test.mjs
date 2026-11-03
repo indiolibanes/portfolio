@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import * as T from 'three';
-import {BURST_ORIGINAL_IDS,BURST_REBASED_IDS,createRebasedBurstClip} from '../src/scripts/shorekeeper/liberation-rotation.mjs';
+import {BURST_ORIGINAL_IDS,BURST_REBASED_IDS,BURST_BODY_OWNED_IDS,createRebasedBurstClip} from '../src/scripts/shorekeeper/liberation-rotation.mjs';
 import {COMBAT_CLIP_IDS,SOURCE_COMBAT_IDS,validateCombatLibrary} from '../src/scripts/shorekeeper/combat-director.mjs';
 
 const root=new T.Bone();root.name='Root';
@@ -36,7 +36,7 @@ for(let i=1;i<t.length;i++){
  const beforeDelta=qa.clone().invert().multiply(qb),afterDelta=ca.clone().invert().multiply(cb);
  assert(beforeDelta.angleTo(afterDelta)<2e-3,'Relative angular displacement must remain unchanged');
 }
-assert.equal(COMBAT_CLIP_IDS.length,SOURCE_COMBAT_IDS.length+2);
+assert.equal(COMBAT_CLIP_IDS.length,SOURCE_COMBAT_IDS.length+BURST_REBASED_IDS.length+BURST_BODY_OWNED_IDS.length);
 assert(COMBAT_CLIP_IDS.includes(stabilized.name));
 assert(!SOURCE_COMBAT_IDS.includes(stabilized.name),'Rebased variants must not be accepted as remote/source files');
 const source={json:{asset:{extras:{skCombatLibrary:'2.1-c'}}},gltf:{animations:[clip]}};
