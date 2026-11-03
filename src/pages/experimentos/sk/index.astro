@@ -38,7 +38,6 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </nav>
 <div class="sk-canvas-host" data-sk-canvas tabindex="0" role="img" aria-label="Personagem 3D. Arraste para orbitar; use dois dedos ou a roda para zoom.">
 </div>
-<div class="sk-butterflies" aria-hidden="true"><span class="sk-butterfly"></span><span class="sk-butterfly"></span><span class="sk-butterfly"></span><span class="sk-butterfly"></span></div>
 <div class="sk-empty" data-empty>
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
@@ -46,7 +45,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <p>Selecione seu modelo local e deixe as animações e os pequenos gestos acontecerem. Seu arquivo permanece no dispositivo.</p>
 </div>
 <div class="sk-readouts">
-<span data-readout="fps">FPS —</span>
+<span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
 <button data-action="capture" disabled>↓ PNG</button>
 </div>
@@ -91,7 +90,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <label class="sk-field sk-slider">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
 <p class="sk-help" data-expression-state role="status">Aguardando modelo local.</p>
 <details class="sk-easter-egg"><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
-<details class="sk-face-qa"><summary>Inspeção facial avançada</summary>
+<details class="sk-face-qa" hidden aria-hidden="true"><summary>Inspeção facial avançada (somente testes internos)</summary>
 
 
 <p class="sk-help">E_Close é bilateral. Os pesos servem à inspeção; não representam limites faciais aprovados.</p>
@@ -145,7 +144,6 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 
 <label class="sk-field">Modo<select data-control="originalMode" disabled><option value="reference">Reference QA · sem expressão adicional</option><option value="expressive">Expressive Acting · experimental</option></select></label>
 <label class="sk-toggle"><input type="checkbox" data-control="actingAuto" disabled/> Contemplação automática</label>
-<label class="sk-toggle"><input type="checkbox" data-control="butterflies" checked/> Borboletas</label>
 
 <p class="sk-help">Reference QA preserva o movimento de origem. Expressive Acting acrescenta a biblioteca facial. A aprovação visual dos novos presets continua pendente.</p>
 <p class="sk-help" data-original-availability>Selecione o GLB privado com os novos clipes. O GLB F1.6 continua aceito.</p>
@@ -163,7 +161,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <p class="sk-help" data-motion-policy>
 </p>
 </section>
-<details class="sk-qa-tools"><summary>Ferramentas de inspeção</summary>
+<details class="sk-qa-tools" hidden aria-hidden="true"><summary>Ferramentas de inspeção (somente testes internos)</summary>
 <section id="sk-panel-rig" role="region" aria-label="Diagnóstico de rig preservado" data-pane="rig" class="sk-qa-pane">
 <div class="sk-section-title">
 <h2>Estrutura & pose</h2>
@@ -226,8 +224,8 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 </select>
 </label>
 <label class="sk-field">Frequência máxima<select data-control="fps">
-<option value="30" selected>30 quadros/s</option>
-<option value="60">60 quadros/s</option>
+<option value="30">30 quadros/s</option>
+<option value="60" selected>60 quadros/s</option>
 </select>
 </label>
 <label class="sk-toggle">
