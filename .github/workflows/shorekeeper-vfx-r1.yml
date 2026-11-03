@@ -1,0 +1,28 @@
+name: Shorekeeper VFX R1
+on:
+  pull_request:
+    paths:
+      - 'src/scripts/shorekeeper/**'
+      - 'src/scripts/shorekeeper-sk-lab.mjs'
+      - 'src/pages/experimentos/sk/**'
+      - 'src/styles/shorekeeper-presentation.css'
+      - 'tests/shorekeeper-vfx.test.mjs'
+      - 'tests/shorekeeper-publication-smoke.test.mjs'
+      - '.github/workflows/shorekeeper-vfx-r1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/shorekeeper-vfx.test.mjs
+      - run: node tests/shorekeeper-publication-smoke.test.mjs
+      - run: node tests/performance-route-isolation.test.mjs
+      - run: npm run build
