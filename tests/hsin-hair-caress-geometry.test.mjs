@@ -5,7 +5,7 @@ import {ctx, hairPose, keyTargets} from '../scripts/solve-hsin-hair-caress.mjs';
 import {measurePose, nearestTo} from '../scripts/lib/hsin-arm-metrics.mjs';
 import {qAngle} from '../scripts/lib/hsin-math.mjs';
 
-const acting = JSON.parse(readFileSync(new URL('../public/assets/models/hsin/hsin-v2.1-acting.json', import.meta.url))), hair = acting.poses.hairCaress, n = hair.names.length, q = (f, i) => f.slice(i * 4, i * 4 + 4);
+const acting = JSON.parse(readFileSync(new URL('../public/assets/characters/hsin/models/hsin-v2.1-acting.json', import.meta.url))), hair = acting.poses.hairCaress, n = hair.names.length, q = (f, i) => f.slice(i * 4, i * 4 + 4);
 assert.equal(n, 18); assert.ok(hair.names.slice(0, 6).every((name, i) => name === hairPose.names[i]), 'arm chain = the approved left chain'); assert.ok(hair.names.every((name) => /L$/.test(name)), 'left side only');
 assert.ok(hair.frames.length >= 3, 'sampled trajectory, independent of historical frame count'); assert.ok(hair.frames.every((f) => f.length === n * 4 && f.every(Number.isFinite)));
 const maxDiff = (a, b) => Math.max(...a.map((v, i) => Math.abs(v - b[i])));
