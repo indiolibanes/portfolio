@@ -61,8 +61,13 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <label for="sk-file">Modelo privado <small>GLB local · até 130 MB</small>
 </label>
 <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
-<p class="sk-help">Referência local: shorekeeper-f20-original-idles.private.glb</p>
+<p class="sk-help">Versão canônica: <code>PRIVATE_shorekeeper_f20a_original_idles.glb</code> · os três idles originais.</p>
 <p class="sk-filename" data-sk-file-name>Nenhum arquivo selecionado</p>
+<div class="sk-actions sk-private-cache-actions">
+<button type="button" data-action="rememberPrivate" disabled>Guardar neste navegador</button>
+<button type="button" data-action="forgetPrivate" disabled>Esquecer cópia local</button>
+</div>
+<p class="sk-help" data-private-cache-status role="status" aria-live="polite">O modelo não é hospedado. Selecione uma vez e guarde-o neste navegador, se desejar.</p>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
 <div class="sk-actions">
