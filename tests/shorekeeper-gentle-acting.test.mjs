@@ -15,8 +15,8 @@ for(const c of clips){start(c.name);for(const expression of ['blink','smile','lo
 face.trigger('blink');scheduler.advance(.13);assert(weights.E_Close>.99);scheduler.advance(.09);scheduler.advance(.2);assert(weights.E_Close<1e-8);
 face.trigger('smile');scheduler.advance(.8);assert(weights.M_Smile_L>.2);face.trigger('neutral');scheduler.advance(.65);assert(weights.M_Smile_L<1e-8);
 face.trigger('look');scheduler.advance(.8);assert(weights.Pupil_L<=.3&&weights.Pupil_L>0);
-face.trigger('myStar');scheduler.advance(.65);assert(weights.M_Smile_R>.55&&weights.E_Smile_R>.3&&weights.Pupil_R<=.3);
-face.trigger('wonder');scheduler.advance(.55);assert(weights.E_Focus>.2&&weights.Pupil_Up>0);
+face.trigger('myStar');scheduler.advance(.8);assert(weights.M_Smile_R>.55&&weights.E_Smile_R>.3&&weights.Pupil_R<=.3);
+face.trigger('wonder');scheduler.advance(.55);assert(weights.E_Stare>.2&&weights.M_OpenSmall>0);
 face.trigger('neutral');scheduler.advance(.65);assert(Object.values(weights).every(v=>v<1e-7));
 face.setPaused(true);const before=weights.Pupil_L;scheduler.advance(2);assert.equal(weights.Pupil_L,before);face.setPaused(false);
 scheduler.setEnabled(true);for(let i=0;i<6000;i++){director?.advance(.1);scheduler.advance(.1);}assert(started.length>8);assert(clips.every(c=>started.includes(c.name)));assert(active<=1);

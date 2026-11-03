@@ -18,7 +18,7 @@ assert(stageCode.includes('scene.background=new T.Color(0xd6e9f5)'));
 assert.match(page,/Azul-gelo · estúdio/);
 const presentationCss=await readFile('src/styles/shorekeeper-presentation.css','utf8');
 assert(page.includes('shorekeeper-presentation.css'),'SK presentation CSS is imported');
-assert(page.includes('data-action="gentleStar"')&&page.includes('data-action="gentleWonder"'),'My Star and cutscene-inspired microexpression actions exist');
+assert(page.includes("'MY_STAR'")&&page.includes("'SURPRISE_SOFT'")&&page.includes('data-expression={id}'),'Curated expression buttons exist');
 assert(page.includes('sk-butterflies')&&presentationCss.includes('prefers-reduced-motion:reduce'),'Butterfly layer must respect motion preference');
 assert(page.includes('data-pane="rig"')&&page.includes('data-pane="visual"'),'Legacy runtime DOM hooks remain for QA');
 assert(page.includes("['acting','Apresentação']")&&page.includes("['face','Expressões']"),'Presentation-first tab layout');
