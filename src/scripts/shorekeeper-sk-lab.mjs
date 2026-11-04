@@ -79,7 +79,8 @@ export function mountShorekeeperLab(root){
    const entry=document.createElement('p');entry.className='sk-help';entry.setAttribute('role','listitem');
    const title=document.createElement('strong');title.textContent=line.label;entry.append(title,document.createTextNode(' — '+line.text));return entry;
   }));
-  const canPlay=!!model&&modelReady&&phase()==='ready'&&!state.loading&&!userPaused;
+  const manualReady=phase()==='ready'||(phase()==='animating'&&control('presentationMode').value==='contemplation');
+  const canPlay=!!model&&modelReady&&manualReady&&!state.loading&&!userPaused;
   for(const button of all('[data-r2-quick-burst]')){
    const id=button.dataset.r2QuickBurst;
    button.disabled=!canPlay||!clips.some(clip=>clip.name===id);
@@ -300,7 +301,12 @@ export function mountShorekeeperLab(root){
  }
  on($('[data-r2-recheck]'),'click',()=>{void recheckR2AndLoad();});
  for(const button of all('[data-r2-quick-burst]'))on(button,'click',()=>{
-  if(button.disabled||!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||phase()!=='ready')return;
+  if(button.disabled||!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256)return;
+  if(phase()==='animating'&&control('presentationMode').value==='contemplation'){
+   scheduler?.setEnabled(false);control('actingAuto').checked=false;
+   director?.dispose();director=null;face?.reset();
+  }
+  if(phase()!=='ready')return;
   const id=button.dataset.r2QuickBurst;
   if(!['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL'].includes(id)||!model.userData.skClips.some(c=>c.name===id))return;
   cancelPreparation('manual-burst');narrative?.stop();scheduler?.setEnabled(false);control('actingAuto').checked=false;
