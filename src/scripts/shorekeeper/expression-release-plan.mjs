@@ -10,7 +10,9 @@
  */
 export const EXPRESSION_RELEASE_PLAN = Object.freeze({
   active: false,
-  humanApproval: {
+  // Existing R5 release gate must remain null until explicit authorization.
+  humanApproval: null,
+  visualReview: {
     observedOn: '2026-11-04',
     scope: 'Named facial appearances and dynamics reviewed by the author',
     notApproved: ['automatic scheduler', 'global release', 'GPU performance', 'unverified corrective shapes'],
