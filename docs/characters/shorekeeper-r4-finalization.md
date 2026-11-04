@@ -73,6 +73,8 @@ O teste da interface carrega arquivos pela entrada real, alterna geometrias e te
 
 CPU do update VFX, draw calls, memória Three e renderer são registrados nos manifests privados. Na amostra R4 em ápice (45 updates), média de CPU do update .116 ms e P95 recente .20 ms neste host de software; não incluem custo de rasterização e não representam sessão prolongada. CPU de SwiftShader não caracteriza GPU; VRAM, throttling/consumo, sessão GPU real de 600 s, Samsung Internet e bfcache real continuam **NOT_TESTED**. Não há PERFORMANCE_PASS nem HUMAN_APPROVED.
 
+O pacote final reúne 378 PNG das três suítes (280 face, 35 VFX, 63 Root), uma captura da interface e 27 MP4 (6 face, 5 VFX, 16 CL). As contagens não incluem a execução perdida nem as baterias iniciais substituídas. A prova CL final acrescenta piso de referência e um vídeo de pouso em ¾; esse piso é diagnóstico, não novo cenário canônico. ORIGINAL ainda exige avaliar a reorientação entre o endpoint fonte e Idle na ponte; contato numérico não aprova essa rotação.
+
 Matriz completa: [shorekeeper-r4-approval-matrix.csv](shorekeeper-r4-approval-matrix.csv). Protocolo: [shorekeeper-r4-capture-protocol.md](shorekeeper-r4-capture-protocol.md). Pacote privado contém comparativos, PNG, MP4, manifests, fontes do harness e logs. Nenhum GLB/PSA/textura/referência/captura privada entra no Git ou dist. Auth/R2, assets públicos e todos os sistemas Hsin seguem a base sem alteração.
 
 ## Gates restantes e R5
