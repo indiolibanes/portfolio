@@ -1,9 +1,11 @@
 import {RECIPES,createFaceExpressionController} from './shorekeeper-face-expressions.mjs';
 import {EXPRESSION_LIBRARY,EXPRESSION_MORPHS,FACIAL_VALIDATION,expressionId,expressionSupport} from './expression-library.mjs';
+import {claimFacialWriter} from './facial-ownership.mjs';
 export const GENTLE_MORPHS=EXPRESSION_MORPHS;
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 /** The single facial writer. Expression and bilateral blink have explicit bounded composition. */
 export function createGentleFace(inspection,{qaRecipes=RECIPES}={}){
+ const releaseWriter=claimFacialWriter(inspection,'gentle-acting');let disposed=false;
  const names=GENTLE_MORPHS.filter(n=>inspection.names.includes(n)),base=Object.fromEntries(names.map(n=>[n,0]));
  let current='neutral',phase='idle',from={...base},target={},elapsed=0,timing=null,paused=false,intensity=1,blink=null,weights={...base},source='manual';
  const shadow=(inspection.morphMeshes??[]).filter(m=>['Shorekeeper_Face','Shorekeeper_Eye'].includes(m.name)).map(m=>({name:m.name,morphTargetDictionary:m.morphTargetDictionary,morphTargetInfluences:Array.from(m.morphTargetInfluences)}));
@@ -27,17 +29,18 @@ export function createGentleFace(inspection,{qaRecipes=RECIPES}={}){
  return {
   support,
   qaSupport(name){return {...recovered.support(name),status:'EXPERIMENTAL'};},
-  triggerQA(name){if(paused||combat)return false;if(name==='NEUTRAL'){if(external)recovered.cancel();else if(phase!=='idle')recover();return true;}if(!qaRecipes[name]||!recovered.support(name).available)return false;if(!external){createRecovered();external=true;}phase='idle';current='neutral';return recovered.trigger(name,{intensity});},
+  triggerQA(name){if(disposed||paused||combat)return false;if(name==='NEUTRAL'){if(external)recovered.cancel();else if(phase!=='idle')recover();return true;}if(!qaRecipes[name]||!recovered.support(name).available)return false;if(!external){createRecovered();external=true;}phase='idle';current='neutral';return recovered.trigger(name,{intensity});},
   onAnimationEvent(e){if(!/^SK_(?:ATTACK|SKILL|AIR_SKILL|BURST)_/.test(e.clip??'')&&e.clip!=='SK_COMBO_EXPERIMENTAL')return;if(e.type==='start'){this.reset();combat=true;}if(e.type==='end'){combat=false;this.reset();}},
   interruptForCombat(){if(external)recovered.cancel();else if(phase!=='idle')recover();},
 
-  trigger(name,{automatic=false}={}){if(combat)return false;if(name==='blink'){if(!names.includes('E_Close'))return false;blink={clock:0,value:0};return true;}if(external){if(name==='neutral'){recovered.cancel();return true;}if(recovered.isActive())return false;external=false;}const id=expressionId(name),p=EXPRESSION_LIBRARY[id];if(!p)throw Error('Expressão desconhecida');if(FACIAL_VALIDATION[id]==='UNSUPPORTED'||(automatic&&FACIAL_VALIDATION[id]!=='VALIDATED'))return false;if(!support(id).available)return false;if(automatic&&phase!=='idle')return false;
+  trigger(name,{automatic=false}={}){if(disposed||combat)return false;if(name==='blink'){if(!names.includes('E_Close'))return false;blink={clock:0,value:0};return true;}if(external){if(name==='neutral'){recovered.cancel();return true;}if(recovered.isActive())return false;external=false;}const id=expressionId(name),p=EXPRESSION_LIBRARY[id];if(!p)throw Error('Expressão desconhecida');if(FACIAL_VALIDATION[id]==='UNSUPPORTED'||(automatic&&FACIAL_VALIDATION[id]!=='VALIDATED'))return false;if(!support(id).available)return false;if(automatic&&phase!=='idle')return false;
    current=name;source=automatic?'automatic':'manual';timing=name==='neutral'?{...p,exit:.65}:p;from={...base};target=Object.fromEntries(names.map(n=>[n,(p.weights[n]??0)*intensity]));elapsed=0;phase=id==='RETURN_TO_BASE'?'exit':'entry';return true;
   },
   setIntensity(v){if(!Number.isFinite(v)||v<.25||v>1)throw Error('Intensidade fora de 0,25–1');intensity=v;},
-  advance(dt,{writeFacial=true}={}){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(paused||combat||!writeFacial||!dt)return;advanceExpression(dt);if(blink){blink.clock+=dt;const t=blink.clock;blink.value=t<.13?smooth(t/.13):t<.21?1:1-smooth((t-.21)/.20);if(t>=.41)blink=null;}if(external){recovered.update(dt);recovered.setBlink(Math.max(blink?.value??0,recovered.getEyeClosureRequest()));}write();},
+  advance(dt,{writeFacial=true}={}){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(disposed||paused||combat||!writeFacial||!dt)return;advanceExpression(dt);if(blink){blink.clock+=dt;const t=blink.clock;blink.value=t<.13?smooth(t/.13):t<.21?1:1-smooth((t-.21)/.20);if(t>=.41)blink=null;}if(external){recovered.update(dt);recovered.setBlink(Math.max(blink?.value??0,recovered.getEyeClosureRequest()));}write();},
   setPaused(v){paused=!!v;if(paused)recovered.suspend();else recovered.resume();},
-  reset(){recovered.dispose();external=false;combat=false;for(const n of names)base[n]=0;current='neutral';phase='idle';blink=null;createRecovered();write();},
+  reset(){if(disposed)return;recovered.dispose();external=false;combat=false;for(const n of names)base[n]=0;current='neutral';phase='idle';blink=null;createRecovered();write();},
+  dispose(){if(disposed)return;disposed=true;recovered.dispose();releaseWriter();},
   get state(){return {expression:current,id:expressionId(current),phase,returning:phase==='exit',busy:phase!=='idle'||!!blink||(external&&recovered.isActive()),recovered:external?recovered.state:null,paused,intensity,source,blink:blink?.value??0,weights:{...weights},available:[...names],missing:GENTLE_MORPHS.filter(n=>!names.includes(n))};}
  };
 }
