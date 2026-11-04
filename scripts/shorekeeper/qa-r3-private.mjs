@@ -5,24 +5,13 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {loadPrivateCpuGLB as load} from './private-cpu-loader.mjs';
 import {createMouthR3} from '../../src/scripts/shorekeeper/mouth-r3.mjs';
 import {createRebasedBurstClip,createBindRootBurstClip} from '../../src/scripts/shorekeeper/liberation-rotation.mjs';
 import {sampleMotion} from '../../src/scripts/shorekeeper/motion-matching.mjs';
 import {ShorekeeperVfxR3Director} from '../../src/scripts/shorekeeper/vfx-r3.mjs';
 const [modelPath,out,...libraries]=process.argv.slice(2);if(!modelPath||!out)throw Error('model.glb out.json [libraries] required');
-async function load(path){
- const raw=await fs.readFile(path),len=raw.readUInt32LE(12),json=JSON.parse(raw.subarray(20,20+len));
- const originalClips=json.animations?.map(c=>c.name)??[];
- // No fetches, image decode or GPU: the CPU parser needs only geometry, rig and animation accessors.
- for(const mesh of json.meshes??[])for(const prim of mesh.primitives)delete prim.material;
- delete json.materials;delete json.images;delete json.textures;
- const text=Buffer.from(JSON.stringify(json)),padded=Buffer.alloc(Math.ceil(text.length/4)*4,32);text.copy(padded);
- const tail=raw.subarray(20+len),header=Buffer.alloc(20);header.writeUInt32LE(0x46546c67,0);header.writeUInt32LE(2,4);header.writeUInt32LE(20+padded.length+tail.length,8);header.writeUInt32LE(padded.length,12);header.writeUInt32LE(0x4e4f534a,16);
- const bytes=Buffer.concat([header,padded,tail]);
- const gltf=await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'');
- return {gltf,originalClips,sha256:crypto.createHash('sha256').update(raw).digest('hex')};
-}
+
 const result=await load(modelPath),model=result.gltf.scene,clips=[...result.gltf.animations];
 assert.equal(result.sha256,'4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30');
 for(const path of libraries)clips.push(...(await load(path)).gltf.animations);
