@@ -79,7 +79,7 @@ export function mountShorekeeperLab(root){
    const entry=document.createElement('p');entry.className='sk-help';entry.setAttribute('role','listitem');
    const title=document.createElement('strong');title.textContent=line.label;entry.append(title,document.createTextNode(' — '+line.text));return entry;
   }));
-  const canPlay=!!model&&modelReady&&phase()==='ready'&&control('presentationMode').value!=='combat'&&!state.loading&&!userPaused;
+  const canPlay=!!model&&modelReady&&phase()==='ready'&&!state.loading&&!userPaused;
   for(const button of all('[data-r2-quick-burst]')){
    const id=button.dataset.r2QuickBurst;
    button.disabled=!canPlay||!clips.some(clip=>clip.name===id);
@@ -250,6 +250,62 @@ export function mountShorekeeperLab(root){
   const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model.userData.skClips,id));$('[data-original-availability]').textContent='Disponíveis: '+available.join(', ')+'. Arquivos lidos localmente; QA visual pendente.';status('Bibliotecas privadas adicionadas. Habilidades aéreas e ataques longos podem deslocar a personagem: mantenha câmera aberta e avalie a recuperação. QA visual pendente.');sync(true);
  }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;sync(true);loop?.reconcile();}}
  }
+ async function recheckR2AndLoad(){
+  if(disposed||!state.webgl||state.contextLost||state.loading||r2Checking||(model&&phase()!=='ready'))return;
+  remoteAttempt?.abort();remoteAttempt=new AbortController();const signal=remoteAttempt.signal;
+  r2Checking=true;r2Connection='checking';r2HttpStatus=null;syncR2LibraryPanel();
+  try{
+   const check=await inspectPrivateManifest({signal});
+   if(disposed||signal.aborted)return;
+   r2Connection=check.state;r2HttpStatus=check.httpStatus;r2Manifest=check.manifest;syncR2LibraryPanel();
+   if(!check.manifest)return;
+   const manifest=check.manifest;
+   if(model&&metadata?.sha256!==manifest.model.sha256){
+    privateStatus('Modelo local diferente do manifesto privado. Não será substituído automaticamente.');return;
+   }
+   if(!model){
+    privateStatus('Baixando modelo canônico autenticado…');
+    const file=await getPrivateFile(manifest.model,{signal});if(disposed||signal.aborted)return;
+    await load(file,'r2');if(disposed||signal.aborted)return;
+   }
+   if(!model||metadata?.sha256!==manifest.model.sha256){
+    privateStatus('Modelo privado não foi validado; bibliotecas não carregadas.');return;
+   }
+   if(phase()!=='ready'){
+    privateStatus('Interrompa a animação antes de carregar bibliotecas privadas.');return;
+   }
+   const coverage=summarizePrivateCombat(manifest,model.userData.skClips);
+   const required=new Set(coverage.rows.filter(x=>x.registered&&!x.ready).map(x=>x.id));
+   const files=[];
+   for(const entry of manifest.libraries){
+    if(disposed||signal.aborted)return;
+    if(!required.has(entry.id))continue;
+    privateStatus('Validando biblioteca privada '+entry.id+'…');
+    try{files.push(await getPrivateFile(entry,{kind:'library',signal}));}
+    catch(e){if(!signal.aborted)log('R2 · '+entry.id+': '+e.message,'warning');}
+   }
+   if(files.length&&!disposed&&!signal.aborted)await importPrivateLibraries(files,'r2');
+   if(disposed||signal.aborted)return;
+   const final=summarizePrivateCombat(manifest,model?.userData.skClips);
+   privateStatus(final.allLoaded?'Acervo privado verificado: 10/10 animações originais disponíveis.':'R2 conferido. Disponíveis '+final.loaded+'/'+final.total+' clipes; confira as bibliotecas faltantes.');
+  }catch(e){
+   if(!signal.aborted&&!disposed){
+    log('R2: '+e.message,'warning');
+    privateStatus('Não foi possível validar o acervo privado. Acesso e arquivos existentes não foram modificados.');
+   }
+  }finally{r2Checking=false;if(!disposed){syncR2LibraryPanel();sync(true);loop?.reconcile();}}
+ }
+ on($('[data-r2-recheck]'),'click',()=>{void recheckR2AndLoad();});
+ for(const button of all('[data-r2-quick-burst]'))on(button,'click',()=>{
+  if(button.disabled||!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||phase()!=='ready')return;
+  const id=button.dataset.r2QuickBurst;
+  if(!['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL'].includes(id)||!model.userData.skClips.some(c=>c.name===id))return;
+  cancelPreparation('manual-burst');narrative?.stop();scheduler?.setEnabled(false);control('actingAuto').checked=false;
+  control('presentationMode').value='combat';control('presentationMode').dispatchEvent(new Event('change'));
+  control('originalIdle').value=id;control('originalIdle').dispatchEvent(new Event('change'));
+  if(director){status(id+' · animação original sem sincronização VFX automática.');run();}
+  sync(true);
+ });
  on($('[data-original-file]'),'change',e=>{const files=[...(e.target.files??[])];e.target.value='';void importPrivateLibraries(files);});
  on(control('presentationMode'),'change',()=>{cancelPreparation('mode-change');if(!director&&model)buildDirector();if(!inspection||phase()!=='ready')return;const combat=control('presentationMode').value==='combat';scheduler?.setEnabled(false);control('actingAuto').checked=false;control('originalMode').value=combat?'reference':'expressive';face?.reset();const ids=combat?COMBAT_CLIP_IDS:ORIGINAL_IDLE_IDS;control('originalIdle').value=ids.find(id=>model.userData.skClips.some(c=>c.name===id))??'legacy';control('originalIdle').dispatchEvent(new Event('change'));status(combat?'Combate experimental: selecione as bibliotecas privadas para testar os ataques.':'Contemplação selecionada.');sync(true);});
  for(const c of ['originalIdle','originalLayer'])on(control(c),'change',()=>{if(!inspection||phase()!=='ready')return;stopSweep();scheduler?.setEnabled(false);control('actingAuto').checked=false;director?.dispose();director=null;inspection.restore();if(control('originalMode').value==='reference'){face?.reset();inspection.preset({});syncFace();}buildDirector();showBone();sync(true);status(director?(control('originalIdle').value==='legacy'?'Gesto F1.6 selecionado.':(control('originalMode').value==='expressive'?'Expressive Acting selecionado.':'Reference QA: reprodução sem atuação facial adicional.')): 'Animação selecionada indisponível neste arquivo.');});
