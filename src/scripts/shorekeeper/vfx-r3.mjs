@@ -7,7 +7,7 @@ const smooth=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);};
 export class ShorekeeperVfxR3Director extends ShorekeeperVfxR2Director {
  constructor(scene,options={}){
   super(scene,options);
-  this.root.name='ShorekeeperVfxR3';this.atlas.image.data=renderWingAtlas(256,7,{crystalline:true});this.atlas.needsUpdate=true;this.environment=new CelestialEnvironment(scene,options);this.environment.bindModel(null);
+  this.root.name='ShorekeeperVfxR3';this.atlas.image.data=renderWingAtlas(256,7,{crystalline:true});this.atlas.needsUpdate=true;this.environment=new(options.environmentClass??CelestialEnvironment)(scene,options);this.environment.bindModel(null);
   // Mirrored horizontal axes, same upward wing fold on BOTH wings; never roll one wing down artificially.
   this.wingMaterial.vertexShader=this.wingMaterial.vertexShader.replace('iMisc.z*(r2*cos(fl)+u2*sin(fl))','iMisc.z*r2*cos(fl)+u2*sin(fl)');
   this.wingMaterial.fragmentShader=this.wingMaterial.fragmentShader.replace('mix(t.rgb,tinted,.8)*vShade*1.12','mix(t.rgb,tinted,.32)*vShade');

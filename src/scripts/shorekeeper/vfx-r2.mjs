@@ -176,8 +176,8 @@ void main(){ float r=clamp(vRad,0.,1.); float rim=pow(r,9.)*.55; float haze=.16*
 function additive(extra = {}) { return {transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, ...extra}; }
 
 export class ShorekeeperVfxR2Director {
-  constructor(scene, {mobile = false, reducedMotion = false, seed = 0x5c311, butterflies, now = () => performance.now()} = {}) {
-    this.scene = scene; this.now = now; this.mobile = mobile; this.reducedMotion = reducedMotion; this.state = 'OFF'; this.mode = 'BOTH'; this.stage = 'outer';
+  constructor(scene, {mobile = false, reducedMotion = false, seed = 0x5c311, butterflies, wingSegments=1, now = () => performance.now()} = {}) {
+    this.wingSegments=Math.max(1,Math.min(4,Math.floor(wingSegments))); this.scene = scene; this.now = now; this.mobile = mobile; this.reducedMotion = reducedMotion; this.state = 'OFF'; this.mode = 'BOTH'; this.stage = 'outer';
     this._pa=new Float64Array(3);this._pb=new Float64Array(3);this.time = 0; this.suspended = false; this.disposed = false; this.corePhase = 0; this.coreFrozen = false; this.pixelRatio = 1;
     this.levels = new Float64Array(4); this.from = new Float64Array(4); this.target = new Float64Array(4); this.transition = 1; this.transitionSeconds = 1.25;
     this.enabled = {butterflies: true, collapsedCore: true, field: true, canopy: true};
@@ -192,7 +192,7 @@ export class ShorekeeperVfxR2Director {
   }
   /* ---------- construction ---------- */
   _buildButterflies(rng) {
-    const n = this.counts.butterflies, count = n * 2, plane = new T.PlaneGeometry(1, 1, 1, 1);
+    const n = this.counts.butterflies, count = n * 2, plane = new T.PlaneGeometry(1, 1, this.wingSegments, this.wingSegments);
     // uv.x must run 0 (body) -> 1 (tip): shift the plane so x in [0,1].
     const pos = plane.attributes.position; for (let i = 0; i < pos.count; i++) pos.setX(i, pos.getX(i) + 0.5);
     const g = new T.InstancedBufferGeometry(); g.index = plane.index; g.setAttribute('position', pos); g.setAttribute('uv', plane.attributes.uv); g.instanceCount = count;
