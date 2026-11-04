@@ -318,6 +318,8 @@ export function mountShorekeeperLab(root){
      issuer_mismatch:'403: domínio de equipe divergente. Confira SK_ACCESS_TEAM_DOMAIN; use o endereço completo https://sua-equipe.cloudflareaccess.com sem barra final.',
      token_expired:'403: a sessão Access expirou. Faça login novamente na prévia e tente outra vez.',
      token_not_yet_valid:'403: o token ainda não é válido. Verifique a configuração Access e tente autenticar novamente.',
+     team_domain_format_invalid:'403: SK_ACCESS_TEAM_DOMAIN está em formato inválido. Em Pages → Settings → Variables and secrets → Preview, use https://sua-equipe.cloudflareaccess.com (sem aspas, espaços ou barra final).',
+     audience_format_invalid:'403: SK_ACCESS_AUD está em formato inválido. Copie somente o Application Audience (AUD) Tag da aplicação Access desta prévia; não use o nome da policy, ID de conta, aspas ou prefixos.',
      access_configuration_invalid:'403: formato inválido de SK_ACCESS_TEAM_DOMAIN ou SK_ACCESS_AUD na configuração do Pages Preview.',
      token_unreadable:'403: token Access ausente ou incompatível com JWT. Reabra a prévia pela URL protegida e autentique-se novamente.',
      signature_or_public_key_failed:'403: assinatura do token não validada. Confira Team Domain, chave pública Access e a aplicação selecionada; não desative a verificação.',
