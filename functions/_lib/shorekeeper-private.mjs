@@ -3,6 +3,8 @@ export const MANIFEST_KEY='characters/shorekeeper/manifests/current.json';
 export const MANIFEST_SCHEMA='shorekeeper-private-assets/v1';
 export const PRIVATE_HEADERS=Object.freeze({'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'});
 const MAX_MANIFEST=65536,MAX_OBJECT=130000000;
+// Cloudflare Workers does NOT implement fetch redirect:'error' (throws TypeError before
+// the network request). Use 'manual' and fail closed on any 3xx/non-2xx response.
 const cache=new Map();
 const hex=/^[0-9a-f]{64}$/;
 function validKey(key,kind){
@@ -54,7 +56,7 @@ export async function verifyAccessJwt(token,domain,audience,fetcher=fetch){
     (typeof payload.iat==='number'&&payload.iat>now+60))return false;
   let list=cache.get(domain);
   if(!list||list.until<Date.now()){
-   const response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'error'});
+   const response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'manual'});
    if(!response.ok)return false;
    const data=await response.json();
    if(!Array.isArray(data.keys)||data.keys.length>12)return false;
@@ -88,7 +90,7 @@ export async function diagnoseAccessSigningKey(token,domain,audience,fetcher=fet
   if(!(Array.isArray(payload.aud)?payload.aud.includes(audience):payload.aud===audience))return 'audience_mismatch';
  }catch{return 'token_unreadable';}
  let response;
- try{response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'error'});}
+ try{response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'manual'});}
  catch{return 'certificates_fetch_failed';}
  if(!response?.ok)return 'certificates_endpoint_unavailable';
  let jwks;
