@@ -81,7 +81,7 @@ jobs:
       - run: node tests/shorekeeper-private-model-cache.test.mjs
 
       - run: node tests/shorekeeper-b7.test.mjs
-      - run: node --test tests/shorekeeper-facial-runtime.test.mjs tests/shorekeeper-mouth-forensics.test.mjs tests/shorekeeper-mouth-weld.test.mjs
+      - run: node --test tests/shorekeeper-facial-runtime.test.mjs tests/shorekeeper-mouth-forensics.test.mjs tests/shorekeeper-mouth-weld.test.mjs tests/shorekeeper-mouth-r3.test.mjs
       - run: node tests/shorekeeper-f2-facial-release.test.mjs
 
       - run: node tests/shorekeeper-combat.test.mjs
