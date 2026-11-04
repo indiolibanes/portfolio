@@ -311,7 +311,19 @@ export function mountShorekeeperLab(root){
    let data=null;try{data=await response.json();}catch{}
    const code=data?.state;
    let message;
-   if(response.status===403)message='403: o token não foi aceito pela Function. Confira o AUD da aplicação Access correspondente a esta prévia.';
+   if(response.status===403){
+    const reasons=Object.freeze({
+     token_missing:'403: a Function não recebeu o token Access. Confira se esta URL de prévia está protegida pela própria aplicação Access e se o navegador está usando a mesma origem autenticada.',
+     audience_mismatch:'403: AUD diferente. Em Zero Trust → Access → Applications, abra a aplicação que protege ESTA prévia, copie o Application Audience (AUD) Tag e confira o valor de SK_ACCESS_AUD no Pages Preview.',
+     issuer_mismatch:'403: domínio de equipe divergente. Confira SK_ACCESS_TEAM_DOMAIN; use o endereço completo https://sua-equipe.cloudflareaccess.com sem barra final.',
+     token_expired:'403: a sessão Access expirou. Faça login novamente na prévia e tente outra vez.',
+     token_not_yet_valid:'403: o token ainda não é válido. Verifique a configuração Access e tente autenticar novamente.',
+     access_configuration_invalid:'403: formato inválido de SK_ACCESS_TEAM_DOMAIN ou SK_ACCESS_AUD na configuração do Pages Preview.',
+     token_unreadable:'403: token Access ausente ou incompatível com JWT. Reabra a prévia pela URL protegida e autentique-se novamente.',
+     signature_or_public_key_failed:'403: assinatura do token não validada. Confira Team Domain, chave pública Access e a aplicação selecionada; não desative a verificação.',
+    });
+    message=reasons[data?.reason]??'403: a Function rejeitou a autorização. Confira o AUD e o Team Domain da aplicação Access desta prévia.';
+   }
    else if(code==='private_access_config_unavailable')message='503: falta SK_ACCESS_TEAM_DOMAIN ou SK_ACCESS_AUD na configuração do Pages desta prévia.';
    else if(code==='pages_r2_binding_missing')message='503: falta o binding SHOREKEEPER_ASSETS_R2 no ambiente Preview do projeto Pages kaue.';
    else if(code==='manifest_invalid_or_r2_error')message='503: falha ao ler/validar o manifesto R2. Confira JSON, esquema e integridade do bucket.';
