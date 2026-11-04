@@ -43,14 +43,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
 <h2>Um espaço feito<br/>para a Shorekeeper.</h2>
-<p>Selecione seu modelo local e deixe as animações e os pequenos gestos acontecerem. Seu arquivo permanece no dispositivo.</p>
+<p>Modelo e movimentos disponíveis pelo acervo privado autenticado. Alterne entre contemplação e combate sem precisar importar arquivos.</p>
 </div>
 <div class="sk-readouts">
 <span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
 <button data-action="capture" disabled hidden>↓ PNG</button>
 </div>
-<p class="sk-status" data-sk-status role="status" aria-live="polite">Selecione um arquivo GLB local.</p>
+<p class="sk-status" data-sk-status role="status" aria-live="polite">Verificando acesso ao acervo privado…</p>
 </section>
 <aside class="sk-panel" id="sk-controls" aria-label="Controles de inspeção">
 <div class="sk-panel-grip">
@@ -59,6 +59,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 </label>
 </div>
 <div class="sk-file">
+<div class="sk-maintenance-only" data-sk-manual-import>
 <label for="sk-file">Modelo privado <small>GLB local · até 130 MB</small>
 </label>
 <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
@@ -69,6 +70,22 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <button type="button" data-action="forgetPrivate" disabled>Esquecer cópia local</button>
 </div>
 <p class="sk-help" data-private-cache-status role="status" aria-live="polite">Importe o GLB local ou utilize o acesso privado autenticado. A cópia guardada permanece neste navegador.</p>
+</div>
+<details class="sk-private-r2-panel" data-r2-panel open>
+<summary>Acervo privado · modelo e movimentos</summary>
+<p class="sk-help" data-r2-connection-state role="status" aria-live="polite">Verificando o manifesto autenticado…</p>
+<div class="sk-help" data-r2-library-list role="list" aria-label="Bibliotecas e clipes disponíveis">Bibliotecas ainda não verificadas.</div>
+<div class="sk-actions"><button type="button" data-r2-recheck>Verificar acesso e carregar bibliotecas</button></div>
+<div class="sk-actions"><button type="button" data-r2-audit>Diagnosticar caminhos e objetos do R2</button></div>
+<p class="sk-help" data-r2-audit-status role="status" aria-live="polite">Diagnóstico ainda não executado. Não publica nomes de objetos nem credenciais.</p>
+<div class="sk-help" data-r2-audit-results role="list" aria-label="Diagnóstico dos arquivos R2"></div>
+<p class="sk-help">O modelo e as bibliotecas GLB são privados. Uma biblioteca listada no manifesto só aparece como pronta após seus clipes terem sido carregados e reconhecidos. Falhas de autorização não são contornadas.</p>
+<div class="sk-actions" aria-label="Bursts originais reconhecidas">
+<button type="button" data-r2-quick-burst="SK_BURST_01_ORIGINAL" disabled>Burst 01 · original</button>
+<button type="button" data-r2-quick-burst="SK_BURST_02_ORIGINAL" disabled>Burst 02 · original</button>
+</div>
+<p class="sk-help">As Bursts são animações corporais dos arquivos privados. Borboletas, campo estelar, Core e Stellarealm são efeitos procedurais locais, controlados separadamente em Atmosfera celestial. Não há sincronização automática verificada entre os dois sistemas.</p>
+</details>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
 <div class="sk-actions">
@@ -143,7 +160,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 </div>
 <p class="sk-help" data-approved-status role="status">Selecione o modelo canônico para apresentar as expressões.</p>
 </details>
-<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
+<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As expressões manuais funcionam em Contemplação; durante a reprodução de combate a face é reservada ao clipe original. O laboratório anatômico R6 está em branch experimental separada.</p>
 <div class="sk-expressions" aria-label="Gestos faciais disponíveis">
 <button data-expression="LITTLE_SMILE" disabled hidden>Teste interno · Sorrisinho V2</button>
 <button data-expression="blink" aria-pressed="false" disabled><strong>Piscar</strong><small>Fechamento bilateral · movimento original do morph</small></button>
@@ -211,7 +228,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <h2>Presença & contemplação</h2>
 <p class="sk-help">Animações originais em um espaço privado. A piscada acompanha a contemplação.</p>
 <div data-original-section>
-<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 permanecem originais. As variantes CL · eixo reancorado alinham apenas o Root inicial à pose do modelo, preservando a rotação relativa. Compare as versões com câmera fixa; efeitos especiais não acompanham os PSA. GLBs permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
+<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import sk-maintenance-only"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 permanecem originais. As variantes CL · eixo reancorado alinham apenas o Root inicial à pose do modelo, preservando a rotação relativa. Compare as versões com câmera fixa; efeitos especiais não acompanham os PSA. GLBs permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
 <option value="legacy" hidden>Sequência indisponível</option>
 <option value="SK_IDLE_01_ORIGINAL">Idle 01 · original</option>
@@ -355,7 +372,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <button data-action="errors">↓ Erros</button>
 <button data-action="copy">Copiar resumo</button>
 </div>
-<label class="sk-field">Restaurar configuração local<input type="file" data-config-file accept=".json,application/json" disabled/>
+<label class="sk-field sk-maintenance-only">Restaurar configuração local<input type="file" data-config-file accept=".json,application/json" disabled/>
 </label>
 <p class="sk-help">Capturas e relatórios são salvos somente quando você solicita. Contagens do Three.js não são uma medição de VRAM.</p>
 </details>

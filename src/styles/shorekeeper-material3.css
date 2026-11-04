@@ -402,3 +402,6 @@
 @media(prefers-reduced-motion:reduce){
   .sk-page button{transition:none;transform:none!important;}
 }
+
+/* Presentation: R2 authenticated loading is primary; local inputs are maintenance-only. */
+.sk-lab:not([data-maintenance="true"]) .sk-maintenance-only{display:none!important;}
