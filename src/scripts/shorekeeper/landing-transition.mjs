@@ -1,0 +1,23 @@
+import * as T from 'three';import {cloneSamplingModel} from './sampling-model.mjs';
+const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
+/** Skinned foot/toe vertices define the contact plane, rather than ankle joint height. */
+export function footProbes(model){const probes=[];model.traverse(m=>{if(!m.isSkinnedMesh)return;const g=m.geometry,si=g.attributes.skinIndex,sw=g.attributes.skinWeight;if(!si||!sw)return;const ids=[];for(let i=0;i<si.count;i++){let weight=0;for(let k=0;k<4;k++){const b=m.skeleton.bones[si.getComponent(i,k)];if(/(?:Foot|Toe)/.test(b?.name??''))weight+=sw.getComponent(i,k);}if(weight>.55)ids.push(i);}if(ids.length)probes.push({mesh:m,ids});});return probes;}
+export function soleHeight(probes){const p=new T.Vector3();let y=Infinity;for(const row of probes){row.mesh.skeleton.update();for(const i of row.ids){row.mesh.getVertexPosition(i,p).applyMatrix4(row.mesh.matrixWorld);y=Math.min(y,p.y);}}if(!Number.isFinite(y))throw Error('No skinned foot probes');return y;}
+/** Separate precomputed bridge after the FULL Burst. No source edits or per-frame IK. */
+export function createLandingTransition(model,from,to,{duration=.9,fps=30,toTime=0,maxDrop=.45}={}){
+ if(!(duration>=.6&&duration<=1.5)||!(fps>=15&&fps<=60)||!from||!to)throw Error('Invalid landing inputs');
+ const copy=cloneSamplingModel(model),bones=[];copy.traverse(o=>{if(o.isBone)bones.push(o);});const root=bones.find(b=>b.name==='Root');if(!root)throw Error('Root required');
+ const rest=bones.map(b=>({p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()})),mixer=new T.AnimationMixer(copy),probes=footProbes(copy);
+ const restore=()=>{bones.forEach((b,i)=>{b.position.copy(rest[i].p);b.quaternion.copy(rest[i].q);b.scale.copy(rest[i].s);});copy.updateMatrixWorld(true);};
+ const pose=(clip,time)=>{restore();const a=mixer.clipAction(clip);a.setLoop(T.LoopOnce,1);a.clampWhenFinished=true;a.play();a.paused=true;a.time=Math.min(time,clip.duration);mixer.update(0);copy.updateMatrixWorld(true);const values=bones.map(b=>({p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()}));mixer.stopAllAction();return values;};
+ try{
+  const a=pose(from,from.duration),b=pose(to,toTime),left=copy.getObjectByName('Bip001LFoot'),right=copy.getObjectByName('Bip001RFoot');if(!left||!right)throw Error('Both feet required');
+  const setPose=u=>{bones.forEach((bone,i)=>{bone.position.copy(a[i].p).lerp(b[i].p,u);bone.quaternion.copy(a[i].q).slerp(b[i].q,u);bone.scale.copy(a[i].s).lerp(b[i].s,u);});copy.updateMatrixWorld(true);};
+  setPose(0);const startY=soleHeight(probes),lp=left.getWorldPosition(new T.Vector3()),rp=right.getWorldPosition(new T.Vector3()),support=lp.y<=rp.y?left:right,start=support.getWorldPosition(new T.Vector3());
+  setPose(1);const floor=soleHeight(probes),end=support.getWorldPosition(new T.Vector3());if(startY-floor>maxDrop||startY-floor<-.06)throw Error('Landing clearance exceeds experimental bounds');
+  const count=Math.ceil(duration*fps)+1,times=new Float32Array(count),rows=bones.map(()=>({p:new Float32Array(count*3),q:new Float32Array(count*4),s:new Float32Array(count*3)})),position=new T.Vector3(),delta=new T.Vector3(),inv=new T.Matrix3(),trace=[],contactFraction=.62;
+  for(let i=0;i<count;i++){const t=i/(count-1),u=ease(t);times[i]=t*duration;setPose(u);support.getWorldPosition(position);const touchdown=ease(t/contactFraction),desiredY=floor+(startY-floor)*(1-touchdown),actual=soleHeight(probes);delta.set(start.x+(end.x-start.x)*touchdown-position.x,desiredY-actual,start.z+(end.z-start.z)*touchdown-position.z);inv.setFromMatrix4(root.parent.matrixWorld.clone().invert());root.position.add(delta.applyMatrix3(inv));copy.updateMatrixWorld(true);const actualY=soleHeight(probes);support.getWorldPosition(position);const supportX=position.x,supportZ=position.z;trace.push({t:times[i],soleY:actualY,floorY:floor,supportX,supportZ,clearance:actualY-floor,pelvisY:copy.getObjectByName('Bip001Pelvis').getWorldPosition(position).y,support:support.name});bones.forEach((bone,j)=>{bone.position.toArray(rows[j].p,i*3);bone.quaternion.toArray(rows[j].q,i*4);bone.scale.toArray(rows[j].s,i*3);});}
+  const tracks=[];bones.forEach((bone,i)=>tracks.push(new T.VectorKeyframeTrack(bone.name+'.position',times,rows[i].p),new T.QuaternionKeyframeTrack(bone.name+'.quaternion',times,rows[i].q),new T.VectorKeyframeTrack(bone.name+'.scale',times,rows[i].s)));
+  return {clip:new T.AnimationClip('SK_R4_LANDING_TRANSITION',duration,tracks),trace,status:'EXPERIMENTAL_LANDING_VISUAL_QA_PENDING',floorY:floor,sourceClearance:startY-floor,contactTime:duration*contactFraction,source:from.name,target:to.name,targetTime:toTime};
+ }finally{mixer.stopAllAction();mixer.uncacheRoot(copy);copy.removeFromParent();}
+}

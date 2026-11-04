@@ -1,10 +1,10 @@
 import * as T from 'three';
-import {clone as cloneSkeleton} from 'three/addons/utils/SkeletonUtils.js';
+import {cloneSamplingModel} from './sampling-model.mjs';
 import {motionDistance} from './combo-sequencer.mjs';
 const JOINTS=['Root','Rib','Bip001Pelvis','Bip001Spine2','Bip001Head','Bip001LHand','Bip001RHand','Bip001LFoot','Bip001RFoot'];
 /** Bounded CPU sampling on an unrendered skeleton clone. Canonical model/actions are never touched. */
 export function sampleMotion(model,clip,{fps=30}={}){
- const copy=cloneSkeleton(model),bones=JOINTS.map(n=>copy.getObjectByName(n)).filter(Boolean);
+ const copy=cloneSamplingModel(model),bones=JOINTS.map(n=>copy.getObjectByName(n)).filter(Boolean);
  const mixer=new T.AnimationMixer(copy),action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();action.paused=true;
  const frames=[],p=new T.Vector3(),q=new T.Quaternion(),footIndices=['Bip001LFoot','Bip001RFoot'].map(n=>bones.findIndex(b=>b.name===n));
  const n=Math.ceil(clip.duration*fps);let floor=Infinity;
