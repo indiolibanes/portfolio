@@ -24,7 +24,8 @@ import {ShorekeeperVfxR3Director} from './shorekeeper/vfx-r3.mjs';
 import {ShorekeeperVfxR2Director} from './shorekeeper/vfx-r2.mjs';
 import {createComboDirector} from './shorekeeper/combo-sequencer.mjs';
 import {createVfxNarrative} from './shorekeeper/vfx-narrative.mjs';
-import {getPrivateManifest,getPrivateFile} from './shorekeeper/remote-private-model.mjs';
+import {inspectPrivateManifest,getPrivateFile} from './shorekeeper/remote-private-model.mjs';
+import {summarizePrivateCombat} from './shorekeeper/private-library-coverage.mjs';
 import {createMouthRibbonWeld} from './shorekeeper/mouth-ribbon-weld.mjs';
 import {createStage} from './shorekeeper/stage.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel,savePrivateModel,forgetPrivateModel} from './shorekeeper/private-model-cache.mjs';
@@ -45,10 +46,49 @@ export function mountShorekeeperLab(root){
  let comboCamera=null,exemplarCamera=null,narrative=null,vfx=null,vfxPaused=false,vfxDemoCameraSet=false;
  let face=null,scheduler=null,outOfView=false,mouthIsolation=null,mouthWeld=null,referenceUrl=null;
  let activePrivateFile=null,cachedPrivateSha=null,manualFileChosen=false,remoteAttempt=null;
+ let r2Manifest=null,r2Connection='checking',r2HttpStatus=null,r2Checking=false;
  let sweep=null,sweepLast=null,lastPhase='',lastDirectorPhase='idle',restError=null,releaseCounts=null;
  const errors=[],warnings=[],flags=[],animationLibraries=[];let libraryGeneration=0;const libraryLoader=createLocalLoader();let observed={fps:null,frameTimeMs:null};
  const status=message=>{$('[data-sk-status]').textContent=message;};
  const privateStatus=message=>{$('[data-private-cache-status]').textContent=message;};
+ const r2Labels=Object.freeze({
+  checking:'Verificando o manifesto protegido do R2…',
+  ready:'Manifesto R2 autorizado. As bibliotecas só ficam prontas após validação dos clipes.',
+  denied:'Acesso privado negado (403). Autentique-se no Cloudflare Access para este domínio; o site não ignora essa proteção.',
+  unconfigured:'R2 indisponível (503). Verifique o binding SHOREKEEPER_ASSETS_R2 e a configuração do Access no ambiente Pages.',
+  missing:'Manifesto R2 ausente (404). Confira characters/shorekeeper/manifests/current.json.',
+  invalid:'Manifesto incompatível ou inválido. Confira schema, hashes, nomes e máximo de quatro bibliotecas.',
+  unavailable:'Serviço privado indisponível; verifique a implantação e tente novamente.',
+  network:'Não foi possível contatar o serviço privado. Verifique rede, domínio e conexão.',
+  cancelled:'Verificação anterior cancelada.',
+ });
+ function syncR2LibraryPanel(){
+  const stateText=$('[data-r2-connection-state]'),container=$('[data-r2-library-list]');
+  if(!stateText||!container)return;
+  const clips=model?.userData?.skClips??[];
+  const summary=summarizePrivateCombat(r2Manifest,clips);
+  const modelReady=metadata?.sha256===SHOREKEEPER_CANONICAL.sha256;
+  stateText.textContent=(r2Labels[r2Connection]??r2Labels.unavailable)+(r2Connection==='ready'?' Modelo: '+(modelReady?'canônico carregado':model?'outro GLB carregado':'ainda não carregado')+'.':r2HttpStatus&&r2Connection==='unavailable'?' (HTTP '+r2HttpStatus+').':'');
+  const lines=[{label:'Modelo F2.0-A',text:modelReady?'verificado e carregado':r2Manifest?'registrado; carregamento pendente':'não verificado'}];
+  for(const row of summary.rows){
+   const label=row.label+' · '+row.loaded+'/'+row.total+' clipes';
+   const detail=row.ready?'pronto para selecionar':row.state==='partial'?'parcial; faltam '+row.missing.length+' clipes':row.registered?'registrado no R2; carregamento pendente':'ainda não registrado neste manifesto';
+   lines.push({label,text:detail});
+  }
+  container.replaceChildren(...lines.map(line=>{
+   const entry=document.createElement('p');entry.className='sk-help';entry.setAttribute('role','listitem');
+   const title=document.createElement('strong');title.textContent=line.label;entry.append(title,document.createTextNode(' — '+line.text));return entry;
+  }));
+  const canPlay=!!model&&modelReady&&phase()==='ready'&&control('presentationMode').value!=='combat'&&!state.loading&&!userPaused;
+  for(const button of all('[data-r2-quick-burst]')){
+   const id=button.dataset.r2QuickBurst;
+   button.disabled=!canPlay||!clips.some(clip=>clip.name===id);
+   button.title=clips.some(clip=>clip.name===id)?'Bursts originais; efeitos celestiais independentes.':'Animação original ainda não reconhecida.';
+  }
+  const refresh=$('[data-r2-recheck]');
+  refresh.disabled=r2Checking||state.loading||state.contextLost||!state.webgl;
+  refresh.textContent=r2Checking?'Verificando acervo…':'Verificar acesso e carregar bibliotecas';
+ }
  const syncPrivateButtons=()=>{action('rememberPrivate').disabled=!model||!activePrivateFile||state.loading;action('forgetPrivate').disabled=!cachedPrivateSha;};
  const log=(message,kind='error')=>{const list=kind==='error'?errors:warnings;list.push({time:new Date().toISOString(),message:String(message)});if(list.length>50)list.shift();};
  const warn=message=>{log(message,'warning');status(message);};
@@ -97,7 +137,7 @@ export function mountShorekeeperLab(root){
  for(const option of control('originalIdle').options){if(option.value==='legacy')continue;const combat=COMBAT_CLIP_IDS.includes(option.value);option.hidden=(control('presentationMode').value==='combat')!==combat;option.disabled=combat?!model?.userData.skClips?.some(c=>c.name===option.value):!findOriginalClip(model?.userData.skClips??[],option.value,control('originalLayer').value);}
  action('stopSweep').disabled=!sweep;action('capture').disabled=!can.inspect;
  $('[data-config-file]').disabled=!can.rig;$('[data-original-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
- $('[data-empty]').hidden=!!model;$('[data-rig-status]').textContent=can.rig?'Edição disponível':'Edição bloqueada';action('pause').textContent=userPaused?'Retomar':'Pausar';syncPrivateButtons();syncVfx();
+ $('[data-empty]').hidden=!!model;$('[data-rig-status]').textContent=can.rig?'Edição disponível':'Edição bloqueada';action('pause').textContent=userPaused?'Retomar':'Pausar';syncPrivateButtons();syncVfx();syncR2LibraryPanel();
  }
  function stopSweep(restore=true){if(sweep&&restore)inspection?.setMorph('E_Close',sweep.previous);sweep=null;sweepLast=null;syncFace();sync(true);}
  function syncFace(){if(!inspection)return;for(const n of ['E_Close','gazeX','gazeY','morphWeight']){const v=n==='E_Close'?(inspection.weights.E_Close??0):n==='morphWeight'?(inspection.weights[control('morph').value]??0):n==='gazeX'?(inspection.weights.Pupil_R??0)-(inspection.weights.Pupil_L??0):(inspection.weights.Pupil_Up??0)-(inspection.weights.Pupil_Down??0);const el=n==='E_Close'?$('[data-morph="E_Close"]'):control(n);el.value=String(v);$('[data-value="'+n+'"]').textContent=Number(v).toFixed(2);}}
@@ -368,8 +408,10 @@ export function mountShorekeeperLab(root){
   let cached=null;
   try{cached=await readPrivateModel();if(cached)cachedPrivateSha=cached.sha256;}catch(e){log('Cache local: '+e.message,'warning');}
   if(disposed||manualFileChosen||signal.aborted)return;
-  const manifest=await getPrivateManifest({signal});
+  const inspection=await inspectPrivateManifest({signal});
   if(disposed||manualFileChosen||signal.aborted)return;
+  r2Connection=inspection.state;r2HttpStatus=inspection.httpStatus;r2Manifest=inspection.manifest;syncR2LibraryPanel();
+  const manifest=inspection.manifest;
   let loadedFromRemote=false;
   if(manifest&&(!cached||cached.sha256!==manifest.model.sha256)){
    try{
