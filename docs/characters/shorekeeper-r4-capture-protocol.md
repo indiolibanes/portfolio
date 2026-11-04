@@ -58,3 +58,7 @@ No aparelho real, acessar o preview autorizado e selecionar os arquivos locais o
 Verificar alternância canônica/R2/R3/R4 com pesos e câmeras iguais; três idles, blink bilateral e retorno; gesto integral/pirueta e pés/tecido com câmera fixa, depois opcional. Comparar campo+canopy+personagem na vista normal, não só crop. Pausar/reabrir aba, tirar da tela, alternar app, reduced motion, navegar e voltar por bfcache real, repetir load/dispose, perder/restaurar contexto quando suportado. Não simular bfcache com um evento artificial e declarar teste real.
 
 Preencher colunas separadas da matriz: STRUCTURAL_PASS; WEBGL_RENDER_PASS; PERFORMANCE_PASS somente após medição no dispositivo; HUMAN_APPROVED somente após aceite explícito do usuário. Se houver artefato, guardar frame, câmera/peso/Root, versão/hash, reprodução e decisão de rollback. Nenhuma transição VFX-Burst automática até markers/fontes verificáveis.
+
+## Integridade do vídeo
+
+O encoder usa um thread, saída temporária e ffprobe antes de publicar cada MP4. O número de frames deve coincidir com a amostragem; arquivo incompleto falha o runner e preserva os PNG para diagnóstico. Na entrega R4, a auditoria final detectou dois contêineres incompletos: Burst02 ROOT_BODY_OWNED foi reencodado dos 67 PNG originais; o voo individual foi recapturado em bateria separada de 37 frames. Os manifests originais e o registro dessa substituição ficam no pacote privado, sem tratar um frame isolado como vídeo de 3 s.
