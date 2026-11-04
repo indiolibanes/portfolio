@@ -20,6 +20,7 @@ export const STAGE_REFERENCE_STATUS = 'STAGE_REFERENCE_UNVERIFIED';
 export const VFX_R2_MODES = Object.freeze(['BOTH', 'FIELD_GAMEPLAY', 'CINEMATIC_CANOPY']);
 const LEVELS = Object.freeze({OFF: [0, 0, 0, 0], AMBIENT: [0.45, 0.12, 0, 0], PREPARATION: [0.7, 0.35, 0.9, 0], STELLAREALM: [0.85, 0.85, 0.45, 0.6], RESONANCE_PEAK: [1, 1, 1, 1], RECOVERY: [0.35, 0.2, 0, 0.25]});
 const TAU = Math.PI * 2;
+const WING_ATTRIBUTES=Object.freeze(['iPos','iFwd','iMisc']);
 export const CORE_PERIOD = 6;
 export const CORE_PHASES = Object.freeze([['SPAWN', 0, 0.22], ['GATHER', 0.22, 0.56], ['HOLD', 0.56, 0.78], ['CONVERT', 0.78, 0.9], ['DISSOLVE', 0.9, 1]]);
 const smooth01 = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
@@ -35,6 +36,7 @@ export function corePhaseName(p) { for (const [n, a, b] of CORE_PHASES) if (p >=
  */
 const UPPER = [[90, 0.1], [78, 0.2], [66, 0.42], [52, 0.62], [38, 0.82], [27, 1.0], [19, 0.8], [11, 0.62], [3, 0.36], [-4, 0.2]];
 const LOWER = [[-4, 0.2], [-14, 0.4], [-24, 0.52], [-34, 0.86], [-41, 0.52], [-49, 0.42], [-58, 0.62], [-66, 0.4], [-74, 0.5], [-82, 0.36], [-90, 0.1]];
+const LOWER_R3=[[-4,.2],[-14,.38],[-24,.52],[-34,.72],[-41,.32],[-49,.42],[-58,.3],[-66,.60],[-74,.26],[-82,.32],[-90,.1]];
 function envelope(deg, table, scaleY) {
   for (let i = 0; i < table.length - 1; i++) {
     const [a0, r0] = table[i], [a1, r1] = table[i + 1], lo = Math.min(a0, a1), hi = Math.max(a0, a1);
@@ -44,13 +46,13 @@ function envelope(deg, table, scaleY) {
 }
 function hash(i, j, seed) { let h = (Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(seed, 2246822519)) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
 function vnoise(x, y, seed) { const xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy), a = hash(xi, yi, seed), b = hash(xi + 1, yi, seed), c = hash(xi, yi + 1, seed), d = hash(xi + 1, yi + 1, seed); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
-export function renderWingAtlas(size = 256, seed = 7) {
+export function renderWingAtlas(size = 256, seed = 7, {crystalline=false}={}) {
   const out = new Uint8Array(size * size * 4), tx = 0.02, ty = 0.52;
   for (let j = 0; j < size; j++) for (let i = 0; i < size; i++) {
     const x = (i + 0.5) / size, y = 1 - (j + 0.5) / size, dx = x - tx, dy = y - ty, R = Math.hypot(dx, dy), deg = Math.atan2(dy, Math.max(dx, 1e-6)) * 180 / Math.PI;
     let r = 0, g = 0, b = 0, a = 0;
     if (dx > -0.004) {
-      const base = dy >= 0 ? envelope(deg, UPPER, 0.94) : envelope(deg, LOWER, 0.94);
+      const base = dy >= 0 ? envelope(deg, UPPER, 0.94) : envelope(deg, crystalline ? LOWER_R3 : LOWER, 0.94);
       const jag = 1 + 0.1 * (vnoise(deg * 0.55, R * 6, seed) - 0.5) * 2 + 0.06 * Math.sin(deg * 0.9 + seed);
       const env = base * jag, inside = env - R;
       if (env > 0 && inside > 0) {
@@ -176,10 +178,10 @@ function additive(extra = {}) { return {transparent: true, depthWrite: false, de
 export class ShorekeeperVfxR2Director {
   constructor(scene, {mobile = false, reducedMotion = false, seed = 0x5c311, butterflies, now = () => performance.now()} = {}) {
     this.scene = scene; this.now = now; this.mobile = mobile; this.reducedMotion = reducedMotion; this.state = 'OFF'; this.mode = 'BOTH'; this.stage = 'outer';
-    this.time = 0; this.suspended = false; this.disposed = false; this.corePhase = 0; this.coreFrozen = false; this.pixelRatio = 1;
+    this._pa=new Float64Array(3);this._pb=new Float64Array(3);this.time = 0; this.suspended = false; this.disposed = false; this.corePhase = 0; this.coreFrozen = false; this.pixelRatio = 1;
     this.levels = new Float64Array(4); this.from = new Float64Array(4); this.target = new Float64Array(4); this.transition = 1; this.transitionSeconds = 1.25;
     this.enabled = {butterflies: true, collapsedCore: true, field: true, canopy: true};
-    this.counts = {butterflies: butterflies ?? (mobile ? 8 : 18), coreParticles: mobile ? 160 : 420, canopyStars: mobile ? 160 : 520, canopyRings: 10, fieldMotes: mobile ? 40 : 120};
+    this.counts = {butterflies: Math.min(mobile ? 8 : 18, Math.max(0, Math.floor(butterflies ?? (mobile ? 8 : 18)))), coreParticles: mobile ? 12 : 40, canopyStars: mobile ? 90 : 250, canopyRings: 10, fieldMotes: mobile ? 20 : 70};
     this.stats = {samples: 0, totalCpuMs: 0, maxCpuMs: 0, clockSeconds: 0}; this.cpuSamples = new Float64Array(2048);
     const rng = seeded(seed); this.root = new T.Group(); this.root.name = 'ShorekeeperVfxR2'; this.root.visible = false; scene.add(this.root);
     this.tint = new T.Vector3(...STAGE_TINTS.outer);
@@ -196,10 +198,10 @@ export class ShorekeeperVfxR2Director {
     const g = new T.InstancedBufferGeometry(); g.index = plane.index; g.setAttribute('position', pos); g.setAttribute('uv', plane.attributes.uv); g.instanceCount = count;
     this.bPos = new Float32Array(count * 3); this.bFwd = new Float32Array(count * 3); this.bMisc = new Float32Array(count * 4);
     g.setAttribute('iPos', new T.InstancedBufferAttribute(this.bPos, 3)); g.setAttribute('iFwd', new T.InstancedBufferAttribute(this.bFwd, 3)); g.setAttribute('iMisc', new T.InstancedBufferAttribute(this.bMisc, 4));
-    for (const a of ['iPos', 'iFwd', 'iMisc']) g.getAttribute(a).setUsage(T.DynamicDrawUsage);
+    for (const a of WING_ATTRIBUTES) g.getAttribute(a).setUsage(T.DynamicDrawUsage);
     this.atlas = new T.DataTexture(renderWingAtlas(256), 256, 256, T.RGBAFormat); this.atlas.colorSpace = T.SRGBColorSpace; this.atlas.generateMipmaps = true; this.atlas.minFilter = T.LinearMipmapLinearFilter; this.atlas.magFilter = T.LinearFilter; this.atlas.needsUpdate = true;
     this.wingMaterial = new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: {atlas: {value: this.atlas}, uTint: {value: this.tint}, uOpacity: {value: 0}}, vertexShader: WING_VS, fragmentShader: WING_FS});
-    this.wings = new T.Mesh(g, this.wingMaterial); this.wings.frustumCulled = false; this.wings.renderOrder = 4; this.root.add(this.wings);
+    this.wings = new T.InstancedMesh(g, this.wingMaterial,count); this.wings.frustumCulled = false; this.wings.renderOrder = 4; this.root.add(this.wings);
     // per-butterfly Lissajous-like orbit in character-height units; independent phases and speeds
     this.flight = new Float32Array(n * 14);
     for (let i = 0; i < n; i++) this.flight.set([(rng() - 0.5) * 0.5, (rng() - 0.5) * 0.4, 0.36 + rng() * 0.5, 0.3 + rng() * 0.35, 0.18 + rng() * 0.3, 0.12 + rng() * 0.18, 0.22 + rng() * 0.2, 0.35 + rng() * 0.3, rng() * TAU, rng() * TAU, 0.075 + rng() * 0.05, 4 + rng() * 2.5, rng() * TAU, rng()], i * 14);
@@ -258,7 +260,7 @@ export class ShorekeeperVfxR2Director {
   setReducedMotion(v) { this.reducedMotion = !!v; this.renderPose(); }
   setSuspended(v) { this.suspended = !!v; }
   /** QA only (Gate C1): shows a single butterfly at a fixed pose {pos:[x,y,z] in character units, fwd:[x,y,z], flap, bank, scale}; null restores the swarm. flap is the wing dihedral in radians: 0 = wings fully spread (open), ~1.4 = raised together (closed). */
-  qaButterfly(pose) { this.qaPose = pose ? {pos: [0, 0, 0], fwd: [0, 0, 1], flap: 0.7, bank: 0, scale: 0.16, ...pose} : null; this.wings.geometry.instanceCount = pose ? 2 : this.counts.butterflies * 2; this.renderPose(); }
+  qaButterfly(pose) { this.qaPose = pose ? {pos: [0, 0, 0], fwd: [0, 0, 1], flap: 0.7, bank: 0, scale: 0.16, ...pose} : null; this.wings.geometry.instanceCount = pose ? 2 : this.counts.butterflies * 2;this.wings.count=this.wings.geometry.instanceCount; this.renderPose(); }
   /** QA only: place the clocks explicitly (single frame, no time advance). */
   seek({time, corePhase} = {}) { if (time !== undefined) this.time = time; if (corePhase !== undefined) { this.corePhase = corePhase; this.coreFrozen = true; } this.renderPose(); }
   releaseSeek() { this.coreFrozen = false; }
@@ -296,11 +298,11 @@ export class ShorekeeperVfxR2Director {
     // in front of the chest): the hand midpoint is blended up toward chest height. Anchors stay read-only.
     if (this.chestAnchor) { this.chestAnchor.getWorldPosition(this._tmp).sub(this.center).divideScalar(this.scale); this.corePoint.set(this._tmp.x, this._tmp.y + 0.03, this._tmp.z + 0.3); } else this.corePoint.set(this.hand.x * 0.35, this.head.y - 0.13, Math.max(this.hand.z, this.head.z) + 0.14);
     // butterflies: tangent-aligned, asymmetric wingbeat with glide, kept out of the face
-    const n = this.counts.butterflies, pa = this._pa ?? (this._pa = [0, 0, 0]), pb = this._pb ?? (this._pb = [0, 0, 0]), f = this.flight;
+    const n = this.counts.butterflies, pa = this._pa, pb = this._pb, f = this.flight;
     this.wings.visible = b > 0.001; this.wingMaterial.uniforms.uOpacity.value = b;
     if (this.qaPose) {
       const q = this.qaPose, fl = Math.hypot(...q.fwd) || 1;
-      for (let side = 0; side < 2; side++) { for (let c = 0; c < 3; c++) { this.bPos[side * 3 + c] = q.pos[c]; this.bFwd[side * 3 + c] = q.fwd[c] / fl; } this.bMisc.set([q.scale, q.flap, side === 0 ? 1 : -1, q.bank], side * 4); }
+      for (let side = 0; side < 2; side++) { for (let c = 0; c < 3; c++) { this.bPos[side * 3 + c] = q.pos[c]; this.bFwd[side * 3 + c] = q.fwd[c] / fl; } const k=side*4;this.bMisc[k]=q.scale;this.bMisc[k+1]=q.flap;this.bMisc[k+2]=side===0?1:-1;this.bMisc[k+3]=q.bank; }
     }
     for (let i = 0; i < (this.qaPose ? 0 : n); i++) {
       this._pathAt(i, t, pa); this._pathAt(i, t + 0.04, pb);
@@ -317,7 +319,7 @@ export class ShorekeeperVfxR2Director {
         this.bMisc[j * 4] = scale; this.bMisc[j * 4 + 1] = flap; this.bMisc[j * 4 + 2] = side === 0 ? 1 : -1; this.bMisc[j * 4 + 3] = bank;
       }
     }
-    for (const a of ['iPos', 'iFwd', 'iMisc']) this.wings.geometry.getAttribute(a).needsUpdate = true;
+    for (const a of WING_ATTRIBUTES) this.wings.geometry.getAttribute(a).needsUpdate = true;
     // collapsed core
     const cu = this.coreUniforms; cu.uPhase.value = this.corePhase; cu.uTime.value = t; cu.uPixelRatio.value = this.pixelRatio; cu.uOpacity.value = core; cu.uCenter.value.copy(this.corePoint); cu.uHead.value.copy(this.head); this.flareUniforms.uOpacity.value = core; this.flareUniforms.uWorld.value = 0.28 * this.scale;
     this.coreParticles.visible = core > 0.001; this.coreFlare.visible = core > 0.001;
@@ -331,7 +333,7 @@ export class ShorekeeperVfxR2Director {
     const open = smooth01(canopy); this.rings.visible = canopy > 0.001; this.stars.visible = canopy > 0.001; this.dome.visible = canopy > 0.001;
     this.rings.material.uniforms.uTime.value = t; this.rings.material.uniforms.uOpacity.value = canopy;
     // ring row: [radius, x, z, height, tiltX, tiltZ, spin, brightness, width]
-    this.ringBase.forEach((r, i) => { const grow = 0.35 + 0.65 * open; this._e.set(r[4], t * r[6], r[5]); this._q.setFromEuler(this._e); this._p.set(r[1] * grow, r[3] * (0.55 + 0.45 * open), r[2] * grow); this._s.setScalar(r[0] * grow); this._m.compose(this._p, this._q, this._s); if (i === 0) this._m0.copy(this._m); this.rings.setMatrixAt(i, this._m); });
+    for(let i=0;i<this.ringBase.length;i++){const r=this.ringBase[i]; const grow = 0.35 + 0.65 * open; this._e.set(r[4], t * r[6], r[5]); this._q.setFromEuler(this._e); this._p.set(r[1] * grow, r[3] * (0.55 + 0.45 * open), r[2] * grow); this._s.setScalar(r[0] * grow); this._m.compose(this._p, this._q, this._s); if (i === 0) this._m0.copy(this._m); this.rings.setMatrixAt(i, this._m); }
     this.rings.instanceMatrix.needsUpdate = true;
     this.starUniforms.uTime.value = t; this.starUniforms.uOpacity.value = canopy * 0.9; this.starUniforms.uPixelRatio.value = this.pixelRatio; this.stars.rotation.y = t * 0.004;
     this.domeUniforms.uOpacity.value = canopy; this.dome.matrix.copy(this._m0); this.dome.matrixWorldNeedsUpdate = true;
@@ -342,7 +344,7 @@ export class ShorekeeperVfxR2Director {
   }
   dispose() {
     if (this.disposed) return; this.disposed = true; this.root.removeFromParent();
-    for (const o of [this.wings, this.coreParticles, this.coreFlare, this.field, this.motes, this.rings, this.stars, this.dome]) { o.geometry.dispose(); o.material.dispose(); if (o === this.rings) o.dispose(); }
+    for (const o of [this.wings, this.coreParticles, this.coreFlare, this.field, this.motes, this.rings, this.stars, this.dome]) { o.geometry.dispose(); o.material.dispose(); if (o.isInstancedMesh) o.dispose(); }
     this.atlas.dispose(); this.anchor = null; this.anchorL = null; this.headAnchor = null; this.chestAnchor = null; this.root.clear();
   }
 }
