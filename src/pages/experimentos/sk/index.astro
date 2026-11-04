@@ -80,6 +80,19 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-f18-inspecti
 <pre data-model-id>SHA-256: aguardando arquivo</pre>
 </details>
 </div>
+<details data-mouth-qa hidden class="sk-mouth-qa" open>
+<summary>Gate B1 · isolamento da boca</summary>
+<p class="sk-help">Bancada privada de diagnóstico. V2 identifica os controles de base das duas provas; a recuperação do sorriso ainda não foi demonstrada em WebGL.</p>
+<label class="sk-field">Referência GIF local<input data-mouth-reference type="file" accept="image/gif"/></label><img data-mouth-reference-image hidden alt="Referência local escolhida para comparação"/>
+<label class="sk-field">Peso da prova<select data-mouth-weight>{[0,.25,.5,.75,1].map(v=><option value={v} selected={v===1}>{v}</option>)}</select></label>
+<div class="sk-actions">{[['NEUTRAL','Neutro'],['LITTLE_SMILE_V2','LITTLE_SMILE_V2 · base'],['MY_STAR_V2','MY_STAR_V2 · base']].map(([id,label])=><button type="button" data-mouth-probe={id}>{label}</button>)}</div>
+<details><summary>Morphs isolados</summary><div class="sk-actions">{['M_Smile_L','M_Smile_R','P_M_L_Add','P_M_R_Add','M_OpenSmall','P_M_ZL_Add','P_M_ZR_Add'].map(n=><button type="button" data-mouth-probe={'ISOLATE_'+n}>{n}</button>)}</div></details>
+<label class="sk-field">Superfície em inspeção<select data-mouth-component><option value="all">Aguardando GLB canônico</option></select></label>
+<label class="sk-toggle"><input data-mouth-flat type="checkbox"/> Normais · diagnóstico temporário</label>
+<div class="sk-actions">{[['face-front','Rosto frontal'],['face-quarter','Rosto ¾'],['mouth-front','Boca frontal'],['mouth-quarter','Boca ¾']].map(([id,label])=><button type="button" data-mouth-view={id}>{label}</button>)}</div>
+<div class="sk-actions"><button type="button" data-mouth-restore>Restaurar superfícies e neutro</button><button type="button" data-mouth-capture>Captura privada</button><button type="button" data-mouth-export>Atlas JSON privado</button></div>
+<p data-mouth-state class="sk-help" role="status">Carregue o GLB local. Nenhum movimento corporal inicia automaticamente nesta bancada.</p>
+</details>
 <nav class="sk-tabs" role="tablist" aria-label="Áreas de inspeção">{[['acting','Apresentação'],['face','Expressões']].map(([id,label],i)=>
 <button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
 
