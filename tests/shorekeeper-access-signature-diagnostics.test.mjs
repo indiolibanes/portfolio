@@ -39,3 +39,21 @@ test('diagnostic result never exposes token, key, issuer, claims or AUD',async()
  assert.equal(typeof result,'string');
  for(const sensitive of [input,jwk.n,domain,aud])assert.ok(!result.includes(sensitive));
 });
+
+test('Workers JWKS requests use manual redirects and verify valid signed JWTs',async()=>{
+ const fetcher=async(url,options)=>{
+  assert.equal(url,domain+'/cdn-cgi/access/certs');
+  assert.equal(options.redirect,'manual');
+  return new Response(JSON.stringify({keys:[jwk]}),{status:200});
+ };
+ assert.equal(await verifyAccessJwt(jwt(),domain,aud,fetcher),true);
+ assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,fetcher),'signature_valid_but_primary_check_failed');
+});
+test('JWKS 302 redirect does not grant access or follow to an untrusted host',async()=>{
+ const fetcher=async(_url,options)=>{
+  assert.equal(options.redirect,'manual');
+  return new Response(null,{status:302,headers:{Location:'https://example.invalid/keys'}});
+ };
+ assert.equal(await verifyAccessJwt(jwt(),domain,aud,fetcher),false);
+ assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,fetcher),'certificates_endpoint_unavailable');
+});
