@@ -46,14 +46,14 @@ function envelope(deg, table, scaleY) {
 }
 function hash(i, j, seed) { let h = (Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(seed, 2246822519)) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
 function vnoise(x, y, seed) { const xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy), a = hash(xi, yi, seed), b = hash(xi + 1, yi, seed), c = hash(xi, yi + 1, seed), d = hash(xi + 1, yi + 1, seed); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
-export function renderWingAtlas(size = 256, seed = 7, {crystalline=false}={}) {
+export function renderWingAtlas(size = 256, seed = 7, {crystalline=false,delicate=false}={}) {
   const out = new Uint8Array(size * size * 4), tx = 0.02, ty = 0.52;
   for (let j = 0; j < size; j++) for (let i = 0; i < size; i++) {
     const x = (i + 0.5) / size, y = 1 - (j + 0.5) / size, dx = x - tx, dy = y - ty, R = Math.hypot(dx, dy), deg = Math.atan2(dy, Math.max(dx, 1e-6)) * 180 / Math.PI;
     let r = 0, g = 0, b = 0, a = 0;
     if (dx > -0.004) {
       const base = dy >= 0 ? envelope(deg, UPPER, 0.94) : envelope(deg, crystalline ? LOWER_R3 : LOWER, 0.94);
-      const jag = 1 + 0.1 * (vnoise(deg * 0.55, R * 6, seed) - 0.5) * 2 + 0.06 * Math.sin(deg * 0.9 + seed);
+      const jag = 1 + (delicate?.04:.1) * (vnoise(deg * 0.55, R * 6, seed) - 0.5) * 2 + (delicate?.02:.06) * Math.sin(deg * (delicate?.24:.9) + seed);
       const env = base * jag, inside = env - R;
       if (env > 0 && inside > 0) {
         const t = Math.min(1, R / Math.max(env, 1e-3)), rib = 0.5 + 0.5 * Math.sin(deg * 0.62 + vnoise(R * 5, deg * 0.2, seed + 3) * 3), crack = vnoise(R * 14, deg * 0.5, seed + 9);
@@ -66,11 +66,11 @@ export function renderWingAtlas(size = 256, seed = 7, {crystalline=false}={}) {
         b = 1;
       }
     }
-    const bodyHalf = 0.02 * Math.max(0, 1 - Math.pow((y - 0.52) / 0.24, 2));
-    if (x < tx + bodyHalf && Math.abs(y - 0.52) < 0.24) { a = 1; r = 0.95; g = 1; b = 1; }
+    const bodyHalf = (delicate?.012:.02) * Math.max(0, 1 - Math.pow((y - 0.52) / (delicate?.18:.24), 2));
+    if (x < tx + bodyHalf && Math.abs(y - 0.52) < (delicate?.18:.24)) { a = 1; r = 0.95; g = 1; b = 1; }
     for (const [ax, ay, bx, by] of [[0.02, 0.74, 0.16, 0.97], [0.02, 0.74, 0.06, 0.99]]) {
       const px = x - ax, py = y - ay, ex = bx - ax, ey = by - ay, u = Math.max(0, Math.min(1, (px * ex + py * ey) / (ex * ex + ey * ey))), dd = Math.hypot(px - ex * u, py - ey * u);
-      if (dd < 0.006) { a = Math.max(a, 0.95); r = Math.max(r, 0.7); g = Math.max(g, 0.95); b = 1; }
+      if (dd < (delicate?.004:.006)) { a = Math.max(a, 0.95); r = Math.max(r, 0.7); g = Math.max(g, 0.95); b = 1; }
     }
     const k = (j * size + i) * 4; out[k] = Math.min(1, r) * 255; out[k + 1] = Math.min(1, g) * 255; out[k + 2] = Math.min(1, b) * 255; out[k + 3] = Math.min(1, a) * 255;
   }
