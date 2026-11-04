@@ -23,3 +23,12 @@ test('experimental ambient uses existing R5 director and explicit visual cues',(
  assert.match(page,/data-vfx-story/);
  assert.match(page,/data-vfx-state/);
 });
+
+test('approved appearance has explicit reversible geometry selection, no implicit rewrite',()=>{
+ assert.match(page,/data-approved-geometry/);
+ assert.match(page,/<option value="r4">/);
+ assert.match(page,/<option value="r5">/);
+ assert.match(runtime,/approvedGeometry/);
+ assert.match(runtime,/setMouthGeometry\(mode\)/);
+ assert.match(runtime,/if\(mode==='canonical'\)url\.searchParams\.delete\('approvedGeometry'\)/);
+});
