@@ -300,6 +300,40 @@ export function mountShorekeeperLab(root){
   }finally{r2Checking=false;if(!disposed){syncR2LibraryPanel();sync(true);loop?.reconcile();}}
  }
  on($('[data-r2-recheck]'),'click',()=>{void recheckR2AndLoad();});
+ on($('[data-r2-audit]'),'click',async()=>{
+  const button=$('[data-r2-audit]'),state=$('[data-r2-audit-status]'),container=$('[data-r2-audit-results]');
+  if(button.disabled)return;
+  button.disabled=true;state.textContent='Conferindo Access, binding, manifesto e objetos…';container.replaceChildren();
+  try{
+   const response=await fetch('/api/shorekeeper/diagnostics',{
+    credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'},signal:lifetime.signal
+   });
+   let data=null;try{data=await response.json();}catch{}
+   const code=data?.state;
+   let message;
+   if(response.status===403)message='403: o token não foi aceito pela Function. Confira o AUD da aplicação Access correspondente a esta prévia.';
+   else if(code==='private_access_config_unavailable')message='503: falta SK_ACCESS_TEAM_DOMAIN ou SK_ACCESS_AUD na configuração do Pages desta prévia.';
+   else if(code==='pages_r2_binding_missing')message='503: falta o binding SHOREKEEPER_ASSETS_R2 no ambiente Preview do projeto Pages kaue.';
+   else if(code==='manifest_invalid_or_r2_error')message='503: falha ao ler/validar o manifesto R2. Confira JSON, esquema e integridade do bucket.';
+   else if(!response.ok)message='HTTP '+response.status+': o diagnóstico não conseguiu consultar o R2. Confira a implantação atual.';
+   else if(code!=='verified'||!data.inspection)message='Resposta do diagnóstico incompatível. Confira o deploy mais recente.';
+   else if(data.inspection.state==='manifest_missing')message='404 no R2: falta characters/shorekeeper/manifests/current.json no bucket configurado.';
+   else if(data.inspection.allPresent)message='R2: manifesto e quatro objetos presentes, com tamanhos correspondentes. Falta validar o carregamento e a reprodução.';
+   else message='Manifesto encontrado; pelo menos um GLB está ausente ou tem tamanho divergente no caminho esperado.';
+   state.textContent=message;
+   if(data?.inspection?.state!=='manifest_missing'&&data?.inspection&&Array.isArray(data.inspection.libraries)){
+    const x=data.inspection;
+    const entries=[{label:'Modelo canônico',state:x.model},...x.libraries.map(item=>({label:'Biblioteca '+item.id,state:item.state}))];
+    for(const entry of entries){
+     const paragraph=document.createElement('p');paragraph.className='sk-help';paragraph.setAttribute('role','listitem');
+     const title=document.createElement('strong');title.textContent=entry.label;
+     const label=entry.state==='present'?'encontrado':entry.state==='missing'?'ausente':entry.state==='size_mismatch'?'tamanho divergente':'não conferido';
+     paragraph.append(title,document.createTextNode(' — '+label));container.append(paragraph);
+    }
+   }
+  }catch(e){if(!lifetime.signal.aborted)state.textContent='Falha de rede ao acessar o diagnóstico privado. Tente novamente após autenticar-se no Access.';}
+  finally{if(!disposed)button.disabled=false;}
+ });
  for(const button of all('[data-r2-quick-burst]'))on(button,'click',()=>{
   if(button.disabled||!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256)return;
   if(phase()==='animating'&&control('presentationMode').value==='contemplation'){
