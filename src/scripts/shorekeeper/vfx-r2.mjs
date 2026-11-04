@@ -119,13 +119,13 @@ void main(){ vec2 p=gl_PointCoord-.5; float r=length(p)*2.; float halo=pow(max(0
   #include <colorspace_fragment>
 }`;
 const FLARE_VS = `
-uniform float uPhase,uPixelRatio,uSize,uOpacity; uniform vec3 uCenter; varying float vA;
-void main(){ float ph=uPhase; float spawn=smoothstep(.1,.5,ph), conv=smoothstep(.78,.9,ph), diss=smoothstep(.9,1.,ph);
-  float s=(.25+.9*smoothstep(.3,.78,ph)+2.2*smoothstep(.78,.84,ph)*(1.-smoothstep(.84,.97,ph))); vA=uOpacity*spawn*(1.-diss);
-  vec4 mv=modelViewMatrix*vec4(uCenter,1.); gl_Position=projectionMatrix*mv; gl_PointSize=clamp(uSize*s*uPixelRatio/max(.1,-mv.z),1.,220.); }`;
+uniform float uPhase,uWorld,uOpacity; uniform vec3 uCenter; varying float vA; varying vec2 vP;
+void main(){ float ph=uPhase; float spawn=smoothstep(.1,.5,ph), diss=smoothstep(.9,1.,ph);
+  float s=(.2+.55*smoothstep(.3,.78,ph)+.9*smoothstep(.78,.84,ph)*(1.-smoothstep(.84,.97,ph))); vA=uOpacity*spawn*(1.-diss)*(1.-.35*smoothstep(.78,.9,ph)); vP=position.xy;
+  vec4 mv=modelViewMatrix*vec4(uCenter,1.); mv.xy+=position.xy*uWorld*s; gl_Position=projectionMatrix*mv; }`;
 const FLARE_FS = `
-uniform vec3 uTint; varying float vA;
-void main(){ vec2 p=gl_PointCoord-.5; float r=length(p)*2.; float core=exp(-r*r*10.); float halo=pow(max(0.,1.-r),3.); float ray=exp(-abs(p.x)*38.)*max(0.,1.-abs(p.y)*2.)+exp(-abs(p.y)*38.)*max(0.,1.-abs(p.x)*2.);
+uniform vec3 uTint; varying float vA; varying vec2 vP;
+void main(){ vec2 p=vP; float r=length(p)*2.; if(r>1.) discard; float core=exp(-r*r*10.); float halo=pow(max(0.,1.-r),3.); float ray=exp(-abs(p.x)*38.)*max(0.,1.-abs(p.y)*2.)+exp(-abs(p.y)*38.)*max(0.,1.-abs(p.x)*2.);
   float a=vA*(core*.95+halo*.5+ray*.12); if(a<.006) discard; gl_FragColor=vec4(mix(uTint,vec3(1.),.5+.45*core),a);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -210,9 +210,8 @@ export class ShorekeeperVfxR2Director {
     const g = new T.BufferGeometry(); g.setAttribute('position', new T.BufferAttribute(p, 3)); g.setAttribute('aSeed', new T.BufferAttribute(seeds, 3));
     this.coreUniforms = {uPhase: {value: 0}, uTime: {value: 0}, uPixelRatio: {value: 1}, uSize: {value: 15}, uOpacity: {value: 0}, uCenter: {value: new T.Vector3()}, uHead: {value: new T.Vector3()}, uTint: {value: this.tint}};
     this.coreParticles = new T.Points(g, new T.ShaderMaterial({...additive(), uniforms: this.coreUniforms, vertexShader: CORE_VS, fragmentShader: GLOW_FS})); this.coreParticles.frustumCulled = false; this.coreParticles.renderOrder = 6; this.root.add(this.coreParticles);
-    const fg = new T.BufferGeometry(); fg.setAttribute('position', new T.BufferAttribute(new Float32Array(3), 3));
-    this.flareUniforms = {uPhase: this.coreUniforms.uPhase, uPixelRatio: this.coreUniforms.uPixelRatio, uSize: {value: 58}, uOpacity: {value: 0}, uCenter: this.coreUniforms.uCenter, uTint: {value: this.tint}};
-    this.coreFlare = new T.Points(fg, new T.ShaderMaterial({...additive(), uniforms: this.flareUniforms, vertexShader: FLARE_VS, fragmentShader: FLARE_FS})); this.coreFlare.frustumCulled = false; this.coreFlare.renderOrder = 7; this.root.add(this.coreFlare);
+    this.flareUniforms = {uPhase: this.coreUniforms.uPhase, uWorld: {value: 0.5}, uOpacity: {value: 0}, uCenter: this.coreUniforms.uCenter, uTint: {value: this.tint}};
+    this.coreFlare = new T.Mesh(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({depthTest: false, side: T.DoubleSide}), uniforms: this.flareUniforms, vertexShader: FLARE_VS, fragmentShader: FLARE_FS})); this.coreFlare.frustumCulled = false; this.coreFlare.renderOrder = 7; this.root.add(this.coreFlare);
   }
   _buildField(rng) {
     const radius = 1.9, g = new T.CircleGeometry(radius, 128); g.rotateX(-Math.PI / 2);
@@ -295,7 +294,7 @@ export class ShorekeeperVfxR2Director {
     if (this.headAnchor) this.headAnchor.getWorldPosition(this.head).sub(this.center).divideScalar(this.scale); else this.head.set(0, 0.4, 0);
     // The idle keeps the hands low, so the core is staged where the gathering reads in the reference (hands condensing light
     // in front of the chest): the hand midpoint is blended up toward chest height. Anchors stay read-only.
-    if (this.chestAnchor) { this.chestAnchor.getWorldPosition(this._tmp).sub(this.center).divideScalar(this.scale); this.corePoint.set(this._tmp.x, this._tmp.y + 0.03, this._tmp.z + 0.22); } else this.corePoint.set(this.hand.x * 0.35, this.head.y - 0.13, Math.max(this.hand.z, this.head.z) + 0.14);
+    if (this.chestAnchor) { this.chestAnchor.getWorldPosition(this._tmp).sub(this.center).divideScalar(this.scale); this.corePoint.set(this._tmp.x, this._tmp.y + 0.03, this._tmp.z + 0.3); } else this.corePoint.set(this.hand.x * 0.35, this.head.y - 0.13, Math.max(this.hand.z, this.head.z) + 0.14);
     // butterflies: tangent-aligned, asymmetric wingbeat with glide, kept out of the face
     const n = this.counts.butterflies, pa = this._pa ?? (this._pa = [0, 0, 0]), pb = this._pb ?? (this._pb = [0, 0, 0]), f = this.flight;
     this.wings.visible = b > 0.001; this.wingMaterial.uniforms.uOpacity.value = b;
@@ -320,7 +319,7 @@ export class ShorekeeperVfxR2Director {
     }
     for (const a of ['iPos', 'iFwd', 'iMisc']) this.wings.geometry.getAttribute(a).needsUpdate = true;
     // collapsed core
-    const cu = this.coreUniforms; cu.uPhase.value = this.corePhase; cu.uTime.value = t; cu.uPixelRatio.value = this.pixelRatio; cu.uOpacity.value = core; cu.uCenter.value.copy(this.corePoint); cu.uHead.value.copy(this.head); this.flareUniforms.uOpacity.value = core;
+    const cu = this.coreUniforms; cu.uPhase.value = this.corePhase; cu.uTime.value = t; cu.uPixelRatio.value = this.pixelRatio; cu.uOpacity.value = core; cu.uCenter.value.copy(this.corePoint); cu.uHead.value.copy(this.head); this.flareUniforms.uOpacity.value = core; this.flareUniforms.uWorld.value = 0.28 * this.scale;
     this.coreParticles.visible = core > 0.001; this.coreFlare.visible = core > 0.001;
     // field (anchored to the stage floor, world space)
     this.field.visible = field > 0.001; this.field.position.y = this.floorY + 0.003; this.fieldUniforms.uTime.value = t; this.fieldUniforms.uOpacity.value = field;
