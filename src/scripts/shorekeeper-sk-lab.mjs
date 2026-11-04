@@ -275,7 +275,10 @@ export function mountShorekeeperLab(root){
     privateStatus('Interrompa a animação antes de carregar bibliotecas privadas.');return;
    }
    const coverage=summarizePrivateCombat(manifest,model.userData.skClips);
-   const required=new Set(coverage.rows.filter(x=>x.registered&&!x.ready).map(x=>x.id));
+   const required=new Set(manifest.libraries.filter(entry=>
+     !animationLibraries.some(lib=>lib.sha256===entry.sha256)||
+     coverage.rows.some(row=>row.id===entry.id&&!row.ready)
+   ).map(entry=>entry.id));
    const files=[];
    for(const entry of manifest.libraries){
     if(disposed||signal.aborted)return;
