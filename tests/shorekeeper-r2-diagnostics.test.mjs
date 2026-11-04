@@ -64,6 +64,9 @@ test('rejected JWT diagnostics provide hints but never bypass signature checks',
   headers:{'Cf-Access-Jwt-Assertion':token}
  });
  const env={SK_ACCESS_TEAM_DOMAIN:domain,SK_ACCESS_AUD:aud,SHOREKEEPER_ASSETS_R2:fakeBucket()};
+ const originalFetch=globalThis.fetch;
+ globalThis.fetch=async()=>new Response(JSON.stringify({keys:[]}),{status:200});
+ try{
  const cases=[
   [badToken({aud:['0'.repeat(32)]}),'audience_mismatch'],
   [badToken({iss:'https://other.cloudflareaccess.com'}),'issuer_mismatch'],
@@ -78,4 +81,5 @@ test('rejected JWT diagnostics provide hints but never bypass signature checks',
   assert.equal(body.reason,reason);
   assert.deepEqual(Object.keys(body).sort(),['reason','state']);
  }
+ }finally{globalThis.fetch=originalFetch;}
 });
