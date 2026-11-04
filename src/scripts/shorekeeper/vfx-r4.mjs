@@ -1,22 +1,23 @@
+import {patchShader} from './shader-patch.mjs';
 import * as T from 'three';
 import {ShorekeeperVfxR3Director} from './vfx-r3.mjs';
 import {CelestialEnvironmentR4} from './celestial-environment-r4.mjs';
 /** Opt-in R4; one inherited clock/buffer pool, no postprocessing or character writes. */
 export class ShorekeeperVfxR4Director extends ShorekeeperVfxR3Director {
  constructor(scene,options={}){
-  super(scene,{...options,environmentClass:CelestialEnvironmentR4,wingSegments:options.mobile?2:4});
+  super(scene,{...options,environmentClass:options.environmentClass??CelestialEnvironmentR4,wingSegments:options.mobile?2:4});
   this.camera=options.camera??null;this._r4Camera=new T.Vector3();this._r4Hand=new T.Vector3();this._r4Left=new T.Vector3();this.r4=true;
   this.ringBase.forEach((r,i)=>{r[0]=i<6?[2.7,2.43,2.15,1.88,1.62,1.35][i]:2.2+(i-6)*.12;r[3]=1.52-i*.023;r[8]=i===0?.022:r[8]*.72;});
-  this.wingMaterial.vertexShader=this.wingMaterial.vertexShader.replace('f*((uv.y-.52)*1.0)','f*((uv.y-.52)*1.0)+u2*(sin(uv.x*3.14159)*sin(uv.y*3.14159)*.065)');
-  this.rings.material.fragmentShader=this.rings.material.fragmentShader.replace('uTint*1.2','uTint*.72').replace('vec3(1.),.12','vec3(1.),.04');
-  this.dome.material.fragmentShader=this.dome.material.fragmentShader.replace('*.55','*.18').replace('.16*pow(r,2.)','.045*pow(r,2.)');
-  this.field.material.fragmentShader=this.field.material.fragmentShader.replace('uTint*1.15','uTint*.78');
+  this.wingMaterial.vertexShader=patchShader(this.wingMaterial.vertexShader,'f*((uv.y-.52)*1.0)','f*((uv.y-.52)*1.0)+u2*(sin(uv.x*3.14159)*sin(uv.y*3.14159)*.065)','vfx-r4.mjs:this.wingMaterial.vertexShader');
+  this.rings.material.fragmentShader=patchShader(patchShader(this.rings.material.fragmentShader,'uTint*1.2','uTint*.72','vfx-r4.mjs:this.rings.material.fragmentShader'),'vec3(1.),.12','vec3(1.),.04','vfx-r4.mjs:this.rings.material.fragmentShader:second');
+  this.dome.material.fragmentShader=patchShader(patchShader(this.dome.material.fragmentShader,'*.55','*.18','vfx-r4.mjs:this.dome.material.fragmentShader'),'.16*pow(r,2.)','.045*pow(r,2.)','vfx-r4.mjs:this.dome.material.fragmentShader:second');
+  this.field.material.fragmentShader=patchShader(this.field.material.fragmentShader,'uTint*1.15','uTint*.78','vfx-r4.mjs:this.field.material.fragmentShader');
   this.wingMaterial.needsUpdate=this.rings.material.needsUpdate=this.dome.material.needsUpdate=this.field.material.needsUpdate=true;
   const positions=this.stars.geometry.attributes.position;let seed=0x513f09;const rng=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   for(let i=0;i<positions.count;i++){const a=i*2.3999632297,r=8+rng()*6;positions.setXYZ(i,Math.cos(a)*r,.35+rng()*3.2,Math.sin(a)*r);}positions.needsUpdate=true;
   const links=[];for(let c=0;c<3;c++){let from=c*61+12;for(let j=0;j<4;j++){let best=-1,distance=Infinity;for(let k=from+1;k<positions.count;k++){const d=(positions.getX(k)-positions.getX(from))**2+(positions.getY(k)-positions.getY(from))**2+(positions.getZ(k)-positions.getZ(from))**2;if(d<distance){distance=d;best=k;}}if(best<0||distance>14)break;for(const k of [from,best])links.push(positions.getX(k),positions.getY(k),positions.getZ(k));from=best;}}
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(links,3));this.constellations=new T.LineSegments(g,new T.LineBasicMaterial({color:0x7ea9d9,transparent:true,opacity:.16,depthWrite:false}));this.root.add(this.constellations);
-  this.stars.material.vertexShader=this.stars.material.vertexShader.replace('30.*uPixelRatio','55.*uPixelRatio');this.stars.material.needsUpdate=true;this.renderPose();
+  this.stars.material.vertexShader=patchShader(this.stars.material.vertexShader,'30.*uPixelRatio','55.*uPixelRatio','vfx-r4.mjs:this.stars.material.vertexShader');this.stars.material.needsUpdate=true;this.renderPose();
  }
  _pathAt(i,t,out){
   super._pathAt(i,t,out);if(!this.r4)return;const size=this.flight[i*14+10],clear=.13+size;

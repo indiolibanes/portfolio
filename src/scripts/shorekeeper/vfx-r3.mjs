@@ -1,3 +1,4 @@
+import {patchShader} from './shader-patch.mjs';
 import * as T from 'three';
 import {ShorekeeperVfxR2Director,VFX_R2_STATES,renderWingAtlas} from './vfx-r2.mjs';
 import {CelestialEnvironment} from './celestial-environment.mjs';
@@ -9,12 +10,12 @@ export class ShorekeeperVfxR3Director extends ShorekeeperVfxR2Director {
   super(scene,options);
   this.root.name='ShorekeeperVfxR3';this.atlas.image.data=renderWingAtlas(256,7,{crystalline:true});this.atlas.needsUpdate=true;this.environment=new(options.environmentClass??CelestialEnvironment)(scene,options);this.environment.bindModel(null);
   // Mirrored horizontal axes, same upward wing fold on BOTH wings; never roll one wing down artificially.
-  this.wingMaterial.vertexShader=this.wingMaterial.vertexShader.replace('iMisc.z*(r2*cos(fl)+u2*sin(fl))','iMisc.z*r2*cos(fl)+u2*sin(fl)');
-  this.wingMaterial.fragmentShader=this.wingMaterial.fragmentShader.replace('mix(t.rgb,tinted,.8)*vShade*1.12','mix(t.rgb,tinted,.32)*vShade');
+  this.wingMaterial.vertexShader=patchShader(this.wingMaterial.vertexShader,'iMisc.z*(r2*cos(fl)+u2*sin(fl))','iMisc.z*r2*cos(fl)+u2*sin(fl)','vfx-r3.mjs:this.wingMaterial.vertexShader');
+  this.wingMaterial.fragmentShader=patchShader(this.wingMaterial.fragmentShader,'mix(t.rgb,tinted,.8)*vShade*1.12','mix(t.rgb,tinted,.32)*vShade','vfx-r3.mjs:this.wingMaterial.fragmentShader');
   this.wingMaterial.blending=T.NormalBlending;this.wingMaterial.needsUpdate=true;
   this.coreUniforms.uSize.value=5;
-  this.coreParticles.material.fragmentShader=this.coreParticles.material.fragmentShader.replace('mix(uTint,vec3(1.),.25+.6*vH)','mix(uTint,vec3(.8,.88,1.),.12+.12*vH)');
-  this.coreFlare.material.fragmentShader=this.coreFlare.material.fragmentShader.replace('core*.95+halo*.5+ray*.12','core*.12+halo*.16+ray*.10').replace('mix(uTint,vec3(1.),.5+.45*core)','mix(uTint,vec3(.7,.82,1.),.15*core)');
+  this.coreParticles.material.fragmentShader=patchShader(this.coreParticles.material.fragmentShader,'mix(uTint,vec3(1.),.25+.6*vH)','mix(uTint,vec3(.8,.88,1.),.12+.12*vH)','vfx-r3.mjs:this.coreParticles.material.fragmentShader');
+  this.coreFlare.material.fragmentShader=patchShader(patchShader(this.coreFlare.material.fragmentShader,'core*.95+halo*.5+ray*.12','core*.12+halo*.16+ray*.10','vfx-r3.mjs:this.coreFlare.material.fragmentShader'),'mix(uTint,vec3(1.),.5+.45*core)','mix(uTint,vec3(.7,.82,1.),.15*core)','vfx-r3.mjs:this.coreFlare.material.fragmentShader:second');
   this.coreFlare.material.depthTest=true;
   this.coreCrystal=new T.Mesh(new T.OctahedronGeometry(1),new T.MeshBasicMaterial({color:0x6dbde9,transparent:true,opacity:.8,depthWrite:false}));
   this.coreCage=new T.Mesh(new T.IcosahedronGeometry(1),new T.MeshBasicMaterial({color:0xc8a8ff,wireframe:true,transparent:true,opacity:.55,depthWrite:false}));
@@ -24,7 +25,7 @@ export class ShorekeeperVfxR3Director extends ShorekeeperVfxR2Director {
   this.renderPose();
  }
  bindModel(model){super.bindModel(model);this.environment.bindModel(model);}
- next(){const i=VFX_R2_STATES.indexOf(this.state);return this.setState(i===VFX_R2_STATES.length-1?'AMBIENT':VFX_R2_STATES[i+1]);}
+ next(){return super.next();}
  renderPose(){
   super.renderPose();if(!this.environment)return;
   const t=this.reducedMotion?0:this.time,ph=this.corePhase;
