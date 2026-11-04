@@ -1,0 +1,20 @@
+// Private numeric A/B capture only. No rendering or canonical motion approval.
+import fs from 'node:fs';import {fileURLToPath} from 'node:url';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+import * as T from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createRebasedBurstClip,createBindRootBurstClip} from '../../src/scripts/shorekeeper/liberation-rotation.mjs';
+const [modelFile,libraries,output]=process.argv.slice(2);if(!modelFile||!libraries||!output)throw Error('Usage: node scripts/qa/audit-shorekeeper-burst-variants.mjs PRIVATE_MODEL PRIVATE_LIB_DIR PRIVATE_REPORT.json');
+const repo=path.resolve(fileURLToPath(new URL('../../',import.meta.url))),dest=path.resolve(output);if(dest===repo||dest.startsWith(repo+path.sep))throw Error('Private report must be outside repository');
+const sha=b=>createHash('sha256').update(b).digest('hex'),bytes=fs.readFileSync(modelFile);assert.equal(sha(bytes),'4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30');
+globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:2048,height:2048,close(){}});const loader=new GLTFLoader(),parse=b=>loader.parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),'');
+const gltf=await parse(bytes),model=gltf.scene,report={status:'C_ROTATION_QA_PENDING',render:'NOT_EXECUTED',canonicalSha256:sha(bytes),clips:[]};
+const conversion=JSON.parse(fs.readFileSync(path.join(libraries,'conversion-report.json'),'utf8'));
+for(const source of conversion.clips){
+ const b=fs.readFileSync(path.join(libraries,source.library));assert.equal(sha(b),source.sha256);const library=await parse(b),original=library.animations.find(c=>c.name===source.id);const sourceHash=sha(Buffer.from(JSON.stringify(original.toJSON()))),variants=[original,createRebasedBurstClip(T,model,original).clip,createBindRootBurstClip(T,model,original).clip],fps=source.sources[0].fps;
+ const row={clip:source.id,fps,duration:original.duration,sourceSha256:sha(b),variants:[]};
+ for(const clip of variants){assert.equal(clip.duration,original.duration);const changed=clip.tracks.filter((t,i)=>sha(Buffer.from(t.times.buffer,t.times.byteOffset,t.times.byteLength))!==sha(Buffer.from(original.tracks[i].times.buffer,original.tracks[i].times.byteOffset,original.tracks[i].times.byteLength))||sha(Buffer.from(t.values.buffer,t.values.byteOffset,t.values.byteLength))!==sha(Buffer.from(original.tracks[i].values.buffer,original.tracks[i].values.byteOffset,original.tracks[i].values.byteLength))).map(t=>t.name);assert(changed.every(n=>n==='Root.quaternion'));
+ const mixer=new T.AnimationMixer(model),action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();const frames=source.id.includes('01')?[0,105,135]:[0,Math.round(source.sources[0].frames*.33),Math.round(source.sources[0].frames*.65),source.sources[0].frames-1];const samples=[];
+ for(const frame of frames){mixer.setTime(frame/fps);model.updateMatrixWorld(true);const joints={};for(const name of ['Root','Bip001','Bip001Pelvis','Bip001Head','Bip001LThigh','Bip001RThigh']){const n=model.getObjectByName(name);if(n){const p=n.getWorldPosition(new T.Vector3());assert(p.toArray().every(Number.isFinite));joints[name]={worldPosition:p.toArray(),localQuaternion:n.quaternion.toArray()};}}samples.push({sourceFrame:frame,timeSeconds:frame/fps,joints});}
+ action.stop();mixer.stopAllAction();mixer.uncacheRoot(model);row.variants.push({name:clip.name,changedTracks:changed,channels:clip.tracks.length,samples,visualQA:'PENDING'});
+ }assert.equal(sha(Buffer.from(JSON.stringify(original.toJSON()))),sourceHash);report.clips.push(row);
+}
+assert.equal(sha(fs.readFileSync(modelFile)),report.canonicalSha256);fs.writeFileSync(output,JSON.stringify(report,null,2));console.log(JSON.stringify(report.clips.map(c=>({clip:c.clip,fps:c.fps,duration:c.duration,variants:c.variants.map(v=>({name:v.name,changedTracks:v.changedTracks,frames:v.samples.map(s=>s.sourceFrame),times:v.samples.map(s=>s.timeSeconds)}))})),null,2));

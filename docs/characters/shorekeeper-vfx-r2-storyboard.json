@@ -1,0 +1,132 @@
+{
+  "schema": "shorekeeper-bc-c-storyboard/1",
+  "status": "C_ROTATION_QA_PENDING",
+  "syncEnabled": false,
+  "referenceClock": "GIF-local, NOT aligned to PSA",
+  "clips": [
+    {
+      "clip": "SK_BURST_01_ORIGINAL",
+      "fps": 30.16666603088379,
+      "duration": 6,
+      "variants": [
+        {
+          "name": "SK_BURST_01_ORIGINAL",
+          "changedTracks": [],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            105,
+            135
+          ],
+          "sampleTimesSeconds": [
+            0,
+            3.4806630567827397,
+            4.475138215863522
+          ]
+        },
+        {
+          "name": "SK_BURST_01_REBASED",
+          "changedTracks": [
+            "Root.quaternion"
+          ],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            105,
+            135
+          ],
+          "sampleTimesSeconds": [
+            0,
+            3.4806630567827397,
+            4.475138215863522
+          ]
+        },
+        {
+          "name": "SK_BURST_01_ROOT_BODY_OWNED",
+          "changedTracks": [
+            "Root.quaternion"
+          ],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            105,
+            135
+          ],
+          "sampleTimesSeconds": [
+            0,
+            3.4806630567827397,
+            4.475138215863522
+          ]
+        }
+      ]
+    },
+    {
+      "clip": "SK_BURST_02_ORIGINAL",
+      "fps": 30.184049606323242,
+      "duration": 5.433333396911621,
+      "variants": [
+        {
+          "name": "SK_BURST_02_ORIGINAL",
+          "changedTracks": [],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            54,
+            107,
+            163
+          ],
+          "sampleTimesSeconds": [
+            0,
+            1.7890243590339039,
+            3.5449186373449577,
+            5.400203157824562
+          ]
+        },
+        {
+          "name": "SK_BURST_02_REBASED",
+          "changedTracks": [
+            "Root.quaternion"
+          ],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            54,
+            107,
+            163
+          ],
+          "sampleTimesSeconds": [
+            0,
+            1.7890243590339039,
+            3.5449186373449577,
+            5.400203157824562
+          ]
+        },
+        {
+          "name": "SK_BURST_02_ROOT_BODY_OWNED",
+          "changedTracks": [
+            "Root.quaternion"
+          ],
+          "channels": 729,
+          "sampleFrames": [
+            0,
+            54,
+            107,
+            163
+          ],
+          "sampleTimesSeconds": [
+            0,
+            1.7890243590339039,
+            3.5449186373449577,
+            5.400203157824562
+          ]
+        }
+      ]
+    }
+  ],
+  "unresolved": [
+    "reference-to-clip mapping",
+    "Burst02 facing/spin visual comparison",
+    "Outer/Inner/Supernal appearance",
+    "Dim versus Flare butterfly identification"
+  ]
+}
