@@ -23,9 +23,10 @@ const entryState=(obj,bytes)=>!obj?'missing':obj.size===bytes?'present':'size_mi
  */
 function rejectedJwtReason(token,domain,audience){
  if(!token)return 'token_missing';
- if(typeof domain!=='string'||!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain)||
-    typeof audience!=='string'||!/^[a-zA-Z0-9_-]{16,128}$/.test(audience))
-  return 'access_configuration_invalid';
+ if(typeof domain!=='string'||!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain))
+  return 'team_domain_format_invalid';
+ if(typeof audience!=='string'||!/^[a-zA-Z0-9_-]{16,128}$/.test(audience))
+  return 'audience_format_invalid';
  try{
   if(typeof token!=='string'||token.length>16000)return 'token_unreadable';
   const parts=token.split('.');if(parts.length!==3)return 'token_unreadable';
