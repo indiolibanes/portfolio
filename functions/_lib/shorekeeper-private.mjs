@@ -62,11 +62,53 @@ export async function verifyAccessJwt(token,domain,audience,fetcher=fetch){
   }
   const jwk=list.keys.find(k=>k.kid===header.kid&&k.kty==='RSA'&&k.n&&k.e);
   if(!jwk)return false;
-  const key=await crypto.subtle.importKey('jwk',jwk,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
+  const key=await crypto.subtle.importKey('jwk',{kty:'RSA',n:jwk.n,e:jwk.e,alg:'RS256',ext:true},{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
   const signed=new TextEncoder().encode(parts[0]+'.'+parts[1]);
   return crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,decode(parts[2]),signed);
  }catch{return false;}
 }
+
+/**
+ * Read-only diagnostic for the subset of Access JWT rejections whose
+ * untrusted claims already passed format/issuer/audience/time checks.
+ * This is NEVER used to grant access; only verifyAccessJwt can do that.
+ * No JWT, claims, keys, kid, issuer or audience are sent to the browser.
+ */
+export async function diagnoseAccessSigningKey(token,domain,audience,fetcher=fetch){
+ if(typeof token!=='string'||token.length>16000||
+   !/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain??'')||
+   !/^[a-zA-Z0-9_-]{16,128}$/.test(audience??''))return 'signing_diagnostic_unavailable';
+ let parts,header,payload;
+ try{
+  parts=token.split('.');
+  if(parts.length!==3)return 'token_unreadable';
+  header=parseJson(decode(parts[0]));payload=parseJson(decode(parts[1]));
+  if(header.alg!=='RS256'||typeof header.kid!=='string')return 'token_header_invalid';
+  if(payload.iss!==domain)return 'issuer_mismatch';
+  if(!(Array.isArray(payload.aud)?payload.aud.includes(audience):payload.aud===audience))return 'audience_mismatch';
+ }catch{return 'token_unreadable';}
+ let response;
+ try{response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'error'});}
+ catch{return 'certificates_fetch_failed';}
+ if(!response?.ok)return 'certificates_endpoint_unavailable';
+ let jwks;
+ try{jwks=await response.json();}catch{return 'certificates_response_invalid';}
+ if(!Array.isArray(jwks?.keys)||jwks.keys.length===0||jwks.keys.length>12)return 'certificates_response_invalid';
+ const keyData=jwks.keys.find(k=>k?.kid===header.kid);
+ if(!keyData)return 'signing_key_not_found';
+ if(keyData.kty!=='RSA'||typeof keyData.n!=='string'||typeof keyData.e!=='string')return 'signing_key_invalid';
+ let publicKey;
+ try{
+  publicKey=await crypto.subtle.importKey('jwk',{kty:'RSA',n:keyData.n,e:keyData.e,alg:'RS256',ext:true},
+   {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
+ }catch{return 'public_key_import_failed';}
+ try{
+  const input=new TextEncoder().encode(parts[0]+'.'+parts[1]);
+  const valid=await crypto.subtle.verify('RSASSA-PKCS1-v1_5',publicKey,decode(parts[2]),input);
+  return valid?'signature_valid_but_primary_check_failed':'signature_invalid';
+ }catch{return 'signature_verification_failed';}
+}
+
 export async function checkPrivateAccess(request,env){
  if(!env?.SHOREKEEPER_ASSETS_R2||!env?.SK_ACCESS_TEAM_DOMAIN||!env?.SK_ACCESS_AUD)
   return new Response('Private storage unavailable.',{status:503,headers:PRIVATE_HEADERS});
