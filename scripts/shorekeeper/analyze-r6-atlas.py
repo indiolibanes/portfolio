@@ -36,7 +36,7 @@ for m in a['morphs']:
     m['evidenceReferences']=[f"PRIVATE_ATLAS/{m['meshName']}/{m['index']}-{m['name']}-ANGLE-WEIGHT.png"]
     if observations:
         review=observations[m['meshName'],m['index']]
-        m.update({k:review[k] for k in ['status','visualObservation','direction']})
+        m.update({k:review[k] for k in ['status','visualObservation','direction','dependencies','artifactReview']})
 a['renderManifestSha256']=hashlib.sha256((root/'capture-manifest.json').read_bytes()).hexdigest()
 a['status']='GEOMETRY_AND_1455_SWIFTSHADER_RENDERS_COMPLETE_HUMAN_PENDING'
 output.write_text(json.dumps(a,ensure_ascii=False,separators=(',',':'))+'\n')

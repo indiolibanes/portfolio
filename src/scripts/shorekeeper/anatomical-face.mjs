@@ -154,7 +154,7 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
   function playCandidate(name) {
     if(disposed||paused||combat)return false;
     const spec=R6_CANDIDATES[name];if(!spec)throw Error('Unknown R6 candidate');
-    const next=compile(spec);reset();compiled=next;mode='candidate';id=name;return true;
+    const next=compile(spec);if(next.some(tr=>!nameIndex.has(tr.name))||(recipeFor(spec.source).eyeClosure&&!nameIndex.has('E_Close')))return false;reset();compiled=next;mode='candidate';id=name;return true;
   }
   function recover() {
     if(disposed||combat)return false;
@@ -175,7 +175,7 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
     setPaused(v){paused=!!v;legacy.setPaused(paused);},
     onAnimationEvent(e){if(!combatClip(e.clip))return;if(e.type==='start'){reset();combat=true;}if(e.type==='end'){combat=false;reset();}},
     interruptForCombat(){return recover();},reset,
-    restore(){if(disposed||combat)return false;reset();for(let m=0;m<meshes.length;m++)for(let i=0;i<initial[m].length;i++)meshes[m].morphTargetInfluences[i]=initial[m][i];for(const s of slots){values[s.n]=s.mesh.morphTargetInfluences[s.index];output[names[s.n]]=values[s.n];}mode='restored';if(inspection.weights)Object.assign(inspection.weights,output);return true;},
+    restore(){if(disposed||combat)return false;reset();amount=1;for(const region of R6_REGIONS)enabled[region]=true;for(let m=0;m<meshes.length;m++)for(let i=0;i<initial[m].length;i++)meshes[m].morphTargetInfluences[i]=initial[m][i];for(const s of slots){values[s.n]=s.mesh.morphTargetInfluences[s.index];output[names[s.n]]=values[s.n];}mode='restored';if(inspection.weights)Object.assign(inspection.weights,output);return true;},
     dispose(){if(disposed)return;combat=false;api.restore();legacy.dispose();disposed=true;release();},
     report(){return {schema:'shorekeeper.facial-r6/1',status:'R6_ACTING_CANDIDATE',visualQA:'VISUAL_QA_PENDING',appearanceProfile:'APPEARANCE_PROFILE_UNVERIFIED',mode,id,clock,intensity:amount,regions:{...enabled},layers:R6_LAYERS,ownership:facialOwner(inspection),weights:{...output},paused,frozen,combat,writeCount,schedulerR7:false};},
     get state(){const s=legacy.state;return {expression:mode==='candidate'?id:s.expression,id:mode==='candidate'?id:s.id,phase:mode==='candidate'?(releaseAt!==null||clock>3.55?'exit':clock<1.6?'entry':'hold'):s.phase,busy:mode==='candidate'&&clock<6.8||s.busy,blink:s.blink,paused,intensity:amount,weights:output,mode,clock,frozen};}

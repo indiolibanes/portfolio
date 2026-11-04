@@ -51,7 +51,7 @@ try{
   await fs.writeFile(path.join(out,'render-report.json'),JSON.stringify(report,null,2));console.log('VIDEO',name);
  };
  for(const [id,spec]of Object.entries(specs).filter(([id])=>!process.env.R6_BODY_ONLY&&(!process.env.R6_FAMILIES||process.env.R6_FAMILIES.split(',').includes(id))))for(const yaw of [0,45,90])await captureSequence(id,spec,yaw);
- for(const id of loaded.clips.filter(id=>!process.env.R6_FAMILIES&&/^SK_IDLE_0[123]_ORIGINAL$/.test(id)))await captureSequence('MY_STAR_ACTING_R6',specs.MY_STAR_ACTING_R6,0,id);
+ for(const id of loaded.clips.filter(id=>!process.env.R6_GESTURE_ONLY&&!process.env.R6_FAMILIES&&/^SK_IDLE_0[123]_ORIGINAL$/.test(id)))await captureSequence('MY_STAR_ACTING_R6',specs.MY_STAR_ACTING_R6,0,id);
  // Gesture reference exists in the canonical asset; private combat libraries are not presumed present.
  const gesture=loaded.clips.find(id=>/F1[._]6|GESTURE|Stand1_Action01_window/i.test(id));if(gesture&&!process.env.R6_FAMILIES)await captureSequence('LITTLE_SMILE_ACTING_R6',specs.LITTLE_SMILE_ACTING_R6,45,gesture);
  report.renderer=await call('info');report.status=report.errors.length||report.renderer.shaderErrors?'FAILED':'WEBGL_RENDER_PASS';await call('dispose');
