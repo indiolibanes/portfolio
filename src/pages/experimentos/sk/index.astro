@@ -74,6 +74,9 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <p class="sk-help" data-r2-connection-state role="status" aria-live="polite">Verificando o manifesto autenticado…</p>
 <div class="sk-help" data-r2-library-list role="list" aria-label="Bibliotecas e clipes disponíveis">Bibliotecas ainda não verificadas.</div>
 <div class="sk-actions"><button type="button" data-r2-recheck>Verificar acesso e carregar bibliotecas</button></div>
+<div class="sk-actions"><button type="button" data-r2-audit>Diagnosticar caminhos e objetos do R2</button></div>
+<p class="sk-help" data-r2-audit-status role="status" aria-live="polite">Diagnóstico ainda não executado. Não publica nomes de objetos nem credenciais.</p>
+<div class="sk-help" data-r2-audit-results role="list" aria-label="Diagnóstico dos arquivos R2"></div>
 <p class="sk-help">O modelo e as bibliotecas GLB são privados. Uma biblioteca listada no manifesto só aparece como pronta após seus clipes terem sido carregados e reconhecidos. Falhas de autorização não são contornadas.</p>
 <div class="sk-actions" aria-label="Bursts originais reconhecidas">
 <button type="button" data-r2-quick-burst="SK_BURST_01_ORIGINAL" disabled>Burst 01 · original</button>

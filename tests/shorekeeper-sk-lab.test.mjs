@@ -27,7 +27,15 @@ assert(stageCode.includes('dpr=2')&&stageCode.includes('powerPreference:\'high-p
 assert(page.includes('data-pane="rig"')&&page.includes('data-pane="visual"'),'Legacy runtime DOM hooks remain for QA');
 assert(page.includes("['acting','Apresentação']")&&page.includes("['face','Expressões']"),'Presentation-first tab layout');
 assert(!page.includes('data-view="front"')&&!page.includes('data-view="back"'),'Redundant viewport actions removed');
-assert.match(page,/index,follow/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);assert.doesNotMatch(page+script,/fetch\s*\(|XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.match(page,/index,follow/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);
+// Only the explicitly authenticated, same-origin R2 diagnostic may fetch here.
+// The existing private-model module separately handles authorized downloads.
+// No third-party requests, uploads or telemetry are permitted from the SK lab.
+assert.doesNotMatch(page,/fetch\s*\(|XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.doesNotMatch(script,/XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.equal([...script.matchAll(/\bfetch\s*\(/g)].length,1);
+assert.match(script,/fetch\('\/api\/shorekeeper\/diagnostics'/);
+assert.match(script,/credentials:'same-origin',cache:'no-store'/);
 for(const pane of ['rig','visual','face','acting'])assert.match(page,new RegExp('data-pane="'+pane+'"'));
 const pack=uri=>{const data={asset:{version:'2.0'},buffers:uri?[{byteLength:0,uri}]:[{byteLength:0}],images:[]};const raw=Buffer.from(JSON.stringify(data)),json=Buffer.concat([raw,Buffer.alloc((4-raw.length%4)%4,32)]),bytes=Buffer.alloc(20+json.length);bytes.write('glTF');bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(bytes.length,8);bytes.writeUInt32LE(json.length,12);bytes.write('JSON',16);json.copy(bytes,20);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
 assert.doesNotThrow(()=>assertSelfContainedGLB(pack(null)));assert.doesNotThrow(()=>assertSelfContainedGLB(pack('data:application/octet-stream;base64,AAAA')));
