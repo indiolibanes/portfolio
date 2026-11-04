@@ -5,7 +5,7 @@
  * email, bucket name, account ID or raw private bytes.
  * Missing environment variables fail closed.
  */
-import {readManifest,verifyAccessJwt,PRIVATE_HEADERS} from '../../_lib/shorekeeper-private.mjs';
+import {readManifest,verifyAccessJwt,normalizeAccessTeamDomain,PRIVATE_HEADERS} from '../../_lib/shorekeeper-private.mjs';
 const jsonHeaders={...PRIVATE_HEADERS,'Content-Type':'application/json; charset=utf-8'};
 const send=(state,status=200,details={})=>new Response(JSON.stringify({state,...details}),{status,headers:jsonHeaders});
 function requestJwt(request){
@@ -23,7 +23,8 @@ const entryState=(obj,bytes)=>!obj?'missing':obj.size===bytes?'present':'size_mi
  */
 function rejectedJwtReason(token,domain,audience){
  if(!token)return 'token_missing';
- if(typeof domain!=='string'||!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain))
+ const issuer=normalizeAccessTeamDomain(domain);
+ if(!issuer)
   return 'team_domain_format_invalid';
  if(typeof audience!=='string'||!/^[a-zA-Z0-9_-]{16,128}$/.test(audience))
   return 'audience_format_invalid';
@@ -33,7 +34,7 @@ function rejectedJwtReason(token,domain,audience){
   const b64=parts[1].replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-parts[1].length%4)%4);
   const claims=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64),x=>x.charCodeAt(0))));
   const auds=Array.isArray(claims.aud)?claims.aud:[claims.aud];
-  if(claims.iss!==domain)return 'issuer_mismatch';
+  if(claims.iss!==issuer)return 'issuer_mismatch';
   if(!auds.includes(audience))return 'audience_mismatch';
   const now=Math.floor(Date.now()/1000);
   if(!Number.isSafeInteger(claims.exp)||claims.exp<=now)return 'token_expired';

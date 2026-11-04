@@ -89,7 +89,7 @@ test('malformed Team Domain and malformed AUD are distinguished without returnin
   headers:{'Cf-Access-Jwt-Assertion':'header.payload.signature'}
  });
  const cases=[
-  [{SK_ACCESS_TEAM_DOMAIN:'https://example.cloudflareaccess.com/',SK_ACCESS_AUD:'a'.repeat(64)},'team_domain_format_invalid'],
+  [{SK_ACCESS_TEAM_DOMAIN:'https://example.cloudflareaccess.com/unexpected-path',SK_ACCESS_AUD:'a'.repeat(64)},'team_domain_format_invalid'],
   [{SK_ACCESS_TEAM_DOMAIN:'https://example.cloudflareaccess.com',SK_ACCESS_AUD:'Application Audience: 123'},'audience_format_invalid'],
  ];
  for(const [settings,reason] of cases){

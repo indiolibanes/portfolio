@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {generateKeyPairSync,sign} from 'node:crypto';
-import {validateManifest,verifyAccessJwt,MANIFEST_KEY} from '../functions/_lib/shorekeeper-private.mjs';
+import {validateManifest,verifyAccessJwt,normalizeAccessTeamDomain,MANIFEST_KEY} from '../functions/_lib/shorekeeper-private.mjs';
 import {onRequestGet as manifestGet} from '../functions/api/shorekeeper/manifest.js';
 import {onRequestGet as assetGet,onRequestHead as assetHead} from '../functions/api/shorekeeper/asset.js';
 const domain='https://sk-private-test.cloudflareaccess.com',aud='f'.repeat(32);
@@ -43,6 +43,24 @@ test('Access JWT validates RS256, issuer, audience and expiration',async()=>{
  assert.equal(await verifyAccessJwt(token({exp:1}),domain,aud,keyFetch),false);
  assert.equal(await verifyAccessJwt(good.slice(0,-3)+'aaa',domain,aud,keyFetch),false);
  assert.equal(await verifyAccessJwt(good,'https://evil.invalid',aud,keyFetch),false);
+});
+test('only HTTPS Cloudflare Access team origins are accepted and normalized',()=>{
+ const host='sk-private-test.cloudflareaccess.com';
+ for(const input of [
+  host,'https://'+host,'https://'+host+'/',"  \"https://"+host+"/\"  ",
+  host+'/',host.toUpperCase()
+ ])assert.equal(normalizeAccessTeamDomain(input),domain);
+ for(const invalid of [
+  null,'', 'sk-private-test','http://'+host,'https://'+host+'/cdn-cgi/access',
+  'https://'+host+'@evil.test','https://evil.test','https://'+host+'?token=x',
+  'https://sub.'+host,'https://'+host+'.evil.test','https://'+host+'/#fragment'
+ ])assert.equal(normalizeAccessTeamDomain(invalid),null);
+});
+test('valid Access JWT signature is still required after origin normalization',async()=>{
+ const jwt=token();
+ for(const input of [domain,domain+'/',domain.replace('https://',''),"  '"+domain+"/'  "])
+  assert.equal(await verifyAccessJwt(jwt,input,aud,keyFetch),true);
+ assert.equal(await verifyAccessJwt(jwt.slice(0,-4)+'abcd',domain+'/',aud,keyFetch),false);
 });
 test('Endpoints fail closed without binding, Access vars or JWT',async()=>{
  assert.equal((await manifestGet({request:req('/api/shorekeeper/manifest'),env})).status,403);
