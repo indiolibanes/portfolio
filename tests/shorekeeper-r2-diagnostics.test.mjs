@@ -48,5 +48,34 @@ test('invalid or absent JWT is rejected even if R2 binding is present',async()=>
   SHOREKEEPER_ASSETS_R2:fakeBucket()
  }});
  assert.equal(response.status,403);
- assert.equal((await response.json()).state,'access_denied');
+ const denied=await response.json();
+ assert.equal(denied.state,'access_denied');
+ assert.equal(denied.reason,'token_missing');
+});
+
+test('rejected JWT diagnostics provide hints but never bypass signature checks',async()=>{
+ const payload=(obj)=>Buffer.from(JSON.stringify(obj)).toString('base64url');
+ const now=Math.floor(Date.now()/1000);
+ const domain='https://sk-private-test.cloudflareaccess.com',aud='f'.repeat(32);
+ const badToken=(claims)=>payload({alg:'RS256',kid:'test'})+'.'+payload({
+  iss:domain,aud:[aud],exp:now+3600,iat:now-5,...claims
+ })+'.'+Buffer.from('unsigned').toString('base64url');
+ const request=(token)=>new Request('https://example.test/api/shorekeeper/diagnostics',{
+  headers:{'Cf-Access-Jwt-Assertion':token}
+ });
+ const env={SK_ACCESS_TEAM_DOMAIN:domain,SK_ACCESS_AUD:aud,SHOREKEEPER_ASSETS_R2:fakeBucket()};
+ const cases=[
+  [badToken({aud:['0'.repeat(32)]}),'audience_mismatch'],
+  [badToken({iss:'https://other.cloudflareaccess.com'}),'issuer_mismatch'],
+  [badToken({exp:1}),'token_expired'],
+  [badToken({}),'signature_or_public_key_failed'],
+ ];
+ for(const [token,reason] of cases){
+  const response=await onRequestGet({request:request(token),env});
+  assert.equal(response.status,403);
+  const body=await response.json();
+  assert.equal(body.state,'access_denied');
+  assert.equal(body.reason,reason);
+  assert.deepEqual(Object.keys(body).sort(),['reason','state']);
+ }
 });
