@@ -15,6 +15,31 @@ function requestJwt(request){
  return /(?:^|;\s*)CF_Authorization=([^;]+)/.exec(cookie)?.[1]??null;
 }
 const entryState=(obj,bytes)=>!obj?'missing':obj.size===bytes?'present':'size_mismatch';
+/**
+ * A diagnostic HINT only, never an authorization decision.
+ * It inspects untrusted JWT claims only AFTER signature verification failed.
+ * The actual Access gate stays verifyAccessJwt() and always rejects on failure.
+ * Do not return the token, claims, expected audience, issuer or any secrets.
+ */
+function rejectedJwtReason(token,domain,audience){
+ if(!token)return 'token_missing';
+ if(typeof domain!=='string'||!/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain)||
+    typeof audience!=='string'||!/^[a-zA-Z0-9_-]{16,128}$/.test(audience))
+  return 'access_configuration_invalid';
+ try{
+  if(typeof token!=='string'||token.length>16000)return 'token_unreadable';
+  const parts=token.split('.');if(parts.length!==3)return 'token_unreadable';
+  const b64=parts[1].replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-parts[1].length%4)%4);
+  const claims=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64),x=>x.charCodeAt(0))));
+  const auds=Array.isArray(claims.aud)?claims.aud:[claims.aud];
+  if(claims.iss!==domain)return 'issuer_mismatch';
+  if(!auds.includes(audience))return 'audience_mismatch';
+  const now=Math.floor(Date.now()/1000);
+  if(!Number.isSafeInteger(claims.exp)||claims.exp<=now)return 'token_expired';
+  if(Number.isFinite(claims.nbf)&&claims.nbf>now)return 'token_not_yet_valid';
+  return 'signature_or_public_key_failed';
+ }catch{return 'token_unreadable';}
+}
 
 /** Unit-testable status inspector; keys never appear in the returned structure. */
 export async function inspectShorekeeperR2(bucket){
@@ -34,8 +59,9 @@ export async function inspectShorekeeperR2(bucket){
 export async function onRequestGet({request,env}){
  if(!env?.SK_ACCESS_TEAM_DOMAIN||!env?.SK_ACCESS_AUD)
   return send('private_access_config_unavailable',503);
- if(!await verifyAccessJwt(requestJwt(request),env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD))
-  return send('access_denied',403);
+ const jwt=requestJwt(request);
+ if(!await verifyAccessJwt(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD))
+  return send('access_denied',403,{reason:rejectedJwtReason(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD)});
  if(!env.SHOREKEEPER_ASSETS_R2)
   return send('pages_r2_binding_missing',503);
  try{
