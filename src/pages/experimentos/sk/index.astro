@@ -85,6 +85,11 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <p class="sk-help">Borboletas, domínio estelar e núcleos de luz autorais. Selecione uma fase; os efeitos permanecem independentes das animações.</p>
 <div class="sk-vfx-phases" aria-label="Fases dos efeitos">{[['OFF','Desligado'],['AMBIENT','Ambiente'],['PREPARATION','Preparação'],['STELLAREALM','Stellarealm'],['RESONANCE_PEAK','Ápice'],['RECOVERY','Recuperação']].map(([id,label])=><button type="button" data-vfx-state={id} aria-pressed={id==='OFF'?'true':'false'}>{label}</button>)}</div>
 <div class="sk-vfx-systems">{[['butterflies','Borboletas'],['stellarealm','Domínio estelar'],['collapsedCore','Núcleo de luz']].map(([id,label])=><label><input type="checkbox" data-vfx-system={id} checked/>{label}</label>)}</div>
+<div class="sk-vfx-r2" data-vfx-r2 hidden>
+<label>Modo <select data-vfx-r2-mode>{['BOTH','FIELD_GAMEPLAY','CINEMATIC_CANOPY'].map((m)=><option value={m}>{m}</option>)}</select></label>
+<label>Estágio (STAGE_REFERENCE_UNVERIFIED) <select data-vfx-r2-stage><option value="outer">Outer · azul</option><option value="inner">Inner · violeta</option><option value="supernal">Supernal · dourado</option></select></label>
+<p class="sk-help">VFX R2 (<code>?vfx=r2</code>): borboleta cristalina, campo de gameplay no chão, núcleo colapsado em fases e cobertura celeste. Preview manual; QA visual pendente.</p>
+</div>
 <p data-vfx-status class="sk-help" role="status" aria-live="polite">Desligado · QA visual pendente</p>
 <button type="button" data-vfx-pause>Pausar efeitos</button>
 <details class="sk-vfx-qa"><summary>Comparar e registrar</summary>
