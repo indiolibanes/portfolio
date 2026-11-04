@@ -18,6 +18,8 @@ export const BLINK_OWNED = Object.freeze(['E_Close']);
 /** Iris leaves the eye aperture above ~0.3-0.5 in the base-colour render. */
 export const PUPIL_CAP = 0.3;
 
+import {claimFacialWriter} from './facial-ownership.mjs';
+
 const f = (o) => Object.freeze(Object.assign({}, o));
 
 export const RECIPES = Object.freeze({
@@ -49,6 +51,7 @@ export function createFaceExpressionController({meshes=[],recipes=RECIPES}={}){
   if(!Number.isInteger(index)||index<0||index>=influences?.length||!Number.isFinite(influences[index]))throw Error('Invalid morph binding: '+name);
   const base=clamp(influences[index],name.startsWith('Pupil_')?PUPIL_CAP:1);slots.push({name,index,influences,base,value:base,from:base,to:base});
  }}
+ const releaseWriter=claimFacialWriter({morphMeshes:meshes},'face-expression-recipes');
  let active=null,phase='idle',elapsed=0,timing=null,paused=false,disposed=false,blink=0,eye=0,eyeFrom=0,eyeTo=0;
  const have=new Set(slots.map(s=>s.name));
  function write(){for(const s of slots)s.influences[s.index]=clamp(s.value*(LID_CHANNELS.includes(s.name)?1-blink:1),s.name.startsWith('Pupil_')?PUPIL_CAP:1);}
@@ -63,7 +66,7 @@ export function createFaceExpressionController({meshes=[],recipes=RECIPES}={}){
    timing=next;transition((r.eyeClosure??0)*intensity);for(const s of slots)s.to=clamp(s.base+(r.weights[s.name]??0)*intensity*(1-s.base),s.name.startsWith('Pupil_')?PUPIL_CAP:1);
    active=name;phase='attack';return true;
   },
-  setBlink(v){if(!Number.isFinite(v))throw Error('Invalid blink');blink=clamp(v);write();},
+  setBlink(v){if(disposed)return;if(!Number.isFinite(v))throw Error('Invalid blink');blink=clamp(v);write();},
   getEyeClosureRequest:()=>eye,
   suspend(){paused=true;},resume(){paused=false;},cancel,
   isActive:()=>phase!=='idle',isSafeToTransfer:()=>phase==='idle',current:()=>active,
@@ -77,7 +80,7 @@ export function createFaceExpressionController({meshes=[],recipes=RECIPES}={}){
     if(remaining<=0)break;
    }write();
   },
-  dispose(){for(const s of slots)s.influences[s.index]=s.base;active=null;eye=0;phase='idle';disposed=true;},
+  dispose(){if(disposed)return;for(const s of slots)s.influences[s.index]=s.base;active=null;eye=0;phase='idle';disposed=true;releaseWriter();},
   get state(){return {phase,expression:active,paused,eyeClosure:eye,weights:Object.fromEntries(slots.map(s=>[s.name,s.influences[s.index]])),visualQA:'PENDING'};}
  };
 }

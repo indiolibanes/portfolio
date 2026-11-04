@@ -3,6 +3,7 @@ const owners = new WeakMap();
 export const facialMeshes = inspection => (inspection.morphMeshes ?? []).filter(m => ['Shorekeeper_Face', 'Shorekeeper_Eye'].includes(m.name));
 export function claimFacialWriter(inspection, label) {
   const keys = facialMeshes(inspection).map(m => m.morphTargetInfluences);
+  if (keys.some(k => !k || typeof k !== 'object')) throw Error('Invalid facial influence array');
   if (keys.some(k => owners.has(k))) throw Error('Face/Eye already have a facial writer');
   const token = {label};
   for (const k of keys) owners.set(k, token);

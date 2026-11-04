@@ -11,7 +11,7 @@ export function createGentleFace(inspection,{qaRecipes=RECIPES}={}){
  const shadow=(inspection.morphMeshes??[]).filter(m=>['Shorekeeper_Face','Shorekeeper_Eye'].includes(m.name)).map(m=>({name:m.name,morphTargetDictionary:m.morphTargetDictionary,morphTargetInfluences:Array.from(m.morphTargetInfluences)}));
  let recovered=null,external=false,combat=false;
  function createRecovered(){recovered?.dispose();for(const m of shadow)for(const [n,i] of Object.entries(m.morphTargetDictionary))m.morphTargetInfluences[i]=inspection.weights?.[n]??base[n]??0;recovered=createFaceExpressionController({meshes:shadow,recipes:qaRecipes});}
- createRecovered();
+ try{createRecovered();}catch(error){releaseWriter();throw error;}
  const support=id=>expressionSupport(names,id);
 
  function write(){weights={...base};for(const [a,b]of [['Pupil_L','Pupil_R'],['Pupil_Up','Pupil_Down']]){const signed=(weights[a]??0)-(weights[b]??0);if(a in weights)weights[a]=Math.max(0,signed);if(b in weights)weights[b]=Math.max(0,-signed);}const closure=Math.max(blink?.value??0,external?recovered.getEyeClosureRequest():0);if(names.includes('E_Close'))weights.E_Close=Math.max(base.E_Close??0,closure);for(const n of ['E_Smile_L','E_Smile_R'])if(n in weights)weights[n]*=1-closure;

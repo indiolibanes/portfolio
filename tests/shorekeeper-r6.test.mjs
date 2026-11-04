@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {createAnatomicalFaceDirector,R6_CANDIDATES,PUPIL_CAP} from '../src/scripts/shorekeeper/anatomical-face.mjs';
+import {createFaceExpressionController} from '../src/scripts/shorekeeper/shorekeeper-face-expressions.mjs';
 import {createGentleFace} from '../src/scripts/shorekeeper/gentle-acting.mjs';
 import {facialOwner} from '../src/scripts/shorekeeper/facial-ownership.mjs';
 const golden=JSON.parse(fs.readFileSync(new URL('../docs/characters/shorekeeper-r6-baseline-golden.json',import.meta.url)));
@@ -19,7 +20,7 @@ test('70 pre-R6 original GLB weight streams remain bit-exact, including blink/ma
 });
 
 test('ownership is atomic across old/new wrappers, and is relinquished only by dispose',()=>{
- const i=fixture(),f=createAnatomicalFaceDirector(i);assert.throws(()=>createGentleFace({...i}),/writer/);assert.throws(()=>createAnatomicalFaceDirector({...i}),/writer/);assert(facialOwner(i).every(m=>m.owner==='anatomical-face-r6'));f.dispose();f.dispose();const g=createGentleFace(i);assert.throws(()=>createAnatomicalFaceDirector(i),/writer/);g.dispose();const h=createAnatomicalFaceDirector(i);h.dispose();
+ const i=fixture(),f=createAnatomicalFaceDirector(i);assert.throws(()=>createGentleFace({...i}),/writer/);assert.throws(()=>createFaceExpressionController({meshes:i.morphMeshes}),/writer/);assert.throws(()=>createAnatomicalFaceDirector({...i}),/writer/);assert(facialOwner(i).every(m=>m.owner==='anatomical-face-r6'));f.dispose();f.dispose();const g=createGentleFace(i);assert.throws(()=>createAnatomicalFaceDirector(i),/writer/);g.dispose();const h=createAnatomicalFaceDirector(i);h.dispose();
 });
 
 test('all candidates stay finite and return to zero in a deterministic 600s MANUAL command simulation',()=>{
@@ -37,5 +38,5 @@ test('blink, masks, chin asymmetry, gaze direction, worried oral isolation and c
 
 test('lifecycle restores all 69 channels, rejects unsupported/unsafe inputs, freeze and pause have no writes',()=>{
  const i=fixture();i.morphMeshes[0].morphTargetInfluences[1]=.17;const initial=fingerprint(i);
- for(let cycle=0;cycle<3;cycle++){const f=createAnatomicalFaceDirector(i);assert.throws(()=>f.probe('L_P',1));assert.throws(()=>f.setIntensity(NaN));assert.throws(()=>f.seek(Infinity));assert.throws(()=>f.advance(-1));f.probe('Pupil_L',1);assert.equal(f.report().weights.Pupil_L,.3);f.playCandidate('MY_STAR_ACTING_R6');f.advance(2);f.setFrozen(true);const hold=fingerprint(i);f.advance(10);assert.equal(fingerprint(i),hold);f.setFrozen(false);f.setPaused(true);f.advance(10);assert.equal(fingerprint(i),hold);f.setPaused(false);f.restore();assert.equal(fingerprint(i),initial);f.dispose();f.dispose();assert.equal(fingerprint(i),initial);f.advance(2);assert.equal(fingerprint(i),initial);assert.equal(f.playCandidate('MY_STAR_ACTING_R6'),false);}
+ for(let cycle=0;cycle<3;cycle++){const f=createAnatomicalFaceDirector(i);assert.throws(()=>f.probe('L_P',1));assert.throws(()=>f.setIntensity(NaN));assert.throws(()=>f.seek(Infinity));assert.throws(()=>f.advance(-1));f.probe('Pupil_L',1);assert.equal(f.report().weights.Pupil_L,.3);f.playCandidate('MY_STAR_ACTING_R6');f.advance(2);f.setFrozen(true);const hold=fingerprint(i);f.advance(10);assert.equal(fingerprint(i),hold);f.setFrozen(false);f.setPaused(true);f.advance(10);assert.equal(fingerprint(i),hold);f.setPaused(false);f.restore();assert.equal(fingerprint(i),initial);f.advance(2);assert.equal(fingerprint(i),initial);f.dispose();f.dispose();assert.equal(fingerprint(i),initial);f.advance(2);assert.equal(fingerprint(i),initial);assert.equal(f.playCandidate('MY_STAR_ACTING_R6'),false);}
 });

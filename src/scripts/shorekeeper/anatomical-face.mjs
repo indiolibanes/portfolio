@@ -1,6 +1,6 @@
 import {createGentleFace} from './gentle-acting.mjs';
 import {MOUTH_QA_RECIPES} from './mouth-qa-probes.mjs';
-import {RECIPES} from './shorekeeper-face-expressions.mjs';
+import {RECIPES,LID_CHANNELS} from './shorekeeper-face-expressions.mjs';
 import {claimFacialWriter, facialMeshes, facialOwner} from './facial-ownership.mjs';
 
 export const R6_REGIONS = Object.freeze(['brow','lid','cheek','mouth','nasal','gaze']);
@@ -22,8 +22,8 @@ export const R6_CANDIDATES = Object.freeze({
   MY_STAR_ACTING_R6: candidate('My Star · atuação R6','MY_STAR_V2',{B_Happy:.18},{intermediateEyes:true}),
   AFFECT_GROWING_R6: candidate('Afeto crescente · R6','MY_STAR_R3_EYES_SOFT',{B_Happy:.1}),
   HELLO_ACTING_R6: candidate('Olá fechado · R6','HELLO_R2_CANDIDATE',{B_Happy:.12}),
-  TENDERNESS_ACTING_R6: candidate('Ternura · candidato R6','LOVE',{B_Happy:.08},{binding:'NAMED_APPEARANCE_RECIPE_UNVERIFIED'}),
-  SERENITY_ACTING_R6: candidate('Serenidade · candidato R6','HOPE',{B_Happy:.08},{binding:'NAMED_APPEARANCE_RECIPE_UNVERIFIED'}),
+  TENDERNESS_ACTING_R6: candidate('Ternura · candidato R6','LOVE',{B_Happy:.08,P_Nose_Up:.025},{binding:'NAMED_APPEARANCE_RECIPE_UNVERIFIED'}),
+  SERENITY_ACTING_R6: candidate('Serenidade · candidato R6','HOPE',{B_Happy:.08,C_Down_Face:.04},{binding:'NAMED_APPEARANCE_RECIPE_UNVERIFIED'}),
   WORRIED_FIXED_R6: candidate('Preocupação · boca neutra R6','WORRIED',{}, {oralRepair:true}),
   GLANCE_BILATERAL_R6: candidate('Olhar bilateral · R6','GLANCE',{}, {bilateral:true, duration:6.8}),
 });
@@ -52,7 +52,7 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
     Object.assign(shadow.weights,weights);
     for (const m of shadowMeshes) for (const [n,i] of Object.entries(m.morphTargetDictionary)) m.morphTargetInfluences[i]=shadow.weights[n]??0;
   };
-  const legacy = createGentleFace(shadow,{qaRecipes});
+  let legacy;try{legacy=createGentleFace(shadow,{qaRecipes});}catch(error){release();throw error;}
   const enabled = Object.fromEntries(R6_REGIONS.map(r=>[r,true]));
   let mode='neutral',id='NEUTRAL',clock=0,amount=1,paused=false,frozen=false,combat=false,disposed=false,probe=null;
   let compiled=[],closureRequest=0,releaseAt=null,releaseWeights=new Float64Array(names.length),writeCount=0;
@@ -119,7 +119,7 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
     }
     const closure=Math.max(blink,closureRequest);
     put('E_Close',closure);
-    for (const n of ['E_Smile_L','E_Smile_R']) put(n,get(n)*(1-closure));
+    for (const n of LID_CHANNELS) put(n,get(n)*(1-closure));
     // Signed gaze cancels opposing requests, with a vector (not per-axis-only) cap.
     let x=get('Pupil_L')-get('Pupil_R'),y=get('Pupil_Up')-get('Pupil_Down');
     const mag=Math.hypot(x,y),scale=mag>PUPIL_CAP?PUPIL_CAP/mag:1;
@@ -144,6 +144,7 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
     if(disposed||paused||combat)return false;
     if(name==='NEUTRAL')return recover();
     if(!qaRecipes[name]||!legacy.qaSupport(name).available)return false;
+    if(amount>0&&amount<.25)throw Error('Baseline intensity must be 0 or .25–1');
     reset();mode='baseline';id=name;
     if(amount===0){mode='neutral';id='NEUTRAL';return true;}
     // Legacy API has a .25 floor. Baseline QA samples below that are not represented as altered recipes.
@@ -164,17 +165,17 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
   const api={
     support: name=>legacy.support(name),qaSupport: name=>legacy.qaSupport(name),
     playBaseline:baseline,triggerQA:baseline,playCandidate,
-    trigger(name,options){if(disposed||combat)return false;if(name==='blink')return legacy.trigger('blink');if(name==='neutral')return recover();if(options?.automatic)return false;reset();mode='legacy';return legacy.trigger(name,options);},
+    trigger(name,options){if(disposed||combat)return false;if(name==='blink'){if(mode==='restored')reset();return legacy.trigger('blink');}if(name==='neutral')return recover();if(options?.automatic)return false;reset();mode='legacy';return legacy.trigger(name,options);},
     setIntensity(v){if(!Number.isFinite(v)||v<0||v>1)throw Error('Intensity outside 0–1');amount=v;},
     setRegion(region,v){if(!R6_REGIONS.includes(region))throw Error('Unknown facial region');enabled[region]=!!v;if(mode==='candidate'||mode==='probe')evaluate();},
     probe(name,weight){if(disposed||paused||combat)return false;if(!nameIndex.has(name)||!Number.isFinite(weight)||weight<0||weight>1)throw Error('Invalid facial probe');reset();probe={name,weight:clamp(weight,name.startsWith('Pupil_')?PUPIL_CAP:1)};mode='probe';id=name;evaluate();return true;},
     setFrozen(v){frozen=!!v;},
     seek(t){if(!Number.isFinite(t)||t<0||t>12)throw Error('Timeline outside 0–12s');if(mode!=='candidate')return false;clock=t;evaluate();return true;},
-    advance(dt,{writeFacial=true}={}){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(disposed||paused||frozen||combat||!writeFacial||!dt)return;clock+=dt;legacy.advance(dt);evaluate();},
+    advance(dt,{writeFacial=true}={}){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(disposed||paused||frozen||combat||mode==='restored'||!writeFacial||!dt)return;clock+=dt;legacy.advance(dt);evaluate();},
     setPaused(v){paused=!!v;legacy.setPaused(paused);},
     onAnimationEvent(e){if(!combatClip(e.clip))return;if(e.type==='start'){reset();combat=true;}if(e.type==='end'){combat=false;reset();}},
     interruptForCombat(){return recover();},reset,
-    restore(){if(disposed||combat)return false;reset();for(let m=0;m<meshes.length;m++)for(let i=0;i<initial[m].length;i++)meshes[m].morphTargetInfluences[i]=initial[m][i];for(const s of slots)output[names[s.n]]=s.mesh.morphTargetInfluences[s.index];if(inspection.weights)Object.assign(inspection.weights,output);return true;},
+    restore(){if(disposed||combat)return false;reset();for(let m=0;m<meshes.length;m++)for(let i=0;i<initial[m].length;i++)meshes[m].morphTargetInfluences[i]=initial[m][i];for(const s of slots){values[s.n]=s.mesh.morphTargetInfluences[s.index];output[names[s.n]]=values[s.n];}mode='restored';if(inspection.weights)Object.assign(inspection.weights,output);return true;},
     dispose(){if(disposed)return;combat=false;api.restore();legacy.dispose();disposed=true;release();},
     report(){return {schema:'shorekeeper.facial-r6/1',status:'R6_ACTING_CANDIDATE',visualQA:'VISUAL_QA_PENDING',appearanceProfile:'APPEARANCE_PROFILE_UNVERIFIED',mode,id,clock,intensity:amount,regions:{...enabled},layers:R6_LAYERS,ownership:facialOwner(inspection),weights:{...output},paused,frozen,combat,writeCount,schedulerR7:false};},
     get state(){const s=legacy.state;return {expression:mode==='candidate'?id:s.expression,id:mode==='candidate'?id:s.id,phase:mode==='candidate'?(releaseAt!==null||clock>3.55?'exit':clock<1.6?'entry':'hold'):s.phase,busy:mode==='candidate'&&clock<6.8||s.busy,blink:s.blink,paused,intensity:amount,weights:output,mode,clock,frozen};}
