@@ -1,0 +1,703 @@
+{
+  "schema": "shorekeeper-expression-reference-map/1",
+  "gate": "B1_VISUAL_PENDING",
+  "references": [
+    {
+      "file": "anxious.gif",
+      "sha256": "082e8e941f032f8a7fb0f4d745c3cdf67050f45335f38c2f089949c66ba4b4f9",
+      "frames": 49,
+      "durationSeconds": 1.63,
+      "size": [
+        498,
+        281
+      ],
+      "sampleFrames": [
+        0,
+        10,
+        19,
+        29,
+        38,
+        48
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.33,
+        0.63,
+        0.97,
+        1.27,
+        1.6
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "affective hands/gaze after B1",
+      "keyTimesSeconds": [
+        0.33,
+        0.95,
+        1.6
+      ],
+      "confidence": "low for naming anxiety; short clip, intense backlight",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "believe.gif",
+      "sha256": "aadc68ca8d4383124768b93e5148d881c11cff9f7bab03ffc4b73e7b332b5e1b",
+      "frames": 98,
+      "durationSeconds": 6.12,
+      "size": [
+        498,
+        281
+      ],
+      "sampleFrames": [
+        0,
+        19,
+        39,
+        58,
+        78,
+        97
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        1.19,
+        2.44,
+        3.63,
+        4.88,
+        6.06
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "hands/affection, isolate facial contribution after B1",
+      "keyTimesSeconds": [
+        1.19,
+        3.63,
+        6.06
+      ],
+      "confidence": "medium for gesture, low for new facial recipe",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "butterfly.gif",
+      "sha256": "b2bb2966549132ec0a5d4698e972e369aba062d98cc0381ce9eb8825f9a6b110",
+      "frames": 88,
+      "durationSeconds": 5.87,
+      "size": [
+        498,
+        248
+      ],
+      "sampleFrames": [
+        0,
+        12,
+        25,
+        37,
+        50,
+        62,
+        75,
+        87
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.8,
+        1.67,
+        2.47,
+        3.33,
+        4.13,
+        5.0,
+        5.8
+      ],
+      "cutCandidates": [
+        {
+          "frame": 33,
+          "timeSeconds": 2.2,
+          "meanRGBDifference": 68.61805555555556
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "vfx",
+      "observedUse": "hands -> individual butterfly on black -> eye closeup",
+      "keyTimesSeconds": [
+        0.8,
+        2.47,
+        3.33,
+        4.13,
+        5.0
+      ],
+      "confidence": "high for pointed wing silhouette and wing pose changes; Dim/Flare species unresolved",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "cutscene moves.gif",
+      "sha256": "486f7926bc23960eebb71a03b9d42963cc31dddc7c58779cba2979d1da1cfda4",
+      "frames": 132,
+      "durationSeconds": 4.41,
+      "size": [
+        498,
+        281
+      ],
+      "sampleFrames": [
+        0,
+        19,
+        37,
+        56,
+        75,
+        94,
+        112,
+        131
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.63,
+        1.23,
+        1.87,
+        2.5,
+        3.13,
+        3.73,
+        4.37
+      ],
+      "cutCandidates": [
+        {
+          "frame": 41,
+          "timeSeconds": 1.37,
+          "meanRGBDifference": 54.255859375
+        },
+        {
+          "frame": 80,
+          "timeSeconds": 2.67,
+          "meanRGBDifference": 72.35980902777777
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "vfx",
+      "observedUse": "moving character/camera and swept luminous arcs",
+      "keyTimesSeconds": [
+        0.63,
+        1.87,
+        3.13,
+        4.37
+      ],
+      "confidence": "high for changing shots; not a source of skeletal keyframes",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "flushed.gif",
+      "sha256": "a72e9ac397ef363a7d7dee1de472f9000021f766ae942a9caf04753f78145227",
+      "frames": 63,
+      "durationSeconds": 6.3,
+      "size": [
+        498,
+        418
+      ],
+      "sampleFrames": [
+        0,
+        12,
+        25,
+        37,
+        50,
+        62
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        1.2,
+        2.5,
+        3.7,
+        5.0,
+        6.2
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "eyelids/affect after B1",
+      "keyTimesSeconds": [
+        1.2,
+        3.7,
+        6.2
+      ],
+      "confidence": "medium; warm lighting contributes to perceived affect",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "hello.gif",
+      "sha256": "e52502aefd28cef871562158a9eb494fc167630d5c9320235db599b00aec011d",
+      "frames": 120,
+      "durationSeconds": 4.01,
+      "size": [
+        426,
+        360
+      ],
+      "sampleFrames": [
+        0,
+        24,
+        48,
+        71,
+        95,
+        119
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.8,
+        1.6,
+        2.37,
+        3.17,
+        3.97
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "smile/eyelid reference; small opening unconfirmed",
+      "keyTimesSeconds": [
+        0.8,
+        2.37,
+        3.97
+      ],
+      "confidence": "medium; title alone does not prove HELLO or jaw opening",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "hopeful flashback.gif",
+      "sha256": "0f6bcef06a67710d8992294825a5e49fb5d2d4c16b816c32850c2a37fb08ed98",
+      "frames": 87,
+      "durationSeconds": 2.91,
+      "size": [
+        498,
+        332
+      ],
+      "sampleFrames": [
+        0,
+        17,
+        34,
+        52,
+        69,
+        86
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.57,
+        1.13,
+        1.73,
+        2.3,
+        2.87
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "SERENITY naming proposal, HOPE internal alias",
+      "keyTimesSeconds": [
+        0,
+        1.73,
+        2.87
+      ],
+      "confidence": "high for closed eyes; emotion label is interpretive and not approved",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "is this love.gif",
+      "sha256": "40452a2c2ac7f02ee77c18b61b74e1b0813d1f6344bc3c6f72614d47a832677f",
+      "frames": 301,
+      "durationSeconds": 10.03,
+      "size": [
+        498,
+        281
+      ],
+      "sampleFrames": [
+        0,
+        60,
+        120,
+        180,
+        240,
+        300
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "long affective scene, not a single facial preset",
+      "keyTimesSeconds": [
+        2,
+        4,
+        8,
+        10
+      ],
+      "confidence": "medium; light near mouth and body gesture affect interpretation",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "resonance liberation cutscene.gif",
+      "sha256": "25c032963d023243c16f6137353778da84127f9d68eb417e57ba8f831f9406e9",
+      "frames": 165,
+      "durationSeconds": 5.51,
+      "size": [
+        374,
+        211
+      ],
+      "sampleFrames": [
+        0,
+        23,
+        47,
+        70,
+        94,
+        117,
+        141,
+        164
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.77,
+        1.57,
+        2.33,
+        3.13,
+        3.9,
+        4.7,
+        5.47
+      ],
+      "cutCandidates": [
+        {
+          "frame": 114,
+          "timeSeconds": 3.8,
+          "meanRGBDifference": 47.442057291666664
+        },
+        {
+          "frame": 126,
+          "timeSeconds": 4.2,
+          "meanRGBDifference": 57.42860243055556
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "vfx",
+      "observedUse": "character profile/hand gesture -> expanding overhead stellar canopy",
+      "keyTimesSeconds": [
+        0.77,
+        2.33,
+        3.9,
+        4.7,
+        5.47
+      ],
+      "confidence": "high for composition; unaligned to Burst source clocks",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "resonance liberation ingame.gif",
+      "sha256": "c59ffcc1af5fe5948ec84ec41f142c329483e1ef3b64fc50c5c805a68e260a98",
+      "frames": 86,
+      "durationSeconds": 2.86,
+      "size": [
+        498,
+        281
+      ],
+      "sampleFrames": [
+        0,
+        12,
+        24,
+        36,
+        49,
+        61,
+        73,
+        85
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.4,
+        0.8,
+        1.2,
+        1.63,
+        2.03,
+        2.43,
+        2.83
+      ],
+      "cutCandidates": [
+        {
+          "frame": 52,
+          "timeSeconds": 1.73,
+          "meanRGBDifference": 37.42578125
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "vfx",
+      "observedUse": "establishing field -> hands/core -> expansive ground/wing effect",
+      "keyTimesSeconds": [
+        0.4,
+        0.8,
+        1.63,
+        2.03,
+        2.83
+      ],
+      "confidence": "high for shot contents; includes cinematic camera, not continuous third-person gameplay proof",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "shorekeeper-wife.gif",
+      "sha256": "61c0c072e32ccb1707034e54ef8fbf30ad8d9fd9de582f41a89277ecb4d16f66",
+      "frames": 417,
+      "durationSeconds": 13.93,
+      "size": [
+        345,
+        374
+      ],
+      "sampleFrames": [
+        0,
+        82,
+        166,
+        249,
+        333,
+        416
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        2.77,
+        5.57,
+        8.33,
+        11.13,
+        13.9
+      ],
+      "cutCandidates": [
+        {
+          "frame": 170,
+          "timeSeconds": 5.7,
+          "meanRGBDifference": 87.96267361111111
+        },
+        {
+          "frame": 191,
+          "timeSeconds": 6.4,
+          "meanRGBDifference": 87.470703125
+        },
+        {
+          "frame": 205,
+          "timeSeconds": 6.87,
+          "meanRGBDifference": 44.61046006944444
+        },
+        {
+          "frame": 206,
+          "timeSeconds": 6.9,
+          "meanRGBDifference": 64.78038194444444
+        },
+        {
+          "frame": 317,
+          "timeSeconds": 10.6,
+          "meanRGBDifference": 46.41102430555556
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "montage",
+      "observedUse": "multiple shots only, no continuous facial interpolation",
+      "keyTimesSeconds": [
+        2.77,
+        5.57,
+        8.33,
+        11.13,
+        13.9
+      ],
+      "confidence": "high for montage; no single preset correspondence",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "smile.gif",
+      "sha256": "c1e1815b4d3dd16b8c16fc9232f1af8648d7c5f1d7aefb55e45f5f661a8d5e12",
+      "frames": 174,
+      "durationSeconds": 6.96,
+      "size": [
+        300,
+        300
+      ],
+      "sampleFrames": [
+        0,
+        35,
+        69,
+        104,
+        138,
+        173
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        1.4,
+        2.76,
+        4.16,
+        5.52,
+        6.92
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "candidate LITTLE_SMILE_V2 subtle smile reference",
+      "keyTimesSeconds": [
+        4.16,
+        5.52,
+        6.92
+      ],
+      "confidence": "medium; head turn and camera change precede mouth comparison",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "sweet smile.gif",
+      "sha256": "69d0952a3c9adba4207b68110110c272af6378841157dba979dd27d209e6e025",
+      "frames": 84,
+      "durationSeconds": 3.36,
+      "size": [
+        400,
+        400
+      ],
+      "sampleFrames": [
+        0,
+        17,
+        33,
+        50,
+        66,
+        83
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.68,
+        1.32,
+        2.0,
+        2.64,
+        3.32
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "candidate MY_STAR_V2 broader smile reference",
+      "keyTimesSeconds": [
+        1.32,
+        2,
+        2.64
+      ],
+      "confidence": "high for visible mouth curvature; medium for matching the user preset; not a rig-equivalence claim",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "welcome back.gif",
+      "sha256": "23e262f551d927bb06e64baef43ff9e7e8836ead9c23996d1b3bae8010b69d5f",
+      "frames": 210,
+      "durationSeconds": 7.0,
+      "size": [
+        254,
+        254
+      ],
+      "sampleFrames": [
+        0,
+        42,
+        84,
+        125,
+        167,
+        209
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        1.39,
+        2.79,
+        4.18,
+        5.58,
+        6.97
+      ],
+      "cutCandidates": [
+        {
+          "frame": 25,
+          "timeSeconds": 0.85,
+          "meanRGBDifference": 48.39301215277778
+        }
+      ],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "late front-facing smile after wide shot/head turn",
+      "keyTimesSeconds": [
+        4.18,
+        5.58,
+        6.97
+      ],
+      "confidence": "medium; first wide shot is unsuitable as mouth evidence",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    },
+    {
+      "file": "worried.gif",
+      "sha256": "e56108b98171aeee4a8a2482196c15ccc9946dbce815ff7bf183674b66b1ad06",
+      "frames": 125,
+      "durationSeconds": 4.16,
+      "size": [
+        498,
+        230
+      ],
+      "sampleFrames": [
+        0,
+        25,
+        50,
+        74,
+        99,
+        124
+      ],
+      "sampleTimesSeconds": [
+        0.0,
+        0.83,
+        1.67,
+        2.47,
+        3.3,
+        4.13
+      ],
+      "cutCandidates": [],
+      "cutMethod": "48x32 mean RGB absolute difference > max(30,99th percentile); heuristic, requires shot inspection",
+      "kind": "facial",
+      "observedUse": "preserve prior geometry; APPREHENSION name remains a proposal",
+      "keyTimesSeconds": [
+        0.83,
+        2.47,
+        4.13
+      ],
+      "confidence": "medium; lateral gaze can also read as reflection",
+      "association": "CANDIDATE_NOT_CANONICAL_MAPPING",
+      "visualSource": "LOCAL_GIF_SAMPLED_FRAMES",
+      "publishedImages": false
+    }
+  ],
+  "naming": {
+    "MY_STAR_V2": "baseline test ID; no recovered smile claimed",
+    "LITTLE_SMILE_V2": "baseline test ID; no recovered smile claimed",
+    "LOVE": "TENDERNESS proposed only after B1",
+    "HOPE": "SERENITY proposed; preserve HOPE alias",
+    "SURPRISE_SOFT": "SOFT_CURIOSITY proposed; preserve geometry/name pending approval",
+    "WORRIED": "APPREHENSION proposed; preserve geometry/name pending approval",
+    "GLANCE": "preserve existing geometry"
+  },
+  "videoAccess": "REFERENCE_VIDEO_ACCESS_BLOCKED: official YouTube open returned DisabledError; no video frames inspected",
+  "otherSources": [
+    {
+      "url": "https://wutheringwaves.kurogames.com/en/main/news/detail/1398",
+      "access": "no readable content returned"
+    },
+    {
+      "url": "https://www.prydwen.gg/wuthering-waves/characters/the-shorekeeper",
+      "access": "text retrieved, secondary reference; not visual or primary technical evidence"
+    }
+  ]
+}

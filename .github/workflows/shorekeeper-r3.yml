@@ -1,0 +1,22 @@
+name: Shorekeeper R3 structural gates
+on:
+  pull_request:
+    paths: ['src/scripts/shorekeeper/**', 'src/scripts/shorekeeper-sk-lab.mjs', 'src/pages/experimentos/sk/**', 'tests/shorekeeper-*', 'scripts/shorekeeper/**', '.node-version', '.github/workflows/shorekeeper-r3.yml']
+jobs:
+  structural:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/shorekeeper-*.test.mjs
+      - run: node tests/shorekeeper-f16/synthetic-test.mjs
+      - run: node --test tests/performance-route-isolation.test.mjs tests/build-hygiene.test.mjs
+      - run: npm run check
+      - run: npm run build
+      - run: python3 -m py_compile scripts/shorekeeper/convert-burst.py scripts/shorekeeper/convert-advanced-combat.py
+# Public CI never downloads canonical GLB, source animations, reference GIFs or private captures.
+# A green result is structural only. GPU/Samsung/human visual gates remain separate.

@@ -1,0 +1,13 @@
+// Local CPU-only checks; private model/library arguments, mocked PNG decoding. Never visual approval.
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';import * as T from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createInspection} from '../src/scripts/shorekeeper/inspection.mjs';import {createGentleFace,GENTLE_MORPHS} from '../src/scripts/shorekeeper/gentle-acting.mjs';import {EXPRESSION_IDS,FACIAL_VALIDATION} from '../src/scripts/shorekeeper/expression-library.mjs';import {createOriginalIdleDirector,findOriginalClip,ORIGINAL_IDLE_IDS} from '../src/scripts/shorekeeper/original-idle-director.mjs';
+globalThis.self=globalThis;globalThis.createImageBitmap=async()=>({width:2048,height:2048,close(){}});
+async function load(p){const b=fs.readFileSync(p);return new GLTFLoader().parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),'');}
+if(!process.argv[2]||!process.argv[3])throw Error('Usage: node tests/shorekeeper-gentle-acting-private.mjs PRIVATE_MODEL.glb PRIVATE_LIBRARY_DIRECTORY');
+const m=await load(process.argv[2]),inspect=createInspection(m.scene),face=createGentleFace(inspect);assert.deepEqual(face.state.missing,[]);
+const pose=()=>inspect.bones.map(b=>[...b.position,...b.quaternion,...b.scale]);const digest=clip=>{const h=createHash('sha256');h.update(clip.name+clip.duration);for(const t of clip.tracks){h.update(t.name);for(const a of [t.times,t.values])h.update(Buffer.from(a.buffer,a.byteOffset,a.byteLength));}return h.digest('hex');};
+let samples=0,presets=0;
+for(const id of ORIGINAL_IDLE_IDS){const a=await load(path.join(process.argv[3],id+'.animations.glb')),clip=findOriginalClip(a.animations,id),hash=digest(clip);
+ for(const expression of [...EXPRESSION_IDS.filter(id=>FACIAL_VALIDATION[id]!=='UNSUPPORTED'),'blink']){face.reset();const d=createOriginalIdleDirector(T,m.scene,clip);d.start();assert(face.trigger(expression));for(let n=0;n<100;n++){d.advance(.1);const bones=pose();face.advance(.1);assert.deepEqual(pose(),bones,'Morph layer cannot change any bone');for(const name of GENTLE_MORPHS){const value=inspect.weights[name]??0;assert(Number.isFinite(value)&&value>=0&&value<=1);if(name.startsWith('Pupil'))assert(value<=.3);}samples++;}assert(!face.state.busy);d.interrupt();for(let n=0;n<10;n++)d.advance(.1);assert.equal(d.state.phase,'idle');assert(inspect.restError()<1e-7);d.dispose();presets++;}assert.equal(digest(clip),hash,'Source data unchanged');
+}
+console.log(JSON.stringify({result:'CPU_PASS',originalIdles:3,presets,samples,morphs:GENTLE_MORPHS.length,boneWrites:0,sourceClipsUnchanged:true,webgl:'NOT_TESTED',pngDecode:'MOCKED'},null,2));

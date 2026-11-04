@@ -1,0 +1,94 @@
+name: Shorekeeper synthetic and inspection lab
+on:
+  pull_request:
+    paths:
+      - 'tests/shorekeeper-f16/**'
+      - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-combat.test.mjs'
+      - 'tests/shorekeeper-c3-advanced.test.mjs'
+      - 'tests/shorekeeper-c4-burst.test.mjs'
+      - 'tests/shorekeeper-cl1-root-rebase.test.mjs'
+      - 'tests/shorekeeper-cl11-root-body-owned.test.mjs'
+      - 'scripts/shorekeeper/convert-burst.py'
+      - 'scripts/shorekeeper/convert-advanced-combat.py'
+      - 'tests/shorekeeper-presentation-combat.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
+      - 'tests/shorekeeper-gentle-acting.test.mjs'
+      - 'tests/shorekeeper-expression-library.test.mjs'
+      - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
+      - 'tests/shorekeeper-f2-facial-release.test.mjs'
+      - 'tests/shorekeeper-b7/**'
+      - 'tests/shorekeeper-private-model-cache.test.mjs'
+      - 'tests/shorekeeper-mouth-weld.test.mjs'
+      - 'src/scripts/shorekeeper/mouth-ribbon-weld.mjs'
+      - 'src/pages/experimentos/sk/**'
+      - 'src/scripts/shorekeeper-sk-lab.mjs'
+      - 'src/scripts/shorekeeper/**'
+      - 'src/styles/shorekeeper-sk-lab.css'
+      - 'src/styles/shorekeeper-material3.css'
+      - 'src/styles/shorekeeper-presentation.css'
+      - '.github/workflows/shorekeeper-f16.yml'
+  push:
+    paths:
+      - 'tests/shorekeeper-f16/**'
+      - 'tests/shorekeeper-sk-lab.test.mjs'
+      - 'tests/shorekeeper-combat.test.mjs'
+      - 'tests/shorekeeper-c3-advanced.test.mjs'
+      - 'tests/shorekeeper-c4-burst.test.mjs'
+      - 'tests/shorekeeper-cl1-root-rebase.test.mjs'
+      - 'tests/shorekeeper-cl11-root-body-owned.test.mjs'
+      - 'scripts/shorekeeper/convert-burst.py'
+      - 'scripts/shorekeeper/convert-advanced-combat.py'
+      - 'tests/shorekeeper-presentation-combat.test.mjs'
+      - 'tests/shorekeeper-original-idles.test.mjs'
+      - 'tests/shorekeeper-gentle-acting.test.mjs'
+      - 'tests/shorekeeper-expression-library.test.mjs'
+      - 'tests/shorekeeper-b5.test.mjs'
+      - 'tests/shorekeeper-b7.test.mjs'
+      - 'tests/shorekeeper-facial-runtime.test.mjs'
+      - 'tests/shorekeeper-f2-facial-release.test.mjs'
+      - 'tests/shorekeeper-b7/**'
+      - 'tests/shorekeeper-private-model-cache.test.mjs'
+      - 'src/pages/experimentos/sk/**'
+      - 'src/scripts/shorekeeper-sk-lab.mjs'
+      - 'src/scripts/shorekeeper/**'
+      - 'src/styles/shorekeeper-sk-lab.css'
+      - 'src/styles/shorekeeper-material3.css'
+      - 'src/styles/shorekeeper-presentation.css'
+      - '.github/workflows/shorekeeper-f16.yml'
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: node tests/shorekeeper-f16/synthetic-test.mjs
+      - run: node tests/shorekeeper-sk-lab.test.mjs
+
+      - run: node tests/shorekeeper-original-idles.test.mjs
+      - run: node tests/shorekeeper-gentle-acting.test.mjs
+
+      - run: node tests/shorekeeper-expression-library.test.mjs
+
+      - run: node tests/shorekeeper-b5.test.mjs
+
+      - run: node tests/shorekeeper-private-model-cache.test.mjs
+
+      - run: node tests/shorekeeper-b7.test.mjs
+      - run: node --test tests/shorekeeper-facial-runtime.test.mjs tests/shorekeeper-mouth-forensics.test.mjs tests/shorekeeper-mouth-weld.test.mjs tests/shorekeeper-mouth-r3.test.mjs
+      - run: node tests/shorekeeper-f2-facial-release.test.mjs
+
+      - run: node tests/shorekeeper-combat.test.mjs
+      - run: node tests/shorekeeper-presentation-combat.test.mjs
+      - run: node tests/shorekeeper-c3-advanced.test.mjs
+      - run: node tests/shorekeeper-c4-burst.test.mjs
+      - run: node tests/shorekeeper-cl1-root-rebase.test.mjs
+      - run: node tests/shorekeeper-cl11-root-body-owned.test.mjs
+      - run: python3 -m py_compile scripts/shorekeeper/convert-burst.py
+      - run: python3 -m py_compile scripts/shorekeeper/convert-advanced-combat.py

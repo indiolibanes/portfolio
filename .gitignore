@@ -22,3 +22,7 @@ qa-results/
 /preview.log
 /local-private/
 **/PRIVATE_*.glb
+
+# Local Python conversion/QA caches
+__pycache__/
+*.pyc
