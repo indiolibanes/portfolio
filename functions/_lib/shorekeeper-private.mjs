@@ -96,7 +96,7 @@ export async function diagnoseAccessSigningKey(token,domain,audience,fetcher=fet
  if(!Array.isArray(jwks?.keys)||jwks.keys.length===0||jwks.keys.length>12)return 'certificates_response_invalid';
  const keyData=jwks.keys.find(k=>k?.kid===header.kid);
  if(!keyData)return 'signing_key_not_found';
- if(keyData.kty!=='RSA'||typeof keyData.n!=='string'||typeof keyData.e!=='string')return 'signing_key_invalid';
+ if(keyData.kty!=='RSA'||typeof keyData.n!=='string'||typeof keyData.e!=='string'||!/^[-_A-Za-z0-9]+$/.test(keyData.n)||!/^[-_A-Za-z0-9]+$/.test(keyData.e))return 'signing_key_invalid';
  let publicKey;
  try{
   publicKey=await crypto.subtle.importKey('jwk',{kty:'RSA',n:keyData.n,e:keyData.e,alg:'RS256',ext:true},
