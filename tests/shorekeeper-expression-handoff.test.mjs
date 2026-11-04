@@ -6,6 +6,8 @@ const byId = id => p.proposals.find(x => x.id === id);
 test('human acceptance does not activate runtime presets or release', () => {
   assert.equal(p.active, false);
   assert.equal(p.releaseReady, false);
+  assert.equal(p.humanApproval, null);
+  assert.equal(p.visualReview.observedOn, '2026-11-04');
   assert.match(p.geometry, /TO_LOCK/);
   assert.ok(p.approvalContract.require.some(x => x.includes('morph weight map')));
 });
