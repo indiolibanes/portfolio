@@ -5,7 +5,7 @@
  * email, bucket name, account ID or raw private bytes.
  * Missing environment variables fail closed.
  */
-import {readManifest,verifyAccessJwt,PRIVATE_HEADERS} from '../../_lib/shorekeeper-private.mjs';
+import {readManifest,verifyAccessJwt,diagnoseAccessSigningKey,PRIVATE_HEADERS} from '../../_lib/shorekeeper-private.mjs';
 const jsonHeaders={...PRIVATE_HEADERS,'Content-Type':'application/json; charset=utf-8'};
 const send=(state,status=200,details={})=>new Response(JSON.stringify({state,...details}),{status,headers:jsonHeaders});
 function requestJwt(request){
@@ -61,8 +61,13 @@ export async function onRequestGet({request,env}){
  if(!env?.SK_ACCESS_TEAM_DOMAIN||!env?.SK_ACCESS_AUD)
   return send('private_access_config_unavailable',503);
  const jwt=requestJwt(request);
- if(!await verifyAccessJwt(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD))
-  return send('access_denied',403,{reason:rejectedJwtReason(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD)});
+ if(!await verifyAccessJwt(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD)){
+  const reason=rejectedJwtReason(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD);
+  const detail=reason==='signature_or_public_key_failed'
+   ?await diagnoseAccessSigningKey(jwt,env.SK_ACCESS_TEAM_DOMAIN,env.SK_ACCESS_AUD)
+   :reason;
+  return send('access_denied',403,{reason:detail});
+ }
  if(!env.SHOREKEEPER_ASSETS_R2)
   return send('pages_r2_binding_missing',503);
  try{
