@@ -250,14 +250,14 @@ export class ShorekeeperVfxR2Director {
     this._m = new T.Matrix4(); this._m0 = new T.Matrix4(); this._q = new T.Quaternion(); this._e = new T.Euler(); this._p = new T.Vector3(); this._s = new T.Vector3();
   }
   /* ---------- control ---------- */
-  setState(state) { if (this.disposed) return false; if (!VFX_R2_STATES.includes(state)) throw Error('Estado VFX inválido: ' + state); this.state = state; this.from.set(this.levels); this.target.set(LEVELS[state]); this.transition = 0; if (state === 'PREPARATION' && !this.coreFrozen) this.corePhase = 0; return true; }
+  setState(state) { if (this.disposed) return false; if (!VFX_R2_STATES.includes(state)) throw Error('Estado VFX inválido: ' + state); this.state = state; this.from.set(this.levels); this.target.set(LEVELS[state]); this.transition = 0;if(this.reducedMotion){this.levels.set(this.target);this.transition=1.25;this.renderPose();} if (state === 'PREPARATION' && !this.coreFrozen) this.corePhase = 0; return true; }
   /** Manual sequence OFF -> AMBIENT -> PREPARATION -> STELLAREALM -> RESONANCE_PEAK -> RECOVERY -> OFF. */
   next() { const i = VFX_R2_STATES.indexOf(this.state); return this.setState(i === VFX_R2_STATES.length - 1 ? 'OFF' : VFX_R2_STATES[i + 1]); }
   /** 'stellarealm' (the R1 toggle in the lab UI) switches both the gameplay field and the canopy. */
   setEnabled(system, value) { if (system === 'stellarealm') { this.enabled.field = this.enabled.canopy = !!value; this.renderPose(); return; } if (!(system in this.enabled)) throw Error('Sistema VFX inválido'); this.enabled[system] = !!value; this.renderPose(); }
   setMode(mode) { if (!VFX_R2_MODES.includes(mode)) throw Error('Modo VFX inválido'); this.mode = mode; this.renderPose(); }
   setStage(stage) { if (!(stage in STAGE_TINTS)) throw Error('Estágio inválido'); this.stage = stage; this.tint.set(...STAGE_TINTS[stage]); }
-  setReducedMotion(v) { this.reducedMotion = !!v; this.renderPose(); }
+  setReducedMotion(v) { this.reducedMotion = !!v;if(this.reducedMotion){this.levels.set(this.target);this.transition=1.25;} this.renderPose(); }
   setSuspended(v) { this.suspended = !!v; }
   /** QA only (Gate C1): shows a single butterfly at a fixed pose {pos:[x,y,z] in character units, fwd:[x,y,z], flap, bank, scale}; null restores the swarm. flap is the wing dihedral in radians: 0 = wings fully spread (open), ~1.4 = raised together (closed). */
   qaButterfly(pose) { this.qaPose = pose ? {pos: [0, 0, 0], fwd: [0, 0, 1], flap: 0.7, bank: 0, scale: 0.16, ...pose} : null; this.wings.geometry.instanceCount = pose ? 2 : this.counts.butterflies * 2;this.wings.count=this.wings.geometry.instanceCount; this.renderPose(); }

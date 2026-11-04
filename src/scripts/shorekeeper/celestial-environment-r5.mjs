@@ -9,6 +9,9 @@ export class CelestialEnvironmentR5 extends CelestialEnvironmentR4 {
   const old=this.ruins.geometry,parts=[old];
   for(const x of [-.55,.55])for(let step=0;step<3;step++){const g=new T.BoxGeometry(.34-step*.065,.065,.36-step*.06);g.translate(x,.0325+step*.065,0);parts.push(g);}
   for(const x of [-.55,.55]){const g=new T.BoxGeometry(.055,.92,.045);g.translate(x,.69,.115);parts.push(g);}
+  // Keep portrait cameras inside the arcade; near columns previously occluded the character.
+  const matrix=new T.Matrix4(),position=new T.Vector3(),rotation=new T.Quaternion(),scale=new T.Vector3();
+  for(let i=0;i<this.ruins.count;i++){this.ruins.getMatrixAt(i,matrix);matrix.decompose(position,rotation,scale);const radial=18+(i%4)*1.8,k=radial/Math.hypot(position.x,position.z);position.x*=k;position.z*=k;scale.multiplyScalar(2.15);matrix.compose(position,rotation,scale);this.ruins.setMatrixAt(i,matrix);}this.ruins.instanceMatrix.needsUpdate=true;
   // Merge only per-vertex attributes: retain the instance damage field separately.
   const damage=old.getAttribute('iDamage');old.deleteAttribute('iDamage');const g=mergeGeometries(parts);g.setAttribute('iDamage',damage);this.ruins.geometry=g;for(const p of parts)p.dispose();
 
@@ -17,7 +20,8 @@ export class CelestialEnvironmentR5 extends CelestialEnvironmentR4 {
   stone.vertexShader=patchShader(stone.vertexShader,'attribute float iDamage;', 'varying vec3 vStoneNormal;attribute float iDamage;','R5 stone normals declaration');
   stone.vertexShader=patchShader(stone.vertexShader,'vDamage=iDamage;','vStoneNormal=normalize(mat3(modelMatrix)*mat3(instanceMatrix)*normal);vDamage=iDamage;','R5 stone normal transform');
   stone.fragmentShader=patchShader(stone.fragmentShader,'varying float vDamage;', 'varying vec3 vStoneNormal;varying float vDamage;','R5 stone normal varying');
-  stone.fragmentShader=patchShader(stone.fragmentShader,'vec3 c=mix(stone,vec3(.02,.065,.12),smoothstep(12.,30.,vDistance));','float key=.48+.52*max(0.,dot(normalize(vStoneNormal),normalize(vec3(.25,.8,.4))));stone=stone*key*1.6+vec3(.008,.015,.025);vec3 c=mix(stone,vec3(.02,.065,.12),smoothstep(12.,30.,vDistance));','R5 stone light and depth');
+  stone.vertexShader=patchShader(stone.vertexShader,'vDistance=length(mv.xyz);','vDistance=length(mv.xyz)/max(length(modelMatrix[0].xyz),.001);','R5 fog in character heights');
+  stone.fragmentShader=patchShader(stone.fragmentShader,'vec3 c=mix(stone,vec3(.02,.065,.12),smoothstep(12.,30.,vDistance));','float key=.48+.52*max(0.,dot(normalize(vStoneNormal),normalize(vec3(.25,.8,.4))));stone=stone*key*1.6+vec3(.008,.015,.025);vec3 c=mix(stone,vec3(.02,.065,.12),smoothstep(18.,42.,vDistance));','R5 stone light and depth');
   sky.needsUpdate=ground.needsUpdate=stone.needsUpdate=true;
  }
 }
