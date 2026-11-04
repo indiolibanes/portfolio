@@ -8,7 +8,7 @@ export function smoothStation(curve, x) {
  const a=curve[i],b=curve[i+1],t=smooth(clamp((x-a.x)/Math.max(1e-9,b.x-a.x),0,1));
  return a.d.map((v,k)=>v+(b.d[k]-v)*t);
 }
-export function createMouthR3(model,{thickness=.28,lift=.48}={}) {
+export function createMouthR3(model,{thickness=.28,lift=.48,smileGain=.65,addGain=.45,stationInterpolator=smoothStation}={}) {
  if(!(thickness>=.15&&thickness<=1)||!(lift>=0&&lift<=.7))throw Error('Invalid mouth candidate bounds');
  const face=model.getObjectByName('Shorekeeper_Face');
  if(!face?.geometry?.morphTargetsRelative)throw Error('Relative canonical Face required');
@@ -23,7 +23,7 @@ export function createMouthR3(model,{thickness=.28,lift=.48}={}) {
   const ys=near.map(i=>P.getY(i));
   stations.push({x:cx,d:[0,ys.length?(Math.min(...ys)+Math.max(...ys))/2:1.3445,0]});
  }
- for(const i of ids){const cy=smoothStation(stations,P.getX(i))[1];g.attributes.position.setY(i,cy+(P.getY(i)-cy)*thickness);}
+ for(const i of ids){const cy=stationInterpolator(stations,P.getX(i))[1];g.attributes.position.setY(i,cy+(P.getY(i)-cy)*thickness);}
  const report=[];
  for(const name of WELD_MORPHS){
   const mi=face.morphTargetDictionary[name];if(mi===undefined)continue;
@@ -31,11 +31,11 @@ export function createMouthR3(model,{thickness=.28,lift=.48}={}) {
   const delta=Float64Array.from(ids.flatMap(i=>[a.getX(i),a.getY(i),a.getZ(i)]));
   const field=buildStationCurve({x,delta,anchor:3e-3,center:.75e-3,tolerance:.7e-3});
   if(field.reason!=='ok')continue;
-  const gain=name.startsWith('M_Smile')?.65:name.startsWith('P_M_')?.45:.8;
+  const gain=name.startsWith('M_Smile')?smileGain:name.startsWith('P_M_')?addGain:.8;
   let changed=0;
   ids.forEach((i,k)=>{
    if(Math.sign(x[k])!==field.side)return;
-   const d=smoothStation(field.curve,Math.abs(x[k]));
+   const d=stationInterpolator(field.curve,Math.abs(x[k]));
    // All partners use the same smooth displacement, including originally moved partners.
    const dy=clamp(d[1]*gain,-1.8e-3,1.8e-3);
    target.setXYZ(i,d[0]*gain,dy,d[2]*gain+Math.max(0,dy)*lift);changed++;

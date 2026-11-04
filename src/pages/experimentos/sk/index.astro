@@ -3,6 +3,7 @@ import '../../../styles/shorekeeper-sk-lab.css';
 import '../../../styles/shorekeeper-material3.css';
 import '../../../styles/shorekeeper-presentation.css';
 import {EXPRESSION_LIBRARY} from '../../../scripts/shorekeeper/expression-library.mjs';
+import {APPROVED_MANUAL_GESTURES} from '../../../scripts/shorekeeper/approved-manual-gallery.mjs';
 const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
 const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integration-20261104';
 ---
@@ -86,30 +87,32 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <div class="sk-vfx-phases" aria-label="Fases dos efeitos">{[['OFF','Desligado'],['AMBIENT','Ambiente'],['PREPARATION','Preparação'],['STELLAREALM','Stellarealm'],['RESONANCE_PEAK','Ápice'],['RECOVERY','Recuperação']].map(([id,label])=><button type="button" data-vfx-state={id} aria-pressed={id==='OFF'?'true':'false'}>{label}</button>)}</div>
 <div class="sk-vfx-systems">{[['butterflies','Borboletas'],['stellarealm','Domínio estelar'],['collapsedCore','Núcleo de luz']].map(([id,label])=><label><input type="checkbox" data-vfx-system={id} checked/>{label}</label>)}</div>
 <div class="sk-vfx-r2" data-vfx-r2 hidden>
-<label>Modo <select data-vfx-r2-mode>{['BOTH','FIELD_GAMEPLAY','CINEMATIC_CANOPY'].map((m)=><option value={m}>{m}</option>)}</select></label>
+<label>Perfil em comparação <select data-vfx-profile><option value="r2">R2</option><option value="r3">R3</option><option value="r4">R4</option><option value="r5">R5</option></select></label><button type="button" data-vfx-next>Próxima fase</button><label>Modo <select data-vfx-r2-mode>{['BOTH','FIELD_GAMEPLAY','CINEMATIC_CANOPY'].map((m)=><option value={m}>{m}</option>)}</select></label>
 <label>Estágio (STAGE_REFERENCE_UNVERIFIED) <select data-vfx-r2-stage><option value="outer">Outer · azul</option><option value="inner">Inner · violeta</option><option value="supernal">Supernal · dourado</option></select></label>
 <label>Borboleta <select data-vfx-exemplar><option value="swarm">Enxame</option><option value="0">Asas abertas</option><option value=".7">Meio batimento</option><option value="1.4">Asas fechadas</option></select></label><label>Ângulo da prova <select data-vfx-exemplar-angle><option value="0">0°</option><option value=".7853981634">45°</option><option value="1.5707963268">90°</option></select></label>
-<p class="sk-help">Perfil de inspeção (<code>?vfx=r2</code> compara a Rodada 2): borboleta cristalina, campo de gameplay no chão, núcleo colapsado em fases e cobertura celeste. Preview manual; QA visual pendente.</p>
+<p class="sk-help">R4 opt-in: <code>?vfx=r4</code>. Perfil de inspeção (<code>?vfx=r2</code> compara a Rodada 2): borboleta cristalina, campo de gameplay no chão, núcleo colapsado em fases e cobertura celeste. Preview manual; QA visual pendente.</p>
 </div>
 <div class="sk-actions"><button type="button" data-vfx-story>Sequência celestial · 18 s</button><button type="button" data-vfx-story-stop>Voltar à câmera manual</button></div><label class="sk-toggle"><input type="checkbox" data-vfx-story-camera/> Câmera narrativa opcional</label>
 <p data-vfx-status class="sk-help" role="status" aria-live="polite">Desligado · QA visual pendente</p>
-<button type="button" data-vfx-celestial-view>Campo e céu · vista celestial</button><button type="button" data-vfx-pause>Pausar efeitos</button>
+<button type="button" data-vfx-celestial-view="front">Campo e céu · frontal</button><button type="button" data-vfx-celestial-view="quarter">Campo e céu · ¾</button><button type="button" data-vfx-pause>Pausar efeitos</button>
 <details class="sk-vfx-qa"><summary>Comparar e registrar</summary>
 <div class="sk-actions"><button type="button" data-vfx-view="front">Frontal</button><button type="button" data-vfx-view="quarter">Três quartos</button><button type="button" data-vfx-capture>↓ Captura local</button><button type="button" data-vfx-report>↓ Métricas locais</button><button type="button" data-vfx-context>Testar restauração WebGL</button></div>
 <p class="sk-help">A prévia funciona sem modelo. Capturas e métricas ficam no seu dispositivo. A confirmação artística e o teste no Samsung Internet estão pendentes.</p>
 </details>
 </details>
-<details data-combo-qa hidden><summary>Combo experimental · QA</summary><label>Root <select data-combo-root><option>ORIGINAL</option><option>REBASED</option><option>ROOT_BODY_OWNED</option></select></label><button type="button" data-combo-start>BasicAttack1–4 → Burst02 → recuperação</button><label>Tempo determinístico<input data-combo-seek type="range" min="0" max="1" step=".001" value="0"/></label><p class="sk-help">Fontes privadas obrigatórias. Sem BasicAttack1–4, o fallback usa somente Burst02 e Idle01. Aterrissagem e transições aguardam QA visual.</p></details>
+<div data-r5-tools hidden><button type="button" data-r5-rollback>Restaurar perfil R4</button><p class="sk-help">R5 experimental · aprovação visual e teste no dispositivo pendentes.</p></div><details data-combo-qa hidden><summary>Combo experimental · QA</summary><label>Root <select data-combo-root><option>ORIGINAL</option><option>REBASED</option><option>ROOT_BODY_OWNED</option></select></label><label class="sk-toggle"><input type="checkbox" data-combo-landing/> Landing R4 · experimental</label><label>Recuperação <select data-combo-recovery><option value="r4">R4 · referência</option><option value="r5">R5 · candidata</option></select></label><label class="sk-toggle"><input type="checkbox" data-combo-camera/> Câmera opcional · corpo inteiro</label><button type="button" data-combo-start>BasicAttack1–4 → Skill01 → Burst02 → recuperação</button><button type="button" data-combo-cancel hidden>Cancelar preparação</button><p data-combo-progress role="status" aria-live="polite"></p><label>Tempo determinístico<input data-combo-seek type="range" min="0" max="1" step=".001" value="0"/></label><p class="sk-help">Fontes privadas obrigatórias. Sem BasicAttack1–4, o fallback usa somente Burst02 e Idle01. Aterrissagem e transições aguardam QA visual.</p></details>
 <details data-mouth-qa hidden class="sk-mouth-qa" open>
 <summary>Gate B1 · isolamento da boca</summary>
-<p class="sk-help">Bancada privada de diagnóstico. V2 identifica os controles de base das duas provas; a recuperação do sorriso ainda não foi demonstrada em WebGL.</p>
+<p class="sk-help">Bancada privada de diagnóstico. V2 identifica os controles de base das duas provas; as geometrias podem ser comparadas sem promover candidatas.</p>
 <label class="sk-field">Referência GIF local<input data-mouth-reference type="file" accept="image/gif"/></label><img data-mouth-reference-image hidden alt="Referência local escolhida para comparação"/>
+<label class="sk-field">Geometria<select data-mouth-geometry><option value="canonical">Canônica · controle</option><option value="r2">Solda R2</option><option value="r3">Candidata R3</option><option value="r4">Candidata R4 · opt-in</option><option value="r5">Candidata R5 · opt-in</option></select></label>
 <label class="sk-field">Peso da prova<select data-mouth-weight>{[0,.25,.5,.75,1].map(v=><option value={v} selected={v===1}>{v}</option>)}</select></label>
 <div class="sk-actions">{[['NEUTRAL','Neutro'],['LITTLE_SMILE_V2','LITTLE_SMILE_V2 · base'],['MY_STAR_V2','MY_STAR_V2 · base']].map(([id,label])=><button type="button" data-mouth-probe={id}>{label}</button>)}</div>
 <p class="sk-help">Candidatas R2 exigem a solda de fita em tempo de execução: abra <code>?mouthQA=1&amp;mouthR2=1</code>. Estado: B_SMILE_VISUAL_CANDIDATE, sem aprovação humana.</p>
 <div class="sk-actions">{[['LITTLE_SMILE_R2_CANDIDATE','Sorrisinho · R2 candidata'],['MY_STAR_R2_CANDIDATE','My Star · R2 candidata'],['HELLO_R2_CANDIDATE','Olá · R2 candidata']].map(([id,label])=><button type="button" data-mouth-probe={id} disabled>{label}</button>)}</div>
 <p class="sk-help">R3: <code>?mouthQA=1&amp;mouthR3=1</code> · geometria local reversível · B_VISUAL_QA_PENDING.</p>
 <div class="sk-actions">{[['LITTLE_SMILE_R3_CANDIDATE','Sorrisinho R3'],['MY_STAR_R3_CANDIDATE','My Star R3 · olhos originais'],['MY_STAR_R3_EYES_SOFT','My Star R3 · olhos suaves'],['HELLO_R3_CLOSED','Olá · fechada'],['HELLO_R3_OPEN','Olá · entreaberta']].map(([id,label])=><button type="button" data-mouth-probe={id} disabled>{label}</button>)}</div>
+<details><summary>Expressões preservadas</summary><div class="sk-actions">{[['LOVE','Ternura'],['HELLO','Olá original'],['HOPE','Esperança / Serenidade · proposta'],['SURPRISE_SOFT','Surpresa'],['WORRIED','Preocupação'],['GLANCE','Olhar lateral']].map(([id,label])=><button type="button" data-mouth-probe={id}>{label}</button>)}</div></details>
 <details><summary>Morphs isolados</summary><div class="sk-actions">{['M_Smile_L','M_Smile_R','P_M_L_Add','P_M_R_Add','M_OpenSmall','P_M_ZL_Add','P_M_ZR_Add'].map(n=><button type="button" data-mouth-probe={'ISOLATE_'+n}>{n}</button>)}</div></details>
 <label class="sk-field">Superfície em inspeção<select data-mouth-component><option value="all">Aguardando GLB canônico</option></select></label>
 <label class="sk-toggle"><input data-mouth-flat type="checkbox"/> Normais · diagnóstico temporário</label>
@@ -123,6 +126,23 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
 <h2>Expressão.</h2>
+<details class="sk-facial-recovery" data-approved-gallery open>
+<summary>Expressões aprovadas <small>apresentação manual</small></summary>
+<p class="sk-help">Gestos visuais aprovados na inspeção anterior. Apenas no GLB F2.0-A canônico; não mudam a geometria nem substituem as receitas R6/R7. As variantes Ternura/Serenidade conservam a identificação técnica para conferência. Retorno ao neutro automático; não iniciam combate.</p>
+<label class="sk-field">Contorno de apresentação
+<select data-approved-geometry aria-label="Perfil geométrico de contorno oral" disabled>
+<option value="canonical">Canônico (sem solda)</option>
+<option value="r4">R4 (comparativo)</option>
+<option value="r5">R5 (comparativo)</option>
+</select>
+</label>
+<p class="sk-help">As aprovações foram feitas em uma inspeção visual; confira o perfil de boca utilizado. A seleção é reversível e não modifica o GLB.</p>
+<div class="sk-facial-recovery-grid" aria-label="Expressões aprovadas para apresentação manual">
+{APPROVED_MANUAL_GESTURES.map(({id,label,detail})=><button type="button" data-approved-expression={id} title={detail} disabled>{label}</button>)}
+<button type="button" data-approved-expression="NEUTRAL" disabled>Repouso facial</button>
+</div>
+<p class="sk-help" data-approved-status role="status">Selecione o modelo canônico para apresentar as expressões.</p>
+</details>
 <p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
 <div class="sk-expressions" aria-label="Gestos faciais disponíveis">
 <button data-expression="LITTLE_SMILE" disabled hidden>Teste interno · Sorrisinho V2</button>
