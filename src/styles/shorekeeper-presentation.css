@@ -42,3 +42,5 @@
 .sk-page .sk-facial-extra>summary{font-size:12px;color:#456c84;cursor:pointer}
 .sk-page [data-facial-state]{min-height:1.5em;overflow-wrap:anywhere}
 @media(max-width:500px){.sk-page .sk-facial-recovery{padding:12px}.sk-page .sk-facial-recovery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.sk-mouth-qa{margin:16px;padding:16px;border:1px solid #c9dcec;border-radius:22px;background:#f4f9fe}.sk-mouth-qa summary{cursor:pointer;font-weight:600}.sk-mouth-qa .sk-actions{flex-wrap:wrap;gap:6px;margin:10px 0}.sk-mouth-qa img{width:100%;max-height:220px;object-fit:contain}.sk-mouth-qa button{min-height:44px;font-size:12px}.sk-mouth-qa[hidden]{display:none}

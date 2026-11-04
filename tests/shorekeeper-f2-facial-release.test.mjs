@@ -33,7 +33,7 @@ assert(page.includes('data-facial-qa')&&!page.includes('data-facial-qa hidden'))
 assert(page.includes('data-facial-candidate={id}'));
 assert(runtime.includes('face?.triggerQA(id)'));
 assert(runtime.includes('face?.onAnimationEvent(e)'));
-assert(runtime.includes('face?.advance(dt);if(control'));
+assert(runtime.includes("face?.advance(dt,{writeFacial:control('originalMode').value==='expressive'&&control('presentationMode').value!=='combat'})"));
 assert(runtime.includes('scheduler?.advance(dt,{advanceFace:false})'),'face must advance only once');
 assert(runtime.includes("control('presentationMode').value==='combat'"),'combat gating required');
 assert(gentle.includes("SK_(?:ATTACK|SKILL|AIR_SKILL|BURST)_"));
