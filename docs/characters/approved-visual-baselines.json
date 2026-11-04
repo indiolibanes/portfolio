@@ -1,0 +1,407 @@
+{
+  "schemaVersion": "shorekeeper.approved-visual-baselines.r6.v1",
+  "sourceHead": "f3b0c089106b6386558a6f1d0d8610044aee7835",
+  "canonicalGlbSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+  "approvalState": "APPROVED_NAMED_APPEARANCES_PROFILE_UNVERIFIED",
+  "approvalProfile": {
+    "status": "APPEARANCE_PROFILE_UNVERIFIED",
+    "geometry": null,
+    "material": null,
+    "camera": null,
+    "idle": null,
+    "reviewSessionHistory": null,
+    "reason": "transfer confirms named human approvals but supplies no lab render/config from the approval session; do not infer from V2 labels"
+  },
+  "controlledCapture": {
+    "startState": "ZERO_FACIAL_CHANNELS_CONTROLLED_CAPTURE_NOT_HUMAN_SESSION_HISTORY",
+    "materials": "canonical GLB originals; hashes/metadata in private evidence",
+    "lighting": {
+      "hemisphere": 1.2,
+      "key": 1.4,
+      "rim": 0.6
+    },
+    "renderer": "WebGL2; backend separately recorded",
+    "viewports": [
+      [
+        512,
+        512
+      ],
+      [
+        390,
+        640
+      ]
+    ],
+    "yawDegrees": [
+      0,
+      45,
+      90
+    ],
+    "weights": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ]
+  },
+  "geometryProfiles": [
+    {
+      "id": "canonical",
+      "positionAndMorphSha256": "79ed658228f8b0e0b1865d8eda09c1dc8e9b978333b472c1827c55e91f061090",
+      "sourceBuffersUnmodified": true
+    },
+    {
+      "id": "r2",
+      "positionAndMorphSha256": "03eb33d3ed2b887e7180d8adee3cd13fadc975285108433be728a0dbddf04700",
+      "sourceBuffersUnmodified": true
+    },
+    {
+      "id": "r3",
+      "positionAndMorphSha256": "3e51899bd209d56e0aeced56b69250d8912e219b9c80e2bf1f8ec03a467cc750",
+      "sourceBuffersUnmodified": true
+    },
+    {
+      "id": "r4",
+      "positionAndMorphSha256": "4213841494855cee6e1cc7f0158e0b9f4d5aa195592405a592cea75fad2d972e",
+      "sourceBuffersUnmodified": true
+    },
+    {
+      "id": "r5",
+      "positionAndMorphSha256": "211b3b5472f63fd168064b4af8295fd3abfd11bea148008e85da346714da5547",
+      "sourceBuffersUnmodified": true
+    }
+  ],
+  "sourceHashes": {
+    "shorekeeper-face-expressions.mjs": "76c8e25a4739ca8c9e6ea45c157d562dd92cc51af30792db3859e3feda3eeffa",
+    "mouth-qa-probes.mjs": "e6490f5edddb18e2e39e0df1f05703abc9b64f1613504df4f7f03dd06260a552",
+    "expression-library.mjs": "030e352e8b6668b35654afecff40c1198d3fd1265221e6efbb07af396429b0e1",
+    "gentle-acting.mjs": "29aae126f99f0ad9b1419cf2e5e7d06943d9434bd21572b2cd046df24f8a742a",
+    "mouth-ribbon-weld.mjs": "cab6e64f2448503b36b4831371d04ab72f7decf14c48395ff80490c994b3a72f",
+    "mouth-r3.mjs": "7d230631a97dcf1c2488100d1bb99e3854e4dab3d650ab47524762af326a6496",
+    "mouth-r4.mjs": "fa38772e7d4622484c510f88c84e617d3b396cd19ee3973ae3b21ccb00ab5d80",
+    "mouth-r5.mjs": "a66752bd63a01c7d81d990e8350899c0b0d977b9f6304269a3daee3df54e53ea"
+  },
+  "baselines": [
+    {
+      "id": "LITTLE_SMILE_V2",
+      "recipe": {
+        "ref": 4,
+        "status": "B_VISUAL_QA_PENDING",
+        "weights": {
+          "M_Smile_L": 0.9,
+          "M_Smile_R": 0.5,
+          "P_M_L_Add": 0.7,
+          "P_M_R_Add": 0.3,
+          "C_ZL_Face": 0.8
+        },
+        "timing": {
+          "attack": 0.3,
+          "hold": 3600,
+          "release": 0.5
+        },
+        "purpose": "BASELINE_CONTROL_NOT_RECOVERY",
+        "source": "LITTLE_SMILE"
+      },
+      "sha256": "f469c62a1899123ce4e7ee8158b016c9aaeae5c4d2911762a56586ea177657bf",
+      "humanNamedAppearanceApproved": true,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "recipe": {
+        "ref": 1,
+        "status": "B_VISUAL_QA_PENDING",
+        "weights": {
+          "M_Smile_L": 1,
+          "M_Smile_R": 1,
+          "P_M_L_Add": 1,
+          "P_M_R_Add": 1,
+          "E_Smile_L": 0.25,
+          "E_Smile_R": 0.25,
+          "C_ZL_Face": 1,
+          "C_ZR_Face": 1
+        },
+        "timing": {
+          "attack": 0.3,
+          "hold": 3600,
+          "release": 0.5
+        },
+        "purpose": "BASELINE_CONTROL_NOT_RECOVERY",
+        "source": "MY_STAR"
+      },
+      "sha256": "0adc6ccb3c694c6a62225d250b87f8c5505baf16fdb711b65b1e24cbd42fdc5b",
+      "humanNamedAppearanceApproved": true,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "recipe": {
+        "weights": {
+          "M_Smile_L": 1,
+          "M_Smile_R": 1,
+          "P_M_L_Add": 1,
+          "P_M_R_Add": 1,
+          "E_Smile_L": 0.1,
+          "E_Smile_R": 0.1,
+          "C_ZL_Face": 1,
+          "C_ZR_Face": 1
+        },
+        "status": "B_SMILE_VISUAL_CANDIDATE",
+        "purpose": "R2_CANDIDATE",
+        "requiresWeld": true,
+        "timing": {
+          "attack": 1,
+          "hold": 3600,
+          "release": 0.9
+        }
+      },
+      "sha256": "73cb58e0d55cc2e39527e128dea4c59edfdb1e509f249ea7f8ca35e2fc7ed4a3",
+      "humanNamedAppearanceApproved": true,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "recipe": {
+        "weights": {
+          "M_Smile_L": 0.7,
+          "M_Smile_R": 0.7,
+          "P_M_L_Add": 0.6,
+          "P_M_R_Add": 0.6,
+          "E_Smile_L": 0.15,
+          "E_Smile_R": 0.15
+        },
+        "status": "B_SMILE_VISUAL_CANDIDATE",
+        "purpose": "R2_CANDIDATE",
+        "requiresWeld": true,
+        "timing": {
+          "attack": 1,
+          "hold": 3600,
+          "release": 0.9
+        }
+      },
+      "sha256": "4783a5a83b4a0b5e5169119244c56aea50238e4a73d4deb69a1180c190f73f65",
+      "humanNamedAppearanceApproved": true,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "LOVE",
+      "recipe": {
+        "ref": 3,
+        "status": "PARTIAL",
+        "weights": {
+          "M_Smile_L": 0.6,
+          "M_Smile_R": 0.6,
+          "P_M_L_Add": 0.5,
+          "P_M_R_Add": 0.5,
+          "E_Smile_L": 0.2,
+          "E_Smile_R": 0.2,
+          "E_Insipid": 0.3
+        },
+        "timing": {
+          "attack": 1.3,
+          "hold": 2,
+          "release": 1.6
+        }
+      },
+      "sha256": "926dac29a0fabe18534e481268b2feeea270775f6c802a185c0b16ee8a4fa974",
+      "humanNamedAppearanceApproved": true,
+      "binding": "VERIFY_EXACT_QA_VS_LEGACY_PRESENTATION",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "HOPE",
+      "recipe": {
+        "ref": 7,
+        "status": "PARTIAL",
+        "weights": {
+          "M_Smile_L": 0.5,
+          "M_Smile_R": 0.5,
+          "P_M_L_Add": 0.4,
+          "P_M_R_Add": 0.4
+        },
+        "eyeClosure": 1,
+        "timing": {
+          "attack": 1.4,
+          "hold": 2.2,
+          "release": 1.6
+        }
+      },
+      "sha256": "a90300168086b46c9f445da8c2c9912b105b881aac20dba267c11be38f6516a0",
+      "humanNamedAppearanceApproved": true,
+      "binding": "VERIFY_EXACT_QA_VS_LEGACY_PRESENTATION",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "recipe": {
+        "ref": 2,
+        "status": "GEOMETRY_ONLY",
+        "weights": {
+          "E_Stare": 0.6,
+          "B_Up_Add": 0.6,
+          "M_OpenSmall": 0.5
+        },
+        "timing": {
+          "attack": 0.35,
+          "hold": 0.9,
+          "release": 0.9
+        }
+      },
+      "sha256": "4c303c75ac8d42b88865d576d025cb2f35c74096df79ecbafcf2632acc74d158",
+      "humanNamedAppearanceApproved": true,
+      "binding": "VERIFY_EXACT_QA_VS_LEGACY_PRESENTATION",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "WORRIED",
+      "recipe": {
+        "ref": 6,
+        "status": "GEOMETRY_ONLY",
+        "weights": {
+          "B_Sad": 1,
+          "E_Sad": 0.7,
+          "M_Ennui_L": 1,
+          "M_Ennui_R": 1
+        },
+        "timing": {
+          "attack": 1,
+          "hold": 1.8,
+          "release": 1.4
+        }
+      },
+      "sha256": "4352dcc33803ae91a9820ae3946d5ef8ce0fb2835fac9ca679b059ba44c48980",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "GLANCE",
+      "recipe": {
+        "ref": 10,
+        "status": "GEOMETRY_ONLY",
+        "weights": {
+          "E_Focus": 0.5,
+          "Pupil_L": 0.3,
+          "E_Insipid": 0.2
+        },
+        "timing": {
+          "attack": 0.5,
+          "hold": 0.8,
+          "release": 0.7
+        }
+      },
+      "sha256": "7a1e1d5790a1eb4160034f48487672903e1348e6cfbe7b308046b1e337f95fc3",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "LITTLE_SMILE_R2_CANDIDATE",
+      "recipe": {
+        "weights": {
+          "M_Smile_L": 0.6,
+          "M_Smile_R": 0.6,
+          "P_M_L_Add": 0.5,
+          "P_M_R_Add": 0.5,
+          "C_ZL_Face": 0.5,
+          "C_ZR_Face": 0.5
+        },
+        "status": "B_SMILE_VISUAL_CANDIDATE",
+        "purpose": "R2_CANDIDATE",
+        "requiresWeld": true,
+        "timing": {
+          "attack": 1,
+          "hold": 3600,
+          "release": 0.9
+        }
+      },
+      "sha256": "122bcbee932a1653aee3683fe4b24b753224f28440a023ef34c3d93f0a3e8f7b",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "LITTLE_SMILE_R3_CANDIDATE",
+      "recipe": {
+        "weights": {
+          "M_Smile_L": 0.6,
+          "M_Smile_R": 0.6,
+          "P_M_L_Add": 0.5,
+          "P_M_R_Add": 0.5,
+          "C_ZL_Face": 0.5,
+          "C_ZR_Face": 0.5
+        },
+        "status": "B_SMILE_VISUAL_CANDIDATE",
+        "purpose": "R2_CANDIDATE",
+        "requiresWeld": true,
+        "timing": {
+          "attack": 1,
+          "hold": 3600,
+          "release": 0.9
+        }
+      },
+      "sha256": "122bcbee932a1653aee3683fe4b24b753224f28440a023ef34c3d93f0a3e8f7b",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "MY_STAR_R2_CANDIDATE",
+      "recipe": {
+        "weights": {
+          "M_Smile_L": 1,
+          "M_Smile_R": 1,
+          "P_M_L_Add": 1,
+          "P_M_R_Add": 1,
+          "E_Smile_L": 0.25,
+          "E_Smile_R": 0.25,
+          "C_ZL_Face": 1,
+          "C_ZR_Face": 1
+        },
+        "status": "B_SMILE_VISUAL_CANDIDATE",
+        "purpose": "R2_CANDIDATE",
+        "requiresWeld": true,
+        "timing": {
+          "attack": 1,
+          "hold": 3600,
+          "release": 0.9
+        }
+      },
+      "sha256": "e24e2999b5ab4bc5e3d0aa89347cc3e9a2a2c89a119fb9de2b92523cb02c1132",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    },
+    {
+      "id": "HELLO",
+      "recipe": {
+        "ref": 5,
+        "status": "PARTIAL",
+        "weights": {
+          "M_Smile_L": 0.8,
+          "M_Smile_R": 0.8,
+          "P_M_L_Add": 0.8,
+          "P_M_R_Add": 0.8,
+          "M_OpenSmall": 0.4,
+          "S_02": 0.32
+        },
+        "timing": {
+          "attack": 0.7,
+          "hold": 1.4,
+          "release": 1.2
+        }
+      },
+      "sha256": "068578249835e501fa0f430805dc518c42bc852be84d52d44545779eaacf7718",
+      "humanNamedAppearanceApproved": false,
+      "binding": "EXACT_QA_ID_PRESERVED_GEOMETRY_UNVERIFIED",
+      "status": "APPROVED_BASELINE_LOCK_NO_PROMOTION"
+    }
+  ],
+  "aliases": [],
+  "schedulerR7": false,
+  "releaseReady": false
+}

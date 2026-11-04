@@ -1,0 +1,23 @@
+/** Private local UI session. Actual wall time, separate from simulated timelines. Requires Playwright ffmpeg for recording. */
+import http from 'node:http';
+import fs from 'node:fs/promises';import path from 'node:path';import{createRequire}from'node:module';
+const [modelPath,distPath,outPath,chromiumPath,playwrightModule='playwright']=process.argv.slice(2);if(!chromiumPath)throw Error('MODEL DIST_DIR OUTPUT_DIR CHROMIUM [PLAYWRIGHT_MODULE]');
+const {chromium}=createRequire(import.meta.url)(playwrightModule);
+const server=http.createServer(async(req,res)=>{try{const u=new URL(req.url,'http://localhost'),rel=u.pathname.endsWith('/')?u.pathname+'index.html':u.pathname;const f=path.resolve(distPath,'.'+rel);if(!f.startsWith(path.resolve(distPath)+path.sep))throw Error('path');const data=await fs.readFile(f);res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.json':'application/json','.css':'text/css','.svg':'image/svg+xml','.png':'image/png'})[path.extname(f)]??'application/octet-stream');res.end(data);}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const port=server.address().port;
+const out=path.resolve(outPath);await fs.mkdir(out,{recursive:true});const b=await chromium.launch({headless:true,executablePath:path.resolve(chromiumPath),args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--single-process','--no-zygote','--in-process-gpu']});
+const context=await b.newContext({viewport:{width:1200,height:850},recordVideo:{dir:out,size:{width:1200,height:850}}});const p=await context.newPage(),r={renderClass:'SWIFTSHADER_WEBGL2',humanApproval:null,commands:[],errors:[],reports:[]};p.on('pageerror',e=>r.errors.push(String(e)));async function report(name){await p.locator('[data-action="report"]').evaluate(el=>{for(let e=el.parentElement;e;e=e.parentElement)if(e.tagName==='DETAILS')e.open=true;});const download=p.waitForEvent('download');await p.locator('[data-action="report"]').click();const d=await download,file=path.join(out,name+'.json');await d.saveAs(file);const q=JSON.parse(await fs.readFile(file,'utf8'));r.reports.push({name,facialR6:q.facialR6,observed:q.observed,renderLoop:q.renderLoop,renderer:q.renderer,state:q.state});return q;}
+try{
+ await p.goto(`http://127.0.0.1:${port}/experimentos/sk/?facialR6=1&vfxQA=1`,{waitUntil:'networkidle'});await p.locator('[data-sk-file]').setInputFiles(path.resolve(modelPath));await p.waitForFunction(()=>document.querySelector('[data-sk-lab]').dataset.state==='ready',{timeout:60000});await p.locator('[data-r6-camera="0"]').click();await p.screenshot({path:path.join(out,'loaded.png')});await report('initial');
+ const ids=await p.locator('[data-r6-candidate] option').evaluateAll(os=>os.map(o=>o.value));const start=Date.now();
+ for(let n=0;Date.now()-start<Number(process.env.R6_MANUAL_SECONDS??120)*1000;n++){
+  const id=ids[n%ids.length];await p.locator('[data-r6-candidate]').selectOption(id);await p.locator('[data-r6-play="candidate"]').click();r.commands.push({wallSeconds:(Date.now()-start)/1000,id});
+  await p.waitForTimeout(1700);await p.locator('[data-r6-blink]').click();await p.waitForTimeout(3400);
+  if(n%6===0)await report('manual-'+n);
+ }
+ r.manualWallSeconds=(Date.now()-start)/1000;await p.locator('[data-r6-restore]').click();await report('after-manual-restore');
+ // Three load/unload cycles exercise real scene, GPU disposal and lease release.
+ for(let n=0;n<3;n++){await p.locator('[data-sk-file]').setInputFiles(path.resolve(modelPath));await p.waitForFunction(()=>document.querySelector('[data-sk-lab]').dataset.state==='ready');await report('reload-'+n);}
+ // Existing context test is deliberately a user-triggered QA control.
+ await p.locator('[data-vfx-r2]').evaluate(el=>el.hidden=false);await p.locator('[data-vfx-context]').evaluate(el=>{for(let e=el.parentElement;e;e=e.parentElement)if(e.tagName==='DETAILS')e.open=true;});await p.locator('[data-vfx-context]').click();await p.waitForTimeout(3500);await report('context-restored');
+ await p.locator('[data-sk-canvas]').evaluate(el=>el.style.display='none');await p.waitForTimeout(1500);await report('offscreen');await p.locator('[data-sk-canvas]').evaluate(el=>el.style.display='');await p.waitForTimeout(1500);await report('onscreen');await p.emulateMedia({reducedMotion:'reduce'});await p.waitForTimeout(1000);await report('reduced-motion');await p.emulateMedia({reducedMotion:'no-preference'});await p.screenshot({path:path.join(out,'restored.png')});r.status=r.errors.length?'FAILED':'UI_MANUAL_SESSION_PASS';
+}catch(e){r.failure=String(e.stack);throw e;}finally{await fs.writeFile(path.join(out,'session.json'),JSON.stringify(r,null,2));await context.close();await b.close();server.close();}

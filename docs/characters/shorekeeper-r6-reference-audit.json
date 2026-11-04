@@ -1,0 +1,223 @@
+{
+  "schema": "shorekeeper.r6.reference-audit/1",
+  "source": "provided transfer package; all 31 manifest entries verified before implementation",
+  "referenceVideos": 15,
+  "sourceMediaPublished": false,
+  "contactSheetsReviewed": [
+    "sk_faces_contact.jpg",
+    "sk_vfx_contact.jpg"
+  ],
+  "timingLimit": "Compact MP4 conversions of references/GIFs; not PSA timing sources or proof of the exact human lab approval profile.",
+  "references": [
+    {
+      "filename": "anxious.mp4",
+      "sha256": "c1605f48f2e40313296a2f8d8a7b01fa57f2f8729f5f5531e26d11b0eb3d3969",
+      "durationSeconds": 1.633333,
+      "stream": {
+        "width": 498,
+        "height": 280,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Tensão suave com gesto corporal; não inferir tear/nasal flare ou estados automáticos.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "believe.mp4",
+      "sha256": "caeaa296c54fbd71371f0951b7909139e347ffc2f75d0791e45023fafd5f4a42",
+      "durationSeconds": 6.133333,
+      "stream": {
+        "width": 498,
+        "height": 280,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Referência de presença calma e olhar; iluminação noturna não deve ser convertida em morph.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "butterfly.mp4",
+      "sha256": "c7b3435f206734e8f2755815e573e5b871cd8e5a17819f414cdb266a22fbb8ca",
+      "durationSeconds": 5.866667,
+      "stream": {
+        "width": 498,
+        "height": 248,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FUTURE_BODY_VFX_REFERENCE_ONLY",
+      "observation": "Referência VFX futura; não usada como morph, textura nem marcador de Burst.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "cutscene_moves.mp4",
+      "sha256": "0416d6b6d142242c10f408aaacfc04f56dd675dc50e609ce2e7bbedce6619f74",
+      "durationSeconds": 4.4,
+      "stream": {
+        "width": 498,
+        "height": 280,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FUTURE_BODY_VFX_REFERENCE_ONLY",
+      "observation": "Referência corporal/VFX futura; não fornece tempos PSA verificáveis.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "flushed.mp4",
+      "sha256": "19ee5256ec4694ebb295b5f5336b1988677758ea4bb33fc6aeeb7d4346fbb4f3",
+      "durationSeconds": 6.3,
+      "stream": {
+        "width": 498,
+        "height": 418,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Frontal de boca discreta/olhos suaves; cor de rubor não demonstra shape de bochecha inflada.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "hello.mp4",
+      "sha256": "08c13c4ab58fcfde773c6bf0ffb1e1531c02a18a4b860771041b8744569674d2",
+      "durationSeconds": 4.0,
+      "stream": {
+        "width": 426,
+        "height": 360,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Abertura e fechamento orais permanecem distintos da saudação fechada HELLO_R2.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "hopeful_flashback.mp4",
+      "sha256": "f1a95be9d5112a2b0a3472e9eb6025d01d6c17872e533cafb06ff1859d13ef6e",
+      "durationSeconds": 2.9,
+      "stream": {
+        "width": 498,
+        "height": 332,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Cabeça baixa e fechamento ocular sob luz quente; não inferir receita/geom de laboratório.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "is_this_love.mp4",
+      "sha256": "4ffc2c6be1fb82a808c29d98fb3c2627a649bdeade1a18af249748ffcd7c4451",
+      "durationSeconds": 10.033333,
+      "stream": {
+        "width": 498,
+        "height": 280,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Olhar e sorriso sob iluminação intensa; manter interpretação emocional separada de aprovação de perfil.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "resonance_liberation_cutscene.mp4",
+      "sha256": "9f009bdbac074ef082937524c2334c0db117a4d832403253484daa915d7cd90b",
+      "durationSeconds": 5.5,
+      "stream": {
+        "width": 374,
+        "height": 210,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FUTURE_BODY_VFX_REFERENCE_ONLY",
+      "observation": "Referência cinematográfica, sem binding automático a Burst02 ou R7.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "resonance_liberation_ingame.mp4",
+      "sha256": "fa2543f603073b052d78423478e8c669f49cbf1bac2f6742e3b8e29c455a6ec9",
+      "durationSeconds": 2.866667,
+      "stream": {
+        "width": 498,
+        "height": 280,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FUTURE_BODY_VFX_REFERENCE_ONLY",
+      "observation": "Referência de gameplay/VFX, sem extração de assets nem markers inferidos.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "shorekeeper-wife.mp4",
+      "sha256": "088e085a953ff11faf57176206dd561e1a914c81b4eac0117419b50a3ee79f2f",
+      "durationSeconds": 13.933333,
+      "stream": {
+        "width": 344,
+        "height": 374,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Montagem de várias cenas; não é baseline estável nem marcador de animação.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "smile.mp4",
+      "sha256": "7689ef3be9384c59d4b13db5d77b3f3edd200c2331e516cfab9977e65f70b3b2",
+      "durationSeconds": 6.966667,
+      "stream": {
+        "width": 300,
+        "height": 300,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Sorriso fechado delicado e transição de olhar/cabeça; inspiração temporal, não pesos canônicos.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "sweet_smile.mp4",
+      "sha256": "153bb858871eff80be04680a5ba6f2a76f582a743999af4397f9d28dc26f0ac5",
+      "durationSeconds": 3.366667,
+      "stream": {
+        "width": 400,
+        "height": 400,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Sorriso em três-quartos com pálpebras suaves; participação facial sutil.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "welcome_back.mp4",
+      "sha256": "1ee8fc249a5dca076414a832711bfb47b4c79d15c3df1ca4085690e950d07e71",
+      "durationSeconds": 7.0,
+      "stream": {
+        "width": 254,
+        "height": 254,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Transição de perfil para frontal e sorriso; preservar fonte corporal independente.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    },
+    {
+      "filename": "worried.mp4",
+      "sha256": "0d2d3b93daca6f992e549c52816388c13445c06eadde3e04693c875c4e1d8235",
+      "durationSeconds": 4.166667,
+      "stream": {
+        "width": 498,
+        "height": 230,
+        "avg_frame_rate": "30/1"
+      },
+      "role": "FACIAL_VISUAL_REFERENCE_ONLY",
+      "observation": "Sobrancelhas fortes com boca discreta; não há justificativa artística para uma segunda linha oral solta.",
+      "approvalProfileEvidence": false,
+      "animationMarkersVerified": false
+    }
+  ]
+}
