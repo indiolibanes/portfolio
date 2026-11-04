@@ -322,7 +322,18 @@ export function mountShorekeeperLab(root){
      audience_format_invalid:'403: SK_ACCESS_AUD está em formato inválido. Copie somente o Application Audience (AUD) Tag da aplicação Access desta prévia; não use o nome da policy, ID de conta, aspas ou prefixos.',
      access_configuration_invalid:'403: formato inválido de SK_ACCESS_TEAM_DOMAIN ou SK_ACCESS_AUD na configuração do Pages Preview.',
      token_unreadable:'403: token Access ausente ou incompatível com JWT. Reabra a prévia pela URL protegida e autentique-se novamente.',
-     signature_or_public_key_failed:'403: assinatura do token não validada. Confira Team Domain, chave pública Access e a aplicação selecionada; não desative a verificação.',
+     signature_or_public_key_failed:'403: verificação criptográfica falhou. Tente o diagnóstico mais recente; a assinatura continua obrigatória.',
+     certificates_fetch_failed:'403: o Pages não conseguiu consultar os certificados públicos do Cloudflare Access. Confira a disponibilidade do Team Domain e o endpoint /cdn-cgi/access/certs.',
+     certificates_endpoint_unavailable:'403: o servidor de certificados da equipe não respondeu com sucesso. Abra no navegador o Team Domain seguido de /cdn-cgi/access/certs, sem compartilhar o conteúdo.',
+     certificates_response_invalid:'403: o endpoint do Cloudflare Access não retornou a lista de chaves públicas esperada. Confira o Team Domain da equipe.',
+     signing_key_not_found:'403: a chave pública correspondente ao token não foi encontrada. Pode haver rotação de chaves ou token de outra equipe; saia e entre novamente na aplicação Access desta prévia.',
+     signing_key_invalid:'403: o certificado encontrado não é uma chave RSA válida para este verificador. Confira a aplicação e o domínio da equipe.',
+     public_key_import_failed:'403: a chave pública foi encontrada, mas não pôde ser importada no runtime. O problema é provavelmente técnico, não do R2.',
+     signature_invalid:'403: a assinatura não corresponde à chave pública encontrada. Autentique-se novamente na aplicação Access que protege esta prévia; não desative a validação.',
+     signature_verification_failed:'403: o runtime falhou ao executar a verificação RS256. Necessária correção técnica do verificador.',
+     signature_valid_but_primary_check_failed:'403: o diagnóstico conseguiu verificar a assinatura; o verificador principal rejeitou o mesmo token. Problema técnico interno, não configuração do R2.',
+     signing_diagnostic_unavailable:'403: não foi possível concluir o diagnóstico criptográfico. Confira o Team Domain e o AUD.',
+     token_header_invalid:'403: cabeçalho do token incompatível com assinatura RS256 do Cloudflare Access.',
     });
     message=reasons[data?.reason]??'403: a Function rejeitou a autorização. Confira o AUD e o Team Domain da aplicação Access desta prévia.';
    }
