@@ -36,6 +36,9 @@ const PHASES={empty:'Sem modelo',loading:'Carregando',ready:'Pronto',animating:'
 export function mountShorekeeperLab(root){
  if(root._skDispose)root._skDispose();
  const $=s=>root.querySelector(s),all=s=>[...root.querySelectorAll(s)],control=n=>$('[data-control="'+n+'"]'),action=n=>$('[data-action="'+n+'"]');
+ // Keep emergency manual imports reachable only with an explicit maintenance flag.
+ // Hidden controls remain mounted because loader/cancel/cache handlers depend on them.
+ root.dataset.maintenance=String(new URLSearchParams(location.search).get('maintenance')==='1');
  const lifetime=new AbortController(),events={signal:lifetime.signal},on=(el,event,fn)=>el.addEventListener(event,fn,events);
  const mouthQA=new URLSearchParams(location.search).get('mouthQA')==='1';
  const facialQA=mouthQA||new URLSearchParams(location.search).get('facialQA')==='1'; // Manual, explicit candidates in the Expressions tab; never scheduled automatically.
