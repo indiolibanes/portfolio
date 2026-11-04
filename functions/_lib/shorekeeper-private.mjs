@@ -39,26 +39,41 @@ function decode(part){
  return Uint8Array.from(atob(encoded),v=>v.charCodeAt(0));
 }
 function parseJson(bytes){return JSON.parse(new TextDecoder().decode(bytes));}
+/** Normalize a trusted Cloudflare Access issuer, never arbitrary origins. */
+export function normalizeAccessTeamDomain(value){
+ if(typeof value!=='string')return null;
+ let text=value.trim();
+ if((text.startsWith('"')&&text.endsWith('"'))||
+    (text.startsWith("'")&&text.endsWith("'")))text=text.slice(1,-1).trim();
+ if(/^[a-z0-9-]+\.cloudflareaccess\.com\/*$/i.test(text))text='https://'+text;
+ try{
+  const url=new URL(text);
+  if(url.protocol!=='https:'||url.port||url.username||url.password||
+     url.search||url.hash||url.pathname!=='/'||
+     !/^[a-z0-9-]+\.cloudflareaccess\.com$/.test(url.hostname))return null;
+  return url.origin;
+ }catch{return null;}
+}
 export async function verifyAccessJwt(token,domain,audience,fetcher=fetch){
- if(typeof token!=='string'||token.length>16000||
-    !/^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(domain??'')||
+ const issuer=normalizeAccessTeamDomain(domain);
+ if(typeof token!=='string'||token.length>16000||!issuer||
     !/^[a-zA-Z0-9_-]{16,128}$/.test(audience??''))return false;
  try{
   const parts=token.split('.');if(parts.length!==3)return false;
   const header=parseJson(decode(parts[0])),payload=parseJson(decode(parts[1]));
   if(header.alg!=='RS256'||typeof header.kid!=='string')return false;
   const now=Math.floor(Date.now()/1000);
-  if(payload.iss!==domain||!(Array.isArray(payload.aud)?payload.aud.includes(audience):payload.aud===audience)||
+  if(payload.iss!==issuer||!(Array.isArray(payload.aud)?payload.aud.includes(audience):payload.aud===audience)||
     !Number.isSafeInteger(payload.exp)||payload.exp<=now||
     (typeof payload.nbf==='number'&&payload.nbf>now)||
     (typeof payload.iat==='number'&&payload.iat>now+60))return false;
-  let list=cache.get(domain);
+  let list=cache.get(issuer);
   if(!list||list.until<Date.now()){
-   const response=await fetcher(domain+'/cdn-cgi/access/certs',{redirect:'error'});
+   const response=await fetcher(issuer+'/cdn-cgi/access/certs',{redirect:'error'});
    if(!response.ok)return false;
    const data=await response.json();
    if(!Array.isArray(data.keys)||data.keys.length>12)return false;
-   list={until:Date.now()+300000,keys:data.keys};cache.set(domain,list);
+   list={until:Date.now()+300000,keys:data.keys};cache.set(issuer,list);
   }
   const jwk=list.keys.find(k=>k.kid===header.kid&&k.kty==='RSA'&&k.n&&k.e);
   if(!jwk)return false;
