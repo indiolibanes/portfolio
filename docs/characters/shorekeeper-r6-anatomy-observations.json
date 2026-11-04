@@ -1,0 +1,798 @@
+{
+  "canonicalGlbSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+  "classificationScope": "Technical coarse anatomical region from deltas and real-material raster. No FACS equivalence, isolated-muscle claim, aesthetic approval or source approval profile inferred.",
+  "morphs": [
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 0,
+      "name": "B_Anger",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 1,
+      "name": "B_Happy",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 2,
+      "name": "B_Cheerful",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 3,
+      "name": "B_Sad",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 4,
+      "name": "B_Flat",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 5,
+      "name": "B_AH_R",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 6,
+      "name": "B_AH_L",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 7,
+      "name": "B_Up_Add",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 8,
+      "name": "B_Down_Add",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 9,
+      "name": "E_Close",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 10,
+      "name": "E_Smile_R",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 11,
+      "name": "E_Smile_L",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 12,
+      "name": "E_Anger",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 13,
+      "name": "E_Sad",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 14,
+      "name": "E_Focus",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 15,
+      "name": "E_Insipid",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 16,
+      "name": "E_Stare",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 17,
+      "name": "Aa",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 18,
+      "name": "A",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 19,
+      "name": "E",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 20,
+      "name": "I",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 21,
+      "name": "O",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 22,
+      "name": "U",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 23,
+      "name": "M_Smile_R",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 24,
+      "name": "M_Smile_L",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 25,
+      "name": "M_Ennui_R",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 26,
+      "name": "M_Ennui_L",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 27,
+      "name": "M_OpenSmall",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 28,
+      "name": "M_Laugh",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 29,
+      "name": "M_Scared",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 30,
+      "name": "M_ScaredTooth",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 31,
+      "name": "M_Anger",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 32,
+      "name": "M_Trapezoid",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 33,
+      "name": "M_O",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 34,
+      "name": "M_A",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 35,
+      "name": "M_Nutcracker",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 36,
+      "name": "P_M_R_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 37,
+      "name": "P_M_L_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 38,
+      "name": "P_M_ZR_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 39,
+      "name": "P_M_ZL_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 40,
+      "name": "C_ZR_Face",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Compound cheek-to-chin/lower-face displacement. Not an isolated cheek muscle.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 41,
+      "name": "C_ZL_Face",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Compound cheek-to-chin/lower-face displacement. Not an isolated cheek muscle.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 42,
+      "name": "C_Down_Face",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lower-face/chin surface displacement, not a jaw bone rotation.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 43,
+      "name": "C_M_Distant",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 44,
+      "name": "P_Nose_Up",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Central projecting nasal tip moves vertically in geometry and raster. No independent nostril flare established.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 45,
+      "name": "P_Nose_Down",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Central projecting nasal tip moves vertically in geometry and raster. No independent nostril flare established.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 46,
+      "name": "P_M_Up_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 47,
+      "name": "P_M_Down_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 48,
+      "name": "P_M_RMove_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 49,
+      "name": "P_M_LMove_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 50,
+      "name": "P_M_MidPoint_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 51,
+      "name": "P_M_UpDownView_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 52,
+      "name": "P_M_Scale_Add",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 53,
+      "name": "E_Blephar",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 54,
+      "name": "B_Inside_Add",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 55,
+      "name": "S_01",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 56,
+      "name": "S_02",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 57,
+      "name": "S_03",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 58,
+      "name": "S_04",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 59,
+      "name": "S_05",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 60,
+      "name": "S_06",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 61,
+      "name": "S_07",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 62,
+      "name": "S_08",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Face",
+      "index": 63,
+      "name": "S_09",
+      "status": "VISUAL_ONLY",
+      "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 0,
+      "name": "L_P",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 1,
+      "name": "L_F",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 2,
+      "name": "L_B",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 3,
+      "name": "L_F_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 4,
+      "name": "L_B_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 5,
+      "name": "L_Up",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 6,
+      "name": "L_Up_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 7,
+      "name": "R_P",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 8,
+      "name": "R_F",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 9,
+      "name": "R_B",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 10,
+      "name": "R_F_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 11,
+      "name": "R_B_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 12,
+      "name": "R_Up",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Down",
+      "index": 13,
+      "name": "R_Up_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 0,
+      "name": "L_P",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 1,
+      "name": "L_F",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 2,
+      "name": "L_B",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 3,
+      "name": "L_F_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 4,
+      "name": "L_B_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 5,
+      "name": "L_Up",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 6,
+      "name": "L_Up_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 7,
+      "name": "R_P",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 8,
+      "name": "R_F",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 9,
+      "name": "R_B",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 10,
+      "name": "R_F_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 11,
+      "name": "R_B_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 12,
+      "name": "R_Up",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Alpha",
+      "index": 13,
+      "name": "R_Up_U",
+      "status": "CONFLICT",
+      "visualObservation": "Garment channel. Excluded from facial controller.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Eye",
+      "index": 0,
+      "name": "Pupil_Up",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Eye",
+      "index": 1,
+      "name": "Pupil_Down",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
+      "direction": null
+    },
+    {
+      "meshName": "Shorekeeper_Eye",
+      "index": 2,
+      "name": "Pupil_R",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
+      "direction": {
+        "meanWorldDelta": [
+          -0.0067909844565410245,
+          3.81067560513018e-10,
+          0.001985140215831687
+        ],
+        "characterHorizontal": "RIGHT_NEGATIVE_X",
+        "status": "GEOMETRY_AND_FRONTAL_RASTER_DIRECTION_VERIFIED"
+      }
+    },
+    {
+      "meshName": "Shorekeeper_Eye",
+      "index": 3,
+      "name": "Pupil_L",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
+      "direction": {
+        "meanWorldDelta": [
+          0.006790984324577564,
+          -4.894088977218135e-10,
+          0.001985139662313034
+        ],
+        "characterHorizontal": "LEFT_POSITIVE_X",
+        "status": "GEOMETRY_AND_FRONTAL_RASTER_DIRECTION_VERIFIED"
+      }
+    },
+    {
+      "meshName": "Shorekeeper_Eye",
+      "index": 4,
+      "name": "Pupil_Scale",
+      "status": "VERIFIED_ANATOMICAL",
+      "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
+      "direction": null
+    }
+  ]
+}
