@@ -129,6 +129,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <details class="sk-facial-recovery" data-approved-gallery open>
 <summary>Expressões aprovadas <small>apresentação manual</small></summary>
 <p class="sk-help">Gestos visuais aprovados na inspeção anterior. Apenas no GLB F2.0-A canônico; não mudam a geometria nem substituem as receitas R6/R7. As variantes Ternura/Serenidade conservam a identificação técnica para conferência. Retorno ao neutro automático; não iniciam combate.</p>
+<label class="sk-field">Contorno de apresentação
+<select data-approved-geometry aria-label="Perfil geométrico de contorno oral" disabled>
+<option value="canonical">Canônico (sem solda)</option>
+<option value="r4">R4 (comparativo)</option>
+<option value="r5">R5 (comparativo)</option>
+</select>
+</label>
+<p class="sk-help">As aprovações foram feitas em uma inspeção visual; confira o perfil de boca utilizado. A seleção é reversível e não modifica o GLB.</p>
 <div class="sk-facial-recovery-grid" aria-label="Expressões aprovadas para apresentação manual">
 {APPROVED_MANUAL_GESTURES.map(({id,label,detail})=><button type="button" data-approved-expression={id} title={detail} disabled>{label}</button>)}
 <button type="button" data-approved-expression="NEUTRAL" disabled>Repouso facial</button>
