@@ -83,3 +83,21 @@ test('rejected JWT diagnostics provide hints but never bypass signature checks',
  }
  }finally{globalThis.fetch=originalFetch;}
 });
+
+test('malformed Team Domain and malformed AUD are distinguished without returning values',async()=>{
+ const request=new Request('https://example.test/api/shorekeeper/diagnostics',{
+  headers:{'Cf-Access-Jwt-Assertion':'header.payload.signature'}
+ });
+ const cases=[
+  [{SK_ACCESS_TEAM_DOMAIN:'https://example.cloudflareaccess.com/',SK_ACCESS_AUD:'a'.repeat(64)},'team_domain_format_invalid'],
+  [{SK_ACCESS_TEAM_DOMAIN:'https://example.cloudflareaccess.com',SK_ACCESS_AUD:'Application Audience: 123'},'audience_format_invalid'],
+ ];
+ for(const [settings,reason] of cases){
+  const response=await onRequestGet({request,env:{SHOREKEEPER_ASSETS_R2:fakeBucket(),...settings}});
+  assert.equal(response.status,403);
+  const body=await response.json();
+  assert.deepEqual(body,{state:'access_denied',reason});
+  assert.ok(!JSON.stringify(body).includes(settings.SK_ACCESS_TEAM_DOMAIN));
+  assert.ok(!JSON.stringify(body).includes(settings.SK_ACCESS_AUD));
+ }
+});
