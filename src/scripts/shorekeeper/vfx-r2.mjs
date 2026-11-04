@@ -92,7 +92,7 @@ uniform sampler2D atlas; uniform vec3 uTint; uniform float uOpacity;
 varying vec2 vUv; varying float vShade;
 void main(){
   vec4 t=texture2D(atlas,vec2(vUv.x,1.-vUv.y)); float a=t.a*uOpacity; if(a<.004) discard;
-  vec3 c=mix(t.rgb,t.rgb*uTint*1.35,.62)*vShade*1.12; gl_FragColor=vec4(c,a);
+  float lum=dot(t.rgb,vec3(.3,.55,.15)); vec3 tinted=uTint*(lum*1.7+.08)+vec3(max(0.,lum-.62))*1.1; vec3 c=mix(t.rgb,tinted,.8)*vShade*1.12; gl_FragColor=vec4(c,a);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
@@ -142,36 +142,36 @@ void main(){
   float dash2=smoothstep(.5,.6,fract(ang/6.2832*18.-t*.35)); a+=ring(r,.63,.0035)*dash2*.7;
   float tail=pow(fract(ang/6.2832-t*.18),3.); a+=ring(r,.88+.02*sin(t*.4),.02)*tail*.9;
   float tail2=pow(fract(-ang/6.2832-t*.12+.5),4.); a+=ring(r,.41,.016)*tail2*.8;
-  a+=.06*(1.-r)*(1.-r)+.05*exp(-r*r*9.);
+  a+=.2*pow(1.-r,1.6)+.16*exp(-r*r*7.);
   float edge=smoothstep(1.,.93,r); a*=edge*uOpacity; if(a<.004) discard;
-  gl_FragColor=vec4(mix(uTint,vec3(1.),.55*smoothstep(.15,1.,a)),min(1.,a));
+  gl_FragColor=vec4(mix(uTint*1.15,vec3(1.),.1*smoothstep(.3,1.1,a)),min(1.,a));
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
 const RING_VS = `
 attribute vec2 iRing; varying float vR; varying float vAng; varying float vB;
 void main(){
-  float len=length(position.xy); vec2 d=position.xy/max(len,1e-5); float t=clamp((len-.9)/.1,0.,1.); // 0 inner .. 1 outer edge
+  float len=length(position.xz); vec2 d=position.xz/max(len,1e-5); float t=clamp((len-.9)/.1,0.,1.); // 0 inner .. 1 outer edge
   float rad=1.-iRing.y*(1.-t); vR=t; vAng=atan(d.y,d.x); vB=iRing.x;
-  vec4 p=instanceMatrix*vec4(d*rad,0.,1.); gl_Position=projectionMatrix*modelViewMatrix*p;
+  vec4 p=instanceMatrix*vec4(d.x*rad,0.,d.y*rad,1.); gl_Position=projectionMatrix*modelViewMatrix*p;
 }`;
 const RING_FS = `
 uniform float uTime,uOpacity; uniform vec3 uTint; varying float vR; varying float vAng; varying float vB;
 void main(){ float sp=pow(.5+.5*sin(vAng*5.-uTime*.5+vB*9.),3.); float prof=pow(vR,7.)+.34*pow(vR,2.2);
-  float a=uOpacity*vB*prof*(.5+.7*sp); if(a<.004) discard; gl_FragColor=vec4(mix(uTint,vec3(1.),.72),a);
+  float a=uOpacity*vB*prof*(.5+.7*sp); if(a<.004) discard; gl_FragColor=vec4(mix(uTint*1.2,vec3(1.),.12),a);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
-const DOME_VS = `varying vec3 vN; void main(){ vN=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`;
-const DOME_FS = `
-uniform float uOpacity; uniform vec3 uTint; varying vec3 vN;
-void main(){ float el=vN.y; float rim=smoothstep(.62,.2,el)*smoothstep(.02,.16,el); float top=smoothstep(.35,1.,el);
-  float a=uOpacity*(rim*.16+top*.07); if(a<.003) discard; gl_FragColor=vec4(mix(uTint*.5,vec3(.4,.45,1.),.5),a);
+const DISC_VS = `varying float vRad; void main(){ vRad=length(position.xz); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`;
+const DISC_FS = `
+uniform float uOpacity; uniform vec3 uTint; varying float vRad;
+void main(){ float r=clamp(vRad,0.,1.); float rim=pow(r,9.)*.55; float haze=.16*pow(r,2.)*(1.-.35*smoothstep(.9,1.,r)); float a=uOpacity*(rim+haze); if(a<.003) discard;
+  gl_FragColor=vec4(mix(uTint*.85,mix(uTint,vec3(1.),.5),.35+.5*rim),a);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
 
-function additive(extra = {}) { return {transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, ...extra}; }
+function additive(extra = {}) { return {transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, ...extra}; }
 
 export class ShorekeeperVfxR2Director {
   constructor(scene, {mobile = false, reducedMotion = false, seed = 0x5c311, butterflies, now = () => performance.now()} = {}) {
@@ -230,9 +230,9 @@ export class ShorekeeperVfxR2Director {
     // row: [radius, x, z, height, tiltX, tiltZ, spin, brightness, thickness]; in character heights. A halo of near-parallel
     // concentric ellipses (the "dome" of resonance liberation, 4.2-5.5 s) crossed by steeper arcs.
     const rings = [], halo = [13, 11.4, 9.9, 8.5, 7.2, 6.0];
-    halo.forEach((r, i) => rings.push([r, 1.2, -2.4, 6.2 - i * 0.15, 0.2 + i * 0.015, 0.05 - i * 0.01, 0.006 * (i % 2 ? -1 : 1), 0.95 - i * 0.07, 0.012 + 0.002 * i]));
-    for (let i = 0; i < 4; i++) rings.push([6 + rng() * 9, (rng() - 0.5) * 6, (rng() - 0.5) * 6 - 1.5, 4.5 + rng() * 2.5, 0.5 + rng() * 0.6, (rng() - 0.5) * 0.9, (rng() - 0.5) * 0.03, 0.55 + rng() * 0.3, 0.006 + rng() * 0.006]);
-    const rg = new T.RingGeometry(0.9, 1, 256, 1); this.ringBase = rings;
+    halo.forEach((r, i) => rings.push([r, 1.2, -2.4, 6.2 - i * 0.15, 0.2 + i * 0.015, 0.05 - i * 0.01, 0.006 * (i % 2 ? -1 : 1), 0.95 - i * 0.07, i === 0 ? 0.05 : 0.014 + 0.002 * i]));
+    for (let i = 0; i < 4; i++) rings.push([5 + rng() * 5, (rng() - 0.5) * 6, (rng() - 0.5) * 6 - 1.5, 5.2 + rng() * 2.2, 0.22 + rng() * 0.3, (rng() - 0.5) * 0.5, (rng() - 0.5) * 0.03, 0.55 + rng() * 0.3, 0.006 + rng() * 0.006]);
+    const rg = new T.RingGeometry(0.9, 1, 256, 1); rg.rotateX(-Math.PI / 2); this.ringBase = rings;
     const ring = new T.InstancedMesh(rg, new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: {uTime: {value: 0}, uOpen: {value: 0}, uOpacity: {value: 0}, uTint: {value: this.tint}}, vertexShader: RING_VS, fragmentShader: RING_FS}), rings.length);
     ring.frustumCulled = false; ring.renderOrder = 3; const iRing = new Float32Array(rings.length * 2); rings.forEach((r, i) => iRing.set([r[7], r[8]], i * 2));
     ring.geometry.setAttribute('iRing', new T.InstancedBufferAttribute(iRing, 2)); this.rings = ring; this.root.add(ring);
@@ -242,10 +242,11 @@ export class ShorekeeperVfxR2Director {
     this.starUniforms = {uTime: {value: 0}, uOpacity: {value: 0}, uPixelRatio: {value: 1}};
     this.stars = new T.Points(sg, new T.ShaderMaterial({...additive(), uniforms: this.starUniforms, vertexShader: 'attribute vec3 color; attribute float phase; uniform float uTime,uPixelRatio; varying vec3 vC; varying float vS; void main(){ vC=color; vS=.55+.45*sin(uTime*.9+phase); vec4 mv=modelViewMatrix*vec4(position,1.); gl_Position=projectionMatrix*mv; gl_PointSize=clamp(30.*uPixelRatio*(.7+.5*sin(phase))/max(.1,-mv.z),1.,8.); }', fragmentShader: 'uniform float uOpacity; varying vec3 vC; varying float vS; void main(){ vec2 p=gl_PointCoord-.5; float h=pow(max(0.,1.-length(p)*2.),2.); float a=uOpacity*vS*h; if(a<.005) discard; gl_FragColor=vec4(vC,a);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}));
     this.stars.frustumCulled = false; this.stars.renderOrder = 2; this.root.add(this.stars);
+    // Luminous body of the largest ring (the "canopy" disc seen from below in the reference): same transform as ring 0.
     this.domeUniforms = {uOpacity: {value: 0}, uTint: {value: this.tint}};
-    this.dome = new T.Mesh(new T.SphereGeometry(22, 48, 24, 0, TAU, 0, Math.PI * 0.5), new T.ShaderMaterial({...additive({side: T.BackSide}), uniforms: this.domeUniforms, vertexShader: DOME_VS, fragmentShader: DOME_FS}));
-    this.dome.frustumCulled = false; this.dome.renderOrder = 0; this.root.add(this.dome);
-    this._m = new T.Matrix4(); this._q = new T.Quaternion(); this._e = new T.Euler(); this._p = new T.Vector3(); this._s = new T.Vector3();
+    this.dome = new T.Mesh(new T.CircleGeometry(1, 128).rotateX(-Math.PI / 2), new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: this.domeUniforms, vertexShader: DISC_VS, fragmentShader: DISC_FS}));
+    this.dome.frustumCulled = false; this.dome.renderOrder = 0; this.dome.matrixAutoUpdate = false; this.root.add(this.dome);
+    this._m = new T.Matrix4(); this._m0 = new T.Matrix4(); this._q = new T.Quaternion(); this._e = new T.Euler(); this._p = new T.Vector3(); this._s = new T.Vector3();
   }
   /* ---------- control ---------- */
   setState(state) { if (this.disposed) return false; if (!VFX_R2_STATES.includes(state)) throw Error('Estado VFX inválido: ' + state); this.state = state; this.from.set(this.levels); this.target.set(LEVELS[state]); this.transition = 0; if (state === 'PREPARATION' && !this.coreFrozen) this.corePhase = 0; return true; }
@@ -331,10 +332,10 @@ export class ShorekeeperVfxR2Director {
     const open = smooth01(canopy); this.rings.visible = canopy > 0.001; this.stars.visible = canopy > 0.001; this.dome.visible = canopy > 0.001;
     this.rings.material.uniforms.uTime.value = t; this.rings.material.uniforms.uOpacity.value = canopy;
     // ring row: [radius, x, z, height, tiltX, tiltZ, spin, brightness, width]
-    this.ringBase.forEach((r, i) => { const grow = 0.35 + 0.65 * open; this._e.set(r[4], t * r[6], r[5]); this._q.setFromEuler(this._e); this._p.set(r[1] * grow, r[3] * (0.55 + 0.45 * open), r[2] * grow); this._s.setScalar(r[0] * grow); this._m.compose(this._p, this._q, this._s); this.rings.setMatrixAt(i, this._m); });
+    this.ringBase.forEach((r, i) => { const grow = 0.35 + 0.65 * open; this._e.set(r[4], t * r[6], r[5]); this._q.setFromEuler(this._e); this._p.set(r[1] * grow, r[3] * (0.55 + 0.45 * open), r[2] * grow); this._s.setScalar(r[0] * grow); this._m.compose(this._p, this._q, this._s); if (i === 0) this._m0.copy(this._m); this.rings.setMatrixAt(i, this._m); });
     this.rings.instanceMatrix.needsUpdate = true;
     this.starUniforms.uTime.value = t; this.starUniforms.uOpacity.value = canopy * 0.9; this.starUniforms.uPixelRatio.value = this.pixelRatio; this.stars.rotation.y = t * 0.004;
-    this.domeUniforms.uOpacity.value = canopy; this.dome.position.y = 0;
+    this.domeUniforms.uOpacity.value = canopy; this.dome.matrix.copy(this._m0); this.dome.matrixWorldNeedsUpdate = true;
   }
   report() {
     const s = this.stats, n = Math.min(s.samples, this.cpuSamples.length), sorted = Array.from(this.cpuSamples.subarray(0, n)).sort((a, b) => a - b), meshes = [this.wings, this.coreParticles, this.coreFlare, this.field, this.motes, this.rings, this.stars, this.dome];

@@ -14,7 +14,7 @@ Arquivos: `src/scripts/shorekeeper/vfx-r2.mjs`, `tests/shorekeeper-vfx-r2.test.m
 | Janela | O que a referência mostra | O que o R2 faz |
 |---|---|---|
 | `butterfly.gif` 2,2–4,6 s | borboleta cristalina azul-elétrico, asa larga de membrana com borda irregular, nervuras em leque, núcleo branco-ciano, asa inferior em lascas pontudas | atlas de asa procedural (membrana, nervuras, núcleo, antenas, corpo), asa espelhada por instância |
-| `resonance liberation` cutscene 4,2–5,5 s | cobertura enorme de anéis finos luminosos em elipses concêntricas sobre o cenário | `CINEMATIC_CANOPY`: 6 elipses quase paralelas + 4 arcos cruzados, borda brilhante com halo interno, estrelas e domo muito sutil |
+| `resonance liberation` cutscene 4,2–5,5 s | cobertura enorme de anéis finos luminosos em elipses concêntricas sobre o cenário | `CINEMATIC_CANOPY`: disco luminoso horizontal acima da cena (borda brilhante + névoa interna), 6 elipses quase paralelas + 4 arcos cruzados mais baixos, estrelas |
 | `resonance liberation` in-game 0–2,9 s | anéis brancos finos no chão, arcos tipo cometa, pontilhado, núcleo em estrela | `FIELD_GAMEPLAY`: campo radial ancorado ao piso (anéis, tracejados giratórios, caudas), partículas ascendentes |
 
 ## 3. Sistemas
@@ -24,7 +24,7 @@ Gate C1: quadros fixos em 3 ângulos (0°, 45°, 90° de azimute) × 3 aberturas
 
 **Collapsed Core em fases.** `SPAWN → GATHER → HOLD → CONVERT → DISSOLVE` (0–0,22–0,56–0,78–0,9–1 de um ciclo de 6 s). Partículas em esferas que se contraem, flare em estrela no HOLD, pico de flare na conversão, dissolução ascendente. Posicionado à frente do **peito** (osso `Bip001Spine2` só para leitura), porque o idle mantém as mãos baixas e a referência mostra a luz condensando à frente do corpo. Só avança de `PREPARATION` em diante; `seek({corePhase})` congela a fase para QA.
 
-**FIELD_GAMEPLAY** (campo radial no chão, ancorado ao piso do palco) e **CINEMATIC_CANOPY** (estrutura grande acima da cena) são independentes (`BOTH | FIELD_GAMEPLAY | CINEMATIC_CANOPY`).
+**FIELD_GAMEPLAY** (campo radial no chão, ancorado ao piso do palco) e **CINEMATIC_CANOPY** (estrutura grande acima da cena) são independentes (`BOTH | FIELD_GAMEPLAY | CINEMATIC_CANOPY`). Um erro corrigido durante a verificação em WebGL: a primeira versão da cobertura saiu em planos **verticais** (portal), não sobre a cena; a comparação com o GIF mostrou. Os materiais de VFX também passaram a `toneMapped: false`, porque o tone mapping do palco dessaturava tudo para branco e apagava a diferença entre estágios.
 
 **Estágios Outer (azul), Inner (violeta), Supernal (dourado):** só trocam a cor compartilhada; **`STAGE_REFERENCE_UNVERIFIED`** — não há referência verificada para essas paletas, são propostas.
 
@@ -45,7 +45,9 @@ Renderizada em **WebGL2 real** (Chromium headless + SwiftShader, `stage.mjs` do 
 - A asa é **procedural**, não o asset do jogo: lê como borboleta cristalina azul, mas é mais "limpa" que a referência (sem fragmentos/partículas soltas nas bordas, sem as lascas inferiores longas).
 - O brilho/bloom do jogo não existe aqui (sem pós-processamento): o núcleo e as bordas dos anéis parecem mais planos.
 - A cobertura do Stellarealm é inferida de um quadro curto; não há planta do cenário. Altura, raio e tilt dos anéis são ajuste artístico.
-- Estágios Inner/Supernal: `STAGE_REFERENCE_UNVERIFIED`.
+- Estágios Inner/Supernal: `STAGE_REFERENCE_UNVERIFIED`. As cores diferem de forma legível (ciano, violeta, dourado-pálido), mas os anéis aditivos saturam perto do branco; o dourado sai mais pálido que o proposto.
+- Em comparação com o GIF, a cobertura agora tem a estrutura certa (disco luminoso com borda e elipses concêntricas, vista de baixo), mas **falta o céu azul saturado, os raios de luz e as ruínas**: no quadro comparativo ela ainda parece um desenho técnico sobre fundo escuro, não uma cena.
+- O campo de gameplay reproduz a geometria (anéis brancos finos, tracejados, caudas) mas **não** o brilho violeta-azul do chão nem o clarão em estrela do GIF (sem bloom).
 - Sem GPU/Android: nenhuma medição de FPS ou tempo de GPU (`gpuTiming: NOT_MEASURED`); custo de CPU registrado no relatório do diretor. Orçamento declarado: ≤ 8 draw calls adicionais.
 - Sem acoplamento ao combate/câmera até existirem marcadores de evento manuais (ver `burst-variants-qa.md`).
 
