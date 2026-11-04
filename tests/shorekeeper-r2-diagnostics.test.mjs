@@ -71,7 +71,7 @@ test('rejected JWT diagnostics provide hints but never bypass signature checks',
   [badToken({aud:['0'.repeat(32)]}),'audience_mismatch'],
   [badToken({iss:'https://other.cloudflareaccess.com'}),'issuer_mismatch'],
   [badToken({exp:1}),'token_expired'],
-  [badToken({}),'signature_or_public_key_failed'],
+  [badToken({}),'certificates_response_invalid'],
  ];
  for(const [token,reason] of cases){
   const response=await onRequestGet({request:request(token),env});
