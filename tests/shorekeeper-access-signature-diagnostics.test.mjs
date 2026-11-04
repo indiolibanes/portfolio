@@ -31,7 +31,7 @@ test('certificate endpoint errors are distinct from unknown KID and malformed JW
 });
 test('bad key material is diagnosed but cannot authorize',async()=>{
  assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,asKeys([{...jwk,kty:'EC'}])),'signing_key_invalid');
- assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,asKeys([{...jwk,n:'not-a-valid-rsa-modulus'}])),'public_key_import_failed');
+ assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,asKeys([{...jwk,n:''}])),'public_key_import_failed');
 });
 test('diagnostic result never exposes token, key, issuer, claims or AUD',async()=>{
  const input=jwt();
