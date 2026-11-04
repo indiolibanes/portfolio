@@ -7,9 +7,9 @@ const domain='https://diagnostic-test.cloudflareaccess.com',aud='f'.repeat(32);
 const {publicKey,privateKey}=generateKeyPairSync('rsa',{modulusLength:2048});
 const jwk={...publicKey.export({format:'jwk'}),alg:'RS256',kid:'reference-key',use:'sig'};
 const encode=obj=>Buffer.from(JSON.stringify(obj)).toString('base64url');
-function jwt({signature='valid',kid='reference-key'}={}){
+function jwt({signature='valid',kid='reference-key',issuer=domain}={}){
  const now=Math.floor(Date.now()/1000);
- const input=encode({alg:'RS256',kid})+'.'+encode({iss:domain,aud:[aud],iat:now-10,exp:now+600});
+ const input=encode({alg:'RS256',kid})+'.'+encode({iss:issuer,aud:[aud],iat:now-10,exp:now+600});
  const cryptographic=sign('RSA-SHA256',Buffer.from(input),privateKey).toString('base64url');
  return input+'.'+(signature==='valid'?cryptographic:Buffer.alloc(256,1).toString('base64url'));
 }
@@ -50,10 +50,18 @@ test('Workers JWKS requests use manual redirects and verify valid signed JWTs',a
  assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,fetcher),'signature_valid_but_primary_check_failed');
 });
 test('JWKS 302 redirect does not grant access or follow to an untrusted host',async()=>{
- const fetcher=async(_url,options)=>{
+ // A distinct issuer avoids reusing the 5-minute in-memory JWKS cache from
+ // the positive test: this must exercise the real fetch path, not a cache hit.
+ const redirectDomain='https://redirect-test.cloudflareaccess.com';
+ const token=jwt({issuer:redirectDomain});
+ let calls=0;
+ const fetcher=async(url,options)=>{
+  calls++;
+  assert.equal(url,redirectDomain+'/cdn-cgi/access/certs');
   assert.equal(options.redirect,'manual');
   return new Response(null,{status:302,headers:{Location:'https://example.invalid/keys'}});
  };
- assert.equal(await verifyAccessJwt(jwt(),domain,aud,fetcher),false);
- assert.equal(await diagnoseAccessSigningKey(jwt(),domain,aud,fetcher),'certificates_endpoint_unavailable');
+ assert.equal(await verifyAccessJwt(token,redirectDomain,aud,fetcher),false);
+ assert.equal(await diagnoseAccessSigningKey(token,redirectDomain,aud,fetcher),'certificates_endpoint_unavailable');
+ assert.equal(calls,2);
 });
