@@ -7,6 +7,7 @@ on:
       - 'src/pages/experimentos/sk/**'
       - 'src/styles/shorekeeper-presentation.css'
       - 'tests/shorekeeper-vfx.test.mjs'
+      - 'tests/shorekeeper-vfx-r2.test.mjs'
       - 'tests/shorekeeper-publication-smoke.test.mjs'
       - '.github/workflows/shorekeeper-vfx-r1.yml'
   workflow_dispatch:
@@ -22,7 +23,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: node --test tests/shorekeeper-vfx.test.mjs
+      - run: node --test tests/shorekeeper-vfx.test.mjs tests/shorekeeper-vfx-r2.test.mjs
       - run: node tests/shorekeeper-publication-smoke.test.mjs
       - run: node tests/performance-route-isolation.test.mjs
       - run: npm run build
