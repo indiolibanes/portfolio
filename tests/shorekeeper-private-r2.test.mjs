@@ -37,6 +37,7 @@ test('R2 manifest rejects traversal, unknown hashes, duplicates and overlimit',(
 test('Access JWT validates RS256, issuer, audience and expiration',async()=>{
  const good=token();
  assert.equal(await verifyAccessJwt(good,domain,aud,keyFetch),true);
+ assert.equal(await verifyAccessJwt(token({exp:Math.floor(Date.now()/1000)+3*86400}),domain,aud,keyFetch),true,'Cloudflare-signed 72-hour application sessions are valid');
  assert.equal(await verifyAccessJwt(token({aud:['x'.repeat(32)]}),domain,aud,keyFetch),false);
  assert.equal(await verifyAccessJwt(token({iss:'https://other.cloudflareaccess.com'}),domain,aud,keyFetch),false);
  assert.equal(await verifyAccessJwt(token({exp:1}),domain,aud,keyFetch),false);
