@@ -8,7 +8,12 @@
       "name": "B_Anger",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -16,7 +21,12 @@
       "name": "B_Happy",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -24,7 +34,12 @@
       "name": "B_Cheerful",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -32,7 +47,12 @@
       "name": "B_Sad",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -40,7 +60,12 @@
       "name": "B_Flat",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -48,7 +73,12 @@
       "name": "B_AH_R",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -56,7 +86,12 @@
       "name": "B_AH_L",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -64,7 +99,12 @@
       "name": "B_Up_Add",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -72,7 +112,12 @@
       "name": "B_Down_Add",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -80,7 +125,11 @@
       "name": "E_Close",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -88,7 +137,11 @@
       "name": "E_Smile_R",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -96,7 +149,11 @@
       "name": "E_Smile_L",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -104,7 +161,11 @@
       "name": "E_Anger",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -112,7 +173,11 @@
       "name": "E_Sad",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -120,7 +185,11 @@
       "name": "E_Focus",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -128,7 +197,11 @@
       "name": "E_Insipid",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -136,7 +209,11 @@
       "name": "E_Stare",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -144,7 +221,13 @@
       "name": "Aa",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -152,7 +235,13 @@
       "name": "A",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -160,7 +249,13 @@
       "name": "E",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -168,7 +263,13 @@
       "name": "I",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -176,7 +277,13 @@
       "name": "O",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -184,7 +291,13 @@
       "name": "U",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -192,7 +305,13 @@
       "name": "M_Smile_R",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -200,7 +319,13 @@
       "name": "M_Smile_L",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -208,7 +333,13 @@
       "name": "M_Ennui_R",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "M_Ennui L/R at 1 together reproduce detached oral edge; R6 candidate keeps both at zero, no source geometry or material change."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -216,7 +347,13 @@
       "name": "M_Ennui_L",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "M_Ennui L/R at 1 together reproduce detached oral edge; R6 candidate keeps both at zero, no source geometry or material change."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -224,7 +361,13 @@
       "name": "M_OpenSmall",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -232,7 +375,13 @@
       "name": "M_Laugh",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -240,7 +389,13 @@
       "name": "M_Scared",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -248,7 +403,13 @@
       "name": "M_ScaredTooth",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -256,7 +417,13 @@
       "name": "M_Anger",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -264,7 +431,13 @@
       "name": "M_Trapezoid",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -272,7 +445,13 @@
       "name": "M_O",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -280,7 +459,13 @@
       "name": "M_A",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -288,7 +473,13 @@
       "name": "M_Nutcracker",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -296,7 +487,13 @@
       "name": "P_M_R_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -304,7 +501,13 @@
       "name": "P_M_L_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -312,7 +515,13 @@
       "name": "P_M_ZR_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -320,7 +529,13 @@
       "name": "P_M_ZL_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -328,7 +543,13 @@
       "name": "C_ZR_Face",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Compound cheek-to-chin/lower-face displacement. Not an isolated cheek muscle.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -336,7 +557,13 @@
       "name": "C_ZL_Face",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Compound cheek-to-chin/lower-face displacement. Not an isolated cheek muscle.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -344,7 +571,13 @@
       "name": "C_Down_Face",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lower-face/chin surface displacement, not a jaw bone rotation.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -352,7 +585,13 @@
       "name": "C_M_Distant",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -360,7 +599,12 @@
       "name": "P_Nose_Up",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Central projecting nasal tip moves vertically in geometry and raster. No independent nostril flare established.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -368,7 +612,12 @@
       "name": "P_Nose_Down",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Central projecting nasal tip moves vertically in geometry and raster. No independent nostril flare established.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -376,7 +625,13 @@
       "name": "P_M_Up_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -384,7 +639,13 @@
       "name": "P_M_Down_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -392,7 +653,13 @@
       "name": "P_M_RMove_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -400,7 +667,13 @@
       "name": "P_M_LMove_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -408,7 +681,13 @@
       "name": "P_M_MidPoint_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -416,7 +695,13 @@
       "name": "P_M_UpDownView_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -424,7 +709,13 @@
       "name": "P_M_Scale_Add",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -432,7 +723,11 @@
       "name": "E_Blephar",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Lid/periocular deformation visible with canonical material; dependency with E_Close must be composed.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "OCULAR_BLINK priority; lid requests damped during closure"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -440,7 +735,12 @@
       "name": "B_Inside_Add",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Bilateral brow band, partly occluded by fringe; geometric and raster displacement verified.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Canonical material and fringe occlusion",
+        "Review compound pose before approval"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -448,7 +748,13 @@
       "name": "S_01",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -456,7 +762,13 @@
       "name": "S_02",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -464,7 +776,13 @@
       "name": "S_03",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -472,7 +790,13 @@
       "name": "S_04",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -480,7 +804,13 @@
       "name": "S_05",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -488,7 +818,13 @@
       "name": "S_06",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -496,7 +832,13 @@
       "name": "S_07",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -504,7 +846,13 @@
       "name": "S_08",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Face",
@@ -512,7 +860,13 @@
       "name": "S_09",
       "status": "VISUAL_ONLY",
       "visualObservation": "Morph individually rendered. Semantic subdivision of lip/liner/chin is not asserted from the name.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Mouth geometry profile",
+        "Liner/contour occlusion",
+        "Compound lower-face channels"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -520,7 +874,11 @@
       "name": "L_P",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -528,7 +886,11 @@
       "name": "L_F",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -536,7 +898,11 @@
       "name": "L_B",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -544,7 +910,11 @@
       "name": "L_F_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -552,7 +922,11 @@
       "name": "L_B_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -560,7 +934,11 @@
       "name": "L_Up",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -568,7 +946,11 @@
       "name": "L_Up_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -576,7 +958,11 @@
       "name": "R_P",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -584,7 +970,11 @@
       "name": "R_F",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -592,7 +982,11 @@
       "name": "R_B",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -600,7 +994,11 @@
       "name": "R_F_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -608,7 +1006,11 @@
       "name": "R_B_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -616,7 +1018,11 @@
       "name": "R_Up",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Down",
@@ -624,7 +1030,11 @@
       "name": "R_Up_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -632,7 +1042,11 @@
       "name": "L_P",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -640,7 +1054,11 @@
       "name": "L_F",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -648,7 +1066,11 @@
       "name": "L_B",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -656,7 +1078,11 @@
       "name": "L_F_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -664,7 +1090,11 @@
       "name": "L_B_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -672,7 +1102,11 @@
       "name": "L_Up",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -680,7 +1114,11 @@
       "name": "L_Up_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -688,7 +1126,11 @@
       "name": "R_P",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -696,7 +1138,11 @@
       "name": "R_F",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -704,7 +1150,11 @@
       "name": "R_B",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -712,7 +1162,11 @@
       "name": "R_F_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -720,7 +1174,11 @@
       "name": "R_B_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -728,7 +1186,11 @@
       "name": "R_Up",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Alpha",
@@ -736,7 +1198,11 @@
       "name": "R_Up_U",
       "status": "CONFLICT",
       "visualObservation": "Garment channel. Excluded from facial controller.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "BODY_GARMENT_EXCLUDED"
+      ],
+      "artifactReview": "INDIVIDUAL_RASTER_COMPLETE; compound-pose and human aesthetic review remain separate."
     },
     {
       "meshName": "Shorekeeper_Eye",
@@ -744,7 +1210,13 @@
       "name": "Pupil_Up",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Eyelid aperture",
+        "Antagonistic gaze channels",
+        "Vector cap .3"
+      ],
+      "artifactReview": "Raw diagnostic weights above runtime cap may leave iris aperture; runtime capped separately."
     },
     {
       "meshName": "Shorekeeper_Eye",
@@ -752,7 +1224,13 @@
       "name": "Pupil_Down",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Eyelid aperture",
+        "Antagonistic gaze channels",
+        "Vector cap .3"
+      ],
+      "artifactReview": "Raw diagnostic weights above runtime cap may leave iris aperture; runtime capped separately."
     },
     {
       "meshName": "Shorekeeper_Eye",
@@ -768,7 +1246,13 @@
         ],
         "characterHorizontal": "RIGHT_NEGATIVE_X",
         "status": "GEOMETRY_AND_FRONTAL_RASTER_DIRECTION_VERIFIED"
-      }
+      },
+      "dependencies": [
+        "Eyelid aperture",
+        "Antagonistic gaze channels",
+        "Vector cap .3"
+      ],
+      "artifactReview": "Raw diagnostic weights above runtime cap may leave iris aperture; runtime capped separately."
     },
     {
       "meshName": "Shorekeeper_Eye",
@@ -784,7 +1268,13 @@
         ],
         "characterHorizontal": "LEFT_POSITIVE_X",
         "status": "GEOMETRY_AND_FRONTAL_RASTER_DIRECTION_VERIFIED"
-      }
+      },
+      "dependencies": [
+        "Eyelid aperture",
+        "Antagonistic gaze channels",
+        "Vector cap .3"
+      ],
+      "artifactReview": "Raw diagnostic weights above runtime cap may leave iris aperture; runtime capped separately."
     },
     {
       "meshName": "Shorekeeper_Eye",
@@ -792,7 +1282,13 @@
       "name": "Pupil_Scale",
       "status": "VERIFIED_ANATOMICAL",
       "visualObservation": "Iris/eye geometry displacement. Raw diagnostic weights above .3 can leave the aperture; runtime remains capped. L positive X, R negative X.",
-      "direction": null
+      "direction": null,
+      "dependencies": [
+        "Eyelid aperture",
+        "Antagonistic gaze channels",
+        "Vector cap .3"
+      ],
+      "artifactReview": "Raw diagnostic weights above runtime cap may leave iris aperture; runtime capped separately."
     }
   ]
 }

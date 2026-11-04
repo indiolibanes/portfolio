@@ -1,0 +1,268 @@
+{
+  "schema": "shorekeeper.r6.approval-matrix/1",
+  "pr": 238,
+  "baseHead": "f3b0c089106b6386558a6f1d0d8610044aee7835",
+  "status": "VISUAL_QA_PENDING",
+  "humanApproval": null,
+  "humanApprovalScope": "Existing named appearances only; exact lab geometry/profile unverified. No R6 candidate approved.",
+  "evidenceClasses": {
+    "structural": "103 Node tests, exact weights, canonical buffer/clip/material integration",
+    "raster": "WebGL2 on ANGLE SwiftShader, actual GLB and materials; offline stepping",
+    "manualBrowser": "123.724s wall time; not 123s facial timeline at the observed low software FPS",
+    "physicalGpu": "NOT_TESTED",
+    "samsungInternet": "NOT_TESTED",
+    "independentSonnetAstra": "NOT_RUN"
+  },
+  "gates": [
+    {
+      "id": "R6-01",
+      "status": "PASS",
+      "gate": "Preflight heads, bases e CI",
+      "evidence": "PR236 f3b0c08; PR235/236 já merged; base original restaurada sem mudança de conteúdo. CI do head R6 a398667 verde; structural do base236 observado in_progress.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-02",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Perfil exato da aprovação humana",
+      "evidence": "Receitas/geometrias congeladas. Pacote não identifica câmera/material/geometria/idle da sessão de aprovação: APPEARANCE_PROFILE_UNVERIFIED.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-03",
+      "status": "PASS",
+      "gate": "V2 imutável no mesmo perfil",
+      "evidence": "70 streams exatos e 1050 PNG byte a byte idênticos nas condições controladas; tolerância zero. Não resolve R6-02.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-04",
+      "status": "PASS",
+      "gate": "Owner ocular e blink",
+      "evidence": "Lease Face/Eye em todas as entradas; E_Close composto uma vez; timings .13/.08/.20 testados, pedidos de HOPE separados.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-05",
+      "status": "PASS",
+      "gate": "Atlas completo por mesh",
+      "evidence": "97 instâncias/83 nomes, 249 ossos; 1455 PNG, 97 contacts, métricas geométricas/pixels e gráficos. Down/Alpha excluídos.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-06",
+      "status": "PASS",
+      "gate": "Brow verificável",
+      "evidence": "Deltas da faixa de sobrancelhas e renders 0–1; candidatos usam .08–.18. Delicadeza artística aguarda Sonnet/autor.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-07",
+      "status": "PASS",
+      "gate": "C_* somente com prova",
+      "evidence": "C_Z documentado como composto bochecha/queixo/rosto inferior; não é músculo isolado.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-08",
+      "status": "PASS",
+      "gate": "Nariz/queixo sem invenção",
+      "evidence": "P_Nose Up/Down: deslocamento vertical da ponta; C_Down_Face: superfície inferior. Não há nasal flare/wink/bochecha inflada inventados.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-09",
+      "status": "PASS",
+      "gate": "My Star V2 preservada",
+      "evidence": "Peso literal, pico ocular .25, timing e pixels de cinco perfis preservados; candidato é ID separado.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-10",
+      "status": "PASS",
+      "gate": "Afeto crescente distinto",
+      "evidence": "Intermediário .1 permanece separado; candidato pleno passa por .1→.25; três ângulos reais.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-11",
+      "status": "PASS",
+      "gate": "Little Smile e queixo",
+      "evidence": "Pico assimétrico .9/.5, C_ZL .8; baseline original exato, candidato separado, vídeo temporal e três idles.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-12",
+      "status": "PASS",
+      "gate": "Olá fechado versus falado",
+      "evidence": "HELLO_R2 selecionável e não alias do HELLO original com abertura; receitas inalteradas.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-13",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Ternura/Serenidade/Surpresa",
+      "evidence": "Pixels/receitas literais preservados; associação exata da aparência nomeada e aceite independente Astra ainda pendentes.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-14",
+      "status": "PASS",
+      "gate": "WORRIED sem linha oral duplicada",
+      "evidence": "180 provas: M_Ennui reproduz bordas; candidato usa boca neutra e mantém B_Sad1/E_Sad.7. Espessura do neutro e aceite artístico separados.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-15",
+      "status": "PASS",
+      "gate": "Olhar bilateral e range",
+      "evidence": "Vídeo L(+X)/centro/R(−X)/neutro e cap vetorial .3; gesto .22. Frontal/45 mostram ambos lados; +90 é ocluído pelo capuz canônico.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-16",
+      "status": "PASS",
+      "gate": "Um writer, corpo preservado",
+      "evidence": "Concorrência old/new/receitas recusada; combate bloqueia face; 9 replays dos idles com buffers/materiais/clipes/249 ossos preservados.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-17",
+      "status": "PASS",
+      "gate": "Range, overflow e NaN",
+      "evidence": "600s de comandos manuais simulados, canais finitos 0–1, cap de pupila, pausa, blink e inputs inválidos testados.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-18",
+      "status": "PASS",
+      "gate": "Restore/dispose e lifecycle",
+      "evidence": "Três recargas UI e três ciclos privados completos; restore69 persistente/idempotente, contexto, offscreen e reduced motion no SwiftShader. Pós-combo pendente de bibliotecas privadas.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-19",
+      "status": "PASS",
+      "gate": "Privacidade do diff/build",
+      "evidence": "Nenhum GLB/PSA/GIF/screenshot novo em Git/public/dist; políticas R2/Access e Hsin inalteradas; verificador estrito não relaxado.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R6-20",
+      "status": "PASS",
+      "gate": "R6 opt-in",
+      "evidence": "Query facialR6=1, import dinâmico e UI escondida por padrão. Nenhum scheduler R7.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "R7-01",
+      "status": "NOT_APPLICABLE",
+      "gate": "Eventos aprovados antes do scheduler",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-02",
+      "status": "NOT_APPLICABLE",
+      "gate": "Máquina de estados",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-03",
+      "status": "NOT_APPLICABLE",
+      "gate": "Não repetição",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-04",
+      "status": "NOT_APPLICABLE",
+      "gate": "Prioridade manual/combate",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-05",
+      "status": "NOT_APPLICABLE",
+      "gate": "Reduced motion e suspensão",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-06",
+      "status": "NOT_APPLICABLE",
+      "gate": "Cooldowns",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-07",
+      "status": "NOT_APPLICABLE",
+      "gate": "Blink no R7",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-08",
+      "status": "NOT_APPLICABLE",
+      "gate": "RAF/mixer do R7",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-09",
+      "status": "NOT_APPLICABLE",
+      "gate": "Samsung físico 600s",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "R7-10",
+      "status": "NOT_APPLICABLE",
+      "gate": "Autoplay após aceite",
+      "evidence": "R7 fora desta etapa: não implementado nem ativado. Plano Opus e execução R7 dependem da validação R6.",
+      "humanAcceptance": "NOT_APPLICABLE"
+    },
+    {
+      "id": "PUB-01",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Auditoria integral main→cadeia",
+      "evidence": "Diff R6 é delimitado e main preservada; não foi refeita auditoria independente de toda a cadeia histórica de 145 arquivos.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "PUB-02",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Políticas reais R2/Access",
+      "evidence": "Proteções de código/testes preservadas; inspeção autenticada das políticas de produção não realizada.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "PUB-03",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Direitos de publicação",
+      "evidence": "Nenhuma nova distribuição de asset; autorização de publicação e direitos continuam decisão do proprietário.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "PUB-04",
+      "status": "PENDING_EVIDENCE",
+      "gate": "Preview autenticado remoto",
+      "evidence": "Build CI/Cloudflare e fallback local passam; inspeção remota autenticada pelo proprietário ainda necessária.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    },
+    {
+      "id": "PUB-05",
+      "status": "PASS",
+      "gate": "PR draft sem merge",
+      "evidence": "PR238 draft sobre o head exato #236; sem automerge; main permanece 839fca45224154c2eca98d1b47e0d3faa42079b0.",
+      "humanAcceptance": "PENDING_SEPARATE_REVIEW"
+    }
+  ],
+  "counts": {
+    "PASS": 19,
+    "PENDING_EVIDENCE": 6,
+    "NOT_APPLICABLE": 10
+  }
+}

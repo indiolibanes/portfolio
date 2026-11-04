@@ -1,0 +1,322 @@
+{
+  "schema": "shorekeeper.r6.technical-summary/1",
+  "pr": 238,
+  "baseHead": "f3b0c089106b6386558a6f1d0d8610044aee7835",
+  "mainUnchanged": "839fca45224154c2eca98d1b47e0d3faa42079b0",
+  "canonicalGlbSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+  "runtimeSourceSha256": {
+    "anatomical-face.mjs": "da93a3966b6ad0f7cc856bc4d675eaaead989d35e7b77aa0da62eb421ce637e9",
+    "facial-ownership.mjs": "b0ce454bd89964c60f30d528fa704748e6109e0c5586dd5ec4d0f6fd2b3bef9d",
+    "gentle-acting.mjs": "d60c0da51bcd8bedb92ce7d9e83f787853fbeca8eea62e984930a3a9e56387f7",
+    "shorekeeper-face-expressions.mjs": "74f6806999286eeb1522e90cd429845f469dd1c079e9dd03e943334d06c0b87f",
+    "facial-r6-qa.mjs": "9b906b253b1d96f9f192f4aefdf07f4685567647befdab39c1f4e9785c7345f8"
+  },
+  "tests": {
+    "node": 103,
+    "fail": 0,
+    "weightGoldenCases": 70,
+    "baselinePngPairs": 1050,
+    "baselineDifferentPng": 0,
+    "atlasPng": 1455,
+    "worriedDiagnostics": 180,
+    "privateIdleCycles": 9,
+    "manualWallSeconds": 123.724,
+    "manualCommands": 9,
+    "simulatedSeconds": 600,
+    "simulatedCommands": 60,
+    "activeVideos": 28,
+    "frameVectorsVerifiedAgainstFinalRuntime": 3976
+  },
+  "renderClass": "SWIFTSHADER_WEBGL2",
+  "physicalGpu": "NOT_TESTED",
+  "androidSamsung": "NOT_TESTED",
+  "appearanceProfile": "APPEARANCE_PROFILE_UNVERIFIED",
+  "humanApproval": null,
+  "visualQA": "VISUAL_QA_PENDING",
+  "atlasArtifact": {
+    "filename": "Shorekeeper_R6_Atlas_Privado_20261104.zip",
+    "bytes": 411739477,
+    "sha256": "c35d76a24d17203917b2ffeb3362ec080a42e7bb4ae348a9bd1174cc5a480b4f",
+    "pngPaths": 3737,
+    "uniquePng": 1961,
+    "persistence": "UPLOAD_TIMED_OUT_OUTCOME_UNCONFIRMED; local artifact retained"
+  },
+  "replayCases": [
+    {
+      "name": "neutral-LITTLE_SMILE_ACTING_R6-0",
+      "id": "LITTLE_SMILE_ACTING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "1a453ad027214e90426893b9dc0d694b2060d97646ad40c5070d50298c1f3069",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-LITTLE_SMILE_ACTING_R6-45",
+      "id": "LITTLE_SMILE_ACTING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "2f2bf2b9f64869938ea09083344e3c3d9ff90bbcafeb16e5c5329af4847b3215",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-LITTLE_SMILE_ACTING_R6-90",
+      "id": "LITTLE_SMILE_ACTING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "455b550f646a64a1d2c3aba518da0a20e69ba4f9a55fee52c33200f9f28e3eb2",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-MY_STAR_ACTING_R6-0",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "f8d7ac33d9101560ce84c4c57bb0dbd740cc5592999ada259f44e515ec4c2f45",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-MY_STAR_ACTING_R6-45",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "9ec834a5f88214df331eeec307bebd3899d93ac55e8f86c9e79c402f2877c5b1",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-MY_STAR_ACTING_R6-90",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "dbd76bad36751914e2c621522a3846da2aab2b43d07156ca206d0095916f1da9",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-AFFECT_GROWING_R6-0",
+      "id": "AFFECT_GROWING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "eddfc9b1998393dbe2d4a7e08b1efbb5ef0c6326efa9a3e9700067f9cf558874",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-AFFECT_GROWING_R6-45",
+      "id": "AFFECT_GROWING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "87359f15bb27e7a1b374448300409c38423555cf1a46f14dacf8f71852a5b9f4",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-AFFECT_GROWING_R6-90",
+      "id": "AFFECT_GROWING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "1257ac732563fa8ff31d88ddecb31f95b56480bb43de129ee7c77013be76a36c",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-HELLO_ACTING_R6-0",
+      "id": "HELLO_ACTING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "4249688f54091269885c03ceb77a256fa0718757986ee590ca134f7f74b3f14e",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-HELLO_ACTING_R6-45",
+      "id": "HELLO_ACTING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "7018d2939d3a1a13924c7965a706e4549afa61831108bd4483eb444fc673aeec",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-HELLO_ACTING_R6-90",
+      "id": "HELLO_ACTING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "9046124a4c4e9c9e41e7c84ba20ef4f33a207b3e07269f4cc59e37bba222c7c0",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-TENDERNESS_ACTING_R6-0",
+      "id": "TENDERNESS_ACTING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "5be1a75de7a984f3eb115092cb0e94546fc39489d028f073252c2a6b918b3b6f",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-TENDERNESS_ACTING_R6-45",
+      "id": "TENDERNESS_ACTING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "e34014c4f2d00c8352819400d2fcca318ef02a851939755d8211c8e27ba3e531",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-TENDERNESS_ACTING_R6-90",
+      "id": "TENDERNESS_ACTING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "16d562b69425e200a03fb5114be02ae5a7ba2efc876f407ccbbeaa9992b73dc1",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-SERENITY_ACTING_R6-0",
+      "id": "SERENITY_ACTING_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "54098e0fd84e2b831652095d4f86b1b78ac913d5278197586f2c761ff536852a",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-SERENITY_ACTING_R6-45",
+      "id": "SERENITY_ACTING_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "6d6fdf119e91aa58c77fa2906756d5119cb5b13151af214d09c31b0cd701b36f",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-SERENITY_ACTING_R6-90",
+      "id": "SERENITY_ACTING_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "980d2413ef239b1debf42ae6fd4f8489e19feeb4a6a9637c58298496c39d444d",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-WORRIED_FIXED_R6-0",
+      "id": "WORRIED_FIXED_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "60eb02684fb266a78697234ad7363b33e167fc24446569210352e9ee3f5221e3",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-WORRIED_FIXED_R6-45",
+      "id": "WORRIED_FIXED_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "bc68dfa977b6a9f26bd554c63b8b43f5808fa48126a0ce2a3468252ec01e5529",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-WORRIED_FIXED_R6-90",
+      "id": "WORRIED_FIXED_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "fcc12b7daf02562073c2c8478023b6c6bf458c3061a34d87dd57dbb2f27e16a3",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-GLANCE_BILATERAL_R6-0",
+      "id": "GLANCE_BILATERAL_R6",
+      "yaw": 0,
+      "bodyId": null,
+      "videoSha256": "f3a101a7b497eb87b05db7dcf9ea88f7e79afe81aabb65a0e7a059769a25a09d",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-GLANCE_BILATERAL_R6-45",
+      "id": "GLANCE_BILATERAL_R6",
+      "yaw": 45,
+      "bodyId": null,
+      "videoSha256": "b9b72a51309bfe88e8742d7e59d06fa7866787a29743e7534b0a89e4df58c862",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "neutral-GLANCE_BILATERAL_R6-90",
+      "id": "GLANCE_BILATERAL_R6",
+      "yaw": 90,
+      "bodyId": null,
+      "videoSha256": "8eda6e7e63dc89c3b7a9ffbda2d92b11614aa5d093233e74540c955119760c3b",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "SK_IDLE_01_ORIGINAL-MY_STAR_ACTING_R6-0",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 0,
+      "bodyId": "SK_IDLE_01_ORIGINAL",
+      "videoSha256": "97257b841baa93c2492ec0c85309767dd7891f2ae70347f77f2277127954aeaf",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "SK_IDLE_02_ORIGINAL-MY_STAR_ACTING_R6-0",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 0,
+      "bodyId": "SK_IDLE_02_ORIGINAL",
+      "videoSha256": "3808f64b8d7c1068d25d5110d4edb3d53dcd886a73f6b8b6f038d1ae6895f5b2",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "SK_IDLE_03_ORIGINAL-MY_STAR_ACTING_R6-0",
+      "id": "MY_STAR_ACTING_R6",
+      "yaw": 0,
+      "bodyId": "SK_IDLE_03_ORIGINAL",
+      "videoSha256": "ca82825fb1034e314e5433696016f19cbd17f83af81b5b62e9b41d8e2e3e38cc",
+      "captureBundleSha256": "ed8c011329617c9b50847c727e973ebcc67ab8aa11fe30fc6a3d0226769b653c",
+      "weightsMatchFinalCode": true
+    },
+    {
+      "name": "Stand1_Action01_window-LITTLE_SMILE_ACTING_R6-45",
+      "id": "LITTLE_SMILE_ACTING_R6",
+      "yaw": 45,
+      "bodyId": "Stand1_Action01_window",
+      "videoSha256": "9daa6cc64e8016dc61e36db36cd2cabea2b46b2f9de0b86f8b59fde789f73b90",
+      "captureBundleSha256": "be9c3902e48f1d9b68c3980c060011787e2330aec468c44ae823f5a84a14ccf5",
+      "weightsMatchFinalCode": true
+    }
+  ],
+  "matrixCounts": {
+    "PASS": 19,
+    "PENDING_EVIDENCE": 6,
+    "NOT_APPLICABLE": 10
+  },
+  "r7Enabled": false,
+  "postCombo": "PENDING_PRIVATE_COMBAT_LIBRARIES",
+  "technicalLimits": [
+    "Profile +90 hides the eyes under the canonical hood; frontal and three-quarter provide gaze evidence.",
+    "Manual software session had ~.7–1.8 sampled FPS with dt cap .1; wall time differs from facial timeline.",
+    "Per-frame UI CPU render samples are not isolated facial cost or physical GPU performance.",
+    "Some workspace rebuilds observed transient prerender/copy artifacts; strict verifier unchanged; isolated source-identical build passed."
+  ],
+  "mainIntegrationSha256": "154fcc0d215cb165ac66d83d3fd18cbe633cc5ba3e5416dfa4befe0a20237fc3",
+  "reviewArtifact": {
+    "bytes": 49529362,
+    "sha256": "282bc4972d2f4ef3df9e1a257842f047d494d1e29774ef38004127bd43c4d63a",
+    "files": 303,
+    "activeVideos": 28,
+    "filename": "Shorekeeper_R6_Revisao_Privada_20261104.zip",
+    "persistence": "CONFIRMED_PRIVATE_LIBRARY"
+  },
+  "implementationCodeHead": "aa4da15f73bd06d790a606ec5701a8046ebded15",
+  "referenceVideosAudited": 15
+}
