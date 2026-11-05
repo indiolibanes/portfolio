@@ -16,23 +16,27 @@ export function* sampleMotionSteps(model,clip,{fps=30}={}){
    const positions=[],quaternions=[];
    for(const bone of bones){bone.matrixWorld.decompose(p,q,scale);positions.push(p.x,p.y,p.z);quaternions.push(q.x,q.y,q.z,q.w);}
    for(const k of footIndices)if(k>=0)floor=Math.min(floor,positions[k*3+1]);
-   frames.push({positions,quaternions});yield {phase:'sampling'};
+   frames.push({time:action.time,positions,quaternions});yield {phase:'sampling'};
   }
  }finally{mixer.stopAllAction();mixer.uncacheRoot(copy);copy.removeFromParent();}
  for(let i=0;i<frames.length;i++){
-  const before=frames[Math.max(0,i-1)],after=frames[Math.min(n,i+1)],dt=(i>0&&i<n?2:1)/fps,frame=frames[i];
-  frame.velocities=frame.positions.map((_,k)=>(after.positions[k]-before.positions[k])/dt);
+  const before=frames[Math.max(0,i-1)],after=frames[Math.min(n,i+1)],dt=after.time-before.time,frame=frames[i];
+  frame.velocities=frame.positions.map((_,k)=>dt>0?(after.positions[k]-before.positions[k])/dt:0);
   frame.contacts=footIndices.map(k=>k>=0&&frame.positions[k*3+1]-floor<.025&&Math.hypot(...frame.velocities.slice(k*3,k*3+3))<.18);if(i%32===0)yield {phase:'contacts'};
  }
  return {fps,frames,joints:bones.map(b=>b.name),floor,contactStatus:'INFERRED_GEOMETRY_NOT_VISUAL_APPROVAL'};
 }
 export function findMotionTransition(a,b,{exitFrom,exitTo,enterFrom=0,enterTo=.15}){
  if(a.joints.join()!==b.joints.join())throw Error('Joint samples differ');
- const ix=(v,s)=>Math.max(0,Math.min(s.frames.length-1,Math.round(v*s.fps)));
- if(exitTo<exitFrom||enterTo<enterFrom)throw Error('Invalid motion windows');let best=null;
- for(let i=ix(exitFrom,a);i<=ix(exitTo,a);i++)for(let j=ix(enterFrom,b);j<=ix(enterTo,b);j++){
-  const score=motionDistance(a.frames[i],b.frames[j]);
-  if(!best||score<best.score)best={exit:i/a.fps,enter:j/b.fps,score,contacts:[a.frames[i].contacts,b.frames[j].contacts]};
+ if(![exitFrom,exitTo,enterFrom,enterTo].every(Number.isFinite)||exitFrom<0||enterFrom<0||exitTo<exitFrom||enterTo<enterFrom)throw Error('Invalid motion windows');
+ // Rounding both endpoints may select OUTSIDE a bounded source window. The
+ // final sampled pose may also be at duration, not ceil(duration*fps)/fps.
+ const candidates=(s,lo,hi)=>s.frames.map((frame,i)=>({frame,time:frame.time??i/s.fps})).filter(x=>x.time>=lo&&x.time<=hi);
+ const aa=candidates(a,exitFrom,exitTo),bb=candidates(b,enterFrom,enterTo);let best=null;
+ for(const x of aa)for(const y of bb){
+  const score=motionDistance(x.frame,y.frame);
+  if(!best||score<best.score)best={exit:x.time,enter:y.time,score,contacts:[x.frame.contacts,y.frame.contacts]};
  }
+ if(!best)throw Error('No samples inside motion windows');
  return best;
 }

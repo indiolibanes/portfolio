@@ -1,5 +1,6 @@
 import {createSourceReviewDirector} from './shorekeeper/source-review.mjs';
 import {createR61Director} from './shorekeeper/r61-cinematic.mjs';
+import {R61_SOURCE_IDS} from './shorekeeper/r61-plan.mjs';
 import {setSourceReviewVfxIsolation} from './shorekeeper/source-review-visuals.mjs';
 import {createFrameMetrics} from './shorekeeper/frame-metrics.mjs';
 import {createPresentationClock} from './shorekeeper/presentation-clock.mjs';
@@ -176,7 +177,7 @@ export function mountShorekeeperLab(root){
  }
  const body=model?.userData.skClips?.find(c=>c.name==='Stand1_Action01_window'),cloth=model?.userData.skClips?.find(c=>c.name==='Rib_Stand1_ClothLayer');if(body&&cloth){try{director=createDirector(T,model,body,cloth,settings());presentationClock.setSpeed(Number(control('speed').value));director.setSpeed(1);}catch(e){log('Composição: '+e.message);}}else warn('Modelo carregado. Os dois clipes esperados não estão disponíveis; inspeção estática permitida.');}
  function visuals(){if(!stage)return;stage.quality(Number(control('dpr').value));stage.light(Number(control('light').value));stage.background(control('background').value);$('[data-value="light"]').textContent=control('light').value;if(!inspection)return;inspection.materials(control('materials').value,control('wireframe').checked);for(const m of inspection.meshes)m.frustumCulled=control('culling').checked;for(const n of ['skeleton','axes'])stage.overlay(n,control(n).checked);}
- function stopCameraOwners(){comboCamera?.stop();narrative?.stop();}
+ function stopCameraOwners(){director?.stopCamera?.();comboCamera?.stop();narrative?.stop();}
  function setMouthGeometry(mode){
   if(!model||(!mouthQA&&metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256))return;
   if(!['canonical','r2','r3','r4','r5'].includes(mode))throw Error('Geometria inválida');
@@ -538,7 +539,10 @@ export function mountShorekeeperLab(root){
  $('[data-combo-landing]').checked=['landingR4','landingR5'].some(k=>new URLSearchParams(location.search).get(k)==='1');$('[data-combo-recovery]').value=new URLSearchParams(location.search).get('landingR5')==='1'?'r5':'r4';
  on($('[data-combo-root]'),'change',()=>{cancelPreparation('root-change');if(model&&!director)buildDirector();syncPreparation();});
  on($('[data-combo-cancel]'),'click',()=>{cancelPreparation('user-cancel');if(model&&!director)buildDirector();status('Preparação cancelada.');syncPreparation();});
- function syncPreparation(){const busy=!!preparation;$('[data-combo-cancel]').hidden=!busy;$('[data-combo-start]').disabled=busy||!model||state.loading||state.contextLost||phase()!=='ready';root.dataset.comboPreparing=String(busy);$('[data-combo-qa]').setAttribute('aria-busy',String(busy));}
+ function syncPreparation(){const busy=!!preparation;$('[data-combo-cancel]').hidden=!busy;$('[data-combo-start]').disabled=busy||!model||state.loading||state.contextLost||phase()!=='ready';root.dataset.comboPreparing=String(busy);$('[data-combo-qa]').setAttribute('aria-busy',String(busy));
+  $('[data-r61-start]').disabled=!r61Enabled||busy||!stage||!state.webgl||state.loading||state.contextLost||!vfx||vfx.disposed||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||!R61_SOURCE_IDS.every(id=>model?.userData.skClips?.some(c=>c.name===id));
+  $('[data-r61-seek]').disabled=busy||state.contextLost||!state.webgl||director?.state.mode!=='R61_EXPERIMENTAL';
+ }
  on($('[data-combo-start]'),'click',async()=>{
   if(!model||phase()!=='ready'||preparation)return;comboCamera?.stop();narrative?.stop();scheduler?.setEnabled(false);control('actingAuto').checked=false;face?.reset();director?.dispose();director=null;inspection.restore();
   const subject=model,library=model.userData.skClips,variant=$('[data-combo-root]').value,landing=$('[data-combo-landing]').checked?($('[data-combo-recovery]').value==='r5'?'r5':true):false,controller=new AbortController(),sequence=++preparationSequence;let progressAt=-Infinity;
@@ -583,7 +587,7 @@ export function mountShorekeeperLab(root){
  on($('[data-vfx-context]'),'click',()=>{const ext=stage?.renderer.getContext().getExtension('WEBGL_lose_context');if(!ext){status('Simulação de contexto indisponível.');return;}ext.loseContext();setTimeout(()=>{if(!disposed)ext.restoreContext();},1000);});
  const resetClock=()=>{presentationClock.reanchor();frameMetrics.reset();renderMetrics.reset();last=0;metricsStart=0;frames=0;frameMs=0;renderFrameMs=0;loop?.reconcile();};
  on(document,'visibilitychange',()=>{sync(true);director?.setPaused(userPaused||document.hidden||suspended||outOfView);face?.setPaused(userPaused||document.hidden||suspended||outOfView);scheduler?.setPaused(userPaused||document.hidden||suspended||outOfView);resetClock();if(sweep)sweepLast=performance.now();});
- const updateMotionPolicy=()=>{vfx?.setReducedMotion(motion.matches);if(motion.matches){comboCamera?.stop();narrative?.stop();}scheduler?.setReducedMotion(motion.matches);if(motion.matches){control('actingAuto').checked=false;scheduler?.setEnabled(false);}if(motion.matches){cancelPreparation('reduced-motion');userPaused=true;director?.setPaused(true);face?.setPaused(true);scheduler?.setPaused(true);stopSweep();}sync(true);$('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido: nenhuma atuação automática. Use Reproduzir para iniciar explicitamente.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';};
+ const updateMotionPolicy=()=>{vfx?.setReducedMotion(motion.matches);if(motion.matches){stopCameraOwners();}scheduler?.setReducedMotion(motion.matches);if(motion.matches){control('actingAuto').checked=false;scheduler?.setEnabled(false);}if(motion.matches){cancelPreparation('reduced-motion');userPaused=true;director?.setPaused(true);face?.setPaused(true);scheduler?.setPaused(true);stopSweep();}sync(true);$('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido: nenhuma atuação automática. Use Reproduzir para iniciar explicitamente.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';};
  // Reconcile media preference before the existing frame sleeps after suspension.
  motion.addEventListener('change',updateMotionPolicy);
  $('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido ativo. Atuação começa apenas por comando.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';

@@ -48,7 +48,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
  const plan=buildR61Plan(library);
  const body=createComboDirector(T,root,plan.clips,plan.schedule,{entry:0,onEvent});
  const cam=createR61Camera(stage,plan,getVfx);
- let disposed=false,active=false,paused=false,sourceVfx=null,savedVfx=null,cue=r61CueAt(plan,0),interrupted=false;
+ let disposed=false,active=false,paused=false,sourceVfx=null,savedVfx=null,cue=r61CueAt(plan,0),interrupted=false,termination=null;
  const restoreVfx=()=>{
   const v=sourceVfx,old=savedVfx;sourceVfx=null;savedVfx=null;
   if(!v||v.disposed||!old)return;
@@ -57,27 +57,44 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
   if(old.enabled)for(const [system,wasEnabled] of Object.entries(old.enabled))
    if(v.enabled?.[system]!==wasEnabled)v.setEnabled(system,wasEnabled);
   if(v.state!==old.state)v.setState(old.state);
+  // Recreate the exact manual pose, including an in-progress fade. setState()
+  // alone would start another transition from the cinematic's final levels.
+  for(const [key,value] of Object.entries(old.values))v[key]=value;
+  for(const [key,value] of Object.entries(old.arrays))v[key].set(value);
+  v.renderPose?.();
+  if(v.root)v.root.visible=old.rootVisible;
+  if(v.environment?.root)v.environment.root.visible=old.environmentVisible;
  };
  const endPresentation=()=>{
   active=false;
   try{cam.stop();}finally{restoreVfx();}
  };
+ // Presentation resources and the body have separate lifetimes. Releasing the
+ // camera/VFX must also start body recovery; otherwise advance() sleeps in run.
+ const interruptPresentation=reason=>{
+  if(!interrupted){interrupted=true;body.interrupt();}
+  termination=reason;endPresentation();
+ };
+ const sourceAvailable=()=>!!sourceVfx&&!sourceVfx.disposed&&getVfx()===sourceVfx;
  const apply=time=>{
   cue=r61CueAt(plan,time);
-  if(sourceVfx&&sourceVfx.disposed){endPresentation();return;}
+  if(!sourceAvailable()){interruptPresentation('VFX_UNAVAILABLE');return;}
   if(sourceVfx&&sourceVfx.state!==cue.state)sourceVfx.setState(cue.state);
   if(camera&&cam.active)cam.sample(time);
  };
  return {
   start(){
    if(disposed)return;
-   endPresentation();interrupted=false;
+   endPresentation();interrupted=false;termination=null;
    body.start();
    try{
     const v=getVfx();
     if(v&&!v.disposed){
      setSourceReviewVfxIsolation(v,false);
-     sourceVfx=v;savedVfx={state:v.state,mode:v.mode,stage:v.stage,enabled:v.enabled?{...v.enabled}:null};
+     sourceVfx=v;savedVfx={state:v.state,mode:v.mode,stage:v.stage,enabled:v.enabled?{...v.enabled}:null,
+      rootVisible:v.root?.visible,environmentVisible:v.environment?.root.visible,
+      values:Object.fromEntries(['time','corePhase','coreFrozen','transition','suspended'].filter(k=>k in v).map(k=>[k,v[k]])),
+      arrays:Object.fromEntries(['levels','from','target'].filter(k=>v[k]?.set).map(k=>[k,Array.from(v[k])]))};
      if(v.mode!=='BOTH')v.setMode('BOTH');
      // R6.1 explicitly presents OUTER rather than inheriting a prior manual
      // Inner/Supernal tint or disabled field/canopy; restore both on exit.
@@ -87,10 +104,14 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
     }
     if(camera)cam.start();
     active=true;apply(0);
-   }catch(e){endPresentation();body.interrupt();throw e;}
+   }catch(e){interruptPresentation('START_FAILED');throw e;}
   },
   advance(dt){
-   if(disposed||paused||!Number.isFinite(dt)||dt<=0)return;
+   if(disposed)return;
+   // Detect null, replacement and disposal BEFORE consuming this frame's time.
+   // Do not adopt a replacement or overwrite its manual settings implicitly.
+   if(active&&!sourceAvailable())interruptPresentation('VFX_UNAVAILABLE');
+   if(paused||!Number.isFinite(dt)||dt<=0)return;
    // An interrupted source recovery is still driven by the same clock.
    if(!active&&body.state.phase!=='exit')return;
    body.advance(dt);
@@ -103,6 +124,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
    if(disposed)return;
    if(!Number.isFinite(t)||t<0||t>plan.schedule.duration)throw Error('Invalid R6.1 seek');
    if(!active)this.start();
+   if(!active)return;
    body.seek(t);apply(t);
    // QA scrubbing must show the requested VFX phase immediately, including
    // while paused; otherwise an OFF -> STELLAREALM fade stays at its old pose.
@@ -110,8 +132,11 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
   },
   interrupt(){
    if(disposed)return;
-   interrupted=true;body.interrupt();endPresentation();
+   interruptPresentation('USER_INTERRUPT');
   },
+  // Manual camera changes and a new reduced-motion preference revoke only the
+  // automatic camera. They must not be overwritten on the next body frame.
+  stopCamera(){cam.stop();},
   setPaused(v){paused=!!v;body.setPaused(paused);},
   // Playback rate is owned solely by presentation-clock.mjs.
   setSpeed(v){if(v!==1)throw Error('Use presentation clock speed');body.setSpeed(1);},
@@ -126,7 +151,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
    return {...b,mode:'R61_EXPERIMENTAL',sourceFrame:null,identity:'SOURCE_ROLE_UNVERIFIED',
     b1:'NOT_REPRODUCED',landing:'AUTHORED_RECOVERY_NO_FOOT_CONTACT_CERTIFICATION',
     cue:interrupted?'INTERRUPTED':cue.beat,vfxCue:active?cue.state:'MANUAL',
-    presentationActive:active,cameraActive:cam.active,status:R61_STATUS,
+    presentationActive:active,cameraActive:cam.active,termination,status:R61_STATUS,
     timeline:'AUTHORED_7_SOURCE_COMPOSITE_NO_GAME_TIMESTAMPS'};
   },
   get plan(){return plan;}
