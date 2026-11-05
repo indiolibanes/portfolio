@@ -274,9 +274,13 @@ export class ShorekeeperVfxR2Director {
     }
     this.root.position.copy(this.center); this.root.scale.setScalar(this.scale); this.renderPose();
   }
+  get needsContinuousFrame() {
+    if(this.disposed||this.suspended||this.reducedMotion)return false;
+    return this.transition<1||this.levels.some((v,i)=>v>0.0001&&this.enabled[['butterflies','field','collapsedCore','canopy'][i]])||!!this.environment?.root.visible;
+  }
   update(dt, pixelRatio = 1) {
     if (this.disposed || this.suspended || !Number.isFinite(dt) || dt <= 0) return;
-    const start = this.now(), step = Math.min(0.1, dt);
+    const start = this.now(), step = dt;
     this.transition = Math.min(1, this.transition + step / this.transitionSeconds); const u = smooth01(this.transition);
     for (let i = 0; i < 4; i++) this.levels[i] = this.from[i] + (this.target[i] - this.from[i]) * u;
     if (!this.reducedMotion) { this.time += step; if (!this.coreFrozen && this.levels[2] > 0.02) this.corePhase = (this.corePhase + step / CORE_PERIOD) % 1; }

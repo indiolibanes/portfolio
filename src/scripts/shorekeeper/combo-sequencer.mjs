@@ -106,9 +106,9 @@ export function createComboSequencer(T, root, clips, schedule) {
     seek(t) { if (disposed) return;if(!Number.isFinite(t))throw Error('Invalid seek');recovery=-1;time = clamp(t, 0, schedule.duration); apply(); },
     setStrength(v){if(!Number.isFinite(v)||v<0||v>1)throw Error('Invalid entry weight');strength=v;apply();},
     recover(){if(disposed)return;releaseWeights.set(scratch);recovery=0;},
-    advance(dt) { if (disposed || paused || !(dt > 0)) return; if(recovery>=0){recovery=Math.min(.45,recovery+Math.min(dt,.1));const u=smooth(recovery/.45),last=actions.length-1;
+    advance(dt) { if (disposed || paused || !(dt > 0)) return; if(recovery>=0){recovery=Math.min(.45,recovery+dt*rate);const u=smooth(recovery/.45),last=actions.length-1;
       actions.forEach((a,i)=>{if(i===last)a.time=Math.min(schedule.segments[i].clipExit,schedule.segments[i].clipEnter+recovery);scratch[i]=releaseWeights[i]*(1-u)+(i===last?u:0);a.setEffectiveWeight(scratch[i]);});mixer.update(0);if(recovery>=.45)time=schedule.duration;return;}
-    time = Math.min(schedule.duration, time + Math.min(dt, 0.1)*rate); apply(); },
+    time = Math.min(schedule.duration, time + dt*rate); apply(); },
     setPaused(v) { paused = !!v; },
     setSpeed(v){if(!Number.isFinite(v)||v<.1||v>2)throw Error('Invalid speed');rate=v;},
     state() { return {time, weights: Array.from(scratch), segment: schedule.segments.findIndex((s) => time >= s.start && time <= s.end), status: COMBO_STATUS, paused}; },
@@ -137,7 +137,7 @@ export function createComboDirector(T,root,clips,schedule,{onEvent=()=>{},entry=
  seek(t){if(!Number.isFinite(t))throw Error('Invalid seek');entering=false;recovering=false;seq.setStrength(1);seq.seek(t);},
  interrupt(){if(!running)return;seq.recover();entering=false;recovering=true;onEvent({type:'recovery',clip:'SK_COMBO_EXPERIMENTAL'});},
  setPaused(v){paused=!!v;seq.setPaused(paused);},setSpeed(v){seq.setSpeed(v);speed=v;},configure(){},
- advance(dt){if(disposed||!running||paused||!Number.isFinite(dt)||dt<=0)return;if(entering){const step=Math.min(dt,.1),used=Math.min(entry-entryClock,step);entryClock+=used;seq.setStrength(smooth(entryClock/entry));if(entryClock>=entry){entering=false;if(step>used)seq.advance(step-used);}return;}seq.advance(dt);if(seq.done){running=false;onEvent({type:'end',clip:'SK_COMBO_EXPERIMENTAL'});}},
+ advance(dt){if(disposed||!running||paused||!Number.isFinite(dt)||dt<=0)return;if(entering){const step=dt,used=Math.min(entry-entryClock,step);entryClock+=used;seq.setStrength(smooth(entryClock/entry));if(entryClock>=entry){entering=false;if(step>used)seq.advance(step-used);if(seq.done){running=false;onEvent({type:'end',clip:'SK_COMBO_EXPERIMENTAL'});}}return;}seq.advance(dt);if(seq.done){running=false;onEvent({type:'end',clip:'SK_COMBO_EXPERIMENTAL'});}},
  dispose(){if(disposed)return;disposed=true;seq.dispose();},
  get state(){return {phase:running?(entering?'entry':recovering?'exit':'run'):'idle',paused,speed,clock:seq.time,duration:seq.duration,progress:seq.time/seq.duration,weights:seq.state().weights,mode:'COMBO_EXPERIMENTAL',visualQA:COMBO_STATUS,landing:'SOURCE_OR_OPT_IN_BRIDGE_VISUAL_QA_PENDING'};}
  };

@@ -28,10 +28,22 @@ export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent
  setSpeed(v){if(!Number.isFinite(v)||v<.1||v>2)throw Error('Invalid speed');speed=v;},
  configure(p){const next={enter,exit,...pending,...Object.fromEntries(Object.entries(p).filter(([k])=>['enter','exit'].includes(k)))};timing(next);if(phase==='idle')({enter,exit}=next);else pending=next;},
  advance(dt){if(disposed)return;if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(paused||phase==='idle'||dt===0)return;
-  // Entry and recovery are outside source time; speed changes only playback.
-  if(phase==='entry'){entryClock=Math.min(enter,entryClock+dt);weight=ease(entryClock/enter);action.setEffectiveWeight(weight);mixer.update(0);updates++;if(entryClock>=enter){phase='run';action.paused=false;emit('execution');}}
-  else if(phase==='run'){const step=Math.min(dt*speed,clip.duration-clock);action.paused=false;weight=1;action.setEffectiveWeight(1);mixer.update(step);updates++;clock=Math.min(clip.duration,clock+step);if(clock>=clip.duration-1e-8)recover();}
-  else {release=Math.min(exit,release+dt);weight=releaseWeight*(1-ease(release/exit));action.setEffectiveWeight(weight);mixer.update(0);updates++;if(release>=exit)finish();}
+  // Carry the unused frame time across phase boundaries without extra rendered frames.
+  let remaining=dt;
+  for(let transitions=0;transitions<8&&remaining>1e-12&&phase!=='idle';transitions++){
+   if(phase==='entry'){
+    const used=Math.min(remaining,Math.max(0,enter-entryClock));entryClock+=used;remaining-=used;weight=ease(entryClock/enter);
+    if(entryClock>=enter-1e-10){phase='run';emit('execution');}
+   }else if(phase==='run'){
+    const used=Math.min(remaining,Math.max(0,(clip.duration-clock)/speed));clock=Math.min(clip.duration,clock+used*speed);remaining-=used;weight=1;
+    if(clock>=clip.duration-1e-10)recover();
+   }else{
+    const used=Math.min(remaining,Math.max(0,exit-release));release+=used;remaining-=used;weight=releaseWeight*(1-ease(release/exit));
+    if(release>=exit-1e-10)finish();
+   }
+  }
+  action.time=clock;action.paused=true;action.setEffectiveWeight(weight);mixer.update(0);updates++;
+  if(phase==='idle')restore();
  },
  dispose(){if(disposed)return;disposed=true;queued=false;action.stop();mixer.uncacheRoot(root);restore();phase='idle';releaseOwner();},
  get state(){return {phase,paused,clock,entryClock,release,weights:[weight],updates,queued,speed,duration:clip.duration,total:clip.duration,progress:clock/clip.duration,parameters:{enter,exit},pending,clip:clip.name,mode:'REFERENCE_QA',timingOriginal:speed===1,owners:bindings.length,loop:'ONCE'};}

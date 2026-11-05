@@ -1,0 +1,19 @@
+gate,status,evidence,limit
+heads,PASS,Five PR heads match private handoff,Frozen before implementation
+R602,R602_DELIVERY_UNLOCATED,PR branch and commit searches,No replacement identity invented
+handoff-integrity,PASS,15 sizes and SHA256 verified,Private files excluded from Git
+R2-current-source,BLOCKED,EU binding confirmed but default-scope API read returned 404,Not proof of absent EU objects
+R2-R6-port,PARTIAL,Selective code integration plus numerical ownership regressions,Authenticated end-to-end real asset test pending
+clock-fps,PASS_NUMERIC,60 30 15 5 FPS with drops and three speeds,Fixture clips only
+pause-seek,PASS_NUMERIC,Clock and cue recompose tests,Full real semantic sequence pending
+RAF-demand,PASS_NUMERIC,Static sleep and one pending callback with explicit animation reasons,Browser scene not measured
+context-loss,PARTIAL,Remote abort and generation invalidation wired plus loader regressions,Real WebGL restore pending
+preparation,INSTRUMENTED,Source/variant cache and per-unit phase telemetry,No current cold/warm private measurements
+HA,HEAVY_ATTACK_UNVERIFIED,Source map has null measurements,No BA4 substitution
+Ult,ULT_SOURCE_GATE_PENDING,Burst01 and Burst02 remain candidates,No markers or canonical sequence
+camera,NOT_IMPLEMENTED,Legacy preview camera retained,Real landmarks and NDC checks required
+semantic-events,PASS_INFRASTRUCTURE,Source-gated dispatcher tested with fixtures,Not wired to runtime camera/VFX
+GPU,NOT_MEASURED,Rolling CPU/interval instrumentation only,No GPU physical or VRAM claims
+Samsung,NOT_TESTED,No physical device available,600 seconds and three cycles outstanding
+local-checks,PASS,155 Node results plus npm check/build,Remote CI recorded separately
+visual,VISUAL_QA_PENDING,No human approval,No new private videos
