@@ -1,0 +1,154 @@
+{
+  "schema": "shorekeeper.r605.source-status/1",
+  "status": "AUTHENTICATED_R2_UNAVAILABLE",
+  "canonicalModel": {
+    "expectedSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+    "measuredSha256": null
+  },
+  "bundles": [
+    {
+      "id": "basic",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_02_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_03_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_04_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_L02_ORIGINAL",
+          "identity": "HEAVY_ATTACK_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_SKILL_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_SKILL_QTE_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_AIR_SKILL_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    },
+    {
+      "id": "burst",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_BURST_01_ORIGINAL",
+          "identity": "LIBERATION_MAPPING_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_BURST_02_ORIGINAL",
+          "identity": "LIBERATION_MAPPING_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    }
+  ],
+  "variants": [
+    "ORIGINAL",
+    "REBASED",
+    "ROOT_BODY_OWNED"
+  ],
+  "requiredEvents": [
+    "PREP",
+    "HANDS_CLOSE",
+    "ASCENT",
+    "ROTATION_START",
+    "ROTATION_END",
+    "FIELD_REVEAL",
+    "DESCENT",
+    "FOOT_CONTACT",
+    "RECOVERY"
+  ],
+  "markers": [],
+  "note": "No source measurements, frames or cinematic markers are fabricated. Fixture traces are not Shorekeeper evidence.",
+  "baseHead": "cdf9b93485889b3be49080f37c34489fcfd01d1a",
+  "recognizedCurrentClips": 0,
+  "access": {
+    "jurisdiction": "eu",
+    "bindingConfirmed": true,
+    "authenticatedRead": "NOT_PERFORMED",
+    "blocker": "Cloud Browser automatic approval rejected Cloudflare Access origin; REST interface lacks jurisdiction header parameter",
+    "objectAbsenceClaim": false
+  },
+  "webgl": {
+    "status": "ENVIRONMENT_BLOCKED",
+    "reason": "WebGL2 unavailable before first frame",
+    "physicalGpu": "NOT_MEASURED",
+    "samsung600s": "NOT_TESTED"
+  }
+}

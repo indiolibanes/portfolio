@@ -1,0 +1,14 @@
+{
+  "evidence": null,
+  "units": null,
+  "floorY": null,
+  "forwardLocalByBone": {"Root": null, "Bip001": null},
+  "heightTolerance": null,
+  "velocityTolerance": null,
+  "sustainSeconds": null,
+  "soles": [
+    {"side":"L","mesh":null,"indices":[],"evidence":null},
+    {"side":"R","mesh":null,"indices":[],"evidence":null}
+  ],
+  "note": "Intentionally incomplete. Calibrate privately against the actual model, including body forward axes; never copy fixture values or guess a sourceFrame."
+}
