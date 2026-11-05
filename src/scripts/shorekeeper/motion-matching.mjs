@@ -8,15 +8,15 @@ export function sampleMotion(model,clip,options={}){return finishSteps(sampleMot
 export function* sampleMotionSteps(model,clip,{fps=30}={}){
  const copy=cloneSamplingModel(model),bones=JOINTS.map(n=>copy.getObjectByName(n)).filter(Boolean);
  const mixer=new T.AnimationMixer(copy),action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();action.paused=true;
- const frames=[],p=new T.Vector3(),q=new T.Quaternion(),footIndices=['Bip001LFoot','Bip001RFoot'].map(n=>bones.findIndex(b=>b.name===n));
+ const frames=[],p=new T.Vector3(),q=new T.Quaternion(),scale=new T.Vector3(),footIndices=['Bip001LFoot','Bip001RFoot'].map(n=>bones.findIndex(b=>b.name===n));
  const n=Math.ceil(clip.duration*fps);let floor=Infinity;
  try{
   for(let i=0;i<=n;i++){
    action.time=Math.min(clip.duration,i/fps);mixer.update(0);copy.updateMatrixWorld(true);
    const positions=[],quaternions=[];
-   for(const bone of bones){bone.getWorldPosition(p);positions.push(p.x,p.y,p.z);bone.getWorldQuaternion(q);quaternions.push(q.x,q.y,q.z,q.w);}
+   for(const bone of bones){bone.matrixWorld.decompose(p,q,scale);positions.push(p.x,p.y,p.z);quaternions.push(q.x,q.y,q.z,q.w);}
    for(const k of footIndices)if(k>=0)floor=Math.min(floor,positions[k*3+1]);
-   frames.push({positions,quaternions});if(i%4===0)yield {phase:'sampling'};
+   frames.push({positions,quaternions});yield {phase:'sampling'};
   }
  }finally{mixer.stopAllAction();mixer.uncacheRoot(copy);copy.removeFromParent();}
  for(let i=0;i<frames.length;i++){

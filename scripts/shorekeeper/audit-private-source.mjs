@@ -48,7 +48,7 @@ export async function runPrivateAudit({directory,calibrationFile,output}){
   const mixer=new T.AnimationMixer(model.gltf.scene);
   try{for(const {clip} of clips.values()){const a=mixer.clipAction(clip);a.setLoop(T.LoopOnce,1);a.clampWhenFinished=true;a.play();a.paused=true;for(const t of [0,clip.duration/2,clip.duration]){a.time=t;mixer.update(0);model.gltf.scene.updateMatrixWorld(true);model.gltf.scene.traverse(o=>{if(o.isBone&&![...o.position,...o.quaternion,...o.scale].every(Number.isFinite))throw Error('Nonfinite source pose');});}mixer.stopAllAction();}}finally{mixer.stopAllAction();mixer.uncacheRoot(model.gltf.scene);}
   // The mixer restores the original bind pose before any diagnostic variant is derived.
-  for(const id of ['SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL'])for(const fps of [30,60])for(const variant of ['ORIGINAL','REBASED','ROOT_BODY_OWNED']){
+  for(const id of ['SK_ATTACK_L02_ORIGINAL','SK_SKILL_01_ORIGINAL','SK_BURST_01_ORIGINAL','SK_BURST_02_ORIGINAL'])for(const fps of [30,60])for(const variant of id.startsWith('SK_BURST')?['ORIGINAL','REBASED','ROOT_BODY_OWNED']:['ORIGINAL']){
    const item=clips.get(id),report=sampleSourceMotion(model.gltf.scene,item.clip,{fps,variant,sourceHash:item.sourceHash,clipHash:item.clipHash,provenance:'VERIFIED_BYTES',calibration});
    await fs.writeFile(path.join(out,`${id}_${variant}_${fps}.json`),JSON.stringify(report),{mode:0o600,flag:'wx'});
   }

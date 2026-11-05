@@ -1,0 +1,32 @@
+gate,status,evidence
+BASE_251_252,PASS,current metadata and git ancestry;252 CI three success
+TRANSFER_INTEGRITY,PASS,13/13 internal hashes
+FOUR_GLB_BYTES,PASS,offline rehash and parse of previously authorized private downloads
+TEN_CLIP_BINDINGS,PASS,actual AnimationMixer evaluation
+CANDIDATE_TRACES,PASS,16 traces with 30/60 plus key times
+RAF_R5,PASS,byte hash and regression suite
+DPR_RENDER_ONLY,PASS,252 wiring preserved and tests
+CPU_METRIC_LABELS,PASS,separate total and render rolling windows
+MANUAL_SOURCE_TRANSPORT,PASS,deterministic Node transport; manual opt-in UI
+SOURCE_WEBGL_TRANSPORT,PENDING,WebGL2 context unavailable
+HA_IDENTITY,PENDING,no labeled independent reference
+RS_IDENTITY,PENDING,no labeled independent reference
+BURST_IDENTITY,PENDING,partial visual similarity insufficient
+PSA_MAPPING,PENDING,PSA and original converter unavailable
+SCENE_FLOOR_CONTACT,PENDING,rest proxy only; no certified first support
+SOURCE_EXTREMA,PASS,numeric endpoints and global extrema only
+SEMANTIC_LANDMARKS,PENDING,no executable game markers
+AUTOMATIC_CYCLE,PENDING,source mapping blocks new cycle
+CINEMATIC_CAMERA_VFX,PENDING,no canonical source timeline active
+PREPARATION_COLD_BUDGET,PENDING,observed maxUnit17.24ms exceeds requested6ms
+PREPARATION_CACHE,PASS,warm cache hit;no device performance claim
+CPU_COMPARATIVE_MEDIA,PASS,private fixed camera sheets and two diagnostic videos
+WEBGL_REAL,PENDING,context creation blocked before frame1
+GPU_PHYSICAL,PENDING,no supported real device query measured
+SAMSUNG_600S,PENDING,no physical device available
+THREE_CANONICAL_CYCLES,PENDING,cycle identity not certified
+FACE_R6_REGRESSION,PASS,approved golden streams unchanged
+STRUCTURAL_TESTS,PASS,169 Node results;check;build;diff check
+PUBLIC_ASSET_PRIVACY,PASS,only code and compact summaries staged
+HUMAN_ARTISTIC,PENDING,no approval inferred from numeric checks
+HSIN_DUO,PENDING,deferred;Hsin unchanged

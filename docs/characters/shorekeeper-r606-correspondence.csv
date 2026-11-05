@@ -1,0 +1,6 @@
+requestedRole,candidate,clipHash,visualObservation,canonicalStatus,missingEvidence
+HeavyAttack,SK_ATTACK_L02_ORIGINAL,d6e146d031b26610cbb5a49d6f969a3df01be3fb54fd151d7a414a9c0d7f716d,knee lift and rotation in real skinned poses,MANUAL_QA_PENDING,independent labeled Heavy Attack gameplay
+ResonanceSkill,SK_SKILL_01_ORIGINAL,2457efe1541c0ad036492718eba326575c178c5fd483ec6729ec50fdc0665561,forward gesture and turning descent in real poses,MANUAL_QA_PENDING,independent labeled Resonance Skill gameplay
+ResonanceLiberation,SK_BURST_01_ORIGINAL,eccc08d3d9f6cc25d0287972e605410d05b50a281f0a2e5ea907e1fb9a22b57c,arm opening partially resembles cutscene reference,MANUAL_QA_PENDING,continuous source-to-reference alignment with camera and scene
+ResonanceLiberation,SK_BURST_02_ORIGINAL,f9eae22876b9235b9f034cc6514094870de94f8c4bc42a6a750bb6c94bdaa2e2,hands at chest then rotation partially resembles ingame reference,MANUAL_QA_PENDING,continuous source-to-reference alignment and real scene floor
+BasicAttack1-3,SK_ATTACK_01/02/03_ORIGINAL,SEE_R605_STATUS,bytes and bindings verified; filenames only,MANUAL_QA_PENDING,labeled gameplay for ordered three-attack identity
