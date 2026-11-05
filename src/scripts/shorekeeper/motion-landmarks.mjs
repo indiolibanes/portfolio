@@ -7,13 +7,17 @@ export function summarizeMotionAudit(trace) {
  const pelvis=trace.calibration.pelvis??'Bip001Pelvis';
  const handDistance=r=>Math.hypot(...r.bones[trace.calibration.leftHand??'Bip001LHand'].worldPosition.map((v,i)=>v-r.bones[trace.calibration.rightHand??'Bip001RHand'].worldPosition[i]));
  const first=rows[0],last=rows.at(-1),peak=extremum(r=>r.bones[pelvis].worldPosition[1]);
+ // A vertical forward projection has undefined yaw. Never bridge a gap by
+ // subtracting valid endpoints: the unwrapped revolution count is then unknown.
+ const yawContinuous=name=>rows.every(r=>Number.isFinite(r.bones[name].yawUnwrapped));
  return {
   clipId:trace.clipId,clipHash:trace.clipHash,variant:trace.variant,fps:trace.fps,duration:trace.duration,
   orientation:Object.fromEntries(['Root','Bip001'].map(name=>[name,{
    initialForward:first.bones[name].forward,finalForward:last.bones[name].forward,
    initialYawDeg:first.bones[name].yaw===null?null:first.bones[name].yaw*180/Math.PI,
    finalYawDeg:last.bones[name].yaw===null?null:last.bones[name].yaw*180/Math.PI,
-   yawDeltaDeg:first.bones[name].yawUnwrapped===null||last.bones[name].yawUnwrapped===null?null:(last.bones[name].yawUnwrapped-first.bones[name].yawUnwrapped)*180/Math.PI,
+   yawDeltaDeg:yawContinuous(name)?(last.bones[name].yawUnwrapped-first.bones[name].yawUnwrapped)*180/Math.PI:null,
+   yawContinuity:yawContinuous(name)?'SAMPLED_PROJECTION_CONTINUOUS':'INDETERMINATE_PROJECTION_GAP',
    path3DDeg:last.bones[name].rotationPathRadians*180/Math.PI
   }])),
   observations:[observation('CLIP_START',first),observation('PELVIS_HEIGHT_MAX',peak),observation('HAND_SEPARATION_MIN',extremum(handDistance,true)),observation('CLIP_END',last)],
