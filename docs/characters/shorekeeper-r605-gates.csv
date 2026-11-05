@@ -1,13 +1,13 @@
 id,priority,criterion,status,evidence
 G001,P0,PR #249 head e base atuais verificados,PASS,Current PR249 head and base matched; base CI success confirmed
 G002,P0,Nenhum código do PR #250 (regressão) importado,PASS,render-loop.mjs SHA256 identical to PR249; PR250 closed unmerged; old R5 test intact
-G003,P0,R2 autorizado com 4 GLB e 10 IDs reais,PENDING,AUTHENTICATED_R2_UNAVAILABLE; EU binding confirmed; browser origin authorization rejected
+G003,P0,R2 autorizado com 4 GLB e 10 IDs reais,PASS,Four files downloaded through authenticated Access routes; all bytes/SHA256 match; ten composed clips validated and evaluated offline; WebGL is separate
 G004,P0,R6 facial conserva golden 70 streams,PASS,70 R6 golden streams retained in 163 passing Node results
 G005,P0,Facial dispose / lease single writer após 3 reloads,PENDING,Three reload/controller fixture regression passes; authenticated real-model reload not performed
-G006,P0,Root/Bip001 world quat + yaw unwrap Burst01/02 @30/60,PENDING,30/60 Hz A/B/C sampler tested with fixture only; no real source trace
-G007,P0,Solas skinadas/contato em solo registrado,PENDING,Skinned vertex contact math validated with fixture; real sole calibration and video absent
+G006,P0,Root/Bip001 world quat + yaw unwrap Burst01/02 @30/60,PENDING,Actual Root/Bip001 world matrices/quaternions/yaw measured in twelve 30/60 Hz source traces; original PSA sourceFrame correspondence not certified
+G007,P0,Solas skinadas/contato em solo registrado,PENDING,32 actual skinned probes per foot measured; no sustained interval under configured geometric rest-plane rule; independent scene floor/contact pending
 G008,P0,HA L02 confirmado com reference game,PENDING,HEAVY_ATTACK_UNVERIFIED
-G009,P0,Skill01 confirmado RS e Burst01/02 Ult,PENDING,LIBERATION_MAPPING_UNVERIFIED; no current source hashes or video mapping
+G009,P0,Skill01 confirmado RS e Burst01/02 Ult,PENDING,Actual source CPU contact sheets compared qualitatively to references; canonical role assignment still unverified
 G010,P0,3BA→HA→RS→Ult sequenciados sem fallback silencioso,PENDING,Canonical sequence deliberately not activated
 G011,P0,"Outer após Ult, sem Echo/troca/Inner/Supernal indevidos",PENDING,No speculative Outer/canonical progression implemented
 G012,P0,Event cues vinculados ao relógio real da sequência,PENDING,No certified original markers; markers array empty
@@ -18,7 +18,7 @@ G016,P1,"RAF repousa, respeita invalidação e nenhum vazamento",PENDING,R5 RAF 
 G017,P1,R2 reiniciar/cancelar/context lost sem stale model,PENDING,Loader hotfix and cancellation code unchanged; authenticated runtime missing
 G018,P1,Cache preparação chaveado hash/versão e sem mem leak,PENDING,Existing source-keyed cache preserved; no real cold/warm device measurement
 G019,P1,"GPU/CPU p50,p95,p99 no Samsung Internet >=600s",PENDING,Samsung 600 seconds not available; GPU_NOT_MEASURED
-G020,P1,3 ciclos Ult/idle no Samsung sem context loss,PENDING,No three real Ult cycles; synthetic WebGL attempt blocked before first frame
+G020,P1,3 ciclos Ult/idle no Samsung sem context loss,PENDING,169 actual source poses rendered offline in CPU; no three full canonical Ult cycles on Samsung
 G021,P1,Drawcall/dpr/overdraw medidos com FX R5,PENDING,Bounded timer query instrumentation implemented; WebGL2 unavailable
 G022,P1,WebGL real + retrato390x640 e 16:9,PENDING,Fixture preview served; WebGL2 context creation failed; no rendered portraits
 G023,P2,UI R5/R6 simplificada e manutenção oculta,PENDING,UI simplification deferred until source/Ult validation
