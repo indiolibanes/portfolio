@@ -251,6 +251,18 @@ export class ShorekeeperVfxR2Director {
   }
   /* ---------- control ---------- */
   setState(state) { if (this.disposed) return false; if (!VFX_R2_STATES.includes(state)) throw Error('Estado VFX inválido: ' + state); this.state = state; this.from.set(this.levels); this.target.set(LEVELS[state]); this.transition = 0;if(this.reducedMotion){this.levels.set(this.target);this.transition=1.25;this.renderPose();} if (state === 'PREPARATION' && !this.coreFrozen) this.corePhase = 0; return true; }
+  /** Opt-in inspectable pose at an absolute authored time; unlike setState,
+   * scrubbing does not depend on an earlier transition or frame history.
+   * This changes only VFX-owned levels/clocks, never the character or camera. */
+  snapState(state,{time}={}){
+    if(!VFX_R2_STATES.includes(state))throw Error('Estado VFX inválido: '+state);
+    if(time!==undefined&&(!Number.isFinite(time)||time<0))throw Error('Invalid VFX seek');
+    if(this.disposed)return false;
+    this.state=state;this.target.set(LEVELS[state]);this.from.set(this.target);
+    this.levels.set(this.target);this.transition=1;
+    if(time!==undefined){this.time=time;if(!this.coreFrozen)this.corePhase=(time/CORE_PERIOD)%1;}
+    this.renderPose();return true;
+  }
   /** Manual sequence OFF -> AMBIENT -> PREPARATION -> STELLAREALM -> RESONANCE_PEAK -> RECOVERY -> OFF. */
   next() { const i = VFX_R2_STATES.indexOf(this.state); return this.setState(i === VFX_R2_STATES.length - 1 ? 'OFF' : VFX_R2_STATES[i + 1]); }
   /** 'stellarealm' (the R1 toggle in the lab UI) switches both the gameplay field and the canopy. */
