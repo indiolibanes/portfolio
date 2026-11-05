@@ -53,6 +53,9 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
   const v=sourceVfx,old=savedVfx;sourceVfx=null;savedVfx=null;
   if(!v||v.disposed||!old)return;
   if(old.mode&&v.mode!==old.mode)v.setMode(old.mode);
+  if(old.stage&&v.stage!==old.stage)v.setStage(old.stage);
+  if(old.enabled)for(const [system,wasEnabled] of Object.entries(old.enabled))
+   if(v.enabled?.[system]!==wasEnabled)v.setEnabled(system,wasEnabled);
   if(v.state!==old.state)v.setState(old.state);
  };
  const endPresentation=()=>{
@@ -74,8 +77,13 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
     const v=getVfx();
     if(v&&!v.disposed){
      setSourceReviewVfxIsolation(v,false);
-     sourceVfx=v;savedVfx={state:v.state,mode:v.mode};
+     sourceVfx=v;savedVfx={state:v.state,mode:v.mode,stage:v.stage,enabled:v.enabled?{...v.enabled}:null};
      if(v.mode!=='BOTH')v.setMode('BOTH');
+     // R6.1 explicitly presents OUTER rather than inheriting a prior manual
+     // Inner/Supernal tint or disabled field/canopy; restore both on exit.
+     if(v.stage!=='outer'&&v.setStage)v.setStage('outer');
+     for(const system of ['butterflies','field','canopy','collapsedCore'])
+      if(v.enabled&&!v.enabled[system])v.setEnabled(system,true);
     }
     if(camera)cam.start();
     active=true;apply(0);
