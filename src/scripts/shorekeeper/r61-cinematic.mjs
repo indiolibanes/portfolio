@@ -96,6 +96,9 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
    if(!Number.isFinite(t)||t<0||t>plan.schedule.duration)throw Error('Invalid R6.1 seek');
    if(!active)this.start();
    body.seek(t);apply(t);
+   // QA scrubbing must show the requested VFX phase immediately, including
+   // while paused; otherwise an OFF -> STELLAREALM fade stays at its old pose.
+   if(sourceVfx?.snapState)sourceVfx.snapState(cue.state,{time:t});
   },
   interrupt(){
    if(disposed)return;
