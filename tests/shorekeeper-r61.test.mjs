@@ -26,9 +26,10 @@ function fakeStage(){
  };
 }
 function fakeVfx(){
- return {state:'OFF',mode:'FIELD_GAMEPLAY',disposed:false,center:new T.Vector3(),scale:2,
+ return {state:'OFF',mode:'FIELD_GAMEPLAY',stage:'inner',disposed:false,center:new T.Vector3(),scale:2,
+  enabled:{field:false,canopy:false,butterflies:false,collapsedCore:false},
   root:new T.Group(),environment:{root:new T.Group()},
-  setState(v){this.state=v;},setMode(v){this.mode=v;},renderPose(){}};
+  setState(v){this.state=v;},setMode(v){this.mode=v;},setStage(v){this.stage=v;},setEnabled(k,v){this.enabled[k]=v;},renderPose(){}};
 }
 
 test('R61 plan requires seven exact original body sources; no fallback or B1 invention',()=>{
@@ -66,7 +67,8 @@ test('R61 owns one body mixer and camera, drives original tracks and restores VF
  director.start();
  assert.equal(cameraOwner(stage),'r61-cinematic');
  assert.equal(stage.orbit.enabled,false);
- assert.equal(vfx.mode,'BOTH');
+ assert.equal(vfx.mode,'BOTH');assert.equal(vfx.stage,'outer');
+ assert.ok(Object.values(vfx.enabled).every(Boolean),'Outer presentation re-enables systems');
  const target=director.plan.cues.find(c=>c.beat==='LIBERATION_PEAK_AUTHORIAL').t;
  director.seek(target);
  assert.equal(director.state.cue,'LIBERATION_PEAK_AUTHORIAL');
@@ -80,7 +82,8 @@ test('R61 owns one body mixer and camera, drives original tracks and restores VF
  assert.equal(stage.orbit.enabled,true);
  assert.equal(stage.orbit.enableDamping,true);
  assert.equal(vfx.state,'OFF');
- assert.equal(vfx.mode,'FIELD_GAMEPLAY');
+ assert.equal(vfx.mode,'FIELD_GAMEPLAY');assert.equal(vfx.stage,'inner');
+ assert.ok(Object.values(vfx.enabled).every(v=>!v),'all manually disabled systems restored');
  director.advance(.6);
  director.start();
  director.seek(0);
