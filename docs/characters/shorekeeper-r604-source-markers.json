@@ -1,0 +1,139 @@
+{
+  "schema": "shorekeeper.r604.source-markers/1",
+  "status": "ULT_SOURCE_GATE_PENDING",
+  "canonicalModel": {
+    "expectedSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+    "measuredSha256": null
+  },
+  "bundles": [
+    {
+      "id": "basic",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_01_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_02_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_03_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_ATTACK_04_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_L02_ORIGINAL",
+          "identity": "HEAVY_ATTACK_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_SKILL_01_ORIGINAL",
+          "identity": "RS_CANDIDATE_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_SKILL_QTE_01_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_AIR_SKILL_01_ORIGINAL",
+          "identity": "SOURCE_ID_ONLY",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    },
+    {
+      "id": "burst",
+      "sha256": null,
+      "status": "NOT_ACQUIRED_THIS_RUN",
+      "clips": [
+        {
+          "clipId": "SK_BURST_01_ORIGINAL",
+          "identity": "ULT_CANDIDATE_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        },
+        {
+          "clipId": "SK_BURST_02_ORIGINAL",
+          "identity": "ULT_CANDIDATE_UNVERIFIED",
+          "clipHash": null,
+          "duration": null,
+          "trackTimes": null,
+          "worldRotation": null,
+          "soleContact": null
+        }
+      ]
+    }
+  ],
+  "variants": [
+    "ORIGINAL",
+    "REBASED",
+    "ROOT_BODY_OWNED"
+  ],
+  "requiredEvents": [
+    "PREP",
+    "HANDS_CLOSE",
+    "ASCENT",
+    "ROTATION_START",
+    "ROTATION_END",
+    "FIELD_REVEAL",
+    "DESCENT",
+    "FOOT_CONTACT",
+    "RECOVERY"
+  ],
+  "markers": [],
+  "note": "No measured markers. GIF time is not clip time. Synthetic test markers must never populate this file."
+}

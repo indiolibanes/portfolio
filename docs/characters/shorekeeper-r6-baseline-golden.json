@@ -1,0 +1,585 @@
+{
+  "schema": "shorekeeper.r6.f3b0c08.weight-streams/1",
+  "sourceHead": "f3b0c089106b6386558a6f1d0d8610044aee7835",
+  "conditions": {
+    "seconds": 6,
+    "blinkAt": 1.7,
+    "manualNeutralAt": 3.2,
+    "start": "all facial weights zero",
+    "encoding": "Face then Eye target-index order; IEEE754 Float64 little endian; after each advance"
+  },
+  "meshes": [
+    {
+      "name": "Shorekeeper_Face",
+      "morphTargetDictionary": {
+        "B_Anger": 0,
+        "B_Happy": 1,
+        "B_Cheerful": 2,
+        "B_Sad": 3,
+        "B_Flat": 4,
+        "B_AH_R": 5,
+        "B_AH_L": 6,
+        "B_Up_Add": 7,
+        "B_Down_Add": 8,
+        "E_Close": 9,
+        "E_Smile_R": 10,
+        "E_Smile_L": 11,
+        "E_Anger": 12,
+        "E_Sad": 13,
+        "E_Focus": 14,
+        "E_Insipid": 15,
+        "E_Stare": 16,
+        "Aa": 17,
+        "A": 18,
+        "E": 19,
+        "I": 20,
+        "O": 21,
+        "U": 22,
+        "M_Smile_R": 23,
+        "M_Smile_L": 24,
+        "M_Ennui_R": 25,
+        "M_Ennui_L": 26,
+        "M_OpenSmall": 27,
+        "M_Laugh": 28,
+        "M_Scared": 29,
+        "M_ScaredTooth": 30,
+        "M_Anger": 31,
+        "M_Trapezoid": 32,
+        "M_O": 33,
+        "M_A": 34,
+        "M_Nutcracker": 35,
+        "P_M_R_Add": 36,
+        "P_M_L_Add": 37,
+        "P_M_ZR_Add": 38,
+        "P_M_ZL_Add": 39,
+        "C_ZR_Face": 40,
+        "C_ZL_Face": 41,
+        "C_Down_Face": 42,
+        "C_M_Distant": 43,
+        "P_Nose_Up": 44,
+        "P_Nose_Down": 45,
+        "P_M_Up_Add": 46,
+        "P_M_Down_Add": 47,
+        "P_M_RMove_Add": 48,
+        "P_M_LMove_Add": 49,
+        "P_M_MidPoint_Add": 50,
+        "P_M_UpDownView_Add": 51,
+        "P_M_Scale_Add": 52,
+        "E_Blephar": 53,
+        "B_Inside_Add": 54,
+        "S_01": 55,
+        "S_02": 56,
+        "S_03": 57,
+        "S_04": 58,
+        "S_05": 59,
+        "S_06": 60,
+        "S_07": 61,
+        "S_08": 62,
+        "S_09": 63
+      }
+    },
+    {
+      "name": "Shorekeeper_Eye",
+      "morphTargetDictionary": {
+        "Pupil_Up": 0,
+        "Pupil_Down": 1,
+        "Pupil_R": 2,
+        "Pupil_L": 3,
+        "Pupil_Scale": 4
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "d1f435e6b483e4a482f7beb597fe1874247bf19082a3d6ab0e003be30b6c3d76"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "4987be0cef1849c589e44f0d6c1a5e2d4d0a84c84da1936ed3bfc8a44ecf4a9b"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "fd2a3f77a2130d6384c35315f7f62646549a250787ff5ab7e9cf5e8e63076662"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "5059f5d51ad5a41a288d3adaf71106af99acf07b419bd7fdd2f08dc7b478c5a1"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "176ef0197adfecebba0e281acd8fefddd23af5f04547118739599b3485b5ef44"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "252e3b159e34543e72eafc0a1dc0bdecf5d7dfc44ca067a2870f579944fab414"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "97622879a730e31913c2ce2fbd77a8fe49d22bc9353b1fd279a6702651252c2f"
+    },
+    {
+      "id": "LITTLE_SMILE_V2",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "c7a2ec82ae9d4cc7710f4a903d0a4143fd6bb3da3e0c759eee3502452aa1418a"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "08cd17dd3e548f9efc7420b168fdce4491788ba1fccb1ce04a060e1f380546a7"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "9464356c6cc8394ea3e963a8db9427079a57b7cdcd5f6c360c13cdd6e8c6dc01"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "e30fbe49d15404ce932bd256bd70e5987f434cd667c2e4fb57600f5da1219e6f"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "2ae96c7dbbb99a27ed77878859718633b78fd687bc8e615eacd8c2f71260d0ae"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "0d313e6380a4006c25fe21801e035d84f444e9ca5755066af841128fa1d57002"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "42c76bb9a84e300e435aca95b9a205456867f116e333508497cccc7069bec676"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "b04ea4774292ec591cfec5c3739588308feac4214ecee5ab6379727deeff392a"
+    },
+    {
+      "id": "MY_STAR_V2",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "319cace5f1bd06659b86142cf9e9095d71136b5973e8b946487680bdef3ff634"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "37c70def545abb7bb92bdd3199bcb5fa14699753b28df66486ca98e8e7120cb0"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "f3c321d3134d7eb6825cbec03ee79848848d27de434d78b6f0fe94a3d299359f"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "b08ac8871560b9e016964ac706f8daa25da1822101a5842e9ef502e386d39cfe"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "62c3bbe8516d856f856524a7d223b86f33a9aaac48d58664fd2c0e95b50c128c"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "731066012f3c7af56cc294d7acae9e8cb0c72b80a5e2e584b4e12a4277501108"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "f5ff6138314b60edad00dc272e4b9b9b2a836de8c8188d5a5e9e628414787247"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "9a9cb2adb9d60844d0f188ad3f4e8108d0d1367ec035067a6426418acebc8add"
+    },
+    {
+      "id": "MY_STAR_R3_EYES_SOFT",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "21544bffd763e845603f6d972c6ae523fb705b783f092191d59796fd9a49fad6"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "1f0088241438d14a765f41e5651fc0caaff77dcc06c6481d1e8d9697218e752e"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "223473fe489e820eaeaafab068dd619120739b126d12bbf2c641df83cfd62db8"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ee01473872e14b0d1f53f58c5945cdf140c4b09da374fedcb711160a4923983"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "c0ba15c940039f31f10d21ffc0891a01aef2c5c2490c6ca56c65668d7747ab65"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "347a0b41e8869dd035516c9e8bb125d446f97a71dbcdc9cffaf94044eefcb3a2"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "080a28d0d447ba025722566f263bcb91e779d9afbaf0d1b12b01d29e21496464"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "eb82a597c668784a2ea750d761514071b3c92c2fa81d4c227e6b113bde18d1e6"
+    },
+    {
+      "id": "HELLO_R2_CANDIDATE",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "9e291f6a7749517fa816938ff65dc3bdb5e40cc3002355f2bbf6417a57227d5b"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "00d443e96f0a1d0e8adae8809e030ac8baf5d9bc58d188688b8785fd65665410"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "0a3d2c1537411d446a4371fbd214888752d53081c5fda5d35d94ac2c825aadb7"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "8ddf7896019484b626957f9dbef8acfefde2a364a151941b5f400aa2be106318"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "9060711f72558378625899c8dee52a4db5f44663684f1b7ea282061d638d516c"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5143c3b28311327723b70bb77e0d08f39c164b97b9bd342f82c9f269c58a4409"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "4808e233504f7587eb0a435293e3d502e3ee6e0032d0ab84469b4ea1dc54be21"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "19361db3a5c2e9a6a1618c41d201d53ff85be7dd183666dec7718af21ea7b59a"
+    },
+    {
+      "id": "LOVE",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "cf8842bbe6f83dd364d0b0c05da5822a25b9c09d7a11d36a3365bbe2206f9f89"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "8cc8143ebfbbc2c878395f2d9ac0f50f179866a714f09eae3818ca3efbce0607"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "59f3259ef2b584eb648b8d7a927231e133aa701cd76317711ebcd431c601de3f"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "9b052ca4f62fe1533c4c0df60973131fca1dcabc5b24eb3d6d11bda2cbe7708a"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "bb55ad7de274c6e65e803fb0ddca4626960770f4a72326f0b1f9849cd30dada1"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "f075618dc16fea08762f3af5bdeb344f47ae80c5e4a83c9852d0d6de49456a4d"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "138f241336216cab834def2b19abceb019e60c139c564fec2fa2c215984fcd7c"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "9112a8b8d480efc0978a3588f0b5718011eff90d1f2a313e2ae673f0b365c2fb"
+    },
+    {
+      "id": "HOPE",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "01abed3d305ede12429d9adf79dcb72cf5fc955f85ac13ba2f07ed0518c6d1de"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "5ec2ecda09402a7c1b9543f6b3e693c0decf3b47c47b40bfdb82ae6452aa6f18"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e69ad083f6e8a0c40311f3c4ee0da236748dc8529b40bcfc0ca7f5a4647d5fd3"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.25,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "4b71c8501d9783eef996291fa40915238ee83bf7417ab66e753ab818e0b473b3"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.25,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "e6d7490b626e07ad0e6af5a38541f466027ab5f759ad66f9d1147dd054f3b87b"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.5,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "13c4d6c415089baae46e1c2e62376cbfd1fa28103b5f2c3bd45a8973f264d313"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.5,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "809a8aedc110be02607655740ec4b36424c6ffdd5d51aebab09ed64854f87d61"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.75,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "0df2d0e567e4f79c523809336156f60085123159bbebe05e116b514790f1b054"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 0.75,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "d53031f2f8074846164220c066a3357d1fe870c7838a5985f27fed94cdd09c9b"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 1,
+      "hz": 30,
+      "frames": 180,
+      "sha256": "beb3b862978c50713c439e0bef86119ab3433e2252c7700e533cc31eab3f756b"
+    },
+    {
+      "id": "SURPRISE_SOFT",
+      "intensity": 1,
+      "hz": 60,
+      "frames": 360,
+      "sha256": "51f578d0236986d893d248407b21d2ae8e3bd51c58989e10642d40ff654226bf"
+    }
+  ],
+  "humanGeometry": "APPEARANCE_PROFILE_UNVERIFIED"
+}

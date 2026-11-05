@@ -46,7 +46,7 @@ test('reduced motion freezes clocks, drops the core and flattens the wingbeat, s
 
 test('pause (suspended) and invalid deltas never advance state', () => {
   const {vfx} = make(); vfx.setState('STELLAREALM'); vfx.setSuspended(true); run(vfx, 1); assert.equal(vfx.time, 0);
-  vfx.setSuspended(false); vfx.update(NaN, 1); vfx.update(-1, 1); vfx.update(0, 1); assert.equal(vfx.time, 0); vfx.update(10, 1); assert.ok(vfx.time <= 0.1 + 1e-9, 'delta is clamped'); vfx.dispose();
+  vfx.setSuspended(false); vfx.update(NaN, 1); vfx.update(-1, 1); vfx.update(0, 1); assert.equal(vfx.time, 0); vfx.update(10, 1); assert.equal(vfx.time, 10, 'presentation time preserves a dropped frame'); vfx.dispose();
 });
 
 test('butterflies: independent paths, tangent flight vectors, face-avoidance zone, wings mirrored by side', () => {
