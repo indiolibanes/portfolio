@@ -22,7 +22,7 @@ jobs:
           BASE=85b3d707de0e110e2e2b692e346d099ba936de4c
           git merge-base --is-ancestor "$BASE" HEAD
           git diff --check "$BASE" HEAD
-          if git diff --name-only "$BASE" HEAD | grep -Ev '^(src/scripts/shorekeeper/s6-expression-catalog\.mjs|src/scripts/shorekeeper/s6-duo-choreography\.mjs|src/scripts/shorekeeper/s6-duet-guest\.mjs|src/scripts/hsin-stage\.ts|src/pages/experimentos/duo/index\.astro|tests/shorekeeper-s6e-.*\.test\.mjs|docs/shorekeeper-s6e/.*|\.github/workflows/shorekeeper-s6e-unified-duet\.yml)$'; then
+          if git diff --name-only "$BASE" HEAD | grep -Ev '^(src/scripts/shorekeeper/s6-expression-catalog\.mjs|src/scripts/shorekeeper/s6-duo-choreography\.mjs|src/scripts/shorekeeper/s6-duet-guest\.mjs|src/scripts/hsin-stage\.ts|src/pages/experimentos/duo/index\.astro|tests/shorekeeper-s6e-.*\.test\.mjs|tests/shorekeeper-s6-duo-stage-contract\.test\.mjs|docs/shorekeeper-s6e/.*|\.github/workflows/shorekeeper-s6e-unified-duet\.yml)$'; then
             echo 'Non-S6E code change'; exit 1
           fi
       - name: Automatic facial family and music mode tests

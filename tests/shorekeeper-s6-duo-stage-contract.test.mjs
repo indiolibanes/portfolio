@@ -8,7 +8,7 @@ test('S6 private duet has one Hsin stage, uses original renderer and existing fr
  assert.match(source,/data-hsin-stage data-s6-duo="true"/);
  assert.match(source,/HsinStageLayout/);
  assert.match(h,/duetGuest\.advance\(dt/);
- assert.match(h,/scene,\{signal:attempt\.signal\}/);
+ assert.match(h,/scene,\{signal:attempt\.signal,stage:duoStageAdapter\}/);
  assert.match(h,/duetGuest\?\.dispose\(\)/);
  assert.match(h,/const duetRequested=root\.dataset\.s6Duo==='true'/);
  assert.equal(source.match(/data-stage-canvas/g).length,1);
@@ -17,6 +17,6 @@ test('S6 private duet has one Hsin stage, uses original renderer and existing fr
 test('S6 private duet does not change Hsin default public route or expose source assets',()=>{
  assert.ok(!solo.includes('data-s6-duo'));
  assert.ok(!solo.includes('s6-duet-guest'));
- assert.ok(source.includes('Private Duet Preview'));
+ assert.ok(source.includes('S6-E Private Duet'));
  assert.ok(!source.includes('window.__'));
 });
