@@ -3,6 +3,7 @@ import {claimCameraOwner} from './camera-ownership.mjs';
 import {setSourceReviewVfxIsolation} from './source-review-visuals.mjs';
 import {buildR61Plan,r61CueAt,r61CameraPose,R61_STATUS} from './r61-plan.mjs';
 import {r62CameraFrame,R62_DEFAULT_ORBIT_PERIOD} from './r62-camera.mjs';
+import {createRigCameraReader,prepareCameraGuide,smartCameraFrame,projectCameraPoints} from './smart-camera.mjs';
 
 /** No extra RAF, no alternate body mixer and no writes to GLB source tracks. */
 function createR61Camera(stage,plan,getVfx,profile=null){
@@ -35,8 +36,9 @@ function createR61Camera(stage,plan,getVfx,profile=null){
    if(!release||ret)return;
    if(profile){
     const vfx=getVfx(),h=Number.isFinite(vfx?.scale)&&vfx.scale>0?vfx.scale:2;
-    const f=r62CameraFrame({plan,timeline:profile.timeline,t:time,aspect:stage.camera.aspect,h,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,
+    let f=r62CameraFrame({plan,timeline:profile.timeline,t:time,aspect:stage.camera.aspect,h,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,
      anchors:{pel:read(B.pel),head:read(B.head),rh:read(B.rh),lh:read(B.lh)},period:profile.period??R62_DEFAULT_ORBIT_PERIOD,reduced:!!profile.reduced?.()});
+    if(profile.smart && profile.rigReader && profile.guide){const rig=profile.rigReader.read(),secondary=profile.secondary?.()??[];f=smartCameraFrame(profile.T,{base:f,rig,guide:profile.guide,t:time,h,aspect:stage.camera.aspect,width:stage.canvas?.width??960,height:stage.canvas?.height??540,reduced:!!profile.reduced?.(),secondary,plan,timeline:profile.timeline,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,period:profile.period??R62_DEFAULT_ORBIT_PERIOD});}
     lastFrame=f;applyProfileCamera({position:f.position,target:f.target,fov:f.fov,preset:f.preset});return;
    }
    const pose=r61CameraPose(plan,time,stage.camera.aspect),vfx=getVfx();
@@ -62,6 +64,11 @@ function createR61Camera(stage,plan,getVfx,profile=null){
   },
   get returning(){return !!ret;},
   get lastFrame(){return lastFrame;},
+  telemetry(){
+   if(!profile?.rigReader)return null;const rig=profile.rigReader.read(),T=profile.T,c=stage.camera;
+   const pos=c.position.clone().sub(new T.Vector3().fromArray(rig.anchors.chest));pos.y=0;pos.normalize();
+   return {...lastFrame?.smart,...projectCameraPoints(T,c,rig.points,stage.canvas?.width??960,stage.canvas?.height??540),front:rig.front,frontFacingDot:pos.dot(new T.Vector3().fromArray(rig.front)),backView:pos.dot(new T.Vector3().fromArray(rig.front))<0,azimuth:Math.atan2(c.position.x-stage.orbit.target.x,c.position.z-stage.orbit.target.z),radius:c.position.distanceTo(stage.orbit.target),target:stage.orbit.target.toArray(),ownership:release?'r61-cinematic':'MANUAL',reason:release?lastFrame?.smart?.reason:'MANUAL',effectivePosition:c.position.toArray(),effectiveFov:c.fov,aspect:c.aspect};
+  },
   stop(){
    ret=null;
    if(!release)return;
@@ -97,6 +104,13 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
  if(!['layer','legacy'].includes(liberationMode)||(lib&&liberationMode==='layer'&&!score.liberation))throw Error('R6.2 liberation mode must be layer (with a layer) or legacy');
  const legacyState=(c,t)=>!score?c.state:lib?(liberationMode==='layer'?'AMBIENT':t<lib.start?'AMBIENT':c.state):t<burstStart?'AMBIENT':c.state;
  const starGate=t=>!lib?null:liberationMode==='layer'?(score.last?.starGate??0):(t<lib.start?0:1);
+ if(cameraProfile?.smart){
+  const h=getVfx()?.scale??2;
+  try{const rigReader=createRigCameraReader(T,root,h),key=Object.values(plan.clips).map(c=>c.uuid).join('|')+'|'+h;
+   const guide=prepareCameraGuide({model:root,key,duration:plan.schedule.duration,samplePose:t=>body.seek(t),reader:rigReader});body.seek(0);
+   cameraProfile={...cameraProfile,T,rigReader,guide,secondary:()=>score?.last?.skill?.butterflies?.filter(b=>b.visible&&b.pos).map(b=>b.pos)??[]};
+  }catch(e){score?.dispose();body.dispose();throw e;}
+ }
  const cam=createR61Camera(stage,plan,getVfx,cameraProfile?{...cameraProfile,timeline:cameraProfile.timeline??lib}:null);
  let disposed=false,active=false,paused=false,sourceVfx=null,savedVfx=null,cue=r61CueAt(plan,0),interrupted=false,termination=null;
  const restoreVfx=()=>{
@@ -215,6 +229,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
     presentationActive:active,cameraActive:cam.active,termination,status:R61_STATUS,
     timeline:'AUTHORED_7_SOURCE_COMPOSITE_NO_GAME_TIMESTAMPS'};
   },
+  cameraTelemetry(){return cam.telemetry();},
   get plan(){return plan;}
  };
 }

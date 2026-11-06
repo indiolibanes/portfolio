@@ -19,7 +19,7 @@ import {BILLBOARD_VS, FACE_FS, TAIL} from './combat-vfx-shaders.mjs';
 export const SKILL_BUTTERFLY_COUNT = 5;
 export const SKILL_MAX_DRAW_CALLS = 5;
 const NB = SKILL_BUTTERFLY_COUNT, TRAIL = 14, SPARKS = 6, MOTES = 20, NP = NB * TRAIL + NB * SPARKS + MOTES;
-const SPAWN_STEP = 0.045, FLIGHT = 0.5, TRAIL_DELTA = 0.018, THETA = [-1.1, -0.55, 0, 0.55, 1.1];
+const SPAWN_STEP = 0.060, FLIGHT = 0.59, TRAIL_DELTA = 0.018, THETA = [-1.1, -0.55, 0, 0.55, 1.1];
 const TAU = Math.PI * 2;
 const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const clamp01 = x => Math.max(0, Math.min(1, x));
@@ -35,7 +35,13 @@ void main(){
   float cb=cos(iMisc.w), sb=sin(iMisc.w); vec3 r2=r*cb+u*sb; vec3 u2=-r*sb+u*cb;
   float fl=iMisc.y; vec3 o=iMisc.z*r2*cos(fl)+u2*sin(fl);
   vUv=uv; vAlpha=iAlpha; vShade=.7+.3*abs(dot(normalize(cross(o,f)),vec3(0.,0.,1.)));
-  vec3 wp=iPos+iMisc.x*(o*uv.x+f*(uv.y-.52));
+  // Flight-plane wings can become edge-on to a frontal camera. Keep their
+  // silhouette in the view plane while flap/bank remain authored absolute-time accents.
+  vec3 cr=vec3(viewMatrix[0][0],viewMatrix[1][0],viewMatrix[2][0]);
+  vec3 cu=vec3(viewMatrix[0][1],viewMatrix[1][1],viewMatrix[2][1]);
+  vec3 wing=normalize(cr*cb+cu*sb)*iMisc.z*(.72+.28*abs(cos(fl)));
+  vec3 axis=normalize(cu*cb-cr*sb);
+  vec3 wp=iPos+iMisc.x*(wing*uv.x+axis*(uv.y-.52));
   vec4 mv=viewMatrix*vec4(wp,1.); vec4 hv=viewMatrix*vec4(uHeadW,1.);
   vScr=mv.xy-hv.xy*(mv.z/min(hv.z,-1e-3)); vOn=(hv.z<-1e-3&&uFaceR>0.)?1.:0.;
   gl_Position=projectionMatrix*mv;
@@ -96,7 +102,7 @@ void main(){
 export const SKILL_COLORS = Object.freeze({cyan: [0.50, 0.95, 1.0], gold: [1.0, 0.86, 0.52], wing: [0.55, 0.95, 1.0]});
 
 export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_TARGET'}) {
- let mode = targetMode, disposed = false;
+ let mode = targetMode, ablation = 'FULL', disposed = false;
  const mats = [], geos = [], tex = [];
  const additive = extra => ({transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, side: T.DoubleSide, ...extra});
  const mk = (m, geo, order, name) => { const o = new T.Mesh(geo, m); o.name = name; o.frustumCulled = false; o.renderOrder = order; o.visible = false; mats.push(m); geos.push(geo); parent.add(o); return o; };
@@ -151,10 +157,10 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
   target.copy(O).addScaledVector(fwd, 1.7 * h); target.y = P.chest.y - 0.05 * h;
   for (let i = 0; i < NB; i++) {
    const th = THETA[i], sn = Math.sin(th);
-   S[i].copy(P.chest).addScaledVector(fwd, 0.10 * h).addScaledVector(right, th * 0.06 * h); S[i].y += 0.02 * h;
+   S[i].copy(P.chest).addScaledVector(fwd, (0.14 + .025*(i%2)) * h).addScaledVector(right, th * 0.19 * h); S[i].y += (-0.025 + .035*(i%3)) * h;
    if (mode === 'SIMULATED_TARGET') TG[i].copy(target).addScaledVector(right, th * 0.045 * h);
    else { const phi = th * 0.9; TG[i].copy(O).addScaledVector(fwd, Math.cos(phi) * 1.0 * h).addScaledVector(right, Math.sin(phi) * 1.0 * h); TG[i].y = P.chest.y + 0.12 * h; }
-   C1[i].copy(S[i]).addScaledVector(fwd, 0.35 * h).addScaledVector(right, sn * 0.55 * h); C1[i].y += 0.05 * h + 0.02 * h * (i % 2);
+   C1[i].copy(S[i]).addScaledVector(fwd, 0.35 * h).addScaledVector(right, sn * 0.72 * h); C1[i].y += (i%2===0 ? -.13 : .13) * h;
    C2[i].copy(TG[i]).addScaledVector(fwd, -0.55 * h).addScaledVector(right, sn * 0.30 * h); C2[i].y += 0.03 * h;
   }
  }
@@ -162,11 +168,11 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
  function update(c) {
   neutralize(); last = null;
   const {t, cue, rm, bundle: b} = c, heal = b.index.get('SKILL.heal'), bf = b.index.get('SKILL.butterflies');
-  const healOn = heal && cue.healingPulse > 0.002 && t >= heal.start && t < heal.end;
-  const bfOn = bf && cue.guidedButterflies > 0.002 && t >= bf.start && t < bf.end;
+  const healOn = ablation !== 'BUTTERFLIES_ONLY' && heal && cue.healingPulse > 0.002 && t >= heal.start && t < heal.end;
+  const bfOn = ablation !== 'HEAL_ONLY' && bf && cue.guidedButterflies > 0.002 && t >= bf.start && t < bf.end;
   if (!healOn && !bfOn) return null;
   frame(c);
-  const probe = {heal: null, butterflies: [], target: null, motes: 0, sparks: 0, trails: 0};
+  const probe = {ablation, origin: 'REAL_TORSO_FRAME', handGlow: 0, heal: null, butterflies: [], target: null, motes: 0, sparks: 0, trails: 0};
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
   let pi = 0;
   // ---------------- healing (SIMULATED_HEALING) ----------------
@@ -174,10 +180,10 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
    const uh = (t - heal.start) / (heal.end - heal.start), lv = cue.healingPulse, exp = smooth((uh - 0.2) / 0.5);
    const gU = U(ground), floor = c.floorY;
    ground.position.set(O.x, floor + 0.004, O.z); ground.scale.set(1.9 * h, 1, 1.9 * h);
-   gU.uR.value = rm ? 0.55 : 0.12 + 0.83 * exp; gU.uA.value = lv * smooth((uh - 0.18) / 0.12) * 0.9; ground.visible = gU.uA.value > 0.002;
+   gU.uR.value = rm ? 0.55 : 0.12 + 0.83 * exp; gU.uA.value = lv * smooth((uh - 0.18) / 0.12) * 0.42; ground.visible = gU.uA.value > 0.002;
    const sU = U(sweep), mid = tmp.copy(O).lerp(chestC, 0.5);
    sU.uCenter.value.copy(mid); sU.uSize.value = 0.46 * h; sU.uPush.value = 0.05 * h;
-   sU.uBand.value = rm ? 0 : -0.95 + 1.9 * exp; sU.uA.value = lv * 0.55 * smooth((uh - 0.2) / 0.1); sweep.visible = sU.uA.value > 0.002;
+   sU.uBand.value = rm ? 0 : -0.95 + 1.9 * exp; sU.uA.value = lv * 0.18 * smooth((uh - 0.2) / 0.1); sweep.visible = sU.uA.value > 0.002;
    const gather = rm ? 0 : clamp01(uh / 0.3);
    for (let k = 0; k < MOTES; k++, pi++) {
     const a = hash(k, 1) * TAU, r0 = (0.55 + 0.25 * hash(k, 2)) * h, y0 = (hash(k, 3) - 0.5) * 0.30 * h, ph = rm ? 0.5 : uh;
@@ -187,7 +193,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     if (rm) { rad = 0.30 * h * (0.6 + 0.4 * hash(k, 4)); y = 0.2 * h * hash(k, 5); al = lv * 0.8; }
     const i = NB * TRAIL + NB * SPARKS + k;
     pPos[i * 3] = O.x + Math.cos(a) * rad; pPos[i * 3 + 1] = chestC.y + y; pPos[i * 3 + 2] = O.z + Math.sin(a) * rad;
-    pS[i] = 0.022 * h * (0.7 + 0.6 * hash(k, 6)); pA[i] = al * 0.9; pK[i] = 0.35 + 0.4 * hash(k, 7);
+    pS[i] = 0.022 * h * (0.7 + 0.6 * hash(k, 6)); pA[i] = al * 0.3; pK[i] = 0.35 + 0.4 * hash(k, 7);
    }
    probe.motes = MOTES; probe.heal = {phase: uh, expansion: exp, level: lv, ringRadius: gU.uR.value, band: sU.uBand.value, stage: uh < 0.25 ? 'PRE_EMISSION' : uh < 0.65 ? 'EXPANSION' : 'DISSIPATION', gather, label: 'SIMULATED_HEALING'};
   }
@@ -202,7 +208,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     bez(i, ease(s), p0); const s2 = ease(clamp01(s + 0.02)), s1 = ease(clamp01(s - 0.02)); bez(i, s2, p1); bez(i, s1, tmp); p1.sub(tmp);
     if (p1.lengthSq() < 1e-10) p1.copy(c.fwd);
     p1.normalize();
-    const scale = 0.17 * h * (0.7 + 0.3 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
+    const scale = 0.235 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
     const phase = TAU * (2.6 + 0.12 * i) * t + i * 1.3, w = Math.sin(phase) + 0.28 * Math.sin(2 * phase - 0.7);
     const flap = rm ? 0.6 : 0.08 + (0.5 - 0.5 * w) * 1.2, bank = rm ? 0 : 0.3 * Math.sin(i + t * 1.1);
     for (let side = 0; side < 2; side++) {
@@ -210,11 +216,11 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
      wPos[j * 3] = p0.x; wPos[j * 3 + 1] = p0.y; wPos[j * 3 + 2] = p0.z; wFwd[j * 3] = p1.x; wFwd[j * 3 + 1] = p1.y; wFwd[j * 3 + 2] = p1.z;
      wMisc[j * 4] = scale; wMisc[j * 4 + 1] = flap; wMisc[j * 4 + 2] = side === 0 ? 1 : -1; wMisc[j * 4 + 3] = bank; wAlpha[j] = alpha;
     }
-    probe.butterflies[i].pos = [p0.x, p0.y, p0.z]; probe.butterflies[i].tangent = [p1.x, p1.y, p1.z];
+    probe.butterflies[i].pos = [p0.x, p0.y, p0.z]; probe.butterflies[i].origin = S[i].toArray(); probe.butterflies[i].scale = scale; probe.butterflies[i].emissionPhase = s < .14 ? 'EMERGENCE' : s < .8 ? 'FLIGHT' : 'ARRIVAL'; probe.butterflies[i].tangent = [p1.x, p1.y, p1.z];
     if (!rm) for (let k = 0; k < TRAIL; k++) { // trail = the same path at earlier phase: no history
      const sk = sRaw - k * TRAIL_DELTA; if (sk <= 0) continue;
      bez(i, ease(clamp01(sk)), tmp); const idx = i * TRAIL + k, fade = Math.pow(1 - k / TRAIL, 1.5) * (1 - smooth(ta / 0.12));
-     pPos[idx * 3] = tmp.x; pPos[idx * 3 + 1] = tmp.y; pPos[idx * 3 + 2] = tmp.z; pS[idx] = 0.03 * h * (1 - 0.6 * k / TRAIL); pA[idx] = gain * fade * 0.8; pK[idx] = 0.7; probe.trails++;
+     pPos[idx * 3] = tmp.x; pPos[idx * 3 + 1] = tmp.y; pPos[idx * 3 + 2] = tmp.z; pS[idx] = 0.03 * h * (1 - 0.6 * k / TRAIL); pA[idx] = gain * fade * 0.42; pK[idx] = 0.7; probe.trails++;
     }
    }
    if (!rm) for (let i = 0; i < NB; i++) { // arrival sparks
@@ -227,7 +233,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     }
    }
    if (mode === 'SIMULATED_TARGET') {
-    const rU = U(reticle); rU.uCenter.value.copy(target); rU.uSize.value = 0.32 * h; rU.uPush.value = 0; rU.uA.value = gain * 0.7; rU.uRot.value = rm ? 0 : t * 0.4; reticle.visible = rU.uA.value > 0.002;
+    const rU = U(reticle); rU.uCenter.value.copy(target); rU.uSize.value = 0.32 * h; rU.uPush.value = 0; rU.uA.value = gain * 0.38; rU.uRot.value = rm ? 0 : t * 0.4; reticle.visible = rU.uA.value > 0.002;
     probe.target = {label: 'SIMULATED_TARGET', pos: [target.x, target.y, target.z]};
    }
    probe.ub = ub; probe.targetMode = mode;
@@ -239,6 +245,8 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
 
  return {
   update, hide() { neutralize(); last = null; },
+  setAblation(m) { if(!['FULL','HEAL_ONLY','BUTTERFLIES_ONLY'].includes(m))throw new TypeError('skill ablation'); ablation=m; },
+  get ablation() { return ablation; },
   setTargetMode(m) { if (!['SIMULATED_TARGET', 'NONE'].includes(m)) throw new TypeError('target mode'); mode = m; },
   get targetMode() { return mode; },
   get meshes() { return meshes; },
