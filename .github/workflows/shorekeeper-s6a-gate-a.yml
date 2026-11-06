@@ -34,7 +34,7 @@ jobs:
           run diff-check git diff --check 5380f43533ac5db455f6d5a057fac5764dcd8a7c
           S5C_REPO=$PWD run menu-contract node --test .qa-s6a/menu-contract.test.mjs
           S5C_REPO=$PWD run security-contract node --test .qa-s6a/security-contract.test.mjs
-          run g7-harness node --test .qa-s6a/g7/g7-ab-mechanical.test.mjs
+          run g7-harness node --test .qa-s6a/g7/g7-ab-mechanical.test.mjs .qa-s6a/g7/expected-manifest.test.mjs
           # dist hygiene: list GLB/large binaries in dist, robots meta in the sk page
           { find dist -iname '*.glb' -printf '%s %p\n'; echo "--- robots meta in dist/experimentos/sk:";
             grep -o '<meta name="robots"[^>]*>' dist/experimentos/sk/index.html 2>&1; } > $O/dist-hygiene.txt

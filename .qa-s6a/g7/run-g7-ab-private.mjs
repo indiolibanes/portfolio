@@ -16,14 +16,16 @@ import {validateCombatLibrary} from '../../src/scripts/shorekeeper/combat-direct
 import {createRebasedBurstClip,createBindRootBurstClip} from '../../src/scripts/shorekeeper/liberation-rotation.mjs';
 import {disposeObject} from '../../src/scripts/shorekeeper/local-model.mjs';
 import {auditG7} from './g7-ab-mechanical.mjs';
+import {normalizeExpectedManifest} from './expected-manifest.mjs';
 const [kit, output] = process.argv.slice(2).map(p => p && path.resolve(p));
 if (!kit || !output) { console.error('Usage: node .qa-s6a/g7/run-g7-ab-private.mjs PRIVATE_KIT_DIR PRIVATE_OUTPUT_DIR'); process.exit(1); }
 const insideGit = p => { try { execFileSync('git', ['-C', p, 'rev-parse', '--is-inside-work-tree'], {stdio: 'pipe'}); return true; } catch { return false; } };
 await fs.mkdir(path.dirname(output), {recursive: true});
 if (insideGit(path.dirname(output))) throw Error('Private output must be outside any Git checkout');
 await fs.mkdir(output, {mode: 0o700});
-const expectedRaw = JSON.parse(await fs.readFile(path.join(kit, 'expected.json'), 'utf8')), expected = expectedRaw.files ?? expectedRaw;
-const want = name => { const e = expected[name]; return typeof e === 'string' ? {sha256: e} : e; };
+const expectedRaw = JSON.parse(await fs.readFile(path.join(kit, 'expected.json'), 'utf8'));
+const expected = normalizeExpectedManifest(expectedRaw);
+const want = name => expected.get(name);
 const scenes = [];
 async function load(name) {
   const bytes = await fs.readFile(path.join(kit, name)), sha256 = createHash('sha256').update(bytes).digest('hex'), e = want(name);
