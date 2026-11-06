@@ -1,9 +1,13 @@
-/** G10-A: read-only anatomical framing. All smoothing is prepared on absolute time,
+/** G10-B comfort revision on top of G10-A: see G10B_REPORT.md. The G10-A yaw tracker (2.4 rad/s slew,
+ * 0.12 s smoothing) is replaced by a comfort-limited planner; everything remains a pure function of
+ * absolute time prepared from the director's EXISTING body sampler.
+ * G10-A: read-only anatomical framing. All smoothing is prepared on absolute time,
  * using the director's EXISTING body sampler; no mixer/clock/RAF or source edits.
  * Toe direction disambiguates anatomical front in bind pose. Face/silhouette QA
  * remains required: these bounds are a padded joint cloud, not a skinned surface.
  */
 import {r62CameraFrame} from './r62-camera.mjs';
+import {skillFlightPoints} from './combat-vfx-skill.mjs';
 const cache = new WeakMap();
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const B = {pel:'Bip001Pelvis',chest:'Bip001Spine2',head:'Bip001Head',rh:'Bip001RHand',lh:'Bip001LHand',rf:'Bip001RFoot',lf:'Bip001LFoot',rt:'Bip001RThigh',lt:'Bip001LThigh',rtoe:'Bip001RToe0',ltoe:'Bip001LToe0',re:'Bip001RForearm',le:'Bip001LForearm'};
@@ -35,50 +39,127 @@ export function createRigCameraReader(T, model, h) {
  }};
 }
 
+/** G10-B comfort limits. Every number is verified on the produced path (guide.metrics) and by tests. */
+export const G10B_COMFORT = Object.freeze({
+ version: 'G10-B', yawMaxDegPerS: 30, yawAccDegPerS2: 50, facingDeadZoneDeg: 70, spinIgnoreRadPerS: 2.5,
+ targetSigmaS: 0.35, fovSigmaS: 0.8, radiusSlopeH: 1.2, radiusTempH: 0.06, plannerEdge: 0.80, finalEdge: 0.84, offsetYaw: 0.12
+});
+const TAU = Math.PI * 2, wrapPi = x => x - TAU * Math.round(x / TAU);
+const gaussSmooth = (rows, sigmaSamples, get) => { // symmetric, history-free, edge-normalized
+ const half = Math.ceil(3 * sigmaSamples), n = rows.length, out = new Array(n), dim = get(0).length ?? 1;
+ for (let i = 0; i < n; i++) {
+  let w = 0; const acc = new Array(dim).fill(0);
+  for (let j = Math.max(0, i - half); j <= Math.min(n - 1, i + half); j++) { const k = Math.exp(-.5 * ((j - i) / sigmaSamples) ** 2), v = get(j); w += k; for (let a = 0; a < dim; a++) acc[a] += (dim === 1 && !Array.isArray(v) ? v : v[a]) * k; }
+  out[i] = acc.map(x => x / w);
+ }
+ return out;
+};
+const smoothstep = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+/** Continuous arena weight (replaces the G10-A phase regexp, which stepped the target at phase changes). */
+export function arenaWeight(t, tl) {
+ if (!tl) return 0;
+ const up = smoothstep((t - tl.revealStart) / Math.max(.3, tl.revealPeak - tl.revealStart));
+ const down = 1 - smoothstep((t - (tl.peak + 1.0)) / Math.max(.5, (tl.recoveryStart ?? tl.revealEnd) + 0.8 - (tl.peak + 1.0)));
+ return up * down;
+}
+
+/** Comfort yaw planner: dynamic programming on the circle over KNOWN body yaw (absolute time, prepared once).
+ *  Dead zone around the anatomical front, bounded speed and acceleration, spins faster than the eye can
+ *  follow are not chased. Returns unwrapped camera yaw (before wobble/offset) per row. */
+export function planComfortYaw(bodyYaw, hz, duration, C = G10B_COMFORT) {
+ const DT = .1, BIN = Math.PI / 360, NBIN = 720, M = Math.round(C.yawMaxDegPerS / 5), NV = 2 * M + 1, steps = Math.max(1, Math.round(duration / DT));
+ const at = k => bodyYaw[Math.min(bodyYaw.length - 1, Math.round(k * DT * hz))];
+ const spinW = k => { const a = at(Math.max(0, k - 1)), b = at(Math.min(steps, k + 1)); const r = Math.abs(b - a) / (2 * DT); return 1 / (1 + (r / C.spinIgnoreRadPerS) ** 2); };
+ const TH = C.facingDeadZoneDeg * Math.PI / 180, WF = 30, LAM = 12, MU = .8;
+ const stage = new Float32Array(NBIN), INF = 1e30;
+ const NS = NBIN * NV; let cost = new Float32Array(NS).fill(INF), next = new Float32Array(NS);
+ const back = Array.from({length: steps}, () => new Int8Array(NS));
+ const j0 = ((Math.round(wrapPi(at(0) - C.offsetYaw) / BIN) % NBIN) + NBIN) % NBIN; cost[j0 * NV + M] = 0;
+ const vcost = Array.from({length: NV}, (_, q) => LAM * (((q - M) * 5 * Math.PI / 180) ** 2) * DT);
+ for (let k = 1; k <= steps; k++) {
+  const psi = at(k), w = spinW(k);
+  for (let j = 0; j < NBIN; j++) { const e = Math.abs(wrapPi(j * BIN + C.offsetYaw - psi)), f = Math.max(0, e - TH) / (Math.PI - TH); stage[j] = WF * w * f * f; }
+  next.fill(INF); const bk = back[k - 1];
+  for (let j = 0; j < NBIN; j++) for (let q = 0; q < NV; q++) {
+   const c0 = cost[j * NV + q]; if (c0 >= INF) continue;
+   for (let d = -1; d <= 1; d++) {
+    const q2 = q + d; if (q2 < 0 || q2 >= NV) continue;
+    const m2 = q2 - M, j2 = (((j + m2) % NBIN) + NBIN) % NBIN, s2 = j2 * NV + q2, c = c0 + vcost[q2] + MU * d * d + stage[j2];
+    if (c < next[s2]) { next[s2] = c; bk[s2] = d; }
+   }
+  }
+  [cost, next] = [next, cost];
+ }
+ let best = 0; for (let s = 1; s < NS; s++) if (cost[s] < cost[best]) best = s;
+ const ms = new Array(steps + 1); let s = best;
+ for (let k = steps; k >= 1; k--) { const q2 = s % NV, j2 = (s - q2) / NV, d = back[k - 1][s], q = q2 - d, m2 = q2 - M, j = (((j2 - m2) % NBIN) + NBIN) % NBIN; ms[k] = m2; s = j * NV + q; }
+ ms[0] = 0;
+ const path = new Array(steps + 1); path[0] = j0 * BIN; for (let k = 1; k <= steps; k++) path[k] = path[k - 1] + ms[k] * BIN;
+ // expand to row rate and low-pass (jerk limit); smoothing cannot raise the peak speed
+ const n = bodyYaw.length, lin = new Array(n);
+ for (let i = 0; i < n; i++) { const x = Math.min(steps, i / hz / DT), a = Math.floor(x), b = Math.min(steps, a + 1); lin[i] = path[a] + (path[b] - path[a]) * (x - a); }
+ return gaussSmooth(lin, .3 * hz, i => lin[i]).map(v => v[0]);
+}
+
 /** Reuse preparation across viewport/ablation/restart. Cache only small camera
  * guides, not models/curves. The caller restores pose with its normal start(). */
-export function prepareCameraGuide({model,key,duration,samplePose,reader,hz=30}) {
- let records=cache.get(model);if(!records){records=new Map();cache.set(model,records);}if(records.has(key))return records.get(key);
+export function prepareCameraGuide({model,key,duration,samplePose,reader,hz=30,skillWindow=null,h=null}) {
+ const fullKey = key + '|' + G10B_COMFORT.version + '|' + (skillWindow ? skillWindow.start.toFixed(3) + ',' + skillWindow.end.toFixed(3) : '');
+ let records=cache.get(model);if(!records){records=new Map();cache.set(model,records);}if(records.has(fullKey))return records.get(fullKey);
  const n=Math.ceil(duration*hz),rows=[];let prev=0;
  for(let i=0;i<=n;i++){
   const t=Math.min(duration,i/hz);samplePose(t);const r=reader.read(),box=r.points.reduce((b,p)=>{p.position.forEach((x,j)=>{b.min[j]=Math.min(b.min[j],x);b.max[j]=Math.max(b.max[j],x);});return b;},{min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
   let yaw=Math.atan2(r.front[0],r.front[2]);if(i)yaw=prev+Math.atan2(Math.sin(yaw-prev),Math.cos(yaw-prev));prev=yaw;
-  rows.push({t,yaw,center:box.min.map((x,j)=>(x+box.max[j])/2),span:Math.hypot(...box.min.map((x,j)=>(box.max[j]-x)/2)),anchors:r.anchors});
+  const flat=new Float32Array(r.points.length*3);r.points.forEach((p,j)=>flat.set(p.position,j*3));
+  rows.push({t,yawRaw:yaw,center:box.min.map((x,j)=>(x+box.max[j])/2),span:Math.hypot(...box.min.map((x,j)=>(box.max[j]-x)/2)),anchors:r.anchors,front:r.front,points:flat});
  }
- // Symmetric finite convolution is independent of seek/play history. A bounded
- // yaw slew trades brief rear views during fast authentic spins for a camera
- // that does not whip around. Such intervals are reported, never called approved.
- const smooth=rows.map((r,i)=>{let w=0,y=0,c=[0,0,0];for(let j=Math.max(0,i-8);j<=Math.min(n,i+8);j++){const k=Math.exp(-.5*((j-i)/3.5)**2);w+=k;y+=rows[j].yaw*k;c=c.map((x,a)=>x+rows[j].center[a]*k);}return {...r,yaw:y/w,center:c.map(x=>x/w)};});
- // Bidirectional projection uses known future poses to start a turn early,
- // reducing prolonged lag after a fast source spin without increasing yaw speed.
- for(let pass=0;pass<80;pass++)for(const reverse of [false,true])for(let j=1;j<smooth.length;j++){
-  const i=reverse?smooth.length-j:j,a=smooth[i-1],b=smooth[i],limit=2.4*(b.t-a.t),delta=b.yaw-a.yaw;
-  if(Math.abs(delta)>limit){const correction=(delta-Math.sign(delta)*limit)/2;a.yaw+=correction;b.yaw-=correction;}
+ const C=G10B_COMFORT, hh=h??(rows[0].anchors.head[1]-Math.min(rows[0].anchors.rf[1],rows[0].anchors.lf[1]))/.9;
+ // ---- comfort yaw + smoother target ----
+ const yawPath=planComfortYaw(rows.map(r=>r.yawRaw),hz,duration,C);
+ const centers=gaussSmooth(rows,C.targetSigmaS*hz,i=>rows[i].center);
+ const smooth=rows.map((r,i)=>({...r,yaw:yawPath[i],center:centers[i]}));
+ // ---- skill flight envelope points (control polygon of every butterfly path): prepared, not reacted to ----
+ if(skillWindow)for(const r of smooth){
+  if(r.t<skillWindow.start-.25||r.t>skillWindow.end+.25){r.skillPts=null;continue;}
+  const A=r.anchors,fw=r.front,rt=[A.rt[0]-A.lt[0],0,A.rt[2]-A.lt[2]],l=Math.hypot(rt[0],rt[2])||1;rt[0]/=l;rt[2]/=l;
+  r.skillPts=skillFlightPoints({pel:A.pel,chest:A.chest,fwd:fw,right:rt,h:hh});
  }
- for(let i=1;i<smooth.length;i++){const d=2.4*(smooth[i].t-smooth[i-1].t);smooth[i].yaw=clamp(smooth[i].yaw,smooth[i-1].yaw-d,smooth[i-1].yaw+d);}
- const radii=new Map();
+ // metrics of the planned path (reported, never assumed)
+ let maxRate=0,maxAcc=0;for(let i=1;i<smooth.length;i++){const v=(smooth[i].yaw-smooth[i-1].yaw)*hz;maxRate=Math.max(maxRate,Math.abs(v));if(i>1)maxAcc=Math.max(maxAcc,Math.abs((smooth[i].yaw-2*smooth[i-1].yaw+smooth[i-2].yaw)*hz*hz));}
  const worldMin=[Infinity,Infinity,Infinity],worldMax=[-Infinity,-Infinity,-Infinity];
  for(const r of rows)r.center.forEach((x,j)=>{worldMin[j]=Math.min(worldMin[j],x-r.span);worldMax[j]=Math.max(worldMax[j],x+r.span);});
  const staticCenter=worldMin.map((x,j)=>(x+worldMax[j])/2),staticSpan=Math.hypot(...worldMin.map((x,j)=>(worldMax[j]-x)/2));
+ const shots=new Map();
+ const wobble=t=>.28*Math.sin(t*Math.PI*2/18);
+ function buildShot(ctx){
+  const {plan,timeline,aspect,center,arena,period,reduced}=ctx,T3=[0,0,0];
+  const base=smooth.map((r,i)=>{const a=Object.fromEntries(['pel','head','rh','lh'].map(k=>[k,r.anchors[k]]));return r62CameraFrame({plan,timeline,t:r.t,aspect,h:ctx.h,center,arena,period,reduced,anchors:a});});
+  const fovS=gaussSmooth(smooth,C.fovSigmaS*hz,i=>base[i].fov).map(v=>v[0]),tgtS=gaussSmooth(smooth,C.targetSigmaS*hz,i=>base[i].target),arenaW=smooth.map(r=>arenaWeight(r.t,timeline));
+  const req=smooth.map((r,i)=>{
+   const w=arenaW[i],bt=tgtS[i],tg=r.center.map((x,a)=>x+(bt[a]-x)*.25*w);
+   const yaw=r.yaw+wobble(r.t)+C.offsetYaw,dx=Math.sin(yaw),dz=Math.cos(yaw),dy=.16,dl=Math.hypot(dx,dy,dz),d=[dx/dl,dy/dl,dz/dl];
+   let rx=d[2],rz=-d[0];const rl=Math.hypot(rx,rz)||1;rx/=rl;rz/=rl; // right = up x dir (normalized)
+   const rr=[d[2],0,-d[0]],rn=Math.hypot(...rr)||1,right=rr.map(x=>x/rn),vert=[d[1]*right[2]-d[2]*right[1],d[2]*right[0]-d[0]*right[2],d[0]*right[1]-d[1]*right[0]];
+   const tanY=Math.tan(fovS[i]*Math.PI/360),tanX=tanY*aspect,E=C.plannerEdge;let dist=base[i].radius;
+   const eat=(px,py,pz)=>{const ex=px-tg[0],ey=py-tg[1],ez=pz-tg[2],z=ex*d[0]+ey*d[1]+ez*d[2];dist=Math.max(dist,z+Math.abs(ex*right[0]+ey*right[1]+ez*right[2])/(tanX*E),z+Math.abs(ex*vert[0]+ey*vert[1]+ez*vert[2])/(tanY*E),z+.05*ctx.h);};
+   for(let k=0;k<r.points.length;k+=3)eat(r.points[k],r.points[k+1],r.points[k+2]);
+   if(r.skillPts&&!reduced)for(const p of r.skillPts)eat(p[0],p[1],p[2]);
+   return dist;
+  });
+  const s=C.radiusSlopeH*ctx.h,temp=C.radiusTempH*ctx.h,eps=.22,radius=req.map((_,i)=>{let mx=-Infinity;const vv=req.map((q,j)=>{const v=q-s*(Math.hypot(smooth[j].t-smooth[i].t,eps)-eps);mx=Math.max(mx,v);return v;});let sum=0;for(const v of vv)sum+=Math.exp((v-mx)/temp);return mx+temp*Math.log(sum);});
+  return {radius,fov:fovS,arenaW,req,tgt:[0,1,2].map(a=>tgtS.map(v=>v[a]))};
+ }
+ const interp=(arr,t)=>{const x=clamp(t*hz,0,n),i=Math.min(n-1,Math.floor(x));return arr[i]+(arr[i+1]-arr[i])*(x-i);};
  const result=Object.freeze({staticFrame:{yaw:smooth[0].yaw,center:staticCenter,span:staticSpan},
- radiusAt(t,{plan,timeline,aspect,h,center,arena,period,reduced}){
-  const key=[aspect,h,period,reduced,center.x,center.y,center.z,arena?.x,arena?.z].join('|');
-  let values=radii.get(key);
-  if(!values){values=rows.map((r,i)=>{
-   const a=Object.fromEntries(['pel','head','rh','lh'].map(k=>[k,r.anchors[k]]));
-   const b=r62CameraFrame({plan,timeline,t:r.t,aspect,h,center,arena,period,reduced,anchors:a});
-   const vf=b.fov*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*aspect),shift=Math.hypot(...r.center.map((x,j)=>x-smooth[i].center[j]));
-   const arenaShift=/OUTER|PEAK|DISSIPATION/.test(b.phase)?.25*Math.hypot(...b.target.map((x,j)=>x-smooth[i].center[j])):0;
-   return Math.max(b.radius,(r.span+shift+arenaShift+.03*h)/Math.sin(Math.min(vf,hf)*.84/2));
-  });if(radii.size>=4)radii.delete(radii.keys().next().value);radii.set(key,values);}
-  // Smooth upper envelope: anticipate a needed dolly instead of an instantaneous
-  // radius correction. Explicit absolute-time lookahead, not runtime damping.
-  const speed=2*h,epsilon=.22,temp=.025*h;
-  const vv=values.map((r,i)=>r-speed*(Math.hypot(rows[i].t-t,epsilon)-epsilon)),max=Math.max(...vv);
-  return max+temp*Math.log(vv.reduce((sum,v)=>sum+Math.exp((v-max)/temp),0));
+ shotAt(t,ctx){
+  const key=[ctx.aspect,ctx.h,ctx.period,ctx.reduced,ctx.center.x,ctx.center.y,ctx.center.z,ctx.arena?.x,ctx.arena?.z].join('|');
+  let s=shots.get(key);if(!s){s=buildShot(ctx);if(shots.size>=4)shots.delete(shots.keys().next().value);shots.set(key,s);}
+  return {radius:interp(s.radius,t),fov:interp(s.fov,t),arenaW:interp(s.arenaW,t),baseTarget:s.tgt.map(a=>interp(a,t)),skillEnvelope:!!skillWindow};
  },
- sample(t){const x=clamp(t*hz,0,n),i=Math.min(n-1,Math.floor(x)),a=smooth[i],b=smooth[i+1],u=clamp((t-a.t)/(b.t-a.t),0,1);return {yaw:a.yaw+(b.yaw-a.yaw)*u,center:a.center.map((v,j)=>v+(b.center[j]-v)*u)};},samples:rows.length,hz,maxYawSpeed:2.4});
- if(records.size>=2)records.delete(records.keys().next().value);records.set(key,result);return result;
+ radiusAt(t,ctx){return this.shotAt(t,ctx).radius;},
+ sample(t){const x=clamp(t*hz,0,n),i=Math.min(n-1,Math.floor(x)),a=smooth[i],b=smooth[i+1],u=clamp((t-a.t)/(b.t-a.t),0,1);return {yaw:a.yaw+(b.yaw-a.yaw)*u,center:a.center.map((v,j)=>v+(b.center[j]-v)*u)};},
+ samples:rows.length,hz,maxYawSpeed:maxRate,metrics:Object.freeze({maxYawRateRadPerS:maxRate,maxYawAccRadPerS2:maxAcc,comfort:C}),skillWindow});
+ if(records.size>=2)records.delete(records.keys().next().value);records.set(fullKey,result);return result;
 }
 
 export function projectCameraPoints(T,camera,points,width,height) {
@@ -90,19 +171,26 @@ export function projectCameraPoints(T,camera,points,width,height) {
 }
 
 /** Exact perspective inequalities fit an oriented cloud including depth, not
- * just a span/tan estimate. The existing F1 shape is a MINIMUM shot distance. */
+ * just a span/tan estimate. The existing F1 shape is a MINIMUM shot distance.
+ * G10-B: radius/fov/arena weight come from the prepared comfort shot plan; the exact fit below is a
+ * safety net (its triggers are reported in smart.safetyNet). */
 export function smartCameraFrame(T,{base,rig,guide,t,h,aspect,width=960,height=540,reduced=false,secondary=[],plan,timeline,center,arena:arenaAnchor,period=18}) {
  const g=reduced&&guide.staticFrame?guide.staticFrame:guide.sample(t),front=new T.Vector3().fromArray(rig.front);
+ const shot=plan&&guide.shotAt&&!reduced?guide.shotAt(t,{plan,timeline,aspect,h,center,arena:arenaAnchor,period,reduced}):null;
  const yaw=g.yaw+(reduced?.12:.28*Math.sin(t*Math.PI*2/18)+.12),dir=new T.Vector3(Math.sin(yaw),reduced?.12:.16,Math.cos(yaw)).normalize();
- const arena=/OUTER|PEAK|DISSIPATION/.test(base.phase),target=new T.Vector3().fromArray(g.center);
- if(arena)target.lerp(new T.Vector3().fromArray(base.target),.25);
+ const arenaW=shot?shot.arenaW:(/OUTER|PEAK|DISSIPATION/.test(base.phase)?1:0),arena=arenaW>.5,target=new T.Vector3().fromArray(g.center);
+ if(arenaW>0)target.lerp(new T.Vector3().fromArray(shot?.baseTarget??base.target),.25*arenaW);
  const up=new T.Vector3(0,1,0),right=new T.Vector3().crossVectors(up,dir).normalize(),vertical=new T.Vector3().crossVectors(dir,right).normalize();
- const fov=base.fov,tanY=Math.tan(fov*Math.PI/360),tanX=tanY*aspect,edge=.84,delta=new T.Vector3();let distance=plan?guide.radiusAt(t,{plan,timeline,aspect,h,center,arena:arenaAnchor,period,reduced}):base.radius;
+ const fov=shot?shot.fov:base.fov,tanY=Math.tan(fov*Math.PI/360),tanX=tanY*aspect,edge=G10B_COMFORT.finalEdge,delta=new T.Vector3();
+ let distance=shot?shot.radius:plan?guide.radiusAt(t,{plan,timeline,aspect,h,center,arena:arenaAnchor,period,reduced}):base.radius;
+ const planned=distance;
  if(reduced&&g.span)distance=Math.max(base.radius,(g.span+2*h)/Math.sin(Math.min(2*Math.atan(tanX),2*Math.atan(tanY))*.84/2));
- const pts=[...rig.points,...(!reduced?secondary:[]).map((p,i)=>({id:'skill-'+i,position:p}))];
- for(const p of pts){delta.fromArray(p.position).sub(target);const z=delta.dot(dir);distance=Math.max(distance,z+Math.abs(delta.dot(right))/(tanX*edge),z+Math.abs(delta.dot(vertical))/(tanY*edge),z+.05*h);}
+ // Live secondary points (butterflies) are bounded by the prepared flight envelope; they only join the
+ // exact fit when the guide has no envelope (e.g. test doubles).
+ const pts=[...rig.points,...(!reduced?secondary:[]).map((p,i)=>({id:'skill-'+i,position:p}))],fitPts=shot?.skillEnvelope?rig.points:pts;
+ for(const p of fitPts){delta.fromArray(p.position).sub(target);const z=delta.dot(dir);distance=Math.max(distance,z+Math.abs(delta.dot(right))/(tanX*edge),z+Math.abs(delta.dot(vertical))/(tanY*edge),z+.05*h);}
  const pos=target.clone().addScaledVector(dir,distance),camera=new T.PerspectiveCamera(fov,aspect,.001,10000);camera.position.copy(pos);camera.lookAt(target);camera.updateMatrixWorld(true);
  const view=projectCameraPoints(T,camera,rig.points,width,height),secondaryView=secondary.length&&!reduced?projectCameraPoints(T,camera,pts.slice(rig.points.length),width,height):null;
  const facing=front.dot(pos.clone().sub(new T.Vector3().fromArray(rig.anchors.chest)).setY(0).normalize());
- return {...base,position:pos.toArray(),target:target.toArray(),radius:distance,azimuth:yaw,preset:'g10-smart-authorial',smart:{reason:reduced?'REDUCED':distance>base.radius+1e-6?'FIT':arena?'ARENA':'FACING',front:rig.front,frontFacingDot:facing,backView:facing<0,frontSingularity:rig.frontSingularity,ownership:'r61-cinematic',aspect,fov,radius:distance,target:target.toArray(),azimuth:yaw,...view,secondary:secondaryView,calibration:rig.calibration,maxGuideYawSpeed:guide.maxYawSpeed,temporalGuarantee:'ABSOLUTE_PREPARED_GUIDE;FINAL_FIT_MAY_REACT_TO_G7_DISCONTINUITY'}};
+ return {...base,position:pos.toArray(),target:target.toArray(),radius:distance,fov,azimuth:yaw,preset:'g10b-smart-authorial',smart:{reason:reduced?'REDUCED':distance>planned+1e-6?'FIT':arena?'ARENA':'FACING',front:rig.front,frontFacingDot:facing,backView:facing<0,frontSingularity:rig.frontSingularity,ownership:'r61-cinematic',aspect,fov,radius:distance,plannedRadius:planned,safetyNet:distance>planned+1e-6,arenaWeight:arenaW,target:target.toArray(),azimuth:yaw,...view,secondary:secondaryView,calibration:rig.calibration,maxGuideYawSpeed:guide.maxYawSpeed,comfort:guide.metrics?.comfort?.version??null,temporalGuarantee:'ABSOLUTE_PREPARED_COMFORT_PLAN;FINAL_FIT_IS_A_REPORTED_SAFETY_NET'}};
 }

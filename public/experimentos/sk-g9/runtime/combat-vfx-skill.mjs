@@ -53,7 +53,7 @@ void main(){
   vec4 t=texture2D(atlas,vec2(vUv.x,1.-vUv.y)); float a=t.a*vAlpha; if(a<.004) discard;
   a*=(vOn<.5)?1.:smoothstep(uFaceR*.75,uFaceR*1.35,length(vScr)); if(a<.004) discard;
   float lum=dot(t.rgb,vec3(.3,.55,.15)); vec3 tinted=uTint*(lum*1.7+.08)+vec3(max(0.,lum-.62))*1.1;
-  gl_FragColor=vec4(mix(t.rgb,tinted,.8)*vShade*1.12,a);${TAIL}`;
+  gl_FragColor=vec4(min(vec3(.95),mix(t.rgb,tinted,.8)*vShade*.88),a);${TAIL}`;
 const PART_VS = `
 attribute vec3 iPos; attribute float iS; attribute float iA; attribute float iK;
 uniform vec3 uHeadW; uniform float uFaceR;
@@ -80,15 +80,25 @@ void main(){
   float ring=exp(-pow((r-uR)/(.035+.05*uR),2.)), tail=smoothstep(uR,0.,r)*.22*smoothstep(0.,.25,uR), edge=1.-smoothstep(.8,1.,r);
   float a=uA*(ring*1.0+tail)*edge; if(a<.004) discard;
   gl_FragColor=vec4(mix(uCyan,uGold,.25*ring),min(1.,a));${TAIL}`;
-const SWEEP_FS = `${FACE_FS}
-uniform vec3 uCyan, uGold; uniform float uA, uBand;
-varying vec2 vP; varying vec2 vD;
+const RIBBON_VS = `
+attribute float aAng; attribute float aRing; attribute float aCross;
+uniform vec3 uHeadW; uniform float uFaceR;
+varying float vAng; varying float vRing; varying float vCross; varying vec2 vScr; varying float vOn;
 void main(){
-  float yN=vP.y/2.4, ax=abs(vP.x); if(ax>1.) discard;
-  float body=smoothstep(1.,.45,ax), band=exp(-pow((yN-uBand)/.16,2.)), trail=(yN<uBand)?exp(-(uBand-yN)*3.)*.35:0.;
-  float streak=.65+.35*sin(vP.x*14.+yN*28.), edge=smoothstep(1.,.82,abs(yN));
-  float a=uA*(band+trail)*body*streak*edge*faceMask(vP); if(a<.004) discard;
-  gl_FragColor=vec4(mix(uCyan,uGold,.35*band),min(1.,a));${TAIL}`;
+  vAng=aAng; vRing=aRing; vCross=aCross;
+  vec4 mv=modelViewMatrix*vec4(position,1.); vec4 hv=viewMatrix*vec4(uHeadW,1.);
+  vScr=mv.xy-hv.xy*(mv.z/min(hv.z,-1e-3)); vOn=(hv.z<-1e-3&&uFaceR>0.)?1.:0.;
+  gl_Position=projectionMatrix*mv;
+}`;
+const RIBBON_FS = `
+uniform vec3 uCyan, uGold; uniform float uA, uSpin, uFaceR;
+varying float vAng; varying float vRing; varying float vCross; varying vec2 vScr; varying float vOn;
+void main(){
+  float dir=(mod(vRing,2.)<.5)?1.:-1.; float x=fract((vAng-uSpin*(1.+.35*vRing)*dir)/6.2831853); float y=fract(x+.5);
+  float arcs=pow(1.-x,2.6)*smoothstep(0.,.015,x)+.5*pow(1.-y,3.)*smoothstep(0.,.02,y);
+  float prof=exp(-vCross*vCross*3.2); float a=uA*arcs*prof;
+  a*=(vOn<.5)?1.:smoothstep(uFaceR*.75,uFaceR*1.35,length(vScr)); if(a<.004) discard;
+  gl_FragColor=vec4(mix(uGold,uCyan,x*.85)*(.75+.45*prof),min(1.,a));${TAIL}`;
 const RETICLE_FS = `${FACE_FS}
 uniform vec3 uTint; uniform float uA, uRot;
 varying vec2 vP; varying vec2 vD;
@@ -99,6 +109,27 @@ void main(){
   float a=uA*(ring*.9+dot_*.8+tick)*faceMask(vP); if(a<.004) discard;
   gl_FragColor=vec4(mix(uTint,vec3(1.),.35*dot_),min(1.,a));${TAIL}`;
 
+/** G10-B flight geometry shared by the layer and the camera planner (pure numbers, body frame).
+ *  Five DISTINCT arcs: each butterfly leaves the torso contour on its own side and lands on its own
+ *  point of a fan ahead of the character (no single blob). Bezier curves stay inside the control polygon,
+ *  so the control points are a conservative envelope for framing. */
+const add = (o, ...t) => { const r = [o[0], o[1], o[2]]; for (const [v, k] of t) { r[0] += v[0] * k; r[1] += v[1] * k; r[2] += v[2] * k; } return r; };
+const UP = [0, 1, 0];
+export function flightGeometry(i, {pel, chest, fwd, right, h}, targeted = true) {
+ const th = THETA[i], sn = Math.sin(th), sg = i % 2 === 0 ? -1 : 1;
+ const S = add(chest, [fwd, (0.02 + 0.02 * (i % 2)) * h], [right, th * 0.20 * h], [UP, (-0.03 + 0.035 * (i % 3)) * h]);
+ const TG = targeted
+  ? add(pel, [fwd, 1.55 * h], [right, th * 0.50 * h], [UP, chest[1] - pel[1] - 0.04 * h + sg * 0.10 * h])
+  : add(pel, [fwd, Math.cos(th * 0.5) * 1.0 * h], [right, Math.sin(th * 0.5) * 1.0 * h], [UP, chest[1] - pel[1] + 0.12 * h]);
+ const C1 = add(S, [fwd, 0.22 * h], [right, sn * 0.95 * h], [UP, sg * 0.18 * h]);
+ const C2 = add(TG, [fwd, -0.50 * h], [right, sn * 0.55 * h], [UP, 0.06 * h]);
+ return {S, C1, C2, TG};
+}
+export function skillFlightPoints(frame) {
+ const out = [];
+ for (let i = 0; i < NB; i++) { const g = flightGeometry(i, frame, true); out.push(g.S, g.C1, g.C2, g.TG, add(g.C1, [UP, -0.36 * frame.h * (i % 2 === 0 ? -1 : 1)])); }
+ return out;
+}
 export const SKILL_COLORS = Object.freeze({cyan: [0.50, 0.95, 1.0], gold: [1.0, 0.86, 0.52], wing: [0.55, 0.95, 1.0]});
 
 export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_TARGET'}) {
@@ -129,7 +160,18 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
  const gp = new T.PlaneGeometry(1, 1); gp.rotateX(-Math.PI / 2);
  const ground = mk(new T.ShaderMaterial({...additive({polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2}), uniforms: {uCyan: cyan(), uGold: gold(), uA: {value: 0}, uR: {value: 0}}, vertexShader: GROUND_VS, fragmentShader: GROUND_FS}), gp, 8, 'skillHealGroundRing');
  const billUniforms = () => ({uCenter: {value: v3()}, uDirW: {value: new T.Vector3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uA: {value: 0}, ...headU()});
- const sweep = mk(new T.ShaderMaterial({...additive(), uniforms: {...billUniforms(), uCyan: cyan(), uGold: gold(), uBand: {value: 0}}, vertexShader: BILLBOARD_VS, fragmentShader: SWEEP_FS}), new T.PlaneGeometry(1, 2.4), 9, 'skillHealBodySweep');
+ // G10-B: three tilted comet ribbons circling the torso (replaces the flat chest billboard that read as glowing arms).
+ const ribbonGeo = (() => {
+  const rings = [{r: .34, y: -.12, tx: .32, tz: .10, w: .020}, {r: .45, y: .02, tx: -.42, tz: .18, w: .016}, {r: .56, y: .16, tx: .22, tz: -.30, w: .013}], SEG = 96;
+  const pos = [], ang = [], rg = [], cr = [], idx = [], e = new T.Euler(), q = new T.Quaternion(), v = new T.Vector3();
+  rings.forEach((R, k) => {
+   q.setFromEuler(e.set(R.tx, 0, R.tz)); const base = pos.length / 3;
+   for (let s = 0; s <= SEG; s++) { const a = s / SEG * TAU; for (const side of [-1, 1]) { v.set(Math.cos(a) * (R.r + side * R.w), 0, Math.sin(a) * (R.r + side * R.w)).applyQuaternion(q); pos.push(v.x, v.y + R.y, v.z); ang.push(a); rg.push(k); cr.push(side); } }
+   for (let s = 0; s < SEG; s++) { const i = base + s * 2; idx.push(i, i + 1, i + 2, i + 1, i + 3, i + 2); }
+  });
+  const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.setAttribute('aAng', new T.Float32BufferAttribute(ang, 1)); g.setAttribute('aRing', new T.Float32BufferAttribute(rg, 1)); g.setAttribute('aCross', new T.Float32BufferAttribute(cr, 1)); g.setIndex(idx); return g;
+ })();
+ const sweep = mk(new T.ShaderMaterial({...additive(), uniforms: {uCyan: cyan(), uGold: gold(), uA: {value: 0}, uSpin: {value: 0}, ...headU()}, vertexShader: RIBBON_VS, fragmentShader: RIBBON_FS}), ribbonGeo, 9, 'skillEmissionRibbons');
  const reticle = mk(new T.ShaderMaterial({...additive(), uniforms: {...billUniforms(), uTint: {value: new T.Vector3(0.55, 0.95, 1)}, uRot: {value: 0}}, vertexShader: BILLBOARD_VS, fragmentShader: RETICLE_FS}), new T.PlaneGeometry(1, 1), 10, 'skillSimulatedTarget');
  const meshes = {wings, particles, ground, sweep, reticle};
  const U = o => o.material.uniforms;
@@ -154,15 +196,9 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
  function frame(c) { // body frame: pelvis origin, forward f, right r (character right = R thigh - L thigh)
   const {P, fwd, right} = c;
   O.copy(P.pel); chestC.copy(P.chest);
-  target.copy(O).addScaledVector(fwd, 1.7 * h); target.y = P.chest.y - 0.05 * h;
-  for (let i = 0; i < NB; i++) {
-   const th = THETA[i], sn = Math.sin(th);
-   S[i].copy(P.chest).addScaledVector(fwd, (0.14 + .025*(i%2)) * h).addScaledVector(right, th * 0.19 * h); S[i].y += (-0.025 + .035*(i%3)) * h;
-   if (mode === 'SIMULATED_TARGET') TG[i].copy(target).addScaledVector(right, th * 0.045 * h);
-   else { const phi = th * 0.9; TG[i].copy(O).addScaledVector(fwd, Math.cos(phi) * 1.0 * h).addScaledVector(right, Math.sin(phi) * 1.0 * h); TG[i].y = P.chest.y + 0.12 * h; }
-   C1[i].copy(S[i]).addScaledVector(fwd, 0.35 * h).addScaledVector(right, sn * 0.72 * h); C1[i].y += (i%2===0 ? -.13 : .13) * h;
-   C2[i].copy(TG[i]).addScaledVector(fwd, -0.55 * h).addScaledVector(right, sn * 0.30 * h); C2[i].y += 0.03 * h;
-  }
+  const A = {pel: P.pel.toArray(), chest: P.chest.toArray(), fwd: fwd.toArray(), right: right.toArray(), h};
+  target.copy(O).addScaledVector(fwd, 1.55 * h); target.y = P.chest.y - 0.05 * h;
+  for (let i = 0; i < NB; i++) { const g = flightGeometry(i, A, mode === 'SIMULATED_TARGET'); S[i].fromArray(g.S); C1[i].fromArray(g.C1); C2[i].fromArray(g.C2); TG[i].fromArray(g.TG); }
  }
 
  function update(c) {
@@ -180,10 +216,10 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
    const uh = (t - heal.start) / (heal.end - heal.start), lv = cue.healingPulse, exp = smooth((uh - 0.2) / 0.5);
    const gU = U(ground), floor = c.floorY;
    ground.position.set(O.x, floor + 0.004, O.z); ground.scale.set(1.9 * h, 1, 1.9 * h);
-   gU.uR.value = rm ? 0.55 : 0.12 + 0.83 * exp; gU.uA.value = lv * smooth((uh - 0.18) / 0.12) * 0.42; ground.visible = gU.uA.value > 0.002;
-   const sU = U(sweep), mid = tmp.copy(O).lerp(chestC, 0.5);
-   sU.uCenter.value.copy(mid); sU.uSize.value = 0.46 * h; sU.uPush.value = 0.05 * h;
-   sU.uBand.value = rm ? 0 : -0.95 + 1.9 * exp; sU.uA.value = lv * 0.18 * smooth((uh - 0.2) / 0.1); sweep.visible = sU.uA.value > 0.002;
+   gU.uR.value = rm ? 0.55 : 0.12 + 0.83 * exp; gU.uA.value = lv * smooth((uh - 0.18) / 0.12) * 0.26; ground.visible = gU.uA.value > 0.002;
+   const sU = U(sweep), uf = rm ? 0.45 : exp;
+   sweep.position.copy(chestC); sweep.scale.setScalar(h * (0.62 + 0.75 * uf));
+   sU.uSpin.value = rm ? 0.8 : t * 2.4; sU.uA.value = lv * 0.60 * smooth((uh - 0.14) / 0.12) * (1 - smooth((uh - 0.62) / 0.34)); sweep.visible = sU.uA.value > 0.002;
    const gather = rm ? 0 : clamp01(uh / 0.3);
    for (let k = 0; k < MOTES; k++, pi++) {
     const a = hash(k, 1) * TAU, r0 = (0.55 + 0.25 * hash(k, 2)) * h, y0 = (hash(k, 3) - 0.5) * 0.30 * h, ph = rm ? 0.5 : uh;
@@ -193,9 +229,9 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     if (rm) { rad = 0.30 * h * (0.6 + 0.4 * hash(k, 4)); y = 0.2 * h * hash(k, 5); al = lv * 0.8; }
     const i = NB * TRAIL + NB * SPARKS + k;
     pPos[i * 3] = O.x + Math.cos(a) * rad; pPos[i * 3 + 1] = chestC.y + y; pPos[i * 3 + 2] = O.z + Math.sin(a) * rad;
-    pS[i] = 0.022 * h * (0.7 + 0.6 * hash(k, 6)); pA[i] = al * 0.3; pK[i] = 0.35 + 0.4 * hash(k, 7);
+    pS[i] = 0.022 * h * (0.7 + 0.6 * hash(k, 6)); pA[i] = al * 0.2; pK[i] = 0.35 + 0.4 * hash(k, 7);
    }
-   probe.motes = MOTES; probe.heal = {phase: uh, expansion: exp, level: lv, ringRadius: gU.uR.value, band: sU.uBand.value, stage: uh < 0.25 ? 'PRE_EMISSION' : uh < 0.65 ? 'EXPANSION' : 'DISSIPATION', gather, label: 'SIMULATED_HEALING'};
+   probe.motes = MOTES; probe.heal = {phase: uh, expansion: exp, level: lv, ringRadius: gU.uR.value, spin: sU.uSpin.value, stage: uh < 0.25 ? 'PRE_EMISSION' : uh < 0.65 ? 'EXPANSION' : 'DISSIPATION', gather, label: 'SIMULATED_HEALING'};
   }
   // ---------------- five guided butterflies (SIMULATED_TARGET) ----------------
   if (bfOn) {
@@ -208,7 +244,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     bez(i, ease(s), p0); const s2 = ease(clamp01(s + 0.02)), s1 = ease(clamp01(s - 0.02)); bez(i, s2, p1); bez(i, s1, tmp); p1.sub(tmp);
     if (p1.lengthSq() < 1e-10) p1.copy(c.fwd);
     p1.normalize();
-    const scale = 0.235 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
+    const scale = 0.215 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
     const phase = TAU * (2.6 + 0.12 * i) * t + i * 1.3, w = Math.sin(phase) + 0.28 * Math.sin(2 * phase - 0.7);
     const flap = rm ? 0.6 : 0.08 + (0.5 - 0.5 * w) * 1.2, bank = rm ? 0 : 0.3 * Math.sin(i + t * 1.1);
     for (let side = 0; side < 2; side++) {
@@ -233,7 +269,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     }
    }
    if (mode === 'SIMULATED_TARGET') {
-    const rU = U(reticle); rU.uCenter.value.copy(target); rU.uSize.value = 0.32 * h; rU.uPush.value = 0; rU.uA.value = gain * 0.38; rU.uRot.value = rm ? 0 : t * 0.4; reticle.visible = rU.uA.value > 0.002;
+    const rU = U(reticle); rU.uCenter.value.copy(target); rU.uSize.value = 0.32 * h; rU.uPush.value = 0; rU.uA.value = gain * 0.20; rU.uRot.value = rm ? 0 : t * 0.4; reticle.visible = rU.uA.value > 0.002;
     probe.target = {label: 'SIMULATED_TARGET', pos: [target.x, target.y, target.z]};
    }
    probe.ub = ub; probe.targetMode = mode;

@@ -311,6 +311,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   get liberationEnabled() { return !!liberation && !!bundle.timeline; },
   get arena() { return arena; },
   get timeline() { return bundle.timeline ?? null; },
+  get skillWindow() { const e = bundle.index?.get('SKILL.butterflies'); return e && Number.isFinite(e.start) ? {start: e.start, end: e.end} : null; },
   /** Test/QA probe: the exact shader inputs of every effect (read-only copy). */
   uniforms() {
    const out = {};

@@ -107,7 +107,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
  if(cameraProfile?.smart){
   const h=getVfx()?.scale??2;
   try{const rigReader=createRigCameraReader(T,root,h),key=Object.values(plan.clips).map(c=>c.uuid).join('|')+'|'+h;
-   const guide=prepareCameraGuide({model:root,key,duration:plan.schedule.duration,samplePose:t=>body.seek(t),reader:rigReader});body.seek(0);
+   const guide=prepareCameraGuide({model:root,key,duration:plan.schedule.duration,samplePose:t=>body.seek(t),reader:rigReader,skillWindow:score?.skillWindow??null,h});body.seek(0);
    cameraProfile={...cameraProfile,T,rigReader,guide,secondary:()=>score?.last?.skill?.butterflies?.filter(b=>b.visible&&b.pos).map(b=>b.pos)??[]};
   }catch(e){score?.dispose();body.dispose();throw e;}
  }

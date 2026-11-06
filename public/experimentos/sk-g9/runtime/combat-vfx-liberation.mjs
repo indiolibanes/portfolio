@@ -39,20 +39,21 @@ uniform vec3 uBlue, uViolet, uGold; uniform float uA, uReveal, uPeak, uShock, uV
 varying vec2 vP;
 float ring(float r,float c,float w){ return exp(-pow((r-c)/w,2.)); }
 void main(){
-  float r=length(vP); if(r>1.15) discard;
+  // G10-B: the ground is the footprint of the dome (bright horizon ring + soft inner wash), not a radar disc.
+  float r=length(vP); if(r>1.2) discard;
   float a=atan(vP.y,vP.x), inside=1.-smoothstep(uReveal-.02,uReveal+.02,r);
-  float edge=ring(r,.97,.016)*1.15+ring(r,.925,.006)*.55;
-  float halo=r>.97?exp(-(r-.97)*16.)*.45:0.;
-  float rings=0.; for(int i=1;i<6;i++){ float c=float(i)*.16; rings+=ring(r,c,.006)*(.28+.07*float(i)); }
-  float spokes=pow(abs(cos(a*6.+uTime*.05)),70.)*smoothstep(.12,.3,r)*(1.-smoothstep(.84,.95,r))*.32;
-  float glyph=step(.855,r)*step(r,.895)*pow(abs(cos(a*24.+uTime*.03)),10.);
-  float centre=exp(-r*r*16.)*.30, wash=(1.-r)*.10;
+  float edge=ring(r,.965,.012)*1.5+ring(r,.93,.05)*.34;
+  float halo=r>.965?exp(-(r-.965)*11.)*.55:0.;
+  float wash=smoothstep(.2,.95,r)*(1.-smoothstep(.95,.99,r))*.17+exp(-r*r*10.)*.14;
+  float orbit=ring(r,.62,.004)*.30+ring(r,.40,.003)*.18+ring(r,.78,.003)*.2;
+  float glyph=step(.875,r)*step(r,.905)*pow(abs(cos(a*20.+uTime*.03)),14.);
   vec3 ringCol=mix(uBlue,uViolet,clamp(uViol,0.,1.));
-  vec3 col=(uBlue*(edge*.9+centre+wash+halo)+ringCol*(rings+spokes*1.1))*inside;
-  float gw=uGoldW*uPeak; col=col*(1.-.75*glyph*gw)+uGold*gw*(glyph*1.25+edge*.35)*inside;
-  col+=mix(uBlue,vec3(1.),.45)*ring(r,uReveal,.022)*step(uReveal,1.0);
-  float sh=uPeak>0.?ring(r,uShock,.028)*uPeak*(1.-smoothstep(.9,1.08,uShock)):0.;
-  col+=uGold*(.35+uGoldW*.75)*sh*inside;
+  vec3 whiteBlue=mix(uBlue,vec3(1.),.62);
+  vec3 col=(whiteBlue*edge+uBlue*(wash+halo)+ringCol*orbit)*inside;
+  float gw=uGoldW*uPeak; col=col*(1.-.6*glyph*gw)+uGold*gw*(glyph*.9+edge*.2)*inside;
+  col+=whiteBlue*ring(r,uReveal,.02)*.7*step(uReveal,1.0);
+  float sh=uPeak>0.?ring(r,uShock,.024)*uPeak*(1.-smoothstep(.9,1.08,uShock)):0.;
+  col+=uGold*(.3+uGoldW*.6)*sh*inside;
   col*=uA*uContrast; if(max(col.r,max(col.g,col.b))<.004) discard;
   gl_FragColor=vec4(col,1.);${TAIL}`;
 const DOME_VS = `${SCR_VS_HEAD} varying vec3 vN;
@@ -60,15 +61,23 @@ void main(){ vN=normalize(position); vec4 mv=modelViewMatrix*vec4(position,1.); 
 const DOME_FS = `${SCR_FS}
 uniform vec3 uBlue, uViolet, uGold; uniform float uA, uRise, uViol, uGoldW, uPeak, uTime, uContrast;
 varying vec3 vN;
+float arcLine(vec2 p,vec2 c,float rho,float w){ return exp(-pow((length(p-c)-rho)/w,2.)); }
 void main(){
+  // G10-B: the Stellarealm ceiling as seen from inside: thin off-centre orbit circles (stereographic plan),
+  // a bright horizon ring, soft vertical light shafts and a zenith glow. No meridian wire cage.
   float e=clamp(vN.y,0.,1.); if(e>uRise+.02) discard;
-  float az=atan(vN.z,vN.x)+uTime*.012;
-  float mer=pow(abs(cos(az*3.)),160.)*(1.-smoothstep(.55,.95,e))*.6;
-  float lat=exp(-pow((e-.42)/.012,2.))*.7;
-  float horizon=exp(-pow(e/.05,2.))*.7, front=exp(-pow((e-uRise)/.03,2.))*.18*step(uRise,.99);
-  float fade=1.-e*.55;
-  vec3 col=mix(uBlue,uViolet,clamp(.45+.75*uViol,0.,1.))*(mer+lat+horizon)*fade;
-  col+=uGold*uGoldW*uPeak*lat*.55;
+  vec2 p=vN.xz/(1.+vN.y); float cs=cos(uTime*.010), sn=sin(uTime*.010); p=mat2(cs,-sn,sn,cs)*p;
+  float w=.0055+.004*e;
+  float lines=arcLine(p,vec2(-.20,.10),.52,w)+arcLine(p,vec2(.24,-.06),.46,w)+.85*arcLine(p,vec2(.02,.0),.74,w)
+   +.7*arcLine(p,vec2(-.05,-.22),.30,w)+.6*arcLine(p,vec2(.0,.0),.20,w*.8)+.5*arcLine(p,vec2(.0,.0),.90,w);
+  float az=atan(vN.z,vN.x);
+  float shaft=pow(.5+.5*sin(az*26.+sin(az*7.)*2.2),5.)*smoothstep(0.,.05,e)*exp(-e*2.6)*.34;
+  float horizon=exp(-pow(e/.032,2.))*1.35+exp(-e*9.)*.30;
+  float zen=pow(e,5.)*.30+exp(-pow(length(p)/.16,2.))*.22;
+  float front=exp(-pow((e-uRise)/.03,2.))*.16*step(uRise,.99);
+  vec3 line=mix(mix(uBlue,vec3(1.),.7),uViolet,clamp(uViol*.7,0.,1.));
+  vec3 col=line*(lines*.62*(1.-.35*e))+mix(uBlue,uViolet,clamp(.25+.5*uViol,0.,1.))*(shaft+zen)+mix(uBlue,vec3(1.),.6)*horizon;
+  col+=uGold*uGoldW*uPeak*(arcLine(p,vec2(-.20,.10),.52,w*1.4)+arcLine(p,vec2(.0,.0),.74,w*1.4))*.6;
   col+=mix(uBlue,vec3(1.),.5)*front;
   col*=uA*uContrast*scrMask(); if(max(col.r,max(col.g,col.b))<.004) discard;
   gl_FragColor=vec4(col,1.);${TAIL}`;
@@ -161,7 +170,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   focus.copy(c.P.rh).add(c.P.lh).multiplyScalar(0.5).lerp(c.P.chest, 0.6); focus.y -= 0.02 * h; // kept low: hands rise to the chin in Burst02
   if (vC > 0.002) {
    const uC = phase(eC, t), k = U(core), grow = rm ? 1 : 0.35 + 0.65 * smooth(uC / 0.55);
-   k.uCenter.value.copy(focus); k.uSize.value = 0.34 * h * grow; k.uPush.value = 0.06 * h; k.uA.value = vC * 0.6; k.uTime.value = time; k.uGrow.value = grow; k.uViol.value = 0.4 * col3.violet;
+   k.uCenter.value.copy(focus); k.uSize.value = 0.24 * h * grow; k.uPush.value = 0.06 * h; k.uA.value = vC * 0.38; k.uTime.value = time; k.uGrow.value = grow; k.uViol.value = 0.4 * col3.violet;
    core.visible = true; probe.core = {grow, focus: focus.toArray(), label: 'ETHEREAL_NO_POLYHEDRON'};
   }
   // ---- Motes: converge (condense), drift up from the field (reveal/peak), rise and fade (decay) ----
