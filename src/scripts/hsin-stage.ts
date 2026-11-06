@@ -210,7 +210,7 @@ export function mountHsinStage(root:HTMLElement){
     if(duetRequested){
       if(duetStatus)duetStatus.textContent='Shorekeeper: verifying private Cloudflare Access and R2 assets…';
       // Add the guest to the EXISTING scene. Never construct a second canvas,
-      // renderer, requestAnimationFrame owner or a public GLB URL.
+      // renderer, frame scheduler or a public GLB URL.
       void import('./shorekeeper/s6-duet-guest.mjs').then(async ({loadS6DuetGuest})=>{
         if(cleaned||attempt.signal.aborted||destroyed)return;
         const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,stage:duoStageAdapter});
