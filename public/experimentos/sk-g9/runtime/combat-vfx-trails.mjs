@@ -11,8 +11,10 @@
  * reverse scrub give the same ribbon for the same time, with no per-frame accumulation.
  * One draw call (one BufferGeometry, 4 ribbons), additive, depthWrite off.
  */
-export const TRAIL_WINDOW_S = 0.64;
-export const TRAIL_SEGMENTS = 22;
+export const TRAIL_WINDOW_S = 1.15;
+export const TRAIL_SEGMENTS = 44;
+/** G11.3 orbital beams: ribbons that circle the character (energy-driven), pure function of absolute time and the chest history. */
+export const ORBIT_RIBBONS = 5, ORBIT_WINDOW_S = 1.5, ORBIT_PERIOD_S = 1.35;
 export const TRAIL_POINTS = ['pel', 'chest', 'rfoot', 'lfoot', 'rhand', 'lhand'];
 export const TRAIL_INDEX = Object.freeze(Object.fromEntries(TRAIL_POINTS.map((k, i) => [k, i])));
 const NAMES = {pel: 'Bip001Pelvis', chest: 'Bip001Spine2', rfoot: 'Bip001RFoot', lfoot: 'Bip001LFoot', rhand: 'Bip001RHand', lhand: 'Bip001LHand'};
@@ -46,15 +48,15 @@ export function trailPosition(hist, k, t, out = [0, 0, 0]) {
 
 const TRAIL_VS = `attribute vec3 aTan; attribute float aSide; attribute float aU; attribute float aA; attribute float aW; attribute float aR; uniform float uW;
 varying float vS; varying float vU; varying float vA; varying float vR;
-void main(){ vS=aSide; vU=aU; vA=aA; vR=aR; vec3 vd=normalize(cameraPosition-position); vec3 sd=cross(normalize(aTan+vec3(1e-6)),vd); float l=length(sd); sd=l>1e-5?sd/l:vec3(0.,1.,0.);
+void main(){ vS=aSide; vU=aU; vA=aA; vR=aR; vec3 vd=normalize(cameraPosition-position); vec3 tn=normalize(aTan+vec3(1e-6)); vec3 sd=cross(tn,vd); float l=length(sd); sd=l>1e-5?sd/l:vec3(0.,1.,0.); sd=normalize(mix(vec3(0.,1.,0.),sd,smoothstep(.35,.8,l)));
  float taper=(1.-aU*.72)*(.55+.45*smoothstep(0.,.08,aU)); vec3 p=position+sd*aSide*uW*aW*taper; gl_Position=projectionMatrix*viewMatrix*vec4(p,1.); }`;
 const TRAIL_FS = `uniform float uK; varying float vS; varying float vU; varying float vA; varying float vR;
 void main(){
  float s2=vS*vS, fade=pow(1.-vU,1.05);
- float body=exp(-s2*2.1), core=exp(-s2*11.), fringe=smoothstep(.35,1.,abs(vS))*(1.-smoothstep(.95,1.,abs(vS)));
+ float body=exp(-s2*1.5), core=exp(-s2*11.), fringe=smoothstep(.35,1.,abs(vS))*(1.-smoothstep(.95,1.,abs(vS)));
  float stk=.72+.28*sin(vU*46.+vS*5.5+vR*7.1)*sin(vU*17.-vS*3.+vR*3.3);
  vec3 deep=vec3(.02,.12,.85), mid=vec3(.08,.34,1.), hot=vec3(.45,.78,1.), vio=vec3(.40,.04,1.);
- vec3 col=deep*body*1.25*stk+mid*body*.28+hot*core*(.30+.30*(1.-vU))+vio*fringe*.85*(1.-.4*vU);
+ vec3 col=deep*body*1.6*stk+mid*body*.5+hot*core*(.42+.30*(1.-vU))+vio*fringe*.85*(1.-.4*vU);
  float a=uK*vA*fade; col*=a; if(max(col.r,max(col.g,col.b))<.004) discard;
  gl_FragColor=vec4(col,1.);
  #include <tonemapping_fragment>
@@ -67,33 +69,44 @@ void main(){
  * @param h     model height (world units)
  */
 export function createTrailLayer(T, {parent, h}) {
- const R = TRAIL_POINTS.length, S = TRAIL_SEGMENTS + 1, V = R * S * 2;
+ const RB = TRAIL_POINTS.length, R = RB + ORBIT_RIBBONS, S = TRAIL_SEGMENTS + 1, V = R * S * 2;
  const pos = new Float32Array(V * 3), tan = new Float32Array(V * 3), side = new Float32Array(V), au = new Float32Array(V), aa = new Float32Array(V), aw = new Float32Array(V), ar = new Float32Array(V);
  const idx = []; for (let r = 0; r < R; r++) for (let s = 0; s < S - 1; s++) { const b = (r * S + s) * 2; idx.push(b, b + 1, b + 2, b + 1, b + 3, b + 2); }
  const g = new T.BufferGeometry(); g.setIndex(idx);
  const attrs = {position: [pos, 3], aTan: [tan, 3], aSide: [side, 1], aU: [au, 1], aA: [aa, 1], aW: [aw, 1], aR: [ar, 1]};
  for (const [name, [arr, size]] of Object.entries(attrs)) { const at = new T.BufferAttribute(arr, size); at.setUsage(T.DynamicDrawUsage); g.setAttribute(name, at); }
- // static per-ribbon attributes
- for (let r = 0; r < R; r++) for (let s = 0; s < S; s++) for (let e = 0; e < 2; e++) { const o = (r * S + s) * 2 + e; aw[o] = TRAIL_WIDTH[TRAIL_POINTS[r]]; ar[o] = r + 1; }
- const mat = new T.ShaderMaterial({uniforms: {uW: {value: 0.058 * h}, uK: {value: 0}}, vertexShader: TRAIL_VS, fragmentShader: TRAIL_FS,
-  transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, side: T.DoubleSide});
+ for (let r = 0; r < R; r++) for (let s = 0; s < S; s++) for (let e = 0; e < 2; e++) { const o = (r * S + s) * 2 + e; aw[o] = r < RB ? TRAIL_WIDTH[TRAIL_POINTS[r]] : 0.62 - 0.06 * (r - RB); ar[o] = r + 1; }
+ const mat = new T.ShaderMaterial({uniforms: {uW: {value: 0.13 * h}, uK: {value: 0}}, vertexShader: TRAIL_VS, fragmentShader: TRAIL_FS,
+  transparent: true, depthWrite: false, depthTest: true, blending: T.CustomBlending, blendEquation: T.AddEquation, blendSrc: T.OneFactor, blendDst: T.OneMinusSrcColorFactor, toneMapped: false, side: T.DoubleSide}); // screen blend: overlaps saturate smoothly (G11.3), no hard white slabs
  const mesh = new T.Mesh(g, mat); mesh.name = 'blueMotionTrails'; mesh.frustumCulled = false; mesh.renderOrder = 9; mesh.visible = false; parent.add(mesh);
- const a = [0, 0, 0], b = [0, 0, 0];
+ const a = [0, 0, 0], b = [0, 0, 0], c0 = [0, 0, 0], c1 = [0, 0, 0];
  let disposed = false, last = null;
  const hide = () => { mesh.visible = false; last = null; };
+ const orbit = (r, tt, wide, out) => { // centre = chest history, helix around it
+  const j = r - RB, dir = j % 2 ? -1 : 1, ph = dir * 2 * Math.PI * tt / ORBIT_PERIOD_S * (1 + 0.12 * j) + j * 2 * Math.PI / ORBIT_RIBBONS;
+  const rad = h * (0.5 + 0.2 * Math.sin(j * 1.7 + tt * 2.1)) * wide, yy = h * (-0.38 + 0.2 * j / (ORBIT_RIBBONS - 1) * 1.9 + 0.2 * Math.sin(tt * 3.2 + j * 2.3));
+  trailPosition(hist_, TRAIL_INDEX.chest, tt, c0);
+  out[0] = c0[0] + Math.cos(ph) * rad; out[1] = c0[1] + yy; out[2] = c0[2] + Math.sin(ph) * rad;
+ };
+ let hist_ = null;
  return {
   mesh,
-  /** @returns probe {strength, ribbons} or null when nothing is fast enough. `rm` (reduced motion) hides the trails. */
-  update(hist, t, rm = false) {
+  /** @param energy 0..1 attack/heavy/ultimate energy at t (drives the orbital beams); @param wide ultimate widening >= 1 */
+  update(hist, t, rm = false, energy = 0, wide = 1) {
    if (disposed || !hist || rm || !(t > 0)) { hide(); return null; }
-   let peak = 0;
+   hist_ = hist; let peak = 0;
    for (let r = 0; r < R; r++) {
-    const hand = TRAIL_POINTS[r].endsWith('hand'), sp0 = hand ? TRAIL_HAND_SPEED_H : TRAIL_SPEED_H;
+    const isOrb = r >= RB, hand = !isOrb && TRAIL_POINTS[r].endsWith('hand'), sp0 = hand ? TRAIL_HAND_SPEED_H : TRAIL_SPEED_H, win = isOrb ? ORBIT_WINDOW_S : TRAIL_WINDOW_S;
     for (let s = 0; s < S; s++) {
-     const u = s / (S - 1), tt = t - u * TRAIL_WINDOW_S, t2 = tt - TRAIL_WINDOW_S / (S - 1);
-     trailPosition(hist, r, tt, a); trailPosition(hist, r, Math.max(0, t2), b);
-     const dt = tt - Math.max(0, t2), sp = dt > 1e-6 ? Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) / dt / h : 0;
-     const al = smooth((sp - sp0.from) / (sp0.to - sp0.from)) * (tt >= 0 ? 1 : 0); peak = Math.max(peak, al * (1 - u));
+     const u = s / (S - 1), tt = t - u * win, t2 = tt - win / (S - 1);
+     let al;
+     if (isOrb) { orbit(r, Math.max(0, tt), wide, a); orbit(r, Math.max(0, t2), wide, b); al = 0.55 * smooth(energy * 1.6) * (tt >= 0 ? 1 : 0) * (1 - 0.15 * u); }
+     else {
+      trailPosition(hist, r, tt, a); trailPosition(hist, r, Math.max(0, t2), b);
+      const dt = tt - Math.max(0, t2), sp = dt > 1e-6 ? Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) / dt / h : 0;
+      al = smooth((sp - sp0.from) / (sp0.to - sp0.from)) * (tt >= 0 ? 1 : 0);
+     }
+     peak = Math.max(peak, al * (1 - u));
      for (let e = 0; e < 2; e++) {
       const o = ((r * S + s) * 2 + e), o3 = o * 3;
       pos[o3] = a[0]; pos[o3 + 1] = a[1]; pos[o3 + 2] = a[2];
@@ -104,7 +117,7 @@ export function createTrailLayer(T, {parent, h}) {
    }
    if (peak < 0.01) { hide(); return null; }
    for (const n of ['position', 'aTan', 'aSide', 'aU', 'aA']) g.attributes[n].needsUpdate = true;
-   mat.uniforms.uK.value = 0.9; mesh.visible = true; last = {strength: peak, ribbons: R};
+   mat.uniforms.uK.value = 1.0; mesh.visible = true; last = {strength: peak, ribbons: R, energy};
    return last;
   },
   hide,

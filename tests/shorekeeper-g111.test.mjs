@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import * as
 import {buildR61Plan,R61_SOURCE_IDS} from '../public/experimentos/sk-g9/runtime/r61-plan.mjs';
 import {createS3Score,resolveClipId,ambientButterflyGate} from '../public/experimentos/sk-g9/runtime/combat-vfx-events.mjs';
 import {createLiberationLayer,liberationColorScore,LIBERATION_RADIUS_PRESETS} from '../public/experimentos/sk-g9/runtime/combat-vfx-liberation.mjs';
-import {createTrailLayer,buildTrailHistory,TRAIL_POINTS,TRAIL_INDEX,TRAIL_WINDOW_S} from '../public/experimentos/sk-g9/runtime/combat-vfx-trails.mjs';
+import {createTrailLayer,buildTrailHistory,TRAIL_POINTS,TRAIL_INDEX,TRAIL_WINDOW_S,TRAIL_SEGMENTS} from '../public/experimentos/sk-g9/runtime/combat-vfx-trails.mjs';
 import {buildSparkTable,createSparkLayer,SPARK_MAX,SPARK_LIFE_S} from '../public/experimentos/sk-g9/runtime/combat-vfx-sparkflies.mjs';
 import {createS3CombatVfx,COMBAT_VFX_MAX_DRAW_CALLS} from '../public/experimentos/sk-g9/runtime/combat-vfx-adapter.mjs';
 const DUR={SK_ATTACK_01_ORIGINAL:3.633,SK_ATTACK_02_ORIGINAL:5.733,SK_ATTACK_03_ORIGINAL:3.867,SK_ATTACK_L02_ORIGINAL:4.667,SK_SKILL_01_ORIGINAL:5.233,SK_BURST_02_ORIGINAL:5.433,SK_IDLE_01_ORIGINAL:2.5};
@@ -23,9 +23,9 @@ test('G11.1 trigger: ONE butterfly above the (left, raised) hand, before the fie
  const c=t=>liberationColorScore(t,g);assert.ok(c(g.triggerDissolve+0.05).trig.dis>0&&c(g.triggerEnd-0.001).trig.dis>0.95);assert.equal(c(g.triggerFull).trig.a,1);
  L.dispose();
 });
-test('G11.1 ambient (R5) butterflies are gated off from the trigger until the burst ends, then restored; pure',()=>{
- assert.equal(ambientButterflyGate(g,g.triggerStart-1),1);assert.equal(ambientButterflyGate(g,g.triggerFull),0);assert.equal(ambientButterflyGate(g,(g.absorbStart+g.butterflyPeak)/2),0);
- assert.equal(ambientButterflyGate(g,g.butterflyEnd+1),1);assert.equal(ambientButterflyGate(null,3),1);assert.equal(ambientButterflyGate(g,g.triggerFull),ambientButterflyGate(g,g.triggerFull));
+test('G11.1 ambient (R5) butterflies are gated off from the trigger until the burst ends (G11.3: gated off for the whole score), pure',()=>{
+ assert.equal(ambientButterflyGate(g,g.triggerStart-1),0);assert.equal(ambientButterflyGate(g,g.triggerFull),0);assert.equal(ambientButterflyGate(g,(g.absorbStart+g.butterflyPeak)/2),0);
+ assert.equal(ambientButterflyGate(g,g.butterflyEnd+1),0,'G11.3: no independent butterflies after the burst either');assert.equal(ambientButterflyGate(null,3),1);assert.equal(ambientButterflyGate(g,g.triggerFull),ambientButterflyGate(g,g.triggerFull));
 });
 test('G11.1 Stellarealm: vast default radius (much larger than the G11 presets)',()=>{
  assert.ok(LIBERATION_RADIUS_PRESETS.vast>=6&&LIBERATION_RADIUS_PRESETS.vast>=1.8*LIBERATION_RADIUS_PRESETS.wide);
@@ -56,7 +56,7 @@ test('G11.1 trails: broad ribbons (not thin lines), hands only at attack speed, 
  const hist=buildTrailHistory(root,t=>{for(const o of Object.values(b))o.position.set(t*speed,1,0);},4);
  const layer=createTrailLayer(T,{parent:new T.Group(),h});assert.ok(layer.mesh.material.uniforms.uW.value>=0.05*h,'ribbon width >= 0.05 h (G11 was 0.012 h)');
  const probe=layer.update(hist,2);assert.ok(probe&&probe.strength>0.5,'body trails visible at 2.0 h/s');
- const S=23,A=layer.mesh.geometry.attributes.aA.array,ribbonAlpha=r=>Math.max(...Array.from({length:S*2},(_,i)=>A[r*S*2+i]));
+ const S=TRAIL_SEGMENTS+1,A=layer.mesh.geometry.attributes.aA.array,ribbonAlpha=r=>Math.max(...Array.from({length:S*2},(_,i)=>A[r*S*2+i]));
  assert.ok(ribbonAlpha(TRAIL_INDEX.pel)>0.5&&ribbonAlpha(TRAIL_INDEX.rfoot)>0.5);assert.equal(ribbonAlpha(TRAIL_INDEX.rhand),0,'hand: no trail below attack speed');assert.equal(ribbonAlpha(TRAIL_INDEX.lhand),0);
  const fast=buildTrailHistory(root,t=>{for(const o of Object.values(b))o.position.set(t*6*h,1,0);},4);layer.update(fast,2);assert.ok(ribbonAlpha(TRAIL_INDEX.rhand)>0.9,'hand trails at attack speed');
  layer.update(hist,3);const a1=Array.from(layer.mesh.geometry.attributes.position.array);layer.update(hist,1);layer.update(hist,3);assert.deepEqual(Array.from(layer.mesh.geometry.attributes.position.array),a1,'pure function of time');
@@ -92,7 +92,7 @@ function adapterRig(){const {root,b}=bodyRig(),scene=new T.Scene();scene.add(roo
  pose(0);const adapter=createS3CombatVfx(T,{scene,model:root,plan,scale:1.6,stageAnchor:{x:0,z:0,floorY:0}});
  const hist=buildTrailHistory(root,t=>pose(t),plan.schedule.duration);return {adapter,hist,pose,root};}
 test('G11.1 adapter: mixed spectrum (violet in combo AND Heavy), quick butterflies from the hands, draw-call budget, reduced-motion',()=>{
- assert.equal(COMBAT_VFX_MAX_DRAW_CALLS,8);
+ assert.equal(COMBAT_VFX_MAX_DRAW_CALLS,9,'G11.3: +1 draw call for the Heavy singularity');
  const {adapter,hist,pose}=adapterRig();adapter.setTrailHistory(hist);
  const env=bundle.events.filter(e=>e.channel==='blueAttack'),heavy=bundle.events.find(e=>e.channel==='heavyPulse');assert.ok(env.length>=3&&heavy);
  const viol=new Set();let sparkSeen=0;

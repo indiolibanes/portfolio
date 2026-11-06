@@ -13,7 +13,7 @@
  *  - Additive, toneMapped:false, depthWrite:false, 6 draw calls maximum.
  */
 import {createS1Score, createS2Score, createS3Score, resolveClipId, S1_VISUAL_VARIANTS} from './combat-vfx-events.mjs';
-import {BILLBOARD_VS, FACE_FS, TAIL} from './combat-vfx-shaders.mjs';
+import {BILLBOARD_VS, FACE_FS, TAIL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
 import {createSkillLayer} from './combat-vfx-skill.mjs';
 import {createLiberationLayer} from './combat-vfx-liberation.mjs';
 import {createTrailLayer} from './combat-vfx-trails.mjs';
@@ -21,7 +21,7 @@ import {createSparkLayer, buildSparkTable} from './combat-vfx-sparkflies.mjs';
 
 export const COMBAT_VFX_ANCHORS = Object.freeze({rh: 'Bip001RHand', lh: 'Bip001LHand', rf: 'Bip001RForearm', lf: 'Bip001LForearm', chest: 'Bip001Spine2', head: 'Bip001Head'});
 export const COMBAT_VFX_BODY_ANCHORS = Object.freeze({pel: 'Bip001Pelvis', rt: 'Bip001RThigh', lt: 'Bip001LThigh', rfoot: 'Bip001RFoot', lfoot: 'Bip001LFoot'});
-export const COMBAT_VFX_MAX_DRAW_CALLS = 8; // G11: +1 body motion trails; G11.1: +1 quick attack butterflies (one instanced mesh)
+export const COMBAT_VFX_MAX_DRAW_CALLS = 9; // G11: +1 body motion trails; G11.1: +1 quick attack butterflies (one instanced mesh)
 export const COMBAT_VFX_LABEL = 'AUTHORIAL_SIMULATED_NOT_CANONICAL';
 
 const HEAVY_VIOLET = 0.62;
@@ -83,6 +83,25 @@ void main(){
   }
   a*=uA*faceMask(vP); if(a<.004) discard;
   gl_FragColor=vec4(col,min(1.,a));${TAIL}`;
+/** G11.3 Heavy: a large blue/violet charged sphere (small black hole): dark turbulent body, hot compressed centre, bright rim, swirling accretion arms. */
+const SING_FS = `${FACE_FS}
+uniform vec3 uTint, uViolet; uniform float uA, uTime, uSurge;
+varying vec2 vP; varying vec2 vD;
+${NOISE_GLSL}
+void main(){
+  float r=length(vP); if(r>1.) discard;
+  float rs=.46, q=r/rs, ang=atan(vP.y,vP.x);
+  float sw=ang+(3.2+1.5*uSurge)*(1.-smoothstep(0.,1.4,q))+uTime*1.6;
+  float t1=fbm(vec2(sw*1.7,q*5.-uTime*1.8)), t2=fbm(vec2(sw*3.1+4.,q*9.+uTime*1.2));
+  float inside=1.-smoothstep(.96,1.,q);
+  vec3 body=mix(uTint,uViolet,clamp(t1*1.3+.15*q,0.,1.))*(.10+.75*smoothstep(.15,1.,q))*(.55+.9*t2);
+  float rim=exp(-pow((q-1.)/.075,2.))*(.9+.7*t1)*(1.+.8*uSurge);
+  float arms=pow(abs(cos(sw*3.)),5.)*exp(-max(0.,q-1.)*2.6)*smoothstep(.98,1.12,q)*(.6+.7*t2);
+  float halo=exp(-pow(max(0.,q-1.)/.55,2.))*smoothstep(.95,1.,q)*.55;
+  float core=exp(-q*q*26.)*(.55+.8*uSurge);
+  vec3 col=body*inside+uViolet*(rim*.9+arms*.8)+uTint*(rim*.5+halo*.8+arms*.4)+vec3(.78,.86,1.)*(core+rim*.18);
+  col*=uA*faceMask(vP); float a=max(col.r,max(col.g,col.b)); if(a<.004) discard;
+  gl_FragColor=vec4(min(col,vec3(1.)),min(1.,a));${TAIL}`;
 const PULSE_FS = `${FACE_FS}
 uniform vec3 uTint, uViolet; uniform float uConvA, uConv, uRelA, uRel, uViol;
 varying vec2 vP; varying vec2 vD;
@@ -164,6 +183,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   glowR: quad(mat(GLOW_FS, glowU()), 8, 'blueGlowR'), glowL: quad(mat(GLOW_FS, glowU()), 8, 'blueGlowL'),
   arcR: quad(mat(ARC_FS, arcU()), 9, 'blueArcR'), arcL: quad(mat(ARC_FS, arcU()), 9, 'blueArcL'),
   core: quad(mat(CORE_FS, {uTime: {value: 0}, uSph: {value: 1 / 2.4}, uHot: {value: 0}}), 11, 'blueCoreSphere'),
+  sing: quad(mat(SING_FS, {uTime: {value: 0}, uSurge: {value: 0}}), 12, 'blueHeavySingularity'),
   pulse: quad(mat(PULSE_FS, {uConvA: {value: 0}, uConv: {value: 0}, uRelA: {value: 0}, uRel: {value: 0}}), 10, 'blueHeavyPulse')
  };
  const skillLayer = skill ? createSkillLayer(T, {parent: root, h, bundle, targetMode}) : null;
@@ -208,6 +228,17 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   mesh.visible = u.uA.value > 0.002; return f;
  };
 
+ // G11.3: the (simulated) target of the Heavy: a point in front of her at chest height (same body-frame forward as the Skill layer).
+ const tgtPt = new T.Vector3(), fwdV = new T.Vector3();
+ const heavyTarget = (dom, aspect = 16 / 9) => {
+  if (bodyOk) { readBody(); fwdV.copy(B.rt).sub(B.lt); fwdV.y = 0; if (fwdV.lengthSq() < 1e-8) fwdV.set(1, 0, 0); fwdV.normalize(); fwdV.set(fwdV.z, 0, -fwdV.x); }
+  else { fwdV.copy(dom === 'R' ? P.rh : P.lh).sub(P.chest); fwdV.y = 0; if (fwdV.lengthSq() < 1e-8) fwdV.set(0, 0, 1); fwdV.normalize(); }
+  return tgtPt.copy(P.chest).addScaledVector(fwdV, (aspect < 1 ? 0.72 : 1.05) * h).setY(P.chest.y - 0.12 * h);
+ };
+ const placeSing = (tp, radiusH, level, surge, v, timeU, rm) => {
+  const u = U(fx.sing); u.uCenter.value.copy(tp); u.uSize.value = h * radiusH * 2 / 0.46; u.uPush.value = 0.0; u.uTint.value.set(0.16, 0.42, 1.0); u.uViolet.value.set(0.50, 0.12, 1.0);
+  u.uA.value = level; u.uTime.value = rm ? 0 : timeU; u.uSurge.value = surge; fx.sing.visible = level > 0.002; return 1;
+ };
  const activeOf = (cue, time, test) => {
   let best = null;
   for (const pr of cue.eventProvenance) {
@@ -264,6 +295,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
      if (heavy) { // concentration rings converge on the same focus point (preparation only)
       const p = U(fx.pulse); p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint); p.uViol.value = HEAVY_VIOLET;
       p.uConvA.value = cue.blueCore * f; p.uConv.value = rm ? 0.35 : u; fx.pulse.visible = true;
+      placeSing(heavyTarget(bundle.hand?.[core.clipId] ?? 'R', aspect), 0.08 + 0.34 * smooth(u), cue.blueCore * 1.15, 0, v, timeUniform, rm);
      }
     }
    }
@@ -278,6 +310,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
      const f = faceFactor(focus), p = U(fx.pulse), ph = phaseOf(rel, t);
      p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint); p.uViol.value = HEAVY_VIOLET;
      p.uRelA.value = cue.heavyPulse * f; p.uRel.value = rm ? 0.45 : ph; fx.pulse.visible = true; face = Math.min(face, f);
+     placeSing(heavyTarget(dom, aspect), 0.42 + 0.22 * smooth(ph * 1.4), Math.max(cue.heavyPulse, 0) * 1.25, 1 - smooth(ph * 1.2), v, timeUniform, rm);
      const arcMesh = dom === 'R' ? fx.arcR : fx.arcL;
      face = Math.min(face, placeArc(arcMesh, hp, fp, cue.heavyPulse, HEAVY_LAUNCH, dom === 'R' ? +1 : -1, Math.min(1, ph * 1.15), 1, rm));
     }
@@ -306,7 +339,8 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
    for (const o of Object.values(libLayer.meshes)) if (o.visible) shown++;
   }
   // G11 body motion trails (history table is optional; without it nothing is drawn)
-  const trailProbe = trails.update(trailHistory, t, rm); if (trails.mesh.visible) shown++;
+  const energy = Math.min(1, Math.max(cue.blueAttack, cue.heavyPulse, cue.blueCore * 0.7, libLayer ? cue.liberationField * 0.7 : 0, cue.guidedButterflies ? cue.guidedButterflies * 0.3 : 0)), wide = 1 + (libLayer ? 0.6 * Math.min(1, cue.liberationField) : 0);
+  const trailProbe = trails.update(trailHistory, t, rm, energy, wide); if (trails.mesh.visible) shown++;
   // G11.1 quick attack butterflies (needs the hand history; none in proxy/no-history mode)
   let sparkProbe = null;
   if (trailHistory && (have || proxyAnchors) && !rm) { readPose(); headW.copy(P.head); headW.y += 0.05 * h; sparkProbe = sparks.update({table: sparkTable, hist: trailHistory, t, rm, headW}); } else sparks.hide();

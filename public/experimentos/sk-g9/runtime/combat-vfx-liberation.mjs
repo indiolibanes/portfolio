@@ -18,7 +18,7 @@ import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
 
 export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butterfly
 /** Radius / contrast A/B presets, relative to the model height (no world-unit or gameplay claim). */
-export const LIBERATION_RADIUS_PRESETS = Object.freeze({compact: 1.8, standard: 2.6, wide: 3.4, vast: 7.2});
+export const LIBERATION_RADIUS_PRESETS = Object.freeze({compact: 1.8, standard: 2.6, wide: 3.4, vast: 8.6});
 export const LIBERATION_CONTRAST_PRESETS = Object.freeze({soft: 0.8, standard: 1.0, strong: 1.25});
 export const LIBERATION_COLORS = Object.freeze({blue: [0.18, 0.50, 1.0], violet: [0.42, 0.16, 1.0], gold: [1.0, 0.52, 0.10]});
 const NM = 224, TAU = Math.PI * 2;
@@ -223,7 +223,7 @@ void main(){ float r=length(vUv); if(r>1.) discard; float a=vA*(pow(1.-r,2.2)*.9
  */
 export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER'}) {
  if (!S3_COLOR_VARIANTS[variant]) throw new TypeError('Liberation: unknown colour variant ' + variant);
- if (!(radius > 0.5 && radius < 8) || !(contrast > 0.1 && contrast < 3)) throw new TypeError('Liberation: radius/contrast out of range');
+ if (!(radius > 0.5 && radius < 12) || !(contrast > 0.1 && contrast < 3)) throw new TypeError('Liberation: radius/contrast out of range');
  let disposed = false, last = null, cfg = {radius, contrast, variant};
  const mats = [], geos = [];
  const v3 = (...a) => new T.Vector3(...a), col = k => ({value: v3(...LIBERATION_COLORS[k])});
@@ -296,7 +296,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   if (cs.bf.ring > 0.002) {
    const f = U(field); field.position.set(c.stage.x, c.stage.floorY + 0.006 * h, c.stage.z); field.scale.set(2.3 * R, 1, 2.3 * R);
    if (!field.visible) { setTint(f); f.uA.value = 0; f.uReveal.value = 1.05; f.uContrast.value = cfg.contrast; field.visible = true; }
-   f.uShock.value = cs.bf.ringR; f.uShockA.value = cs.bf.ring; f.uGold.value.fromArray(G11_TINTS.gold); probe.shock = cs.bf.ringR;
+   f.uShock.value = cs.bf.ringR; f.uShockA.value = cs.bf.ring; f.uGold.value.set(0.70, 0.90, 1.0); probe.shock = cs.bf.ringR;
   }
   // ---- G11.1 trigger: ONE butterfly above the right hand, dissolving at once into the field (no swarm, no core, no converging motes) ----
   if (cs.trig.a > 0.002) {
@@ -323,9 +323,9 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   }
   const fieldMotes = (lv, kGold, rise0, count) => { for (let i = 0; i < count; i++) {
    const ang = hash(i, 5) * TAU, rr = (0.12 + 0.86 * hash(i, 6) * hash(i, 61)) * R, per = 2.6 + hash(i, 7) * 1.6, ph = rm ? 0.4 : ((t / per + hash(i, 8)) % 1);
-   put(c.stage.x + Math.cos(ang) * rr, c.stage.floorY + (rise0 + ph * 1.6 + 1.6 * hash(i, 62) * (rr / R)) * h, c.stage.z + Math.sin(ang) * rr, 0.03 * h * (1 + hash(i, 9)), lv * Math.sin(Math.PI * ph) * 0.8, kGold);
+   put(c.stage.x + Math.cos(ang) * rr, c.stage.floorY + (rise0 + ph * 1.6 + 1.6 * hash(i, 62) * (rr / R)) * h, c.stage.z + Math.sin(ang) * rr, 0.05 * h * (1 + hash(i, 9)), lv * Math.sin(Math.PI * ph) * 0.8, kGold);
   } };
-  if (fieldLv > 0.002 && vR > 0.002) fieldMotes(fieldLv * (1 - cs.absorb), 0.15 + 0.85 * cs.gold, 0.02, 40);
+  if (fieldLv > 0.002 && vR > 0.002) fieldMotes(fieldLv * (1 - cs.absorb), 0.15 + 0.85 * cs.gold, 0.02, 90);
   // ---- G11.1 absorption: the field's light streams (spiralling) into her chest, a warm core grows there ----
   focus.copy(c.P.chest); focus.y += 0.04 * h;
   if (cs.absorbLin > 0 && t < (g?.butterflyStart ?? 0) + 0.12) {
@@ -346,9 +346,9 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    butterfly: cs.bf.a > 0.002 ? {alpha: cs.bf.a, open: cs.bf.open, scale: cs.bf.scale, burn: cs.bf.burn, flash: cs.bf.flash} : null};
   if ((cs.bf.a > 0.002 || cs.bf.flash > 0.01) && g) {
    const k = U(butterfly);
-   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * 1.12; k.uMin.value = 1.5 * h; k.uMax.value = 20 * h;
+   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * 1.40; k.uMin.value = 2.4 * h; k.uMax.value = 20 * h;
    k.uA.value = cs.bf.a * 0.80 * cfg.contrast; k.uOpen.value = cs.bf.open; k.uTime.value = time; k.uBurn.value = cs.bf.burn; k.uFlash.value = cs.bf.flash; k.uChaos.value = cs.bf.chaos;
-   k.uGold.value.fromArray(G11_TINTS.gold); k.uBlue.value.set(0.16, 0.50, 1.0); k.uViolet.value.set(0.50, 0.10, 1.0);
+   k.uGold.value.set(0.90, 0.96, 1.0); k.uBlue.value.set(0.14, 0.46, 1.0); k.uViolet.value.set(0.10, 0.30, 1.0); k.uHotC.value.set(0.80, 0.92, 1.0); // G11.3: blue + white only (first-phase ultimate colours)
    butterfly.visible = true;
   }
   if (cs.bf.burst > 0.001 && g) {
@@ -356,7 +356,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    for (let i = 0; i < 176; i++) {
     const ang = hash(i, 21) * TAU, el = (hash(i, 22) - 0.5) * 2.0, sp = 0.45 + 1.4 * hash(i, 23), delay = hash(i, 25) * 0.25, uu = clamp01((u - delay) / (1 - delay)), e = 1 - Math.pow(1 - uu, 2.2);
     const rad = (0.2 + 3.4 * e * sp) * h, wob = rm ? 0 : 0.25 * h * Math.sin(uu * 9 + hash(i, 26) * TAU) * uu;
-    put(base.x + Math.cos(ang) * rad * (1 - 0.35 * Math.abs(el)) + wob, base.y + Math.sin(el * 1.1) * rad * 0.75, base.z + Math.sin(ang) * rad * (1 - 0.35 * Math.abs(el)), 0.034 * h * (0.5 + hash(i, 24)) * (1 - 0.5 * uu), Math.sin(Math.PI * Math.min(1, uu * 1.05)) * 0.95, hash(i, 27) < 0.5 ? 0.0 : 0.85 + 0.15 * hash(i, 28));
+    put(base.x + Math.cos(ang) * rad * (1 - 0.35 * Math.abs(el)) + wob, base.y + Math.sin(el * 1.1) * rad * 0.75, base.z + Math.sin(ang) * rad * (1 - 0.35 * Math.abs(el)), 0.034 * h * (0.5 + hash(i, 24)) * (1 - 0.5 * uu), Math.sin(Math.PI * Math.min(1, uu * 1.05)) * 0.95, 0.0);
    }
   }
   if (vD > 0.002 && !(cs.bf.a > 0.002)) fieldMotes(vD * 0.5, 0.6, 0.15, 14);

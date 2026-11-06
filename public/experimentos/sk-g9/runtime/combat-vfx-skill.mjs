@@ -19,7 +19,8 @@ import {BILLBOARD_VS, FACE_FS, TAIL} from './combat-vfx-shaders.mjs';
 export const SKILL_BUTTERFLY_COUNT = 5;
 export const SKILL_MAX_DRAW_CALLS = 5;
 const NB = SKILL_BUTTERFLY_COUNT, TRAIL = 14, SPARKS = 6, MOTES = 20, NP = NB * TRAIL + NB * SPARKS + MOTES;
-const SPAWN_STEP = 0.060, FLIGHT = 0.59, TRAIL_DELTA = 0.018, THETA = [-1.1, -0.55, 0, 0.55, 1.1];
+export const SPAWN_STEP = 0.042, FLIGHT = 0.21, TRAIL_DELTA = 0.032, // G11.3: Swift-like - 2.8x faster flight, long streak
+  THETA = [-1.1, -0.55, 0, 0.55, 1.1];
 const TAU = Math.PI * 2;
 const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const clamp01 = x => Math.max(0, Math.min(1, x));
@@ -245,7 +246,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     bez(i, ease(s), p0); const s2 = ease(clamp01(s + 0.02)), s1 = ease(clamp01(s - 0.02)); bez(i, s2, p1); bez(i, s1, tmp); p1.sub(tmp);
     if (p1.lengthSq() < 1e-10) p1.copy(c.fwd);
     p1.normalize();
-    const scale = 0.215 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
+    const scale = 0.30 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
     const phase = TAU * (4.4 + 0.15 * i) * t + i * 1.3, w = Math.sin(phase) + 0.28 * Math.sin(2 * phase - 0.7);
     const flap = rm ? 0.6 : 0.08 + (0.5 - 0.5 * w) * 1.2, bank = rm ? 0 : 0.3 * Math.sin(i + t * 1.1);
     for (let side = 0; side < 2; side++) {
@@ -257,7 +258,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     if (!rm) for (let k = 0; k < TRAIL; k++) { // trail = the same path at earlier phase: no history
      const sk = sRaw - k * TRAIL_DELTA; if (sk <= 0) continue;
      bez(i, ease(clamp01(sk)), tmp); const idx = i * TRAIL + k, fade = Math.pow(1 - k / TRAIL, 1.5) * (1 - smooth(ta / 0.12));
-     pPos[idx * 3] = tmp.x; pPos[idx * 3 + 1] = tmp.y; pPos[idx * 3 + 2] = tmp.z; pS[idx] = 0.03 * h * (1 - 0.6 * k / TRAIL); pA[idx] = gain * fade * 0.42; pK[idx] = 0.7; probe.trails++;
+     pPos[idx * 3] = tmp.x; pPos[idx * 3 + 1] = tmp.y; pPos[idx * 3 + 2] = tmp.z; pS[idx] = 0.055 * h * (1 - 0.6 * k / TRAIL); pA[idx] = gain * fade * 0.6; pK[idx] = 0.7; probe.trails++;
     }
    }
    if (!rm) for (let i = 0; i < NB; i++) { // arrival sparks

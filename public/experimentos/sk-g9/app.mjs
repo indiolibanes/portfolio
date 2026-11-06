@@ -30,7 +30,7 @@ const download=(blob,name)=>{const a=document.createElement('a'),u=URL.createObj
  else if(mode==='A'){shot.cameraComparison={status:'REFERENCE_ONLY_PENDING_BLOB'};}
  else{const ref=cameraReferences.get(comparisonId);shot.cameraComparison=ref?{...compareEffectiveCameras(ref.camera,shot.effectiveCamera),referencePngSha256:ref.pngSha256}:{status:'NO_A_REFERENCE'};}
  const pending=stage.capture();shot.render=stage.info();const blob=await pending;
- const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()))).map(x=>x.toString(16).padStart(2,'0')).join(''),name='G112_'+shot.mode+'_'+shot.comparisonId.replace(/[^A-Za-z0-9_-]/g,'_').slice(0,64)+'_'+shot.effectiveCamera.pixelWidth+'x'+shot.effectiveCamera.pixelHeight+'_'+shot.presentationTime.toFixed(6);
+ const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()))).map(x=>x.toString(16).padStart(2,'0')).join(''),name='G113_'+shot.mode+'_'+shot.comparisonId.replace(/[^A-Za-z0-9_-]/g,'_').slice(0,64)+'_'+shot.effectiveCamera.pixelWidth+'x'+shot.effectiveCamera.pixelHeight+'_'+shot.presentationTime.toFixed(6);
  if(shot.mode==='A'){cameraReferences.set(shot.comparisonId,{camera:shot.effectiveCamera,pngSha256:sha});shot.cameraComparison={status:'REFERENCE_ONLY'};}
  download(blob,name+'.png');download(new Blob([JSON.stringify({pngFile:name+'.png',pngSha256:sha,...shot},null,2)],{type:'application/json'}),name+'.json');
 });

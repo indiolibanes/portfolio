@@ -251,10 +251,8 @@ export function g11Timeline(schedule, decayEnd = null, lib = null) {
 
 /** G11.1: multiplier of the ambient (R5) butterfly flock. 1 outside, 0 from just before the trigger butterfly until the burst ends. Pure. */
 export function ambientButterflyGate(g, t) {
- if (!g || g.triggerStart === undefined) return 1;
- const sm = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
- const down = sm((g.triggerStart - 0.15 - t) / 0.30), up = sm((t - (g.butterflyEnd - 0.05)) / 0.45);
- return t < g.triggerStart - 0.15 ? down : t < g.butterflyEnd - 0.05 ? 0 : up;
+ // G11.3: there is NO free-floating butterfly in the scene: with a score (g present) the ambient R5 flock is off for the whole timeline.
+ return g ? 0 : 1;
 }
 
 export function s3Timeline(schedule) {
