@@ -1,0 +1,11 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shorekeeper G9 · prévia privada por arquivos locais</title><meta name="robots" content="noindex,nofollow,noarchive">
+<style>body{font:15px system-ui;background:#13212c;color:#eff7ff;margin:16px}button,input,select{margin:5px;padding:6px}#host{width:min(100%,960px);height:540px;background:#243745}pre{white-space:pre-wrap;max-width:960px}label{display:inline-block}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./three/build/three.module.js","three/addons/":"./three/examples/jsm/"}}</script>
+<h1>G9 · prévia diagnóstica da Shorekeeper</h1><p><strong>Prévia experimental, não aprovada como gameplay canônico.</strong> Selecione os quatro GLBs autorizados <strong>e o expected.json privado</strong> na mesma seleção. Os arquivos são lidos exclusivamente no seu navegador: não há upload nem armazenamento persistente. O G7 permanece NO_GO.</p>
+<input id="files" type="file" multiple accept=".glb,.json"><button id="load">Carregar</button><br>
+<label>Modo <select id="mode"><option value="A">A · corpo R6.1 + VFX R5 da bancada</option><option value="B">B · R6.2 S3/F1 local</option><option value="N">N · Attack02 isolado</option></select></label>
+<label><input id="auto" type="checkbox">Câmera F1 (B; desliga comparação travada)</label>
+<label>Comparação <input id="pair" value="par_01_wide" aria-label="ID da comparação"></label><label>Tempo absoluto (s) <input id="time" type="number" min="0" value="0" step="0.016666667"></label>
+<button id="seek">Seek</button><button id="play">Reproduzir</button><button id="pause">Pausar</button><button id="interrupt">Interromper</button><button id="restart">Reiniciar</button><button id="dispose">Descartar</button>
+<button id="portrait">390×640</button><button id="wide">960×540</button><button id="lock">Travar câmera atual</button><button id="capture">PNG + metadados</button><button id="vfxloss">Perder VFX</button><button id="vfxreplace">Trocar VFX</button><button id="losecontext">Perder contexto</button>
+<div id="host"></div><pre id="status">Inicializando WebGL2…</pre><script type="module" src="./app.mjs"></script></html>
