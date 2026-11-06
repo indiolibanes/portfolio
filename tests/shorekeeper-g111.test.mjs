@@ -12,13 +12,13 @@ const V=(x,y,z)=>new T.Vector3(x,y,z);
 function layerFrame(layer,t,rm=false){const cue=bundle.score.cueAt(t,resolveClipId(plan.schedule,t),16/9);
  const p=layer.update({t,cue,rm,bundle,headW:V(0,1.5,0),P:{chest:V(0,1.1,0),rh:V(-.5,1.1,.1),lh:V(.5,1.1,.1)},stage:{x:0,z:0,floorY:0}});return {p,u:JSON.stringify(layer.uniformsProbe()),m:layer.meshes};}
 
-test('G11.1 trigger: ONE butterfly above the right hand, before the field colour ramps, dissolving into the Stellarealm',()=>{
+test('G11.1 trigger: ONE butterfly above the (left, raised) hand, before the field colour ramps, dissolving into the Stellarealm',()=>{
  for(const k of ['triggerStart','triggerFull','triggerDissolve','triggerEnd'])assert.ok(Number.isFinite(g[k]),k);
  const order=['triggerStart','triggerFull','triggerDissolve','triggerEnd','violetStart','goldStart','absorbStart','butterflyStart'];for(let i=1;i<order.length;i++)assert.ok(g[order[i]]>g[order[i-1]],order[i]);
  assert.ok(g.triggerStart>=burst.start&&g.triggerEnd<g.violetStart,'trigger sits inside the real Burst02 segment');
  const L=createLiberationLayer(T,{parent:new T.Group(),h:1.6,bundle});
  const f=layerFrame(L,(g.triggerFull+g.triggerDissolve)/2);assert.equal(f.p.trigger.count,1,'exactly one trigger butterfly');assert.equal(f.m.trigger.visible,true);
- const [ax,ay,az]=f.p.trigger.anchor;assert.ok(ay>1.1+0.03*1.6,'above the right hand (hand y=1.1, anchor y='+ay+')');assert.ok(Math.hypot(ax+.5,az-.1)<0.3*1.6,'laterally close to the right hand');
+ const [ax,ay,az]=f.p.trigger.anchor;assert.ok(ay>1.1+0.03*1.6,'above the RAISED (left) hand (hand y=1.1, anchor y='+ay+')');assert.ok(Math.hypot(ax-.5,az-.1)<0.3*1.6,'laterally close to the left hand');
  assert.equal(layerFrame(L,g.triggerStart-0.05).m.trigger.visible,false);assert.equal(layerFrame(L,g.triggerEnd+0.05).m.trigger.visible,false,'it is gone once the field exists');
  const c=t=>liberationColorScore(t,g);assert.ok(c(g.triggerDissolve+0.05).trig.dis>0&&c(g.triggerEnd-0.001).trig.dis>0.95);assert.equal(c(g.triggerFull).trig.a,1);
  L.dispose();

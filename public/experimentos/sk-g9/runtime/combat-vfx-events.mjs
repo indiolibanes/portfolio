@@ -225,7 +225,7 @@ export const G11_PLACEMENT = Object.freeze({
  violet: [0.426, 0.702], gold: [0.640, 0.860],
  absorbLeadS: 1.05, butterflyLeadS: 0.30, butterflyOpenS: 0.28, butterflyPeakS: 0.42, butterflyDissolveS: 0.40, butterflyTailS: 0.95,
  // G11.1 trigger: ONE butterfly above the right hand, anchored to the condensation / reveal windows.
- triggerInS: 0.10, triggerFullS: 0.35, triggerDissolveLeadS: 0.12, triggerEndTailS: 0.14
+ triggerInS: 0.10, triggerFullS: 0.35, triggerDissolveLeadS: 0.58, triggerEndTailS: 0.14
 });
 /** @param lib {condenseStart, revealStart} from the authorial LIB.* windows (needed for the trigger butterfly). */
 export function g11Timeline(schedule, decayEnd = null, lib = null) {

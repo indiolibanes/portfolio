@@ -11,7 +11,7 @@
  * reverse scrub give the same ribbon for the same time, with no per-frame accumulation.
  * One draw call (one BufferGeometry, 4 ribbons), additive, depthWrite off.
  */
-export const TRAIL_WINDOW_S = 0.55;
+export const TRAIL_WINDOW_S = 0.64;
 export const TRAIL_SEGMENTS = 22;
 export const TRAIL_POINTS = ['pel', 'chest', 'rfoot', 'lfoot', 'rhand', 'lhand'];
 export const TRAIL_INDEX = Object.freeze(Object.fromEntries(TRAIL_POINTS.map((k, i) => [k, i])));
@@ -50,7 +50,7 @@ void main(){ vS=aSide; vU=aU; vA=aA; vR=aR; vec3 vd=normalize(cameraPosition-pos
  float taper=(1.-aU*.72)*(.55+.45*smoothstep(0.,.08,aU)); vec3 p=position+sd*aSide*uW*aW*taper; gl_Position=projectionMatrix*viewMatrix*vec4(p,1.); }`;
 const TRAIL_FS = `uniform float uK; varying float vS; varying float vU; varying float vA; varying float vR;
 void main(){
- float s2=vS*vS, fade=pow(1.-vU,1.25);
+ float s2=vS*vS, fade=pow(1.-vU,1.05);
  float body=exp(-s2*2.1), core=exp(-s2*11.), fringe=smoothstep(.35,1.,abs(vS))*(1.-smoothstep(.95,1.,abs(vS)));
  float stk=.72+.28*sin(vU*46.+vS*5.5+vR*7.1)*sin(vU*17.-vS*3.+vR*3.3);
  vec3 deep=vec3(.02,.12,.85), mid=vec3(.08,.34,1.), hot=vec3(.45,.78,1.), vio=vec3(.40,.04,1.);

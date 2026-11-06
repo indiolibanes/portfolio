@@ -47,13 +47,14 @@ void main(){
   gl_Position=projectionMatrix*mv;
 }`;
 const WING_FS = `
-uniform sampler2D atlas; uniform vec3 uTint; uniform float uFaceR;
+uniform sampler2D atlas; uniform vec3 uTint, uCore; uniform float uFaceR;
 varying vec2 vUv; varying float vShade; varying float vAlpha; varying vec2 vScr; varying float vOn;
 void main(){
   vec4 t=texture2D(atlas,vec2(vUv.x,1.-vUv.y)); float a=t.a*vAlpha; if(a<.004) discard;
   a*=(vOn<.5)?1.:smoothstep(uFaceR*.75,uFaceR*1.35,length(vScr)); if(a<.004) discard;
-  float lum=dot(t.rgb,vec3(.3,.55,.15)); vec3 tinted=uTint*(lum*1.7+.08)+vec3(max(0.,lum-.62))*1.1;
-  gl_FragColor=vec4(min(vec3(.95),mix(t.rgb,tinted,.8)*vShade*.88),a);${TAIL}`;
+  float lum=dot(t.rgb,vec3(.3,.55,.15)); float core=exp(-pow(vUv.x/.34,2.))*exp(-pow((vUv.y-.52)/.34,2.));
+  vec3 tinted=uTint*(lum*1.7+.08)+vec3(max(0.,lum-.62))*.7; tinted=mix(tinted,uCore*(lum*1.6+.55),clamp(core*1.15,0.,1.))+uCore*core*.35;
+  gl_FragColor=vec4(min(vec3(.95),mix(t.rgb*.4,tinted,.9)*vShade*.9),a);${TAIL}`;
 const PART_VS = `
 attribute vec3 iPos; attribute float iS; attribute float iA; attribute float iK;
 uniform vec3 uHeadW; uniform float uFaceR;
@@ -130,7 +131,7 @@ export function skillFlightPoints(frame) {
  for (let i = 0; i < NB; i++) { const g = flightGeometry(i, frame, true); out.push(g.S, g.C1, g.C2, g.TG, add(g.C1, [UP, -0.36 * frame.h * (i % 2 === 0 ? -1 : 1)])); }
  return out;
 }
-export const SKILL_COLORS = Object.freeze({cyan: [0.50, 0.95, 1.0], gold: [1.0, 0.86, 0.52], wing: [0.55, 0.95, 1.0]});
+export const SKILL_COLORS = Object.freeze({cyan: [0.50, 0.95, 1.0], gold: [1.0, 0.86, 0.52], wing: [0.40, 0.80, 1.0], core: [1.0, 0.78, 0.30]});
 
 export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_TARGET'}) {
  let mode = targetMode, ablation = 'FULL', disposed = false;
@@ -148,7 +149,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
  for (const [n, a, k] of [['iPos', wPos, 3], ['iFwd', wFwd, 3], ['iMisc', wMisc, 4], ['iAlpha', wAlpha, 1]]) { const at = new T.InstancedBufferAttribute(a, k); at.setUsage(T.DynamicDrawUsage); wg.setAttribute(n, at); }
  const atlas = new T.DataTexture(renderWingAtlas(128, 7, {crystalline: true, delicate: true}), 128, 128, T.RGBAFormat);
  atlas.colorSpace = T.SRGBColorSpace; atlas.generateMipmaps = true; atlas.minFilter = T.LinearMipmapLinearFilter; atlas.magFilter = T.LinearFilter; atlas.needsUpdate = true; tex.push(atlas);
- const wings = mk(new T.ShaderMaterial({...additive(), uniforms: {atlas: {value: atlas}, uTint: {value: new T.Vector3(...SKILL_COLORS.wing)}, ...headU()}, vertexShader: WING_VS, fragmentShader: WING_FS}), wg, 12, 'skillButterflyWings');
+ const wings = mk(new T.ShaderMaterial({...additive(), uniforms: {atlas: {value: atlas}, uTint: {value: new T.Vector3(...SKILL_COLORS.wing)}, uCore: {value: new T.Vector3(...SKILL_COLORS.core)}, ...headU()}, vertexShader: WING_VS, fragmentShader: WING_FS}), wg, 12, 'skillButterflyWings');
 
  // ---- instanced particles: trails, arrival sparks, heal motes ----
  const pg = new T.InstancedBufferGeometry(); const pq = new T.PlaneGeometry(1, 1); pg.index = pq.index; pg.setAttribute('position', pq.attributes.position); pg.setAttribute('uv', pq.attributes.uv); pg.instanceCount = NP; pq.dispose();
@@ -245,7 +246,7 @@ export function createSkillLayer(T, {parent, h, bundle, targetMode = 'SIMULATED_
     if (p1.lengthSq() < 1e-10) p1.copy(c.fwd);
     p1.normalize();
     const scale = 0.215 * h * (0.72 + 0.28 * smooth(sRaw / 0.15)) * (1 - 0.5 * smooth(ta / 0.08));
-    const phase = TAU * (2.6 + 0.12 * i) * t + i * 1.3, w = Math.sin(phase) + 0.28 * Math.sin(2 * phase - 0.7);
+    const phase = TAU * (4.4 + 0.15 * i) * t + i * 1.3, w = Math.sin(phase) + 0.28 * Math.sin(2 * phase - 0.7);
     const flap = rm ? 0.6 : 0.08 + (0.5 - 0.5 * w) * 1.2, bank = rm ? 0 : 0.3 * Math.sin(i + t * 1.1);
     for (let side = 0; side < 2; side++) {
      const j = i * 2 + side;

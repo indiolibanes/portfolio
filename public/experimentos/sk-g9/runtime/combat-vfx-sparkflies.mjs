@@ -55,7 +55,7 @@ void main(){
  float sqm=1.-smoothstep(.5,.98,max(abs(vUv.x),abs(vUv.y)));
  float edge=exp(-pow(wing/.03,2.)), halo=(wing>0.?exp(-pow(wing/.26,2.)):0.)*sqm;
  vec3 base=mix(uBlue,uViolet,vA.w);
- vec3 col=base*(ins*.45+edge*1.1+halo*.55)+vec3(.9,.96,1.)*(bfBody(pb)*.8+edge*.28+ins*.12);
+ vec3 col=base*(ins*.45+edge*1.1+halo*.55)+vec3(.9,.96,1.)*(bfBody(pb)*.8+edge*.28+ins*.12)+vec3(1.,.78,.35)*exp(-pow(length(q-vec2(.18,.08))/.17,2.))*ins*.75;
  col*=vA.x*scr; if(max(col.r,max(col.g,col.b))<.004) discard;
  gl_FragColor=vec4(min(col,vec3(1.)),1.);
  #include <tonemapping_fragment>
@@ -84,14 +84,15 @@ export function createSparkLayer(T, {parent, h}) {
     const s = table[i]; if (s.ts > t) break;
     const age = t - s.ts; if (age >= SPARK_LIFE_S) continue;
     const u = age / SPARK_LIFE_S, k = TRAIL_INDEX[s.hand === 'R' ? 'rhand' : 'lhand'];
-    trailPosition(hist, k, s.ts, p0);
-    const th = hash(s.seed * 1.7) * 6.2831, up = 0.35 + 0.65 * hash(s.seed * 2.3), sp = (0.55 + 0.8 * hash(s.seed * 3.1)) * h;
-    const run = (1 - Math.exp(-3.2 * age)) / 3.2;                 // decelerating drift
-    const wob = 0.045 * h * Math.sin(age * 19 + s.seed) * (0.4 + u);
-    const o3 = n * 3;
-    pos[o3] = p0[0] + Math.cos(th) * sp * 0.55 * run + wob;
-    pos[o3 + 1] = p0[1] + up * sp * 0.5 * run + 0.03 * h * u;
-    pos[o3 + 2] = p0[2] + Math.sin(th) * sp * 0.55 * run - wob * 0.6;
+    // G11.2: the butterfly is CARRIED by the light trail: it is born on the hand NOW and slides back along the hand's own path
+    // (same history table as the ribbons), so it moves with the character and the energy flow instead of drifting off alone.
+    const lag = Math.min(age, 0.45) * 0.9;
+    trailPosition(hist, k, Math.max(0, t - lag), p0);
+    const th = hash(s.seed * 1.7) * 6.2831, up = 0.3 + 0.7 * hash(s.seed * 2.3), spread = smooth(u * 1.6);
+    const wob = 0.02 * h * Math.sin(age * 17 + s.seed) * (0.4 + u), o3 = n * 3;
+    pos[o3] = p0[0] + Math.cos(th) * 0.075 * h * spread + wob;
+    pos[o3 + 1] = p0[1] + up * 0.07 * h * spread + 0.02 * h * u;
+    pos[o3 + 2] = p0[2] + Math.sin(th) * 0.075 * h * spread - wob * 0.6;
     const grow = smooth(u / 0.16), fade = 1 - smooth((u - 0.55) / 0.45);
     aA[n * 4] = 1.15 * grow * fade;                                   // alpha
     aA[n * 4 + 1] = 0.05 * h * s.scale * (0.55 + 0.45 * grow) * (1 - 0.25 * u); // size
