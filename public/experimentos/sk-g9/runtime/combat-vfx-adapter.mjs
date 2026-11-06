@@ -17,19 +17,23 @@ import {BILLBOARD_VS, FACE_FS, TAIL} from './combat-vfx-shaders.mjs';
 import {createSkillLayer} from './combat-vfx-skill.mjs';
 import {createLiberationLayer} from './combat-vfx-liberation.mjs';
 import {createTrailLayer} from './combat-vfx-trails.mjs';
+import {createSparkLayer, buildSparkTable} from './combat-vfx-sparkflies.mjs';
 
 export const COMBAT_VFX_ANCHORS = Object.freeze({rh: 'Bip001RHand', lh: 'Bip001LHand', rf: 'Bip001RForearm', lf: 'Bip001LForearm', chest: 'Bip001Spine2', head: 'Bip001Head'});
 export const COMBAT_VFX_BODY_ANCHORS = Object.freeze({pel: 'Bip001Pelvis', rt: 'Bip001RThigh', lt: 'Bip001LThigh', rfoot: 'Bip001RFoot', lfoot: 'Bip001LFoot'});
-export const COMBAT_VFX_MAX_DRAW_CALLS = 7; // G11: +1 for the body motion trails (single mesh)
+export const COMBAT_VFX_MAX_DRAW_CALLS = 8; // G11: +1 body motion trails; G11.1: +1 quick attack butterflies (one instanced mesh)
 export const COMBAT_VFX_LABEL = 'AUTHORIAL_SIMULATED_NOT_CANONICAL';
 
+const HEAVY_VIOLET = 0.62;
 /** G11 Heavy: launch streak look (blue, thin, curved) - used only for the Heavy release, on the dominant hand. */
-const HEAVY_LAUNCH = Object.freeze({tint: [0.42, 0.78, 1.0], bend: 0.35, length: 0.95, width: 0.07, filaments: 2, glints: 0.8, gain: 1.05});
+const HEAVY_LAUNCH = Object.freeze({tint: [0.42, 0.78, 1.0], bend: 0.35, length: 0.95, width: 0.07, filaments: 2, glints: 0.8, gain: 1.05, viol: HEAVY_VIOLET});
+/** G11.1 mixed energy spectrum: violet share per clip (deterministic, 0.30..0.75; Heavy fixed) so the combo is not one flat blue. */
+const violetOf = clipId => { let h = 2166136261; const s = String(clipId); for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return 0.30 + 0.45 * ((h >>> 0) / 4294967296); };
 const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const fail = m => { throw new TypeError('Combat VFX adapter: ' + m); };
 
 const GLOW_FS = `${FACE_FS}
-uniform vec3 uTint; uniform float uA, uRing;
+uniform vec3 uTint, uViolet; uniform float uA, uRing, uViol;
 varying vec2 vP; varying vec2 vD;
 void main(){
   float r=length(vP); if(r>1.) discard;
@@ -37,9 +41,10 @@ void main(){
   float rr=mix(.18,.92,uRing), ring=uRing>0.?exp(-pow((r-rr)/.05,2.))*(1.-uRing):0.;
   float a=uA*(core*.9+halo*.55+ring*.9); if(a<.004) discard;
   a*=faceMask(vP); if(a<.004) discard;
-  gl_FragColor=vec4(mix(uTint,vec3(1.),.45*core+.3*ring),min(1.,a));${TAIL}`;
+  vec3 tn=mix(uTint,uViolet,uViol*smoothstep(.05,.7,r)*1.1+uViol*ring*.5);
+  gl_FragColor=vec4(mix(tn,vec3(1.),.4*core+.14*ring),min(1.,a));${TAIL}`;
 const ARC_FS = `${FACE_FS}
-uniform vec3 uTint; uniform float uA, uPhase, uBend, uLen, uWidth, uFil, uGlint;
+uniform vec3 uTint, uViolet; uniform float uA, uPhase, uBend, uLen, uWidth, uFil, uGlint, uViol;
 varying vec2 vP; varying vec2 vD;
 float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 void main(){
@@ -56,7 +61,9 @@ void main(){
   float sp=step(.992,hash(floor(vec2(s*L*22.,y*22.))+floor(uPhase*5.)))*uGlint;
   float a=uA*(line+glow*.45+sp)*prof; if(a<.004) discard;
   a*=faceMask(vP); if(a<.004) discard;
-  gl_FragColor=vec4(mix(uTint,vec3(1.),.55*line*prof+.6*sp),min(1.,a));${TAIL}`;
+  float vg=uViol*(smoothstep(.05,.8,s)*1.0+(1.-line)*.5);
+  vec3 tn=mix(uTint,uViolet,clamp(vg,0.,1.));
+  gl_FragColor=vec4(mix(tn,vec3(1.),.36*line*prof+.5*sp),min(1.,a));${TAIL}`;
 const CORE_FS = `${FACE_FS}
 uniform vec3 uTint; uniform float uA, uTime, uSph, uHot;
 varying vec2 vP; varying vec2 vD;
@@ -77,7 +84,7 @@ void main(){
   a*=uA*faceMask(vP); if(a<.004) discard;
   gl_FragColor=vec4(col,min(1.,a));${TAIL}`;
 const PULSE_FS = `${FACE_FS}
-uniform vec3 uTint; uniform float uConvA, uConv, uRelA, uRel;
+uniform vec3 uTint, uViolet; uniform float uConvA, uConv, uRelA, uRel, uViol;
 varying vec2 vP; varying vec2 vD;
 void main(){
   float r=length(vP); if(r>1.) discard;
@@ -87,7 +94,8 @@ void main(){
   float rr=mix(.12,.97,1.-pow(1.-uRel,2.2)), rw=.028+.05*uRel;
   float rel=uRelA*(exp(-pow((r-rr)/rw,2.))*1.15+.25*exp(-pow((r-rr*.82)/(rw*3.),2.))*(1.-uRel));
   float a=(conv+rel)*faceMask(vP); if(a<.004) discard;
-  gl_FragColor=vec4(mix(uTint,vec3(1.),.35*min(1.,rel)),min(1.,a));${TAIL}`;
+  vec3 tn=mix(uTint,uViolet,clamp(uViol*(.45+.75*r),0.,1.));
+  gl_FragColor=vec4(mix(tn,vec3(1.),.14*min(1.,rel)),min(1.,a));${TAIL}`;
 
 /**
  * @param T       three namespace (injected like the other Shorekeeper modules)
@@ -142,7 +150,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
  const root = new T.Group(); root.name = 'ShorekeeperCombatScoreVfx'; root.visible = false; parent.add(root);
  const mats = [], geos = [];
  const mat = (fs, uniforms) => {
-  const m = new T.ShaderMaterial({uniforms: {uCenter: {value: new T.Vector3()}, uDirW: {value: new T.Vector3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uHeadW: {value: new T.Vector3()}, uFaceR: {value: 0}, uTint: {value: new T.Vector3(0.3, 0.8, 1)}, uA: {value: 0}, ...uniforms}, vertexShader: BILLBOARD_VS, fragmentShader: fs,
+  const m = new T.ShaderMaterial({uniforms: {uCenter: {value: new T.Vector3()}, uDirW: {value: new T.Vector3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uHeadW: {value: new T.Vector3()}, uFaceR: {value: 0}, uTint: {value: new T.Vector3(0.3, 0.8, 1)}, uViolet: {value: new T.Vector3(0.36, 0.05, 1.0)}, uViol: {value: 0}, uA: {value: 0}, ...uniforms}, vertexShader: BILLBOARD_VS, fragmentShader: fs,
    transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, side: T.DoubleSide});
   mats.push(m); return m;
  };
@@ -171,6 +179,8 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
  // 'TIMELINE_ONLY' = A/B 'legacy-gated' variant: Liberation timing is known but the layer is not drawn.
  const libLayer = liberation && liberation !== 'TIMELINE_ONLY' ? createLiberationLayer(T, {parent: root, h, bundle, ...(liberation === true ? {} : liberation)}) : null;
  const trails = createTrailLayer(T, {parent: root, h});
+ const sparks = createSparkLayer(T, {parent: root, h});
+ const sparkTable = buildSparkTable(bundle.events, id => bundle.hand?.[id] ?? 'R');
  let trailHistory = null;
  const U = o => o.material.uniforms;
  // Every uniform returns to its construction value at the start of each frame, so hidden effects can
@@ -181,19 +191,19 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
 
  // Coarse centre guard only; the exact per-pixel face exclusion is the screen-space mask (vFace).
  const faceFactor = p => smooth((p.distanceTo(P.head) / h - 0.06) / 0.10);
- const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); trails.hide(); root.visible = false; visible = false; };
+ const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); trails.hide(); sparks.hide(); root.visible = false; visible = false; };
 
  const placeGlow = (mesh, p, level, v, ring) => {
   const f = faceFactor(p), u = U(mesh);
   u.uCenter.value.copy(p); u.uSize.value = h * v.glow * (0.7 + 0.35 * level) * 1.7; u.uPush.value = 0.06 * h;
-  u.uTint.value.set(...v.tint); u.uA.value = level * v.gain * f * 0.8; u.uRing.value = ring;
+  u.uTint.value.set(...v.tint); u.uViol.value = v.viol ?? 0; u.uA.value = level * v.gain * f * 0.8; u.uRing.value = ring;
   mesh.visible = u.uA.value > 0.002; return f;
  };
  const placeArc = (mesh, hand, fore, level, v, side, phase, weight, rm) => {
   const f = faceFactor(hand), u = U(mesh);
   tmp.copy(hand).sub(fore); if (tmp.lengthSq() < 1e-10) tmp.set(side, 0, 0); tmp.normalize();
   u.uCenter.value.copy(hand); u.uDirW.value.copy(tmp); u.uSize.value = h * 0.9; u.uPush.value = 0.05 * h;
-  u.uTint.value.set(...v.tint); u.uA.value = level * v.gain * weight * f;
+  u.uTint.value.set(...v.tint); u.uViol.value = v.viol ?? 0; u.uA.value = level * v.gain * weight * f;
   u.uPhase.value = rm ? 0.5 : phase; u.uBend.value = v.bend * side; u.uLen.value = v.length; u.uWidth.value = v.width; u.uFil.value = v.filaments; u.uGlint.value = rm ? 0 : v.glints;
   mesh.visible = u.uA.value > 0.002; return f;
  };
@@ -225,7 +235,8 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
    // --- Basic envelope: side from measured dominant hand, secondary weight and look from the variant ---
    const env = activeOf(cue, t, e => e.channel === 'blueAttack');
    if (env && cue.blueAttack > 0.002) {
-    const v = S1_VISUAL_VARIANTS[env.clipId], dom = bundle.hand?.[env.clipId] ?? 'R';
+    const v0 = S1_VISUAL_VARIANTS[env.clipId], dom = bundle.hand?.[env.clipId] ?? 'R';
+    const v = v0 && {...v0, viol: violetOf(env.clipId)};
     if (v) {
      const u = phaseOf(env, t), flashRing = v.flash ? smooth((u - 0.38) / 0.34) : 0, level = cue.blueAttack;
      const hands = [['R', P.rh, P.rf, fx.glowR, fx.arcR, +1], ['L', P.lh, P.lf, fx.glowL, fx.arcL, -1]];
@@ -251,7 +262,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
      c.uA.value = cue.blueCore * f * (heavy ? 0.8 : 1); c.uTime.value = timeUniform; c.uHot.value = heavy ? 1 : 0.35;
      fx.core.visible = c.uA.value > 0.002; face = Math.min(face, f);
      if (heavy) { // concentration rings converge on the same focus point (preparation only)
-      const p = U(fx.pulse); p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
+      const p = U(fx.pulse); p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint); p.uViol.value = HEAVY_VIOLET;
       p.uConvA.value = cue.blueCore * f; p.uConv.value = rm ? 0.35 : u; fx.pulse.visible = true;
      }
     }
@@ -265,7 +276,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
      const dom = bundle.hand?.[rel.clipId] ?? 'R', hp = dom === 'R' ? P.rh : P.lh, fp = dom === 'R' ? P.rf : P.lf;
      focus.copy(hp).lerp(fp, 0.10);
      const f = faceFactor(focus), p = U(fx.pulse), ph = phaseOf(rel, t);
-     p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
+     p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint); p.uViol.value = HEAVY_VIOLET;
      p.uRelA.value = cue.heavyPulse * f; p.uRel.value = rm ? 0.45 : ph; fx.pulse.visible = true; face = Math.min(face, f);
      const arcMesh = dom === 'R' ? fx.arcR : fx.arcL;
      face = Math.min(face, placeArc(arcMesh, hp, fp, cue.heavyPulse, HEAVY_LAUNCH, dom === 'R' ? +1 : -1, Math.min(1, ph * 1.15), 1, rm));
@@ -287,7 +298,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   let libProbe = null;
   if (libLayer) {
-   const g11 = bundle.timeline?.g11, bfLive = !!g11 && t >= g11.butterflyStart && t < g11.butterflyEnd; // G11: the cancel bridges the reveal->decay gap
+   const g11 = bundle.timeline?.g11, bfLive = !!g11 && t >= g11.absorbStart && t < g11.butterflyEnd; // G11.1: absorption + burst bridge the reveal->decay gap
    if ((cue.liberationField > 0.002 || bfLive) && (have || proxyAnchors) && (proxyAnchors || status.chest === 'REAL_BONE')) {
     readPose(); headW.copy(P.head); headW.y += 0.05 * h;
     libProbe = libLayer.update({t, cue, rm, bundle, headW, P: {chest: P.chest, rh: P.rh, lh: P.lh}, stage: arena});
@@ -296,11 +307,15 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   // G11 body motion trails (history table is optional; without it nothing is drawn)
   const trailProbe = trails.update(trailHistory, t, rm); if (trails.mesh.visible) shown++;
+  // G11.1 quick attack butterflies (needs the hand history; none in proxy/no-history mode)
+  let sparkProbe = null;
+  if (trailHistory && (have || proxyAnchors) && !rm) { readPose(); headW.copy(P.head); headW.y += 0.05 * h; sparkProbe = sparks.update({table: sparkTable, hist: trailHistory, t, rm, headW}); } else sparks.hide();
+  if (sparks.mesh.visible) shown++;
   for (const o of Object.values(fx)) if (o.visible) { shown++; if (live) { U(o).uHeadW.value.copy(headW); U(o).uFaceR.value = 0.14 * h; } }
   visible = root.visible = shown > 0;
   last = Object.freeze({presentationTime: t, clipId: id, beat: cue.beat, levels: Object.freeze({blueAttack: cue.blueAttack, blueCore: cue.blueCore, heavyPulse: cue.heavyPulse, ...(libLayer ? {liberationField: cue.liberationField} : {}), ...(skillLayer ? {healingPulse: cue.healingPulse, guidedButterflies: cue.guidedButterflies} : {})}),
    skill: skillProbe && Object.freeze(skillProbe),
-   trails: trailProbe && Object.freeze(trailProbe), liberation: libProbe && Object.freeze(libProbe), starGate: libProbe ? libProbe.starGate : 0,
+   trails: trailProbe && Object.freeze(trailProbe), sparks: sparkProbe && Object.freeze(sparkProbe), liberation: libProbe && Object.freeze(libProbe), starGate: libProbe ? libProbe.starGate : 0,
    drawCalls: shown, minFaceFactor: face, anchorStatus, reducedMotion: rm, label: COMBAT_VFX_LABEL, pending: cue.pending, provenance: cue.eventProvenance.map(p => p.id)});
   return last;
  }
@@ -311,7 +326,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   release() { if (!disposed) { hide(); last = null; } },
   dispose() {
    if (disposed) return; disposed = true; hide(); root.removeFromParent();
-   skillLayer?.dispose(); libLayer?.dispose(); trails.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
+   skillLayer?.dispose(); libLayer?.dispose(); trails.dispose(); sparks.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
   },
   /** G11: read-only world-position history of the body anchors (see combat-vfx-trails.mjs); null clears it. */
   setTrailHistory(hist) { trailHistory = hist ?? null; },

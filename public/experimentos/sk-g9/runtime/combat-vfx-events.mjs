@@ -220,18 +220,41 @@ export function authorS3Events(schedule) {
  * Fractions are of the real Burst02 segment; the butterfly is anchored to the END of the Burst so it sits on
  * the authorial cancel / return-to-rotation beat and ends inside the Liberation decay window.
  */
-export const G11_PLACEMENT = Object.freeze({violet: [0.41, 0.53], gold: [0.667, 0.814], butterflyLeadS: 0.72, butterflyPeakLeadS: 0.27, butterflyOpenS: 0.35, butterflyDissolveS: 0.30, butterflyTailS: 0.58});
-export function g11Timeline(schedule, decayEnd = null) {
+export const G11_PLACEMENT = Object.freeze({
+ // G11.1: slower, overlapping hue ramps (fractions of the real Burst02 segment), absorption BEFORE the burst.
+ violet: [0.426, 0.702], gold: [0.640, 0.860],
+ absorbLeadS: 1.05, butterflyLeadS: 0.30, butterflyOpenS: 0.28, butterflyPeakS: 0.42, butterflyDissolveS: 0.40, butterflyTailS: 0.95,
+ // G11.1 trigger: ONE butterfly above the right hand, anchored to the condensation / reveal windows.
+ triggerInS: 0.10, triggerFullS: 0.35, triggerDissolveLeadS: 0.12, triggerEndTailS: 0.14
+});
+/** @param lib {condenseStart, revealStart} from the authorial LIB.* windows (needed for the trigger butterfly). */
+export function g11Timeline(schedule, decayEnd = null, lib = null) {
  const burst = schedule?.segments?.find(s => s.id === S3_LIBERATION_CLIP); if (!burst) return null;
  const len = burst.end - burst.start, p = G11_PLACEMENT, at = f => burst.start + f * len;
- const bfStart = burst.end - p.butterflyLeadS, bfPeak = burst.end - p.butterflyPeakLeadS;
- const bfEnd = Math.min(burst.end + p.butterflyTailS, (decayEnd ?? schedule.duration) - 0.05, schedule.duration - 0.05);
- const out = {violetStart: at(p.violet[0]), violetFull: at(p.violet[1]), goldStart: at(p.gold[0]), goldFull: at(p.gold[1]),
+ const bfStart = burst.end - p.butterflyLeadS, bfPeak = bfStart + p.butterflyPeakS;
+ const bfEnd = Math.min(burst.end + p.butterflyTailS, schedule.duration - 0.05);
+ const out = {};
+ if (lib && Number.isFinite(lib.condenseStart) && Number.isFinite(lib.revealStart)) Object.assign(out, {
+  triggerStart: lib.condenseStart + p.triggerInS, triggerFull: lib.condenseStart + p.triggerFullS,
+  triggerDissolve: lib.revealStart - p.triggerDissolveLeadS, triggerEnd: lib.revealStart + p.triggerEndTailS});
+ Object.assign(out, {violetStart: at(p.violet[0]), violetFull: at(p.violet[1]), goldStart: at(p.gold[0]), goldFull: at(p.gold[1]),
+  absorbStart: burst.end - p.absorbLeadS,
   butterflyStart: bfStart, butterflyOpen: bfStart + p.butterflyOpenS, butterflyPeak: bfPeak, butterflyDissolve: bfPeak + p.butterflyDissolveS, butterflyEnd: bfEnd,
-  basis: 'AUTHORIAL_DERIVED_FROM_SCHEDULE', sourceFrame: null};
- const k = ['violetStart', 'violetFull', 'goldStart', 'goldFull', 'butterflyStart', 'butterflyOpen', 'butterflyPeak', 'butterflyDissolve', 'butterflyEnd'];
- for (let i = 1; i < k.length; i++) if (!(out[k[i]] > out[k[i - 1]])) fail('G11 colour/butterfly windows are not monotonic');
+  basis: 'AUTHORIAL_DERIVED_FROM_SCHEDULE', sourceFrame: null});
+ // Order contract: trigger -> violet -> gold -> absorption -> burst (ramps may overlap, causality may not).
+ const chains = [['triggerStart', 'triggerFull', 'triggerDissolve', 'triggerEnd'], ['violetStart', 'violetFull'], ['goldStart', 'goldFull'], ['violetStart', 'goldStart'], ['violetFull', 'goldFull'],
+  ['goldStart', 'absorbStart', 'butterflyStart'], ['goldFull', 'butterflyStart'], ['butterflyStart', 'butterflyOpen', 'butterflyPeak', 'butterflyDissolve', 'butterflyEnd']];
+ if (out.triggerEnd !== undefined) chains.push(['triggerEnd', 'violetStart']);
+ for (const c of chains) for (let i = 1; i < c.length; i++) if (!(out[c[i]] > out[c[i - 1]])) fail('G11 trigger/colour/absorb/butterfly windows are not ordered: ' + c[i - 1] + ' -> ' + c[i]);
  return Object.freeze(out);
+}
+
+/** G11.1: multiplier of the ambient (R5) butterfly flock. 1 outside, 0 from just before the trigger butterfly until the burst ends. Pure. */
+export function ambientButterflyGate(g, t) {
+ if (!g || g.triggerStart === undefined) return 1;
+ const sm = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+ const down = sm((g.triggerStart - 0.15 - t) / 0.30), up = sm((t - (g.butterflyEnd - 0.05)) / 0.45);
+ return t < g.triggerStart - 0.15 ? down : t < g.butterflyEnd - 0.05 ? 0 : up;
 }
 
 export function s3Timeline(schedule) {
@@ -241,7 +264,7 @@ export function s3Timeline(schedule) {
  return Object.freeze({skillEnd: skill.end, start: by('LIB.condense').start, closePeak: by('LIB.condense').peak, closeEnd: by('LIB.condense').end,
   revealStart: by('LIB.reveal').start, revealPeak: by('LIB.reveal').peak, peak: by('LIB.peak').peak, revealEnd: by('LIB.reveal').end,
   end: by('LIB.decay')?.end ?? by('LIB.reveal').end, recoveryStart: rec?.start ?? null, duration: schedule.duration,
-  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null)});
+  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null, {condenseStart: by('LIB.condense').start, revealStart: by('LIB.reveal').start})});
 }
 
 /** S1 + S2 + S3 bundle. Burst02 -> LIBERATION, Idle01 -> RECOVERY, both SOURCE_ROLE_UNVERIFIED. */

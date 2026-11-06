@@ -10,6 +10,8 @@ import {r62CameraFrame} from './r62-camera.mjs';
 import {skillFlightPoints} from './combat-vfx-skill.mjs';
 const cache = new WeakMap();
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+/** G11.1: joint order used by the rig reader (8 padded corners per joint) - lets the arena shot shrink the pads about each joint. */
+const JOINTS=['pel','chest','head','rh','lh','rf','lf','rtoe','ltoe','re','le'];
 const B = {pel:'Bip001Pelvis',chest:'Bip001Spine2',head:'Bip001Head',rh:'Bip001RHand',lh:'Bip001LHand',rf:'Bip001RFoot',lf:'Bip001LFoot',rt:'Bip001RThigh',lt:'Bip001LThigh',rtoe:'Bip001RToe0',ltoe:'Bip001LToe0',re:'Bip001RForearm',le:'Bip001LForearm'};
 export function createRigCameraReader(T, model, h) {
  const bones=Object.fromEntries(Object.entries(B).map(([k,n])=>[k,model.getObjectByName(n)]));
@@ -42,7 +44,7 @@ export function createRigCameraReader(T, model, h) {
 /** G10-B comfort limits. Every number is verified on the produced path (guide.metrics) and by tests. */
 export const G10B_COMFORT = Object.freeze({
  version: 'G10-B', yawMaxDegPerS: 30, yawAccDegPerS2: 50, facingDeadZoneDeg: 70, spinIgnoreRadPerS: 2.5,
- targetSigmaS: 0.35, fovSigmaS: 0.8, radiusSlopeH: 1.2, radiusTempH: 0.06, plannerEdge: 0.80, finalEdge: 0.84, offsetYaw: 0.12
+ targetSigmaS: 0.35, fovSigmaS: 0.8, radiusSlopeH: 1.2, radiusTempH: 0.06, plannerEdge: 0.80, finalEdge: 0.84, arenaEdgeGain: 0.16, arenaPadShrink: 0.62, arenaSlopeGain: 1.6, arenaFloorH: 0.12, arenaRadiusSigmaS: 0.30, offsetYaw: 0.12
 });
 const TAU = Math.PI * 2, wrapPi = x => x - TAU * Math.round(x / TAU);
 const gaussSmooth = (rows, sigmaSamples, get) => { // symmetric, history-free, edge-normalized
@@ -55,11 +57,14 @@ const gaussSmooth = (rows, sigmaSamples, get) => { // symmetric, history-free, e
  return out;
 };
 const smoothstep = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+/** G11.1: camera direction elevation (unit-ish y component). Low and looking up inside the Stellarealm (arena weight 1), the G10-B value otherwise. */
+export const cameraDy=w=>.16-.27*clamp(w,0,1);
 /** Continuous arena weight (replaces the G10-A phase regexp, which stepped the target at phase changes). */
 export function arenaWeight(t, tl) {
  if (!tl) return 0;
  const up = smoothstep((t - tl.revealStart) / Math.max(.3, tl.revealPeak - tl.revealStart));
- const down = 1 - smoothstep((t - (tl.peak + 1.0)) / Math.max(.5, (tl.recoveryStart ?? tl.revealEnd) + 0.8 - (tl.peak + 1.0)));
+ // G11.1: with the burst timeline the close, low arena shot is HELD through absorption + burst, then released.
+ const g = tl.g11, down = g ? 1 - smoothstep((t - g.butterflyPeak) / Math.max(.5, g.butterflyEnd + 0.4 - g.butterflyPeak)) : 1 - smoothstep((t - (tl.peak + 1.0)) / Math.max(.5, (tl.recoveryStart ?? tl.revealEnd) + 0.8 - (tl.peak + 1.0)));
  return up * down;
 }
 
@@ -137,17 +142,20 @@ export function prepareCameraGuide({model,key,duration,samplePose,reader,hz=30,s
   const fovS=gaussSmooth(smooth,C.fovSigmaS*hz,i=>base[i].fov).map(v=>v[0]),tgtS=gaussSmooth(smooth,C.targetSigmaS*hz,i=>base[i].target),arenaW=smooth.map(r=>arenaWeight(r.t,timeline));
   const req=smooth.map((r,i)=>{
    const w=arenaW[i],bt=tgtS[i],tg=r.center.map((x,a)=>x+(bt[a]-x)*.25*w);
-   const yaw=r.yaw+wobble(r.t)+C.offsetYaw,dx=Math.sin(yaw),dz=Math.cos(yaw),dy=.16,dl=Math.hypot(dx,dy,dz),d=[dx/dl,dy/dl,dz/dl];
+   const yaw=r.yaw+wobble(r.t)+C.offsetYaw,dx=Math.sin(yaw),dz=Math.cos(yaw),dy=cameraDy(w),dl=Math.hypot(dx,dy,dz),d=[dx/dl,dy/dl,dz/dl];
    let rx=d[2],rz=-d[0];const rl=Math.hypot(rx,rz)||1;rx/=rl;rz/=rl; // right = up x dir (normalized)
    const rr=[d[2],0,-d[0]],rn=Math.hypot(...rr)||1,right=rr.map(x=>x/rn),vert=[d[1]*right[2]-d[2]*right[1],d[2]*right[0]-d[0]*right[2],d[0]*right[1]-d[1]*right[0]];
-   const tanY=Math.tan(fovS[i]*Math.PI/360),tanX=tanY*aspect,E=C.plannerEdge;let dist=base[i].radius;
+   const tanY=Math.tan(fovS[i]*Math.PI/360),tanX=tanY*aspect,E=C.plannerEdge+C.arenaEdgeGain*w;let dist=base[i].radius;
    const eat=(px,py,pz)=>{const ex=px-tg[0],ey=py-tg[1],ez=pz-tg[2],z=ex*d[0]+ey*d[1]+ez*d[2];dist=Math.max(dist,z+Math.abs(ex*right[0]+ey*right[1]+ez*right[2])/(tanX*E),z+Math.abs(ex*vert[0]+ey*vert[1]+ez*vert[2])/(tanY*E),z+.05*ctx.h);};
-   for(let k=0;k<r.points.length;k+=3)eat(r.points[k],r.points[k+1],r.points[k+2]);
+   {const sk=1-C.arenaPadShrink*w;for(let k=0;k<r.points.length;k+=3){const c=r.anchors[JOINTS[Math.floor(k/24)]];eat(c[0]+(r.points[k]-c[0])*sk,c[1]+(r.points[k+1]-c[1])*sk,c[2]+(r.points[k+2]-c[2])*sk);}}
    if(r.skillPts&&!reduced)for(const p of r.skillPts)eat(p[0],p[1],p[2]);
    return dist;
   });
-  const s=C.radiusSlopeH*ctx.h,temp=C.radiusTempH*ctx.h,eps=.22,radius=req.map((_,i)=>{let mx=-Infinity;const vv=req.map((q,j)=>{const v=q-s*(Math.hypot(smooth[j].t-smooth[i].t,eps)-eps);mx=Math.max(mx,v);return v;});let sum=0;for(const v of vv)sum+=Math.exp((v-mx)/temp);return mx+temp*Math.log(sum);});
-  return {radius,fov:fovS,arenaW,req,tgt:[0,1,2].map(a=>tgtS.map(v=>v[a]))};
+  // G11.1: inside the arena the radius may close faster (past wide requirements - e.g. the Skill butterfly envelope in portrait - decay with a steeper slope), still a pure, prepared function of time.
+  const s0=C.radiusSlopeH*ctx.h,temp=C.radiusTempH*ctx.h,eps=.22,radius=req.map((_,i)=>{const s=s0*(1+C.arenaSlopeGain*arenaW[i]);let mx=-Infinity;const vv=req.map((q,j)=>{const v=q-s*(Math.hypot(smooth[j].t-smooth[i].t,eps)-eps);mx=Math.max(mx,v);return v;});let sum=0;for(const v of vv)sum+=Math.exp((v-mx)/temp);return mx+temp*Math.log(sum);});
+  // G11.1 comfort: the slope-limited envelope has acceleration kinks where the arena slope gain engages; inside the arena it is low-passed (symmetric, history-free) so the dolly eases in/out.
+  const radG=gaussSmooth(smooth,C.arenaRadiusSigmaS*hz,i=>[radius[i]]).map(v=>v[0]),radiusF=radius.map((q,i)=>q+(radG[i]-q)*arenaW[i]);
+  return {radius:radiusF,fov:fovS,arenaW,req,tgt:[0,1,2].map(a=>tgtS.map(v=>v[a]))};
  }
  const interp=(arr,t)=>{const x=clamp(t*hz,0,n),i=Math.min(n-1,Math.floor(x));return arr[i]+(arr[i+1]-arr[i])*(x-i);};
  const result=Object.freeze({staticFrame:{yaw:smooth[0].yaw,center:staticCenter,span:staticSpan},
@@ -177,19 +185,22 @@ export function projectCameraPoints(T,camera,points,width,height) {
 export function smartCameraFrame(T,{base,rig,guide,t,h,aspect,width=960,height=540,reduced=false,secondary=[],plan,timeline,center,arena:arenaAnchor,period=18}) {
  const g=reduced&&guide.staticFrame?guide.staticFrame:guide.sample(t),front=new T.Vector3().fromArray(rig.front);
  const shot=plan&&guide.shotAt&&!reduced?guide.shotAt(t,{plan,timeline,aspect,h,center,arena:arenaAnchor,period,reduced}):null;
- const yaw=g.yaw+(reduced?.12:.28*Math.sin(t*Math.PI*2/18)+.12),dir=new T.Vector3(Math.sin(yaw),reduced?.12:.16,Math.cos(yaw)).normalize();
- const arenaW=shot?shot.arenaW:(/OUTER|PEAK|DISSIPATION/.test(base.phase)?1:0),arena=arenaW>.5,target=new T.Vector3().fromArray(g.center);
+ const yaw=g.yaw+(reduced?.12:.28*Math.sin(t*Math.PI*2/18)+.12);
+ const arenaW=shot?shot.arenaW:(/OUTER|PEAK|DISSIPATION/.test(base.phase)?1:0),arena=arenaW>.5,dir=new T.Vector3(Math.sin(yaw),reduced?.12:cameraDy(arenaW),Math.cos(yaw)).normalize(),target=new T.Vector3().fromArray(g.center);
  if(arenaW>0)target.lerp(new T.Vector3().fromArray(shot?.baseTarget??base.target),.25*arenaW);
  const up=new T.Vector3(0,1,0),right=new T.Vector3().crossVectors(up,dir).normalize(),vertical=new T.Vector3().crossVectors(dir,right).normalize();
- const fov=shot?shot.fov:base.fov,tanY=Math.tan(fov*Math.PI/360),tanX=tanY*aspect,edge=G10B_COMFORT.finalEdge,delta=new T.Vector3();
+ const fov=shot?shot.fov:base.fov,tanY=Math.tan(fov*Math.PI/360),tanX=tanY*aspect,edge=G10B_COMFORT.finalEdge+G10B_COMFORT.arenaEdgeGain*arenaW,delta=new T.Vector3();
  let distance=shot?shot.radius:plan?guide.radiusAt(t,{plan,timeline,aspect,h,center,arena:arenaAnchor,period,reduced}):base.radius;
  const planned=distance;
  if(reduced&&g.span)distance=Math.max(base.radius,(g.span+2*h)/Math.sin(Math.min(2*Math.atan(tanX),2*Math.atan(tanY))*.84/2));
  // Live secondary points (butterflies) are bounded by the prepared flight envelope; they only join the
  // exact fit when the guide has no envelope (e.g. test doubles).
- const pts=[...rig.points,...(!reduced?secondary:[]).map((p,i)=>({id:'skill-'+i,position:p}))],fitPts=shot?.skillEnvelope?rig.points:pts;
+ const skf=1-G10B_COMFORT.arenaPadShrink*arenaW,shr=rig.points.map((p,i)=>{const c=rig.anchors[JOINTS[Math.floor(i/8)]];return {id:p.id,position:[c[0]+(p.position[0]-c[0])*skf,c[1]+(p.position[1]-c[1])*skf,c[2]+(p.position[2]-c[2])*skf]};});
+ const pts=[...shr,...(!reduced?secondary:[]).map((p,i)=>({id:'skill-'+i,position:p}))],fitPts=shot?.skillEnvelope?shr:pts;
  for(const p of fitPts){delta.fromArray(p.position).sub(target);const z=delta.dot(dir);distance=Math.max(distance,z+Math.abs(delta.dot(right))/(tanX*edge),z+Math.abs(delta.dot(vertical))/(tanY*edge),z+.05*h);}
- const pos=target.clone().addScaledVector(dir,distance),camera=new T.PerspectiveCamera(fov,aspect,.001,10000);camera.position.copy(pos);camera.lookAt(target);camera.updateMatrixWorld(true);
+ const pos=target.clone().addScaledVector(dir,distance);
+ if(arenaAnchor&&Number.isFinite(arenaAnchor.floorY))pos.y=Math.max(pos.y,arenaAnchor.floorY+G10B_COMFORT.arenaFloorH*h*Math.min(1,arenaW*2)); // G11.1: never below the stage floor
+ const camera=new T.PerspectiveCamera(fov,aspect,.001,10000);camera.position.copy(pos);camera.lookAt(target);camera.updateMatrixWorld(true);
  const view=projectCameraPoints(T,camera,rig.points,width,height),secondaryView=secondary.length&&!reduced?projectCameraPoints(T,camera,pts.slice(rig.points.length),width,height):null;
  const facing=front.dot(pos.clone().sub(new T.Vector3().fromArray(rig.anchors.chest)).setY(0).normalize());
  return {...base,position:pos.toArray(),target:target.toArray(),radius:distance,fov,azimuth:yaw,preset:'g10b-smart-authorial',smart:{reason:reduced?'REDUCED':distance>planned+1e-6?'FIT':arena?'ARENA':'FACING',front:rig.front,frontFacingDot:facing,backView:facing<0,frontSingularity:rig.frontSingularity,ownership:'r61-cinematic',aspect,fov,radius:distance,plannedRadius:planned,safetyNet:distance>planned+1e-6,arenaWeight:arenaW,target:target.toArray(),azimuth:yaw,...view,secondary:secondaryView,calibration:rig.calibration,maxGuideYawSpeed:guide.maxYawSpeed,comfort:guide.metrics?.comfort?.version??null,temporalGuarantee:'ABSOLUTE_PREPARED_COMFORT_PLAN;FINAL_FIT_IS_A_REPORTED_SAFETY_NET'}};

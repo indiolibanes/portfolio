@@ -67,15 +67,18 @@ export function r62CameraFrame({plan, timeline, t, aspect = 16 / 9, h = 2, cente
   shape = reduced ? {r: 4.4 * pk, elev: 0.6, look: 0.42, fov: 36} : base(T);
   phase = reduced ? 'REDUCED_STATIC' : 'AMBIENT_ORBIT';
  } else {
+  const g11 = timeline.g11 ?? null, arenaEnd = g11 ? g11.butterflyPeak : Math.max(timeline.peak + 0.5, timeline.revealEnd - 0.3);
   const preT = L0 - 1.0, close = {r: null, elev: 0.03, look: null, fov: 32, kind: 'close'};
   const K = [
    {t: preT, ...base(Math.min(preT, plan.schedule.segments[5]?.start ?? preT))},
    {...close, t: timeline.closePeak - 0.25},
    {...close, t: timeline.closeEnd - 0.25},
-   {t: timeline.revealPeak, r: 5.4 * pa, elev: 1.0, look: 0.38, fov: 44, kind: 'arena'},
-   {t: timeline.peak, r: 5.8 * pa, elev: 1.12, look: 0.36, fov: 46, kind: 'arena'},
-   {t: Math.max(timeline.peak + 0.5, timeline.revealEnd - 0.3), r: 5.4 * pa, elev: 0.92, look: 0.36, fov: 42, kind: 'arena'},
-   {t: L1 + 0.6, ...base(Math.min(plan.schedule.duration, L1 + 0.6))}
+   // G11.1: the Stellarealm is seen from INSIDE and the character dominates the frame: the arena base radius is only a floor
+   // (the G10-B exact fit decides the real distance), narrower lens, target near mid-body, low camera (see smart-camera dy).
+   {t: timeline.revealPeak, r: 1.1 * pa, elev: 0.20, look: 0.46, fov: 40, kind: 'arena'},
+   {t: timeline.peak, r: 1.1 * pa, elev: 0.18, look: 0.46, fov: 40, kind: 'arena'},
+   {t: arenaEnd, r: 1.1 * pa, elev: 0.18, look: 0.46, fov: 40, kind: 'arena'},
+   {t: Math.max(L1 + 0.6, arenaEnd + 0.6), ...base(Math.min(plan.schedule.duration, Math.max(L1 + 0.6, arenaEnd + 0.6)))}
   ];
   if (T <= K[0].t || T >= K.at(-1).t) { shape = base(T); phase = T <= K[0].t ? 'AMBIENT_ORBIT' : 'RECOVERY_ORBIT'; }
   else {

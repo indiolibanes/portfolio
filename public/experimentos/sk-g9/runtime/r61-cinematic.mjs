@@ -4,6 +4,7 @@ import {setSourceReviewVfxIsolation} from './source-review-visuals.mjs';
 import {buildR61Plan,r61CueAt,r61CameraPose,R61_STATUS} from './r61-plan.mjs';
 import {r62CameraFrame,R62_DEFAULT_ORBIT_PERIOD} from './r62-camera.mjs';
 import {buildTrailHistory} from './combat-vfx-trails.mjs';
+import {ambientButterflyGate} from './combat-vfx-events.mjs';
 import {createRigCameraReader,prepareCameraGuide,smartCameraFrame,projectCameraPoints} from './smart-camera.mjs';
 
 /** No extra RAF, no alternate body mixer and no writes to GLB source tracks. */
@@ -153,6 +154,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
    try{score.apply(time,undefined,stage.camera.aspect);}
    catch(error){interruptPresentation('SCORE_VFX_FAILED');return;}
    const g=starGate(time);if(g!==null&&sourceVfx?.setScoreStarGate){const k=Math.max(0,Math.min(1,g));sourceVfx.setScoreStarGate(k,liberationMode==='layer'?k:null);}
+   if(lib?.g11&&sourceVfx?.setScoreButterflyGate)sourceVfx.setScoreButterflyGate(ambientButterflyGate(lib.g11,time));
   }
   if(boundsFollower){try{boundsFollower.update();}catch(error){interruptPresentation('BOUNDS_FOLLOWER_FAILED');return;}}
   if(camera&&cam.active)cam.sample(time);
@@ -168,7 +170,7 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
      setSourceReviewVfxIsolation(v,false);
      sourceVfx=v;savedVfx={state:v.state,mode:v.mode,stage:v.stage,enabled:v.enabled?{...v.enabled}:null,
       rootVisible:v.root?.visible,environmentVisible:v.environment?.root.visible,
-      values:Object.fromEntries(['time','corePhase','coreFrozen','transition','suspended','scoreStarGate','scoreStarCanopy'].filter(k=>k in v).map(k=>[k,v[k]])),
+      values:Object.fromEntries(['time','corePhase','coreFrozen','transition','suspended','scoreStarGate','scoreStarCanopy','scoreButterflyGate'].filter(k=>k in v).map(k=>[k,v[k]])),
       arrays:Object.fromEntries(['levels','from','target'].filter(k=>v[k]?.set).map(k=>[k,Array.from(v[k])]))};
      if(v.mode!=='BOTH')v.setMode('BOTH');
      // R6.1 explicitly presents OUTER rather than inheriting a prior manual

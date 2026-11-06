@@ -31,13 +31,13 @@ test('G11 plan: stability preset is carried by the plan; off keeps the library c
  assert.equal(on.sourceFrame,null);assert.equal(on.identity,'SOURCE_ROLE_UNVERIFIED');
 });
 const plan=buildR61Plan(lib(null),{bodyStability:'off'}),bundle=createS3Score(plan.schedule),g=bundle.timeline.g11,burst=plan.schedule.segments[5];
-test('G11 colour/cancel timeline: blue -> violet -> gold BEFORE the butterfly, monotonic, inside the real schedule, no PSA frame',()=>{
+test('G11(.1) colour/burst timeline: blue -> violet -> gold (overlapping ramps) -> absorption BEFORE the butterfly, monotonic, inside the real schedule, no PSA frame',()=>{
  assert.equal(g.sourceFrame,null);assert.equal(g.basis,'AUTHORIAL_DERIVED_FROM_SCHEDULE');
- const k=['violetStart','violetFull','goldStart','goldFull','butterflyStart','butterflyOpen','butterflyPeak','butterflyDissolve','butterflyEnd'];for(let i=1;i<k.length;i++)assert.ok(g[k[i]]>g[k[i-1]],k[i]);
+ const k=['violetStart','goldStart','violetFull','absorbStart','goldFull','butterflyStart','butterflyOpen','butterflyPeak','butterflyDissolve','butterflyEnd'];for(let i=1;i<k.length;i++)assert.ok(g[k[i]]>g[k[i-1]],k[i]);
  assert.ok(g.violetStart>burst.start&&g.goldFull<g.butterflyStart,'gold is fully present before the cancel');assert.ok(g.butterflyEnd<plan.schedule.duration);
  const c=t=>liberationColorScore(t,g);
- assert.equal(c(g.violetStart-0.1).violet,0);assert.equal(c(g.violetStart-0.1).phase,'BLUE');assert.ok(c(g.violetFull+0.1).phase==='VIOLET'&&c(g.violetFull+0.1).violet>0.99&&c(g.violetFull+0.1).gold===0);
- assert.equal(c(g.goldFull).phase,'GOLD');assert.ok(c(g.butterflyStart-0.01).gold>0.99,'gold is at full strength just before the burst');
+ assert.equal(c(g.violetStart-0.1).violet,0);assert.equal(c(g.violetStart-0.1).phase,'BLUE');assert.ok(c(g.violetFull+0.1).phase==='VIOLET'&&c(g.violetFull+0.1).violet>0.99&&c(g.violetFull+0.1).gold<0.5);
+ assert.equal(c(g.absorbStart-0.05).phase,'GOLD');assert.equal(c(g.goldFull).phase,'ABSORB');assert.ok(c(g.butterflyStart-0.01).gold>0.99,'gold is at full strength just before the burst');
  // gold is a real warm colour (not a white mix): R >> B
  const h=c(g.butterflyStart-0.01).hue;assert.ok(h[0]>2*h[2]);assert.deepEqual(h,G11_TINTS.gold);
  assert.equal(c(g.butterflyStart-0.001).bf.a,0);assert.equal(c(g.butterflyEnd).bf.a,0);assert.equal(c(g.butterflyEnd+1).phase,'CLEAR');assert.ok(c(g.butterflyPeak).bf.a>0.95);
@@ -46,25 +46,25 @@ test('G11 colour/cancel timeline: blue -> violet -> gold BEFORE the butterfly, m
 });
 function layerFrame(layer,t,rm=false){const cue=bundle.score.cueAt(t,resolveClipId(plan.schedule,t),16/9),V=(x,y,z)=>new T.Vector3(x,y,z);
  const p=layer.update({t,cue,rm,bundle,headW:V(0,1.5,0),P:{chest:V(0,1.1,0),rh:V(-.5,1.1,.1),lh:V(.5,1.1,.1)},stage:{x:0,z:0,floorY:0}});return {p,u:JSON.stringify(layer.uniformsProbe()),b:layer.meshes.butterfly.visible,f:layer.meshes.field.visible};}
-test('G11 liberation layer: no premature butterfly, a short flap phase with start/peak/end, nothing left afterwards, seek-order independent',()=>{
+test('G11(.1) liberation layer: no premature giant butterfly, a bounded burst phase with start/peak/end, nothing left afterwards, seek-order independent',()=>{
  const parent=new T.Group(),L=createLiberationLayer(T,{parent,h:1.6,bundle});
  const grid=[];for(let t=22.2;t<=28.6;t+=0.05)grid.push(+t.toFixed(3));
  const fwd=grid.map(t=>layerFrame(L,t)),rev=[...grid].reverse().map(t=>layerFrame(L,t)).reverse();
  grid.forEach((t,i)=>{assert.equal(fwd[i].u,rev[i].u,'frame differs by seek order at '+t);
   if(t<g.butterflyStart-1e-9)assert.equal(fwd[i].b,false,'premature butterfly at '+t);if(t>=g.butterflyEnd)assert.equal(fwd[i].b,false,'residual butterfly at '+t);if(t>=g.butterflyEnd)assert.equal(fwd[i].f,false,'residual field at '+t);});
  const vis=grid.filter((t,i)=>fwd[i].b);assert.ok(vis.length>=10&&vis[0]>=g.butterflyStart-0.05&&vis.at(-1)<g.butterflyEnd,'phase is short and bounded');
- assert.ok(layerFrame(L,g.butterflyPeak).p.g11.butterfly.alpha>0.95);assert.equal(layerFrame(L,g.butterflyPeak).p.stage,'BUTTERFLY_CANCEL');
- // the gap between the reveal tail and the decay head must not drop the cancel
- const gap=layerFrame(L,(burst.end+g.butterflyPeak)/2);assert.ok(gap.b,'cancel survives the reveal->decay gap');
+ assert.ok(layerFrame(L,g.butterflyPeak).p.g11.butterfly.alpha>0.95);assert.equal(layerFrame(L,g.butterflyPeak).p.stage,'BUTTERFLY_BURST');
+ // the gap between the reveal tail and the decay head must not drop the burst
+ const gap=layerFrame(L,(burst.end+g.butterflyPeak)/2);assert.ok(gap.b,'burst survives the reveal->decay gap');
  const rmf=layerFrame(L,g.butterflyPeak,true);assert.equal(rmf.p.g11.butterfly.open,1);
  L.dispose();
 });
-test('G11 trails: pure function of absolute time from a 30 Hz history; nothing while still; fast body segments show; reduced motion hides',()=>{
+test('G11(.1) trails: pure function of absolute time from a 30 Hz history; nothing while still; fast body segments show; reduced motion hides',()=>{
  // a body that is still, then dashes along +x at 30 u/s between t=1 and t=1.2
  const x=t=>t<1?0:t<1.2?(t-1)*30:6;const bones={};const root=new T.Group();
- for(const n of ['Bip001Pelvis','Bip001Spine2','Bip001RFoot','Bip001LFoot']){const b=new T.Bone();b.name=n;root.add(b);bones[n]=b;}
+ for(const n of ['Bip001Pelvis','Bip001Spine2','Bip001RFoot','Bip001LFoot','Bip001RHand','Bip001LHand']){const b=new T.Bone();b.name=n;root.add(b);bones[n]=b;}
  const hist=buildTrailHistory(root,t=>{for(const b of Object.values(bones))b.position.set(x(t),1,0);},3);
- assert.equal(TRAIL_POINTS.length,4);assert.ok(Math.abs(trailPosition(hist,0,1.1)[0]-3)<0.2);
+ assert.equal(TRAIL_POINTS.length,6);assert.ok(Math.abs(trailPosition(hist,0,1.1)[0]-3)<0.2);
  const layer=createTrailLayer(T,{parent:new T.Group(),h:1.6});
  assert.equal(layer.update(hist,0.8),null,'still body: no trail');assert.ok(layer.update(hist,1.25)?.strength>0.5,'dash: trail');
  const a=Array.from(layer.mesh.geometry.attributes.position.array);layer.update(hist,2.9);layer.update(hist,1.25);assert.deepEqual(Array.from(layer.mesh.geometry.attributes.position.array),a,'same time -> same ribbon');
