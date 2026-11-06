@@ -1,0 +1,15 @@
+gate,requirement,status,evidence_or_blocker
+A_BASE,S5 source untouched,PASS_BASELINE,zero changes to app or original library
+B_G11.3,approved direction preserved,PENDING_NEW_CI,S5 G11.3 parity tests inherited
+C_G7,6 S5 joins at 30 and 60 Hz,G7_NO_GO,private-kit A/B pending
+D_G7_SOLES,skinned sole contact and landing,G7_NO_GO,bone landmarks do not prove contact
+E_ACCESS,owner authenticated browser,BLOCKED,legitimate session unavailable
+F_R2,authenticated R2 model and source hashes,BLOCKED,protected live inventory not tested
+G_GPU,600 seconds real desktop GPU,BLOCKED,device not available
+H_SAMSUNG,physical Android Samsung,BLOCKED,device not available
+I_S4,certified facial/Burst source,DEFERRED,legacy R6 facial preserved
+J_NODE,Node and S6B synthetic suite,PENDING_NEW_CI,do not reuse old SHA
+K_CHECK,npm run check,PENDING_NEW_CI,do not reuse old SHA
+L_BUILD,npm run build,PENDING_NEW_CI,do not reuse old SHA
+M_ROLLBACK,nonproduction revert,DOCUMENTED,rollback protocol exists
+N_RIGHTS,source licensing and publication rights,BLOCKED,not yet verified

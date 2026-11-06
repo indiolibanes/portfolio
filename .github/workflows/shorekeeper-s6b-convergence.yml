@@ -1,0 +1,40 @@
+name: Shorekeeper S6-B convergence (QA only)
+on:
+  push:
+    branches: ['experiment/shorekeeper-r623-s6b-convergence-20261106']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: Confirm QA-only source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=5380f43533ac5db455f6d5a057fac5764dcd8a7c
+          git merge-base --is-ancestor "$BASE" HEAD
+          if git diff --name-only "$BASE" HEAD | grep -Ev '^(\.qa-s6b/|docs/shorekeeper-s6b/|\.github/workflows/shorekeeper-s6b-convergence.yml)' ; then echo 'Unexpected non-QA changes'; exit 1; fi
+          git diff --check "$BASE" HEAD
+      - name: S6-B G7 diagnostics (synthetic only)
+        run: node --test .qa-s6b/g7/*.test.mjs
+      - name: Original Shorekeeper/G11.3 parity
+        run: node --test tests/shorekeeper*.test.mjs
+      - name: All Node tests
+        run: node --test tests/*.test.mjs
+      - name: Check
+        run: npm run check
+      - name: Build
+        run: npm run build
+      - name: Guard against private GLB publication
+        shell: bash
+        run: |
+          if find dist -type f \( -iname '*shorekeeper*.glb' -o -iname 'basic.glb' -o -iname 'advanced.glb' -o -iname 'burst.glb' \) | grep .; then echo 'Private Shorekeeper asset in dist'; exit 1; fi
+          echo 'Source hygiene PASS. G7 remains NO_GO pending authenticated visual QA.'
