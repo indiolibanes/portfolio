@@ -447,6 +447,18 @@ export function mountShorekeeperLab(root){
  // R6.1: opt-in authorial cinematic presentation; no invented PSA markers.
  const r61Enabled=new URLSearchParams(location.search).get('r61')==='1';
  const r62Enabled=r61Enabled&&new URLSearchParams(location.search).get('r62')==='s5';
+ // The G11.3 direction is the only end-user S5 choice. Older VFX/R6 variants
+ // remain mounted for QA and rollback, accessible with explicit legacyQA=1.
+ const legacyMenuQA=new URLSearchParams(location.search).get('legacyQA')==='1';
+ root.dataset.s5Menu=r62Enabled&&!legacyMenuQA?'clean':'legacy';
+ if(r62Enabled){
+  const panel=$('[data-r61-preview]');
+  panel.querySelector('summary').textContent='R6.2.3 · G11.3 integrada';
+  $('[data-r61-start]').textContent='Reproduzir ciclo · G11.3 (S5)';
+  const notes=panel.querySelectorAll('p.sk-help');
+  if(notes[0])notes[0].textContent='Sequência cinematográfica autoral integrada: ataques básicos → Heavy → Skill → Liberation → recuperação. Mantém os clipes originais, o carregamento privado e a direção visual G11.3.';
+  if(notes[1])notes[1].textContent='Prévia S5 · fonte corporal original · G7 NO_GO · QA em GPU física pendente. Diagnósticos antigos: acrescente legacyQA=1 à URL; nenhuma fonte ou opção foi apagada.';
+ }
  $('[data-r61-preview]').hidden=!r61Enabled;
  on($('[data-r61-start]'),'click',()=>{
   if(!r61Enabled||!model||!stage||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||
@@ -465,17 +477,17 @@ export function mountShorekeeperLab(root){
    control('originalIdle').value='SK_BURST_02_ORIGINAL';
    presentationClock.reset();presentationClock.setSpeed(Number(control('speed').value));
    userPaused=false;director.start();
-   status((r62Enabled?'S5 local · G11.3 visual · G7 NO_GO · ':'')+'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
+   status(r62Enabled?'R6.2.3 · G11.3 integrada · fontes corporais originais · G7 NO_GO; QA em GPU pendente.':'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
    $('[data-r61-time]').textContent='Ciclo iniciado · fonte original, cinematografia autoral · sourceFrame PSA indisponível.';
    sync(true);stage.invalidate();
-  }catch(e){warn('R6.1: '+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}
+  }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}
  });
  on($('[data-r61-seek]'),'input',e=>{
   if(director?.state.mode!=='R61_EXPERIMENTAL'||state.contextLost)return;
   try{
    const t=Number(e.target.value)*director.state.duration;
    director.seek(t);presentationClock.seek(t);last=0;stage.invalidate();
-  }catch(error){warn('Seek R6.1: '+error.message);}
+  }catch(error){warn((r62Enabled?'Seek S5: ':'Seek R6.1: ')+error.message);}
  });
  $('[data-combo-qa]').hidden=new URLSearchParams(location.search).get('comboQA')!=='1';
  $('[data-vfx-r2]').hidden=new URLSearchParams(location.search).get('vfxQA')!=='1';
