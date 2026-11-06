@@ -22,8 +22,8 @@ test('S6 starts no cinematic until canonical bytes and all source libraries are 
  for(const key of ['loading','paused','reducedMotion']){
   h.p.advance(1,{...h.ready,[key]:true});assert.deepEqual(h.events,[]);
  }
- h.p.advance(1,{...h.ready,bodyPhase:'run'});assert.deepEqual(h.events,[]);
- h.p.advance(1,h.ready);assert.deepEqual(h.events,['cinematic']);
+ h.p.advance(1,{...h.ready,bodyPhase:'run',bodyMode:'COMBO_EXPERIMENTAL'});assert.deepEqual(h.events,[]);
+ h.p.advance(1,{...h.ready,bodyPhase:'run',bodyMode:'REFERENCE_QA',bodyClip:'SK_IDLE_01_ORIGINAL'});assert.deepEqual(h.events,['cinematic']);
  assert.equal(h.p.state.phase,S6_AUTO_STATUS.CINEMATIC);
  h.p.advance(1,{...h.ready,bodyMode:'R61_EXPERIMENTAL',bodyPhase:'run'});
  assert.deepEqual(h.events,['cinematic']);

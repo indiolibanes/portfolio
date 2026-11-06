@@ -501,7 +501,8 @@ export function mountShorekeeperLab(root){
   s6Autonomy=createS6Autonomy({
    startCinematic(){
     const button=$('[data-r61-start]');
-    if(!model||!stage||!vfx||button.disabled||state.loading||phase()!=='ready')return false;
+    const originalIdle=director?.state.mode==='REFERENCE_QA'&&ORIGINAL_IDLE_IDS.includes(director?.state.clip);
+    if(!model||!stage||!vfx||button.disabled||state.loading||!(phase()==='ready'||(phase()==='animating'&&originalIdle)))return false;
     button.click();return director?.state.mode==='R61_EXPERIMENTAL'&&director.state.phase!=='idle';
    },
    enterIdles(){
@@ -658,7 +659,7 @@ export function mountShorekeeperLab(root){
    s6Autonomy.advance(dt,{canonical:metadata?.sha256===SHOREKEEPER_CANONICAL.sha256&&metadata?.origin==='r2',
     completeLibraries:hasS5&&manifestMatches&&coverage,allIdles:hasIdles,stage:!!stage&&state.webgl&&!state.contextLost,
     visible:!document.hidden&&!suspended&&!outOfView,loading:state.loading,paused:userPaused,reducedMotion:motion.matches,
-    bodyPhase:director?.state.phase??'idle',bodyMode:director?.state.mode??null,
+    bodyPhase:director?.state.phase??'idle',bodyMode:director?.state.mode??null,bodyClip:director?.state.clip??null,
     cameraReturning:!!director?.state.camera?.returning,faceBusy:!!face?.state.busy,
     faceWritable:control('presentationMode').value==='contemplation'&&control('originalMode').value==='expressive'&&control('actingAuto').checked});
   }

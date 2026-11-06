@@ -24,7 +24,10 @@ export function createS6Autonomy({startCinematic,enterIdles,triggerExpression,ex
     if(!Number.isFinite(dt)||dt<0)throw Error('S6 invalid frame delta');
     if(phase===S6_AUTO_STATUS.BLOCKED||phase===S6_AUTO_STATUS.STOPPED||!ready(snapshot)||!dt)return;
     if(phase===S6_AUTO_STATUS.WAITING){
-      if(snapshot.bodyPhase!=='idle'||snapshot.cameraReturning)return;
+      // An existing automatic idle may be playing when the last R2 library
+      // becomes ready; the existing S5 button disposes that owner before claim.
+      const originalIdle=snapshot.bodyMode==='REFERENCE_QA'&&/^SK_IDLE_0[123]_ORIGINAL$/.test(snapshot.bodyClip??'');
+      if((snapshot.bodyPhase!=='idle'&&!originalIdle)||snapshot.cameraReturning)return;
       attempts++;
       try{
         if(startCinematic()===true){phase=S6_AUTO_STATUS.CINEMATIC;cycles++;reason=null;}
