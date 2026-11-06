@@ -1,0 +1,25 @@
+✔ S5 paused VFX loss releases presentation/camera immediately and does not reacquire on seek (280.715229ms)
+Shorekeeper F1.8 PASS: privacy/format, load race/cancel, resource sharing, all fixture morphs, rig restore, state policy, pending timing, speed, pause and single mixer.
+✔ tests/shorekeeper-sk-lab.test.mjs (122.41644ms)
+✔ manual state machine cycles OFF -> ... -> RECOVERY -> OFF (RECOVERY never loops to AMBIENT) (114.952429ms)
+✔ nothing is visible in OFF; the peak shows every system; the root stays invisible when disabled (45.826985ms)
+✔ modes gate gameplay field and cinematic canopy independently (44.346722ms)
+✔ Collapsed Core has five ordered phases and advances only in PREPARATION and above (62.44076ms)
+✔ reduced motion freezes clocks, drops the core and flattens the wingbeat, still one finished frame (41.303049ms)
+✔ pause (suspended) and invalid deltas never advance state (61.816896ms)
+✔ butterflies: independent paths, tangent flight vectors, face-avoidance zone, wings mirrored by side (37.960699ms)
+✔ flight is continuous: positions move smoothly frame to frame (44.133502ms)
+✔ QA single butterfly pose (Gate C1) shows exactly one butterfly and can restore the swarm (42.114826ms)
+✔ wing atlas is deterministic, non-empty, transparent at the corners and opaque near the thorax/body (7.895806ms)
+✔ stage tints are labelled as unverified references and change the shared tint only (56.351315ms)
+✔ stays inside the budget: <= 8 additional draw calls, CPU stats recorded, GPU honestly NOT_MEASURED (129.756085ms)
+✔ never writes to bones, morphs or animation: anchors are read-only and the director owns only its subtree (53.602237ms)
+✔ dispose is idempotent, removes the subtree, frees GPU resources and silences later calls (41.048177ms)
+ℹ tests 206
+ℹ suites 0
+ℹ pass 206
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7334.765845

@@ -1,0 +1,3 @@
+source=qa/shorekeeper-s6a-gate-a-20261106
+run=42299171653
+sha=e7ee7c46e669fcc95f21ccb92e5127a3484eaa61

@@ -1,0 +1,344 @@
+✔ clean removes stale output while preserving sources and symlink targets (11.720008ms)
+Build hygiene: PASS
+✔ output gate rejects accidental private files and allows intended public assets (12.767117ms)
+Experimentos canonical route: Hsin V2.0.1 at /experimentos/, legacy stage/lab removed PASS
+✔ tests/experimentos-canonical.test.mjs (51.703272ms)
+Hsin acting director and spatial geometry: PASS
+✔ tests/hsin-acting-director.test.mjs (103.062288ms)
+Hsin acting runtime: lip and hair players on the real rig, exact rest, exact frames, only owned bones move, exact restoration over 5 full episodes PASS
+✔ tests/hsin-acting-runtime.test.mjs (819.761796ms)
+Arm envelope: torso and sleeve rejection, positive clearance and immutable geometry PASS
+✔ tests/hsin-arm-clearance.test.mjs (158.46492ms)
+Arm roles: right=under-chin, left=chest, disjoint, chest refuses the signature arm, anatomical side classified from geometry PASS
+✔ tests/hsin-arm-roles.test.mjs (63.491225ms)
+Autonomous repertoire: seeded neutral/smiles/gaze/winks; cooldowns, hand roles, mutual exclusion, rests and graceful release PASS
+✔ tests/hsin-autonomous-repertoire.test.mjs (163.20344ms)
+B.1 automation: context selection, S1–S3, I1–I5 tests, wink alternation, one composer, exact restore PASS
+✔ tests/hsin-b1-automation.test.mjs (2667.632014ms)
+Chest director: approved default timing, organic bounded durations, optional guarded composition, breath on the same clock, no snaps PASS
+✔ tests/hsin-chest-director.test.mjs (291.812088ms)
+Chest rig: ready, exact rest/endpoints, stateless pose, bounded breath, guarded optional composition, right arm untouched PASS
+✔ tests/hsin-chest-rig.test.mjs (997.47562ms)
+Chest gesture: staged entry/hold/release, warm-only calendar, ownership and exact cancellation PASS
+✔ tests/hsin-chest.test.mjs (120.145193ms)
+SKIP private GLB audit: supply an authorized local .glb path.
+✔ tests/hsin-choreography-private.test.mjs (117.983082ms)
+Dance geometry PASS: actual skinned foot surfaces, sampled silhouette envelope, left forearm/hand screen triangle probes in portrait, landscape and profile. VISUAL_QA_PENDING
+{"frames":231,"maxFootSurfaceDrift":0,"leftForearmScreenIntrusions":0,"screenTriangleProbes":651420,"footVertices":3608,"bounds":{"min":[-0.39725189567533714,0.00004306111012157725,-0.703137499612108],"max":[0.8192037039053505,1.7518006877579015,0.41519637539517446]},"limitation":"Surface sampling and screen triangle probes, not continuous cloth/hair collision detection or artistic approval.","viewports":[{"w":393,"h":852,"yaw":8},{"w":1280,"h":720,"yaw":8},{"w":1280,"h":720,"yaw":28}],"minArmBelowEyeCenter":0.22422310846324622}
+✔ tests/hsin-dance-geometry.test.mjs (4998.571857ms)
+Lunar Dance R2 PASS {"frames":1928,"soleVertices":250,"maxSupportDrift":0.0003096661010296254,"minSoleY":-0.0002639011563902033,"maxOrgDefGap":0.00004194518542019112,"maxStepDegrees":6.2238980307482255,"seconds":600,"publicVersion":"2.0.1","visual":"VISUAL_QA_PENDING","footToleranceMeters":0.0005,"sessions":2,"phrases":["moon-breathing","silk-sway","crescent-turn","fox-invitation","ballet-flourish","petal-flourish","lunar-waltz","lunar-repose"],"traceHash":"2bf533a9aa11299f9081c709448039ca08b42613c307a14a64f1bad4c5847071","runtimeBufferBytes":5472}
+✔ tests/hsin-dance-r2.test.mjs (4337.16614ms)
+secondary bones by group {"sleeveL":52,"sleeveR":51,"tail":10,"hair":102}
+Moon Fox Reverie authoring: score at rest, C1 curves, bounded bow, five movements, secondary maths, spline vs linear, real rig names PASS
+✔ tests/hsin-dance-r3-authoring.test.mjs (3854.495598ms)
+Moon Fox Reverie director: rare, exclusive, cooldown, safe interruption windows, fallback, R2 sequence identical PASS
+✔ tests/hsin-dance-r3-director.test.mjs (604.329256ms)
+Moon Fox Reverie R3 PASS {"slide":"0.045 mm","continuity":{"maxStepDeg":2.4315915626728044,"maxJumpDeg":0.5568100474073139,"maxSecondaryStepDeg":0.5337849993107973,"maxPositionStepMm":2.2795902891411086,"signFlips":0},"cost":{"r2WaltzSpline":0.0243,"r2WaltzLinear":0.0324,"reverieWithSecondary":0.1081}}
+✔ tests/hsin-dance-r3.test.mjs (36984.264767ms)
+Dance PASS: 600 s twice, seeded phrases, no-music parity, confirmed Play, handoff, pause/resume, buffering, seek, end, provider swap, hidden freeze, all 7 phrases, planted feet, ORG/DEF, exact reference and zero Quaternion allocation in playback.
+{"maxStepDegrees":1.368512039767395,"maxOrgDefGap":4.790087874910675e-7,"states":["CONTEMPLATIVE_IDLE","DANCE_PREPARATION","DANCE_SOFT","DANCE_EXPRESSIVE","DANCE_RECOVERY","DANCE_TO_IDLE"],"phrases":["moon-breathing","silk-sway","fox-invitation","crescent-turn","petal-flourish","lunar-step","lunar-repose"],"seconds":600,"bufferBytes":3168}
+✔ tests/hsin-dance.test.mjs (1735.245411ms)
+Hsin embedded Face/Eye map resolution: PASS
+✔ tests/hsin-embedded-texture.test.mjs (46.214048ms)
+Facial acting: deterministic timing, channel ownership, geometry gaze, lifecycle and exact A/B restore PASS
+✔ tests/hsin-face-acting.test.mjs (239.831773ms)
+Facial B.1: S1/S2/S3, explicit nasal tests, isolated full-range limits, A/B regression, restore PASS
+✔ tests/hsin-face-b1.test.mjs (112.021627ms)
+Pass B: seeded fixation, lid arbitration, geometry audit, composition, body cues, A/B and lifecycle PASS
+✔ tests/hsin-face-pass-b.test.mjs (323.671651ms)
+SKIP private GLB audit: supply an authorized local .glb path.
+✔ tests/hsin-face-private.test.mjs (114.138088ms)
+Hsin face skin math: unlit defect proven, lit response with soft shadow, warm, unclipped, coherent with body skin, shared rig PASS
+✔ tests/hsin-face-skin-math.test.mjs (178.010955ms)
+Hsin face skin: swap, shared texture, exact restore, disposal, shared rig, real GLB unlit->lit with morphs/skinning intact PASS
+✔ tests/hsin-face-skin.test.mjs (253.100506ms)
+Hsin v1.0.9 synthetic rig, staged acting, extra ORG/DEF, classic fallback, pause and undo: PASS
+✔ tests/hsin-gesture-ik.test.mjs (136.439275ms)
+Hsin Hair Caress geometry: rest to rest, velocity-continuous, index pad 1-6 mm from the real hair surface during the stroke, hovering before and after, face/bangs/torso clear (visual approval PENDING)
+✔ tests/hsin-hair-caress-geometry.test.mjs (2412.784811ms)
+Hair/hand safeguards: unavailable rig refuses playback, head/hair intrusion rejected, real side-specific skin sampling and hand gaps PASS
+Sleeve surfaces: true 3D crossing rejected, projection-only occlusion accepted PASS
+✔ tests/hsin-hair-gesture.test.mjs (160.3473ms)
+Left-arm motion: overlap timing with exact endpoints, bounded breath, varied durations and guarded hand composition PASS
+✔ tests/hsin-left-arm-motion.test.mjs (124.335551ms)
+lipHair episodes per simulated hour, seeds 1-8: 10 9 9 10 10 10 8 9
+Hsin Lip & Hair: continuous weight paths, event order, interruption, seeds, both withdrawal orders, rarity/cooldown and exclusivity in a 3600 s repertoire PASS
+✔ tests/hsin-lip-hair.test.mjs (435.508614ms)
+Hsin Lip Touch geometry: signature preserved, continuous path, fingertip 2.8 mm from the target 2.5 mm off the lower-lip surface, no vertex behind the skin, hand/fingers/forearm clear (visual approval PENDING)
+✔ tests/hsin-lip-touch-geometry.test.mjs (1468.322938ms)
+Lunar refinement: independent body/face targets, unchanged arm paths, signature hand/face proxy, five camera aspects, exact restoration, textures/disposal/budget PASS; VISUAL_QA_PENDING
+{"studies":[{"bodyApparentYaw":60,"headApparentYaw":30,"rootDegrees":-52,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":30.14555339038461},{"bodyApparentYaw":65,"headApparentYaw":35,"rootDegrees":-57,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":35.14555339038464},{"bodyApparentYaw":70,"headApparentYaw":40,"rootDegrees":-62,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":40.14555339038462},{"bodyApparentYaw":75,"headApparentYaw":45,"rootDegrees":-67,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":45.145553390384606}],"handFace":[{"weight":0.85,"before":0.1427203412634669,"after":0.14127657909601687,"delta":-0.0014437621674500134},{"weight":1,"before":0.06091116997751844,"after":0.0601741974256656,"delta":-0.0007369725518528436}],"viewports":[{"w":320,"h":740,"perspectiveFaceYaw":41.66145382993993,"distance":4.65,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":5.894920450281174,"peripheralCrop":true},{"w":393,"h":852,"perspectiveFaceYaw":41.66145382993993,"distance":4.65,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":5.541931202078445,"peripheralCrop":true},{"w":768,"h":1024,"perspectiveFaceYaw":42.155284858592,"distance":3.503991076041115,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":3.503991076041115,"peripheralCrop":false},{"w":1280,"h":720,"perspectiveFaceYaw":41.19525748720316,"distance":3.4464244647946964,"target":[0.09902680687415705,0.88,-0.013917310096006545],"portrait":false,"fullEnvelopeDistance":3.4464244647946964,"peripheralCrop":false},{"w":1920,"h":1080,"perspectiveFaceYaw":41.19525748720316,"distance":3.4464244647946964,"target":[0.09902680687415705,0.88,-0.013917310096006545],"portrait":false,"fullEnvelopeDistance":3.4464244647946964,"peripheralCrop":false}],"gpuMeasured":false,"previousFaceYaw":22.653706303861313,"meshes":13,"triangles":7230,"structuralPasses":23,"textureBytes":104546,"estimatedTextureMiB":9.999999999999998,"textures":[{"url":"/assets/scenes/hsin/night-sky-v201.webp","bytes":5740,"width":1024,"height":512,"sha256":"3d7b07c5413e54b91dad95907561413e2170dd87bb798f1a5e897b908e0d60a6"},{"url":"/assets/scenes/hsin/golden-moon-v201.webp","bytes":50000,"width":512,"height":512,"sha256":"15a181657219989fc99ad0576c558893f13b9c5afb09a1f8031e13ebcac446fc"},{"url":"/assets/scenes/hsin/stone-v201.webp","bytes":28812,"width":1024,"height":1024,"sha256":"d1aacad55f07e3fbef18a6f65a19246db942678ae3db05ed64197a6f45244063"},{"url":"/assets/scenes/hsin/terrace-atlas-v201.webp","bytes":17692,"width":512,"height":256,"sha256":"fa872a26d1d15472bbd259b011c7499d4058417912e7feed21ea9a54151b746b"},{"url":"/assets/scenes/hsin/water-v201.webp","bytes":2302,"width":512,"height":256,"sha256":"b521188aaa7a2b67be66e3bfa308f5c579e8aa04a95047ea28d87411935f97f1"}]}
+✔ tests/hsin-lunar-refinement.test.mjs (735.620171ms)
+Lunar Terrace V2.0.1: static root/face studies, unchanged arm trajectories and 600s traces, stone contact, reversible frozen matrices, gaze, framing, disposal, textures and budgets PASS (not GPU/FPS or artistic approval)
+{"studies":[{"bodyApparentYaw":35,"headApparentYaw":40,"rootDegrees":-27,"neckDegrees":1.7999999999999998,"headDegrees":3.2,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":25.691537516799066},{"bodyApparentYaw":45,"headApparentYaw":40,"rootDegrees":-37,"neckDegrees":5.3999999999999995,"headDegrees":9.600000000000001,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":24.075590324019164},{"bodyApparentYaw":55,"headApparentYaw":40,"rootDegrees":-47,"neckDegrees":9,"headDegrees":16,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":22.653706303861313},{"bodyApparentYaw":65,"headApparentYaw":40,"rootDegrees":-57,"neckDegrees":12.6,"headDegrees":22.4,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":21.50089535375308}],"maxRigidHandError":2.2591401799415137e-16,"soleY":1.6525951614110301e-16,"simulationSeconds":600,"sceneMeshes":13,"sceneTriangles":7230,"scenePassCeiling":13,"totalPassCeiling":23,"textureBytes":104546,"textures":[{"url":"/assets/scenes/hsin/night-sky-v201.webp","bytes":5740,"width":1024,"height":512,"sha256":"3d7b07c5413e54b91dad95907561413e2170dd87bb798f1a5e897b908e0d60a6"},{"url":"/assets/scenes/hsin/golden-moon-v201.webp","bytes":50000,"width":512,"height":512,"sha256":"15a181657219989fc99ad0576c558893f13b9c5afb09a1f8031e13ebcac446fc"},{"url":"/assets/scenes/hsin/stone-v201.webp","bytes":28812,"width":1024,"height":1024,"sha256":"d1aacad55f07e3fbef18a6f65a19246db942678ae3db05ed64197a6f45244063"},{"url":"/assets/scenes/hsin/terrace-atlas-v201.webp","bytes":17692,"width":512,"height":256,"sha256":"fa872a26d1d15472bbd259b011c7499d4058417912e7feed21ea9a54151b746b"},{"url":"/assets/scenes/hsin/water-v201.webp","bytes":2302,"width":512,"height":256,"sha256":"b521188aaa7a2b67be66e3bfa308f5c579e8aa04a95047ea28d87411935f97f1"}]}
+✔ tests/hsin-lunar-terrace.test.mjs (1738.283063ms)
+Hsin material audit: face and eyes unlit, every other material lit, neutral vertex colours, sRGB base colour, no morph normals PASS
+✔ tests/hsin-material-audit.test.mjs (103.142858ms)
+Hsin direct sample and UV binding: PASS
+✔ tests/hsin-material-debug.test.mjs (94.567132ms)
+Moonlit scenery PASS: 7 draws, 3274 triangles, 54752 texture bytes, moon framing in portrait/landscape and both orbit limits (not WebGL/FPS QA).
+✔ tests/hsin-moonlit-environment.test.mjs (229.656665ms)
+Hsin motion director: legacy passes unchanged, gaze stays with the viewer, lid arbiter, intent-linked winks, director variety, path timing PASS
+✔ tests/hsin-motion-director.test.mjs (6967.840607ms)
+Music state/API/transport PASS: selection != playback, official states, positions, track identity, seek, buffering, stale epochs, synthetic verified-map gate, cleanup; production map remains unverified.
+✔ tests/hsin-music-state.test.mjs (38.138967ms)
+Hydrogen pavilion R2 PASS {"viewports":[{"width":320,"height":740,"mode":"reserved native-player bay"},{"width":393,"height":852,"mode":"reserved native-player bay"},{"width":844,"height":390,"mode":"reserved native-player bay"},{"width":1280,"height":720,"mode":"projected world facade","selected":{"x":1112,"y":360,"side":"right","score":0,"hard":0}},{"width":1920,"height":1080,"mode":"projected world facade","selected":{"x":1752,"y":540,"side":"right","score":0,"hard":0}}],"maxVelocity":380,"policyMs":0.0024331940000000005,"dampingMs":0.0003692092,"baseline":{"meshes":5,"triangles":4804},"r2":{"meshes":7,"triangles":4132},"newTextures":0,"newLights":0,"newRenderTargets":0,"limitation":"Node policy/math/geometry tests, not GPU/browser iframe or artistic QA. In impossible frames automatic side crossing is deferred and constrained layout is reported."}
+✔ tests/hsin-pavilion-r2.test.mjs (106.645084ms)
+Signature transition: bounded quintic entry, reversal, exit and reset PASS
+✔ tests/hsin-pose-transition.test.mjs (37.110115ms)
+Autonomous face: neutral returns, two-sided smiles, varied supported winks and contextual gaze PASS
+✔ tests/hsin-presence-expression.test.mjs (2915.091213ms)
+Presentation: 5–10s blinks, seeded dual winks, sustained baseline/attention, transient touch and left-chain geometry PASS
+✔ tests/hsin-presentation.test.mjs (866.702502ms)
+SKIP private repertoire: provide an authorized local GLB.
+✔ tests/hsin-repertoire-private.test.mjs (107.465848ms)
+Hsin rig parity: offline evaluator matches three.js skinning (rest 1.7e-7 m, signature 1.7e-7 m) PASS
+✔ tests/hsin-rig-parity.test.mjs (578.454821ms)
+Hsin music tower PASS: opt-in, persistent iframe, switching, silence, teardown, peripheral placement; 7 draws / 4132 triangles.
+(node:3255) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ tests/hsin-soundtrack.test.mjs (304.479039ms)
+V2 production GLB: size/hash/retained live channels, pupil calibration, cached poses on real rig, static-matrix updates, 600 s simulation and exact restoration PASS (not WebGL/FPS QA)
+✔ tests/hsin-stage-asset.test.mjs (889.309882ms)
+Hsin stage metrics: no-op when disabled, windowed percentiles, milestones, gaps excluded, opt-in wiring without UI or extra loop PASS
+✔ tests/hsin-stage-metrics.test.mjs (49.464946ms)
+Hsin V2 stage: 30 FPS cap, hidden/reduced/paused clock, demand-only camera damping, camera and pixel budgets, exact baked restoration, no upload/authoring runtime PASS
+✔ tests/hsin-stage.test.mjs (109.837099ms)
+Hsin spatial CCD safety: accepted smooth paths; rejected elbow flips and joint jumps (PASS)
+✔ tests/hsin-waypoint-safety.test.mjs (98.916719ms)
+Music experimental mode: direct Hsin stage link and no temporary cameo PASS
+✔ tests/music-experimental-mode.test.mjs (49.609655ms)
+Music → Hsin transition contract PASS
+✔ tests/music-experimental-transition.test.mjs (46.798736ms)
+PASS: landing-only Canvas 2D runtime, no scene markers on other known public routes.
+✔ tests/performance-route-isolation.test.mjs (51.061546ms)
+✔ normalized Cloudflare JWK verifies a truly signed JWT (48.041535ms)
+✔ JWT with malformed signature never becomes authorized (4.800572ms)
+✔ certificate endpoint errors are distinct from unknown KID and malformed JWKS (4.154057ms)
+✔ bad key material is diagnosed but cannot authorize (2.421279ms)
+✔ diagnostic result never exposes token, key, issuer, claims or AUD (1.317949ms)
+✔ Workers JWKS requests use manual redirects and verify valid signed JWTs (5.669733ms)
+✔ JWKS 302 redirect does not grant access or follow to an untrusted host (1.894516ms)
+✔ approved gallery is visible without debug flags and source-whitelisted (1.671327ms)
+✔ manual activation requires canonical SHA and cannot enable scheduler (0.258993ms)
+✔ experimental ambient uses existing R5 director and explicit visual cues (0.169446ms)
+✔ approved appearance has explicit reversible geometry selection, no implicit rewrite (0.195605ms)
+✔ approved manual gallery names exact QA variants, never deduplicates R2 into V2 (2.342427ms)
+✔ manual approved recipes preserve original morph weights and cap long QA holds (0.247332ms)
+✔ R5 release and auto scheduler stay blocked (0.131687ms)
+B5.1 PASS: candidate smile, blocked presets, exact neutral, scheduled bilateral blink, pause and reduced motion
+✔ tests/shorekeeper-b5.test.mjs (55.497849ms)
+B7 QA candidate bounds and progressive weights PASS; no visual approval.
+✔ tests/shorekeeper-b7.test.mjs (48.242775ms)
+Shorekeeper C.3: four advanced combat clips, single owner, pause, recovery, controls and private conversion contract PASS
+✔ tests/shorekeeper-c3-advanced.test.mjs (76.665ms)
+Shorekeeper C.4: two Burst candidates, single director, pause, recovery and private conversion contract PASS
+✔ tests/shorekeeper-c4-burst.test.mjs (110.696772ms)
+Shorekeeper CL.1 non-destructive Root rebase, relative rotations, whitelist and A/B controls PASS
+✔ tests/shorekeeper-cl1-root-rebase.test.mjs (71.622347ms)
+Shorekeeper CL.1.1: Root-bind comparison, original/rebased preservation, source whitelist and manual UI PASS
+✔ tests/shorekeeper-cl11-root-body-owned.test.mjs (106.917448ms)
+combat synthetic tests passed
+✔ tests/shorekeeper-combat.test.mjs (82.100946ms)
+✔ quaternion angle is symmetric, sign-invariant and exact (1.562015ms)
+✔ findTransition picks the most similar pair inside the allowed windows (1.678032ms)
+✔ schedule: segments overlap by the fade, durations add up, events are ordered (1.079366ms)
+✔ weights always sum to 1, are continuous across blends and clip time stays inside its window (6.101794ms)
+✔ sequencer blends deterministically through a single mixer and records its state (9.400916ms)
+✔ sequencer rejects non-body channels and missing clips (0.5273ms)
+✔ deriveBindRootClip holds Root at bind without touching the source clip or other tracks (0.733762ms)
+✔ human acceptance does not activate runtime presets or release (1.386602ms)
+✔ approved Little Smile V2 remains distinct from R2/R3 (0.27776ms)
+✔ My Star full and soft-eyes intermediate are preserved separately (1.749684ms)
+✔ Hello R2 is not silently replaced by open-mouth original (0.232865ms)
+✔ uncertain emotional naming remains explicitly unbound (0.24462ms)
+✔ concern and lateral gaze remain actionable, not approved (0.225377ms)
+✔ no QA aliases are implicitly promoted (0.237782ms)
+Expression library PASS: all presets/intensities, real button bindings, exact recovery, timestep invariance, blink composition, capabilities, reduced motion and 600s session.
+✔ tests/shorekeeper-expression-library.test.mjs (145.997667ms)
+Shorekeeper F.2 canonical version + manual recovered facial controls PASS
+✔ tests/shorekeeper-f2-facial-release.test.mjs (95.350507ms)
+✔ final pupil cap includes nonzero and unsafe initial weights (9.020174ms)
+✔ switch and cancellation preserve the current pose, then recover smoothly (4.484331ms)
+✔ invalid bindings, dt and recipes cannot corrupt a session (0.593246ms)
+✔ HOPE delegates E_Close to ocular writer; blink curve remains identical without requests (16.448715ms)
+✔ combat interrupts, suspension freezes, only manual QA starts recovered expressions (6.929191ms)
+✔ ten minute automatic session never requests recovered QA and updates face once (335.366889ms)
+✔ approved blink timing is unchanged and automatic unapproved presets are rejected (0.517897ms)
+✔ integrated owner preserves nonzero baselines and caps final pupil weight (8.295637ms)
+✔ production inspection keeps Down/Alpha channels outside the facial writer (43.478216ms)
+Gentle acting: three idles, ownership, pause, recovery, reduced motion and 10-minute deterministic session passed.
+✔ tests/shorekeeper-gentle-acting.test.mjs (169.92068ms)
+✔ cancelling at pre-parse progress does not start GLTF parsing (1.42136ms)
+✔ cancelling at completion releases the unadopted scene exactly once (1.543949ms)
+✔ throwing completion observer releases the scene and preserves the error (0.935635ms)
+✔ successful handoff leaves disposal to the consumer (0.437524ms)
+✔ replacement load from completion cannot receive or dispose its predecessor resources (1.852655ms)
+✔ cancellation during an asynchronous parse disposes only its own result (0.467583ms)
+✔ indexed topology inventory is read-only and measures relative and absolute deltas (3.488191ms)
+✔ temporary component isolation restores geometry, materials, visibility and leaves morphs intact (1.355494ms)
+✔ combat and reference playback yield all final facial writes; post-combat recovers ownership (3.011003ms)
+✔ V2 test IDs remain baseline controls and never claim recovery or approval (0.187881ms)
+✔ mouth interpolation joins every station with C1 tangents, no centre derivative jump (1.234145ms)
+✔ finds the 52-vertex lip-band island and ignores decoys (2.961604ms)
+✔ welds missing station partners from the deltas that already exist, without mutating inputs (2.866426ms)
+✔ lift pushes the lifted stroke forward only when it moves up (0.404093ms)
+✔ bilateral and empty morphs are not welded (0.358272ms)
+✔ liner delta follows the stroke at the front rim and fades with depth and past the tip (0.507374ms)
+✔ runtime weld edits a CLONE; canonical buffers are untouched and restore/dispose are idempotent (1.697419ms)
+✔ dispose while active restores the canonical geometry (2.287542ms)
+✔ throws, without changing anything, when the contour island is missing (0.901465ms)
+✔ R2 candidates are explicit, weld-gated, never write E_Close, and keep the V2 baselines (0.469985ms)
+Original idles PASS: single-owner TRS, exact rest, original clock, queued timing, pause, interruption, repeat, single mixer update and missing clips.
+✔ tests/shorekeeper-original-idles.test.mjs (80.649002ms)
+Presentation combat privacy and control hooks PASS; browser/WebGL QA is separate.
+✔ tests/shorekeeper-presentation-combat.test.mjs (52.247898ms)
+Shorekeeper private canonical GLB metadata and browser-local cache integration PASS.
+✔ tests/shorekeeper-private-model-cache.test.mjs (37.51963ms)
+✔ R2 manifest rejects traversal, unknown hashes, duplicates and overlimit (1.870987ms)
+✔ Access JWT validates RS256, issuer, audience and expiration (46.947977ms)
+✔ Endpoints fail closed without binding, Access vars or JWT (3.778443ms)
+✔ Authenticated manifest and models remain private and no-store (10.505061ms)
+SK isolated route / local asset path / attribution / authorial procedural VFX metadata PASS
+✔ tests/shorekeeper-publication-smoke.test.mjs (45.625066ms)
+✔ authenticated R2 model and libraries stay visible and functional (4.877995ms)
+✔ legacy file imports are maintenance-only, but still mounted for recovery (0.297532ms)
+✔ experimental combat is not mislabeled as automatic facial QA (0.194689ms)
+✔ Access denial remains explicit and never leaks headers or tokens (2.216985ms)
+✔ missing R2 binding and manifest are not mislabeled as permission errors (0.310175ms)
+✔ well-formed synthetic three-library manifest is accepted (2.129496ms)
+✔ invalid schema or more than four libraries is rejected, not treated as ready (0.295324ms)
+✔ network failure is reported as network state without thrown secrets (0.379609ms)
+✔ mobile UI calls same-origin authenticated read-only R2 diagnostics (1.258811ms)
+✔ diagnostics differentiates Access AUD, Pages binding and R2 object errors (1.365571ms)
+✔ read-only diagnosis finds the exact manifest path and four objects (2.932918ms)
+✔ missing manifest is different from missing GLBs (0.43071ms)
+✔ wrong size cannot be reported as a valid asset (0.443772ms)
+✔ missing Access configuration fails closed with no names or secrets (29.797719ms)
+✔ invalid or absent JWT is rejected even if R2 binding is present (0.96305ms)
+✔ rejected JWT diagnostics provide hints but never bypass signature checks (3.916925ms)
+✔ malformed Team Domain and malformed AUD are distinguished without returning values (2.334897ms)
+✔ private library panel and manual Burst launchers are wired, not decorative (2.826587ms)
+✔ availability follows actually loaded clips and private canonical model identity (0.275262ms)
+✔ VFX are procedural and remain separate from original Burst animation synchronization (0.378731ms)
+✔ ten unique original combat animations have a three-bundle catalogue (2.912723ms)
+✔ a registered R2 object is not confused with a loaded playable clip (0.525376ms)
+✔ manifest state and active clip state remain separate for manual GLB imports (0.227821ms)
+✔ BODY and RIB variants do not masquerade as independently verified source clips (0.255444ms)
+✔ full valid set is recognized without requiring a fake VFX-to-Burst marker (0.248833ms)
+✔ R3 lifecycle owns scenery, preserves character, bounds budgets and restores OFF after recovery (387.867247ms)
+✔ narrative camera is optional and restores manual camera and controls at completion (3.015851ms)
+✔ body ownership rejects concurrent mixers and releases for the next controller (7.567949ms)
+✔ repeated source clips have independent actions and deterministic back-seek (1.046002ms)
+✔ motion distance penalizes feet changing contact and velocities even at equal orientation (0.471606ms)
+✔ combo playback speed is applied after the safety delta clamp (0.665623ms)
+✔ interrupt recovery blends toward final idle, never jumps to bind pose (0.991672ms)
+✔ standard celestial framing contains canopy silhouette and field in landscape and portrait (4.206844ms)
+✔ cameras cannot write concurrently and restore position, FOV and manual controls (1.503131ms)
+✔ celestial fit supplies Orbit limits sufficient for portrait distance (0.21492ms)
+✔ camera leases are released even if restoration fails (0.23671ms)
+✔ R4 interpolation remains bounded and C1 without flattening a rising middle station (5.897821ms)
+✔ R4 alternating extrema never overshoot (0.935596ms)
+✔ post-Burst bridge starts at source endpoint and grounds skinned soles without source mutation (16.727794ms)
+✔ unsafe landing clearance fails explicitly (1.516303ms)
+✔ combo keeps full Burst, reuses plan and invalidates cache on library replacement (20.223593ms)
+✔ entry blend uses source time only after preparation and supports interrupt (1.721067ms)
+✔ R4 preserves caps, bounds draw calls and disposes owned GPU resources (384.284438ms)
+✔ R4 exclusion path and tangent sampling share the same displaced curve (137.690095ms)
+✔ offscreen, hidden and context gates cancel the one pending callback and resume once (1.383606ms)
+✔ static pause settles and cancels an invalidation raised inside the final tick (0.331822ms)
+✔ cooperative cancellation closes a partially sampled clone and never publishes a result (2.211255ms)
+✔ cooperative batches retain measured total work while yielding to interaction tasks (0.540789ms)
+✔ R4/R5 inherited state cycle ends in OFF without changing camera or canonical bones (281.212348ms)
+✔ R5 composes authorial shaders without raising counts or draws; signatures are deterministic (616.889566ms)
+✔ shader drift fails explicitly and expression promotion stays disabled (0.815497ms)
+✔ reduced motion presents manual phases without waiting for animation (200.178997ms)
+✔ actual R5 tilted and offset rings fit front/quarter portrait and landscape (211.783859ms)
+{"simulatedSeconds":600,"manualCommands":60,"wallCpuMs":685.78214,"hardwarePerformance":false,"schedulerR7":false}
+✔ 70 pre-R6 original GLB weight streams remain bit-exact, including blink/manual return at 30/60Hz (854.297944ms)
+✔ ownership is atomic across old/new wrappers, and is relinquished only by dispose (1.207781ms)
+✔ all candidates stay finite and return to zero in a deterministic 600s MANUAL command simulation (688.022813ms)
+✔ blink, masks, chin asymmetry, gaze direction, worried oral isolation and combat recovery (2.017352ms)
+✔ lifecycle restores all 69 channels, rejects unsupported/unsafe inputs, freeze and pause have no writes (3.031284ms)
+✔ original source and combo duration survive 60/30/15/5 FPS, drops and 0.5/1/1.5 speed (29.638932ms)
+✔ pause, buffer/offscreen reanchor, seek and reset omit hidden wall time (0.569064ms)
+✔ VFX transition and time preserve a 200ms dropped frame without extra renders (144.188886ms)
+✔ measured cue crossings emit once, seek recomposes silently and cycles reset (1.746786ms)
+✔ one pending RAF, zero static/offscreen/disposed, input wakes and animated sky stays active (0.549046ms)
+✔ telemetry bounds memory, reports rolling percentiles and does not invent GPU timings (0.569212ms)
+✔ three controller reloads release facial ownership after combat and recovery (numeric fixtures) (16.693361ms)
+✔ adaptive DPR observes render-only cost; total frame CPU remains a separate metric (2.009253ms)
+✔ CPU-only animation work does not force a resolution downgrade when render cost fits budget (0.613685ms)
+✔ 30/60 Hz A/B/C preserves source bytes and measures world yaw separately from rotation and soles (116.026285ms)
+✔ calibration, hashes and actual key times fail closed; vertical forward has no invented yaw (2.221533ms)
+✔ adaptive DPR requires opt-in, sustained measured cost and cooldown; pacing alone is not input (0.758892ms)
+✔ GPU queries are bounded, asynchronous, invalidated on disjoint and disposed without another RAF (0.727775ms)
+✔ data-only parser verifies format without renderer and offline audit rejects public/repo output (10.077855ms)
+✔ rejected PR250 RAF change is excluded and the R5 static auto-invalidation contract is intact (0.40823ms)
+✔ forensic world space includes a transformed model parent without changing the live rig (18.598587ms)
+✔ 200/1000ms drops retain source time and one mixer evaluation per presentation step (7.659868ms)
+✔ source-only inspection hides BOTH R5 VFX and celestial environment, restores on exit (217.804593ms)
+✔ source-only inspection also hides R2 effects without a celestial environment (67.922785ms)
+✔ sourceQA is insulated across frame updates, VFX profile replacement and release (1.343369ms)
+✔ yaw summary rejects a projection singularity inside otherwise valid endpoints (52.435977ms)
+✔ a missing yaw endpoint is also indeterminate, never zero degrees (13.995591ms)
+✔ manual source transport samples exact source times without fades or a second clock (13.599859ms)
+✔ pause, seek, restart, offscreen reanchor and interrupt do not manufacture recovery frames (4.379159ms)
+✔ motion preparation yields each pose and matrix decomposition matches world getters (3.06483ms)
+✔ numeric observations keep source, diagnostic and presentation times distinct and never create game markers (38.430019ms)
+✔ snapState changes all four VFX levels instantly and preserves independent authored clock (116.737804ms)
+✔ R61 seek while paused renders the exact VFX cue instead of old fade target (49.298327ms)
+✔ R61 plan requires seven exact original body sources; no fallback or B1 invention (4.521383ms)
+✔ R61 cue transitions and portrait framing are authored, absolute and monotonic (1.516445ms)
+✔ R61 owns one body mixer and camera, drives original tracks and restores VFX (8.695998ms)
+✔ R61 playback completes without extra RAF or synthetic source-frame markers (7.249099ms)
+✔ R611 VFX dispose recovers body within one second and releases camera immediately (8.277943ms)
+✔ R611 VFX null recovers body within one second and releases camera immediately (1.621815ms)
+✔ R611 VFX replace recovers body within one second and releases camera immediately (1.505258ms)
+✔ R611 absent VFX at start and seek cannot create a frozen run (1.081174ms)
+✔ R611 resource loss while paused releases camera without advancing the presentation clock (1.979971ms)
+✔ R611 repeated interruption is idempotent; pause holds recovery and restart clears termination (1.622017ms)
+✔ R611 revoking automatic camera preserves manual view through later advance and seek (1.516997ms)
+✔ R611 restores exact R5 manual fade, time, toggles and hidden environment in both disposal orders (393.890435ms)
+✔ R611 single presentation clock: speed, pause and reverse seek give identical source pose and camera (1.163025ms)
+✔ R611 matching respects closed source windows and exact last sample time (1.991591ms)
+✔ G11.3 trails: wider and longer than G11.2 (0.058h / 0.64s), orbital ribbons exist (20.226647ms)
+✔ G11.3 orbital beams: energy-driven, circle the chest, widen with the ultimate, pure function of time (19.35955ms)
+✔ G11.3 Skill butterflies: Swift-like flight (>= 2.5x faster than G11.2: 0.59 s) (0.263991ms)
+✔ G11.3 no independent butterflies: ambient flock gated off for the whole score, pure; null gate keeps the legacy value (0.330387ms)
+✔ G11.3 Stellarealm: larger than G11.2 (7.2) and accepted by the layer (8.273567ms)
+✔ G11.3 final butterfly is blue + white only (no gold dominance), huge (7.501916ms)
+✔ G11.3 Heavy: a large blue+violet singularity on the target, ahead of her, charged during prep, off outside Heavy; budget; reduced motion (427.948055ms)
+✔ G11.3 trigger butterfly stays above the LEFT hand (ultimate trigger preserved) (1.452629ms)
+✔ S5 constructs idle and keeps exact source clip identity; G7 and S4 remain gated (566.376646ms)
+✔ S5 rejects derived body and incompatible VFX before allocating a body owner (257.45384ms)
+✔ S5 seek reverse pause and 30/60/irregular playback are deterministic; source curves stay unchanged (775.583487ms)
+✔ S5 portrait resize and manual override preserve the single camera lease without reacquire (365.467288ms)
+✔ S5 completes three data cycles; loss/replacement releases camera and does not write replacement VFX (1117.794309ms)
+✔ S5 retains facial influences and idempotent dispose removes score resources (273.95105ms)
+✔ S5 shares body ownership with the legacy runtime and cannot allocate a concurrent mixer (287.554711ms)
+✔ S5 paused VFX loss releases presentation/camera immediately and does not reacquire on seek (321.128731ms)
+Shorekeeper F1.8 PASS: privacy/format, load race/cancel, resource sharing, all fixture morphs, rig restore, state policy, pending timing, speed, pause and single mixer.
+✔ tests/shorekeeper-sk-lab.test.mjs (133.800426ms)
+✔ manual state machine cycles OFF -> ... -> RECOVERY -> OFF (RECOVERY never loops to AMBIENT) (152.907129ms)
+✔ nothing is visible in OFF; the peak shows every system; the root stays invisible when disabled (82.162156ms)
+✔ modes gate gameplay field and cinematic canopy independently (74.693114ms)
+✔ Collapsed Core has five ordered phases and advances only in PREPARATION and above (111.453084ms)
+✔ reduced motion freezes clocks, drops the core and flattens the wingbeat, still one finished frame (59.159299ms)
+✔ pause (suspended) and invalid deltas never advance state (70.044679ms)
+✔ butterflies: independent paths, tangent flight vectors, face-avoidance zone, wings mirrored by side (70.422223ms)
+✔ flight is continuous: positions move smoothly frame to frame (76.941742ms)
+✔ QA single butterfly pose (Gate C1) shows exactly one butterfly and can restore the swarm (72.681694ms)
+✔ wing atlas is deterministic, non-empty, transparent at the corners and opaque near the thorax/body (14.981352ms)
+✔ stage tints are labelled as unverified references and change the shared tint only (67.719867ms)
+✔ stays inside the budget: <= 8 additional draw calls, CPU stats recorded, GPU honestly NOT_MEASURED (146.784434ms)
+✔ never writes to bones, morphs or animation: anchors are read-only and the director owns only its subtree (74.1268ms)
+✔ dispose is idempotent, removes the subtree, frees GPU resources and silences later calls (63.815395ms)
+ℹ tests 259
+ℹ suites 0
+ℹ pass 259
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43121.087792

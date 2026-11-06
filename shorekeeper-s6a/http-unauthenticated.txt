@@ -1,0 +1,96 @@
+=== GET https://170596cc.kaue.pages.dev/experimentos/sk/?r61=1&r62=s5
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:34 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fexperimentos%2Fsk%2F%3Fr61%3D1%26r62%3Ds5
+access-control-allow-credentials: true
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/experimentos/sk/"
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:34 GMT; Path=/; Secure; HttpOnly
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=isTzVmGacxuyyLIjozJsOetZEh2KXraESJMbLebL%2F4%2Fzor5OxD6DcIO49Z%2BWzLVwK396l2tyypfPqVBh3m6qxpC34F03FfQqNQEBak8m95yftKvrey7LUWVO16wCXZiBsGC6N17KUIoqMg%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a56749382edb55f7-LAX
+alt-svc: h3=":443"; ma=86400
+
+=== GET https://170596cc.kaue.pages.dev/experimentos/sk/?r61=1&legacyQA=1
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:34 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fexperimentos%2Fsk%2F%3Fr61%3D1%26legacyQA%3D1
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/experimentos/sk/"
+access-control-allow-credentials: true
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:34 GMT; Path=/; Secure; HttpOnly
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VfVTem98ZR1z4ufY6itbY8kEZYcpNrCjGnGBFAUQ%2FBrkgztfjXcujbHfzx5pbDLzoa0xoS9tA1GRnDOWo3sp2ein4TJ6YlCqwuXlvqBhPjM%2FRZNwPRYJLN8XGL5jNBM%2FiFt9R0OD1GUOHw%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a5674938cb487650-LAX
+alt-svc: h3=":443"; ma=86400
+
+=== GET https://170596cc.kaue.pages.dev/experimentos/sk/
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:34 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fexperimentos%2Fsk%2F
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:34 GMT; Path=/; Secure; HttpOnly
+access-control-allow-credentials: true
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/experimentos/sk/"
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=iyvmwu1a7wlukdIteRQqu%2BVOsO5pg6UioXu0UguTedRf8LabYJNJD4nyrvtYDake3KsVKrJCTA50uExtxLGKtE32FVT7RuZFvw8%2BXP8DGqRTaPgmcvDHyeXCzVRbXsu%2BzCXW%2FAUsJnnxYg%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a56749395b6b9e1f-LAX
+alt-svc: h3=":443"; ma=86400
+
+=== GET https://170596cc.kaue.pages.dev/api/shorekeeper/manifest
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:35 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fapi%2Fshorekeeper%2Fmanifest
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:35 GMT; Path=/; Secure; HttpOnly
+access-control-allow-credentials: true
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/api/shorekeeper/manifest"
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=NeN%2F4ZPC1YaVBXW2Dyj4gsFmlrAf65dWFt0OCPCZacy42f8VxPOTHnkWD%2BQITnVoDqVMj0XRCWx5cuJuLHIihVdW8fbm7V0Ea6gxklshmfuLcEPPirS0O5bKziS6nW7m5xx2A1wxLfNgfA%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a5674939e9412f26-LAX
+alt-svc: h3=":443"; ma=86400
+
+=== GET https://170596cc.kaue.pages.dev/api/shorekeeper/asset?kind=library&id=basic
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:35 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fapi%2Fshorekeeper%2Fasset%3Fkind%3Dlibrary%26id%3Dbasic
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/api/shorekeeper/asset"
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+access-control-allow-credentials: true
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:35 GMT; Path=/; Secure; HttpOnly
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=i7s6M5d8g0ky71y5U9iScez7GB8NU1mft3SubHyB4uphh4n652Q9eNaDD9G6tIN1sXBs9uzj6RWhEMlPHKI9GAMHldEWn2ut1fbFXBd5%2BuQjYTrsutP8gdmuv5uhOjR5V0MBwCwuWy4G7w%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a567493adae1f7d6-LAX
+alt-svc: h3=":443"; ma=86400
+
+=== GET https://170596cc.kaue.pages.dev/api/shorekeeper/diagnostics
+HTTP/2 302 
+date: Fri, 06 Nov 2026 21:45:35 GMT
+content-type: text/html; charset=UTF-8
+location: https://horologiarius.cloudflareaccess.com/cdn-cgi/access/login/170596cc.kaue.pages.dev?kid=<redacted>&meta=<redacted>&redirect_url=%2Fapi%2Fshorekeeper%2Fdiagnostics
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+access-control-allow-credentials: true
+www-authenticate: Cloudflare-Access resource_metadata="https://170596cc.kaue.pages.dev/.well-known/cloudflare-access-protected-resource/api/shorekeeper/diagnostics"
+set-cookie: CF_AppSession=<redacted>; Expires=Sat, 07 Nov 2026 21:45:35 GMT; Path=/; Secure; HttpOnly
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ouPoZXyQTaVOTBCwZCJJfri7EYnLnLk%2Fq4l74z2JhpjmivlajM014bMkiTPeN0sNFVMbb%2BjxZf3oZ6YacxPySQKBRUCujr5AQbAtCToDbsaMhxjxek34ZjBf6t%2B7PJ5iUISF98SEsQhFRA%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a567493b7b46dbe1-LAX
+alt-svc: h3=":443"; ma=86400
+

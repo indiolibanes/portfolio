@@ -1,0 +1,14 @@
+✔ S5 normal selects clean menu and integrated labels without deleting legacy elements (1.902774ms)
+✔ legacyQA=1 restores legacy menu while S5 stays the selected integration (0.791014ms)
+✔ R6.1 direct URL and unflagged entry keep legacy visibility decisions (2.221059ms)
+✔ S5 clean hides derived Root options while real original source clips stay available (1.074257ms)
+✔ legacy QA preserves the derived variants for explicit diagnostics (1.721176ms)
+✔ CSS hides only explicitly marked version containers and R2 status controls remain present (0.267194ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.066856

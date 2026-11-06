@@ -1,0 +1,14 @@
+✔ client distinguishes 401/403 denial, 503 configuration, 404 missing and network failure without exposing secrets (20.729116ms)
+✔ cookie-only legitimate synthetic JWT works; invalid assertion cannot be replaced by a good cookie (11.013008ms)
+✔ RS256 is mandatory and issuer/audience/expiry/nbf checks remain fail-closed (4.205339ms)
+✔ JWKS redirects are not followed and failed certificates cannot authorize a request (1.490033ms)
+✔ download validates length, declared SHA and computed SHA before handing any file to GLTFLoader (3.24275ms)
+✔ abort remains cancellation instead of a silent successful model transfer (0.301529ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.293571

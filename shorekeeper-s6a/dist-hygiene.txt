@@ -1,0 +1,5 @@
+9873744 dist/assets/models/hsin/hsin-v2.0.glb
+17054692 dist/experimental/sophia-7b-e1-latest.glb
+20795692 dist/experimental/sophia-alpha.glb
+--- robots meta in dist/experimentos/sk:
+<meta name="robots" content="index,follow">

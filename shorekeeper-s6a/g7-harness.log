@@ -1,0 +1,13 @@
+✔ G11.3 expected.json array records normalize to named assets (1.80438ms)
+✔ also accepts legacy name-to-hash and files object forms (0.278344ms)
+✔ rejects malformed digests and bytes, duplicate names, invalid schema (0.445669ms)
+✔ does not rely on object prototype or allow spoofed asset names (0.175414ms)
+✔ detects the injected Skill→Burst gap, keeps rest pose and reports both Hz (51.024651ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.747931
