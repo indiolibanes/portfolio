@@ -150,7 +150,16 @@ export function mountShorekeeperLab(root){
  approvedGeometry.disabled=!metadata||metadata.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||!can.inspect||!expressive||userPaused||control('presentationMode').value==='combat';
  for(const button of all('[data-facial-camera], [data-facial-capture]'))button.disabled=!can.inspect;
 
- for(const option of control('originalIdle').options){if(option.value==='legacy')continue;const combat=COMBAT_CLIP_IDS.includes(option.value);option.hidden=(control('presentationMode').value==='combat')!==combat;option.disabled=combat?!model?.userData.skClips?.some(c=>c.name===option.value):!findOriginalClip(model?.userData.skClips??[],option.value,control('originalLayer').value);}
+ for(const option of control('originalIdle').options){
+  if(option.value==='legacy')continue;
+  // R6 root-rebased variants are reserved for historical QA, not the S5 menu.
+  if(root.dataset.s5Menu==='clean'&&/(?:_REBASED|_ROOT_BODY_OWNED)$/.test(option.value)){
+   option.hidden=true;option.disabled=true;continue;
+  }
+  const combat=COMBAT_CLIP_IDS.includes(option.value);
+  option.hidden=(control('presentationMode').value==='combat')!==combat;
+  option.disabled=combat?!model?.userData.skClips?.some(c=>c.name===option.value):!findOriginalClip(model?.userData.skClips??[],option.value,control('originalLayer').value);
+ }
  action('stopSweep').disabled=!sweep;action('capture').disabled=!can.inspect;
  $('[data-config-file]').disabled=!can.rig;$('[data-original-file]').disabled=!can.rig;$('[data-sk-file]').disabled=state.contextLost||!state.webgl;action('cancel').hidden=!state.loading;action('retry').hidden=state.webgl&&!state.contextLost;
  $('[data-empty]').hidden=!!model;$('[data-rig-status]').textContent=can.rig?'Edição disponível':'Edição bloqueada';action('pause').textContent=userPaused?'Retomar':'Pausar';syncPrivateButtons();syncVfx();syncR2LibraryPanel();
