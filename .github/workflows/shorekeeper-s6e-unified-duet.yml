@@ -1,0 +1,46 @@
+name: Shorekeeper S6-E consolidated duet QA
+on:
+  push:
+    branches: ['experiment/shorekeeper-r623-s6e-unified-duet-20261106']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: S6-E change boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=85b3d707de0e110e2e2b692e346d099ba936de4c
+          git merge-base --is-ancestor "$BASE" HEAD
+          git diff --check "$BASE" HEAD
+          if git diff --name-only "$BASE" HEAD | grep -Ev '^(src/scripts/shorekeeper/s6-expression-catalog\.mjs|src/scripts/shorekeeper/s6-duo-choreography\.mjs|src/scripts/shorekeeper/s6-duet-guest\.mjs|src/scripts/hsin-stage\.ts|src/pages/experimentos/duo/index\.astro|tests/shorekeeper-s6e-.*\.test\.mjs|docs/shorekeeper-s6e/.*|\.github/workflows/shorekeeper-s6e-unified-duet\.yml)$'; then
+            echo 'Non-S6E code change'; exit 1
+          fi
+      - name: Automatic facial family and music mode tests
+        run: node --test tests/shorekeeper-s6e-*.test.mjs
+      - name: Shorekeeper suite
+        run: node --test tests/shorekeeper*.test.mjs
+      - name: All Node
+        run: node --test tests/*.test.mjs
+      - name: Type and project checks
+        run: npm run check
+      - name: Astro build
+        run: npm run build
+      - name: Private assets must never appear in the build
+        shell: bash
+        run: |
+          test -f dist/experimentos/duo/index.html
+          grep -qi noindex dist/experimentos/duo/index.html
+          if find dist -type f \( -iname 'shorekeeper-f20a*.glb' -o -iname 'basic*.glb' -o -iname 'advanced*.glb' -o -iname 'burst*.glb' \) | grep .; then
+            echo 'Private Shorekeeper GLB in public build'; exit 1
+          fi
+          echo 'Build hygiene passed; source/GPU/R2 human QA not inferred.'

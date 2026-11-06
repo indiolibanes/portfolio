@@ -1,0 +1,17 @@
+gate,criterion,state,source_or_blocker
+A_BASE,S6-D approved base preserved,READY_TO_COMPARE,85b3d707
+B_FACIAL_LATEST,R6 engine selected and older approved archived,IMPLEMENTED,anatomical-face + s6-expression-catalog
+C_FACIAL_DEDUP,one automatic entry per semantic family,IMPLEMENTED,7 families / archive unchanged
+D_QUIET,3 original idles and distinct facial families on same source,IMPLEMENTED_NEEDS_REAL_QA,original-idle-director + anatomical-face
+E_MUSIC,confirmed player status gates rotation and combat,IMPLEMENTED_NEEDS_REAL_QA,hsin-music-state + choreography
+F_G113,existing S5 R62 integration on Hsin renderer no second RAF,IMPLEMENTED_NEEDS_REAL_QA,createR62Integration + VfxR5
+G_OWNER,one Shorekeeper body writer and one facial writer,UNIT_TEST_PENDING,dispose idle before start cinematic
+H_PRIVATE_ASSETS,full R2 bucket objects & authenticated browser,EXTERNAL_BLOCKED,private-assets empty
+I_G7,6 transitions foot contacts/grounding,NO_GO,real model and GPU needed
+J_GPU,10-minute physical GPU session,PENDING,not available
+K_SAMSUNG,physical Samsung/Android,PENDING,not available
+L_CHECK,npm run check,PENDING_CI,new S6E commit
+M_BUILD,npm run build,PENDING_CI,new S6E commit
+N_NODE,Node regression suite,PENDING_CI,new S6E commit
+O_RIGHTS,source and redistribution rights,PENDING,owner records required
+P_PRODUCTION,merge/publication,NOT_AUTHORIZED,branch preview only
