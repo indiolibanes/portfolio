@@ -1,4 +1,5 @@
 import {buildComboSchedule} from './combo-sequencer.mjs';
+import {deriveStabilizedBurst,BODY_STABILITY_CLIP} from './body-stability.mjs';
 
 /**
  * R6.1 is an expressly AUTHORIAL assembly of authentic, unchanged animation
@@ -14,7 +15,7 @@ export const R61_SOURCE_IDS=Object.freeze([
 export const R61_STATUS='R61_AUTHORIAL_PREVIEW_SOURCE_MAPPING_PENDING';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-export function buildR61Plan(library) {
+export function buildR61Plan(library,{bodyStability='standard'}={}) {
  if(!Array.isArray(library))throw Error('R6.1 requires an authenticated private animation library');
  const clips={},missing=[];
  for(const id of R61_SOURCE_IDS){
@@ -28,6 +29,8 @@ export function buildR61Plan(library) {
  }
  // Never silently replace a missing HA, Skill or Burst with another movement.
  if(missing.length)throw Error('R6.1 incomplete sources: '+missing.join(', '));
+ // G11: reversible, editorial clone of the Burst with a damped hips sway (source clip untouched; 'off' = original object).
+ const stab=deriveStabilizedBurst(clips[BODY_STABILITY_CLIP],bodyStability);clips[BODY_STABILITY_CLIP]=stab.clip;
  const steps=R61_SOURCE_IDS.map((id,i)=>{
   const duration=clips[id].duration,exit=i===6?Math.min(1.45,duration):duration;
   return {id,duration,exit,fade:i===0?0:Math.min(i===6?.38:.20,exit*.24)};
@@ -46,7 +49,7 @@ export function buildR61Plan(library) {
   {t:schedule.duration,state:'AMBIENT',beat:'IDLE'}
  ];
  return Object.freeze({
-  clips,schedule,cues:Object.freeze(cues.map(c=>Object.freeze(c))),
+  clips,schedule,bodyStability:Object.freeze({preset:stab.preset,strength:stab.strength,changedTracks:stab.changedTracks,peakCorrection:stab.peakCorrection,blocked:stab.blocked}),cues:Object.freeze(cues.map(c=>Object.freeze(c))),
   identity:'SOURCE_ROLE_UNVERIFIED',sourceFrame:null,b1:'NO_SUSTAINED_CUPPED_HAND_POSE_CONFIRMED',
   performance:'MOBILE_GPU_PENDING',status:R61_STATUS
  });

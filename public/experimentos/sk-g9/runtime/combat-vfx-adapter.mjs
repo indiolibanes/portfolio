@@ -16,12 +16,15 @@ import {createS1Score, createS2Score, createS3Score, resolveClipId, S1_VISUAL_VA
 import {BILLBOARD_VS, FACE_FS, TAIL} from './combat-vfx-shaders.mjs';
 import {createSkillLayer} from './combat-vfx-skill.mjs';
 import {createLiberationLayer} from './combat-vfx-liberation.mjs';
+import {createTrailLayer} from './combat-vfx-trails.mjs';
 
 export const COMBAT_VFX_ANCHORS = Object.freeze({rh: 'Bip001RHand', lh: 'Bip001LHand', rf: 'Bip001RForearm', lf: 'Bip001LForearm', chest: 'Bip001Spine2', head: 'Bip001Head'});
 export const COMBAT_VFX_BODY_ANCHORS = Object.freeze({pel: 'Bip001Pelvis', rt: 'Bip001RThigh', lt: 'Bip001LThigh', rfoot: 'Bip001RFoot', lfoot: 'Bip001LFoot'});
-export const COMBAT_VFX_MAX_DRAW_CALLS = 6;
+export const COMBAT_VFX_MAX_DRAW_CALLS = 7; // G11: +1 for the body motion trails (single mesh)
 export const COMBAT_VFX_LABEL = 'AUTHORIAL_SIMULATED_NOT_CANONICAL';
 
+/** G11 Heavy: launch streak look (blue, thin, curved) - used only for the Heavy release, on the dominant hand. */
+const HEAVY_LAUNCH = Object.freeze({tint: [0.42, 0.78, 1.0], bend: 0.35, length: 0.95, width: 0.07, filaments: 2, glints: 0.8, gain: 1.05});
 const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const fail = m => { throw new TypeError('Combat VFX adapter: ' + m); };
 
@@ -167,6 +170,8 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
  }
  // 'TIMELINE_ONLY' = A/B 'legacy-gated' variant: Liberation timing is known but the layer is not drawn.
  const libLayer = liberation && liberation !== 'TIMELINE_ONLY' ? createLiberationLayer(T, {parent: root, h, bundle, ...(liberation === true ? {} : liberation)}) : null;
+ const trails = createTrailLayer(T, {parent: root, h});
+ let trailHistory = null;
  const U = o => o.material.uniforms;
  // Every uniform returns to its construction value at the start of each frame, so hidden effects can
  // never carry history: the full shader input is a pure function of (time, clip, aspect, pose).
@@ -176,7 +181,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
 
  // Coarse centre guard only; the exact per-pixel face exclusion is the screen-space mask (vFace).
  const faceFactor = p => smooth((p.distanceTo(P.head) / h - 0.06) / 0.10);
- const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); root.visible = false; visible = false; };
+ const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); trails.hide(); root.visible = false; visible = false; };
 
  const placeGlow = (mesh, p, level, v, ring) => {
   const f = faceFactor(p), u = U(mesh);
@@ -237,14 +242,16 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
     const v = S1_VISUAL_VARIANTS[core.clipId];
     if (v) {
      const heavy = core.id.startsWith('HEAVY'), u = phaseOf(core, t);
-     mid.copy(P.rh).add(P.lh).multiplyScalar(0.5); focus.copy(mid).lerp(P.chest, 0.35); focus.y += 0.03 * h;
+     // G11: the Heavy charge lives on the DOMINANT hand (palm), not between the hands / on the chest, and it COMPRESSES.
+     if (heavy) { const dom = bundle.hand?.[core.clipId] ?? 'R'; focus.copy(dom === 'R' ? P.rh : P.lh).lerp(dom === 'R' ? P.rf : P.lf, 0.10); }
+     else { mid.copy(P.rh).add(P.lh).multiplyScalar(0.5); focus.copy(mid).lerp(P.chest, 0.35); focus.y += 0.03 * h; }
      const f = faceFactor(focus), c = U(fx.core), grow = 0.55 + 0.45 * smooth(Math.min(1, u * 1.6));
-     const radius = h * 0.07 * v.accumulation * (rm ? 1 : grow);
+     const radius = heavy ? h * 0.075 * (rm ? 0.8 : 1.0 - 0.45 * smooth(u)) : h * 0.07 * v.accumulation * (rm ? 1 : grow);
      c.uCenter.value.copy(focus); c.uSize.value = radius * 2 * 2.4; c.uPush.value = 0.08 * h; c.uTint.value.set(...v.tint);
-     c.uA.value = cue.blueCore * f; c.uTime.value = timeUniform; c.uHot.value = heavy ? 1 : 0.35;
+     c.uA.value = cue.blueCore * f * (heavy ? 0.8 : 1); c.uTime.value = timeUniform; c.uHot.value = heavy ? 1 : 0.35;
      fx.core.visible = c.uA.value > 0.002; face = Math.min(face, f);
      if (heavy) { // concentration rings converge on the same focus point (preparation only)
-      const p = U(fx.pulse); p.uCenter.value.copy(focus); p.uSize.value = h * 1.3; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
+      const p = U(fx.pulse); p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
       p.uConvA.value = cue.blueCore * f; p.uConv.value = rm ? 0.35 : u; fx.pulse.visible = true;
      }
     }
@@ -254,10 +261,14 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
    if (rel && cue.heavyPulse > 0.002) {
     const v = S1_VISUAL_VARIANTS[rel.clipId];
     if (v) {
-     mid.copy(P.rh).add(P.lh).multiplyScalar(0.5); focus.copy(mid).lerp(P.chest, 0.35); focus.y += 0.03 * h;
-     const f = faceFactor(focus), p = U(fx.pulse);
-     p.uCenter.value.copy(focus); p.uSize.value = h * 1.3; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
-     p.uRelA.value = cue.heavyPulse * f; p.uRel.value = rm ? 0.45 : phaseOf(rel, t); fx.pulse.visible = true; face = Math.min(face, f);
+     // G11: launch from the dominant hand: curved streak along the arm line + ONE impact ring centred on that hand, then dissipation.
+     const dom = bundle.hand?.[rel.clipId] ?? 'R', hp = dom === 'R' ? P.rh : P.lh, fp = dom === 'R' ? P.rf : P.lf;
+     focus.copy(hp).lerp(fp, 0.10);
+     const f = faceFactor(focus), p = U(fx.pulse), ph = phaseOf(rel, t);
+     p.uCenter.value.copy(focus); p.uSize.value = h * 0.95; p.uPush.value = 0.07 * h; p.uTint.value.set(...v.tint);
+     p.uRelA.value = cue.heavyPulse * f; p.uRel.value = rm ? 0.45 : ph; fx.pulse.visible = true; face = Math.min(face, f);
+     const arcMesh = dom === 'R' ? fx.arcR : fx.arcL;
+     face = Math.min(face, placeArc(arcMesh, hp, fp, cue.heavyPulse, HEAVY_LAUNCH, dom === 'R' ? +1 : -1, Math.min(1, ph * 1.15), 1, rm));
     }
    }
   }
@@ -276,17 +287,20 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   let libProbe = null;
   if (libLayer) {
-   if (cue.liberationField > 0.002 && (have || proxyAnchors) && (proxyAnchors || status.chest === 'REAL_BONE')) {
+   const g11 = bundle.timeline?.g11, bfLive = !!g11 && t >= g11.butterflyStart && t < g11.butterflyEnd; // G11: the cancel bridges the reveal->decay gap
+   if ((cue.liberationField > 0.002 || bfLive) && (have || proxyAnchors) && (proxyAnchors || status.chest === 'REAL_BONE')) {
     readPose(); headW.copy(P.head); headW.y += 0.05 * h;
     libProbe = libLayer.update({t, cue, rm, bundle, headW, P: {chest: P.chest, rh: P.rh, lh: P.lh}, stage: arena});
    } else libLayer.hide();
    for (const o of Object.values(libLayer.meshes)) if (o.visible) shown++;
   }
+  // G11 body motion trails (history table is optional; without it nothing is drawn)
+  const trailProbe = trails.update(trailHistory, t, rm); if (trails.mesh.visible) shown++;
   for (const o of Object.values(fx)) if (o.visible) { shown++; if (live) { U(o).uHeadW.value.copy(headW); U(o).uFaceR.value = 0.14 * h; } }
   visible = root.visible = shown > 0;
   last = Object.freeze({presentationTime: t, clipId: id, beat: cue.beat, levels: Object.freeze({blueAttack: cue.blueAttack, blueCore: cue.blueCore, heavyPulse: cue.heavyPulse, ...(libLayer ? {liberationField: cue.liberationField} : {}), ...(skillLayer ? {healingPulse: cue.healingPulse, guidedButterflies: cue.guidedButterflies} : {})}),
    skill: skillProbe && Object.freeze(skillProbe),
-   liberation: libProbe && Object.freeze(libProbe), starGate: libProbe ? libProbe.starGate : 0,
+   trails: trailProbe && Object.freeze(trailProbe), liberation: libProbe && Object.freeze(libProbe), starGate: libProbe ? libProbe.starGate : 0,
    drawCalls: shown, minFaceFactor: face, anchorStatus, reducedMotion: rm, label: COMBAT_VFX_LABEL, pending: cue.pending, provenance: cue.eventProvenance.map(p => p.id)});
   return last;
  }
@@ -297,8 +311,11 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   release() { if (!disposed) { hide(); last = null; } },
   dispose() {
    if (disposed) return; disposed = true; hide(); root.removeFromParent();
-   skillLayer?.dispose(); libLayer?.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
+   skillLayer?.dispose(); libLayer?.dispose(); trails.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
   },
+  /** G11: read-only world-position history of the body anchors (see combat-vfx-trails.mjs); null clears it. */
+  setTrailHistory(hist) { trailHistory = hist ?? null; },
+  get hasTrailHistory() { return !!trailHistory; },
   get root() { return root; },
   get disposed() { return disposed; },
   get visible() { return visible; },

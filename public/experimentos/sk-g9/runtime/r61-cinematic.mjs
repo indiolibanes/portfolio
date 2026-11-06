@@ -3,6 +3,7 @@ import {claimCameraOwner} from './camera-ownership.mjs';
 import {setSourceReviewVfxIsolation} from './source-review-visuals.mjs';
 import {buildR61Plan,r61CueAt,r61CameraPose,R61_STATUS} from './r61-plan.mjs';
 import {r62CameraFrame,R62_DEFAULT_ORBIT_PERIOD} from './r62-camera.mjs';
+import {buildTrailHistory} from './combat-vfx-trails.mjs';
 import {createRigCameraReader,prepareCameraGuide,smartCameraFrame,projectCameraPoints} from './smart-camera.mjs';
 
 /** No extra RAF, no alternate body mixer and no writes to GLB source tracks. */
@@ -87,9 +88,9 @@ function createR61Camera(stage,plan,getVfx,profile=null){
  * B1 and the identity of Heavy Attack / Skill / Burst are not canonically proven.
  * The game timelines, sourceFrame PSA and foot-contact markers are NOT invented.
  */
-export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null}={}){
+export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null,bodyStability='standard'}={}){
  if(!stage?.camera||!stage?.orbit||!stage?.restoreCamera)throw Error('R6.1 stage required');
- const plan=buildR61Plan(library);
+ const plan=buildR61Plan(library,{bodyStability});
  const body=createComboDirector(T,root,plan.clips,plan.schedule,{entry:0,onEvent});
  // R6.2 opt-in: an isolated score adapter ({apply,release,dispose}) built from the plan. While it
  // is present the legacy R5 PREPARATION cue (R3 coreCrystal/coreCage) is held at AMBIENT until the
@@ -104,6 +105,8 @@ export function createR61Director(T,root,library,stage,{getVfx=()=>null,camera=t
  if(!['layer','legacy'].includes(liberationMode)||(lib&&liberationMode==='layer'&&!score.liberation))throw Error('R6.2 liberation mode must be layer (with a layer) or legacy');
  const legacyState=(c,t)=>!score?c.state:lib?(liberationMode==='layer'?'AMBIENT':t<lib.start?'AMBIENT':c.state):t<burstStart?'AMBIENT':c.state;
  const starGate=t=>!lib?null:liberationMode==='layer'?(score.last?.starGate??0):(t<lib.start?0:1);
+ // G11: deterministic motion-trail history (30 Hz table through the body director's own seek; no second mixer).
+ if(score?.setTrailHistory){try{const th=buildTrailHistory(root,t=>body.seek(t),plan.schedule.duration);if(th)score.setTrailHistory(th);body.seek(0);}catch(e){score.setTrailHistory(null);body.seek(0);}}
  if(cameraProfile?.smart){
   const h=getVfx()?.scale??2;
   try{const rigReader=createRigCameraReader(T,root,h),key=Object.values(plan.clips).map(c=>c.uuid).join('|')+'|'+h;

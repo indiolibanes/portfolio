@@ -213,13 +213,35 @@ export function authorS3Events(schedule) {
 }
 
 /** Timeline consumed by the S3 camera and director (pure; null without a Burst). */
+/**
+ * G11 · AUTHORIAL colour / cancel score of the Outer Stellarealm. Pure function of the schedule (no PSA, no
+ * sourceFrame, no game timestamps). BLUE (prepare/expand) -> VIOLET -> GOLD (clearly before the cancel) ->
+ * GIANT BUTTERFLY (the field itself is cancelled as two wings + axis) -> field gone -> sequence restart.
+ * Fractions are of the real Burst02 segment; the butterfly is anchored to the END of the Burst so it sits on
+ * the authorial cancel / return-to-rotation beat and ends inside the Liberation decay window.
+ */
+export const G11_PLACEMENT = Object.freeze({violet: [0.41, 0.53], gold: [0.667, 0.814], butterflyLeadS: 0.72, butterflyPeakLeadS: 0.27, butterflyOpenS: 0.35, butterflyDissolveS: 0.30, butterflyTailS: 0.58});
+export function g11Timeline(schedule, decayEnd = null) {
+ const burst = schedule?.segments?.find(s => s.id === S3_LIBERATION_CLIP); if (!burst) return null;
+ const len = burst.end - burst.start, p = G11_PLACEMENT, at = f => burst.start + f * len;
+ const bfStart = burst.end - p.butterflyLeadS, bfPeak = burst.end - p.butterflyPeakLeadS;
+ const bfEnd = Math.min(burst.end + p.butterflyTailS, (decayEnd ?? schedule.duration) - 0.05, schedule.duration - 0.05);
+ const out = {violetStart: at(p.violet[0]), violetFull: at(p.violet[1]), goldStart: at(p.gold[0]), goldFull: at(p.gold[1]),
+  butterflyStart: bfStart, butterflyOpen: bfStart + p.butterflyOpenS, butterflyPeak: bfPeak, butterflyDissolve: bfPeak + p.butterflyDissolveS, butterflyEnd: bfEnd,
+  basis: 'AUTHORIAL_DERIVED_FROM_SCHEDULE', sourceFrame: null};
+ const k = ['violetStart', 'violetFull', 'goldStart', 'goldFull', 'butterflyStart', 'butterflyOpen', 'butterflyPeak', 'butterflyDissolve', 'butterflyEnd'];
+ for (let i = 1; i < k.length; i++) if (!(out[k[i]] > out[k[i - 1]])) fail('G11 colour/butterfly windows are not monotonic');
+ return Object.freeze(out);
+}
+
 export function s3Timeline(schedule) {
  const ev = authorS3Events(schedule).filter(e => e.basis === 'AUTHORIAL'), by = id => ev.find(e => e.id === id);
  if (!by('LIB.condense')) return null;
  const skill = schedule.segments.find(s => s.id === S2_SKILL_CLIP), rec = schedule.segments.find(s => s.id === S3_RECOVERY_CLIP);
  return Object.freeze({skillEnd: skill.end, start: by('LIB.condense').start, closePeak: by('LIB.condense').peak, closeEnd: by('LIB.condense').end,
   revealStart: by('LIB.reveal').start, revealPeak: by('LIB.reveal').peak, peak: by('LIB.peak').peak, revealEnd: by('LIB.reveal').end,
-  end: by('LIB.decay')?.end ?? by('LIB.reveal').end, recoveryStart: rec?.start ?? null, duration: schedule.duration});
+  end: by('LIB.decay')?.end ?? by('LIB.reveal').end, recoveryStart: rec?.start ?? null, duration: schedule.duration,
+  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null)});
 }
 
 /** S1 + S2 + S3 bundle. Burst02 -> LIBERATION, Idle01 -> RECOVERY, both SOURCE_ROLE_UNVERIFIED. */
