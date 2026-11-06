@@ -28,14 +28,15 @@ const wrap = d => ((d + 540) % 360) - 180;
 
 /** Compare two snapshots. `animated` restricts local comparison to bones the clips actually drive. */
 export function compareSnapshots(T, a, b, bones, animated) {
-  let sum = 0, n = 0, max = 0, maxBone = null;
-  bones.forEach((bone, i) => { if (!animated.has(bone.name)) return; const d = qAngle(a.local[i].q, b.local[i].q); sum += d; n++; if (d > max) { max = d; maxBone = bone.name; } });
+  let sum = 0, n = 0, max = 0, maxBone = null; const per = [];
+  bones.forEach((bone, i) => { if (!animated.has(bone.name)) return; const d = qAngle(a.local[i].q, b.local[i].q); sum += d; n++; per.push([bone.name, d]); if (d > max) { max = d; maxBone = bone.name; } });
+  const topBones = per.sort((x, y) => y[1] - x[1]).slice(0, 6).filter(([, d]) => d > 1e-6).map(([bone, d]) => ({bone, deg: +d.toFixed(3)}));
   const world = {};
   for (const name of Object.keys(a.world)) {
     const pa = a.world[name], pb = b.world[name], ya = yawOf(T, pa.q), yb = yawOf(T, pb.q);
     world[name] = {displacementM: +pa.p.distanceTo(pb.p).toFixed(5), deltaM: pb.p.clone().sub(pa.p).toArray().map(v => +v.toFixed(5)), rotationDeg: +qAngle(pa.q, pb.q).toFixed(3), yawDeltaDeg: ya === null || yb === null ? null : +wrap(yb - ya).toFixed(3)};
   }
-  return {meanLocalDeg: n ? +(sum / n).toFixed(3) : 0, maxLocalDeg: +max.toFixed(3), maxLocalBone: maxBone, comparedBones: n, world};
+  return {meanLocalDeg: n ? +(sum / n).toFixed(3) : 0, maxLocalDeg: +max.toFixed(3), maxLocalBone: maxBone, topBones, comparedBones: n, world};
 }
 
 /** Pose a single clip at clip-time t on a fresh mixer (no blend) and capture it. */
