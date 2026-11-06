@@ -1,3 +1,4 @@
+import {claimBodyOwner} from './animation-ownership.mjs';
 /** Reference playback. One action owns every keyed TRS property; no facial writes. */
 export const ORIGINAL_IDLE_IDS = ['SK_IDLE_01_ORIGINAL','SK_IDLE_02_ORIGINAL','SK_IDLE_03_ORIGINAL'];
 export function findOriginalClip(clips,id,layer='composed') {
@@ -6,10 +7,12 @@ export function findOriginalClip(clips,id,layer='composed') {
  return clips.find(c=>c.name===name)??null;
 }
 export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent=()=>{},mixerFactory=r=>new T.AnimationMixer(r)}={}) {
+ if(!Number.isFinite(enter)||!Number.isFinite(exit)||enter<.05||exit<.05)throw Error('Invalid transition timing');
  if(!clip||!Number.isFinite(clip.duration)||clip.duration<=0)throw Error('Original idle unavailable');
  const bindings=clip.tracks.map(t=>t.name);if(new Set(bindings).size!==bindings.length)throw Error('Duplicate property ownership');
  const snapshot=[];root.traverse(o=>{if(o.isBone)snapshot.push({o,p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone()});});
- const mixer=mixerFactory(root),action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;
+ const releaseOwner=claimBodyOwner(root,'original:'+clip.name);let disposed=false;
+ let mixer,action;try{mixer=mixerFactory(root);action=mixer.clipAction(clip);}catch(e){releaseOwner();throw e;}action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;
  let phase='idle',paused=false,clock=0,entryClock=0,release=0,weight=0,releaseWeight=0,updates=0,speed=1,pending=null,queued=false;
  const timing=p=>{if(!Number.isFinite(p.enter)||!Number.isFinite(p.exit)||p.enter<.05||p.exit<.05)throw Error('Invalid transition timing');};timing({enter,exit});
  const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -19,18 +22,30 @@ export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent
  function recover(){if(phase==='idle'||phase==='exit')return;release=0;releaseWeight=weight;phase='exit';action.paused=true;emit('recovery');}
  function finish(){action.stop();weight=0;restore();phase='idle';emit('end');if(queued){queued=false;begin();}}
  return {
- start(){if(phase==='idle')begin();else{queued=true;recover();}},
+ start(){if(disposed)return;if(phase==='idle')begin();else{queued=true;recover();}},
  interrupt(){queued=false;recover();},
  setPaused(v){paused=!!v;},
  setSpeed(v){if(!Number.isFinite(v)||v<.1||v>2)throw Error('Invalid speed');speed=v;},
  configure(p){const next={enter,exit,...pending,...Object.fromEntries(Object.entries(p).filter(([k])=>['enter','exit'].includes(k)))};timing(next);if(phase==='idle')({enter,exit}=next);else pending=next;},
- advance(dt){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(paused||phase==='idle'||dt===0)return;
-  // Entry and recovery are outside source time; speed changes only playback.
-  if(phase==='entry'){entryClock=Math.min(enter,entryClock+dt);weight=ease(entryClock/enter);action.setEffectiveWeight(weight);mixer.update(0);updates++;if(entryClock>=enter){phase='run';action.paused=false;emit('execution');}}
-  else if(phase==='run'){const step=Math.min(dt*speed,clip.duration-clock);action.paused=false;weight=1;action.setEffectiveWeight(1);mixer.update(step);updates++;clock=Math.min(clip.duration,clock+step);if(clock>=clip.duration-1e-8)recover();}
-  else {release=Math.min(exit,release+dt);weight=releaseWeight*(1-ease(release/exit));action.setEffectiveWeight(weight);mixer.update(0);updates++;if(release>=exit)finish();}
+ advance(dt){if(disposed)return;if(!Number.isFinite(dt)||dt<0)throw Error('Invalid dt');if(paused||phase==='idle'||dt===0)return;
+  // Carry the unused frame time across phase boundaries without extra rendered frames.
+  let remaining=dt;
+  for(let transitions=0;transitions<8&&remaining>1e-12&&phase!=='idle';transitions++){
+   if(phase==='entry'){
+    const used=Math.min(remaining,Math.max(0,enter-entryClock));entryClock+=used;remaining-=used;weight=ease(entryClock/enter);
+    if(entryClock>=enter-1e-10){phase='run';emit('execution');}
+   }else if(phase==='run'){
+    const used=Math.min(remaining,Math.max(0,(clip.duration-clock)/speed));clock=Math.min(clip.duration,clock+used*speed);remaining-=used;weight=1;
+    if(clock>=clip.duration-1e-10)recover();
+   }else{
+    const used=Math.min(remaining,Math.max(0,exit-release));release+=used;remaining-=used;weight=releaseWeight*(1-ease(release/exit));
+    if(release>=exit-1e-10)finish();
+   }
+  }
+  action.time=clock;action.paused=true;action.setEffectiveWeight(weight);mixer.update(0);updates++;
+  if(phase==='idle')restore();
  },
- dispose(){queued=false;action.stop();mixer.uncacheRoot(root);restore();phase='idle';},
+ dispose(){if(disposed)return;disposed=true;queued=false;action.stop();mixer.uncacheRoot(root);restore();phase='idle';releaseOwner();},
  get state(){return {phase,paused,clock,entryClock,release,weights:[weight],updates,queued,speed,duration:clip.duration,total:clip.duration,progress:clock/clip.duration,parameters:{enter,exit},pending,clip:clip.name,mode:'REFERENCE_QA',timingOriginal:speed===1,owners:bindings.length,loop:'ONCE'};}
  };
 }

@@ -6,15 +6,24 @@ function valid(entry){
   Number.isSafeInteger(entry.bytes)&&entry.bytes>16&&entry.bytes<=MAX_BYTES&&
   typeof entry.sha256==='string'&&/^[0-9a-f]{64}$/.test(entry.sha256);
 }
-export async function getPrivateManifest({signal}={}){
+/** Public-safe diagnostics: do not expose object keys, secrets, JWT or R2 errors. */
+export async function inspectPrivateManifest({signal}={}){
  try{
   const response=await fetch(MANIFEST,{credentials:'same-origin',cache:'no-store',signal,headers:{Accept:'application/json'}});
-  if(!response.ok)return null;
-  const data=await response.json();
-  if(data.schema!=='shorekeeper-private-assets/v1'||!valid(data.model)||!Array.isArray(data.libraries)||data.libraries.length>4)return null;
-  if(!data.libraries.every(x=>valid(x)&&typeof x.id==='string'&&/^[a-z0-9][a-z0-9_-]{0,39}$/.test(x.id)))return null;
-  return data;
- }catch{return null;}
+  if(response.status===401||response.status===403)return {state:'denied',manifest:null,httpStatus:response.status};
+  if(response.status===503)return {state:'unconfigured',manifest:null,httpStatus:503};
+  if(response.status===404)return {state:'missing',manifest:null,httpStatus:404};
+  if(!response.ok)return {state:'unavailable',manifest:null,httpStatus:response.status};
+  let data;try{data=await response.json();}catch{return {state:'invalid',manifest:null,httpStatus:200};}
+  if(data.schema!=='shorekeeper-private-assets/v1'||!valid(data.model)||!Array.isArray(data.libraries)||data.libraries.length>4||
+     !data.libraries.every(x=>valid(x)&&typeof x.id==='string'&&/^[a-z0-9][a-z0-9_-]{0,39}$/.test(x.id))||
+     new Set(data.libraries.map(x=>x.id)).size!==data.libraries.length)return {state:'invalid',manifest:null,httpStatus:200};
+  return {state:'ready',manifest:data,httpStatus:200};
+ }catch(e){return {state:signal?.aborted?'cancelled':'network',manifest:null,httpStatus:null};}
+}
+/** Backward-compatible read for consumers needing only the manifest. */
+export async function getPrivateManifest(options={}){
+ return (await inspectPrivateManifest(options)).manifest;
 }
 export async function getPrivateFile(entry,{kind='model',signal}={}){
  if(!valid(entry)||!['model','library'].includes(kind))throw Error('Manifesto de asset privado inválido.');

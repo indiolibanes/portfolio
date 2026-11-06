@@ -3,8 +3,9 @@ import '../../../styles/shorekeeper-sk-lab.css';
 import '../../../styles/shorekeeper-material3.css';
 import '../../../styles/shorekeeper-presentation.css';
 import {EXPRESSION_LIBRARY} from '../../../scripts/shorekeeper/expression-library.mjs';
+import {APPROVED_MANUAL_GESTURES} from '../../../scripts/shorekeeper/approved-manual-gallery.mjs';
 const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
-const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
+const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integration-20261104';
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -12,13 +13,13 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="robots" content="index,follow"/>
-<meta name="description" content="Laboratório 3D independente da Shorekeeper, com importação local ou acesso privado autenticado via R2."/>
-<title>Shorekeeper · Laboratório 3D</title>
+<meta name="description" content="Laboratório independente da Shorekeeper, com importação local ou acesso privado autenticado."/>
+<title>Shorekeeper · Apresentação</title>
 </head>
 <body class="sk-page">
 <main class="sk-lab" data-sk-lab data-revision={revision} data-branch={branch} data-state="empty">
 <header class="sk-top">
-<a href="/" class="sk-back" aria-label="Voltar ao portfólio">←</a>
+<a href="/experimentos/" class="sk-back" aria-label="Voltar aos experimentos">←</a>
 <div>
 <p class="sk-eyebrow">SHOREKEEPER · APRESENTAÇÃO</p>
 <h1>Shorekeeper <span>A moment with you</span>
@@ -42,14 +43,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <span aria-hidden="true">◎</span>
 <p class="sk-eyebrow">UM INSTANTE DE CONTEMPLAÇÃO</p>
 <h2>Um espaço feito<br/>para a Shorekeeper.</h2>
-<p>Carregamento privado autenticado quando disponível. Alternativamente, selecione seu modelo local para contemplação e inspeção.</p>
+<p>Modelo e movimentos disponíveis pelo acervo privado autenticado. Alterne entre contemplação e combate sem precisar importar arquivos.</p>
 </div>
 <div class="sk-readouts">
 <span data-readout="fps" hidden>FPS —</span>
 <span data-readout="counts">Sem modelo</span>
 <button data-action="capture" disabled hidden>↓ PNG</button>
 </div>
-<p class="sk-status" data-sk-status role="status" aria-live="polite">Selecione um arquivo GLB local.</p>
+<p class="sk-status" data-sk-status role="status" aria-live="polite">Verificando acesso ao acervo privado…</p>
 </section>
 <aside class="sk-panel" id="sk-controls" aria-label="Controles de inspeção">
 <div class="sk-panel-grip">
@@ -58,6 +59,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 </label>
 </div>
 <div class="sk-file">
+<div class="sk-maintenance-only" data-sk-manual-import>
 <label for="sk-file">Modelo privado <small>GLB local · até 130 MB</small>
 </label>
 <input id="sk-file" data-sk-file type="file" accept=".glb,model/gltf-binary"/>
@@ -67,7 +69,23 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <button type="button" data-action="rememberPrivate" disabled>Guardar neste navegador</button>
 <button type="button" data-action="forgetPrivate" disabled>Esquecer cópia local</button>
 </div>
-<p class="sk-help" data-private-cache-status role="status" aria-live="polite">Verificando acesso privado autenticado e cópia local; o modelo não é distribuído publicamente.</p>
+<p class="sk-help" data-private-cache-status role="status" aria-live="polite">Importe o GLB local ou utilize o acesso privado autenticado. A cópia guardada permanece neste navegador.</p>
+</div>
+<details class="sk-private-r2-panel" data-r2-panel open>
+<summary>Acervo privado · modelo e movimentos</summary>
+<p class="sk-help" data-r2-connection-state role="status" aria-live="polite">Verificando o manifesto autenticado…</p>
+<div class="sk-help" data-r2-library-list role="list" aria-label="Bibliotecas e clipes disponíveis">Bibliotecas ainda não verificadas.</div>
+<div class="sk-actions"><button type="button" data-r2-recheck>Verificar acesso e carregar bibliotecas</button></div>
+<div class="sk-actions"><button type="button" data-r2-audit>Diagnosticar caminhos e objetos do R2</button></div>
+<p class="sk-help" data-r2-audit-status role="status" aria-live="polite">Diagnóstico ainda não executado. Não publica nomes de objetos nem credenciais.</p>
+<div class="sk-help" data-r2-audit-results role="list" aria-label="Diagnóstico dos arquivos R2"></div>
+<p class="sk-help">O modelo e as bibliotecas GLB são privados. Uma biblioteca listada no manifesto só aparece como pronta após seus clipes terem sido carregados e reconhecidos. Falhas de autorização não são contornadas.</p>
+<div class="sk-actions" aria-label="Bursts originais reconhecidas">
+<button type="button" data-r2-quick-burst="SK_BURST_01_ORIGINAL" disabled>Burst 01 · original</button>
+<button type="button" data-r2-quick-burst="SK_BURST_02_ORIGINAL" disabled>Burst 02 · original</button>
+</div>
+<p class="sk-help">As Bursts são animações corporais dos arquivos privados. Borboletas, campo estelar, Core e Stellarealm são efeitos procedurais locais, controlados separadamente em Atmosfera celestial. Não há sincronização automática verificada entre os dois sistemas.</p>
+</details>
 <progress data-load-progress max="1" value="0" hidden aria-label="Progresso de carregamento">
 </progress>
 <div class="sk-actions">
@@ -76,23 +94,103 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 </div>
 <details>
 <summary>Privacidade e identificação</summary>
-<p class="sk-help">A interface é pública, mas downloads privados exigem Cloudflare Access válido. O modelo enviado pelo seletor local não é transferido ao servidor. Cópias em cache ficam neste navegador.</p>
+<p class="sk-help">Esta página de preview pode ser pública. O GLB é lido pela File API e não é enviado ao servidor. Noindex não é controle de acesso.</p>
 <pre data-model-id>SHA-256: aguardando arquivo</pre>
 </details>
 </div>
+<details class="sk-vfx-controls" data-legacy-version-menu open>
+<summary>Atmosfera celestial <small>prévia manual</small></summary>
+<p class="sk-help">Borboletas, domínio estelar e núcleos de luz autorais. Selecione uma fase; os efeitos permanecem independentes das animações.</p>
+<div class="sk-vfx-phases" aria-label="Fases dos efeitos">{[['OFF','Desligado'],['AMBIENT','Ambiente'],['PREPARATION','Preparação'],['STELLAREALM','Stellarealm'],['RESONANCE_PEAK','Ápice'],['RECOVERY','Recuperação']].map(([id,label])=><button type="button" data-vfx-state={id} aria-pressed={id==='OFF'?'true':'false'}>{label}</button>)}</div>
+<div class="sk-vfx-systems">{[['butterflies','Borboletas'],['stellarealm','Domínio estelar'],['collapsedCore','Núcleo de luz']].map(([id,label])=><label><input type="checkbox" data-vfx-system={id} checked/>{label}</label>)}</div>
+<div class="sk-vfx-r2" data-vfx-r2 hidden>
+<label>Perfil em comparação <select data-vfx-profile><option value="r2">R2</option><option value="r3">R3</option><option value="r4">R4</option><option value="r5">R5</option></select></label><button type="button" data-vfx-next>Próxima fase</button><label>Modo <select data-vfx-r2-mode>{['BOTH','FIELD_GAMEPLAY','CINEMATIC_CANOPY'].map((m)=><option value={m}>{m}</option>)}</select></label>
+<label>Estágio (STAGE_REFERENCE_UNVERIFIED) <select data-vfx-r2-stage><option value="outer">Outer · azul</option><option value="inner">Inner · violeta</option><option value="supernal">Supernal · dourado</option></select></label>
+<label>Borboleta <select data-vfx-exemplar><option value="swarm">Enxame</option><option value="0">Asas abertas</option><option value=".7">Meio batimento</option><option value="1.4">Asas fechadas</option></select></label><label>Ângulo da prova <select data-vfx-exemplar-angle><option value="0">0°</option><option value=".7853981634">45°</option><option value="1.5707963268">90°</option></select></label>
+<p class="sk-help">R4 opt-in: <code>?vfx=r4</code>. Perfil de inspeção (<code>?vfx=r2</code> compara a Rodada 2): borboleta cristalina, campo de gameplay no chão, núcleo colapsado em fases e cobertura celeste. Preview manual; QA visual pendente.</p>
+</div>
+<div class="sk-actions"><button type="button" data-vfx-story>Sequência celestial · 18 s</button><button type="button" data-vfx-story-stop>Voltar à câmera manual</button></div><label class="sk-toggle"><input type="checkbox" data-vfx-story-camera/> Câmera narrativa opcional</label>
+<p data-vfx-status class="sk-help" role="status" aria-live="polite">Desligado · QA visual pendente</p>
+<button type="button" data-vfx-celestial-view="front">Campo e céu · frontal</button><button type="button" data-vfx-celestial-view="quarter">Campo e céu · ¾</button><button type="button" data-vfx-pause>Pausar efeitos</button>
+<details class="sk-vfx-qa"><summary>Comparar e registrar</summary>
+<div class="sk-actions"><button type="button" data-vfx-view="front">Frontal</button><button type="button" data-vfx-view="quarter">Três quartos</button><button type="button" data-vfx-capture>↓ Captura local</button><button type="button" data-vfx-report>↓ Métricas locais</button><button type="button" data-vfx-context>Testar restauração WebGL</button></div>
+<p class="sk-help">A prévia funciona sem modelo. Capturas e métricas ficam no seu dispositivo. A confirmação artística e o teste no Samsung Internet estão pendentes.</p>
+</details>
+</details>
+<details data-r61-preview hidden open class="sk-vfx-controls">
+ <summary>R6.1 · Apresentação cinematográfica experimental</summary>
+ <p class="sk-help"><strong>Uma sequência completa, não canônica:</strong> três clipes de ataque básico → L02 (candidato HA) → Skill01 (candidato RS) → Burst02 (candidato Liberation) → campo Outer autoral → Idle01. O movimento B1 de mãos em concha continua sem correspondência comprovada; não é sintetizado.</p>
+ <div class="sk-actions"><button type="button" data-r61-start disabled>Executar R6.1 · ciclo completo</button><label class="sk-toggle"><input type="checkbox" data-r61-camera checked/> Câmera cinematográfica (desativada em movimento reduzido)</label></div>
+ <label>Inspeção temporal da sequência<input data-r61-seek disabled type="range" min="0" max="1" step=".0001" value="0"/></label>
+ <p data-r61-time class="sk-help" role="status" aria-live="polite">Aguardando fontes originais autenticadas. Controles de pausa, velocidade e interrupção são compartilhados.</p>
+ <p class="sk-help">Exige os sete clipes de origem; não utiliza fallback silencioso. Sem música automática. A câmera e os VFX são uma interpretação autoral, independente de markers PSA e da coreografia original. Sem certificação de aterrissagem, fidelidade, GPU ou teste Samsung. Acesso opt-in via <code>?r61=1</code>.</p>
+ </details><div data-r5-tools data-legacy-version-menu hidden><button type="button" data-r5-rollback>Restaurar perfil R4</button><p class="sk-help">R5 experimental · aprovação visual e teste no dispositivo pendentes.</p></div><details data-source-review data-legacy-version-menu hidden open><summary>Inspeção de fontes · QA manual</summary><p class="sk-help">HA, RS e Ult aguardam correspondência canônica. A sequência 3 BA → HA → RS → Ult → Outer → recuperação permanece bloqueada. Estes controles reproduzem candidatos sem atribuir habilidades.</p><label>Clipe<select data-source-id><option>SK_ATTACK_01_ORIGINAL</option><option>SK_ATTACK_02_ORIGINAL</option><option>SK_ATTACK_03_ORIGINAL</option><option>SK_ATTACK_L02_ORIGINAL</option><option>SK_SKILL_01_ORIGINAL</option><option>SK_BURST_01_ORIGINAL</option><option>SK_BURST_02_ORIGINAL</option></select></label><label>Variante<select data-source-variant><option>ORIGINAL</option><option>REBASED</option><option>ROOT_BODY_OWNED</option></select></label><button type="button" data-source-play>Reproduzir fonte · sem fades</button><label>Tempo do clipe<input data-source-seek type="range" min="0" max="1" step=".0001" value="0"/></label><p data-source-time role="status">sourceFrame PSA desconhecido. Tempo de GIF é independente.</p><p class="sk-help">A/B/C apenas para Bursts. Câmera mantida e VFX desligados ao iniciar. Pausar, velocidade e interromper usam os controles existentes. Interromper restaura o repouso; não simula aterrissagem. Não há reinício automático.</p></details><details data-combo-qa data-legacy-version-menu hidden><summary>Combo experimental · QA</summary><label>Root <select data-combo-root><option>ORIGINAL</option><option>REBASED</option><option>ROOT_BODY_OWNED</option></select></label><label class="sk-toggle"><input type="checkbox" data-combo-landing/> Landing R4 · experimental</label><label>Recuperação <select data-combo-recovery><option value="r4">R4 · referência</option><option value="r5">R5 · candidata</option></select></label><label class="sk-toggle"><input type="checkbox" data-combo-camera/> Câmera opcional · corpo inteiro</label><button type="button" data-combo-start>BasicAttack1–4 → Skill01 → Burst02 → recuperação</button><button type="button" data-combo-cancel hidden>Cancelar preparação</button><p data-combo-progress role="status" aria-live="polite"></p><label>Tempo determinístico<input data-combo-seek type="range" min="0" max="1" step=".001" value="0"/></label><p class="sk-help">Fontes privadas obrigatórias. Sem BasicAttack1–4, o fallback usa somente Burst02 e Idle01. Aterrissagem e transições aguardam QA visual.</p></details>
+<details data-mouth-qa data-legacy-version-menu hidden class="sk-mouth-qa" open>
+<summary>Gate B1 · isolamento da boca</summary>
+<p class="sk-help">Bancada privada de diagnóstico. V2 identifica os controles de base das duas provas; as geometrias podem ser comparadas sem promover candidatas.</p>
+<label class="sk-field">Referência GIF local<input data-mouth-reference type="file" accept="image/gif"/></label><img data-mouth-reference-image hidden alt="Referência local escolhida para comparação"/>
+<label class="sk-field">Geometria<select data-mouth-geometry><option value="canonical">Canônica · controle</option><option value="r2">Solda R2</option><option value="r3">Candidata R3</option><option value="r4">Candidata R4 · opt-in</option><option value="r5">Candidata R5 · opt-in</option></select></label>
+<label class="sk-field">Peso da prova<select data-mouth-weight>{[0,.25,.5,.75,1].map(v=><option value={v} selected={v===1}>{v}</option>)}</select></label>
+<div class="sk-actions">{[['NEUTRAL','Neutro'],['LITTLE_SMILE_V2','LITTLE_SMILE_V2 · base'],['MY_STAR_V2','MY_STAR_V2 · base']].map(([id,label])=><button type="button" data-mouth-probe={id}>{label}</button>)}</div>
+<p class="sk-help">Candidatas R2 exigem a solda de fita em tempo de execução: abra <code>?mouthQA=1&amp;mouthR2=1</code>. Estado: B_SMILE_VISUAL_CANDIDATE, sem aprovação humana.</p>
+<div class="sk-actions">{[['LITTLE_SMILE_R2_CANDIDATE','Sorrisinho · R2 candidata'],['MY_STAR_R2_CANDIDATE','My Star · R2 candidata'],['HELLO_R2_CANDIDATE','Olá · R2 candidata']].map(([id,label])=><button type="button" data-mouth-probe={id} disabled>{label}</button>)}</div>
+<p class="sk-help">R3: <code>?mouthQA=1&amp;mouthR3=1</code> · geometria local reversível · B_VISUAL_QA_PENDING.</p>
+<div class="sk-actions">{[['LITTLE_SMILE_R3_CANDIDATE','Sorrisinho R3'],['MY_STAR_R3_CANDIDATE','My Star R3 · olhos originais'],['MY_STAR_R3_EYES_SOFT','My Star R3 · olhos suaves'],['HELLO_R3_CLOSED','Olá · fechada'],['HELLO_R3_OPEN','Olá · entreaberta']].map(([id,label])=><button type="button" data-mouth-probe={id} disabled>{label}</button>)}</div>
+<details><summary>Expressões preservadas</summary><div class="sk-actions">{[['LOVE','Ternura'],['HELLO','Olá original'],['HOPE','Esperança / Serenidade · proposta'],['SURPRISE_SOFT','Surpresa'],['WORRIED','Preocupação'],['GLANCE','Olhar lateral']].map(([id,label])=><button type="button" data-mouth-probe={id}>{label}</button>)}</div></details>
+<details><summary>Morphs isolados</summary><div class="sk-actions">{['M_Smile_L','M_Smile_R','P_M_L_Add','P_M_R_Add','M_OpenSmall','P_M_ZL_Add','P_M_ZR_Add'].map(n=><button type="button" data-mouth-probe={'ISOLATE_'+n}>{n}</button>)}</div></details>
+<label class="sk-field">Superfície em inspeção<select data-mouth-component><option value="all">Aguardando GLB canônico</option></select></label>
+<label class="sk-toggle"><input data-mouth-flat type="checkbox"/> Normais · diagnóstico temporário</label>
+<div class="sk-actions">{[['face-front','Rosto frontal'],['face-quarter','Rosto ¾'],['mouth-front','Boca frontal'],['mouth-quarter','Boca ¾'],['mouth-profile','Boca perfil']].map(([id,label])=><button type="button" data-mouth-view={id}>{label}</button>)}</div>
+<div class="sk-actions"><button type="button" data-mouth-restore>Restaurar superfícies e neutro</button><button type="button" data-mouth-capture>Captura privada</button><button type="button" data-mouth-export>Atlas JSON privado</button></div>
+<p data-mouth-state class="sk-help" role="status">Carregue o GLB local. Nenhum movimento corporal inicia automaticamente nesta bancada.</p>
+</details>
 <nav class="sk-tabs" role="tablist" aria-label="Áreas de inspeção">{[['acting','Apresentação'],['face','Expressões']].map(([id,label],i)=>
 <button type="button" role="tab" id={'sk-tab-'+id} aria-controls={'sk-panel-'+id} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-tab={id}>{label}</button>)}</nav>
 
 
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
 <h2>Expressão.</h2>
-<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As demais experiências faciais aguardam validação visual.</p>
+<details data-facial-r6 data-legacy-version-menu hidden class="sk-mouth-qa"><summary>R6 · aguardando GLB</summary></details>
+<details class="sk-facial-recovery" data-approved-gallery open>
+<summary>Expressões aprovadas <small>apresentação manual</small></summary>
+<p class="sk-help">Gestos visuais aprovados na inspeção anterior. Apenas no GLB F2.0-A canônico; não mudam a geometria nem substituem as receitas R6/R7. As variantes Ternura/Serenidade conservam a identificação técnica para conferência. Retorno ao neutro automático; não iniciam combate.</p>
+<label class="sk-field">Contorno de apresentação
+<select data-approved-geometry aria-label="Perfil geométrico de contorno oral" disabled>
+<option value="canonical">Canônico (sem solda)</option>
+<option value="r4">R4 (comparativo)</option>
+<option value="r5">R5 (comparativo)</option>
+</select>
+</label>
+<p class="sk-help">As aprovações foram feitas em uma inspeção visual; confira o perfil de boca utilizado. A seleção é reversível e não modifica o GLB.</p>
+<div class="sk-facial-recovery-grid" aria-label="Expressões aprovadas para apresentação manual">
+{APPROVED_MANUAL_GESTURES.map(({id,label,detail})=><button type="button" data-approved-expression={id} title={detail} disabled>{label}</button>)}
+<button type="button" data-approved-expression="NEUTRAL" disabled>Repouso facial</button>
+</div>
+<p class="sk-help" data-approved-status role="status">Selecione o modelo canônico para apresentar as expressões.</p>
+</details>
+<p class="sk-help sk-face-guide">Piscada bilateral aprovada. As expressões manuais funcionam em Contemplação; durante a reprodução de combate a face é reservada ao clipe original. O laboratório anatômico R6 está em branch experimental separada.</p>
 <div class="sk-expressions" aria-label="Gestos faciais disponíveis">
 <button data-expression="LITTLE_SMILE" disabled hidden>Teste interno · Sorrisinho V2</button>
 <button data-expression="blink" aria-pressed="false" disabled><strong>Piscar</strong><small>Fechamento bilateral · movimento original do morph</small></button>
 </div>
 <label class="sk-field sk-slider" hidden aria-hidden="true">Intensidade da próxima expressão<input data-control="expressionIntensity" type="range" min="0.25" max="1" step="0.25" value="1" disabled/><output data-value="expressionIntensity">100%</output></label>
 <p class="sk-help" data-expression-state role="status">Aguardando modelo local.</p>
+<details data-facial-qa class="sk-facial-recovery" open>
+<summary>Expressões recuperadas pelo Claude <small>teste manual</small></summary>
+<p class="sk-help">Estas receitas usam os morphs do F2.0-A. São candidatas visuais, não expressões canônicas aprovadas. Os três idles e a piscada permanecem inalterados.</p>
+<div class="sk-facial-recovery-grid" aria-label="Expressões faciais experimentais">
+{[['MY_STAR','My Star'],['LITTLE_SMILE','Sorrisinho'],['LOVE','Ternura'],['HELLO','Olá'],['HOPE','Esperança']].map(([id,label])=><button type="button" data-facial-candidate={id} disabled>{label}</button>)}
+</div>
+<details class="sk-facial-extra"><summary>Mais três candidatos geométricos</summary>
+<div class="sk-facial-recovery-grid">{[['SURPRISE_SOFT','Surpresa suave'],['WORRIED','Preocupada'],['GLANCE','Olhar lateral']].map(([id,label])=><button type="button" data-facial-candidate={id} disabled>{label}</button>)}</div>
+</details>
+<div class="sk-actions"><button type="button" data-facial-candidate="NEUTRAL" disabled>Retorno ao neutro</button></div>
+<p class="sk-help" data-facial-state role="status" aria-live="polite">Abra o modelo e selecione Contemplação para experimentar.</p>
+<details class="sk-facial-extra"><summary>Câmera e captura para comparação</summary>
+<div class="sk-actions">{[['front','Frontal'],['quarter','¾'],['face','Rosto']].map(([id,label])=><button type="button" data-facial-camera={id} disabled>{label}</button>)}</div>
+<button type="button" data-facial-capture disabled>Salvar captura PNG local</button>
+</details>
+</details>
 <details class="sk-easter-egg" hidden><summary>Um lado mais brincalhão</summary><button data-expression="MEME_OPTIONAL" disabled>Modo meme · manual</button><p class="sk-help">Uma aproximação com os morphs disponíveis. Sem deformar a geometria para imitar o desenho.</p></details>
 <details class="sk-face-qa" hidden aria-hidden="true"><summary>Inspeção facial avançada (somente testes internos)</summary>
 
@@ -138,7 +236,7 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <h2>Presença & contemplação</h2>
 <p class="sk-help">Animações originais em um espaço privado. A piscada acompanha a contemplação.</p>
 <div data-original-section>
-<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 permanecem originais. As variantes CL · eixo reancorado alinham apenas o Root inicial à pose do modelo, preservando a rotação relativa. Compare as versões com câmera fixa; efeitos especiais não acompanham os PSA. GLBs permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
+<label class="sk-field">Modo<select data-control="presentationMode" disabled><option value="contemplation">Contemplação</option><option value="combat">Combate · experimental</option></select></label><details class="sk-library-import sk-maintenance-only"><summary>Adicionar ataques privados</summary><p class="sk-help">Adicione até quatro bibliotecas privadas por seleção. Burst 01 e 02 permanecem originais. As variantes CL · eixo reancorado alinham apenas o Root inicial à pose do modelo, preservando a rotação relativa. Compare as versões com câmera fixa; efeitos especiais não acompanham os PSA. GLBs permanecem locais.</p><label class="sk-field">Bibliotecas locais<input data-original-file type="file" accept=".glb,model/gltf-binary" multiple disabled/></label></details>
 <label class="sk-field">Sequência<select data-control="originalIdle" disabled>
 <option value="legacy" hidden>Sequência indisponível</option>
 <option value="SK_IDLE_01_ORIGINAL">Idle 01 · original</option>
@@ -282,14 +380,20 @@ const branch=process.env.CF_PAGES_BRANCH || 'release/shorekeeper-public-lab';
 <button data-action="errors">↓ Erros</button>
 <button data-action="copy">Copiar resumo</button>
 </div>
-<label class="sk-field">Restaurar configuração local<input type="file" data-config-file accept=".json,application/json" disabled/>
+<label class="sk-field sk-maintenance-only">Restaurar configuração local<input type="file" data-config-file accept=".json,application/json" disabled/>
 </label>
 <p class="sk-help">Capturas e relatórios são salvos somente quando você solicita. Contagens do Three.js não são uma medição de VRAM.</p>
 </details>
-<footer class="sk-panel-footer">Shorekeeper e Wuthering Waves são criações de © KURO GAMES. Personagens, modelos, animações e músicas pertencem aos respectivos titulares.<br/>Experiência técnica independente, não oficial e não afiliada à KURO GAMES. Nenhum arquivo do jogo é hospedado aqui; modelos e animações são carregados somente no navegador do visitante.</footer>
+<footer class="sk-panel-footer">Shorekeeper é personagem de Wuthering Waves © KURO GAMES.<br/>Agradecimento a seus criadores e à comunidade de preservação e estudo de animações. Experiência independente e não oficial. Nenhum asset privado integra o build público.</footer>
 </aside>
 </div>
 </main>
 <script>import {mountShorekeeperLab} from '../../../scripts/shorekeeper-sk-lab.mjs';const root=document.querySelector('[data-sk-lab]');if(root)mountShorekeeperLab(root);</script>
 </body>
 </html>
+
+<style is:global>
+  /* S5 only: hide historical R2-R5 / pre-G11.3 menus, never delete their
+     controls or diagnostics. Restore with the explicit legacyQA=1 query. */
+  .sk-lab[data-s5-menu="clean"] [data-legacy-version-menu] { display: none !important; }
+</style>

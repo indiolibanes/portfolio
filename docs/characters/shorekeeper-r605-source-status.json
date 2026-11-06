@@ -1,0 +1,193 @@
+{
+  "schema": "shorekeeper.r605.source-status/1",
+  "status": "R2_BYTES_VERIFIED_OFFLINE_SOURCE_FORENSICS_PARTIAL",
+  "canonicalModel": {
+    "expectedSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30",
+    "measuredSha256": "4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30"
+  },
+  "bundles": [
+    {
+      "id": "basic",
+      "sha256": "2efd607ea7d47f9d43c67eb1e0da7bb08445acb63eed60b66296966bb6fd318e",
+      "status": "VERIFIED_BYTES_VALIDATED_CLIPS",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "905849a9660c3ba3a5e83b6516513ca9b99c7c967bbf276d6ed24fadd969c809",
+          "duration": 3.633333444595337,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 110
+        },
+        {
+          "clipId": "SK_ATTACK_02_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "906b58a27b6ee44459fdbad91d652fd124eb0cd0dd96bfbd019cd1632f880d1b",
+          "duration": 5.733333110809326,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 174
+        },
+        {
+          "clipId": "SK_ATTACK_03_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "dd9f773619c9ad897dd501c9c69c26c9896ae2ca43d208a9cbefffbb2dfe8764",
+          "duration": 3.866666555404663,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 118
+        },
+        {
+          "clipId": "SK_ATTACK_04_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "a01437d19f6df7f4aa11bd5f1ed9beffa811a063e0c1d08e6090001c5eb94ed6",
+          "duration": 6,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 182
+        }
+      ],
+      "bytes": 5032460
+    },
+    {
+      "id": "advanced",
+      "sha256": "dfb8086c4c41cdc65a71ca5a9e8465e77f23cd2e50223cb5e79522d32363306a",
+      "status": "VERIFIED_BYTES_VALIDATED_CLIPS",
+      "clips": [
+        {
+          "clipId": "SK_ATTACK_L02_ORIGINAL",
+          "identity": "HEAVY_ATTACK_UNVERIFIED",
+          "clipHash": "d6e146d031b26610cbb5a49d6f969a3df01be3fb54fd151d7a414a9c0d7f716d",
+          "duration": 4.666666507720947,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 142
+        },
+        {
+          "clipId": "SK_SKILL_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "2457efe1541c0ad036492718eba326575c178c5fd483ec6729ec50fdc0665561",
+          "duration": 5.233333110809326,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 159
+        },
+        {
+          "clipId": "SK_SKILL_QTE_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "d293bc6fdfe648547324423392f80eb2105ab4d7e573445ba2c8d53b8924f64e",
+          "duration": 5.133333206176758,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 156
+        },
+        {
+          "clipId": "SK_AIR_SKILL_01_ORIGINAL",
+          "identity": "UNVERIFIED_THIS_RUN",
+          "clipHash": "bba749f4a78c96ed037a32a0a4682f16531f4497c876b2753b573bba11c51b2d",
+          "duration": 2.1666667461395264,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "NOT_FULLY_FORENSICALLY_SAMPLED",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 67
+        }
+      ],
+      "bytes": 4689040
+    },
+    {
+      "id": "burst",
+      "sha256": "984f7b58ae5b32560509834d75793fd298e51b49a2a062a4a7a7fba85b6fc35e",
+      "status": "VERIFIED_BYTES_VALIDATED_CLIPS",
+      "clips": [
+        {
+          "clipId": "SK_BURST_01_ORIGINAL",
+          "identity": "LIBERATION_MAPPING_UNVERIFIED",
+          "clipHash": "eccc08d3d9f6cc25d0287972e605410d05b50a281f0a2e5ea907e1fb9a22b57c",
+          "duration": 6,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "MEASURED_PRIVATELY_30_60_WITH_GEOMETRIC_REST_CALIBRATION",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 182
+        },
+        {
+          "clipId": "SK_BURST_02_ORIGINAL",
+          "identity": "LIBERATION_MAPPING_UNVERIFIED",
+          "clipHash": "f9eae22876b9235b9f034cc6514094870de94f8c4bc42a6a750bb6c94bdaa2e2",
+          "duration": 5.433333396911621,
+          "trackTimes": "EXPORTED_PRIVATELY",
+          "worldRotation": "MEASURED_PRIVATELY_30_60_WITH_GEOMETRIC_REST_CALIBRATION",
+          "soleContact": "NOT_CERTIFIED",
+          "trackCount": 729,
+          "rootKeyCount": 165
+        }
+      ],
+      "bytes": 2800712
+    }
+  ],
+  "variants": [
+    "ORIGINAL",
+    "REBASED",
+    "ROOT_BODY_OWNED"
+  ],
+  "requiredEvents": [
+    "PREP",
+    "HANDS_CLOSE",
+    "ASCENT",
+    "ROTATION_START",
+    "ROTATION_END",
+    "FIELD_REVEAL",
+    "DESCENT",
+    "FOOT_CONTACT",
+    "RECOVERY"
+  ],
+  "markers": [],
+  "note": "The four authenticated files and ten composed clips are verified. HA/RS/Ult canonical mapping, scene floor/contact, sourceFrame-to-PSA mapping, cinematic integration and physical GPU remain pending. No private media or raw traces are published.",
+  "baseHead": "cdf9b93485889b3be49080f37c34489fcfd01d1a",
+  "recognizedCurrentClips": 10,
+  "access": {
+    "jurisdiction": "eu",
+    "bindingConfirmed": true,
+    "authenticatedRead": "PASS",
+    "downloadedAndHashedObjects": 4,
+    "objectAbsenceClaim": false,
+    "sessionSecretsPublished": false
+  },
+  "webgl": {
+    "status": "ENVIRONMENT_BLOCKED",
+    "reason": "WebGL2 unavailable before first frame",
+    "physicalGpu": "NOT_MEASURED",
+    "samsung600s": "NOT_TESTED"
+  },
+  "calibration": {
+    "status": "GEOMETRIC_REST_PROXY_VISUAL_SCENE_CONTACT_PENDING",
+    "soleProbesPerFoot": 32,
+    "units": "model_unit",
+    "sourceFrame": "UNRESOLVED_PSA_MAPPING",
+    "contactFinding": "NO_SUSTAINED_INTERVAL_UNDER_CONFIGURED_REST_PLANE_RULE"
+  },
+  "cpuProof": {
+    "sourcePoseSamples": 169,
+    "contactSheets": 14,
+    "images": 183,
+    "renderer": "DIAGNOSTIC_CPU_BASE_COLOR_SIMPLE_LIGHT_NOT_WEBGL_OR_FULL_PBR",
+    "camera": "IDENTICAL_FIXED_CAMERA_FOR_ABC",
+    "physicalGpuApproved": false
+  }
+}

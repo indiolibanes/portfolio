@@ -1,0 +1,58 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import * as T from 'three';
+import {partition,createDirector} from '../src/scripts/shorekeeper/director.mjs';
+import {assertSelfContainedGLB,createLocalLoader,disposeObject} from '../src/scripts/shorekeeper/local-model.mjs';
+import {createInspection,boneGroup,morphGroup,FACE_PRESETS} from '../src/scripts/shorekeeper/inspection.mjs';
+import {labPhase,permissions} from '../src/scripts/shorekeeper/lab-state.mjs';
+const page=await readFile('src/pages/experimentos/sk/index.astro','utf8'),script=await readFile('src/scripts/shorekeeper-sk-lab.mjs','utf8');
+const materialTheme=await readFile('src/styles/shorekeeper-material3.css','utf8');
+const stageCode=await readFile('src/scripts/shorekeeper/stage.mjs','utf8');
+assert(page.includes('shorekeeper-material3.css'),'The light theme must be imported by the SK route');
+assert(materialTheme.includes('color-scheme: light'));
+for(const token of ['--sk-primary','--sk-on-primary','--sk-primary-container','--sk-surface','--sk-on-surface','--sk-outline'])assert(materialTheme.includes(token),'Missing Material 3 tonal token: '+token);
+assert(materialTheme.includes('.sk-tabs button[aria-selected=true]'));
+assert(materialTheme.includes('@media(max-width:930px)'));
+assert(materialTheme.includes('prefers-reduced-motion:reduce'));
+assert(stageCode.includes('scene.background=new T.Color(0xd6e9f5)'));
+assert.match(page,/Azul-gelo · estúdio/);
+const presentationCss=await readFile('src/styles/shorekeeper-presentation.css','utf8');
+assert(page.includes('shorekeeper-presentation.css'),'SK presentation CSS is imported');
+assert(page.includes('data-expression="LITTLE_SMILE" disabled hidden')&&page.includes('data-expression="blink"'),'Curated expression buttons exist');
+assert(!page.includes('sk-butterflies')&&!presentationCss.includes('.sk-butterfly'),'Decorative butterflies must be removed');
+assert(page.includes('<option value="60" selected>60 quadros/s</option>'),'60 FPS must be the default');
+assert(page.includes('<option value="2" selected>2 · detalhado</option>'),'DPR 2 must be the default');
+assert(page.includes('sk-qa-tools" hidden')&&page.includes('sk-face-qa" hidden'),'Technical controls hidden from presentation');
+assert(stageCode.includes('dpr=2')&&stageCode.includes('powerPreference:\'high-performance\''),'GPU quality preference must be applied');
+assert(page.includes('data-pane="rig"')&&page.includes('data-pane="visual"'),'Legacy runtime DOM hooks remain for QA');
+assert(page.includes("['acting','Apresentação']")&&page.includes("['face','Expressões']"),'Presentation-first tab layout');
+assert(!page.includes('data-view="front"')&&!page.includes('data-view="back"'),'Redundant viewport actions removed');
+assert.match(page,/index,follow/);assert.doesNotMatch(script,/from ['"][^'"]*tests\//);
+// Only the explicitly authenticated, same-origin R2 diagnostic may fetch here.
+// The existing private-model module separately handles authorized downloads.
+// No third-party requests, uploads or telemetry are permitted from the SK lab.
+assert.doesNotMatch(page,/fetch\s*\(|XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.doesNotMatch(script,/XMLHttpRequest|sendBeacon|FormData\s*\(/);
+assert.equal([...script.matchAll(/\bfetch\s*\(/g)].length,1);
+assert.match(script,/fetch\('\/api\/shorekeeper\/diagnostics'/);
+assert.match(script,/credentials:'same-origin',cache:'no-store'/);
+for(const pane of ['rig','visual','face','acting'])assert.match(page,new RegExp('data-pane="'+pane+'"'));
+const pack=uri=>{const data={asset:{version:'2.0'},buffers:uri?[{byteLength:0,uri}]:[{byteLength:0}],images:[]};const raw=Buffer.from(JSON.stringify(data)),json=Buffer.concat([raw,Buffer.alloc((4-raw.length%4)%4,32)]),bytes=Buffer.alloc(20+json.length);bytes.write('glTF');bytes.writeUInt32LE(2,4);bytes.writeUInt32LE(bytes.length,8);bytes.writeUInt32LE(json.length,12);bytes.write('JSON',16);json.copy(bytes,20);return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);};
+assert.doesNotThrow(()=>assertSelfContainedGLB(pack(null)));assert.doesNotThrow(()=>assertSelfContainedGLB(pack('data:application/octet-stream;base64,AAAA')));
+for(const uri of ['https://example.invalid/x','file:///private/a','../a.bin','blob:other','javascript:alert(1)','data:text/html;base64,AA=='])assert.throws(()=>assertSelfContainedGLB(pack(uri)),/externa|autorizada/);
+assert.throws(()=>assertSelfContainedGLB(new ArrayBuffer(4)),/inválido/);let corrupt=pack(null);new DataView(corrupt).setUint32(12,4000000,true);assert.throws(()=>assertSelfContainedGLB(corrupt),/Chunk/);
+// A stale parse can only dispose its own scene, never the newer adopted scene.
+let pending=[],disposed=[];const local=createLocalLoader({read:async()=>pack(null),hash:async()=> 'hash',parse:()=>new Promise(resolve=>pending.push(resolve)),dispose:g=>disposed.push(g.scene)});
+const first=local.load({size:100}),settle=()=>new Promise(resolve=>setImmediate(resolve));await settle();const second=local.load({size:100});await settle();const newer={scene:{id:'new'}},older={scene:{id:'old'}};pending[1](newer);assert.equal((await second).gltf,newer);pending[0](older);assert.equal(await first,null);assert.deepEqual(disposed,[older.scene]);
+const third=local.load({size:100});await settle();local.cancel();pending[2]({scene:{id:'cancelled'}});assert.equal(await third,null);assert.equal(disposed.at(-1).id,'cancelled');
+// Morph ownership persists across unrelated controls, and rest is reversible.
+const root=new T.Group(),bone=new T.Bone();bone.name='Bip001Head';root.add(bone);const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute([0,0,0,1,0,0,0,1,0],3));geo.morphAttributes.position=[new T.Float32BufferAttribute([0,0,.1,0,0,.1,0,0,.1],3),new T.Float32BufferAttribute([0,.1,0,0,.1,0,0,.1,0],3)];const mesh=new T.Mesh(geo,new T.MeshStandardMaterial());mesh.name='Face';mesh.morphTargetDictionary={E_Close:0,M_Smile_L:1};mesh.morphTargetInfluences=[0,0];root.add(mesh);const inspect=createInspection(root);
+for(const name of inspect.names)for(const w of [0,.25,.5,.75,1])assert(inspect.setMorph(name,w));inspect.setMorph('E_Close',.25);inspect.setMorph('M_Smile_L',.7);assert.deepEqual(mesh.morphTargetInfluences,[.25,.7]);inspect.rotate(bone,[0,10,0]);assert(inspect.restError()>.01);inspect.restore();assert(inspect.restError()<1e-7);inspect.preset(FACE_PRESETS.blink);assert.deepEqual(mesh.morphTargetInfluences,[1,0]);inspect.materials('neutral');assert.notEqual(mesh.material,inspect.extraMaterials[0]);inspect.materials('original');
+assert.equal(boneGroup('Bone_Hair001'),'Cabelo');assert.equal(boneGroup('Bip001LHand'),'Braços e mãos');assert.equal(morphGroup('Pupil_Up'),'Olhar e pupilas');
+// Exactly one disposal per shared resource, including the bitmap shared by maps.
+let counts={g:0,m:0,t:0,image:0};geo.addEventListener('dispose',()=>counts.g++);const mat=mesh.material;mat.addEventListener('dispose',()=>counts.m++);const texture=new T.Texture({close(){counts.image++}});texture.addEventListener('dispose',()=>counts.t++);mat.map=texture;mat.emissiveMap=texture;const duplicate=new T.Mesh(geo,mat);root.add(duplicate);disposeObject(root,inspect.extraMaterials);assert.deepEqual(counts,{g:1,m:1,t:1,image:1});
+// UI policy locks manual rig while animating, paused or loading.
+assert.equal(labPhase({webgl:true,model:true,phase:'run'}),'animating');for(const p of ['loading','animating','paused','error','context-lost','empty'])assert.equal(permissions(p,true).rig,false);assert(permissions('ready',true).rig);assert.equal(labPhase({contextLost:true,loading:true}),'context-lost');
+const q=a=>[0,Math.sin(a/2),0,Math.cos(a/2)],track=(n,a,b)=>new T.QuaternionKeyframeTrack(n+'.quaternion',[0,1],[...q(a),...q(b)]);const body=new T.AnimationClip('body',1,[track('arm',0,.3),track('cloth',0,0)]),cloth=new T.AnimationClip('cloth',.6,[track('cloth',.3,.5)]),actor=new T.Group(),a=new T.Bone(),b=new T.Bone();a.name='arm';b.name='cloth';actor.add(a,b);assert.equal(partition(T,body,cloth).body.tracks.length,1);assert.throws(()=>partition(T,body,new T.AnimationClip('bad',1,[track('absent',0,1)])),/unmatched/);
+let calls=0;const d=createDirector(T,actor,body,cloth,{mixerFactory:r=>{const m=new T.AnimationMixer(r),step=m.update.bind(m);m.update=dt=>{calls++;return step(dt)};return m;}});d.start();d.advance(.1);const clock=d.state.clock;d.configure({enter:1.2});assert.equal(d.state.clock,clock);assert.equal(d.state.parameters.enter,.5);assert.equal(d.state.pending.enter,1.2);d.setPaused(true);d.advance(1);assert.equal(calls,1);d.setPaused(false);d.interrupt();for(let i=0;i<30;i++)d.advance(.02);assert.equal(d.state.phase,'idle');d.start();assert.equal(d.state.parameters.enter,1.2);d.setSpeed(.5);d.advance(.2);assert.equal(d.state.clock,.1);d.dispose();
+console.log('Shorekeeper F1.8 PASS: privacy/format, load race/cancel, resource sharing, all fixture morphs, rig restore, state policy, pending timing, speed, pause and single mixer.');

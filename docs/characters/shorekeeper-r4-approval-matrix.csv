@@ -1,0 +1,31 @@
+ID,Prioridade,Area,Gate,Estrutural,Rasterizacao,Desempenho_GPU_Samsung,Aprovacao_humana,Evidencia_limite
+B01,P0,Facial,GLB canônico e buffers/clipes fontes preservados,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,CPU hash + idles/face renderizados
+B02,P0,Facial,LITTLE_SMILE delicado em frontal 3/4 perfil,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,canônica/R2/R3/R4 5 pesos + 3 vídeos; contorno requer aceite
+B03,P0,Facial,MY_STAR e blink bilateral com retorno,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,3 vídeos + peak blink + olhos originais/suaves
+B04,P1,Facial,HELLO fechada/entreaberta comparáveis,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,2 quadros e controles preservados; referência ambígua
+B05,P0,Facial,Contorno e forro em material original/isolado,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,profundidade/taper/138 liner vertices; acabamento 3/4 ainda candidato
+B06,P0,Facial,Face/Eye/body/blink sem writers concorrentes,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,3 idles + teste UI de combo/interrupção
+B07,P2,Facial,Unificar nomes/presets somente após aceite,BLOCKED_HUMAN_APPROVAL,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,nenhum alias promovido
+B08,P1,Facial,LOVE HOPE SURPRISE WORRIED GLANCE preservadas,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,quadros privados; nomes ainda separados
+V01,P0,VFX,Exemplar 3x3 e voo individual >=3 s,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,9 PNG + voo 3 s
+V02,P0,VFX,Enxame orgânico com exclusões,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,vídeo enxame; volumes aproximados não colisão exata
+V03,P0,VFX,Core em cinco fases sem encobrir rosto,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,5 PNG + vídeo 6 s + inspeção Skill01
+V04,P0,VFX,FIELD_GAMEPLAY sobre superfície,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,quadros R2/R3/R4 e modo isolado
+V05,P0,VFX,Canopy campo personagem no plano normal,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,fit compartilhado + frente 3/4 retrato e narrativa
+V06,P0,VFX,Céu horizonte ruínas profundidade,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,antes/depois; qualidade artística requer humano
+V07,P1,VFX,Identificar Dim/Flare e Outer/Inner/Supernal,REFERENCE_UNVERIFIED,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,UNRESOLVED e STAGE_REFERENCE_UNVERIFIED
+V08,P0,VFX,Estados manuais e lifecycle num único RAF,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,UI pausa reduced-motion context restore dispose
+V09,P1,VFX,Narrativa 18 s independente do combate,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,vídeos com/sem câmera e restauração registrada
+C01,P0,Combate,Root A/B/C nos mesmos frames PSA,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,63 PNG frente 3/4 topo; ROTATION_PENDING
+C02,P0,Combate,Pirueta Burst02 preservada integralmente,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,tracks não-Root iguais + vídeos fonte integral
+C03,P0,Combate,Basic1-4 Skill01 Burst02 Recovery Idle01,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,7 bibliotecas reais; 6 vídeos A/B por Root
+C04,P0,Combate,Aterrissagem e continuidade de pés/pelve,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,ponte .9 s limitada; CPU e vídeo não são aprovação física
+C05,P0,Combate,Owner único corpo Root Face câmera VFX,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,leases + handoff UI + ausência Rib declarada
+C06,P1,Combate,Câmera opcional restaura controle manual,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,vídeo com/sem + UI interrupção e vista manual
+C07,P1,Combate,Markers VFX associados a Bursts verificáveis,BLOCKED_REFERENCE,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,nenhuma associação automática implementada
+CI01,P0,Build,Build e regressões no head final,STRUCTURAL_PASS,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,logs locais e checks públicos do PR #234
+CI02,P0,Segurança,Assets privados fora de Git/dist e R2 preservado,STRUCTURAL_PASS,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,diff restrito a Shorekeeper e docs/testes
+PERF01,P0,Performance,600 s reais em GPU e Samsung Internet,NOT_TESTED,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,sem acesso a hardware/aparelho real
+PERF02,P0,Performance,Pausa offscreen contexto reload dispose,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,UI Chromium/SwiftShader; 13 geometrias/14 texturas
+PERF03,P1,Performance,bfcache real e transição térmica/consumo,NOT_TESTED,NOT_APPLICABLE,NOT_TESTED,VISUAL_QA_PENDING,não substituir por eventos sintéticos
+INT01,P0,Integração,Rota única preserva Hsin/idles/combate,STRUCTURAL_PASS,WEBGL_RENDER_PASS,NOT_TESTED,VISUAL_QA_PENDING,PR draft #234 sobre #233 sem main/merge

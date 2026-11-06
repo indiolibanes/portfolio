@@ -1,0 +1,44 @@
+name: Shorekeeper S6-C autonomy private QA
+on:
+  push:
+    branches: ['experiment/shorekeeper-r623-s6c-autonomy-20261106']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: Whitelist allowed changes only
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=eb807cee816a337c2aab1a2d38a74a7e7f25bf84
+          git merge-base --is-ancestor "$BASE" HEAD
+          git diff --check "$BASE" HEAD
+          if git diff --name-only "$BASE" HEAD | grep -Ev '^(src/scripts/shorekeeper-sk-lab\.mjs|src/scripts/shorekeeper/s6-autonomy\.mjs|tests/shorekeeper-s6-autonomy\.test\.mjs|docs/shorekeeper-s6c/.*|\.github/workflows/shorekeeper-s6c-autonomy\.yml)$'; then
+            echo 'Unexpected source modification'; exit 1
+          fi
+      - name: S6 autonomy tests
+        run: node --test tests/shorekeeper-s6-autonomy.test.mjs
+      - name: All Shorekeeper regression tests
+        run: node --test tests/shorekeeper*.test.mjs
+      - name: All Node
+        run: node --test tests/*.test.mjs
+      - name: check
+        run: npm run check
+      - name: build
+        run: npm run build
+      - name: Private assets must never enter dist
+        shell: bash
+        run: |
+          if find dist -type f \( -name 'shorekeeper-f20a*.glb' -o -name 'basic*.glb' -o -name 'advanced*.glb' -o -name 'burst*.glb' \) | grep .; then
+            echo 'PRIVATE GLB LEAK'; exit 1
+          fi
+          echo 'Build hygiene passed; real Access/R2 and G7 QA remain pending.'

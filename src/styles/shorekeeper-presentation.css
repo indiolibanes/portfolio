@@ -29,3 +29,34 @@
 .sk-page .sk-library-import summary{cursor:pointer;color:#355d7a}
 .sk-page .sk-viewport button:focus-visible,.sk-page .sk-panel button:focus-visible,.sk-page .sk-panel select:focus-visible{outline:3px solid #709fc5;outline-offset:2px}
 @media(max-width:930px){.sk-page .sk-panel{max-width:none}}
+
+/* Shorekeeper F.2 — Claude facial recipes, deliberately manual and experimental. */
+.sk-page .sk-facial-recovery{margin:14px 0 22px;padding:15px;border:1px solid #c6dfea;border-radius:18px;background:linear-gradient(125deg,#f9fdff,#ebf6fd 72%,#f5f3ff)}
+.sk-page .sk-facial-recovery>summary{font-weight:650;color:#315c75;cursor:pointer}
+.sk-page .sk-facial-recovery>summary small{font-weight:450;color:#617c8f}
+.sk-page .sk-facial-recovery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.sk-page .sk-facial-recovery-grid button{padding:11px 9px;min-height:44px;border:1px solid #c2dbe8;border-radius:13px;background:#fff;color:#26506d;font-size:12px}
+.sk-page .sk-facial-recovery-grid button:hover:not(:disabled){background:#e5f4fd;border-color:#83b7d3}
+.sk-page .sk-facial-recovery-grid button:disabled{opacity:.46}
+.sk-page .sk-facial-extra{margin:10px 0;border-top:1px solid #dcecf5;padding:9px 0}
+.sk-page .sk-facial-extra>summary{font-size:12px;color:#456c84;cursor:pointer}
+.sk-page [data-facial-state]{min-height:1.5em;overflow-wrap:anywhere}
+@media(max-width:500px){.sk-page .sk-facial-recovery{padding:12px}.sk-page .sk-facial-recovery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.sk-mouth-qa{margin:16px;padding:16px;border:1px solid #c9dcec;border-radius:22px;background:#f4f9fe}.sk-mouth-qa summary{cursor:pointer;font-weight:600}.sk-mouth-qa .sk-actions{flex-wrap:wrap;gap:6px;margin:10px 0}.sk-mouth-qa img{width:100%;max-height:220px;object-fit:contain}.sk-mouth-qa button{min-height:44px;font-size:12px}.sk-mouth-qa[hidden]{display:none}
+/* R3 manual atmosphere: quiet controls follow the existing presentation palette. */
+.sk-vfx-controls{padding:1rem;border-top:1px solid var(--sk-outline, #a8bcc744);margin-block:.75rem;color:inherit}
+.sk-vfx-controls summary{font-size:.95rem;cursor:pointer}.sk-vfx-controls small{font-weight:400;opacity:.65}
+.sk-vfx-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;margin-block:.8rem}
+.sk-vfx-phases button{padding:.6rem .3rem;font-size:.78rem;min-height:40px}
+.sk-vfx-phases button[aria-pressed=true]{background:#35556a;color:#f1faff}
+.sk-vfx-systems{display:flex;flex-wrap:wrap;gap:.65rem;font-size:.78rem;margin-bottom:.8rem}
+.sk-vfx-r2 label{display:block;font-size:.8rem;margin-block:.65rem}
+.sk-vfx-qa{margin-top:.75rem}.sk-vfx-controls button:disabled{opacity:.45}
+
+/* Opt-in R6 QA stays inside the scrollable Expressions pane. */
+[data-facial-r6] label{display:grid;gap:6px;margin:10px 0;font-size:12px}
+[data-facial-r6] select{width:100%;min-width:0}
+[data-facial-r6] fieldset{border:1px solid #c9dcec;border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px}
+[data-facial-r6] fieldset label{display:flex;align-items:center;margin:0}
+[data-facial-r6] p{font-size:12px;line-height:1.6;overflow-wrap:anywhere}

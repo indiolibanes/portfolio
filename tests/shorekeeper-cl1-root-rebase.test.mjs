@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import * as T from 'three';
+import {BURST_ORIGINAL_IDS,BURST_REBASED_IDS,BURST_BODY_OWNED_IDS,createRebasedBurstClip} from '../src/scripts/shorekeeper/liberation-rotation.mjs';
+import {COMBAT_CLIP_IDS,SOURCE_COMBAT_IDS,validateCombatLibrary} from '../src/scripts/shorekeeper/combat-director.mjs';
+
+const root=new T.Bone();root.name='Root';
+const hips=new T.Bone();hips.name='Bip001';root.add(hips);
+const model=new T.Group();model.add(root);
+const originalBind=new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-Math.PI/2);
+root.quaternion.copy(originalBind);
+const q0=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),3.05);
+const q1=q0.clone().multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,0,1),.42));
+const q2=q0.clone().multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,0,1),-.21));
+const qrest=hips.quaternion.clone();
+const t=[0,.5,1];
+const rawTrack=new T.QuaternionKeyframeTrack('Root.quaternion',t,[...q0.toArray(),...q1.toArray(),...q2.toArray()]);
+const hipsTrack=new T.QuaternionKeyframeTrack('Bip001.quaternion',t,[...qrest.toArray(),...qrest.toArray(),...qrest.toArray()]);
+const clip=new T.AnimationClip(BURST_ORIGINAL_IDS[0],1,[rawTrack,hipsTrack]);
+const before=Array.from(rawTrack.values);
+const {clip:stabilized,diagnostic}=createRebasedBurstClip(T,model,clip);
+assert.equal(stabilized.name,BURST_REBASED_IDS[0]);
+assert.equal(diagnostic.changedTracks.length,1);
+assert(diagnostic.bindDeltaDegrees>90);
+assert.deepEqual(Array.from(rawTrack.values),before,'Source must not be mutated');
+assert.equal(stabilized.duration,clip.duration);
+assert.deepEqual(Array.from(stabilized.tracks[0].times),t);
+assert.deepEqual(Array.from(stabilized.tracks[1].values),Array.from(hipsTrack.values),'Bip001 and every other track must be untouched');
+// Float32 quaternion track storage can yield sub-milliradian differences in angleTo despite identical rotations.
+const v=stabilized.tracks[0].values;
+const r0=new T.Quaternion().fromArray(v,0);
+assert(r0.angleTo(originalBind)<2e-3,'Rebased first quaternion must match canonical Root bind');
+for(let i=1;i<t.length;i++){
+ const qa=new T.Quaternion().fromArray(before,4*(i-1)),qb=new T.Quaternion().fromArray(before,4*i);
+ const ca=new T.Quaternion().fromArray(v,4*(i-1)),cb=new T.Quaternion().fromArray(v,4*i);
+ const beforeDelta=qa.clone().invert().multiply(qb),afterDelta=ca.clone().invert().multiply(cb);
+ assert(beforeDelta.angleTo(afterDelta)<2e-3,'Relative angular displacement must remain unchanged');
+}
+assert.equal(COMBAT_CLIP_IDS.length,SOURCE_COMBAT_IDS.length+BURST_REBASED_IDS.length+BURST_BODY_OWNED_IDS.length);
+assert(COMBAT_CLIP_IDS.includes(stabilized.name));
+assert(!SOURCE_COMBAT_IDS.includes(stabilized.name),'Rebased variants must not be accepted as remote/source files');
+const source={json:{asset:{extras:{skCombatLibrary:'2.1-c'}}},gltf:{animations:[clip]}};
+assert.deepEqual(validateCombatLibrary(T,model,source),[clip]);
+assert.throws(()=>validateCombatLibrary(T,model,{...source,gltf:{animations:[stabilized]}}),/Identificador/);
+assert.throws(()=>createRebasedBurstClip(T,model,new T.AnimationClip('SK_ATTACK_01_ORIGINAL',1,[rawTrack])),/restricted/);
+const s=await readFile('src/scripts/shorekeeper-sk-lab.mjs','utf8');
+const page=await readFile('src/pages/experimentos/sk/index.astro','utf8');
+for(const id of BURST_REBASED_IDS)assert(page.includes('value="'+id+'"'));
+assert(s.includes('createRebasedBurstClip(T,model,c)'));
+assert(s.includes('...clips,...rebased.map(row=>row.clip)'));
+assert(s.includes('director?.advance(dt)'));
+console.log('Shorekeeper CL.1 non-destructive Root rebase, relative rotations, whitelist and A/B controls PASS');

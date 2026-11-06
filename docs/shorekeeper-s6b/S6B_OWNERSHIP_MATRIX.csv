@@ -1,0 +1,9 @@
+component,owner_or_source,scope,status,s6b_change
+body,createComboDirector/createComboSequencer,original S5 clips with single mixer,G7_NO_GO,NONE
+source_library,private authenticated GLB sources,unaltered bytes and curves,SOURCE_MAPPING_PENDING,NONE
+camera,r62 cinematic camera lease,G11.3 approved camera / manual restore,ART_ACCEPTED_GPU_PENDING,NONE
+VFX,createS3CombatVfx and R5 director,G11.3 artistically approved score,ART_ACCEPTED_GPU_PENDING,NONE
+clock,presentation-clock.mjs,one RAF / time owner,BASELINE_TESTED,NONE
+facial,legacy R6 facial owner,S4 deferred,S4_INPUT_NOT_VERIFIED,NONE
+G7,private-only S6-B diagnostic,real buildR61Plan / six joins / 30 and 60 Hz,NUMERIC_ONLY_NO_GO,QA_ONLY
+R2_Auth,Cloudflare Access / R2,owner session only,AUTHENTICATED_QA_BLOCKED,NONE

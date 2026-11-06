@@ -1,0 +1,55 @@
+---
+import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
+import HsinSoundtrack from '../../../components/HsinSoundtrack.astro';
+import '../../../styles/hsin-stage.css';
+const posterVersion='2.0.1';
+const posterCache='lunar-terrace-r2';
+---
+<HsinStageLayout title="Hsin & Shorekeeper | Private Duet Preview">
+  <main class="hsin-stage" data-hsin-stage data-s6-duo="true" data-state="waiting" aria-label="Hsin and Shorekeeper · private shared-stage preview">
+    <div class="hsin-stage__poster" aria-hidden="true">
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcset={`/assets/models/hsin/hsin-v${posterVersion}-poster-landscape.webp?v=${posterCache}`} width="1280" height="720" />
+        <img src={`/assets/models/hsin/hsin-v${posterVersion}-poster.webp?v=${posterCache}`} width="786" height="1704" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+    </div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin on the moonlit terrace, with a private Shorekeeper guest only after verified authentication. Drag to orbit, use wheel or pinch to zoom." tabindex="0"></div>
+    <header class="hsin-stage__header">
+      <h1>Hsin <span>& Shorekeeper · S6 private rehearsal</span></h1>
+      <a href="/experimentos/" aria-label="Return to Hsin's solo stage">↗</a>
+    </header>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparing Hsin…</div>
+    <div class="hsin-stage__error" data-stage-error hidden>
+      <p>The stage is unavailable in this browser.</p>
+      <button type="button" data-stage-retry>Try again</button>
+    </div>
+    <nav class="hsin-stage__tools" aria-label="Scene controls">
+      <button type="button" data-stage-out aria-label="Zoom out" title="Zoom out" disabled>−</button>
+      <button type="button" data-stage-in aria-label="Zoom in" title="Zoom in" disabled>＋</button>
+      <button type="button" data-stage-reset aria-label="Reset framing" title="Reset framing" disabled>⌂</button>
+      <button type="button" data-stage-pause aria-label="Pause acting" title="Pause acting" aria-pressed="false" disabled>Ⅱ</button>
+    </nav>
+    <div class="s6-duet-status" data-duo-guest-status role="status" aria-live="polite">
+      Hsin is the stage host. Shorekeeper requires a verified private Access/R2 library.
+    </div>
+    <details class="hsin-stage__credits">
+      <summary>Credits & status</summary>
+      <p>Hsin and Shorekeeper originate from Kuro Games. Hsin adaptation: Lvoxx; re-rig: imblue__; model shaders: LSCherry.</p>
+      <p>Non-production study. Original-idle and facial guest playback are experimental. Shorekeeper G7 remains NO_GO. The protected GLB is never exposed as a public static asset.</p>
+    </details>
+    <HsinSoundtrack />
+    <noscript><p class="hsin-stage__noscript">Enable JavaScript to view the stage. Private Shorekeeper assets are not included in this document.</p></noscript>
+  </main>
+</HsinStageLayout>
+<style>
+  .s6-duet-status{position:absolute;z-index:6;bottom:clamp(88px,14vh,160px);left:50%;transform:translateX(-50%);width:min(84vw,650px);
+  padding:10px 14px;border:1px solid rgba(187,211,239,.35);border-radius:10px;
+  background:rgba(6,18,37,.85);color:#e4edff;font:13px/1.5 system-ui,sans-serif;
+  text-align:center;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+  @media(max-width:600px){.s6-duet-status{bottom:120px;width:min(87vw,460px);font-size:12px}}
+</style>
+<script>
+  import {mountHsinStage} from '../../../scripts/hsin-stage';
+  const root=document.querySelector<HTMLElement>('[data-hsin-stage][data-s6-duo]');
+  if(root)mountHsinStage(root);
+</script>
