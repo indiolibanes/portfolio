@@ -18,6 +18,7 @@ export async function inspectPrivateManifest({signal,source='private'}={}){
  const config=endpoint(source);
  try{
   const response=await fetch(config.manifest,{credentials:'same-origin',cache:'no-store',signal,headers:{Accept:'application/json'}});
+  if(response.redirected&&/\/cdn-cgi\/access\/login/.test(response.url))return {state:'auth_redirect',manifest:null,httpStatus:response.status};
   if(response.status===401||response.status===403)return {state:'denied',manifest:null,httpStatus:response.status};
   if(response.status===503)return {state:'unconfigured',manifest:null,httpStatus:503};
   if(response.status===404)return {state:'missing',manifest:null,httpStatus:404};

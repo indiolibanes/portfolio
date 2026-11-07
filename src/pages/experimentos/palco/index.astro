@@ -6,23 +6,16 @@ import '../../../styles/shorekeeper-duo.css';
 import {R6_PRIMARY_CHOICES,R6_HISTORIC_CHOICES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
 const r5Approved=R6_HISTORIC_CHOICES.filter(x=>x.approvedAppearance);
 const r5Comparatives=R6_HISTORIC_CHOICES.filter(x=>!x.approvedAppearance);
-const posterVersion='2.0.1';
-const posterCache='lunar-terrace-r2';
 ---
-<HsinStageLayout title="Palco Lunar — Hsin & Shorekeeper">
-  <main class="hsin-stage" data-hsin-stage data-s6-duo="true" data-public-stage="true" data-state="waiting" aria-label="Hsin e Shorekeeper no palco lunar interativo">
-    <div class="hsin-stage__poster" aria-hidden="true">
-      <picture>
-        <source media="(min-aspect-ratio: 1/1)" srcset={`/assets/models/hsin/hsin-v${posterVersion}-poster-landscape.webp?v=${posterCache}`} width="1280" height="720" />
-        <img src={`/assets/models/hsin/hsin-v${posterVersion}-poster.webp?v=${posterCache}`} width="786" height="1704" alt="" fetchpriority="high" decoding="async" />
-      </picture>
-    </div>
-    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin e Shorekeeper em um terraço lunar. Arraste para explorar e use pinça ou a roda do mouse para aproximar." tabindex="0"></div>
+<HsinStageLayout title="Jardim das Marés Astrais">
+  <main class="hsin-stage" data-hsin-stage data-s6-duo="true" data-public-stage="true" data-state="waiting" aria-label="Jardim das Marés Astrais interativo">
+    <div class="hsin-stage__poster" aria-hidden="true" style="background:radial-gradient(ellipse at 50% 22%,#677d88 0%,#1b354e 28%,#071329 68%);"></div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Jardim lunar autoral. Arraste para explorar e use pinça ou a roda do mouse para aproximar." tabindex="0"></div>
     <header class="hsin-stage__header">
-      <h1>Hsin <span>& Shorekeeper · Palco Lunar</span></h1>
+      <h1>Jardim <span>das Marés Astrais</span></h1>
       <a href="/experimentos/" aria-label="Voltar aos experimentos">↗</a>
     </header>
-    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando Hsin…</div>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando o jardim…</div>
     <div class="hsin-stage__error" data-stage-error hidden>
       <p>O palco não está disponível neste navegador.</p>
       <button type="button" data-stage-retry>Tentar novamente</button>
@@ -30,9 +23,9 @@ const posterCache='lunar-terrace-r2';
     <div class="s6-camera-toolbar" aria-label="Escolha de câmera">
       <label for="s6-camera-mode">Câmera</label>
       <select id="s6-camera-mode" data-duo-camera-mode aria-label="Escolher acompanhamento ou câmera livre">
-        <option value="auto">Automática · G11.3 Shorekeeper</option>
+        <option value="auto">Vista do jardim</option>
         <option value="free">Exploração livre</option>
-        <option value="hsin">Acompanhar Hsin</option>
+        <option value="hsin" disabled>Acompanhar Hsin</option>
         <option value="shorekeeper" disabled>Acompanhar Shorekeeper</option>
         <option value="phrolova" disabled>Phrolova · futuramente</option>
         <option value="sophia" disabled>Sophia · futuramente</option>
@@ -46,7 +39,7 @@ const posterCache='lunar-terrace-r2';
       <button type="button" data-stage-pause aria-label="Pausar atuação" title="Pausar atuação" aria-pressed="false" disabled>Ⅱ</button>
     </nav>
     <div class="s6-duet-status" data-duo-guest-status role="status" aria-live="polite">
-      Hsin e Shorekeeper · preparando o palco…
+      Cenário autoral · explore livremente ou escolha uma trilha.
     </div>
     <details class="s6-r6-manual" data-duo-r6-controls hidden>
       <summary>Expressões da Shorekeeper</summary>
@@ -80,7 +73,8 @@ const posterCache='lunar-terrace-r2';
     <details class="hsin-stage__credits">
       <summary>Créditos e projeto</summary>
       <p>Hsin, Shorekeeper e personagens relacionados: Kuro Games. Adaptação da Hsin: Lvoxx. Re-rig: imblue__. Shaders do modelo: LSCherry.</p>
-      <p>Experiência independente de pesquisa e atuação tridimensional, sem associação ou endosso oficial da Kuro Games. Os movimentos e efeitos cinematográficos foram reorganizados para esta apresentação.</p>
+      <p>Jardim procedural autoral de um projeto independente, sem associação ou endosso oficial da Kuro Games. Esta página não carrega modelos de personagens.</p>
+      <p><a href="/experimentos/duo/?r6Guest=1">Abrir o laboratório de Hsin e Shorekeeper</a></p>
     </details>
     <HsinSoundtrack />
     <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar o palco tridimensional.</p></noscript>
@@ -107,7 +101,7 @@ const posterCache='lunar-terrace-r2';
   @media(max-width:600px){.s6-r6-manual{bottom:195px;right:12px;width:min(310px,84vw)}}
 </style>
 <script>
-  import {mountHsinStage} from '../../../scripts/hsin-stage';
+  import {mountAstralGarden} from '../../../scripts/astral-garden-public.mjs';
   const root=document.querySelector<HTMLElement>('[data-hsin-stage][data-public-stage]');
-  if(root)mountHsinStage(root);
+  if(root)mountAstralGarden(root);
 </script>
