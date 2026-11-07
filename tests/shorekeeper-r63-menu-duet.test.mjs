@@ -1,0 +1,65 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {FACE_MENU_VALUES,resolveFaceMenu,R6_PRIMARY_CHOICES,R6_HISTORIC_CHOICES} from '../src/scripts/shorekeeper/facial-unified-menu.mjs';
+import {APPROVED_MANUAL_GESTURES} from '../src/scripts/shorekeeper/approved-manual-gallery.mjs';
+import {R6_CANDIDATES,createAnatomicalFaceDirector} from '../src/scripts/shorekeeper/anatomical-face.mjs';
+import {s6DuoRequirements,s6DuoModelRequirements} from '../src/scripts/shorekeeper/s6-duet-guest.mjs';
+import {SHOREKEEPER_CANONICAL} from '../src/scripts/shorekeeper/private-model-cache.mjs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+
+test('one R6 menu, historic variants conserved and default hidden',()=>{
+ assert.equal(R6_PRIMARY_CHOICES.length,9);
+ assert.equal(R6_HISTORIC_CHOICES.length,16);
+ assert.equal(FACE_MENU_VALUES.approved.length,APPROVED_MANUAL_GESTURES.length);
+ assert.equal(FACE_MENU_VALUES.approved.length+FACE_MENU_VALUES.archive.length,16);
+ assert.equal(new Set([...FACE_MENU_VALUES.primary,...FACE_MENU_VALUES.approved,...FACE_MENU_VALUES.archive].map(x=>x.value)).size,25);
+ assert.deepEqual(resolveFaceMenu('r6:EYES_WIDE_ACTING_R6'),{kind:'r6',id:'EYES_WIDE_ACTING_R6',label:'Olhos arregalados · surpresa'});
+ assert.equal(resolveFaceMenu('baseline:HELLO_R3_OPEN').kind,'baseline');
+ assert.equal(resolveFaceMenu('baseline:NOT_A_RECIPE'),null);
+ assert.equal(resolveFaceMenu('r6:INVALID'),null);
+ const page=read('src/pages/experimentos/sk/index.astro');
+ const runtime=read('src/scripts/shorekeeper-sk-lab.mjs');
+ assert.equal((page.match(/<select data-r6-variant-select /g)??[]).length,1);
+ assert.match(page,/data-r6-historic-option hidden disabled/);
+ assert.match(runtime,/if\(r6Stage\)\{[\s\S]*?\['\[data-approved-gallery\]','\[data-facial-qa\]','\.sk-expressions','\.sk-face-guide'\]/);
+ assert.match(runtime,/data-r6-mouth-slot/);
+ assert.match(runtime,/selected\.kind==='r6'\?face\.playCandidate\(selected\.id\):face\.playBaseline\(selected\.id\)/);
+ assert.match(runtime,/data-r6-main-blink/);
+ assert(!runtime.includes("selectedVariant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value]"));
+});
+
+test('wide-eyed surprise is an opt-in distinct R6 recipe; original surprise and blink are unchanged',()=>{
+ const fixture=JSON.parse(read('docs/characters/shorekeeper-r6-baseline-golden.json'));
+ const meshes=fixture.meshes.map(m=>({...m,morphTargetInfluences:new Array(Object.keys(m.morphTargetDictionary).length).fill(0)}));
+ const inspection={morphMeshes:meshes,names:meshes.flatMap(m=>Object.keys(m.morphTargetDictionary)),weights:{}};
+ const f=createAnatomicalFaceDirector(inspection);
+ assert(R6_CANDIDATES.EYES_WIDE_ACTING_R6);
+ assert.equal(f.playCandidate('EYES_WIDE_ACTING_R6'),true);
+ f.seek(.85);
+ assert(f.report().weights.E_Stare>.65,'wider gaze than SURPRISE_SOFT base of 0.6');
+ assert.equal(f.report().weights.E_Close,0,'E_Close unaffected');
+ f.reset();assert(meshes.every(m=>m.morphTargetInfluences.every(v=>v===0)));
+ f.dispose();
+});
+
+test('opt-in R6 guest can read authenticated F2.0-A for idles without three unused combat GLBs',()=>{
+ const manifest={schema:'shorekeeper-private-assets/v1',model:{sha256:SHOREKEEPER_CANONICAL.sha256,bytes:SHOREKEEPER_CANONICAL.bytes},libraries:[]};
+ assert.equal(s6DuoModelRequirements(manifest,SHOREKEEPER_CANONICAL.sha256),true);
+ assert.equal(s6DuoRequirements(manifest,SHOREKEEPER_CANONICAL.sha256),false);
+ assert.equal(s6DuoModelRequirements({...manifest,model:{...manifest.model,sha256:'0'.repeat(64)}},SHOREKEEPER_CANONICAL.sha256),false);
+ const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
+ const stage=read('src/scripts/hsin-stage.ts');
+ const style=read('src/styles/shorekeeper-duo.css');
+ assert.match(guest,/for\(const id of \(experimentalR6\?\[\]:REQUIRED\)\)/);
+ assert.match(guest,/const inspected=await inspectPrivateManifest/);
+ assert.match(guest,/if\(!file\)file=await getPrivateFile/);
+ assert.match(guest,/crypto\.subtle\.digest\('SHA-256',buffer\)/);
+ assert.match(guest,/music\?\.playbackConfirmed===true&&music\?\.status==='playing'/);
+ assert.match(stage,/music:music\.sample\(\)/);
+ assert.match(stage,/const minimumGap=\.52/);
+ assert.match(stage,/duetEnvelope=\{width:extent\.x,height:extent\.y/);
+ assert.match(stage,/if\(musicElement&&!duetRequested\)/);
+ assert.match(style,/\[data-s6-duo="true"\]/);
+ assert(!/requestAnimationFrame|WebGLRenderer/.test(guest),'guest creates no renderer or animation loop');
+});
