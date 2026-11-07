@@ -6,7 +6,7 @@ import {EXPRESSION_LIBRARY} from '../../../scripts/shorekeeper/expression-librar
 import {APPROVED_MANUAL_GESTURES} from '../../../scripts/shorekeeper/approved-manual-gallery.mjs';
 import {R6_G113_CANDIDATES} from '../../../scripts/shorekeeper/r6-g113-bridge.mjs';
 import {FACIAL_VARIANTS} from '../../../scripts/shorekeeper/facial-variant-catalog.mjs';
-import {FACE_MENU_VALUES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
+import {R5_FACE_BUTTON_GROUPS,R5_FACE_ARCHIVED_IDENTICAL,R5_FACE_BUTTON_COUNT} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
 const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
 const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integration-20261104';
 ---
@@ -154,33 +154,28 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <section id="sk-panel-face" role="tabpanel" aria-labelledby="sk-tab-face" data-pane="face" class="sk-pane" hidden>
 <h2>Expressão.</h2>
 <details data-facial-r6 data-legacy-version-menu hidden class="sk-mouth-qa"><summary>R6 · aguardando GLB</summary></details>
-<details data-r6-g113-panel hidden open class="sk-facial-recovery">
-<summary>Expressões da Shorekeeper <small>R6 · manual</small></summary>
-<p class="sk-help">Um único seletor. R5 corrige o contorno oral neste ensaio; versões V2/R2/R3 continuam preservadas em Histórico. A piscada e os três idles são intocados.</p>
-<label class="sk-field">Expressão
-<select data-r6-variant-select aria-label="Expressões da Shorekeeper" disabled>
-<optgroup label="Atuação anatômica · R6">
-{FACE_MENU_VALUES.primary.map(v=><option value={v.value}>{v.label} · R6</option>)}
-</optgroup>
-<optgroup label="Histórico · aparências aprovadas" data-r6-historic-group hidden>
-{FACE_MENU_VALUES.approved.map(v=><option value={v.value} data-r6-historic-option hidden disabled>{v.label}</option>)}
-</optgroup>
-<optgroup label="Histórico · variações e QA" data-r6-historic-group hidden>
-{FACE_MENU_VALUES.archive.map(v=><option value={v.value} data-r6-historic-option hidden disabled>{v.label}</option>)}
-</optgroup>
-</select></label>
-<div class="sk-actions">
-<button type="button" data-r6-variant-play disabled>Reproduzir expressão</button>
+<details data-r6-g113-panel hidden open class="sk-facial-recovery sk-r65-face">
+<summary>Expressões da Shorekeeper <small>R5 · contorno | R6 · atuação</small></summary>
+<p class="sk-help">Um painel com {R5_FACE_BUTTON_COUNT} expressões diferentes. Basta tocar em um botão; R5 corrige a geometria da boca, enquanto R6 acrescenta atuação anatômica. V2/R2/R3 com curvas próprias continuam disponíveis abaixo.</p>
+{R5_FACE_BUTTON_GROUPS.map(group=><section class="sk-r65-group" aria-label={group.label}>
+<h3>{group.label}</h3>
+<div class="sk-r65-grid" role="group" aria-label={group.label}>
+{group.choices.map(v=><button type="button" data-r65-face={v.value} aria-pressed="false" title={v.label} disabled>{v.label}</button>)}
+</div>
+</section>)}
+<div class="sk-actions sk-r65-actions">
 <button type="button" data-r6-main-blink disabled>Piscar</button>
 <button type="button" data-r6-g113-neutral disabled>Neutro</button>
 </div>
-<button type="button" data-r6-history-toggle aria-expanded="false">Mostrar versões anteriores</button>
-<details class="sk-facial-extra" data-r6-mouth-details><summary>Geometria da boca · R5 recomendada</summary>
-<div data-r6-mouth-slot></div>
-</details>
-<p class="sk-help" data-r6-variant-info>Selecione uma atuação R6; as receitas históricas só aparecem quando solicitadas.</p>
+<p class="sk-help" data-r6-variant-info>R5 aplicada em memória; nenhuma alteração no GLB canônico. As variantes com morphs ou tempos diferentes continuam individualizadas.</p>
 <p class="sk-help" data-r6-g113-status role="status" aria-live="polite">Aguardando GLB F2.0-A canônico.</p>
-<p class="sk-help">Olhos arregalados é uma proposta nova, aguardando aprovação visual. G7 permanece NO_GO.</p>
+<details class="sk-facial-extra" data-r6-mouth-details hidden>
+<summary>QA técnico · geometria histórica (Original/R2/R3/R4/R5)</summary>
+<div data-r6-mouth-slot></div>
+<p class="sk-help">Somente diagnóstico: versões antigas da malha podem produzir diferenças mesmo com pesos iguais.</p>
+<div class="sk-r65-grid">{R5_FACE_ARCHIVED_IDENTICAL.map(v=><button type="button" data-r65-legacy-duplicate={v.value} disabled>{v.label} · geometria original</button>)}</div>
+</details>
+<p class="sk-help">Olhos arregalados continua candidata visual; G7 permanece NO_GO. Os três idles e a piscada não foram alterados.</p>
 </details>
 <details class="sk-facial-recovery" data-approved-gallery open>
 <summary>Expressões aprovadas <small>apresentação manual</small></summary>
