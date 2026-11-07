@@ -234,13 +234,9 @@ export function mountShorekeeperLab(root){
  if(facialR6)$('[data-tab="face"]').click();
  metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version,origin:source};activePrivateFile=file;
  if(!mouthQA&&metadata.sha256===SHOREKEEPER_CANONICAL.sha256){
-  const mode=new URLSearchParams(location.search).get('approvedGeometry');
-  if(r6Stage){
-   // R5 is a reversible local geometry patch: preferred for the R6 smile, not a source-GLB dependency.
-   const chosen=['canonical','r2','r3','r4','r5'].includes(mode)?mode:'r5';
-   setMouthGeometry(chosen);
-  }else if(mode==='r4'||mode==='r5')setMouthGeometry(mode);
-  else $('[data-approved-geometry]').value='canonical';
+  // R5 is the only active presentation geometry. Preserve old patches
+  // solely as internal forensic/rollback modules.
+  setMouthGeometry('r5');
  }
  privateStatus(result.sha256===SHOREKEEPER_CANONICAL.sha256?'GLB canônico F2.0-A verificado · três idles originais. '+(cachedPrivateSha===result.sha256?'Cópia guardada neste navegador.':'Você pode guardá-lo neste navegador.'):'GLB alternativo carregado · verifique as animações antes de guardar.');
  const missing=result.json.accessors?.filter(a=>a.sparse&&a.type==='VEC3'&&(!a.min||!a.max)).length??0;if(missing)log(missing+' accessors sparse VEC3 sem min/max: inspecionar culling.','warning');
@@ -642,7 +638,7 @@ export function mountShorekeeperLab(root){
  on($('[data-mouth-capture]'),'click',async()=>{if(!mouthAllowed())return;try{save(await stage.capture(),'shorekeeper-mouth-PRIVATE.png','image/png');}catch(e){warn(e.message);}});
  on($('[data-approved-geometry]'),'change',e=>{
   if(!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||state.contextLost||userPaused||control('presentationMode').value==='combat')return;
-  const mode=e.target.value;if(!(r6Stage?['canonical','r2','r3','r4','r5']:['canonical','r4','r5']).includes(mode))return;
+  const mode=e.target.value;if(mode!=='r5')return;
   try{
    face?.reset();scheduler?.setEnabled(false);control('actingAuto').checked=false;
    setMouthGeometry(mode);
@@ -735,7 +731,7 @@ export function mountShorekeeperLab(root){
  // Reconcile media preference before the existing frame sleeps after suspension.
  motion.addEventListener('change',updateMotionPolicy);
  $('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido ativo. Atuação começa apenas por comando.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';
- $('[data-r5-tools]').hidden=!['mouthR5','landingR5'].some(k=>new URLSearchParams(location.search).get(k)==='1')&&new URLSearchParams(location.search).get('vfx')!=='r5';
+ $('[data-r5-tools]').hidden=new URLSearchParams(location.search).get('legacyQA')!=='1';
  on($('[data-r5-rollback]'),'click',()=>{cancelPreparation('rollback');stopCameraOwners();director?.dispose();director=null;face?.reset();inspection?.restore();if(mouthQA&&model)setMouthGeometry('r4');setVfxProfile('r4');$('[data-combo-recovery]').value='r4';control('presentationMode').value='contemplation';control('originalMode').value='expressive';if(model)buildDirector();const u=new URL(location.href);u.searchParams.delete('mouthR5');u.searchParams.delete('landingR5');u.searchParams.set('vfx','r4');if(mouthQA)u.searchParams.set('mouthR4','1');if($('[data-combo-landing]').checked)u.searchParams.set('landingR4','1');history.replaceState(null,'',u);status('Perfil R4 restaurado. Modelo privado mantido.');sync(true);syncVfx();stage.invalidate();});
  function frame(now){if(disposed)return false;if(vfx&&vfx.reducedMotion!==motion.matches)updateMotionPolicy();if(document.hidden||suspended||outOfView||state.contextLost||state.loading||!stage){vfx?.setSuspended(true);presentationClock.reanchor();last=0;return false;}if(!last){last=now;presentationClock.reanchor();presentationClock.tick(now);return true;}const delta=now-last,target=1000/Number(control('fps').value);if(delta<target-1)return;last=now;presentationClock.setPaused(userPaused);const dt=presentationClock.tick(now);const start=performance.now();director?.advance(dt);
   if(s6Autonomy){

@@ -20,7 +20,7 @@ import {createAnatomicalFaceDirector} from './anatomical-face.mjs';
 import {createMouthR5} from './mouth-r5.mjs';
 import {duetMusicSnapshot} from './duet-music-contract.mjs';
 import {R6_PRIMARY_CHOICES,resolveFaceMenu} from './facial-unified-menu.mjs';
-import {createDuetBasicTurn,createNonRepeatingChoice,quietFaceWait} from './duet-acting-policy.mjs';
+import {createNonRepeatingChoice,quietFaceWait} from './duet-acting-policy.mjs';
 export const canPlayDuetR6Expression=id=>R6_PRIMARY_CHOICES.some(x=>x.id===id);
 
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
@@ -39,7 +39,7 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
   return ((index+1)%count+count)%count;
 }
 function aborted(signal){return !!signal?.aborted;}
-export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null}={}){
+export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,lowPower=false}={}){
   const prepared=experimentalR6?(preparation??prepareDuetModel({signal})):null;
   const preparedModel=prepared?await prepared.take():null;
   if(prepared&&!preparedModel)return null;
@@ -103,7 +103,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     let active=-1,restSeconds=0,faceSeconds=quietFaceWait(),manualFaceCooldown=0,playing=true;
     const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
     const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
-    const turn=createDuetBasicTurn(group);
+    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Manual=false,g113Attempted=false,g113Cooldown=0;
     let musicSnapshot=duetMusicSnapshot();
     const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
     function switchIdle(){
@@ -114,27 +114,120 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       director.start();
     }
     switchIdle();
+    // G11.3 is the already-authored S5 seven-source cinematic (not a yaw loop).
+    // Extra libraries are fetched only after an explicit test or verified playback.
+    async function startG113(mode='manual'){
+      if(disposed||aborted(signal)||g113Loading||g113?.state.phase!=='idle'&&g113)return false;
+      if(g113&&g113.state.phase==='idle')finishG113();
+      g113Attempted=true;
+      if(!s6DuoRequirements(manifest,SHOREKEEPER_CANONICAL.sha256)){
+        g113Status='PRIVATE_COMBAT_LIBRARIES_REQUIRED';return false;
+      }g113Status='LOADING_VERIFIED_G113';
+      g113Loading=(async()=>{
+        let nextVfx=null,nextDirector=null;
+        try{
+          if(!g113Clips){
+            const additional=[];
+            for(const id of REQUIRED){
+              const item=manifest.libraries.find(row=>row.id===id);
+              const data=await parseFile(item,'library');if(disposed||aborted(signal))return false;
+              additional.push(...validateCombatLibrary(T,model,data));
+              disposeObject(data.gltf.scene);
+            }
+            scenes.length=0;
+            const unique=new Map([...loaded,...additional].map(c=>[c.name,c]));
+            if(unique.size!==loaded.length+additional.length)throw Error('Duplicated G11.3 source clips');
+            const {R61_SOURCE_IDS}=await import('./r61-plan.mjs');
+            if(!R61_SOURCE_IDS.every(id=>unique.has(id)))throw Error('G11.3 missing authenticated source clip');
+            g113Clips=[...unique.values()];
+          }
+          if(disposed||aborted(signal))return false;
+          const [{ShorekeeperVfxR5Director},{createR62Integration}]=await Promise.all([
+            import('./vfx-r5.mjs'),import('./r62-integration.mjs')
+          ]);
+          if(disposed||aborted(signal))return false;
+          nextVfx=new ShorekeeperVfxR5Director(scene,{camera,mobile:lowPower,reducedMotion:false});
+          nextVfx.bindModel(model);
+          // One Stellarealm canopy/field contains BOTH performers, never a separate SK scene.
+          if(hostModel){
+            hostModel.updateMatrixWorld(true);group.updateMatrixWorld(true);
+            const box=new T.Box3().setFromObject(hostModel).union(new T.Box3().setFromObject(group));
+            const sz=box.getSize(new T.Vector3()),mid=box.getCenter(new T.Vector3());
+            const radius=Math.max(sz.x,sz.z)/2+.65;
+            const scale=Math.max(nextVfx.scale,radius/1.8);
+            nextVfx.center.copy(mid);nextVfx.scale=scale;
+            nextVfx.floorY=(box.min.y-mid.y)/scale;
+            nextVfx.root.position.copy(mid);nextVfx.root.scale.setScalar(scale);
+            nextVfx.environment.root.position.set(mid.x,box.min.y-.008,mid.z);
+            nextVfx.environment.root.scale.setScalar(scale);
+            nextVfx.renderPose();
+          }
+          // The Hsin sky/moon stay the background; only the shared Stellarealm
+          // field, canopy and G11 score are drawn. Never replace the stage camera.
+          nextVfx.environment.sky.visible=false;
+          nextVfx.setStage('outer');nextVfx.setState('OFF');
+          // Keep camera choreography off so Hsin and Shorekeeper stay in the same frame.
+          const stage={scene,camera:camera??{aspect:1},orbit:{},restoreCamera(){}};
+          // A combo claims the exact body owner currently held by an idle:
+          // release the idle BEFORE constructing the G11.3 director.
+          director?.dispose();director=null;
+          face?.reset();
+          nextDirector=createR62Integration(T,model,g113Clips,stage,{
+            getVfx:()=>nextVfx,camera:false,
+            reducedMotion:()=>false,
+            onEvent:e=>face?.onAnimationEvent?.(e)
+          });
+          if(disposed||aborted(signal))return false;
+          nextDirector.start();
+          g113=nextDirector;vfx=nextVfx;g113Manual=mode==='manual';
+          nextDirector=null;nextVfx=null;
+          g113Status='PLAYING_G113_S5';
+          return true;
+        }catch{
+          g113Status='G113_SOURCE_OR_VFX_UNAVAILABLE';
+          return false;
+        }finally{
+          nextDirector?.dispose();nextVfx?.dispose();
+          if(!disposed&&!director&&!g113)switchIdle();
+          g113Loading=null;
+        }
+      })();
+      return g113Loading;
+    }
+    function finishG113(){
+      if(g113){g113.dispose();g113=null;}
+      if(vfx){vfx.dispose();vfx=null;}
+      g113Manual=false;g113Cooldown=2;g113Attempted=false;
+      if(!disposed){g113Status='IDLE_RECOVERED';face?.reset();switchIdle();}
+    }
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
       observeMusic(music);
       if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
       const elapsed=Math.min(.09,dt);
-      const musicPlaying=musicSnapshot.playbackConfirmed;
-      // Approved stage-group rotation. Never modify Root/bones to imitate a dance.
-      turn.advance(elapsed,{playing:musicPlaying});
+      const confirmed=musicSnapshot.playbackConfirmed;
+      if(!confirmed&&!g113Manual&&g113?.state.presentationActive)g113.interrupt();
+      if(g113){
+        g113.advance(elapsed);vfx?.update(elapsed,1);
+        face?.advance(elapsed,{writeFacial:true});
+        if(g113.state.phase==='idle')finishG113();
+        model.updateMatrixWorld(true);return;
+      }
+      if(confirmed&&g113Cooldown<=0&&!g113Attempted&&!g113Loading){
+        void startG113('music');
+      }
+      if(!confirmed){g113Attempted=false;}
+      g113Cooldown=Math.max(0,g113Cooldown-elapsed);
       director?.advance(elapsed);
-      // Quiet mode: random, non-repeating choice of all three original idles.
-      // Music mode: finish the existing idle and sustain a single basic turn.
-      if(!musicPlaying&&director?.state.phase==='idle'){
+      if(director?.state.phase==='idle'){
         restSeconds-=elapsed;
         if(restSeconds<=0){restSeconds=1.5+Math.random()*3.5;switchIdle();}
       }
       face?.advance(elapsed,{writeFacial:true});
       manualFaceCooldown=Math.max(0,manualFaceCooldown-elapsed);
-      if(!musicPlaying&&manualFaceCooldown<=0){
+      if(!confirmed&&manualFaceCooldown<=0){
         faceSeconds-=elapsed;
         if(faceSeconds<=0&&!face?.state.busy){
           let accepted=false;
-          // Only existing S6 curated families auto-play. R6 QA candidates stay manual.
           for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
             const row=S6_AUTO_FACE_ROSTER[faceChoice.next()];
             if(face.qaSupport(row.id).available&&face.triggerQA(row.id)){accepted=true;break;}
@@ -153,9 +246,9 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     }
     function dispose(){
       if(disposed)return;
-      disposed=true;turn.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
+      disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
-    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,startG113,
       playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
       playFaceSelection(value){
         const selected=resolveFaceMenu(value);
@@ -166,7 +259,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       blinkR6(){return manualFace(()=>face.trigger('blink'));},
       get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,turn:turn.state,quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,manual:g113Manual,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF'},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);

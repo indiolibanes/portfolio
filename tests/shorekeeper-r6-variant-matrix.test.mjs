@@ -38,9 +38,10 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  const hsin=read('src/scripts/hsin-stage.ts');
  const duo=read('src/pages/experimentos/duo/index.astro');
  const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
- assert.match(lab,/const chosen=\['canonical','r2','r3','r4','r5'\]\.includes\(mode\)\?mode:'r5'/);
+ assert.match(lab,/setMouthGeometry\('r5'\)/);
  assert.match(lab,/face\.playBaseline\(selected\.id\)/);
- assert.match(lab,/\['canonical','r2','r3','r4','r5'\]:\['canonical','r4','r5'\]/);
+ assert.match(page,/data-r5-geometry-internal hidden/);
+ assert(!page.includes('data-r6-mouth-details'));
  assert.match(page,/data-r6-variant-button/);
  assert(!page.includes('data-r6-variant-select'));
  assert.match(page,/FACE_MENU_VALUES\.primary\.map/);

@@ -1,19 +1,26 @@
-# Shorekeeper — dueto: rotação básica aprovada
+# Shorekeeper — G11.3/S5: ciclo cinematográfico autorizado
 
-**Aprovação do usuário:** durante reprodução musical confirmada, a coreografia da Shorekeeper é simplesmente uma rotação básica em torno do próprio eixo vertical. Não foi solicitada dança nova, habilidade Skill/Burst nem rastreamento de batidas. G7 permanece NO_GO para novos movimentos cinematográficos.
+**Correção humana de 7/11/2026:** “rotação” se refere à **sequência cinematográfica G11.3**, não à rotação rígida da personagem no próprio eixo. A implementação R6.4.1 do pião foi rejeitada e removida.
 
-## Comportamento implementado na R6.4.1
+## Contrato de apresentação do dueto
 
-| Estado | Movimento | Expressões |
+| Estado | Corpo e cenário | Face e controle |
 | --- | --- | --- |
-| Sem música | Idles originais 01, 02 e 03, sorteados desde o primeiro uso e sem repetição consecutiva | Três famílias S6/R5 curadas em ordem aleatória; R6 só manual |
-| Playing confirmado | Rotação suave do grupo da Shorekeeper, 360° em ~14 s, sem criar ação de rig nem segundo mixer | Não iniciar uma nova expressão automática; comandos manuais disponíveis |
-| Ready, paused, buffering, ended | Retorno controlado à orientação frontal pelo menor arco | Retomada de contemplação |
-| Página pausada / movimento reduzido | Não avançar o relógio corporal nem a rotação | Nenhuma nova expressão automática |
-| Dispose | Restaurar orientação e liberar os owners existentes | Liberar o escritor facial existente |
+| Sem música | Idles 01/02/03 originais aleatórios desde o início; sem repetição consecutiva | Três famílias S6/R5 curadas aleatórias; R6 somente manual |
+| Música confirmada | Carregar basic+advanced+burst autenticados se ainda ausentes; executar G11.3/S5, com Stellarealm unificado contendo Hsin e Shorekeeper | Face sai das expressões manuais durante combate; um único body owner |
+| Botão de teste | Iniciar a mesma sequência G11.3 mesmo sem música, se bibliotecas/rig validarem | Status explícito se faltar asset |
+| Pausa/movimento reduzido | Não consumir relógio do combate nem avançar efeitos | Sem novas expressões automáticas |
+| Música interrompida | Interromper a apresentação automática e recuperar idle, sem trocar as curvas originais | Retorno controlado ao modo contemplativo |
+| Dispose | Liberar score/VFX, mixer corporal, writer facial e cópias temporárias | Fail closed |
 
-A rotação ocorre no grupo de apresentação, não no Root/bones. O diretor corporal original continua com o controle dos tracks; o diretor facial anatômico permanece com o único writer para morphs. Nenhum novo WebGLRenderer, requestAnimationFrame, domínio público de assets ou download de biblioteca é criado.
+Ao longo da sequência, o director S5 combina ataques básicos, candidato Heavy Attack, Skill, Burst02 e recuperação. O campo **Stellarealm** é centrado no envelope unido das duas personagens. A câmera do dueto mantém o enquadramento combinado: não adota a câmera solo do laboratório SK.
 
-## Limites
+## Fronteiras de fidelidade
 
-A aprovação é artística quanto à ideia básica de rotação, não uma certificação do ritmo exato, da silhueta 360°, das roupas/cabelos, do modelo, da lua maior, do pavilhão, do desempenho ou da renderização no Samsung Internet. PlaybackConfirmed não fornece BPM ou sincronização de batida; não apresentar isso como dança sincronizada. É necessário QA do dueto autenticado em navegadores reais.
+Os clipes GLB são privados, conferidos por Access e SHA-256, e nenhuma habilidade é fabricada caso faltem. O mapeamento B1/HA/Burst/cutscene ainda é inconclusivo. G7 NÃO está liberado. A aprovação humana contempla o ritmo narrativo do G11.3 existente, não uma certificação de canonicidade dos movimentos.
+
+## Fundo e pavilhão
+
+A lua é fixa no centro da projeção da câmera exclusivamente no dueto, com profundidade de fundo e sem escrita de profundidade; a esfera é desenhada antes dos personagens, portanto não os ofusca. O halo é desativado para evitar alpha overlay. O tamanho adapata a proporção do viewport no fit. O widget 3D se alinha à única fachada nativa HTML: não existe um segundo painel/visor deslocado; controles oficiais do YouTube/Spotify seguem operáveis.
+
+**Pendente:** renderização visual autenticada, posicionamento em 390×844 e 832×384, QA móvel e GPU real, tempo de rede R2, clipping facial, stellarealm abrangendo as personagens durante a câmera em órbita. Nenhuma taxa de FPS declarada.

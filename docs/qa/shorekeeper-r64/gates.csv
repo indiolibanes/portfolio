@@ -13,13 +13,16 @@ LOCAL_PARSE_AB,PASS,3 runs per mode with local bytes and empty textures; not GPU
 IDLE_ENVELOPE,PASS,"4241 poses, 30Hz plus original keys, 3 exact idles; .36h SK padding exceeds observed excursion"
 DUET_MOVING_SILHOUETTES,PENDING,"Hsin dance envelope, cloth physics and device silhouettes not visually certified; Hsin .18h reserve heuristic"
 CAMERA_3D_CORNERS,PASS,Node projection oracle tests portrait/landscape/desktop at multiple azimuths
-PLAYER_DEVICE_LAYOUT,PENDING,CSS reserves a separate render region; real 390x844/832x384 UI QA blocked
+PLAYER_DEVICE_LAYOUT,PENDING,one 3D pavilion aligned to HTML native player; real 390x844/832x384 UI QA blocked
 MUSIC_RECOGNITION,PASS,Confirmed status/epoch/position/quality preserved; subscription updates while acting is paused
-BASIC_TURN_INTENT,PASS,"User approved basic rotation during confirmed music; no beat-synchronized dance"
-BASIC_TURN_VISUAL_QA,PENDING,"Group rotation and neutral recovery implemented; no hosted device render or material/cloth verification"
+G113_INTENT,PASS,"Human corrected meaning: approved cinematic seven-source S5 sequence, not continuous spin"
+G113_SOURCE_GATE,PENDING,"Runtime requires Access-authenticated SHA-verified basic advanced burst libraries; live account not tested"
+G113_STELLAREALM_DUO,PENDING,"R5 field centred on combined Hsin+SK envelope; real GPU WebGL device validation missing"
+G113_CINEMATIC_QA,PENDING,"S5 source choreography reuses R62 integration; Burst source mapping still unverified"
 QUIET_RANDOM_POLICY,PENDING,"Random initial idle and non-repeating selection implemented; new synthetic CI pending"
 R5_R6_BUTTON_PANEL,PENDING,"25 buttons in duo and SK R6 lab; responsive device QA pending"
-DUET_PAVILION_MOON,PENDING,"Reuse volumetric tower overhead and enlarge moon only in duo; mobile visual/GPU QA pending"
+DUET_FIXED_MOON,PENDING,"Camera-child moon fixed center with no depth write/transparent halo; mobile visual QA pending"
+SINGLE_WIDGET_SURFACE,PENDING,"3D pavilion aligned to one native player screen; exact mobile occlusions pending"
 REGRESSIONS,PASS,"235 Shorekeeper, 47 Hsin, 288 overall Node; check/build exit0"
 WEBGL_CONTEXT_DEVICE,PENDING,Lifecycle structural/synthetic tests pass; real context loss/restore and Samsung not executed
 PHYSICAL_GPU_MEMORY,PENDING,"No physical GPU time, VRAM, real FPS or peak device memory measured"

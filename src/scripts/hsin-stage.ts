@@ -108,31 +108,28 @@ export function mountHsinStage(root:HTMLElement){
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
    presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth});presentation.apply();
    const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});
-   if(duetRequested){
-     // Duo only: a much larger moon off to the side, at world depth behind
-     // the two performers. Smaller halo opacity protects facial readability.
-     const lunar=moonlit.group.getObjectByName('Full moon · sculpted static sphere');
-     const halo=moonlit.group.getObjectByName('Moon · restrained atmospheric halo');
-     if(lunar&&halo){
-       lunar.scale.setScalar(1.9);lunar.position.x-=1.25;lunar.position.y+=.15;
-       halo.position.copy(lunar.position);halo.position.z-=.025;
-       halo.scale.setScalar(1.55);(halo.material as any).opacity=.12;
-     }
-   }
    scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
    scene.add(...createStageLights(T).all);
    // Face only: the GLB marks the face unlit, so it ignored every light. Same texture, lit response, reversible; applied before the programs compile.
    faceSkin=createFaceSkin({THREE:T,meshes});faceSkin.apply();
    // Static transforms, including the root yaw, are frozen only after explicit matrix updates.
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
-   const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
+   const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);
+   let fixedDuetMoon:null|{resize:()=>void}=null;
+   if(duetRequested){
+     const lunar=moonlit.group.getObjectByName('Full moon · sculpted static sphere');
+     const halo=moonlit.group.getObjectByName('Moon · restrained atmospheric halo');
+     const {attachFixedDuetMoon}=await import('./shorekeeper/duet-fixed-moon.mjs');
+     fixedDuetMoon=attachFixedDuetMoon(T,{scene,camera,moon:lunar,halo});
+   }
+   orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    const musicElement=root.querySelector<HTMLElement>('[data-music-tower]');
    if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,model,bounds:profile.bounds,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics,duetMode:duetRequested});scene.add(musicTower.group);} // Reuse the same 3D pavilion; in duo it floats above the performers while the native player remains in its own side region.
    root.addEventListener('hsin:tower-layout',()=>{musicTower?.invalidateLayout();loop?.invalidate();},{signal:attempt.signal});
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];
    let duetEnvelope:null|{width:number;height:number;depth:number;center:[number,number,number]}=null;
    const fit=()=>{
-    musicTower?.invalidateLayout();const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
+    musicTower?.invalidateLayout();const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();fixedDuetMoon?.resize();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
     const previousFit=initialDistance;const framing=lunarCameraFit(camera.aspect);initialDistance=framing.distance*(duetRequested?1.27:1);initialTarget=duetRequested?[framing.target[0]+.30,framing.target[1],framing.target[2]]:framing.target;
     if(duetEnvelope){
      const required=duetFitDistance({...duetEnvelope,aspect:camera.aspect,fov:camera.fov,azimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180});
@@ -218,11 +215,11 @@ export function mountHsinStage(root:HTMLElement){
         if(cleaned||attempt.signal.aborted||destroyed)return;
         const prepared=await preparation;
         if(cleaned||attempt.signal.aborted||destroyed)return;
-        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared});
+        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch});
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
         if(duetStatus)duetStatus.textContent=guest?.ready
-          ?duetR6?'Hsin & Shorekeeper · rotação musical básica aprovada; três idles aleatórios no silêncio, com expressões S6 e R5 reversível · R6 manual em QA.':'Hsin & Shorekeeper · rotação básica durante música confirmada; idles e expressões S6 variadas no silêncio · G7 pendente.'
+          ?duetR6?'Hsin & Shorekeeper · ciclo cinematográfico G11.3 durante reprodução confirmada, idles e expressões S6 aleatórias no silêncio. R5 anatômico ativo.':'Hsin & Shorekeeper · G11.3/S5 em reprodução confirmada; idles e expressões S6 variadas no silêncio. Fontes de combate autenticadas necessárias.'
           :guest?.status==='AUTHENTICATION_REQUIRED'
             ?'Hsin ready. Shorekeeper requires your Cloudflare Access session; no private files are publicly exposed.'
             :guest?.status==='PRIVATE_ASSETS_MISSING'
@@ -249,10 +246,10 @@ export function mountHsinStage(root:HTMLElement){
             duetGuest?.observeMusic?.(sample);
             if(cleaned||!duetGuest?.ready||!duetStatus)return;
             if(sample.status==='playing'&&sample.playbackConfirmed){
-              duetStatus.textContent='Shorekeeper · rotação básica aprovada enquanto '+(sample.provider==='spotify'?'Spotify':'YouTube')+' reproduz. Sem sincronia de batidas inventada.';
-            }else if(sample.status==='paused')duetStatus.textContent='Música pausada · Shorekeeper retorna suavemente à contemplação.';
+              duetStatus.textContent='Shorekeeper · ciclo cinematográfico G11.3/S5 com '+(sample.provider==='spotify'?'Spotify':'YouTube')+' confirmado (bibliotecas privadas obrigatórias).';
+            }else if(sample.status==='paused')duetStatus.textContent='Música pausada · apresentação G11.3 interrompida; retorno à contemplação.';
             else if(sample.status==='buffering')duetStatus.textContent='Aguardando reprodução confirmada · contemplação da Shorekeeper.';
-            else duetStatus.textContent='Sem música · três idles originais e expressões faciais em ordem aleatória, sem repetições imediatas.';
+            else duetStatus.textContent='Sem música · idles e expressões S6 aleatórios; botão G11.3 disponível para ensaio manual.';
           };
           const musicUnsubscribe=music.subscribe(updateDuetMusicStatus);
           attempt.signal.addEventListener('abort',musicUnsubscribe,{once:true});
@@ -278,6 +275,23 @@ export function mountHsinStage(root:HTMLElement){
             blink?.addEventListener('click',()=>act(()=>!!duetGuest?.blinkR6?.(),'Piscada bilateral'),{signal:attempt.signal});
             neutral?.addEventListener('click',()=>act(()=>!!duetGuest?.neutralR6?.(),'Repouso facial'),{signal:attempt.signal});
             if(status)status.textContent='Painel manual R5/R6 · 25 estados preservados; o repertório S6 silencioso varia automaticamente. G7 NO_GO.';
+          }
+          const g113Button=root.querySelector<HTMLButtonElement>('[data-duo-g113-start]');
+          if(g113Button){
+            g113Button.disabled=false;
+            g113Button.addEventListener('click',async()=>{
+              if(cleaned||attempt.signal.aborted||paused||motion.matches||!visible()||!duetGuest?.ready)return;
+              g113Button.disabled=true;
+              if(duetStatus)duetStatus.textContent='G11.3 · verificando as três bibliotecas privadas autenticadas…';
+              let ok=false;
+              try{ok=await duetGuest.startG113('manual');}catch{}
+              if(cleaned||attempt.signal.aborted)return;
+              if(duetStatus)duetStatus.textContent=ok
+                ?'G11.3 · ciclo experimental iniciado · Hsin permanece dentro do campo Stellarealm compartilhado.'
+                :'G11.3 indisponível: faltam bibliotecas verificadas ou ocorreu falha na preparação. Nenhum movimento foi substituído.';
+              g113Button.disabled=false;
+              worldDirty=true;loop?.invalidate();
+            },{signal:attempt.signal});
           }
           // Only the private duet route receives the second performer.
           // Hsin's normal public route and autonomous system are unchanged.

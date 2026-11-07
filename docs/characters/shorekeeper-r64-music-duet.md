@@ -1,6 +1,6 @@
-# Shorekeeper R6.4 — dueto, preparação privada e contrato musical
+# Shorekeeper R6.4.2 — dueto, G11.3/S5 e apresentação integrada
 
-**Candidata para revisão em draft, empilhada sobre PR259 (`5cdadef92dc804e5cecfef9c6563fe5c24d25019`). Sem merge. Rotação básica aprovada pelo usuário para reprodução confirmada; QA hospedado/físico pendente; G7 NO_GO.**
+**Candidata para revisão em draft, empilhada sobre PR259 (`5cdadef92dc804e5cecfef9c6563fe5c24d25019`). Sem merge. Ciclo cinematográfico G11.3/S5 aprovado pelo usuário para reprodução confirmada; QA hospedado/físico pendente; G7 NO_GO.**
 
 ## Auditoria da base e regressões corrigidas
 
@@ -37,11 +37,15 @@ O player nativo fica na região superior direita; a área renderizada é separad
 
 Testes de projeção usam Three como oráculo para os cantos, com diferentes azimutes e aspectos. **Ainda faltam:** legibilidade/tamanho das personagens, extremos da Hsin, cabelo/roupas, lua, painel manual aberto, zoom/orientação e interação com o player nos dispositivos. A separação de regiões em código não substitui essa aceitação visual.
 
-## Resposta musical — rotação básica aprovada
+## Resposta musical — G11.3/S5 autorizada, sem pião
 
 O guest recebe exclusivamente musicForStage().sample() e subscribe(). O snapshot mantém provider, status, playbackConfirmed, epoch, posição reportada, observedAt e synchronizationQuality. Só marca PLAYING_CONFIRMED para um provedor válido em playing confirmado; ready/paused/buffering/ended/unavailable ficam distintos. Não extrapola posição nem infere BPM/batidas. A assinatura atualiza reconhecimento mesmo se a atuação estiver pausada, sem avançar face/corpo. Troca de epoch invalida callbacks antigos no contrato Hsin existente.
 
-**BASIC_ROTATION_USER_APPROVED.** Durante reprodução musical confirmada, a Shorekeeper gira suavemente no eixo Y do próprio grupo de cena em cerca de 14 segundos por volta; usa o mesmo RAF do dueto, não altera bones/Root, não infere batidas e não executa Skill/Burst. Sem reprodução, retorna à orientação frontal pelo arco mais curto, e retoma os três idles originais sorteados desde a primeira entrada, sem repetição consecutiva. As três famílias faciais S6 curadas são sorteadas no silêncio; as nove candidatas R6 continuam manuais. Pause/reduced-motion não avançam movimento. A atuação da Hsin não foi substituída. A aprovação do conceito não substitui QA WebGL/Android. Ver storyboard/contrato atualizado.
+**G113_S5_CINEMATIC_APPROVED (direção artística).** A “rotação” aprovada significa o **ciclo/sequência cinematográfica G11.3** do laboratório S5: três ataques básicos originais → candidato Heavy Attack → Skill → Burst02 → fases Stellarealm/Resonance Peak → recuperação/idle. O diretor reutilizado é `createR62Integration`, com fontes corporais originais preservadas, campo R5 compartilhado com a Hsin e **sem direção de câmera autônoma** para não expulsá-la do quadro. Nenhum giro de 360° em `group.rotation.y` deve ocorrer. A fonte exata de HA/Burst/B1 permanece editorialmente não certificada. O user approva a sequência experimental, não reivindica fidelidade canônica de cada golpe. G7 continua NO_GO.
+
+O silêncio preserva idles 01/02/03 originais sorteados desde o primeiro frame (sem repetição consecutiva) e três expressões faciais S6/R5 curadas variando automaticamente; candidatas anatômicas R6 permanecem manuais. Reproduzir música confirmada inicia a tentativa de preparação G11.3, **mas não descarrega as três bibliotecas de combate até esse momento**. O botão `Testar golpes · G11.3 / Stellarealm` permite o mesmo ensaio sem música; todas as bibliotecas exigem manifesto Access/R2 autenticado e SHA verificado. Falha/ausência recusa a execução, sem clipe substituto. Repetição musical usa o mesmo driver de frames, sem RAF/renderer paralelo. A atuação solo da Hsin não é modificada.
+
+O contorno oral R5 é obrigatório como perfil ativo na apresentação do laboratório e do dueto R6. A interface não mostra opções original/R2/R3/R4; os módulos históricos sobrevivem apenas para inspeção/rollback técnico. O painel facial mantém as 25 receitas distintas separadas entre nove R6, sete R5 aprovadas e nove intermediárias recolhíveis.
 
 ## Validação e reprodução
 
@@ -64,13 +68,13 @@ node scripts/shorekeeper/audit-r64-guest.mjs PRIVATE_GLBS PRIVATE_OUTPUT
 Evidência compacta public-safe e matriz: `docs/qa/shorekeeper-r64/`. As ferramentas offline não baixam ou publicam modelos. Comparativos visuais e waterfall autenticado, cache nativo, primeiro frame, memória/GPU físicos continuam PENDING/BLOCKED. Não se declara 60 FPS, aprovação artística ou liberação de G7.
 
 
-## R6.4.1 — ajustes solicitados
+## R6.4.2 — correção de interpretação e refinamento
 
 - Seleção dos idles 01/02/03 por sorteio desde a primeira apresentação; não há mais início obrigatório por Idle 01 nem repetição imediata.
 - No silêncio, três famílias faciais S6/R5 curadas são alternadas por sorteio e conservam o escritor facial existente. Pressionar uma expressão manual suspende temporariamente o agendamento automático. As nove candidatas R6 não são reproduzidas automaticamente.
 - Painel do dueto com 25 botões, separando nove R6, sete R5 preservados e nove intermediários/comparativos recolhíveis. O laboratório SK independente também substitui o combobox facial por painel de 25 botões na rota R6, preservando os estados distintos.
 - Pavilhão original volumétrico em tamanho compacto, pairando sobre as personagens na cena; player oficial HTML mantém controles e região próprios. Lua 1,9x apenas no dueto, com halo enfraquecido. Posição, desempenho e colisões visuais exigem teste em dispositivo.
-- O modelo GLB privado, as bibliotecas, o R2, Access, as animações originais e a implementação da Hsin solo permanecem inalterados.
+- As bibliotecas privadas são carregadas somente no ensaio G11.3 autorizado ou em reprodução musical confirmada; nenhum GLB, R2, Access, rig ou animação original foi alterado. O palco solo da Hsin permanece inalterado.
 
 ## Preservação e rollback
 

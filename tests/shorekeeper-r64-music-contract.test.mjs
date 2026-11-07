@@ -3,7 +3,7 @@ import {createMusicState} from '../src/scripts/hsin-music-state.mjs';
 import {duetMusicSnapshot} from '../src/scripts/shorekeeper/duet-music-contract.mjs';
 test('selection is not playback; confirmed reports carry epoch, observed position and quality without invented beats',()=>{
  const c=createMusicState({now:()=>1200}),epoch=c.select('youtube');assert.equal(duetMusicSnapshot(c.sample()).playbackConfirmed,false);
- c.observe(epoch,{status:'playing',positionSeconds:23.5});const s=duetMusicSnapshot(c.sample());assert.equal(s.state,'PLAYING_CONFIRMED');assert.equal(s.epoch,epoch);assert.equal(s.positionSeconds,23.5);assert.equal(s.synchronizationQuality,'verified');assert.equal(s.choreography,'BASIC_ROTATION_USER_APPROVED');assert.equal(s.beatSynchronization,'NONE');assert.ok(!('beat' in s));
+ c.observe(epoch,{status:'playing',positionSeconds:23.5});const s=duetMusicSnapshot(c.sample());assert.equal(s.state,'PLAYING_CONFIRMED');assert.equal(s.epoch,epoch);assert.equal(s.positionSeconds,23.5);assert.equal(s.synchronizationQuality,'verified');assert.equal(s.choreography,'G113_S5_CINEMATIC_APPROVED');assert.equal(s.beatSynchronization,'NONE');assert.ok(!('beat' in s));
  const stale=c.sample();c.select('spotify');assert.equal(c.observe(epoch,{status:'playing'}),false);assert.equal(duetMusicSnapshot(c.sample()).playbackConfirmed,false);assert.equal(duetMusicSnapshot(stale).positionSeconds,23.5);c.dispose();
 });
 test('paused, buffering, ended, unavailable and no_music remain explicit without advancing any pose clock',()=>{

@@ -133,18 +133,22 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
     const {w,h,pw,ph,sw,sh}=metrics;if(!w||!h||!pw||!ph)return false;
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
     element.dataset.towerAnchor=duetMode?'duo':layout.compact?'bay':'world';
-    // Shared stage: the native provider stays in its side panel; a compact
-    // 3D pavilion floats high over the characters inside the canvas.
-    const paneW=duetMode?Math.min(142,w*.28):layout.compact?Math.min(110,w*.26):pw;
-    const paneH=duetMode?paneW*.9:layout.compact?paneW*.9:ph;
-    const nextAspect=paneH/paneW,nextDecoration=duetMode?.65:layout.compact?1:Math.max(.35,Math.min(1,(h-ph-60)/(paneW*1.35)));
+    // Duo: 3D frame and ONE native player aperture share precisely the same
+    // viewport rectangle. The old version rendered a pavilion at centre and
+    // an unrelated second "screen" in a side bay.
+    const paneW=duetMode?pw*1.12:layout.compact?Math.min(110,w*.26):pw;
+    const paneH=duetMode?ph*1.04:layout.compact?paneW*.9:ph;
+    const nextAspect=paneH/paneW,nextDecoration=duetMode?.58:layout.compact?1:Math.max(.35,Math.min(1,(h-ph-60)/(paneW*1.35)));
     if(Math.abs(aspect-nextAspect)>.005||Math.abs(decorationScale-nextDecoration)>.01){aspect=nextAspect;decorationScale=nextDecoration;build(aspect,decorationScale);}
     camera.updateMatrixWorld();const now=clock(),dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
     const yaw=Math.atan2(camera.position.x-target.x,camera.position.z-target.z),side=element.dataset.soundtrackSide==='left'?-1:1;
     if(smoothedYaw===null||reduced)smoothedYaw=yaw;
     const delta=Math.atan2(Math.sin(yaw-smoothedYaw),Math.cos(yaw-smoothedYaw));smoothedYaw+=delta*(1-Math.exp(-dt*5));
     // Small lag inside a hard safe lane. No teleport on side toggle: that is an explicit move.
-    let x=duetMode?w*.52:layout.compact?w-paneW*.85:layout.x,y=duetMode?Math.max(paneH*.60+8,Math.min(h*.20,h-paneH*.6-14)):layout.compact?h*.66:layout.y;
+    const nativeRect=duetMode?element.getBoundingClientRect():null;
+    const canvasRect=duetMode?host.getBoundingClientRect():null;
+    let x=duetMode?nativeRect.left-canvasRect.left+nativeRect.width/2:layout.compact?w-paneW*.85:layout.x;
+    let y=duetMode?nativeRect.top-canvasRect.top+nativeRect.height/2:layout.compact?h*.66:layout.y;
     const signature=camera.position.x+camera.position.y*13+camera.position.z*31+camera.quaternion.y*71+pw*3+ph;
     if(!duetMode&&!layout.compact&&(signature!==cameraSignature||now-layoutAt>250)){
       cameraSignature=signature;layoutAt=now;cameraForProjection=camera;
