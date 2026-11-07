@@ -38,5 +38,6 @@ assert.ok(stage.includes('window.__hsinMetrics') && /if\(metrics\.enabled\)/.tes
 assert.ok(stage.includes("if(metrics.enabled)delete (window as any).__hsinMetrics"), 'performance hook removed during cleanup');
 assert.ok(stage.includes("const policy=()=>{showPause();metrics.gap()"), 'pause clears old frame interval');
 assert.ok(stage.includes("if(!visible())metrics.gap();"), 'tab visibility clears old frame interval');
-assert.equal((stage.match(/requestAnimationFrame/g) ?? []).length, 1, 'still one render loop, supplied to createStageLoop');
+assert.equal((stage.match(/requestFrame:requestAnimationFrame/g) ?? []).length, 1, 'exactly one native RAF callback is passed to createStageLoop; prose comments do not count');
+assert.equal((stage.match(/loop=createStageLoop\(/g) ?? []).length, 1, 'only one stage render-loop constructor');
 console.log('Hsin stage metrics: no-op when disabled, windowed percentiles, milestones, gaps excluded, opt-in wiring without UI or extra loop PASS');
