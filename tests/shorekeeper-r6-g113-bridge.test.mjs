@@ -44,7 +44,8 @@ test('bridge is isolated from GLB/R2, automatic G7 and production defaults',()=>
  assert.match(runtime,/face\?\.onAnimationEvent\(e\)/);
  assert.match(runtime,/face\?\.advance\(dt,\{writeFacial:/);
  assert.match(runtime,/createR62Integration/);
- assert.match(ui,/data-r6-g113-candidate=\{id\}/);
+ assert.match(ui,/data-r6-variant-select/);
+ assert.match(ui,/data-r6-g113-neutral/);
  assert.match(ui,/G7 permanece NO_GO/);
  assert(!/\b(?:fetch|XMLHttpRequest|sendBeacon)\s*\(/.test(readFileSync(new URL('../src/scripts/shorekeeper/r6-g113-bridge.mjs',import.meta.url),'utf8')));
 });
