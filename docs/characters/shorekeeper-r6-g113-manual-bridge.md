@@ -42,4 +42,39 @@ Os IDs antigos e receitas base continuam preservados, bem como 3 idles canônico
 - Comparar R6 com as evidências privadas e capturas históricas, especialmente sorriso/queixo, E_Close, pupilas. Nenhum PASS sintético é validação artística.
 - Permanecem `G7_NO_GO`, `APPEARANCE_PROFILE_UNVERIFIED`, `GPU_QA_PENDING`, `R2_LIVE_AUTH_PENDING`, `SAMSUNG_QA_PENDING`.
 
-**Rollback:** remover `r6Stage=1` da URL e recarregar; G11.3 original e R6 QA histórico permanecem acessíveis. Não altera main, GLB, R2 ou Hsin.
+## Comparação entre as quatro rodadas e o original
+
+O nome da receita **não** identifica sozinho a apresentação. Existem eixos independentes: (a) `MOUTH_QA_RECIPES` e pesos dos morphs, (b) duração/curva de atuação, (c) geometria de boca original/R2/R3/R4/R5, (d) câmera e materiais. Os presets não são clipes PSA com sourceFrames. Quadros distintos em vídeo podem resultar de diferenças em qualquer eixo.
+
+A UI opt-in R6/G11.3 agora começa com **R5 reversível**, por ser o reparo mais refinado para a linha labial observado pelo autor; isso não é uma dependência matemática do compositor R6 nem uma alteração do GLB canônico. Pode-se selecionar Original, R2, R3, R4 e R5. Fora do modo R6Stage, a galeria mantém apenas os antigos Original/R4/R5.
+
+| Fonte de expressão | Diferença demonstrável nos arquivos de receita | Geometria sugerida | Tratamento |
+| --- | --- | --- | --- |
+| Little Smile V2 | Baseline histórico, timing de demonstração V2 | R5 recomendada para QA; aprovação original sem perfil confirmado | preservar como V2 |
+| Little Smile R2 / R3 | pesos e temporização **iguais** no código; geometria R2 versus R3 muda visual | R2/R3, respectivamente | manter ambos como estados de comparação, não novos morphs |
+| My Star V2 / R2 | mesmos pesos-base; temporizações diferentes | R5 de comparação / R2 | manter ambos, identificar duração |
+| My Star R3 olhos originais | E_Smile_L/R=0, distinto de R2 | R3 | manter como R3 original |
+| My Star R3 olhos suaves | E_Smile_L/R=0,1, distinto do R3 anterior | R3 | manter *Afeto crescente* separado |
+| Hello original | M_OpenSmall=0,4 e S_02=0,32 | Original | preservar sem chamar de Olá R2 |
+| Hello R2 / R3 fechada | pesos e temporização iguais | R2/R3 | manter ambos por geometria |
+| Hello R3 entreaberta | acrescenta M_OpenSmall=0,08 | R3 | variante independente |
+| LOVE / HOPE | receitas diferentes, HOPE pede fechamento ocular | R5 candidata | não presumir aliases aprovados sem QA |
+| Oito candidatos R6 | 5,8 s (Glance 6,8 s), pulse regional e acentos anatômicos adicionais | R5 candidata | botões manuais separados; G7 NO_GO |
+
+O módulo `facial-variant-catalog.mjs` expõe a comparação determinística de nomes, pesos, solicitação ocular, timing e geometria sugerida. Se pesos+timing coincidem, a diferença documentada pode ser inteiramente geométrica. Não afirmar movimento canônico diferente nem fonte PSA para essas receitas quando isso não foi verificado.
+
+**Teste:** na prévia, aba Expressões → "R6 anatômica + G11.3": selecione geometria de contorno e, independentemente, uma receita no seletor "Comparar versão da receita facial"; reproduza a receita manualmente. Repetir mesma câmera e iluminação antes de comparar. Os oito gestos R6 não são sobrescritos pelo seletor histórico.
+
+## Palco privado da Hsin — ensaio R6/R5
+
+A rota **já existente** `/experimentos/duo/` recebe um modo **separado**: `/experimentos/duo/?r6Guest=1`.
+
+- A Hsin conserva seu renderer, câmera, loop e apresentação solo; a Shorekeeper permanece um guest autenticado do R2, sem segundo renderer ou RAF.
+- Somente nesse modo, o guest usa `createAnatomicalFaceDirector` com geometria `createMouthR5` reversível e oferece oito expressões R6 manuais, neutro e piscada. Não são agendadas expressões R6 automaticamente, pois G7 continua NO_GO.
+- A fonte das três idles e o GLB F2.0-A são imutáveis. O modo padrão sem `r6Guest=1` usa exatamente a implementação S6-D anterior.
+- Se o R2 estiver incompleto, o guest **não aparece**; Hsin continua disponível, sem fallback para GLB público ou credenciais improvisadas.
+- Essa rota *não* transporta os VFX cinematográficos G11.3 para a Hsin: isso exigirá integração separada e validação GPU/Android.
+- Testar botão R6 manual, blink, neutro, botão pausa, movimento reduzido, troca de aba/contexto, descarte ao sair e persistência da Hsin solo.
+- G7/S6 automático continua sob gate, sem declaração de aprovação.
+
+**Rollback:** remover `r6Stage=1` do laboratório Shorekeeper ou `r6Guest=1` do palco compartilhado e recarregar. Nada exige mudança em main, nos GLBs ou no R2. QA WebGL/Samsung e acesso autenticado ainda são pendentes.
