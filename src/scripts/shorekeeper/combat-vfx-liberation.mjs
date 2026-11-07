@@ -22,8 +22,11 @@ export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butte
 // The ground shock ring and early hand-trigger remain at their original positions.
 export const GIANT_BUTTERFLY_MIN_CENTER_HEIGHT_H = 2.6;
 export function giantButterflyCenterY(chestY, floorY, height) {
- if (![chestY, floorY, height].every(Number.isFinite) || height <= 0) throw new RangeError('Invalid butterfly height anchor');
- return Math.max(chestY + 0.05 * height, floorY + GIANT_BUTTERFLY_MIN_CENTER_HEIGHT_H * height);
+ if (![chestY, height].every(Number.isFinite) || height <= 0) throw new RangeError('Invalid butterfly height anchor');
+ const chestAnchor = chestY + 0.05 * height;
+ // Synthetic/legacy stages may omit an explicit floor; keep the rise non-destructive.
+ const raisedFloor = Number.isFinite(floorY) ? floorY + GIANT_BUTTERFLY_MIN_CENTER_HEIGHT_H * height : chestAnchor + 1.2 * height;
+ return Math.max(chestAnchor, raisedFloor);
 }
 /** Radius / contrast A/B presets, relative to the model height (no world-unit or gameplay claim). */
 export const LIBERATION_RADIUS_PRESETS = Object.freeze({compact: 1.8, standard: 2.6, wide: 3.4, vast: 8.6});
