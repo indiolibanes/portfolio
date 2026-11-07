@@ -156,7 +156,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
       hull.rotation.set(0,-.11,0);
       group.updateMatrixWorld(true);
       element.dataset.towerAnchor='duet-overhead';
-      return true;
+      return !reduced&&idle; // animate only the tiny existing hover bob; no independent timers or forced frames while paused.
     }
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
     element.dataset.towerAnchor=layout.compact?'bay':'world';
