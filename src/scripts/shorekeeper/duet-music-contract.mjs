@@ -1,4 +1,4 @@
-/** Read-only recognition. No beat inference, play clock, pose writes or automatic facial scheduling. */
+/** Read-only provider recognition. A user-approved basic turn is driven separately by the existing scene clock. */
 export function duetMusicSnapshot(sample=null){
  const statuses=['no_music','ready','playing','paused','buffering','ended','unavailable'];
  const status=statuses.includes(sample?.status)?sample.status:'no_music';
@@ -9,5 +9,5 @@ export function duetMusicSnapshot(sample=null){
   playbackConfirmed:confirmed,epoch:Number.isSafeInteger(sample?.epoch)&&sample.epoch>=0?sample.epoch:null,
   positionSeconds:positive(sample?.positionSeconds),observedAt:positive(sample?.observedAt),
   synchronizationQuality:['verified','estimated','unavailable'].includes(sample?.synchronizationQuality)?sample.synchronizationQuality:'unavailable',
-  choreography:'CHOREOGRAPHY_PENDING'});
+  choreography:confirmed?'BASIC_ROTATION_USER_APPROVED':'QUIET_RANDOM_IDLE_FACIAL',beatSynchronization:'NONE'});
 }

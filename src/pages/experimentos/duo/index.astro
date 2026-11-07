@@ -3,7 +3,9 @@ import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
 import HsinSoundtrack from '../../../components/HsinSoundtrack.astro';
 import '../../../styles/hsin-stage.css';
 import '../../../styles/shorekeeper-duo.css';
-import {R6_PRIMARY_CHOICES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
+import {R6_PRIMARY_CHOICES,R6_HISTORIC_CHOICES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
+const r5Approved=R6_HISTORIC_CHOICES.filter(x=>x.approvedAppearance);
+const r5Comparatives=R6_HISTORIC_CHOICES.filter(x=>!x.approvedAppearance);
 const posterVersion='2.0.1';
 const posterCache='lunar-terrace-r2';
 ---
@@ -35,13 +37,29 @@ const posterCache='lunar-terrace-r2';
       Hsin is the stage host. Shorekeeper requires a verified private Access/R2 library.
     </div>
     <details class="s6-r6-manual" data-duo-r6-controls hidden>
-      <summary>Shorekeeper · expressões anatômicas R6 (R5)</summary>
-      <p>Ensaio manual no mesmo palco da Hsin. Nenhuma R7/G7 automática; a textura e a geometria originais permanecem privadas.</p>
-      <label>Expressão R6
-        <select data-duo-r6-select disabled>{R6_PRIMARY_CHOICES.map(({id,label})=><option value={id}>{label} · R6</option>)}</select>
-      </label>
+      <summary>Shorekeeper · painel R5 / R6</summary>
+      <p>Expressões manuais; R6 permanece em QA visual. No silêncio, apenas o repertório facial S6 selecionado atua automaticamente. Sem R7/G7.</p>
+      <div class="s6-face-groups">
+        <div class="s6-face-category">
+          <h2>R6 · 9 candidatas</h2>
+          <div class="s6-face-grid" aria-label="Nove expressões R6 manuais">
+            {R6_PRIMARY_CHOICES.map(({id,label})=><button type="button" data-duo-face={'r6:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </div>
+        <div class="s6-face-category">
+          <h2>R5 · 7 receitas preservadas</h2>
+          <div class="s6-face-grid" aria-label="Sete receitas R5 preservadas">
+            {r5Approved.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </div>
+        <details class="s6-face-comparatives">
+          <summary>R5 · {r5Comparatives.length} estados intermediários / comparativos</summary>
+          <div class="s6-face-grid" aria-label="Comparativos R5 manuais">
+            {r5Comparatives.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </details>
+      </div>
       <div class="s6-r6-buttons">
-        <button type="button" data-duo-r6-play disabled>Apresentar</button>
         <button type="button" data-duo-r6-blink disabled>Piscar</button>
         <button type="button" data-duo-r6-neutral disabled>Neutro</button>
       </div>
@@ -62,13 +80,18 @@ const posterCache='lunar-terrace-r2';
   background:rgba(6,18,37,.85);color:#e4edff;font:13px/1.5 system-ui,sans-serif;
   text-align:center;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.15)}
   @media(max-width:600px){.s6-duet-status{bottom:120px;width:min(87vw,460px);font-size:12px}}
-  .s6-r6-manual{position:absolute;z-index:8;bottom:clamp(185px,29vh,290px);right:clamp(12px,3vw,42px);width:min(350px,76vw);max-height:36vh;overflow:auto;padding:12px 14px;border-radius:17px;background:rgba(235,247,255,.94);color:#24495f;box-shadow:0 8px 24px rgba(5,23,41,.2);font:12px/1.55 system-ui,sans-serif}
+  .s6-r6-manual{position:absolute;z-index:8;bottom:clamp(185px,29vh,290px);right:clamp(12px,3vw,42px);width:min(350px,76vw);max-height:46vh;overflow:auto;padding:12px 14px;border-radius:17px;background:rgba(235,247,255,.94);color:#24495f;box-shadow:0 8px 24px rgba(5,23,41,.2);font:12px/1.55 system-ui,sans-serif}
   .s6-r6-manual summary{font-weight:650;cursor:pointer}
   .s6-r6-manual label{display:block;margin:8px 0}
-  .s6-r6-manual select{width:100%;min-height:40px;border-radius:10px;background:#fff;color:#24495f;border:1px solid #b8d8e9}
+  .s6-r6-manual .s6-face-groups{display:grid;gap:10px;margin:8px 0}
+  .s6-r6-manual .s6-face-category h2{font:600 12px/1.4 system-ui,sans-serif;margin:4px 0 6px}
+  .s6-r6-manual .s6-face-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:6px}
+  .s6-r6-manual .s6-face-comparatives{border-top:1px solid #bbd5e3;padding-top:6px}
+  .s6-r6-manual .s6-face-comparatives summary{font-size:11px;margin:4px 0 10px}
   .s6-r6-buttons{display:flex;flex-wrap:wrap;gap:6px}
-  .s6-r6-buttons button{min-height:40px;padding:7px 10px;border:1px solid #bbd5e3;border-radius:11px;background:#fff;color:#27526b}
-  .s6-r6-buttons button:disabled{opacity:.42}
+  .s6-face-grid button,.s6-r6-buttons button{min-height:40px;padding:7px 8px;border:1px solid #bbd5e3;border-radius:11px;background:#fff;color:#27526b;font:inherit;line-height:1.3;text-align:left}
+  .s6-face-grid button[aria-pressed="true"]{border-color:#4787aa;background:#d7edf7;box-shadow:inset 0 0 0 1px #4787aa}
+  .s6-face-grid button:disabled,.s6-r6-buttons button:disabled{opacity:.42}
   @media(max-width:600px){.s6-r6-manual{bottom:195px;right:12px;width:min(310px,84vw)}}
 </style>
 <script>

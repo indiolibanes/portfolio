@@ -6,7 +6,7 @@ export function towerViewport(width,height,panelWidth,panelHeight,side='right') 
   return {compact,x:side==='left'?margin+panelWidth/2:width-margin-panelWidth/2,
     y:Math.max(80+panelHeight/2,Math.min(height-panelHeight/2-95,height*.52))};
 }
-export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],model=null,bounds=null,moon=null,metrics:instrument=null,clock=()=>performance.now()}) {
+export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],model=null,bounds=null,moon=null,metrics:instrument=null,duetMode=false,clock=()=>performance.now()}) {
   const group=new T.Group();group.name='HsinLunarMusicTower';
   const hull=new T.Group();hull.name='Travelling pavilion · dimensional architecture';group.add(hull);
   const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x93c8bd,hydrogenL:0x8de2ee,hydrogenR:0x8de2ee};
@@ -132,18 +132,21 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
     if(layoutDirty){const bounds=element.closest('[data-hsin-stage]').getBoundingClientRect();metrics={w:host.clientWidth,h:host.clientHeight,pw:element.offsetWidth,ph:element.offsetHeight,sw:bounds.width,sh:bounds.height};layoutDirty=false;}
     const {w,h,pw,ph,sw,sh}=metrics;if(!w||!h||!pw||!ph)return false;
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
-    element.dataset.towerAnchor=layout.compact?'bay':'world';
-    const paneW=layout.compact?Math.min(110,w*.26):pw,paneH=layout.compact?paneW*.9:ph;
-    const nextAspect=paneH/paneW,nextDecoration=layout.compact?1:Math.max(.35,Math.min(1,(h-ph-60)/(paneW*1.35)));
+    element.dataset.towerAnchor=duetMode?'duo':layout.compact?'bay':'world';
+    // Shared stage: the native provider stays in its side panel; a compact
+    // 3D pavilion floats high over the characters inside the canvas.
+    const paneW=duetMode?Math.min(142,w*.28):layout.compact?Math.min(110,w*.26):pw;
+    const paneH=duetMode?paneW*.9:layout.compact?paneW*.9:ph;
+    const nextAspect=paneH/paneW,nextDecoration=duetMode?.65:layout.compact?1:Math.max(.35,Math.min(1,(h-ph-60)/(paneW*1.35)));
     if(Math.abs(aspect-nextAspect)>.005||Math.abs(decorationScale-nextDecoration)>.01){aspect=nextAspect;decorationScale=nextDecoration;build(aspect,decorationScale);}
     camera.updateMatrixWorld();const now=clock(),dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
     const yaw=Math.atan2(camera.position.x-target.x,camera.position.z-target.z),side=element.dataset.soundtrackSide==='left'?-1:1;
     if(smoothedYaw===null||reduced)smoothedYaw=yaw;
     const delta=Math.atan2(Math.sin(yaw-smoothedYaw),Math.cos(yaw-smoothedYaw));smoothedYaw+=delta*(1-Math.exp(-dt*5));
     // Small lag inside a hard safe lane. No teleport on side toggle: that is an explicit move.
-    let x=layout.compact?w-paneW*.85:layout.x,y=layout.compact?h*.66:layout.y;
+    let x=duetMode?w*.52:layout.compact?w-paneW*.85:layout.x,y=duetMode?Math.max(paneH*.60+8,Math.min(h*.20,h-paneH*.6-14)):layout.compact?h*.66:layout.y;
     const signature=camera.position.x+camera.position.y*13+camera.position.z*31+camera.quaternion.y*71+pw*3+ph;
-    if(!layout.compact&&(signature!==cameraSignature||now-layoutAt>250)){
+    if(!duetMode&&!layout.compact&&(signature!==cameraSignature||now-layoutAt>250)){
       cameraSignature=signature;layoutAt=now;cameraForProjection=camera;
       subjects.face=projectSubject(by.get('ORG-Bip001Head'),.15,w,h,rects[0]);
       subjects.hands.length=0;for(const [i,s]of ['L','R'].entries()){const rect=projectSubject(by.get('ORG-Bip001Hand'+s),.11,w,h,rects[i+1]);if(rect)subjects.hands.push(rect);}
@@ -157,7 +160,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
       motion.retarget({width:sw,height:sh,panelWidth:pw,panelHeight:ph,paddingX:pw*.36,paddingTop:pw*.88*decorationScale,paddingBottom:pw*.47*decorationScale,preferred:element.dataset.soundtrackSide,...subjects},{now:now/1000,interacting,reduced});
     }
     motion.setInteracting(interacting);const movement=motion.advance(dt,reduced);
-    if(!layout.compact){x=movement.x;y=movement.y;element.dataset.adaptiveSide=movement.side;element.dataset.layoutConstrained=String(movement.constrained);}
+    if(!duetMode&&!layout.compact){x=movement.x;y=movement.y;element.dataset.adaptiveSide=movement.side;element.dataset.layoutConstrained=String(movement.constrained);}
     const distance=camera.position.distanceTo(target)*.96,worldHeight=2*distance*Math.tan(camera.fov*Math.PI/360);let scale=worldHeight*paneW/w*camera.aspect;
     camera.getWorldDirection(normal);direction.set(x/w*2-1,1-y/h*2,0).unproject(camera).sub(camera.position).normalize();
     center.copy(camera.position).addScaledVector(direction,distance/direction.dot(normal));
@@ -167,7 +170,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
     group.position.copy(center);group.rotation.set(0,yaw,0);group.scale.setScalar(scale);
     // Visible physical depth, including rear chambers, eaves, chassis and nacelles.
     // A fixed slight yaw exposes the side architecture; the native front aperture stays clear.
-    hull.rotation.y=(movement.side==='left'?-1:1)*-.10;hull.rotation.z=movement.tilt;
+    hull.rotation.y=duetMode?-.10:(movement.side==='left'?-1:1)*-.10;hull.rotation.z=duetMode?0:movement.tilt;
     if(!reduced&&idle)hull.position.y=Math.sin(now*.0008)*.008;else hull.position.y=0;
     if(provider!==element.dataset.provider){provider=element.dataset.provider;activation=now;}
     const activating=!reduced&&now-activation<650;
@@ -177,7 +180,7 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
     materials.hydrogenR.color.copy(materials.hydrogenL.color);
     if(movement.vx>1)materials.hydrogenL.color.multiplyScalar(1.2);else if(movement.vx< -1)materials.hydrogenR.color.multiplyScalar(1.2);
     group.updateMatrixWorld(true);
-    if(!layout.compact){element.style.setProperty('--tower-x',`${(x-pw/2).toFixed(2)}px`);element.style.setProperty('--tower-y',`${(y-ph/2).toFixed(2)}px`);}
+    if(!duetMode&&!layout.compact){element.style.setProperty('--tower-x',`${(x-pw/2).toFixed(2)}px`);element.style.setProperty('--tower-y',`${(y-ph/2).toFixed(2)}px`);}
     if(instrument?.enabled)instrument.sample('pavilionUpdate',instrument.now()-started);
     return Math.abs(delta)>.002||activating||movement.moving;
   }

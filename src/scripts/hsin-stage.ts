@@ -210,7 +210,7 @@ export function mountHsinStage(root:HTMLElement){
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
         if(duetStatus)duetStatus.textContent=guest?.ready
-          ?duetR6?'Hsin & Shorekeeper: private duet · original idles + R6 facial QA with reversible R5 mouth. G7 NO_GO; no automatic R6 emotions.':'Hsin & Shorekeeper: shared private stage active · original idles + distinct facial families · G7 validation pending.'
+          ?duetR6?'Hsin & Shorekeeper · rotação musical básica aprovada; três idles aleatórios no silêncio, com expressões S6 e R5 reversível · R6 manual em QA.':'Hsin & Shorekeeper · rotação básica durante música confirmada; idles e expressões S6 variadas no silêncio · G7 pendente.'
           :guest?.status==='AUTHENTICATION_REQUIRED'
             ?'Hsin ready. Shorekeeper requires your Cloudflare Access session; no private files are publicly exposed.'
             :guest?.status==='PRIVATE_ASSETS_MISSING'
@@ -233,33 +233,39 @@ export function mountHsinStage(root:HTMLElement){
             fit();resetCamera();
           }
           // Read the EXISTING provider-verified playback contract; no iframe scraping, audio analysis or fake beat times.
-          const musicUnsubscribe=music.subscribe(sample=>{
+          const updateDuetMusicStatus=(sample:ReturnType<typeof music.sample>)=>{
             duetGuest?.observeMusic?.(sample);
             if(cleaned||!duetGuest?.ready||!duetStatus)return;
             if(sample.status==='playing'&&sample.playbackConfirmed){
-              duetStatus.textContent='Shorekeeper reconhece '+(sample.provider==='spotify'?'Spotify':'YouTube')+' em reprodução. Coreografia própria ainda não aprovada; idles preservados.';
-            }else if(sample.status==='paused')duetStatus.textContent='Música pausada · Shorekeeper em contemplação.';
-            else if(sample.status==='no_music')duetStatus.textContent='Palco compartilhado · contemplação sem música.';
-          });
-          duetGuest.observeMusic?.(music.sample());
-          attempt.signal.addEventListener('abort',musicUnsubscribe,{once:true});musicUnsubscribe&&((sample=>{if(sample.status==='playing'&&sample.playbackConfirmed&&duetStatus)duetStatus.textContent='Shorekeeper reconhece reprodução confirmada; dança própria pendente.';})(music.sample()));
+              duetStatus.textContent='Shorekeeper · rotação básica aprovada enquanto '+(sample.provider==='spotify'?'Spotify':'YouTube')+' reproduz. Sem sincronia de batidas inventada.';
+            }else if(sample.status==='paused')duetStatus.textContent='Música pausada · Shorekeeper retorna suavemente à contemplação.';
+            else if(sample.status==='buffering')duetStatus.textContent='Aguardando reprodução confirmada · contemplação da Shorekeeper.';
+            else duetStatus.textContent='Sem música · três idles originais e expressões faciais em ordem aleatória, sem repetições imediatas.';
+          };
+          const musicUnsubscribe=music.subscribe(updateDuetMusicStatus);
+          attempt.signal.addEventListener('abort',musicUnsubscribe,{once:true});
+          updateDuetMusicStatus(music.sample());
           if(duetR6&&duetControls){
             const status=duetControls.querySelector<HTMLElement>('[data-duo-r6-status]');
-            const select=duetControls.querySelector<HTMLSelectElement>('[data-duo-r6-select]');
-            const play=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-play]');
+            const faceButtons=[...duetControls.querySelectorAll<HTMLButtonElement>('[data-duo-face]')];
             const blink=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-blink]');
             const neutral=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-neutral]');
-            for(const item of [select,play,blink,neutral])if(item)item.disabled=false;
-            const act=(action:()=>boolean,label:string)=>{
+            for(const item of [...faceButtons,blink,neutral])if(item)item.disabled=false;
+            const act=(action:()=>boolean,label:string,button?:HTMLButtonElement)=>{
               if(!visible()||paused||motion.matches||!duetGuest?.ready||cleaned||attempt.signal.aborted)return;
               const ok=action();
-              if(status)status.textContent=ok?label+' · candidato manual; QA visual pendente.':'Expressão indisponível; fonte R6 não aprovada.';
-              if(ok){worldDirty=true;loop?.invalidate();}
+              if(status)status.textContent=ok?label+' · manual; R5/R6 permanecem em QA visual.':'Expressão indisponível para o modelo verificado.';
+              if(ok){
+                for(const item of faceButtons)item.setAttribute('aria-pressed',String(item===button));
+                worldDirty=true;loop?.invalidate();
+              }
             };
-            play?.addEventListener('click',()=>{if(select)act(()=>!!duetGuest?.playR6Expression?.(select.value),'R6 '+(select.selectedOptions[0]?.textContent??''));},{signal:attempt.signal});
+            for(const button of faceButtons)button.addEventListener('click',
+              ()=>act(()=>!!duetGuest?.playFaceSelection?.(button.dataset.duoFace??''),button.textContent?.trim()??'Expressão',button),
+              {signal:attempt.signal});
             blink?.addEventListener('click',()=>act(()=>!!duetGuest?.blinkR6?.(),'Piscada bilateral'),{signal:attempt.signal});
             neutral?.addEventListener('click',()=>act(()=>!!duetGuest?.neutralR6?.(),'Repouso facial'),{signal:attempt.signal});
-            if(status)status.textContent='Shorekeeper carregada com contorno R5 reversível · nove candidatas R6 manuais; G7 NO_GO.';
+            if(status)status.textContent='Painel manual R5/R6 · 25 estados preservados; o repertório S6 silencioso varia automaticamente. G7 NO_GO.';
           }
           // Only the private duet route receives the second performer.
           // Hsin's normal public route and autonomous system are unchanged.

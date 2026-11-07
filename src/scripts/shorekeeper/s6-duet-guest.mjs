@@ -19,7 +19,8 @@ import {S6_AUTO_FACE_ROSTER} from './s6-autonomy.mjs';
 import {createAnatomicalFaceDirector} from './anatomical-face.mjs';
 import {createMouthR5} from './mouth-r5.mjs';
 import {duetMusicSnapshot} from './duet-music-contract.mjs';
-import {R6_PRIMARY_CHOICES} from './facial-unified-menu.mjs';
+import {R6_PRIMARY_CHOICES,resolveFaceMenu} from './facial-unified-menu.mjs';
+import {createDuetBasicTurn,createNonRepeatingChoice,quietFaceWait} from './duet-acting-policy.mjs';
 export const canPlayDuetR6Expression=id=>R6_PRIMARY_CHOICES.some(x=>x.id===id);
 
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
@@ -99,49 +100,73 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     scene.add(group);
     for(const s of scenes)if(s!==model)disposeObject(s);
     scenes.length=0;
-    let active=-1,restSeconds=0,faceSeconds=9,faceIndex=0,playing=true;
+    let active=-1,restSeconds=0,faceSeconds=quietFaceWait(),manualFaceCooldown=0,playing=true;
+    const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
+    const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
+    const turn=createDuetBasicTurn(group);
     let musicSnapshot=duetMusicSnapshot();
     const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
     function switchIdle(){
       director?.dispose();director=null;
-      active=nextDuoIdle(active);
+      active=idleChoice.next();
       director=createOriginalIdleDirector(T,model,loaded.find(c=>c.name===ORIGINAL_IDLE_IDS[active]),
         {enter:.45,exit:.6});
       director.start();
     }
     switchIdle();
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
-      // Playback recognition only. Do not claim choreography/sync or autoplay an unapproved facial pose.
       observeMusic(music);
       if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
       const elapsed=Math.min(.09,dt);
+      const musicPlaying=musicSnapshot.playbackConfirmed;
+      // Approved stage-group rotation. Never modify Root/bones to imitate a dance.
+      turn.advance(elapsed,{playing:musicPlaying});
       director?.advance(elapsed);
-      if(director?.state.phase==='idle'){
+      // Quiet mode: random, non-repeating choice of all three original idles.
+      // Music mode: finish the existing idle and sustain a single basic turn.
+      if(!musicPlaying&&director?.state.phase==='idle'){
         restSeconds-=elapsed;
-        if(restSeconds<=0){restSeconds=2.5;switchIdle();}
+        if(restSeconds<=0){restSeconds=1.5+Math.random()*3.5;switchIdle();}
       }
       face?.advance(elapsed,{writeFacial:true});
-      faceSeconds-=elapsed;
-      if(!experimentalR6&&faceSeconds<=0&&!face?.state.busy) {
-        for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
-          const row=S6_AUTO_FACE_ROSTER[faceIndex++%S6_AUTO_FACE_ROSTER.length];
-          if(face.qaSupport(row.id).available && face.triggerQA(row.id))break;
+      manualFaceCooldown=Math.max(0,manualFaceCooldown-elapsed);
+      if(!musicPlaying&&manualFaceCooldown<=0){
+        faceSeconds-=elapsed;
+        if(faceSeconds<=0&&!face?.state.busy){
+          let accepted=false;
+          // Only existing S6 curated families auto-play. R6 QA candidates stay manual.
+          for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
+            const row=S6_AUTO_FACE_ROSTER[faceChoice.next()];
+            if(face.qaSupport(row.id).available&&face.triggerQA(row.id)){accepted=true;break;}
+          }
+          faceSeconds=accepted?quietFaceWait():3;
         }
-        faceSeconds=18;
       }
       model.updateMatrixWorld(true);
     }
+    function manualFace(perform){
+      if(disposed||!experimentalR6)return false;
+      face.setFrozen(false);
+      const ok=perform();
+      if(ok){manualFaceCooldown=18;faceSeconds=quietFaceWait();}
+      return ok;
+    }
     function dispose(){
       if(disposed)return;
-      disposed=true;director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
+      disposed=true;turn.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
-      playR6Expression(id){if(!experimentalR6||disposed||!canPlayDuetR6Expression(id))return false;face.setFrozen(false);return face.playCandidate(id);},
-      neutralR6(){if(!experimentalR6||disposed)return false;face.setFrozen(false);return face.reset();},
-      blinkR6(){if(!experimentalR6||disposed)return false;return face.trigger('blink');},
+      playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
+      playFaceSelection(value){
+        const selected=resolveFaceMenu(value);
+        if(!selected)return false;
+        return manualFace(()=>selected.kind==='r6'?face.playCandidate(selected.id):face.playBaseline(selected.id));
+      },
+      neutralR6(){return manualFace(()=>face.reset());},
+      blinkR6(){return manualFace(()=>face.trigger('blink'));},
       get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,turn:turn.state,quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);
