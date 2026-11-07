@@ -47,7 +47,7 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  assert.match(page,/FACE_MENU_VALUES\.primary\.map/);
  assert.match(page,/data-r6-face-comparatives/);
  assert.match(page,/data-r6-main-blink/);
- assert.match(page,/data-r6-only hidden/);
+ assert.match(page,/data-r5-geometry-internal hidden/);
  assert.match(duo,/data-duo-r6-controls hidden/);
  assert.match(guest,/createAnatomicalFaceDirector\(inspection\)/);
  assert.match(guest,/createMouthR5\(model\)/);

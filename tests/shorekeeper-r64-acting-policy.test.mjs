@@ -42,7 +42,7 @@ test('G11.3 is the seven-source S5 cinematic, not a continuous Y-axis turn',()=>
  const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
  assert.match(guest,/createR62Integration\(T,model,g113Clips,stage/);
  assert.match(guest,/director\?\.dispose\(\);director=null/);
- assert.match(guest,/g113\.start\(\)/);
+ assert.match(guest,/nextDirector\.start\(\)/);
  assert.match(guest,/vfx\?\.update\(elapsed,1\)/);
  assert.match(guest,/R61_SOURCE_IDS\.every/);
  assert.match(guest,/for\(const id of REQUIRED\)/);
