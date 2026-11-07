@@ -36,9 +36,12 @@ export function mountHsinStage(root:HTMLElement){
  const duetR6=duetRequested&&new URLSearchParams(location.search).get('r6Guest')==='1';
  const duetControls=root.querySelector<HTMLElement>('[data-duo-r6-controls]');
  if(duetControls)duetControls.hidden=!duetR6;
+ const cameraChoice=duetRequested?root.querySelector<HTMLSelectElement>('[data-duo-camera-mode]'):null;
+ let cameraMode='auto',chooseDuetCamera=(_mode:string)=>{};
  const music=musicForStage(root);
  const metrics=createStageMetrics({enabled:metricsRequested(location.search)});
  const life=new AbortController(),motion=matchMedia('(prefers-reduced-motion: reduce)'),touch=matchMedia('(pointer: coarse)').matches;
+ cameraChoice?.addEventListener('change',()=>chooseDuetCamera(cameraChoice.value),{signal:life.signal});
  let viewportVisible=true,destroyed=false,started=false,paused=false,generation=0,lost=false;
  let disposeAttempt=()=>{},loop:ReturnType<typeof createStageLoop>|null=null,zoom=(_factor:number)=>{},resetCamera=()=>{},ensureDance=()=>{};
  const showPause=()=>{const frozen=paused||motion.matches;pause.setAttribute('aria-pressed',String(frozen));pause.textContent=frozen?'▶':'Ⅱ';pause.setAttribute('aria-label',frozen?'Retomar atuação':'Pausar atuação');pause.title=frozen?'Retomar atuação':'Pausar atuação';pause.disabled=root.dataset.state!=='ready'||motion.matches;};
@@ -62,7 +65,7 @@ export function mountHsinStage(root:HTMLElement){
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();duetPreparation?.dispose();duetPreparation=null;duetGuest?.dispose();duetGuest=null;musicTower?.dispose();orbit?.dispose();dance?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=dance=null;zoom=()=>{};resetCamera=()=>{};ensureDance=()=>{};};
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();duetPreparation?.dispose();duetPreparation=null;duetGuest?.dispose();duetGuest=null;musicTower?.dispose();orbit?.dispose();dance?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=dance=null;zoom=()=>{};resetCamera=()=>{};ensureDance=()=>{};chooseDuetCamera=()=>{};};
   metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    // Fail before fetching any asset if this browser cannot create a WebGL2 context. The probe needs no three.js, so it runs first.
@@ -122,11 +125,70 @@ export function mountHsinStage(root:HTMLElement){
      const {attachFixedDuetMoon}=await import('./shorekeeper/duet-fixed-moon.mjs');
      fixedDuetMoon=attachFixedDuetMoon(T,{scene,camera,moon:lunar,halo});
    }
-   orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
+   orbit=new OrbitControls(camera,canvas);orbit.enablePan=duetRequested;orbit.zoomToCursor=duetRequested;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    const musicElement=root.querySelector<HTMLElement>('[data-music-tower]');
    if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,model,bounds:profile.bounds,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics,duetMode:duetRequested});scene.add(musicTower.group);} // Reuse the same 3D pavilion; in duo it floats above the performers while the native player remains in its own side region.
    root.addEventListener('hsin:tower-layout',()=>{musicTower?.invalidateLayout();loop?.invalidate();},{signal:attempt.signal});
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];
+
+   // One camera; per-character logical camera modes, reserved slots for the next actors.
+   let lastFollow:any=null,focusShift:any=null;
+   const actorAnchor=(mode:string)=>{
+     const point=new T.Vector3();
+     if(mode==='hsin'){head.getWorldPosition(point);point.y-=.44;return point;}
+     if(mode==='shorekeeper'&&duetGuest?.ready){
+       const pelvis=duetGuest.group.getObjectByName('Bip001Pelvis');
+       if(pelvis)pelvis.getWorldPosition(point);
+       else{duetGuest.group.getWorldPosition(point);point.y+=.78;}
+       return point;
+     }
+     return null;
+   };
+   const animateFocus=(point:any)=>{
+     if(!point||!orbit.enabled)return;
+     focusShift={start:performance.now(),duration:500,from:orbit.target.clone(),to:point.clone(),last:orbit.target.clone()};
+     lastFollow=null;loop?.invalidate();
+   };
+   const followCameraTarget=()=>{
+     if(!duetRequested||!orbit.enabled)return false;
+     if(focusShift){
+       const u=Math.min(1,(performance.now()-focusShift.start)/focusShift.duration),s=u*u*(3-2*u);
+       const next=focusShift.from.clone().lerp(focusShift.to,s),delta=next.clone().sub(focusShift.last);
+       focusShift.last.copy(next);camera.position.add(delta);orbit.target.add(delta);
+       if(u>=1)focusShift=null;
+       return true;
+     }
+     if(cameraMode!=='hsin'&&cameraMode!=='shorekeeper'){lastFollow=null;return false;}
+     const target=actorAnchor(cameraMode);if(!target)return false;
+     if(!lastFollow){lastFollow=target;return false;}
+     const delta=target.clone().sub(lastFollow);lastFollow.copy(target);
+     if(delta.lengthSq()<1e-12)return false;
+     camera.position.add(delta);orbit.target.add(delta);return true;
+   };
+   chooseDuetCamera=(mode:string)=>{
+     if(!duetRequested||!['auto','free','hsin','shorekeeper'].includes(mode))return;
+     if(mode==='shorekeeper'&&!duetGuest?.ready)return;
+     cameraMode=mode;if(cameraChoice)cameraChoice.value=mode;
+     lastFollow=null;focusShift=null;
+     duetGuest?.setCameraPreference?.(mode);
+     if(orbit.enabled){
+       if(mode==='hsin'||mode==='shorekeeper')animateFocus(actorAnchor(mode));
+       else if(mode==='auto')animateFocus(new T.Vector3(...initialTarget));
+     }
+     loop?.invalidate();
+   };
+   const releaseShotForGesture=()=>{
+     if(!duetRequested||orbit.enabled)return;
+     cameraMode='free';if(cameraChoice)cameraChoice.value='free';
+     lastFollow=null;focusShift=null;
+     duetGuest?.setCameraPreference?.('free');
+     orbit.enabled=true;loop?.invalidate();
+   };
+   if(duetRequested){
+     canvas.addEventListener('wheel',releaseShotForGesture,{capture:true,passive:true,signal:attempt.signal});
+     canvas.addEventListener('pointerdown',releaseShotForGesture,{capture:true,passive:true,signal:attempt.signal});
+   }
+
    let duetEnvelope:null|{width:number;height:number;depth:number;center:[number,number,number]}=null;
    const fit=()=>{
     musicTower?.invalidateLayout();const rect=host.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height);camera.aspect=w/h;camera.updateProjectionMatrix();fixedDuetMoon?.resize();renderer.setPixelRatio(pixelRatio(w,h,devicePixelRatio||1,touch));renderer.setSize(w,h,false);root.dataset.pixelRatio=renderer.getPixelRatio().toFixed(2);
@@ -135,12 +197,12 @@ export function mountHsinStage(root:HTMLElement){
      const required=duetFitDistance({...duetEnvelope,aspect:camera.aspect,fov:camera.fov,azimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180});
      initialDistance=Math.max(initialDistance,required);initialTarget=[...duetEnvelope.center];
     }
-    orbit.maxDistance=Math.max(5.5,initialDistance*1.55);if(firstFit){firstFit=false;resetCamera();}else{const d=camera.position.distanceTo(orbit.target),next=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,d*initialDistance/previousFit));const offset=camera.position.clone().sub(orbit.target).multiplyScalar(next/d);if(duetRequested&&duetEnvelope)orbit.target.fromArray(initialTarget);camera.position.copy(orbit.target).add(offset);orbit.update();}loop?.invalidate();
+    orbit.maxDistance=Math.max(5.5,initialDistance*1.55);if(firstFit){firstFit=false;resetCamera();}else{const d=camera.position.distanceTo(orbit.target),next=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,d*initialDistance/previousFit));const offset=camera.position.clone().sub(orbit.target).multiplyScalar(next/d);if(duetRequested&&duetEnvelope&&cameraMode==='auto')orbit.target.fromArray(initialTarget);camera.position.copy(orbit.target).add(offset);orbit.update();}loop?.invalidate();
    };
-   resetCamera=()=>{const azimuth=HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180;orbit.target.fromArray(initialTarget);camera.position.set(orbit.target.x+Math.sin(azimuth)*initialDistance,orbit.target.y+.23,orbit.target.z+Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
+   resetCamera=()=>{if(duetRequested&&cameraMode!=='auto')chooseDuetCamera('auto');const azimuth=HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180;orbit.target.fromArray(initialTarget);camera.position.set(orbit.target.x+Math.sin(azimuth)*initialDistance,orbit.target.y+.23,orbit.target.z+Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
    zoom=(factor:number)=>{const current=camera.position.distanceTo(orbit.target),distance=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,current*factor));camera.position.sub(orbit.target).multiplyScalar(distance/current).add(orbit.target);orbit.update();loop?.invalidate();};
    orbit.addEventListener('change',()=>{
-    const height=duetRequested&&duetEnvelope?initialTarget[1]:attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
+    if(!duetRequested){const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
    });
    fit();resize=new ResizeObserver(fit);resize.observe(host);
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
@@ -200,7 +262,7 @@ export function mountHsinStage(root:HTMLElement){
    canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;duetGuest?.interrupt?.();metrics.count('contextLost');metrics.gap();loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
    canvas.addEventListener('webglcontextrestored',()=>{lost=false;metrics.count('contextRestored');metrics.gap();root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
-    controlsUpdate:()=>{const changed=orbit.update();const moving=musicTower?.update(camera,orbit.target,motion.matches,!paused&&!motion.matches);return changed||moving;},
+    controlsUpdate:()=>{const following=followCameraTarget();const changed=orbit.update();const moving=musicTower?.update(camera,orbit.target,motion.matches,!paused&&!motion.matches);return following||changed||moving;},
     step:(dt:number)=>{const t0=metrics.now();if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);const context=face.diagnostics().expressions?.context;if(dance){const d0=metrics.now();dance.advance(dt,{context});if(metrics.enabled)metrics.sample('danceDirector',metrics.now()-d0);}else body.advance(dt,{enabled:true,context});if(duetGuest?.ready)duetGuest.advance(dt,{paused,reducedMotion:motion.matches,music:music.sample()});worldDirty=true;if(metrics.enabled)metrics.sample('acting',metrics.now()-t0);},
     draw:()=>{const t0=metrics.now();if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}if(metrics.enabled)metrics.sample('sceneUpdate',metrics.now()-t0);const t1=metrics.now();renderer.render(scene,camera);if(duetGuest?.ready)metrics.mark('firstDuetFrame');if(metrics.enabled){metrics.sample('render',metrics.now()-t1);metrics.frame();}},
    });
@@ -224,6 +286,7 @@ export function mountHsinStage(root:HTMLElement){
           }});
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
+        if(guest?.ready){const skOption=cameraChoice?.querySelector<HTMLOptionElement>('option[value="shorekeeper"]');if(skOption)skOption.disabled=false;guest.setCameraPreference?.(cameraMode);}
         if(duetStatus)duetStatus.textContent=guest?.ready
           ?duetR6?'Hsin & Shorekeeper · ciclo cinematográfico G11.3 durante reprodução confirmada, idles e expressões S6 aleatórias no silêncio. R5 anatômico ativo.':'Hsin & Shorekeeper · G11.3/S5 em reprodução confirmada; idles e expressões S6 variadas no silêncio. Fontes de combate autenticadas necessárias.'
           :guest?.status==='AUTHENTICATION_REQUIRED'
@@ -245,7 +308,7 @@ export function mountHsinStage(root:HTMLElement){
           const middle=combined.getCenter(new T.Vector3()),extent=combined.getSize(new T.Vector3());
           if([middle.x,middle.y,middle.z,extent.x,extent.y].every(Number.isFinite)){
             duetEnvelope={width:extent.x,height:extent.y,depth:extent.z,center:[middle.x,middle.y,middle.z]};
-            fit();resetCamera();
+            fit();if(cameraMode==='auto')resetCamera();else chooseDuetCamera(cameraMode);
           }
           // Read the EXISTING provider-verified playback contract; no iframe scraping, audio analysis or fake beat times.
           const updateDuetMusicStatus=(sample:ReturnType<typeof music.sample>)=>{

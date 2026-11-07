@@ -27,6 +27,18 @@ const posterCache='lunar-terrace-r2';
       <p>The stage is unavailable in this browser.</p>
       <button type="button" data-stage-retry>Try again</button>
     </div>
+    <div class="s6-camera-toolbar" aria-label="Escolha de câmera">
+      <label for="s6-camera-mode">Câmera</label>
+      <select id="s6-camera-mode" data-duo-camera-mode aria-label="Escolher acompanhamento ou câmera livre">
+        <option value="auto">Automática · G11.3 Shorekeeper</option>
+        <option value="free">Exploração livre</option>
+        <option value="hsin">Acompanhar Hsin</option>
+        <option value="shorekeeper" disabled>Acompanhar Shorekeeper</option>
+        <option value="phrolova" disabled>Phrolova · futuramente</option>
+        <option value="sophia" disabled>Sophia · futuramente</option>
+      </select>
+      <span class="s6-camera-help">Roda ou pinça: zoom no ponto escolhido. Arraste para orbitar.</span>
+    </div>
     <nav class="hsin-stage__tools" aria-label="Scene controls">
       <button type="button" data-stage-out aria-label="Zoom out" title="Zoom out" disabled>−</button>
       <button type="button" data-stage-in aria-label="Zoom in" title="Zoom in" disabled>＋</button>

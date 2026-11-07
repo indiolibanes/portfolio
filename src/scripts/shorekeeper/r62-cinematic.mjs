@@ -73,10 +73,10 @@ function createR61Camera(stage,plan,getVfx,profile=null){
    const pos=c.position.clone().sub(new T.Vector3().fromArray(rig.anchors.chest));pos.y=0;pos.normalize();
    return {...lastFrame?.smart,...projectCameraPoints(T,c,rig.points,stage.canvas?.width??960,stage.canvas?.height??540),front:rig.front,frontFacingDot:pos.dot(new T.Vector3().fromArray(rig.front)),backView:pos.dot(new T.Vector3().fromArray(rig.front))<0,azimuth:Math.atan2(c.position.x-stage.orbit.target.x,c.position.z-stage.orbit.target.z),radius:c.position.distanceTo(stage.orbit.target),target:stage.orbit.target.toArray(),ownership:release?'r61-cinematic':'MANUAL',reason:release?lastFrame?.smart?.reason:'MANUAL',effectivePosition:c.position.toArray(),effectiveFov:c.fov,aspect:c.aspect};
   },
-  stop(){
+  stop(restore=true){
    ret=null;
    if(!release)return;
-   try{if(saved)stage.restoreCamera(saved);}
+   try{if(saved&&restore)stage.restoreCamera(saved);}
    finally{
     stage.orbit.enabled=enabled;stage.orbit.enableDamping=damping;
     release();release=null;saved=null;
@@ -220,7 +220,12 @@ export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=
   },
   // Manual camera changes and a new reduced-motion preference revoke only the
   // automatic camera. They must not be overwritten on the next body frame.
-  stopCamera(){cam.stop();},
+  stopCamera({preserve=false}={}){cam.stop(!preserve);},
+  resumeCamera(){
+   if(disposed||!active||!camera)return false;
+   if(!cam.active){cam.start();cam.sample(body.state.clock);}
+   return true;
+  },
   setPaused(v){paused=!!v;body.setPaused(paused);},
   // Playback rate is owned solely by presentation-clock.mjs.
   setSpeed(v){if(v!==1)throw Error('Use presentation clock speed');body.setSpeed(1);},

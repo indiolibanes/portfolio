@@ -1,4 +1,4 @@
-import {createDuetCinematicFrame,createDuetTrace} from './duet-cinematic.mjs';
+import {createDuetTrace} from './duet-cinematic.mjs';
 /**
  * S6-D duo guest (private preview): one Hsin scene/renderer/RAF, independent
  * body owner per character. Never publishes a Shorekeeper GLB or fetches a
@@ -105,7 +105,8 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
     const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
     const trace=createDuetTrace(T,model,group);
-    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0;
+    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0,cameraPreference='auto';
+    const cinematicSelected=()=>cameraPreference==='auto'||cameraPreference==='shorekeeper';
     let musicSnapshot=duetMusicSnapshot();
     const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
     function switchIdle(){
@@ -174,12 +175,15 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
           nextDirector=createR62Integration(T,model,g113Clips,stage,{
             getVfx:()=>activeVfx,camera:true,entry:.65,preservePoseOnDispose:true,
             arena:sharedArena,
-            cameraProfile:{smart:false,frameTransform:createDuetCinematicFrame(T,{camera,host:hostModel,guest:group,exclusionRects})},
+            // Preserve the exact approved S5 intelligent camera: the guest remains
+            // the sole subject during its musical G11.3 presentation.
+            cameraProfile:{smart:true},
             reducedMotion:()=>false,
             onEvent:e=>face?.onAnimationEvent?.(e)
           });
           if(disposed||aborted(signal)||!musicSnapshot.playbackConfirmed)return false;
           nextDirector.start();
+          if(!cinematicSelected())nextDirector.stopCamera({preserve:true});
           g113=nextDirector;vfx=nextVfx;
           nextDirector=null;nextVfx=null;
           g113Status='PLAYING_G113_S5';onStatus(g113Status);
@@ -254,6 +258,15 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+      setCameraPreference(mode){
+        if(!['auto','free','hsin','shorekeeper'].includes(mode)||disposed)return false;
+        cameraPreference=mode;
+        if(g113?.state.presentationActive){
+          if(cinematicSelected())g113.resumeCamera();
+          else g113.stopCamera({preserve:true});
+        }
+        return true;
+      },
       interrupt(){if(g113?.state.presentationActive)g113.interrupt();},
       diagnostics(){return {state:this.state,trace:trace.report(),clips:(g113Clips??loaded).map(c=>({name:c.name,duration:c.duration,tracks:c.tracks.map(t=>({name:t.name,keys:t.times.length,start:t.times[0],end:t.times[t.times.length-1]}))}))};},
       playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
@@ -265,7 +278,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       neutralR6(){return manualFace(()=>face.reset());},
       blinkR6(){return manualFace(()=>face.trigger('blink'));},
       get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
-      get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
+      get state(){return {source:'AUTHENTICATED_R2_PRIVATE',cameraPreference,librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
         G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF'},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
