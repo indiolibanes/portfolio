@@ -42,8 +42,9 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  assert.match(lab,/face\.playBaseline\(selected\.id\)/);
  assert.match(lab,/\['canonical','r2','r3','r4','r5'\]:\['canonical','r4','r5'\]/);
  assert.match(page,/data-r65-face=\{v\.value\}/);
- assert.match(page,/FACE_MENU_VALUES\.primary\.map/);
- assert.match(page,/data-r6-history-toggle/);
+ assert.match(page,/R5_FACE_BUTTON_GROUPS\.map/);
+ assert.match(page,/data-r65-face=\{v\.value\}/);
+ assert(!page.includes('data-r6-history-toggle'),'legacy combobox must not remain');
  assert.match(page,/data-r6-main-blink/);
  assert.match(page,/data-r6-only hidden/);
  assert.match(duo,/data-duo-r6-controls hidden/);
