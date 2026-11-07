@@ -40,6 +40,7 @@ import {createMouthRibbonWeld} from './shorekeeper/mouth-ribbon-weld.mjs';
 import {createStage} from './shorekeeper/stage.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel,savePrivateModel,forgetPrivateModel} from './shorekeeper/private-model-cache.mjs';
 import {resolveR6G113Mode,canUseR6G113,R6_G113_CANDIDATES} from './shorekeeper/r6-g113-bridge.mjs';
+import {FACIAL_VARIANTS,FACIAL_VARIANT_MAP,MOUTH_GEOMETRY_PROFILES} from './shorekeeper/facial-variant-catalog.mjs';
 import {createRenderLoop} from './shorekeeper/render-loop.mjs';
 import {labPhase,permissions} from './shorekeeper/lab-state.mjs';
 export {assertSelfContainedGLB};
@@ -158,6 +159,10 @@ export function mountShorekeeperLab(root){
  for(const button of all('[data-r6-g113-candidate]'))
   button.disabled=!r6StageReady||!R6_G113_CANDIDATES.some(x=>x.id===button.dataset.r6G113Candidate);
  $('[data-r6-g113-neutral]').disabled=!r6StageReady;
+ const selectedVariant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
+ $('[data-r6-variant-select]').disabled=!r6StageReady;
+ $('[data-r6-variant-play]').disabled=!r6StageReady||!selectedVariant||!face?.qaSupport?.(selectedVariant.id)?.available;
+ for(const option of all('[data-r6-only]'))option.hidden=!r6Stage;
  const approvedGeometry=$('[data-approved-geometry]');
  approvedGeometry.disabled=!metadata||metadata.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||!can.inspect||!expressive||userPaused||control('presentationMode').value==='combat';
  for(const button of all('[data-facial-camera], [data-facial-capture]'))button.disabled=!can.inspect;
@@ -227,7 +232,11 @@ export function mountShorekeeperLab(root){
  metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version,origin:source};activePrivateFile=file;
  if(!mouthQA&&metadata.sha256===SHOREKEEPER_CANONICAL.sha256){
   const mode=new URLSearchParams(location.search).get('approvedGeometry');
-  if(mode==='r4'||mode==='r5')setMouthGeometry(mode);
+  if(r6Stage){
+   // R5 is a reversible local geometry patch: preferred for the R6 smile, not a source-GLB dependency.
+   const chosen=['canonical','r2','r3','r4','r5'].includes(mode)?mode:'r5';
+   setMouthGeometry(chosen);
+  }else if(mode==='r4'||mode==='r5')setMouthGeometry(mode);
   else $('[data-approved-geometry]').value='canonical';
  }
  privateStatus(result.sha256===SHOREKEEPER_CANONICAL.sha256?'GLB canônico F2.0-A verificado · três idles originais. '+(cachedPrivateSha===result.sha256?'Cópia guardada neste navegador.':'Você pode guardá-lo neste navegador.'):'GLB alternativo carregado · verifique as animações antes de guardar.');
@@ -435,6 +444,28 @@ export function mountShorekeeperLab(root){
    $('[data-r6-g113-status]').textContent=msg;status(msg);sync(true);stage?.invalidate();loop?.wake();
   }catch(e){warn('R6 · '+e.message);}
  });
+ // Recipe/time and geometry are separate, explicit QA axes. No timer or auto-classification.
+ function describeR6Variant(){
+  const selected=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
+  if(!selected)return;
+  const geometry=$('[data-approved-geometry]').value;
+  const recipeTiming=Object.entries(selected.timing).map(([key,value])=>key+' '+value+' s').join(' · ');
+  const guidance=geometry===selected.suggestedGeometry?'Perfil sugerido.':'Perfil '+geometry+' ≠ perfil sugerido '+selected.suggestedGeometry+'.';
+  $('[data-r6-variant-info]').textContent=selected.label+' · pesos '+Object.keys(selected.weights).length+' canais · '+recipeTiming+' · '+guidance+' Ajustes R6 anatômicos são outras curvas; não confundir com estes presets históricos.';
+ }
+ on($('[data-r6-variant-select]'),'change',()=>{describeR6Variant();sync(true);});
+ on($('[data-r6-variant-play]'),'click',()=>{
+  if(!r6Stage||$('[data-r6-variant-play]').disabled||!face?.playBaseline)return;
+  const variant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
+  if(!variant)return;
+  scheduler?.setEnabled(false);control('actingAuto').checked=false;
+  try{
+   face.setFrozen(false);face.setIntensity(1);
+   const ok=face.playBaseline(variant.id);
+   const msg=ok?'Comparação '+variant.label+' · geometria '+$('[data-approved-geometry]').value+' · timings originais desta receita, QA visual pendente.':'Variante indisponível no F2.0-A.';
+   $('[data-r6-g113-status]').textContent=msg;status(msg);describeR6Variant();sync(true);stage?.invalidate();loop?.wake();
+  }catch(e){warn('Variante facial: '+e.message);}
+ });
  on($('[data-r6-g113-neutral]'),'click',()=>{
   if(!r6Stage||!face?.triggerQA||$('[data-r6-g113-neutral]').disabled)return;
   face.setFrozen(false);face.triggerQA('NEUTRAL');
@@ -586,13 +617,14 @@ export function mountShorekeeperLab(root){
  on($('[data-mouth-capture]'),'click',async()=>{if(!mouthAllowed())return;try{save(await stage.capture(),'shorekeeper-mouth-PRIVATE.png','image/png');}catch(e){warn(e.message);}});
  on($('[data-approved-geometry]'),'change',e=>{
   if(!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||state.contextLost||userPaused||control('presentationMode').value==='combat')return;
-  const mode=e.target.value;if(!['canonical','r4','r5'].includes(mode))return;
+  const mode=e.target.value;if(!(r6Stage?['canonical','r2','r3','r4','r5']:['canonical','r4','r5']).includes(mode))return;
   try{
    face?.reset();scheduler?.setEnabled(false);control('actingAuto').checked=false;
    setMouthGeometry(mode);
    const url=new URL(location.href);if(mode==='canonical')url.searchParams.delete('approvedGeometry');else url.searchParams.set('approvedGeometry',mode);
    history.replaceState(null,'',url);
    $('[data-approved-status]').textContent='Contorno '+mode+' selecionado · confira a fidelidade dos sorrisos.';
+   if(r6Stage)describeR6Variant();
    sync(true);loop?.wake();
   }catch(err){warn(err.message);}
  });
