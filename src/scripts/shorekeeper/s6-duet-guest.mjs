@@ -103,6 +103,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     for(const s of scenes)if(s!==model)disposeObject(s);
     scenes.length=0;
     let active=-1,restSeconds=0,faceSeconds=9,faceIndex=0,playing=true;
+    let musicState='NO_MUSIC',musicProvider='none',musicEpoch=null;
     function switchIdle(){
       director?.dispose();director=null;
       active=nextDuoIdle(active);
@@ -111,7 +112,11 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       director.start();
     }
     switchIdle();
-    function advance(dt,{paused=false,reducedMotion=false}={}){
+    function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
+      // Playback recognition only. Do not claim choreography/sync or autoplay an unapproved facial pose.
+      musicState=music?.playbackConfirmed===true&&music?.status==='playing'
+        ?'PLAYING_CONFIRMED':music?.status==='paused'?'PAUSED':music?.status==='buffering'?'BUFFERING':'NO_MUSIC';
+      musicProvider=music?.provider??'none';musicEpoch=music?.epoch??null;
       if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
       const elapsed=Math.min(.09,dt);
       director?.advance(elapsed);
@@ -139,7 +144,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       neutralR6(){if(!experimentalR6||disposed)return false;face.setFrozen(false);return face.reset();},
       blinkR6(){if(!experimentalR6||disposed)return false;return face.trigger('blink');},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:{state:musicState,provider:musicProvider,epoch:musicEpoch,choreography:'NOT_AUTHORED'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);
