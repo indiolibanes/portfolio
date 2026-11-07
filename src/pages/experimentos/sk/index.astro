@@ -5,6 +5,7 @@ import '../../../styles/shorekeeper-presentation.css';
 import {EXPRESSION_LIBRARY} from '../../../scripts/shorekeeper/expression-library.mjs';
 import {APPROVED_MANUAL_GESTURES} from '../../../scripts/shorekeeper/approved-manual-gallery.mjs';
 import {R6_G113_CANDIDATES} from '../../../scripts/shorekeeper/r6-g113-bridge.mjs';
+import {FACIAL_VARIANTS} from '../../../scripts/shorekeeper/facial-variant-catalog.mjs';
 const revision=process.env.CF_PAGES_COMMIT_SHA || process.env.GITHUB_SHA || 'local-dev';
 const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integration-20261104';
 ---
@@ -158,17 +159,28 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <div class="sk-facial-recovery-grid" aria-label="Candidatos anatômicos R6 manuais">
 {R6_G113_CANDIDATES.map(({id,label})=><button type="button" data-r6-g113-candidate={id} disabled>{label} · QA</button>)}
 </div>
+<div class="sk-facial-extra" data-r6-variant-comparison>
+<label class="sk-field">Comparar versão da receita facial
+<select data-r6-variant-select aria-label="Receitas V2, R2, R3 e originais" disabled>
+{FACIAL_VARIANTS.map(v=><option value={v.id}>{v.label}</option>)}
+</select></label>
+<div class="sk-actions"><button type="button" data-r6-variant-play disabled>Reproduzir versão selecionada</button></div>
+<p class="sk-help" data-r6-variant-info>O contorno é selecionado acima, separadamente da receita e de seu timing. Perfis geométricos diferentes podem produzir quadros diferentes com os mesmos pesos.</p>
+</div>
 <div class="sk-actions"><button type="button" data-r6-g113-neutral disabled>Retornar ao neutro</button></div>
 <p class="sk-help" data-r6-g113-status role="status" aria-live="polite">Aguardando GLB F2.0-A canônico. Sem novos assets R2.</p>
+<p class="sk-help">Todos os resultados são candidatos visuais. R5 é correção geométrica reversível, não nova animação de morph. G7 continua bloqueada.</p>
 </details>
 <details class="sk-facial-recovery" data-approved-gallery open>
 <summary>Expressões aprovadas <small>apresentação manual</small></summary>
 <p class="sk-help">Gestos visuais aprovados na inspeção anterior. Apenas no GLB F2.0-A canônico; não mudam a geometria nem substituem as receitas R6/R7. As variantes Ternura/Serenidade conservam a identificação técnica para conferência. Retorno ao neutro automático; não iniciam combate.</p>
 <label class="sk-field">Contorno de apresentação
 <select data-approved-geometry aria-label="Perfil geométrico de contorno oral" disabled>
-<option value="canonical">Canônico (sem solda)</option>
-<option value="r4">R4 (comparativo)</option>
-<option value="r5">R5 (comparativo)</option>
+<option value="canonical">Original · geometria canônica</option>
+<option value="r2" data-r6-only hidden>R2 · solda do contorno</option>
+<option value="r3" data-r6-only hidden>R3 · interpolação do contorno</option>
+<option value="r4">R4 · contorno e forro</option>
+<option value="r5">R5 · contorno, pele e cavidade (recomendado)</option>
 </select>
 </label>
 <p class="sk-help">As aprovações foram feitas em uma inspeção visual; confira o perfil de boca utilizado. A seleção é reversível e não modifica o GLB.</p>
