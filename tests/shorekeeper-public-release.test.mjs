@@ -83,3 +83,11 @@ test('public stage is separate from internal QA and never displays backend detai
  assert(!/Cloudflare Access|private R2|acervo privado|armazenamento separado|private shared-stage/.test(publicPage));
  assert.match(src('src/pages/experimentos/index.astro'),/Hsin/,'original public route remains unchanged until QA');
 });
+
+test('public playback, facial QA and fallback statuses use public-safe copy',()=>{
+ const stage=src('src/scripts/hsin-stage.ts');
+ assert.match(stage,/\(publicRelease\?' confirmado\.'\s*:\s*' confirmado \(bibliotecas privadas obrigatórias\)\.'\)/);
+ assert.match(stage,/publicRelease\?label\+' · expressão aplicada\.'\s*:\s*label\+' · manual/);
+ assert.match(stage,/publicRelease\?'Expressões da Shorekeeper · seleção manual e atuação espontânea\.'\s*:\s*'Painel manual/);
+ assert.match(stage,/publicRelease\?'A Shorekeeper não pôde ser carregada\. A Hsin permanece disponível\.'\s*:\s*'Hsin ready\. Shorekeeper private guest/);
+});
