@@ -150,7 +150,8 @@ export function mountHsinStage(root:HTMLElement){
      lastFollow=null;loop?.invalidate();
    };
    const followCameraTarget=()=>{
-     if(!duetRequested||!orbit.enabled)return false;
+     if(!duetRequested)return false;
+     if(!orbit.enabled){lastFollow=null;focusShift=null;return false;}
      if(focusShift){
        const u=Math.min(1,(performance.now()-focusShift.start)/focusShift.duration),s=u*u*(3-2*u);
        const next=focusShift.from.clone().lerp(focusShift.to,s),delta=next.clone().sub(focusShift.last);
