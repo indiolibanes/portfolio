@@ -52,6 +52,9 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  assert.match(guest,/mouthCorrection\?\.dispose\(\)/);
  assert.match(hsin,/experimentalR6:duetR6/);
  assert.match(hsin,/r6Guest/);
- assert.match(guest,/if\(!experimentalR6&&faceSeconds<=0/);
+ assert.match(guest,/if\(!musicPlaying&&manualFaceCooldown<=0\)/);
+ assert.match(guest,/faceChoice\.next\(\)/);
+ assert.match(guest,/R6 QA candidates stay manual/);
+ assert(!guest.includes('face.playCandidate(row.id)'),'R6 acting candidates must not be automatic');
  assert(!/requestAnimationFrame|new WebGLRenderer|new THREE.WebGLRenderer/.test(guest),'guest owns no RAF or renderer');
 });
