@@ -39,9 +39,12 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  const duo=read('src/pages/experimentos/duo/index.astro');
  const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
  assert.match(lab,/const chosen=\['canonical','r2','r3','r4','r5'\]\.includes\(mode\)\?mode:'r5'/);
- assert.match(lab,/face\.playBaseline\(variant\.id\)/);
+ assert.match(lab,/face\.playBaseline\(selected\.id\)/);
  assert.match(lab,/\['canonical','r2','r3','r4','r5'\]:\['canonical','r4','r5'\]/);
  assert.match(page,/data-r6-variant-select/);
+ assert.match(page,/FACE_MENU_VALUES\.primary\.map/);
+ assert.match(page,/data-r6-history-toggle/);
+ assert.match(page,/data-r6-main-blink/);
  assert.match(page,/data-r6-only hidden/);
  assert.match(duo,/data-duo-r6-controls hidden/);
  assert.match(guest,/createAnatomicalFaceDirector\(inspection\)/);
