@@ -21,7 +21,7 @@ import {createAnatomicalFaceDirector} from './anatomical-face.mjs';
 import {createMouthR5} from './mouth-r5.mjs';
 import {duetMusicSnapshot} from './duet-music-contract.mjs';
 import {R6_PRIMARY_CHOICES,resolveFaceMenu} from './facial-unified-menu.mjs';
-import {createNonRepeatingChoice,quietFaceWait} from './duet-acting-policy.mjs';
+import {createNonRepeatingChoice,quietFaceWait,g113InterludeSeconds} from './duet-acting-policy.mjs';
 export const canPlayDuetR6Expression=id=>R6_PRIMARY_CHOICES.some(x=>x.id===id);
 
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
@@ -203,7 +203,11 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     function finishG113(){
       if(g113){g113.dispose();g113=null;}
       if(vfx){vfx.dispose();vfx=null;}
-      g113Cooldown=2;g113Attempted=false;
+      // A full G11.3 cycle earns a 5–8 s playing-time contemplative interlude.
+      // The body/VFX director has already released ownership for original idles.
+      g113Cooldown=g113InterludeSeconds();g113Attempted=false;
+      faceSeconds=Math.min(faceSeconds,.5+Math.random()*.9);
+      restSeconds=1.5+Math.random()*2.5;
       if(!disposed){g113Status='IDLE_RECOVERED';face?.reset();switchIdle();}
     }
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
@@ -221,11 +225,14 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
         if(g113.state.phase==='idle'&&!g113.state.camera?.returning)finishG113();
         model.updateMatrixWorld(true);return;
       }
+      const contemplativeInterlude=confirmed&&g113Cooldown>0;
       if(confirmed&&g113Cooldown<=0&&!g113Attempted&&!g113Loading){
         void startG113();
       }
       if(!confirmed){g113Attempted=false;}
-      g113Cooldown=Math.max(0,g113Cooldown-elapsed);
+      // Count the 5–8 seconds ONLY while the music is actually playing.
+      // Paused/buffering time must not consume the interlude in silence.
+      if(confirmed)g113Cooldown=Math.max(0,g113Cooldown-elapsed);
       director?.advance(elapsed);
       if(director?.state.phase==='idle'){
         restSeconds-=elapsed;
@@ -233,7 +240,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       }
       face?.advance(elapsed,{writeFacial:true});
       manualFaceCooldown=Math.max(0,manualFaceCooldown-elapsed);
-      if(!confirmed&&manualFaceCooldown<=0){
+      if((!confirmed||contemplativeInterlude)&&manualFaceCooldown<=0){
         faceSeconds-=elapsed;
         if(faceSeconds<=0&&!face?.state.busy){
           let accepted=false;
@@ -279,7 +286,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       blinkR6(){return manualFace(()=>face.trigger('blink'));},
       get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',cameraPreference,librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF'},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF',interludeSecondsRemaining:g113Cooldown,interludeActive:g113Cooldown>0&&!g113},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);

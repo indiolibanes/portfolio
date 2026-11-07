@@ -20,3 +20,10 @@ export function quietFaceWait(random=Math.random){
  if(!Number.isFinite(draw)||draw<0||draw>=1)throw Error('Invalid face interval random source');
  return 5+draw*9;
 }
+
+/** Playing-time interlude between complete musical G11.3 cycles. */
+export function g113InterludeSeconds(random=Math.random){
+ const value=random();
+ if(!Number.isFinite(value)||value<0||value>=1)throw Error('Invalid interlude random source');
+ return 5+3*value;
+}
