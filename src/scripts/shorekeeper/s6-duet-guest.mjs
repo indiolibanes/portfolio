@@ -265,6 +265,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+      cameraActive(){return !!(g113?.state.cameraActive||g113?.state.camera?.returning);},
       setCameraPreference(mode){
         if(!['auto','free','hsin','shorekeeper'].includes(mode)||disposed)return false;
         cameraPreference=mode;
