@@ -68,7 +68,7 @@ Evidência compacta public-safe e matriz: `docs/qa/shorekeeper-r64/`. As ferrame
 
 - Seleção dos idles 01/02/03 por sorteio desde a primeira apresentação; não há mais início obrigatório por Idle 01 nem repetição imediata.
 - No silêncio, três famílias faciais S6/R5 curadas são alternadas por sorteio e conservam o escritor facial existente. Pressionar uma expressão manual suspende temporariamente o agendamento automático. As nove candidatas R6 não são reproduzidas automaticamente.
-- Painel do dueto com 25 botões, separando nove R6, sete R5 preservados e nove intermediários/comparativos recolhíveis. O laboratório SK independente não foi alterado.
+- Painel do dueto com 25 botões, separando nove R6, sete R5 preservados e nove intermediários/comparativos recolhíveis. O laboratório SK independente também substitui o combobox facial por painel de 25 botões na rota R6, preservando os estados distintos.
 - Pavilhão original volumétrico em tamanho compacto, pairando sobre as personagens na cena; player oficial HTML mantém controles e região próprios. Lua 1,9x apenas no dueto, com halo enfraquecido. Posição, desempenho e colisões visuais exigem teste em dispositivo.
 - O modelo GLB privado, as bibliotecas, o R2, Access, as animações originais e a implementação da Hsin solo permanecem inalterados.
 

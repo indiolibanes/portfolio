@@ -18,7 +18,7 @@ MUSIC_RECOGNITION,PASS,Confirmed status/epoch/position/quality preserved; subscr
 BASIC_TURN_INTENT,PASS,"User approved basic rotation during confirmed music; no beat-synchronized dance"
 BASIC_TURN_VISUAL_QA,PENDING,"Group rotation and neutral recovery implemented; no hosted device render or material/cloth verification"
 QUIET_RANDOM_POLICY,PENDING,"Random initial idle and non-repeating selection implemented; new synthetic CI pending"
-R5_R6_BUTTON_PANEL,PENDING,"25 buttons in duo; responsive device QA pending"
+R5_R6_BUTTON_PANEL,PENDING,"25 buttons in duo and SK R6 lab; responsive device QA pending"
 DUET_PAVILION_MOON,PENDING,"Reuse volumetric tower overhead and enlarge moon only in duo; mobile visual/GPU QA pending"
 REGRESSIONS,PASS,"235 Shorekeeper, 47 Hsin, 288 overall Node; check/build exit0"
 WEBGL_CONTEXT_DEVICE,PENDING,Lifecycle structural/synthetic tests pass; real context loss/restore and Samsung not executed

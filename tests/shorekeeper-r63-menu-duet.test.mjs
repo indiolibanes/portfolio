@@ -20,8 +20,9 @@ test('one R6 menu, historic variants conserved and default hidden',()=>{
  assert.equal(resolveFaceMenu('r6:INVALID'),null);
  const page=read('src/pages/experimentos/sk/index.astro');
  const runtime=read('src/scripts/shorekeeper-sk-lab.mjs');
- assert.equal((page.match(/<select data-r6-variant-select /g)??[]).length,1);
- assert.match(page,/data-r6-historic-option hidden disabled/);
+ assert.equal((page.match(/data-r6-variant-button=/g)??[]).length,3);
+ assert.match(page,/data-r6-face-comparatives/);
+ assert(!page.includes('data-r6-variant-select'));
  assert.match(runtime,/if\(r6Stage\)\{[\s\S]*?\['\[data-approved-gallery\]','\[data-facial-qa\]','\.sk-expressions','\.sk-face-guide'\]/);
  assert.match(runtime,/data-r6-mouth-slot/);
  assert.match(runtime,/selected\.kind==='r6'\?face\.playCandidate\(selected\.id\):face\.playBaseline\(selected\.id\)/);
