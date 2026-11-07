@@ -1,0 +1,35 @@
+/* R6.3 duet-only layout. Hsin solo route is untouched.
+   Keep the official native player visible and operable; no iframe cropping or overlays. */
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower,
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower[data-tower-anchor="bay"],
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower[data-tower-anchor="world"]{
+ position:absolute;left:auto;right:clamp(10px,2vw,36px);top:clamp(82px,10vh,132px);
+ bottom:auto;transform:none;width:clamp(210px,22vw,252px);z-index:7;
+}
+.hsin-stage[data-s6-duo="true"] .hsin-stage__canvas,
+.hsin-stage[data-s6-duo="true"] .hsin-stage__poster{
+ bottom:0;right:0;
+}
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower__facade{
+ max-height:min(65dvh,510px);overflow-y:auto;overscroll-behavior:contain;
+}
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower__crown,
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower__propulsion{display:none}
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower__heading h2{font-size:17px}
+.hsin-stage[data-s6-duo="true"] .hsin-music-tower__dance-note{font-size:9px}
+@media(max-width:599px) and (min-height:541px){
+ .hsin-stage[data-s6-duo="true"] .hsin-music-tower{top:94px;right:9px;width:210px;}
+ .hsin-stage[data-s6-duo="true"] .hsin-music-tower__facade{max-height:38dvh}
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__tools{right:auto;left:10px}
+ .hsin-stage[data-s6-duo="true"] .s6-r6-manual{bottom:82px;left:10px;right:auto;width:min(315px,82vw)}
+}
+@media(min-width:600px) and (max-height:540px){
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__canvas,
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__poster{right:226px;bottom:0}
+ .hsin-stage[data-s6-duo="true"] .hsin-music-tower{
+  right:8px;top:58px;bottom:auto;width:210px;transform:none;left:auto;
+ }
+ .hsin-stage[data-s6-duo="true"] .hsin-music-tower__facade{max-height:calc(100dvh - 74px)}
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__tools{right:235px}
+ .hsin-stage[data-s6-duo="true"] .s6-r6-manual{right:235px;bottom:12px;max-height:48vh}
+}
