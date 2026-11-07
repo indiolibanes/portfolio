@@ -101,3 +101,28 @@ test('release pin rejects a changed approved library and disable denies previous
  const res=await assetHead({env:f.env,request:new Request('https://stage.example/api/stage/shorekeeper/asset?kind=model&v='+CANONICAL_MODEL_SHA)});
  assert.equal(res.status,404);assert.equal(res.headers.get('Cache-Control'),'no-store');
 });
+
+test('warm public GLB request revalidates to 304 without re-downloading the model',async()=>{
+ const f=fixture(),bucket=f.env.SHOREKEEPER_ASSETS_R2;
+ const originalGet=bucket.get.bind(bucket);
+ let fullAssetGets=0;
+ bucket.get=async key=>{
+  if(key===manifest.model.key)fullAssetGets++;
+  return originalGet(key);
+ };
+ const url='https://stage.example/api/stage/shorekeeper/asset?kind=model&v='+CANONICAL_MODEL_SHA;
+ const first=await assetGet({env:f.env,request:new Request(url)});
+ assert.equal(first.status,200);
+ assert.equal(first.headers.get('ETag'),'"'+CANONICAL_MODEL_SHA+'"');
+ assert.equal(fullAssetGets,1);
+ const warm=await assetGet({env:f.env,request:new Request(url,{headers:{'If-None-Match':'"'+CANONICAL_MODEL_SHA+'"'}})});
+ assert.equal(warm.status,304);
+ assert.equal(warm.headers.get('ETag'),'"'+CANONICAL_MODEL_SHA+'"');
+ assert.equal(warm.headers.get('Content-Length'),null);
+ assert.equal(await warm.text(),'');
+ assert.equal(fullAssetGets,1,'304 should use metadata-only R2 head, not GET a full asset');
+ const weak=await assetHead({env:f.env,request:new Request(url,{method:'HEAD',headers:{'If-None-Match':'W/"'+CANONICAL_MODEL_SHA+'"'}})});
+ assert.equal(weak.status,304);
+ f.env.SK_PUBLIC_STAGE_ENABLED='0';
+ assert.equal((await assetGet({env:f.env,request:new Request(url,{headers:{'If-None-Match':'"'+CANONICAL_MODEL_SHA+'"'}})})).status,404,'disabled release must not return 304');
+});
