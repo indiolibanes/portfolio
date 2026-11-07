@@ -58,7 +58,7 @@ test('original facial autonomy remains quiet-only while R6 QA stays manual',()=>
  const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
  assert.match(guest,/const idleChoice=createNonRepeatingChoice/);
  assert.match(guest,/active=idleChoice\.next\(\)/);
- assert.match(guest,/if\(!confirmed&&manualFaceCooldown<=0\)/);
+ assert.match(guest,/if\(\(!confirmed\|\|contemplativeInterlude\)&&manualFaceCooldown<=0\)/);
  assert.match(guest,/faceChoice\.next\(\)/);
  assert.match(guest,/playFaceSelection\(value\)/);
  assert(!guest.includes('face.playCandidate(row.id)'));
