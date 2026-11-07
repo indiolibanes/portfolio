@@ -17,6 +17,14 @@ import {BILLBOARD_VS, FACE_FS, TAIL, BUTTERFLY_GLSL, NOISE_GLSL} from './combat-
 import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
 
 export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butterfly
+// Keep the giant G11.3 butterfly visibly above the solid stage. Its billboard
+// spans multiple character heights, so chest-level centering buried the lower wing.
+// The ground shock ring and early hand-trigger remain at their original positions.
+export const GIANT_BUTTERFLY_MIN_CENTER_HEIGHT_H = 2.6;
+export function giantButterflyCenterY(chestY, floorY, height) {
+ if (![chestY, floorY, height].every(Number.isFinite) || height <= 0) throw new RangeError('Invalid butterfly height anchor');
+ return Math.max(chestY + 0.05 * height, floorY + GIANT_BUTTERFLY_MIN_CENTER_HEIGHT_H * height);
+}
 /** Radius / contrast A/B presets, relative to the model height (no world-unit or gameplay claim). */
 export const LIBERATION_RADIUS_PRESETS = Object.freeze({compact: 1.8, standard: 2.6, wide: 3.4, vast: 8.6});
 export const LIBERATION_CONTRAST_PRESETS = Object.freeze({soft: 0.8, standard: 1.0, strong: 1.25});
@@ -273,7 +281,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
   const cs = liberationColorScore(t, g, rm), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
-  bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
+  bfc.set(c.P.chest.x, giantButterflyCenterY(c.P.chest.y, c.stage.floorY, h), c.P.chest.z);
   const probe = {stage: null, levels: {condense: vC, reveal: vR, peak: vK, decay: vD}, starGate: 0, variant: col3.label, radiusH: cfg.radius, contrast: cfg.contrast, mechanics: col3.mechanics, motes: 0};
   // ---- Outer field + canopy ----
   // G11.1: the field GROWS slowly, HOLDS (full strength) while the hue moves blue -> violet -> gold, is ABSORBED into her
