@@ -6,7 +6,7 @@ export function towerViewport(width,height,panelWidth,panelHeight,side='right') 
   return {compact,x:side==='left'?margin+panelWidth/2:width-margin-panelWidth/2,
     y:Math.max(80+panelHeight/2,Math.min(height-panelHeight/2-95,height*.52))};
 }
-export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],model=null,bounds=null,moon=null,metrics:instrument=null,clock=()=>performance.now()}) {
+export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],model=null,bounds=null,moon=null,duetMode=false,metrics:instrument=null,clock=()=>performance.now()}) {
   const group=new T.Group();group.name='HsinLunarMusicTower';
   const hull=new T.Group();hull.name='Travelling pavilion · dimensional architecture';group.add(hull);
   const palette={wood:0x302b2b,iron:0x364b52,brass:0xa88a50,roof:0x233c42,glass:0x93c8bd,hydrogenL:0x8de2ee,hydrogenR:0x8de2ee};
@@ -131,6 +131,33 @@ export function createMusicTower({THREE:T,mergeGeometries,element,host,bones=[],
     if(disposed)return false;const started=instrument?.enabled?instrument.now():0,interacting=hovering||focused;
     if(layoutDirty){const bounds=element.closest('[data-hsin-stage]').getBoundingClientRect();metrics={w:host.clientWidth,h:host.clientHeight,pw:element.offsetWidth,ph:element.offsetHeight,sw:bounds.width,sh:bounds.height};layoutDirty=false;}
     const {w,h,pw,ph,sw,sh}=metrics;if(!w||!h||!pw||!ph)return false;
+    if(duetMode){
+      // Fixed overhead bay for a two-performer stage. The native HTML player remains
+      // in the right sidebar; this is its small 3D architectural companion above the silhouettes.
+      // No 2nd renderer, light, timer, iframe or independent motion director.
+      const paneW=Math.max(90,Math.min(155,w*.23)),paneH=paneW*.9;
+      const nextAspect=paneH/paneW,nextDecoration=.72;
+      if(Math.abs(aspect-nextAspect)>.005||Math.abs(decorationScale-nextDecoration)>.01){
+        aspect=nextAspect;decorationScale=nextDecoration;build(aspect,decorationScale);
+      }
+      const x=Math.min(w-paneW*.56,Math.max(paneW*.58,w*.78));
+      const y=Math.max(paneH*.62,Math.min(h*.18,112));
+      camera.updateMatrixWorld();
+      const distance=camera.position.distanceTo(target)*.92;
+      const worldHeight=2*distance*Math.tan(camera.fov*Math.PI/360);
+      let scale=worldHeight*paneW/w*camera.aspect;
+      camera.getWorldDirection(normal);
+      direction.set(x/w*2-1,1-y/h*2,0).unproject(camera).sub(camera.position).normalize();
+      const proj=Math.max(.15,direction.dot(normal));
+      center.copy(camera.position).addScaledVector(direction,distance/proj);
+      group.position.copy(center);group.rotation.set(0,Math.atan2(camera.position.x-target.x,camera.position.z-target.z),0);
+      group.scale.setScalar(scale);
+      hull.position.y=reduced||!idle?0:Math.sin(clock()*.0008)*.006;
+      hull.rotation.set(0,-.11,0);
+      group.updateMatrixWorld(true);
+      element.dataset.towerAnchor='duet-overhead';
+      return true;
+    }
     const layout=towerViewport(sw,sh,pw,ph,element.dataset.soundtrackSide);
     element.dataset.towerAnchor=layout.compact?'bay':'world';
     const paneW=layout.compact?Math.min(110,w*.26):pw,paneH=layout.compact?paneW*.9:ph;
