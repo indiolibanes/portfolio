@@ -32,6 +32,9 @@ export function mountHsinStage(root:HTMLElement){
  // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
  const duetRequested=root.dataset.s6Duo==='true';
  const duetStatus=root.querySelector<HTMLElement>('[data-duo-guest-status]');
+ const duetR6=duetRequested&&new URLSearchParams(location.search).get('r6Guest')==='1';
+ const duetControls=root.querySelector<HTMLElement>('[data-duo-r6-controls]');
+ if(duetControls)duetControls.hidden=!duetR6;
  const music=musicForStage(root);
  const metrics=createStageMetrics({enabled:metricsRequested(location.search)});
  const life=new AbortController(),motion=matchMedia('(prefers-reduced-motion: reduce)'),touch=matchMedia('(pointer: coarse)').matches;
@@ -188,17 +191,35 @@ export function mountHsinStage(root:HTMLElement){
       // renderer, requestAnimationFrame owner or a public GLB URL.
       void import('./shorekeeper/s6-duet-guest.mjs').then(async ({loadS6DuetGuest})=>{
         if(cleaned||attempt.signal.aborted||destroyed)return;
-        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal});
+        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6});
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
         if(duetStatus)duetStatus.textContent=guest?.ready
-          ?'Hsin & Shorekeeper: shared private stage active · original idles + distinct facial families · G7 validation pending.'
+          ?duetR6?'Hsin & Shorekeeper: private duet · original idles + R6 facial QA with reversible R5 mouth. G7 NO_GO; no automatic R6 emotions.':'Hsin & Shorekeeper: shared private stage active · original idles + distinct facial families · G7 validation pending.'
           :guest?.status==='AUTHENTICATION_REQUIRED'
             ?'Hsin ready. Shorekeeper requires your Cloudflare Access session; no private files are publicly exposed.'
             :guest?.status==='PRIVATE_ASSETS_MISSING'
               ?'Hsin ready. Shorekeeper model and libraries are not yet present in the protected R2 bucket.'
               : 'Hsin ready. Shorekeeper private assets are missing, incomplete or failed verification.';
         if(guest?.ready){
+          if(duetR6&&duetControls){
+            const status=duetControls.querySelector<HTMLElement>('[data-duo-r6-status]');
+            const select=duetControls.querySelector<HTMLSelectElement>('[data-duo-r6-select]');
+            const play=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-play]');
+            const blink=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-blink]');
+            const neutral=duetControls.querySelector<HTMLButtonElement>('[data-duo-r6-neutral]');
+            for(const item of [select,play,blink,neutral])if(item)item.disabled=false;
+            const act=(action:()=>boolean,label:string)=>{
+              if(!visible()||paused||motion.matches||!duetGuest?.ready||cleaned||attempt.signal.aborted)return;
+              const ok=action();
+              if(status)status.textContent=ok?label+' · candidato manual; QA visual pendente.':'Expressão indisponível; fonte R6 não aprovada.';
+              if(ok){worldDirty=true;loop?.invalidate();}
+            };
+            play?.addEventListener('click',()=>{if(select)act(()=>!!duetGuest?.playR6Expression?.(select.value),'R6 '+(select.selectedOptions[0]?.textContent??''));},{signal:attempt.signal});
+            blink?.addEventListener('click',()=>act(()=>!!duetGuest?.blinkR6?.(),'Piscada bilateral'),{signal:attempt.signal});
+            neutral?.addEventListener('click',()=>act(()=>!!duetGuest?.neutralR6?.(),'Repouso facial'),{signal:attempt.signal});
+            if(status)status.textContent='Shorekeeper carregada com contorno R5 reversível · oito atuações R6 manuais; G7 NO_GO.';
+          }
           // Only the private duet route receives the second performer.
           // Hsin's normal public route and autonomous system are unchanged.
           scene.updateMatrixWorld(true);worldDirty=true;loop?.invalidate();
