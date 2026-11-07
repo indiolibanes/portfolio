@@ -1,3 +1,4 @@
+import {createDuetTrace} from './duet-cinematic.mjs';
 /**
  * S6-D duo guest (private preview): one Hsin scene/renderer/RAF, independent
  * body owner per character. Never publishes a Shorekeeper GLB or fetches a
@@ -6,7 +7,9 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {LoadingManager} from 'three';
 import {inspectPrivateManifest,getPrivateFile} from './remote-private-model.mjs';
-import {SHOREKEEPER_CANONICAL,readPrivateModel} from './private-model-cache.mjs';
+import {SHOREKEEPER_CANONICAL} from './private-model-cache.mjs';
+import {prepareDuetModel,s6DuoModelRequirements} from './duet-model-preparation.mjs';
+export {s6DuoModelRequirements} from './duet-model-preparation.mjs';
 import {assertSelfContainedGLB,disposeObject} from './local-model.mjs';
 import {validateCombatLibrary} from './combat-director.mjs';
 import {createOriginalIdleDirector,ORIGINAL_IDLE_IDS} from './original-idle-director.mjs';
@@ -16,7 +19,10 @@ import {APPROVED_MANUAL_RECIPES} from './approved-manual-gallery.mjs';
 import {S6_AUTO_FACE_ROSTER} from './s6-autonomy.mjs';
 import {createAnatomicalFaceDirector} from './anatomical-face.mjs';
 import {createMouthR5} from './mouth-r5.mjs';
-import {R6_G113_CANDIDATES} from './r6-g113-bridge.mjs';
+import {duetMusicSnapshot} from './duet-music-contract.mjs';
+import {R6_PRIMARY_CHOICES,resolveFaceMenu} from './facial-unified-menu.mjs';
+import {createNonRepeatingChoice,quietFaceWait,g113InterludeSeconds} from './duet-acting-policy.mjs';
+export const canPlayDuetR6Expression=id=>R6_PRIMARY_CHOICES.some(x=>x.id===id);
 
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
 export const S6_DUO_STATUS=Object.freeze({
@@ -24,9 +30,6 @@ export const S6_DUO_STATUS=Object.freeze({
   INCOMPLETE:'PRIVATE_LIBRARY_INCOMPLETE',READY:'DUO_PRIVATE_PREVIEW_G7_PENDING',
   FAILED:'PRIVATE_GUEST_UNAVAILABLE'
 });
-export function s6DuoModelRequirements(manifest,hash){
- return !!manifest&&manifest.schema==='shorekeeper-private-assets/v1'&&manifest.model?.sha256===hash&&manifest.model?.bytes===SHOREKEEPER_CANONICAL.bytes;
-}
 export function s6DuoRequirements(manifest,hash){
   if(!manifest||manifest.schema!=='shorekeeper-private-assets/v1')return false;
   if(manifest.model?.sha256!==hash||manifest.model?.bytes!==SHOREKEEPER_CANONICAL.bytes)return false;
@@ -37,8 +40,11 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
   return ((index+1)%count+count)%count;
 }
 function aborted(signal){return !!signal?.aborted;}
-export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false}={}){
-  const inspected=await inspectPrivateManifest({signal});
+export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,cameraStage=null,exclusionRects=()=>[],onStatus=()=>{},lowPower=false,traceEnabled=false}={}){
+  const prepared=experimentalR6?(preparation??prepareDuetModel({signal})):null;
+  const preparedModel=prepared?await prepared.take():null;
+  if(prepared&&!preparedModel)return null;
+  const inspected=preparedModel?{state:preparedModel.ready?'ready':preparedModel.state,manifest:preparedModel.manifest}:await inspectPrivateManifest({signal});
   if(inspected.state!=='ready')return {ready:false,status:inspected.state==='denied'?S6_DUO_STATUS.NO_ACCESS:S6_DUO_STATUS.MISSING,
     advance(){},dispose(){}};
   const manifest=inspected.manifest;
@@ -49,27 +55,20 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     return url;
   });
   const parser=new GLTFLoader(manager),scenes=[],loaded=[];
-  let model=null,group=null,director=null,face=null,mouthCorrection=null,disposed=false;
+  let model=null,group=null,director=null,face=null,mouthCorrection=null,disposed=false,modelParseMs=null;
   const ownedScene=s=>{scenes.push(s);return s;};
   try{
     // Authenticated R2 endpoint verifies HTTP size, header SHA-256, byte length
     // and full SHA-256 before any asset reaches GLTFLoader.
     async function parseFile(entry,kind){
-      // Authorization always precedes any private cache reuse; never use a stale local copy on 401/403.
       let file=null;
-      if(kind==='model'&&experimentalR6){
-        const cached=await readPrivateModel().catch(()=>null);
-        if(cached?.sha256===entry.sha256&&cached.file?.size===entry.bytes){
-          const buffer=await cached.file.arrayBuffer();
-          const digest=await crypto.subtle.digest('SHA-256',buffer);
-          const hex=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');
-          if(hex===entry.sha256)file=cached.file;
-        }
-      }
-      if(!file)file=await getPrivateFile(entry,{kind,signal});
+      const preparedBuffer=kind==='model'?preparedModel?.buffer:null;
+      if(!preparedBuffer)file=await getPrivateFile(entry,{kind,signal});
       if(aborted(signal))throw new DOMException('Cancelled','AbortError');
-      const buffer=await file.arrayBuffer(),json=assertSelfContainedGLB(buffer);
-      const gltf=await parser.parseAsync(buffer,'');
+      const buffer=preparedBuffer??await file.arrayBuffer(),json=assertSelfContainedGLB(buffer);
+      const parseStarted=performance.now();const gltf=await parser.parseAsync(buffer,'');
+      if(kind==='model')modelParseMs=performance.now()-parseStarted;
+      if(kind==='model'&&preparedModel)preparedModel.buffer=null;
       ownedScene(gltf.scene);
       return {gltf,json};
     }
@@ -102,49 +101,192 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     scene.add(group);
     for(const s of scenes)if(s!==model)disposeObject(s);
     scenes.length=0;
-    let active=-1,restSeconds=0,faceSeconds=9,faceIndex=0,playing=true;
-    let musicState='NO_MUSIC',musicProvider='none',musicEpoch=null;
+    let active=-1,restSeconds=0,faceSeconds=quietFaceWait(),manualFaceCooldown=0,playing=true;
+    const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
+    const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
+    const trace=createDuetTrace(T,model,group);
+    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0,cameraPreference='auto';
+    const cinematicSelected=()=>cameraPreference==='auto'||cameraPreference==='shorekeeper';
+    let musicSnapshot=duetMusicSnapshot();
+    const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
     function switchIdle(){
       director?.dispose();director=null;
-      active=nextDuoIdle(active);
+      active=idleChoice.next();
       director=createOriginalIdleDirector(T,model,loaded.find(c=>c.name===ORIGINAL_IDLE_IDS[active]),
-        {enter:.45,exit:.6});
+        {enter:.65,exit:.6,preservePoseOnDispose:true});
       director.start();
     }
     switchIdle();
+    // G11.3 is the already-authored S5 seven-source cinematic (not a yaw loop).
+    // Extra libraries are fetched only after an explicit test or verified playback.
+    async function startG113(){
+      // The S5 choreography is music-exclusive, never a button-triggered action.
+      if(!musicSnapshot.playbackConfirmed||disposed||aborted(signal)||g113Loading||(g113&&g113.state.phase!=='idle'))return false;
+      if(g113&&g113.state.phase==='idle')finishG113();
+      g113Attempted=true;
+      if(!s6DuoRequirements(manifest,SHOREKEEPER_CANONICAL.sha256)){
+        g113Status='PRIVATE_COMBAT_LIBRARIES_REQUIRED';return false;
+      }g113Status='LOADING_VERIFIED_G113';
+      g113Loading=(async()=>{
+        let nextVfx=null,nextDirector=null;
+        try{
+          if(!g113Clips){
+            const additional=[];
+            for(const id of REQUIRED){
+              const item=manifest.libraries.find(row=>row.id===id);
+              const data=await parseFile(item,'library');if(disposed||aborted(signal))return false;
+              additional.push(...validateCombatLibrary(T,model,data));
+              disposeObject(data.gltf.scene);
+            }
+            scenes.length=0;
+            const unique=new Map([...loaded,...additional].map(c=>[c.name,c]));
+            if(unique.size!==loaded.length+additional.length)throw Error('Duplicated G11.3 source clips');
+            const {R61_SOURCE_IDS}=await import('./r61-plan.mjs');
+            if(!R61_SOURCE_IDS.every(id=>unique.has(id)))throw Error('G11.3 missing authenticated source clip');
+            g113Clips=[...unique.values()];
+          }
+          if(disposed||aborted(signal))return false;
+          const [{ShorekeeperVfxR5Director},{createR62Integration}]=await Promise.all([
+            import('./vfx-r5.mjs'),import('./r62-integration.mjs')
+          ]);
+          if(disposed||aborted(signal)||!musicSnapshot.playbackConfirmed)return false;
+          nextVfx=new ShorekeeperVfxR5Director(scene,{camera,mobile:lowPower,reducedMotion:false});
+          nextVfx.bindModel(model);
+          // One Stellarealm canopy/field contains BOTH performers, never a separate SK scene.
+          let sharedArena=null;
+          if(hostModel){
+            hostModel.updateMatrixWorld(true);group.updateMatrixWorld(true);
+            const box=new T.Box3().setFromObject(hostModel).union(new T.Box3().setFromObject(group));
+            const mid=box.getCenter(new T.Vector3());
+            sharedArena={x:mid.x,z:mid.z,floorY:box.min.y,radius:box.getSize(new T.Vector3()).length()/2+.75};
+          }
+          // The Hsin sky/moon stay the background; only the shared Stellarealm
+          // field, canopy and G11 score are drawn. Never replace the stage camera.
+          nextVfx.environment.sky.visible=false;
+          nextVfx.setStage('outer');nextVfx.setState('OFF');
+          // Keep camera choreography off so Hsin and Shorekeeper stay in the same frame.
+          if(!cameraStage)throw Error('DUET_CAMERA_STAGE_REQUIRED');
+          const stage=cameraStage;
+          // A combo claims the exact body owner currently held by an idle:
+          // release the idle BEFORE constructing the G11.3 director.
+          director?.dispose();director=null;
+          face?.reset();
+          const activeVfx=nextVfx; // Stable lease: cleanup variables are nulled after ownership transfer.
+          nextDirector=createR62Integration(T,model,g113Clips,stage,{
+            getVfx:()=>activeVfx,camera:true,entry:.65,preservePoseOnDispose:true,
+            arena:sharedArena,
+            // Preserve the exact approved S5 intelligent camera: the guest remains
+            // the sole subject during its musical G11.3 presentation.
+            cameraProfile:{smart:true},
+            reducedMotion:()=>false,
+            onEvent:e=>face?.onAnimationEvent?.(e)
+          });
+          if(disposed||aborted(signal)||!musicSnapshot.playbackConfirmed)return false;
+          nextDirector.start();
+          if(!cinematicSelected())nextDirector.stopCamera({preserve:true});
+          g113=nextDirector;vfx=nextVfx;
+          nextDirector=null;nextVfx=null;
+          g113Status='PLAYING_G113_S5';onStatus(g113Status);
+          return true;
+        }catch(error){
+          g113Status='G113_SOURCE_OR_VFX_UNAVAILABLE';onStatus(g113Status);
+          console.warn('G11.3 unavailable:',error?.message??'Source or presentation failure');
+          return false;
+        }finally{
+          nextDirector?.dispose();nextVfx?.dispose();
+          if(!disposed&&!director&&!g113)switchIdle();
+          g113Loading=null;
+        }
+      })();
+      return g113Loading;
+    }
+    function finishG113(){
+      if(g113){g113.dispose();g113=null;}
+      if(vfx){vfx.dispose();vfx=null;}
+      // A full G11.3 cycle earns a 5–8 s playing-time contemplative interlude.
+      // The body/VFX director has already released ownership for original idles.
+      g113Cooldown=g113InterludeSeconds();g113Attempted=false;
+      faceSeconds=Math.min(faceSeconds,.5+Math.random()*.9);
+      restSeconds=1.5+Math.random()*2.5;
+      if(!disposed){g113Status='IDLE_RECOVERED';face?.reset();switchIdle();}
+    }
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
-      // Playback recognition only. Do not claim choreography/sync or autoplay an unapproved facial pose.
-      musicState=music?.playbackConfirmed===true&&music?.status==='playing'
-        ?'PLAYING_CONFIRMED':music?.status==='paused'?'PAUSED':music?.status==='buffering'?'BUFFERING':'NO_MUSIC';
-      musicProvider=music?.provider??'none';musicEpoch=music?.epoch??null;
-      if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
+      observeMusic(music);
+      if(reducedMotion&&g113?.state.presentationActive)g113.interrupt();
+      if(disposed||paused||!(dt>0)||!playing)return;
+      if(reducedMotion&&!g113)return;
       const elapsed=Math.min(.09,dt);
+      const confirmed=musicSnapshot.playbackConfirmed;
+      if(!confirmed&&g113?.state.presentationActive)g113.interrupt();
+      if(g113){
+        g113.advance(elapsed);vfx?.update(elapsed,1);
+        if(traceEnabled)trace.sample(elapsed,{body:g113.state,music:musicSnapshot,vfx:g113.scoreAdapter?.last??null,camera:g113.cameraTelemetry()??{position:camera?.position.toArray(),fov:camera?.fov,director:g113.state.camera}});
+        face?.advance(elapsed,{writeFacial:true});
+        if(g113.state.phase==='idle'&&!g113.state.camera?.returning)finishG113();
+        model.updateMatrixWorld(true);return;
+      }
+      const contemplativeInterlude=confirmed&&g113Cooldown>0;
+      if(confirmed&&g113Cooldown<=0&&!g113Attempted&&!g113Loading){
+        void startG113();
+      }
+      if(!confirmed){g113Attempted=false;}
+      // Count the 5–8 seconds ONLY while the music is actually playing.
+      // Paused/buffering time must not consume the interlude in silence.
+      if(confirmed)g113Cooldown=Math.max(0,g113Cooldown-elapsed);
       director?.advance(elapsed);
       if(director?.state.phase==='idle'){
         restSeconds-=elapsed;
-        if(restSeconds<=0){restSeconds=2.5;switchIdle();}
+        if(restSeconds<=0){restSeconds=1.5+Math.random()*3.5;switchIdle();}
       }
       face?.advance(elapsed,{writeFacial:true});
-      faceSeconds-=elapsed;
-      if(!experimentalR6&&faceSeconds<=0&&!face?.state.busy) {
-        for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
-          const row=S6_AUTO_FACE_ROSTER[faceIndex++%S6_AUTO_FACE_ROSTER.length];
-          if(face.qaSupport(row.id).available && face.triggerQA(row.id))break;
+      manualFaceCooldown=Math.max(0,manualFaceCooldown-elapsed);
+      if((!confirmed||contemplativeInterlude)&&manualFaceCooldown<=0){
+        faceSeconds-=elapsed;
+        if(faceSeconds<=0&&!face?.state.busy){
+          let accepted=false;
+          for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
+            const row=S6_AUTO_FACE_ROSTER[faceChoice.next()];
+            if(face.qaSupport(row.id).available&&face.triggerQA(row.id)){accepted=true;break;}
+          }
+          faceSeconds=accepted?quietFaceWait():3;
         }
-        faceSeconds=18;
       }
       model.updateMatrixWorld(true);
     }
+    function manualFace(perform){
+      if(disposed||!experimentalR6)return false;
+      face.setFrozen(false);
+      const ok=perform();
+      if(ok){manualFaceCooldown=18;faceSeconds=quietFaceWait();}
+      return ok;
+    }
     function dispose(){
       if(disposed)return;
-      disposed=true;director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
+      disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
-    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,
-      playR6Expression(id){if(!experimentalR6||disposed||!R6_G113_CANDIDATES.some(x=>x.id===id))return false;face.setFrozen(false);return face.playCandidate(id);},
-      neutralR6(){if(!experimentalR6||disposed)return false;face.setFrozen(false);return face.reset();},
-      blinkR6(){if(!experimentalR6||disposed)return false;return face.trigger('blink');},
-      get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:{state:musicState,provider:musicProvider,epoch:musicEpoch,choreography:'NOT_AUTHORED'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+      setCameraPreference(mode){
+        if(!['auto','free','hsin','shorekeeper'].includes(mode)||disposed)return false;
+        cameraPreference=mode;
+        if(g113?.state.presentationActive){
+          if(cinematicSelected())g113.resumeCamera();
+          else g113.stopCamera({preserve:true});
+        }
+        return true;
+      },
+      interrupt(){if(g113?.state.presentationActive)g113.interrupt();},
+      diagnostics(){return {state:this.state,trace:trace.report(),clips:(g113Clips??loaded).map(c=>({name:c.name,duration:c.duration,tracks:c.tracks.map(t=>({name:t.name,keys:t.times.length,start:t.times[0],end:t.times[t.times.length-1]}))}))};},
+      playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
+      playFaceSelection(value){
+        const selected=resolveFaceMenu(value);
+        if(!selected)return false;
+        return manualFace(()=>selected.kind==='r6'?face.playCandidate(selected.id):face.playBaseline(selected.id));
+      },
+      neutralR6(){return manualFace(()=>face.reset());},
+      blinkR6(){return manualFace(()=>face.trigger('blink'));},
+      get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
+      get state(){return {source:'AUTHENTICATED_R2_PRIVATE',cameraPreference,librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF',interludeSecondsRemaining:g113Cooldown,interludeActive:g113Cooldown>0&&!g113},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);

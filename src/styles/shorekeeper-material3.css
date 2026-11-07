@@ -405,3 +405,14 @@
 
 /* Presentation: R2 authenticated loading is primary; local inputs are maintenance-only. */
 .sk-lab:not([data-maintenance="true"]) .sk-maintenance-only{display:none!important;}
+
+/* Direct R5/R6 manual face panel: no combobox, no legacy duplicate rows. */
+.sk-r6-face-groups{display:grid;gap:11px;margin:10px 0 14px}
+.sk-r6-face-category h3{font:650 12px/1.45 system-ui,sans-serif;margin:4px 0 8px;color:#325f77}
+.sk-r6-face-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.sk-r6-face-grid button{min-height:44px;border:1px solid #c4dfec;border-radius:12px;background:#f8fcff;color:#274e67;padding:9px 10px;text-align:left;font:500 11px/1.4 system-ui,sans-serif}
+.sk-r6-face-grid button:disabled{opacity:.5}
+.sk-r6-face-grid button[aria-pressed="true"]{border-color:#558cae;background:#dbeef9;box-shadow:inset 0 0 0 1px #558cae}
+.sk-r6-face-comparatives{border-top:1px solid #dceaf2;padding-top:8px}
+.sk-r6-face-comparatives summary{font-size:11px}
+@media(max-width:420px){.sk-r6-face-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sk-r6-face-grid button{font-size:10.5px;padding:8px}}

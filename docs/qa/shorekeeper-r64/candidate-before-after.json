@@ -1,0 +1,12 @@
+{
+  "before": {
+    "head": "5cdadef92dc804e5cecfef9c6563fe5c24d25019",
+    "duetMenuCount": 8,
+    "wideEyesAllowed": false
+  },
+  "after": {
+    "duetMenuCount": 9,
+    "wideEyesAllowed": true
+  },
+  "visualQA": "PENDING"
+}

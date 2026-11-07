@@ -1,0 +1,64 @@
+{
+  "sourceIntegrity": "4/4 PASS",
+  "network": "NOT_TESTED",
+  "WebGL": "NOT_TESTED",
+  "physicalGpu": "NOT_MEASURED",
+  "fullLibraryBytes": 52009760,
+  "modelOnlyBytes": 39487548,
+  "omittedLibraryBytes": 12522212,
+  "runs": [
+    {
+      "kind": "fullLibrary",
+      "pass": 0,
+      "nodeHeapDeltaBytes": 38884712,
+      "parseDataOnlyWallMs": 442.119272
+    },
+    {
+      "kind": "modelOnly",
+      "pass": 0,
+      "nodeHeapDeltaBytes": 34561448,
+      "parseDataOnlyWallMs": 134.48485600000004
+    },
+    {
+      "kind": "modelOnly",
+      "pass": 1,
+      "nodeHeapDeltaBytes": -28044240,
+      "parseDataOnlyWallMs": 132.8044809999999
+    },
+    {
+      "kind": "fullLibrary",
+      "pass": 1,
+      "nodeHeapDeltaBytes": 6701152,
+      "parseDataOnlyWallMs": 331.09020399999997
+    },
+    {
+      "kind": "fullLibrary",
+      "pass": 2,
+      "nodeHeapDeltaBytes": 5416008,
+      "parseDataOnlyWallMs": 311.207457
+    },
+    {
+      "kind": "modelOnly",
+      "pass": 2,
+      "nodeHeapDeltaBytes": 14208752,
+      "parseDataOnlyWallMs": 122.65012699999988
+    }
+  ],
+  "parseMethod": "GLTFLoader; textures replaced by empty Texture; local bytes, no image decode, no real cache/network/GPU",
+  "temporal": {
+    "originalIdles": 3,
+    "samples": 4241,
+    "fpsGrid": 30,
+    "originalKeysIncluded": true,
+    "cpuMs": 99639.738381,
+    "extraSidesInModelHeights": {
+      "left": 0.24642183375689203,
+      "right": 0.201287937804876,
+      "below": 0.017223325467961185,
+      "above": 0.2784999486177187,
+      "front": 0.1793113783648274,
+      "back": 0.32555744080385085
+    },
+    "limitation": "SK only; no rendered silhouettes, Hsin dance or cloth simulation certified"
+  }
+}

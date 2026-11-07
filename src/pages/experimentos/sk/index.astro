@@ -156,45 +156,45 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
 <details data-facial-r6 data-legacy-version-menu hidden class="sk-mouth-qa"><summary>R6 · aguardando GLB</summary></details>
 <details data-r6-g113-panel hidden open class="sk-facial-recovery">
 <summary>Expressões da Shorekeeper <small>R6 · manual</small></summary>
-<p class="sk-help">Um único seletor. R5 corrige o contorno oral neste ensaio; versões V2/R2/R3 continuam preservadas em Histórico. A piscada e os três idles são intocados.</p>
-<label class="sk-field">Expressão
-<select data-r6-variant-select aria-label="Expressões da Shorekeeper" disabled>
-<optgroup label="Atuação anatômica · R6">
-{FACE_MENU_VALUES.primary.map(v=><option value={v.value}>{v.label} · R6</option>)}
-</optgroup>
-<optgroup label="Histórico · aparências aprovadas" data-r6-historic-group hidden>
-{FACE_MENU_VALUES.approved.map(v=><option value={v.value} data-r6-historic-option hidden disabled>{v.label}</option>)}
-</optgroup>
-<optgroup label="Histórico · variações e QA" data-r6-historic-group hidden>
-{FACE_MENU_VALUES.archive.map(v=><option value={v.value} data-r6-historic-option hidden disabled>{v.label}</option>)}
-</optgroup>
-</select></label>
+<p class="sk-help">Painel direto de 25 estados: nove R6 e sete R5 preservados, além de nove intermediários distintos para comparação. Contorno oral R5 reversível; sem ativação automática das candidatas R6.</p>
+<div class="sk-r6-face-groups" data-r6-face-panel>
+<section class="sk-r6-face-category" aria-labelledby="sk-r6-face-heading">
+<h3 id="sk-r6-face-heading">R6 · atuação anatômica (9)</h3>
+<div class="sk-r6-face-grid" aria-label="Candidatas R6 manuais">
+{FACE_MENU_VALUES.primary.map(v=><button type="button" data-r6-variant-button={v.value} aria-pressed="false" disabled>{v.label}</button>)}
+</div>
+</section>
+<section class="sk-r6-face-category" aria-labelledby="sk-r5-face-heading">
+<h3 id="sk-r5-face-heading">R5 · receitas preservadas (7)</h3>
+<div class="sk-r6-face-grid" aria-label="Receitas R5 preservadas">
+{FACE_MENU_VALUES.approved.map(v=><button type="button" data-r6-variant-button={v.value} aria-pressed="false" disabled>{v.label}</button>)}
+</div>
+</section>
+<details class="sk-r6-face-comparatives" data-r6-face-comparatives>
+<summary>R5 · {FACE_MENU_VALUES.archive.length} intermediários e comparativos</summary>
+<div class="sk-r6-face-grid" aria-label="Variantes intermediárias e comparativos">
+{FACE_MENU_VALUES.archive.map(v=><button type="button" data-r6-variant-button={v.value} aria-pressed="false" disabled>{v.label}</button>)}
+</div>
+</details>
+</div>
 <div class="sk-actions">
-<button type="button" data-r6-variant-play disabled>Reproduzir expressão</button>
 <button type="button" data-r6-main-blink disabled>Piscar</button>
 <button type="button" data-r6-g113-neutral disabled>Neutro</button>
 </div>
-<button type="button" data-r6-history-toggle aria-expanded="false">Mostrar versões anteriores</button>
-<details class="sk-facial-extra" data-r6-mouth-details><summary>Geometria da boca · R5 recomendada</summary>
-<div data-r6-mouth-slot></div>
-</details>
-<p class="sk-help" data-r6-variant-info>Selecione uma atuação R6; as receitas históricas só aparecem quando solicitadas.</p>
+<div data-r6-mouth-slot hidden aria-hidden="true"></div>
+<p class="sk-help">Contorno oral R5 ativo por padrão. R6 compartilha essa mesma correção reversível; os perfis anteriores ficam apenas no arquivo de QA.</p>
+<p class="sk-help" data-r6-variant-info>Selecione diretamente uma expressão R5/R6. Cada estado preserva seus pesos e sua temporização; os comparativos ficam recolhidos.</p>
 <p class="sk-help" data-r6-g113-status role="status" aria-live="polite">Aguardando GLB F2.0-A canônico.</p>
 <p class="sk-help">Olhos arregalados é uma proposta nova, aguardando aprovação visual. G7 permanece NO_GO.</p>
 </details>
 <details class="sk-facial-recovery" data-approved-gallery open>
 <summary>Expressões aprovadas <small>apresentação manual</small></summary>
 <p class="sk-help">Gestos visuais aprovados na inspeção anterior. Apenas no GLB F2.0-A canônico; não mudam a geometria nem substituem as receitas R6/R7. As variantes Ternura/Serenidade conservam a identificação técnica para conferência. Retorno ao neutro automático; não iniciam combate.</p>
-<label class="sk-field">Contorno de apresentação
-<select data-approved-geometry aria-label="Perfil geométrico de contorno oral" disabled>
-<option value="canonical">Original · geometria canônica</option>
-<option value="r2" data-r6-only hidden>R2 · solda do contorno</option>
-<option value="r3" data-r6-only hidden>R3 · interpolação do contorno</option>
-<option value="r4">R4 · contorno e forro</option>
-<option value="r5">R5 · contorno, pele e cavidade (recomendado)</option>
-</select>
+<label class="sk-field" data-r5-geometry-internal hidden aria-hidden="true">
+Contorno R5 fixo
+<select data-approved-geometry disabled><option value="r5" selected>R5 · contorno, pele e cavidade</option></select>
 </label>
-<p class="sk-help">As aprovações foram feitas em uma inspeção visual; confira o perfil de boca utilizado. A seleção é reversível e não modifica o GLB.</p>
+<p class="sk-help">R5 é o único contorno de apresentação ativo neste laboratório. A correção é reversível e não modifica o arquivo GLB.</p>
 <div class="sk-facial-recovery-grid" aria-label="Expressões aprovadas para apresentação manual">
 {APPROVED_MANUAL_GESTURES.map(({id,label,detail})=><button type="button" data-approved-expression={id} title={detail} disabled>{label}</button>)}
 <button type="button" data-approved-expression="NEUTRAL" disabled>Repouso facial</button>

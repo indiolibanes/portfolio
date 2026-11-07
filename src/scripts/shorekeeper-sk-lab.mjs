@@ -160,9 +160,10 @@ export function mountShorekeeperLab(root){
  for(const button of all('[data-r6-g113-candidate]'))
   button.disabled=!r6StageReady||!R6_G113_CANDIDATES.some(x=>x.id===button.dataset.r6G113Candidate);
  $('[data-r6-g113-neutral]').disabled=!r6StageReady;
- const selectedVariant=resolveFaceMenu($('[data-r6-variant-select]').value);
- $('[data-r6-variant-select]').disabled=!r6StageReady;
- $('[data-r6-variant-play]').disabled=!r6StageReady||!selectedVariant||(selectedVariant.kind==='baseline'&&!face?.qaSupport?.(selectedVariant.id)?.available);
+ for(const button of all('[data-r6-variant-button]')){
+  const choice=resolveFaceMenu(button.dataset.r6VariantButton);
+  button.disabled=!r6StageReady||!choice||(choice.kind==='baseline'&&!face?.qaSupport?.(choice.id)?.available);
+ }
  $('[data-r6-main-blink]').disabled=!r6StageReady||!inspection?.names.includes('E_Close');
  for(const option of all('[data-r6-only]'))option.hidden=!r6Stage;
  const approvedGeometry=$('[data-approved-geometry]');
@@ -233,13 +234,9 @@ export function mountShorekeeperLab(root){
  if(facialR6)$('[data-tab="face"]').click();
  metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version,origin:source};activePrivateFile=file;
  if(!mouthQA&&metadata.sha256===SHOREKEEPER_CANONICAL.sha256){
-  const mode=new URLSearchParams(location.search).get('approvedGeometry');
-  if(r6Stage){
-   // R5 is a reversible local geometry patch: preferred for the R6 smile, not a source-GLB dependency.
-   const chosen=['canonical','r2','r3','r4','r5'].includes(mode)?mode:'r5';
-   setMouthGeometry(chosen);
-  }else if(mode==='r4'||mode==='r5')setMouthGeometry(mode);
-  else $('[data-approved-geometry]').value='canonical';
+  // R5 is the only active presentation geometry. Preserve old patches
+  // solely as internal forensic/rollback modules.
+  setMouthGeometry('r5');
  }
  privateStatus(result.sha256===SHOREKEEPER_CANONICAL.sha256?'GLB canônico F2.0-A verificado · três idles originais. '+(cachedPrivateSha===result.sha256?'Cópia guardada neste navegador.':'Você pode guardá-lo neste navegador.'):'GLB alternativo carregado · verifique as animações antes de guardar.');
  const missing=result.json.accessors?.filter(a=>a.sparse&&a.type==='VEC3'&&(!a.min||!a.max)).length??0;if(missing)log(missing+' accessors sparse VEC3 sem min/max: inspecionar culling.','warning');
@@ -446,9 +443,10 @@ export function mountShorekeeperLab(root){
    $('[data-r6-g113-status]').textContent=msg;status(msg);sync(true);stage?.invalidate();loop?.wake();
   }catch(e){warn('R6 · '+e.message);}
  });
- // One visible selector. R6 candidates and historic V2/R2/R3 baselines remain distinct.
+ // Direct manual panel, with source R5/R6 variants kept as distinct entries.
+ let currentVariantValue=null;
  function describeR6Variant(){
-  const selection=resolveFaceMenu($('[data-r6-variant-select]').value);
+  const selection=resolveFaceMenu(currentVariantValue);
   if(!selection)return;
   const geometry=$('[data-approved-geometry]').value;
   if(selection.kind==='r6'){
@@ -460,28 +458,20 @@ export function mountShorekeeperLab(root){
    $('[data-r6-variant-info]').textContent=selection.label+' · '+Object.keys(historical.weights).length+' morphs · '+times+' · '+hint+' · preservado para comparação.';
   }
  }
- on($('[data-r6-variant-select]'),'change',()=>{describeR6Variant();sync(true);});
- on($('[data-r6-history-toggle]'),'click',()=>{
-  if(!r6Stage)return;
-  const toggle=$('[data-r6-history-toggle]'),expanded=toggle.getAttribute('aria-expanded')!=='true';
-  toggle.setAttribute('aria-expanded',String(expanded));
-  toggle.textContent=expanded?'Ocultar versões anteriores':'Mostrar versões anteriores';
-  for(const option of all('[data-r6-historic-option]')){option.hidden=!expanded;option.disabled=!expanded;}
-  for(const group of all('[data-r6-historic-group]'))group.hidden=!expanded;
-  if(!expanded&&resolveFaceMenu($('[data-r6-variant-select]').value)?.kind==='baseline')
-   $('[data-r6-variant-select]').value='r6:'+R6_PRIMARY_CHOICES[0].id;
-  describeR6Variant();sync(true);
- });
- on($('[data-r6-variant-play]'),'click',()=>{
-  if(!r6Stage||$('[data-r6-variant-play]').disabled)return;
-  const selected=resolveFaceMenu($('[data-r6-variant-select]').value);
+ for(const button of all('[data-r6-variant-button]'))on(button,'click',()=>{
+  if(!r6Stage||button.disabled)return;
+  const selected=resolveFaceMenu(button.dataset.r6VariantButton);
   if(!selected||!face)return;
   scheduler?.setEnabled(false);control('actingAuto').checked=false;
   try{
    face.setFrozen(false);face.setIntensity(1);
    const ok=selected.kind==='r6'?face.playCandidate(selected.id):face.playBaseline(selected.id);
-   const label=selected.kind==='r6'?'R6':'Histórico';
-   const msg=ok?label+' · '+selected.label+' · contorno '+$('[data-approved-geometry]').value+' · visual QA pendente.':'Morphs ou estado indisponíveis neste GLB.';
+   if(ok){
+    currentVariantValue=button.dataset.r6VariantButton;
+    for(const b of all('[data-r6-variant-button]'))b.setAttribute('aria-pressed',String(b===button));
+   }
+   const label=selected.kind==='r6'?'R6':'R5';
+   const msg=ok?label+' · '+selected.label+' · contorno '+$('[data-approved-geometry]').value+' · QA visual pendente.':'Morphs ou estado indisponíveis neste GLB.';
    $('[data-r6-g113-status]').textContent=msg;status(msg);describeR6Variant();sync(true);stage?.invalidate();loop?.wake();
   }catch(e){warn('Expressão: '+e.message);}
  });
@@ -542,7 +532,7 @@ export function mountShorekeeperLab(root){
  // R6.1: opt-in authorial cinematic presentation; no invented PSA markers.
  $('[data-r6-g113-panel]').hidden=!r6Stage;
  if(r6Stage){
-  // One expression menu. Old controls stay in DOM for QA route compatibility, but are not presented twice.
+  // One direct 25-button R5/R6 panel; legacy controls remain mounted but hidden.
   for(const selector of ['[data-approved-gallery]','[data-facial-qa]','.sk-expressions','.sk-face-guide']){
    const el=$(selector);if(el)el.hidden=true;
   }
@@ -648,7 +638,7 @@ export function mountShorekeeperLab(root){
  on($('[data-mouth-capture]'),'click',async()=>{if(!mouthAllowed())return;try{save(await stage.capture(),'shorekeeper-mouth-PRIVATE.png','image/png');}catch(e){warn(e.message);}});
  on($('[data-approved-geometry]'),'change',e=>{
   if(!model||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||state.contextLost||userPaused||control('presentationMode').value==='combat')return;
-  const mode=e.target.value;if(!(r6Stage?['canonical','r2','r3','r4','r5']:['canonical','r4','r5']).includes(mode))return;
+  const mode=e.target.value;if(mode!=='r5')return;
   try{
    face?.reset();scheduler?.setEnabled(false);control('actingAuto').checked=false;
    setMouthGeometry(mode);
@@ -741,7 +731,7 @@ export function mountShorekeeperLab(root){
  // Reconcile media preference before the existing frame sleeps after suspension.
  motion.addEventListener('change',updateMotionPolicy);
  $('[data-motion-policy]').textContent=motion.matches?'Movimento reduzido ativo. Atuação começa apenas por comando.':'Reference QA é manual; Expressive Acting pode usar alternância automática.';
- $('[data-r5-tools]').hidden=!['mouthR5','landingR5'].some(k=>new URLSearchParams(location.search).get(k)==='1')&&new URLSearchParams(location.search).get('vfx')!=='r5';
+ $('[data-r5-tools]').hidden=new URLSearchParams(location.search).get('legacyQA')!=='1';
  on($('[data-r5-rollback]'),'click',()=>{cancelPreparation('rollback');stopCameraOwners();director?.dispose();director=null;face?.reset();inspection?.restore();if(mouthQA&&model)setMouthGeometry('r4');setVfxProfile('r4');$('[data-combo-recovery]').value='r4';control('presentationMode').value='contemplation';control('originalMode').value='expressive';if(model)buildDirector();const u=new URL(location.href);u.searchParams.delete('mouthR5');u.searchParams.delete('landingR5');u.searchParams.set('vfx','r4');if(mouthQA)u.searchParams.set('mouthR4','1');if($('[data-combo-landing]').checked)u.searchParams.set('landingR4','1');history.replaceState(null,'',u);status('Perfil R4 restaurado. Modelo privado mantido.');sync(true);syncVfx();stage.invalidate();});
  function frame(now){if(disposed)return false;if(vfx&&vfx.reducedMotion!==motion.matches)updateMotionPolicy();if(document.hidden||suspended||outOfView||state.contextLost||state.loading||!stage){vfx?.setSuspended(true);presentationClock.reanchor();last=0;return false;}if(!last){last=now;presentationClock.reanchor();presentationClock.tick(now);return true;}const delta=now-last,target=1000/Number(control('fps').value);if(delta<target-1)return;last=now;presentationClock.setPaused(userPaused);const dt=presentationClock.tick(now);const start=performance.now();director?.advance(dt);
   if(s6Autonomy){

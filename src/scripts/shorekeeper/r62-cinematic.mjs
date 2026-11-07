@@ -1,3 +1,4 @@
+import {captureBodyPose} from './body-handoff.mjs';
 import {createComboDirector} from './combo-sequencer.mjs';
 import {claimCameraOwner} from './camera-ownership.mjs';
 import {setSourceReviewVfxIsolation} from './source-review-visuals.mjs';
@@ -41,6 +42,7 @@ function createR61Camera(stage,plan,getVfx,profile=null){
     let f=r62CameraFrame({plan,timeline:profile.timeline,t:time,aspect:stage.camera.aspect,h,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,
      anchors:{pel:read(B.pel),head:read(B.head),rh:read(B.rh),lh:read(B.lh)},period:profile.period??R62_DEFAULT_ORBIT_PERIOD,reduced:!!profile.reduced?.()});
     if(profile.smart && profile.rigReader && profile.guide){const rig=profile.rigReader.read(),secondary=profile.secondary?.()??[];f=smartCameraFrame(profile.T,{base:f,rig,guide:profile.guide,t:time,h,aspect:stage.camera.aspect,width:stage.canvas?.width??960,height:stage.canvas?.height??540,reduced:!!profile.reduced?.(),secondary,plan,timeline:profile.timeline,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,period:profile.period??R62_DEFAULT_ORBIT_PERIOD});}
+    if(profile.frameTransform)f=profile.frameTransform(f,time);
     lastFrame=f;applyProfileCamera({position:f.position,target:f.target,fov:f.fov,preset:f.preset});return;
    }
    const pose=r61CameraPose(plan,time,stage.camera.aspect),vfx=getVfx();
@@ -71,10 +73,10 @@ function createR61Camera(stage,plan,getVfx,profile=null){
    const pos=c.position.clone().sub(new T.Vector3().fromArray(rig.anchors.chest));pos.y=0;pos.normalize();
    return {...lastFrame?.smart,...projectCameraPoints(T,c,rig.points,stage.canvas?.width??960,stage.canvas?.height??540),front:rig.front,frontFacingDot:pos.dot(new T.Vector3().fromArray(rig.front)),backView:pos.dot(new T.Vector3().fromArray(rig.front))<0,azimuth:Math.atan2(c.position.x-stage.orbit.target.x,c.position.z-stage.orbit.target.z),radius:c.position.distanceTo(stage.orbit.target),target:stage.orbit.target.toArray(),ownership:release?'r61-cinematic':'MANUAL',reason:release?lastFrame?.smart?.reason:'MANUAL',effectivePosition:c.position.toArray(),effectiveFov:c.fov,aspect:c.aspect};
   },
-  stop(){
+  stop(restore=true){
    ret=null;
    if(!release)return;
-   try{if(saved)stage.restoreCamera(saved);}
+   try{if(saved&&restore)stage.restoreCamera(saved);}
    finally{
     stage.orbit.enabled=enabled;stage.orbit.enableDamping=damping;
     release();release=null;saved=null;
@@ -89,11 +91,12 @@ function createR61Camera(stage,plan,getVfx,profile=null){
  * B1 and the identity of Heavy Attack / Skill / Burst are not canonically proven.
  * The game timelines, sourceFrame PSA and foot-contact markers are NOT invented.
  */
-export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null,bodyStability='off'}={}){
+export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null,bodyStability='off',entry=0,preservePoseOnDispose=false}={}){
  if(!stage?.camera||!stage?.orbit||!stage?.restoreCamera)throw Error('R6.1 stage required');
  if(bodyStability!=='off')throw Error('S5: derived body curves require a specific editorial authorization');
  const plan=buildR61Plan(library);
- const body=createComboDirector(T,root,plan.clips,plan.schedule,{entry:0,onEvent});
+ const restoreEntry=captureBodyPose(root);
+ const body=createComboDirector(T,root,plan.clips,plan.schedule,{entry,onEvent,preservePoseOnDispose});
  // R6.2 opt-in: an isolated score adapter ({apply,release,dispose}) built from the plan. While it
  // is present the legacy R5 PREPARATION cue (R3 coreCrystal/coreCage) is held at AMBIENT until the
  // Burst starts, so Basic/Heavy/Skill beats are read only through the score. Burst+ stays legacy (S3).
@@ -116,6 +119,7 @@ export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=
    cameraProfile={...cameraProfile,T,rigReader,guide,secondary:()=>score?.last?.skill?.butterflies?.filter(b=>b.visible&&b.pos).map(b=>b.pos)??[]};
   }catch(e){score?.dispose();body.dispose();throw e;}
  }
+ if(preservePoseOnDispose)restoreEntry();
  const cam=createR61Camera(stage,plan,getVfx,cameraProfile?{...cameraProfile,timeline:cameraProfile.timeline??lib}:null);
  let disposed=false,active=false,paused=false,sourceVfx=null,savedVfx=null,cue=r61CueAt(plan,0),interrupted=false,termination=null;
  const restoreVfx=()=>{
@@ -216,7 +220,12 @@ export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=
   },
   // Manual camera changes and a new reduced-motion preference revoke only the
   // automatic camera. They must not be overwritten on the next body frame.
-  stopCamera(){cam.stop();},
+  stopCamera({preserve=false}={}){cam.stop(!preserve);},
+  resumeCamera(){
+   if(disposed||!active||!camera)return false;
+   if(!cam.active){cam.start();cam.sample(body.state.clock);}
+   return true;
+  },
   setPaused(v){paused=!!v;body.setPaused(paused);},
   // Playback rate is owned solely by presentation-clock.mjs.
   setSpeed(v){if(v!==1)throw Error('Use presentation clock speed');body.setSpeed(1);},
