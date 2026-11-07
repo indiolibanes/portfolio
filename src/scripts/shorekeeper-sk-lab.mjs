@@ -41,7 +41,7 @@ import {createStage} from './shorekeeper/stage.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel,savePrivateModel,forgetPrivateModel} from './shorekeeper/private-model-cache.mjs';
 import {resolveR6G113Mode,canUseR6G113,R6_G113_CANDIDATES} from './shorekeeper/r6-g113-bridge.mjs';
 import {FACIAL_VARIANTS,FACIAL_VARIANT_MAP,MOUTH_GEOMETRY_PROFILES} from './shorekeeper/facial-variant-catalog.mjs';
-import {resolveFaceMenu,R6_PRIMARY_CHOICES} from './shorekeeper/facial-unified-menu.mjs';
+import {resolveFaceMenu} from './shorekeeper/facial-unified-menu.mjs';
 import {createRenderLoop} from './shorekeeper/render-loop.mjs';
 import {labPhase,permissions} from './shorekeeper/lab-state.mjs';
 export {assertSelfContainedGLB};
@@ -160,9 +160,13 @@ export function mountShorekeeperLab(root){
  for(const button of all('[data-r6-g113-candidate]'))
   button.disabled=!r6StageReady||!R6_G113_CANDIDATES.some(x=>x.id===button.dataset.r6G113Candidate);
  $('[data-r6-g113-neutral]').disabled=!r6StageReady;
- const selectedVariant=resolveFaceMenu($('[data-r6-variant-select]').value);
- $('[data-r6-variant-select]').disabled=!r6StageReady;
- $('[data-r6-variant-play]').disabled=!r6StageReady||!selectedVariant||(selectedVariant.kind==='baseline'&&!face?.qaSupport?.(selectedVariant.id)?.available);
+ for(const button of all('[data-r65-face], [data-r65-legacy-duplicate]')){
+  const selected=resolveFaceMenu(button.dataset.r65Face??button.dataset.r65LegacyDuplicate);
+  const supported=selected&&(selected.kind==='r6'||face?.qaSupport?.(selected.id)?.available);
+  button.disabled=!r6StageReady||!supported;
+  button.setAttribute('aria-pressed',String(!!selected&&face?.report?.().id===selected.id&&face?.state?.busy));
+  button.title=!r6StageReady?'Carregue F2.0-A canônico e ative Contemplação.':!supported?'Morphs necessários indisponíveis.':selected.label;
+ }
  $('[data-r6-main-blink]').disabled=!r6StageReady||!inspection?.names.includes('E_Close');
  for(const option of all('[data-r6-only]'))option.hidden=!r6Stage;
  const approvedGeometry=$('[data-approved-geometry]');
@@ -446,44 +450,23 @@ export function mountShorekeeperLab(root){
    $('[data-r6-g113-status]').textContent=msg;status(msg);sync(true);stage?.invalidate();loop?.wake();
   }catch(e){warn('R6 · '+e.message);}
  });
- // One visible selector. R6 candidates and historic V2/R2/R3 baselines remain distinct.
- function describeR6Variant(){
-  const selection=resolveFaceMenu($('[data-r6-variant-select]').value);
-  if(!selection)return;
-  const geometry=$('[data-approved-geometry]').value;
-  if(selection.kind==='r6'){
-   $('[data-r6-variant-info]').textContent=selection.label+' · atuação anatômica R6 · geometria '+geometry+' · QA visual pendente. A origem dos morphs e a duração não são clipes PSA.';
-  }else{
-   const historical=FACIAL_VARIANT_MAP[selection.id];
-   const times=Object.entries(historical.timing).map(([key,value])=>key+' '+value+' s').join(' · ');
-   const hint=geometry===historical.suggestedGeometry?'perfil sugerido':('sugestão de perfil '+historical.suggestedGeometry);
-   $('[data-r6-variant-info]').textContent=selection.label+' · '+Object.keys(historical.weights).length+' morphs · '+times+' · '+hint+' · preservado para comparação.';
-  }
- }
- on($('[data-r6-variant-select]'),'change',()=>{describeR6Variant();sync(true);});
- on($('[data-r6-history-toggle]'),'click',()=>{
-  if(!r6Stage)return;
-  const toggle=$('[data-r6-history-toggle]'),expanded=toggle.getAttribute('aria-expanded')!=='true';
-  toggle.setAttribute('aria-expanded',String(expanded));
-  toggle.textContent=expanded?'Ocultar versões anteriores':'Mostrar versões anteriores';
-  for(const option of all('[data-r6-historic-option]')){option.hidden=!expanded;option.disabled=!expanded;}
-  for(const group of all('[data-r6-historic-group]'))group.hidden=!expanded;
-  if(!expanded&&resolveFaceMenu($('[data-r6-variant-select]').value)?.kind==='baseline')
-   $('[data-r6-variant-select]').value='r6:'+R6_PRIMARY_CHOICES[0].id;
-  describeR6Variant();sync(true);
- });
- on($('[data-r6-variant-play]'),'click',()=>{
-  if(!r6Stage||$('[data-r6-variant-play]').disabled)return;
-  const selected=resolveFaceMenu($('[data-r6-variant-select]').value);
-  if(!selected||!face)return;
+ // Manual one-tap buttons: preserve historical R5/V2/R2/R3 recipes without an extra control layer.
+ function playR65Selection(value){
+  if(!r6Stage||!face)return;
+  const selected=resolveFaceMenu(value);
+  if(!selected)return;
   scheduler?.setEnabled(false);control('actingAuto').checked=false;
   try{
    face.setFrozen(false);face.setIntensity(1);
    const ok=selected.kind==='r6'?face.playCandidate(selected.id):face.playBaseline(selected.id);
-   const label=selected.kind==='r6'?'R6':'Histórico';
-   const msg=ok?label+' · '+selected.label+' · contorno '+$('[data-approved-geometry]').value+' · visual QA pendente.':'Morphs ou estado indisponíveis neste GLB.';
-   $('[data-r6-g113-status]').textContent=msg;status(msg);describeR6Variant();sync(true);stage?.invalidate();loop?.wake();
-  }catch(e){warn('Expressão: '+e.message);}
+   const msg=ok?selected.label+' · R5 · '+(selected.kind==='r6'?'atuação anatômica':'receita histórica distinta')+' · QA visual pendente.':'Expressão indisponível no modelo atual.';
+   $('[data-r6-g113-status]').textContent=msg;
+   $('[data-r6-variant-info]').textContent='R5 aplicada em memória · '+(selected.kind==='r6'?'atuação R6':'receita '+selected.id+'; pesos e timing preservados')+'.';
+   status(msg);sync(true);stage?.invalidate();loop?.wake();
+  }catch(e){warn('Expressão R6.5: '+e.message);}
+ }
+ for(const button of all('[data-r65-face], [data-r65-legacy-duplicate]'))on(button,'click',()=>{
+  if(!button.disabled)playR65Selection(button.dataset.r65Face??button.dataset.r65LegacyDuplicate);
  });
  on($('[data-r6-main-blink]'),'click',()=>{
   if(!r6Stage||$('[data-r6-main-blink]').disabled)return;
@@ -542,12 +525,13 @@ export function mountShorekeeperLab(root){
  // R6.1: opt-in authorial cinematic presentation; no invented PSA markers.
  $('[data-r6-g113-panel]').hidden=!r6Stage;
  if(r6Stage){
-  // One expression menu. Old controls stay in DOM for QA route compatibility, but are not presented twice.
+  // Single direct-button panel. Earlier controllers remain mounted for rollback/QA only.
   for(const selector of ['[data-approved-gallery]','[data-facial-qa]','.sk-expressions','.sk-face-guide']){
    const el=$(selector);if(el)el.hidden=true;
   }
   const geometry=$('[data-approved-geometry]').closest('label');
   if(geometry)$('[data-r6-mouth-slot]').append(geometry);
+  $('[data-r6-mouth-details]').hidden=new URLSearchParams(location.search).get('legacyQA')!=='1';
  }
  const r61Enabled=new URLSearchParams(location.search).get('r61')==='1';
  const r62Enabled=r61Enabled&&new URLSearchParams(location.search).get('r62')==='s5';
@@ -655,7 +639,7 @@ export function mountShorekeeperLab(root){
    const url=new URL(location.href);if(mode==='canonical')url.searchParams.delete('approvedGeometry');else url.searchParams.set('approvedGeometry',mode);
    history.replaceState(null,'',url);
    $('[data-approved-status]').textContent='Contorno '+mode+' selecionado · confira a fidelidade dos sorrisos.';
-   if(r6Stage)describeR6Variant();
+   if(r6Stage)$('[data-r6-variant-info]').textContent='Contorno '+mode+' aplicado em memória · somente diagnóstico histórico; R5 recomendado.';
    sync(true);loop?.wake();
   }catch(err){warn(err.message);}
  });
