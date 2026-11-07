@@ -32,7 +32,7 @@ export function mountHsinStage(root:HTMLElement){
  const near=q<HTMLButtonElement>('[data-stage-in]'),far=q<HTMLButtonElement>('[data-stage-out]'),home=q<HTMLButtonElement>('[data-stage-reset]'),pause=q<HTMLButtonElement>('[data-stage-pause]'),retry=q<HTMLButtonElement>('[data-stage-retry]');
  // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
  const duetRequested=root.dataset.s6Duo==='true';
-  const publicRelease=duetRequested&&root.dataset.publicStage==='true';
+ const publicRelease=duetRequested&&root.dataset.publicStage==='true';
  const duetStatus=root.querySelector<HTMLElement>('[data-duo-guest-status]');
  const duetR6=duetRequested&&(publicRelease||new URLSearchParams(location.search).get('r6Guest')==='1');
  const duetControls=root.querySelector<HTMLElement>('[data-duo-r6-controls]');
@@ -323,7 +323,7 @@ export function mountHsinStage(root:HTMLElement){
             duetGuest?.observeMusic?.(sample);
             if(cleaned||!duetGuest?.ready||!duetStatus)return;
             if(sample.status==='playing'&&sample.playbackConfirmed){
-              duetStatus.textContent='Shorekeeper · ciclo cinematográfico G11.3/S5 com '+(sample.provider==='spotify'?'Spotify':'YouTube')+' confirmado (bibliotecas privadas obrigatórias).';
+              duetStatus.textContent='Shorekeeper · ciclo cinematográfico G11.3/S5 com '+(sample.provider==='spotify'?'Spotify':'YouTube')+(publicRelease?' confirmado.':' confirmado (bibliotecas privadas obrigatórias).');
             }else if(sample.status==='paused')duetStatus.textContent='Música pausada · apresentação G11.3 interrompida; retorno à contemplação.';
             else if(sample.status==='buffering')duetStatus.textContent='Aguardando reprodução confirmada · contemplação da Shorekeeper.';
             else duetStatus.textContent='Sem música · contemplação, idles e expressões S6 aleatórios.';
@@ -340,7 +340,7 @@ export function mountHsinStage(root:HTMLElement){
             const act=(action:()=>boolean,label:string,button?:HTMLButtonElement)=>{
               if(!visible()||paused||motion.matches||!duetGuest?.ready||cleaned||attempt.signal.aborted)return;
               const ok=action();
-              if(status)status.textContent=ok?label+' · manual; R5/R6 permanecem em QA visual.':'Expressão indisponível para o modelo verificado.';
+              if(status)status.textContent=ok?(publicRelease?label+' · expressão aplicada.':label+' · manual; R5/R6 permanecem em QA visual.'):'Expressão indisponível para o modelo verificado.';
               if(ok){
                 for(const item of faceButtons)item.setAttribute('aria-pressed',String(item===button));
                 worldDirty=true;loop?.invalidate();
@@ -351,14 +351,14 @@ export function mountHsinStage(root:HTMLElement){
               {signal:attempt.signal});
             blink?.addEventListener('click',()=>act(()=>!!duetGuest?.blinkR6?.(),'Piscada bilateral'),{signal:attempt.signal});
             neutral?.addEventListener('click',()=>act(()=>!!duetGuest?.neutralR6?.(),'Repouso facial'),{signal:attempt.signal});
-            if(status)status.textContent='Painel manual R5/R6 · 25 estados preservados; o repertório S6 silencioso varia automaticamente. G7 NO_GO.';
+            if(status)status.textContent=publicRelease?'Expressões da Shorekeeper · seleção manual e atuação espontânea.':'Painel manual R5/R6 · 25 estados preservados; o repertório S6 silencioso varia automaticamente. G7 NO_GO.';
           }
-          // Only the private duet route receives the second performer.
+          // Attach the second performer only to the explicitly enabled duet routes.
           // Hsin's normal public route and autonomous system are unchanged.
           scene.updateMatrixWorld(true);worldDirty=true;loop?.invalidate();
         }
       }).catch(()=>{
-        if(!cleaned&&duetStatus)duetStatus.textContent='Hsin ready. Shorekeeper private guest could not be initialized safely.';
+        if(!cleaned&&duetStatus)duetStatus.textContent=publicRelease?'A Shorekeeper não pôde ser carregada. A Hsin permanece disponível.':'Hsin ready. Shorekeeper private guest could not be initialized safely.';
       });
     }
   }catch(error){
