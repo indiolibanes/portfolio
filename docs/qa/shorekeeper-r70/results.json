@@ -1,0 +1,55 @@
+{
+  "phase": "R7.0",
+  "base": "28ab6eacd334c75b76c55831c497ab8794a60bae",
+  "technical": "PARTIAL",
+  "distribution": "BLOCKED_PUBLIC_RELEASE",
+  "checks": {
+    "shorekeeperTests": {
+      "passed": 272,
+      "failed": 0,
+      "evidence": "Node code/synthetic tests; not actual source visual QA"
+    },
+    "projectCheck": "PASS",
+    "productionBuild": "PASS",
+    "typecheck": {
+      "status": "FAIL_INHERITED",
+      "diagnostics": 30,
+      "baseDiagnostics": 30,
+      "newNormalizedDiagnostics": 0
+    },
+    "diffCheck": "PASS"
+  },
+  "scenery": {
+    "standaloneMeshes": 22,
+    "instancedTriangles": 3620,
+    "authorial": true,
+    "privateAssetRequests": 0,
+    "offscreenPasses": 0
+  },
+  "environment": {
+    "previewR2BindingPresent": true,
+    "previewAccessVarsPresentAndFormatValid": true,
+    "publicReleaseEnabled": false,
+    "productionR2BindingPresent": false,
+    "remoteConfigMutations": 0
+  },
+  "pending": {
+    "authorizedModelRender": "NOT_RUN_ACCESS_SESSION_UNAVAILABLE",
+    "realG113FloorTrace": "NOT_RUN",
+    "realGLBCompositionAndDerivatives": "NOT_RUN",
+    "coldWarmLoadBenchmarks": "NOT_RUN",
+    "fps": "NOT_RUN",
+    "actualWebGLRecovery": "NOT_RUN",
+    "physicalSamsungInternet": "NOT_RUN",
+    "threeViewportVisualQA": "NOT_RUN"
+  },
+  "routes": {
+    "scenery": "/experimentos/palco/",
+    "privateLab": "/experimentos/duo/?r6Guest=1&hsin-metrics"
+  },
+  "notes": [
+    "Private original assets, body clips, facial weights and source spacing were not modified.",
+    "Browser-localhost refused; native desktop input unavailable. No synthetic scene capture is presented as a model render.",
+    "No rights approval or public Access policy change was inferred."
+  ]
+}

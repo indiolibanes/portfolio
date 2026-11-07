@@ -1,3 +1,4 @@
+import {createFloorOccupancy} from '../astral-tidal-garden.mjs';
 import {createDuetTrace} from './duet-cinematic.mjs';
 /**
  * S6-D duo guest (private preview): one Hsin scene/renderer/RAF, independent
@@ -27,7 +28,7 @@ export const canPlayDuetR6Expression=id=>R6_PRIMARY_CHOICES.some(x=>x.id===id);
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
 export const S6_DUO_STATUS=Object.freeze({
   NO_ACCESS:'AUTHENTICATION_REQUIRED',MISSING:'PRIVATE_ASSETS_MISSING',
-  INCOMPLETE:'PRIVATE_LIBRARY_INCOMPLETE',READY:'DUO_PRIVATE_PREVIEW_G7_PENDING',
+  INCOMPLETE:'PRIVATE_LIBRARY_INCOMPLETE',CONFIGURATION:'PRIVATE_SERVICE_UNAVAILABLE',INVALID:'PRIVATE_MANIFEST_INVALID',NETWORK:'PRIVATE_NETWORK_UNAVAILABLE',READY:'DUO_PRIVATE_PREVIEW_G7_PENDING',
   FAILED:'PRIVATE_GUEST_UNAVAILABLE'
 });
 export function s6DuoRequirements(manifest,hash){
@@ -49,7 +50,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
   const preparedModel=prepared?await prepared.take():null;
   if(prepared&&!preparedModel)return null;
   const inspected=preparedModel?{state:preparedModel.ready?'ready':preparedModel.state,manifest:preparedModel.manifest}:await inspect({signal});
-  if(inspected.state!=='ready')return {ready:false,status:inspected.state==='denied'?S6_DUO_STATUS.NO_ACCESS:S6_DUO_STATUS.MISSING,
+  if(inspected.state!=='ready')return {ready:false,status:['denied','auth_redirect'].includes(inspected.state)?S6_DUO_STATUS.NO_ACCESS:inspected.state==='missing'?S6_DUO_STATUS.MISSING:inspected.state==='unconfigured'?S6_DUO_STATUS.CONFIGURATION:inspected.state==='invalid'?S6_DUO_STATUS.INVALID:inspected.state==='incomplete'?S6_DUO_STATUS.INCOMPLETE:inspected.state==='failed'?S6_DUO_STATUS.FAILED:S6_DUO_STATUS.NETWORK,reason:inspected.state==='failed'?'DOWNLOAD_OR_INTEGRITY':null,
     advance(){},dispose(){}};
   const manifest=inspected.manifest;
   if(!(experimentalR6?s6DuoModelRequirements(manifest,SHOREKEEPER_CANONICAL.sha256):s6DuoRequirements(manifest,SHOREKEEPER_CANONICAL.sha256)))return {ready:false,status:S6_DUO_STATUS.INCOMPLETE,advance(){},dispose(){}};
@@ -59,27 +60,29 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     return url;
   });
   const parser=new GLTFLoader(manager),scenes=[],loaded=[];
-  let model=null,group=null,director=null,face=null,mouthCorrection=null,disposed=false,modelParseMs=null;
+  let failureStage='DOWNLOAD_OR_INTEGRITY',model=null,group=null,director=null,face=null,mouthCorrection=null,disposed=false,modelParseMs=null;
   const ownedScene=s=>{scenes.push(s);return s;};
   try{
     // Authenticated R2 endpoint verifies HTTP size, header SHA-256, byte length
     // and full SHA-256 before any asset reaches GLTFLoader.
     async function parseFile(entry,kind){
+      failureStage='DOWNLOAD_OR_INTEGRITY';
       let file=null;
       const preparedBuffer=kind==='model'?preparedModel?.buffer:null;
       if(!preparedBuffer)file=await fetchBinary(entry,{kind,signal,asBuffer:true});
       if(aborted(signal))throw new DOMException('Cancelled','AbortError');
       const buffer=preparedBuffer??(file instanceof ArrayBuffer?file:await file.arrayBuffer()),json=assertSelfContainedGLB(buffer);
-      const parseStarted=performance.now();const gltf=await parser.parseAsync(buffer,'');
+      failureStage='GLTF_PARSE';const parseStarted=performance.now();const gltf=await parser.parseAsync(buffer,'');
       if(disposed||aborted(signal)){disposeObject(gltf.scene);throw new DOMException('Cancelled','AbortError');}
       if(kind==='model')modelParseMs=performance.now()-parseStarted;
       if(kind==='model'&&preparedModel)preparedModel.buffer=null;
+      failureStage='INITIALIZATION_OR_RIG';
       ownedScene(gltf.scene);
       return {gltf,json};
     }
     const base=await parseFile(manifest.model,'model');
     if(aborted(signal))throw new DOMException('Cancelled','AbortError');
-    model=base.gltf.scene;
+    failureStage='INITIALIZATION_OR_RIG';model=base.gltf.scene;
     loaded.push(...(base.gltf.animations??[]));
     for(const id of (experimentalR6?[]:REQUIRED)){
       const entry=manifest.libraries.find(x=>x.id===id);
@@ -110,6 +113,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
     const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
     const trace=createDuetTrace(T,model,group);
+    const occupancy=createFloorOccupancy(T,model);
     let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0,cameraPreference='auto';
     const cinematicSelected=()=>cameraPreference==='auto'||cameraPreference==='shorekeeper';
     let musicSnapshot=duetMusicSnapshot();
@@ -225,6 +229,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       if(!confirmed&&g113?.state.presentationActive)g113.interrupt();
       if(g113){
         g113.advance(elapsed);vfx?.update(elapsed,1);
+        if(traceEnabled)occupancy.sample();
         if(traceEnabled)trace.sample(elapsed,{body:g113.state,music:musicSnapshot,vfx:g113.scoreAdapter?.last??null,camera:g113.cameraTelemetry()??{position:camera?.position.toArray(),fov:camera?.fov,director:g113.state.camera}});
         face?.advance(elapsed,{writeFacial:true});
         if(g113.state.phase==='idle'&&!g113.state.camera?.returning)finishG113();
@@ -272,6 +277,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     preparationMs=performance.now()-guestStart-(modelParseMs??0);
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
       markRendered(){if(firstGuestFrameMs===null)firstGuestFrameMs=performance.now()-guestStart;},
+      cameraActive(){return !!(g113?.state.cameraActive||g113?.state.camera?.returning);},
       setCameraPreference(mode){
         if(!['auto','free','hsin','shorekeeper'].includes(mode)||disposed)return false;
         cameraPreference=mode;
@@ -282,7 +288,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
         return true;
       },
       interrupt(){if(g113?.state.presentationActive)g113.interrupt();},
-      diagnostics(){return {state:this.state,trace:trace.report(),clips:(g113Clips??loaded).map(c=>({name:c.name,duration:c.duration,tracks:c.tracks.map(t=>({name:t.name,keys:t.times.length,start:t.times[0],end:t.times[t.times.length-1]}))}))};},
+      diagnostics(){return {state:this.state,occupancy:occupancy.report(),trace:trace.report(),clips:(g113Clips??loaded).map(c=>({name:c.name,duration:c.duration,tracks:c.tracks.map(t=>({name:t.name,keys:t.times.length,start:t.times[0],end:t.times[t.times.length-1]}))}))};},
       playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
       playFaceSelection(value){
         const selected=resolveFaceMenu(value);
@@ -298,6 +304,6 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);
     if(error?.name==='AbortError')return null;
-    return {ready:false,status:S6_DUO_STATUS.FAILED,reason:'ASSET_OR_RIG_VALIDATION_FAILED',advance(){},dispose(){}};
+    return {ready:false,status:S6_DUO_STATUS.FAILED,reason:failureStage,advance(){},dispose(){}};
   }
 }
