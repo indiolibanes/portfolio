@@ -14,11 +14,15 @@ export function attachFixedDuetMoon(T,{scene,camera,moon,halo}){
  // this moon is reparented. Re-enable only these two lunar background meshes.
  moon.matrixAutoUpdate=true;halo.matrixAutoUpdate=true;
  const resize=()=>{
-  const r=depth*Math.tan(camera.fov*Math.PI/360)*(camera.aspect<.8?.30:.42);
-  moon.scale.setScalar(r/sourceRadius);moon.updateMatrix();
+  const halfHeight=depth*Math.tan(camera.fov*Math.PI/360);
+  // Dramatically larger than R6.4.2: ~2.7-3.3x diameter, fixed horizontally
+  // centred and elevated in screen-space, as a photographic lunar backdrop.
+  const r=halfHeight*(camera.aspect<.8?.98:1.14);
+  moon.scale.setScalar(r/sourceRadius);
+  moon.position.set(0,halfHeight*.46,-depth);
+  moon.updateMatrix();
  };
  resize();
- moon.position.set(0,0,-depth);
  moon.renderOrder=-100;
  moon.material.depthTest=false;moon.material.depthWrite=false;moon.material.fog=false;
  // Keep the baked atmospheric halo behind the sculpted sphere.
@@ -30,5 +34,5 @@ export function attachFixedDuetMoon(T,{scene,camera,moon,halo}){
  halo.visible=false;
  halo.updateMatrix();moon.updateMatrix();camera.add(halo,moon);
  if(!camera.parent)scene.add(camera);
- return {depth,resize,screenCenter:Object.freeze([0,0]),mode:'CAMERA_LOCKED_BACKGROUND'};
+ return {depth,resize,screenCenter:Object.freeze([0,.46]),mode:'CAMERA_LOCKED_BACKGROUND'};
 }

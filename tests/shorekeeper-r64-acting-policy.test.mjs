@@ -77,7 +77,7 @@ test('fixed lunar mesh stays centre of view on orbit, without covering foregroun
  for(const [x,y,z] of [[0,2,7],[7,5,0],[-5,2,-9]]){
   camera.position.set(x,y,z);camera.lookAt(0,1,0);camera.updateMatrixWorld(true);
   const p=moon.getWorldPosition(new T.Vector3()).project(camera);
-  assert(Math.abs(p.x)<1e-6&&Math.abs(p.y)<1e-6,'moon center fixed after orbit');
+  assert(Math.abs(p.x)<1e-6&&Math.abs(p.y-.46)<1e-6,'giant moon elevated and horizontally centered after orbit');
  }
  const old=moon.scale.x;
  camera.aspect=.46;camera.updateProjectionMatrix();result.resize();
@@ -97,5 +97,10 @@ test('one projected 3D architecture aligns with the single native player surface
  assert.match(tower,/nativeRect\.top-canvasRect\.top/);
  assert.equal((duo.match(/<HsinSoundtrack\s*\/>/g)??[]).length,1);
  assert.match(css,/one aligned pavilion/);
- assert.match(duo,/data-duo-g113-start/);
+ assert(!duo.includes('data-duo-g113-start'),'G11.3 must not have a manual combat button');
+ const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
+ assert.match(guest,/if\(!musicSnapshot.playbackConfirmed\|\|disposed/);
+ assert.match(guest,/if\(!confirmed&&g113\?\.state\.presentationActive\)/);
+ assert(!guest.includes('startG113(\'manual\')'));
+ assert(!stage.includes('data-duo-g113-start'));
 });

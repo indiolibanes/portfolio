@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | Sem música | Idles 01/02/03 originais aleatórios desde o início; sem repetição consecutiva | Três famílias S6/R5 curadas aleatórias; R6 somente manual |
 | Música confirmada | Carregar basic+advanced+burst autenticados se ainda ausentes; executar G11.3/S5, com Stellarealm unificado contendo Hsin e Shorekeeper | Face sai das expressões manuais durante combate; um único body owner |
-| Botão de teste | Iniciar a mesma sequência G11.3 mesmo sem música, se bibliotecas/rig validarem | Status explícito se faltar asset |
+| Sem música, inclusive comando manual | G11.3 bloqueada; somente idles/expressões | Nenhum botão de combate nem bypass |
 | Pausa/movimento reduzido | Não consumir relógio do combate nem avançar efeitos | Sem novas expressões automáticas |
 | Música interrompida | Interromper a apresentação automática e recuperar idle, sem trocar as curvas originais | Retorno controlado ao modo contemplativo |
 | Dispose | Liberar score/VFX, mixer corporal, writer facial e cópias temporárias | Fail closed |
@@ -21,6 +21,6 @@ Os clipes GLB são privados, conferidos por Access e SHA-256, e nenhuma habilida
 
 ## Fundo e pavilhão
 
-A lua é fixa no centro da projeção da câmera exclusivamente no dueto, com profundidade de fundo e sem escrita de profundidade; a esfera é desenhada antes dos personagens, portanto não os ofusca. O halo é desativado para evitar alpha overlay. O tamanho adapata a proporção do viewport no fit. O widget 3D se alinha à única fachada nativa HTML: não existe um segundo painel/visor deslocado; controles oficiais do YouTube/Spotify seguem operáveis.
+A lua mantém o centro horizontal da câmera, elevada verticalmente (NDC +0,46) e 2,7–3,3× maior do que na revisão anterior, exclusivamente no dueto, com profundidade de fundo e sem escrita de profundidade; a esfera é desenhada antes dos personagens, portanto não os ofusca. O halo é desativado para evitar alpha overlay. O tamanho adapata a proporção do viewport no fit. O widget 3D se alinha à única fachada nativa HTML: não existe um segundo painel/visor deslocado; controles oficiais do YouTube/Spotify seguem operáveis.
 
 **Pendente:** renderização visual autenticada, posicionamento em 390×844 e 832×384, QA móvel e GPU real, tempo de rede R2, clipping facial, stellarealm abrangendo as personagens durante a câmera em órbita. Nenhuma taxa de FPS declarada.

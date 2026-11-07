@@ -103,7 +103,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     let active=-1,restSeconds=0,faceSeconds=quietFaceWait(),manualFaceCooldown=0,playing=true;
     const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
     const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
-    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Manual=false,g113Attempted=false,g113Cooldown=0;
+    let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0;
     let musicSnapshot=duetMusicSnapshot();
     const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
     function switchIdle(){
@@ -116,8 +116,9 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     switchIdle();
     // G11.3 is the already-authored S5 seven-source cinematic (not a yaw loop).
     // Extra libraries are fetched only after an explicit test or verified playback.
-    async function startG113(mode='manual'){
-      if(disposed||aborted(signal)||g113Loading||g113?.state.phase!=='idle'&&g113)return false;
+    async function startG113(){
+      // The S5 choreography is music-exclusive, never a button-triggered action.
+      if(!musicSnapshot.playbackConfirmed||disposed||aborted(signal)||g113Loading||(g113&&g113.state.phase!=='idle'))return false;
       if(g113&&g113.state.phase==='idle')finishG113();
       g113Attempted=true;
       if(!s6DuoRequirements(manifest,SHOREKEEPER_CANONICAL.sha256)){
@@ -145,7 +146,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
           const [{ShorekeeperVfxR5Director},{createR62Integration}]=await Promise.all([
             import('./vfx-r5.mjs'),import('./r62-integration.mjs')
           ]);
-          if(disposed||aborted(signal))return false;
+          if(disposed||aborted(signal)||!musicSnapshot.playbackConfirmed)return false;
           nextVfx=new ShorekeeperVfxR5Director(scene,{camera,mobile:lowPower,reducedMotion:false});
           nextVfx.bindModel(model);
           // One Stellarealm canopy/field contains BOTH performers, never a separate SK scene.
@@ -177,9 +178,9 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
             reducedMotion:()=>false,
             onEvent:e=>face?.onAnimationEvent?.(e)
           });
-          if(disposed||aborted(signal))return false;
+          if(disposed||aborted(signal)||!musicSnapshot.playbackConfirmed)return false;
           nextDirector.start();
-          g113=nextDirector;vfx=nextVfx;g113Manual=mode==='manual';
+          g113=nextDirector;vfx=nextVfx;
           nextDirector=null;nextVfx=null;
           g113Status='PLAYING_G113_S5';
           return true;
@@ -197,7 +198,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     function finishG113(){
       if(g113){g113.dispose();g113=null;}
       if(vfx){vfx.dispose();vfx=null;}
-      g113Manual=false;g113Cooldown=2;g113Attempted=false;
+      g113Cooldown=2;g113Attempted=false;
       if(!disposed){g113Status='IDLE_RECOVERED';face?.reset();switchIdle();}
     }
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
@@ -205,7 +206,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
       const elapsed=Math.min(.09,dt);
       const confirmed=musicSnapshot.playbackConfirmed;
-      if(!confirmed&&!g113Manual&&g113?.state.presentationActive)g113.interrupt();
+      if(!confirmed&&g113?.state.presentationActive)g113.interrupt();
       if(g113){
         g113.advance(elapsed);vfx?.update(elapsed,1);
         face?.advance(elapsed,{writeFacial:true});
@@ -213,7 +214,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
         model.updateMatrixWorld(true);return;
       }
       if(confirmed&&g113Cooldown<=0&&!g113Attempted&&!g113Loading){
-        void startG113('music');
+        void startG113();
       }
       if(!confirmed){g113Attempted=false;}
       g113Cooldown=Math.max(0,g113Cooldown-elapsed);
@@ -248,7 +249,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       if(disposed)return;
       disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
-    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,startG113,
+    return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
       playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
       playFaceSelection(value){
         const selected=resolveFaceMenu(value);
@@ -259,7 +260,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       blinkR6(){return manualFace(()=>face.trigger('blink'));},
       get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,manual:g113Manual,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF'},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF'},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
     director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);

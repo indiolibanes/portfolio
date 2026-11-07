@@ -276,23 +276,6 @@ export function mountHsinStage(root:HTMLElement){
             neutral?.addEventListener('click',()=>act(()=>!!duetGuest?.neutralR6?.(),'Repouso facial'),{signal:attempt.signal});
             if(status)status.textContent='Painel manual R5/R6 · 25 estados preservados; o repertório S6 silencioso varia automaticamente. G7 NO_GO.';
           }
-          const g113Button=root.querySelector<HTMLButtonElement>('[data-duo-g113-start]');
-          if(g113Button){
-            g113Button.disabled=false;
-            g113Button.addEventListener('click',async()=>{
-              if(cleaned||attempt.signal.aborted||paused||motion.matches||!visible()||!duetGuest?.ready)return;
-              g113Button.disabled=true;
-              if(duetStatus)duetStatus.textContent='G11.3 · verificando as três bibliotecas privadas autenticadas…';
-              let ok=false;
-              try{ok=await duetGuest.startG113('manual');}catch{}
-              if(cleaned||attempt.signal.aborted)return;
-              if(duetStatus)duetStatus.textContent=ok
-                ?'G11.3 · ciclo experimental iniciado · Hsin permanece dentro do campo Stellarealm compartilhado.'
-                :'G11.3 indisponível: faltam bibliotecas verificadas ou ocorreu falha na preparação. Nenhum movimento foi substituído.';
-              g113Button.disabled=false;
-              worldDirty=true;loop?.invalidate();
-            },{signal:attempt.signal});
-          }
           // Only the private duet route receives the second performer.
           // Hsin's normal public route and autonomous system are unchanged.
           scene.updateMatrixWorld(true);worldDirty=true;loop?.invalidate();
