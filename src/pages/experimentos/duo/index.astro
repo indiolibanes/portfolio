@@ -2,6 +2,7 @@
 import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
 import HsinSoundtrack from '../../../components/HsinSoundtrack.astro';
 import '../../../styles/hsin-stage.css';
+import {R6_G113_CANDIDATES} from '../../../scripts/shorekeeper/r6-g113-bridge.mjs';
 const posterVersion='2.0.1';
 const posterCache='lunar-terrace-r2';
 ---
@@ -32,6 +33,19 @@ const posterCache='lunar-terrace-r2';
     <div class="s6-duet-status" data-duo-guest-status role="status" aria-live="polite">
       Hsin is the stage host. Shorekeeper requires a verified private Access/R2 library.
     </div>
+    <details class="s6-r6-manual" data-duo-r6-controls hidden>
+      <summary>Shorekeeper · expressões anatômicas R6 (R5)</summary>
+      <p>Ensaio manual no mesmo palco da Hsin. Nenhuma R7/G7 automática; a textura e a geometria originais permanecem privadas.</p>
+      <label>Expressão R6
+        <select data-duo-r6-select disabled>{R6_G113_CANDIDATES.map(({id,label})=><option value={id}>{label} · R6</option>)}</select>
+      </label>
+      <div class="s6-r6-buttons">
+        <button type="button" data-duo-r6-play disabled>Apresentar</button>
+        <button type="button" data-duo-r6-blink disabled>Piscar</button>
+        <button type="button" data-duo-r6-neutral disabled>Neutro</button>
+      </div>
+      <p data-duo-r6-status role="status" aria-live="polite">Aguardando acesso privado e modelo canônico.</p>
+    </details>
     <details class="hsin-stage__credits">
       <summary>Credits & status</summary>
       <p>Hsin and Shorekeeper originate from Kuro Games. Hsin adaptation: Lvoxx; re-rig: imblue__; model shaders: LSCherry.</p>
@@ -47,6 +61,14 @@ const posterCache='lunar-terrace-r2';
   background:rgba(6,18,37,.85);color:#e4edff;font:13px/1.5 system-ui,sans-serif;
   text-align:center;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.15)}
   @media(max-width:600px){.s6-duet-status{bottom:120px;width:min(87vw,460px);font-size:12px}}
+  .s6-r6-manual{position:absolute;z-index:8;bottom:clamp(185px,29vh,290px);right:clamp(12px,3vw,42px);width:min(350px,76vw);max-height:36vh;overflow:auto;padding:12px 14px;border-radius:17px;background:rgba(235,247,255,.94);color:#24495f;box-shadow:0 8px 24px rgba(5,23,41,.2);font:12px/1.55 system-ui,sans-serif}
+  .s6-r6-manual summary{font-weight:650;cursor:pointer}
+  .s6-r6-manual label{display:block;margin:8px 0}
+  .s6-r6-manual select{width:100%;min-height:40px;border-radius:10px;background:#fff;color:#24495f;border:1px solid #b8d8e9}
+  .s6-r6-buttons{display:flex;flex-wrap:wrap;gap:6px}
+  .s6-r6-buttons button{min-height:40px;padding:7px 10px;border:1px solid #bbd5e3;border-radius:11px;background:#fff;color:#27526b}
+  .s6-r6-buttons button:disabled{opacity:.42}
+  @media(max-width:600px){.s6-r6-manual{bottom:195px;right:12px;width:min(310px,84vw)}}
 </style>
 <script>
   import {mountHsinStage} from '../../../scripts/hsin-stage';
