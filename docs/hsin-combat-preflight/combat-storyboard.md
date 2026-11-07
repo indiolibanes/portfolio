@@ -1,0 +1,11 @@
+# Decupagem e roteiro de implementação
+
+| Ato e batida | Referência observada | Interpretação para a prévia |
+|---|---|---|
+| I · repouso, preparação, básicos | A apresentação inicial é uma volta de câmera; a prévia não isola a guarda de combate. Em 49–52 s aparece um arco vermelho diante do alvo. | Entrar a partir da pose cinematográfica real. Ensaiar antecipação de ombro, giro curto do tronco e abertura da mão em apoio duplo. O arco segue a mão até ser liberado em mundo. |
+| I · habilidade com anéis, pesado especial, mudança de forma | O trecho 53–57 s mostra corte para a palma aberta iluminada e passagem do vermelho ao dourado. A montagem não identifica qual pesado antecede o corte. | Separar básico, skill e pesado como marcadores. Só promover cada nome depois de obter a tomada com input ou legenda. A primeira Liberação corresponde à mudança de forma. |
+| II · entrada, mecanismos e recursos | Feitos de campo continuam enquanto outra personagem ocupa a arena. Estrutura dourada e verde em 74 s; área circular em 78 s e gesto manual em 79 s. | Dar aos mecanismos uma âncora em mundo independente da mão. Na via padrão, acumular Illumining Heart antes de Dominion. Em Uníssono há entrada alternativa por Intro; em Clarão Voltaico há ganho adicional via colapso de Modular Heartlock. Os modos são escolhas de lógica; não são uma terceira forma. |
+| II · domínio, pesado finalizador e Pilares Através dos Céus | Em 81–87 s alternam-se arena, mão em primeiro plano, estruturas e clarão. A base não oferece clip de pesado nem trilha de câmera. | Um marcador de finalizador consome o campo uma vez. Separar visualmente emissão de pilares e retorno à Forma Responsiva; atrair atenção pela escala das construções, conservando a silhueta. |
+| III · dissipação, recuperação e reinício | O plano de 87 s recoloca uma figura no campo. Transição completa de volta ao idle não está demonstrada. | Proposta autoral: decaimento do campo, repouso dos punhos, restituição de gaze, restauração do corpo e liberação dos controles do diretor. Interromper em qualquer etapa deve chegar ao mesmo repouso. |
+
+Raposa lunar é uma ramificação separada. Requer mesh/rig e autorização próprios. A transição de cor no protótipo pode indicar forma, sem representar transformação anatômica nem simular a raposa.
