@@ -20,11 +20,13 @@ test('one R6 menu, historic variants conserved and default hidden',()=>{
  assert.equal(resolveFaceMenu('r6:INVALID'),null);
  const page=read('src/pages/experimentos/sk/index.astro');
  const runtime=read('src/scripts/shorekeeper-sk-lab.mjs');
- assert.equal((page.match(/<select data-r6-variant-select /g)??[]).length,1);
- assert.match(page,/data-r6-historic-option hidden disabled/);
+ assert.equal((page.match(/<select data-r6-variant-select /g)??[]).length,0,'direct button grid replaces combobox');
+ assert.match(page,/data-r65-face=\{v\.value\}/);
+ assert.match(page,/R5 · contorno/);
  assert.match(runtime,/if\(r6Stage\)\{[\s\S]*?\['\[data-approved-gallery\]','\[data-facial-qa\]','\.sk-expressions','\.sk-face-guide'\]/);
  assert.match(runtime,/data-r6-mouth-slot/);
  assert.match(runtime,/selected\.kind==='r6'\?face\.playCandidate\(selected\.id\):face\.playBaseline\(selected\.id\)/);
+ assert.match(runtime,/data-r65-face/);
  assert.match(runtime,/data-r6-main-blink/);
  assert(!runtime.includes("selectedVariant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value]"));
 });
@@ -62,7 +64,9 @@ test('opt-in R6 guest can read authenticated F2.0-A for idles without three unus
  assert.match(stage,/music:music\.sample\(\)/);
  assert.match(stage,/const minimumGap=\.52/);
  assert.match(stage,/duetEnvelope=\{width:extent\.x,height:extent\.y/);
- assert.match(stage,/if\(musicElement&&!duetRequested\)/);
+ assert.match(stage,/if\(musicElement\)\{musicTower=createMusicTower/);
+ assert.match(stage,/duetMode:duetRequested/);
+ assert.match(stage,/moon\.scale\.setScalar\(2\.05\)/);
  assert.match(style,/\[data-s6-duo="true"\]/);
  assert(!/requestAnimationFrame|WebGLRenderer/.test(guest),'guest creates no renderer or animation loop');
 });
