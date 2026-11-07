@@ -6,7 +6,7 @@ import {createDuetTrace} from './duet-cinematic.mjs';
  */
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {LoadingManager} from 'three';
-import {inspectPrivateManifest,getPrivateFile} from './remote-private-model.mjs';
+import {inspectPrivateManifest,getPrivateFile,inspectPublicStageManifest,getPublicStageFile} from './remote-private-model.mjs';
 import {SHOREKEEPER_CANONICAL} from './private-model-cache.mjs';
 import {prepareDuetModel,s6DuoModelRequirements} from './duet-model-preparation.mjs';
 export {s6DuoModelRequirements} from './duet-model-preparation.mjs';
@@ -31,7 +31,7 @@ export const S6_DUO_STATUS=Object.freeze({
   FAILED:'PRIVATE_GUEST_UNAVAILABLE'
 });
 export function s6DuoRequirements(manifest,hash){
-  if(!manifest||manifest.schema!=='shorekeeper-private-assets/v1')return false;
+  if(!manifest||!['shorekeeper-private-assets/v1','shorekeeper-stage-assets/v1'].includes(manifest.schema))return false;
   if(manifest.model?.sha256!==hash||manifest.model?.bytes!==SHOREKEEPER_CANONICAL.bytes)return false;
   return REQUIRED.every(id=>manifest.libraries?.some(x=>x.id===id))&&new Set(manifest.libraries.map(x=>x.id)).size===manifest.libraries.length;
 }
@@ -40,11 +40,14 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
   return ((index+1)%count+count)%count;
 }
 function aborted(signal){return !!signal?.aborted;}
-export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,cameraStage=null,exclusionRects=()=>[],onStatus=()=>{},lowPower=false,traceEnabled=false}={}){
-  const prepared=experimentalR6?(preparation??prepareDuetModel({signal})):null;
+export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,cameraStage=null,exclusionRects=()=>[],onStatus=()=>{},lowPower=false,traceEnabled=false,releaseSource='private'}={}){
+  if(releaseSource!=='private'&&releaseSource!=='public')throw Error('Invalid guest source');
+  const inspect=releaseSource==='public'?inspectPublicStageManifest:inspectPrivateManifest;
+  const fetchBinary=releaseSource==='public'?getPublicStageFile:getPrivateFile;
+  const prepared=experimentalR6?(preparation??prepareDuetModel({signal,inspect,fetchFile:fetchBinary})):null;
   const preparedModel=prepared?await prepared.take():null;
   if(prepared&&!preparedModel)return null;
-  const inspected=preparedModel?{state:preparedModel.ready?'ready':preparedModel.state,manifest:preparedModel.manifest}:await inspectPrivateManifest({signal});
+  const inspected=preparedModel?{state:preparedModel.ready?'ready':preparedModel.state,manifest:preparedModel.manifest}:await inspect({signal});
   if(inspected.state!=='ready')return {ready:false,status:inspected.state==='denied'?S6_DUO_STATUS.NO_ACCESS:S6_DUO_STATUS.MISSING,
     advance(){},dispose(){}};
   const manifest=inspected.manifest;
@@ -63,7 +66,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     async function parseFile(entry,kind){
       let file=null;
       const preparedBuffer=kind==='model'?preparedModel?.buffer:null;
-      if(!preparedBuffer)file=await getPrivateFile(entry,{kind,signal});
+      if(!preparedBuffer)file=await fetchBinary(entry,{kind,signal});
       if(aborted(signal))throw new DOMException('Cancelled','AbortError');
       const buffer=preparedBuffer??await file.arrayBuffer(),json=assertSelfContainedGLB(buffer);
       const parseStarted=performance.now();const gltf=await parser.parseAsync(buffer,'');

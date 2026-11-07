@@ -32,8 +32,9 @@ export function mountHsinStage(root:HTMLElement){
  const near=q<HTMLButtonElement>('[data-stage-in]'),far=q<HTMLButtonElement>('[data-stage-out]'),home=q<HTMLButtonElement>('[data-stage-reset]'),pause=q<HTMLButtonElement>('[data-stage-pause]'),retry=q<HTMLButtonElement>('[data-stage-retry]');
  // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
  const duetRequested=root.dataset.s6Duo==='true';
+  const publicRelease=duetRequested&&root.dataset.publicStage==='true';
  const duetStatus=root.querySelector<HTMLElement>('[data-duo-guest-status]');
- const duetR6=duetRequested&&new URLSearchParams(location.search).get('r6Guest')==='1';
+ const duetR6=duetRequested&&(publicRelease||new URLSearchParams(location.search).get('r6Guest')==='1');
  const duetControls=root.querySelector<HTMLElement>('[data-duo-r6-controls]');
  if(duetControls)duetControls.hidden=!duetR6;
  const cameraChoice=duetRequested?root.querySelector<HTMLSelectElement>('[data-duo-camera-mode]'):null;
@@ -78,7 +79,11 @@ export function mountHsinStage(root:HTMLElement){
    // Private bytes overlap Hsin loading only after the WebGL capability gate; no guest parse/attachment yet.
    const preparation=duetR6?import('./shorekeeper/duet-model-preparation.mjs').then(({prepareDuetModel})=>{
     if(cleaned||attempt.signal.aborted||destroyed)return null;
-    return duetPreparation=prepareDuetModel({signal:attempt.signal});
+    if(publicRelease){
+       const {inspectPublicStageManifest,getPublicStageFile}=await import('./shorekeeper/remote-private-model.mjs');
+       return duetPreparation=prepareDuetModel({signal:attempt.signal,inspect:inspectPublicStageManifest,fetchFile:getPublicStageFile});
+     }
+     return duetPreparation=prepareDuetModel({signal:attempt.signal});
    }):Promise.resolve(null);preparation.catch(()=>{});
    const [{default:asset},poseManifest,actingManifest]=await Promise.all([import('../data/hsin-v2-asset.json'),cinematic?import('../data/hsin-v21-pose.json').then(m=>m.default):Promise.resolve(null),cinematic?import('../data/hsin-v201-acting.json').then(m=>m.default):Promise.resolve(null)]);
    if(attempt.signal.aborted||destroyed)return;
@@ -271,16 +276,16 @@ export function mountHsinStage(root:HTMLElement){
    await renderer.compileAsync(scene,camera);metrics.mark('compiled');if(attempt.signal.aborted||destroyed||attemptId!==generation){clean();return;}
    root.dataset.state='ready';root.dataset.modelBytes=String(asset.bytes);status.hidden=true;[near,far,home].forEach(b=>b.disabled=false);showPause();loop.setVisible(visible());loop.invalidate();
     if(duetRequested){
-      if(duetStatus)duetStatus.textContent='Shorekeeper: verifying private Cloudflare Access and R2 assets…';
+      if(duetStatus)duetStatus.textContent=publicRelease?'Preparando Shorekeeper…':'Shorekeeper: verifying private Cloudflare Access and R2 assets…';
       // Add the guest to the EXISTING scene. Never construct a second canvas,
       // renderer, requestAnimationFrame owner or a public GLB URL.
       void import('./shorekeeper/s6-duet-guest.mjs').then(async ({loadS6DuetGuest})=>{
         if(cleaned||attempt.signal.aborted||destroyed)return;
         const prepared=await preparation;
         if(cleaned||attempt.signal.aborted||destroyed)return;
-        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch,traceEnabled:metrics.enabled,
+        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch,traceEnabled:metrics.enabled,releaseSource:publicRelease?'public':'private',
           exclusionRects:()=>{const a=musicElement?.getBoundingClientRect(),b=host.getBoundingClientRect();if(!a||!b.width||!b.height)return [];return [{left:2*(a.left-b.left)/b.width-1,right:2*(a.right-b.left)/b.width-1,top:1-2*(a.top-b.top)/b.height,bottom:1-2*(a.bottom-b.top)/b.height}];},
-          onStatus:(s:string)=>{if(duetStatus&&s==='G113_SOURCE_OR_VFX_UNAVAILABLE')duetStatus.textContent='G11.3 indisponível: falha ao verificar as bibliotecas privadas ou preparar a apresentação. Consulte os diagnósticos; nenhuma coreografia alternativa foi iniciada.';},
+          onStatus:(s:string)=>{if(duetStatus&&s==='G113_SOURCE_OR_VFX_UNAVAILABLE')duetStatus.textContent=publicRelease?'A sequência musical não está disponível neste momento.':'G11.3 indisponível: falha ao verificar as bibliotecas privadas ou preparar a apresentação. Consulte os diagnósticos; nenhuma coreografia alternativa foi iniciada.';},
           cameraStage:{scene,camera,orbit,canvas,
             cameraConfig:()=>({position:camera.position.toArray(),target:orbit.target.toArray(),fov:camera.fov,minDistance:orbit.minDistance,maxDistance:orbit.maxDistance}),
             restoreCamera:(c:any)=>{camera.position.fromArray(c.position);orbit.target.fromArray(c.target);camera.fov=c.fov;camera.updateProjectionMatrix();orbit.minDistance=c.minDistance??orbit.minDistance;orbit.maxDistance=c.maxDistance??orbit.maxDistance;orbit.update();camera.updateMatrixWorld(true);fixedDuetMoon?.resize();}
@@ -288,13 +293,15 @@ export function mountHsinStage(root:HTMLElement){
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
         if(guest?.ready){const skOption=cameraChoice?.querySelector<HTMLOptionElement>('option[value="shorekeeper"]');if(skOption)skOption.disabled=false;guest.setCameraPreference?.(cameraMode);}
-        if(duetStatus)duetStatus.textContent=guest?.ready
-          ?duetR6?'Hsin & Shorekeeper · ciclo cinematográfico G11.3 durante reprodução confirmada, idles e expressões S6 aleatórias no silêncio. R5 anatômico ativo.':'Hsin & Shorekeeper · G11.3/S5 em reprodução confirmada; idles e expressões S6 variadas no silêncio. Fontes de combate autenticadas necessárias.'
-          :guest?.status==='AUTHENTICATION_REQUIRED'
-            ?'Hsin ready. Shorekeeper requires your Cloudflare Access session; no private files are publicly exposed.'
-            :guest?.status==='PRIVATE_ASSETS_MISSING'
-              ?'Hsin ready. The protected asset service is unavailable; this does not establish that models are absent.'
-              : 'Hsin ready. Shorekeeper private assets are missing, incomplete or failed verification.';
+        if(duetStatus)duetStatus.textContent=publicRelease
+          ?(guest?.ready?'Hsin e Shorekeeper · apresentação pronta.':'A Shorekeeper não pôde ser carregada. A Hsin permanece disponível.')
+          :(guest?.ready
+           ?duetR6?'Hsin & Shorekeeper · ciclo cinematográfico G11.3 durante reprodução confirmada, idles e expressões S6 aleatórias no silêncio. R5 anatômico ativo.':'Hsin & Shorekeeper · G11.3/S5 em reprodução confirmada; idles e expressões S6 variadas no silêncio. Fontes de combate autenticadas necessárias.'
+           :guest?.status==='AUTHENTICATION_REQUIRED'
+             ?'Hsin ready. Shorekeeper requires your Cloudflare Access session; no private files are publicly exposed.'
+             :guest?.status==='PRIVATE_ASSETS_MISSING'
+               ?'Hsin ready. The protected asset service is unavailable; this does not establish that models are absent.'
+               : 'Hsin ready. Shorekeeper private assets are missing, incomplete or failed verification.');
         if(guest?.ready){
           metrics.mark('duetAttached');
           // Space the actual skinned silhouettes, not fixed pivots; fit both on resize and reset.

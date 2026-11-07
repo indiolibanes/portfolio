@@ -2,7 +2,7 @@
 import {inspectPrivateManifest,getPrivateFile} from './remote-private-model.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel} from './private-model-cache.mjs';
 export function s6DuoModelRequirements(manifest,hash=SHOREKEEPER_CANONICAL.sha256){
- return !!manifest&&manifest.schema==='shorekeeper-private-assets/v1'&&manifest.model?.sha256===hash&&manifest.model?.bytes===SHOREKEEPER_CANONICAL.bytes;
+ return !!manifest&&['shorekeeper-private-assets/v1','shorekeeper-stage-assets/v1'].includes(manifest.schema)&&manifest.model?.sha256===hash&&manifest.model?.bytes===SHOREKEEPER_CANONICAL.bytes;
 }
 export function prepareDuetModel({signal,inspect=inspectPrivateManifest,readCache=readPrivateModel,fetchFile=getPrivateFile,now=()=>performance.now()}={}){
  const controller=new AbortController(),started=now(),timings={};
