@@ -1,3 +1,4 @@
+import {preserveBodyPose} from './body-handoff.mjs';
 import {claimBodyOwner} from './animation-ownership.mjs';
 /** Reference playback. One action owns every keyed TRS property; no facial writes. */
 export const ORIGINAL_IDLE_IDS = ['SK_IDLE_01_ORIGINAL','SK_IDLE_02_ORIGINAL','SK_IDLE_03_ORIGINAL'];
@@ -6,7 +7,7 @@ export function findOriginalClip(clips,id,layer='composed') {
  const name=id+({composed:'',body:'_BODY',rib:'_RIB'}[layer]);
  return clips.find(c=>c.name===name)??null;
 }
-export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent=()=>{},mixerFactory=r=>new T.AnimationMixer(r)}={}) {
+export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent=()=>{},preservePoseOnDispose=false,mixerFactory=r=>new T.AnimationMixer(r)}={}) {
  if(!Number.isFinite(enter)||!Number.isFinite(exit)||enter<.05||exit<.05)throw Error('Invalid transition timing');
  if(!clip||!Number.isFinite(clip.duration)||clip.duration<=0)throw Error('Original idle unavailable');
  const bindings=clip.tracks.map(t=>t.name);if(new Set(bindings).size!==bindings.length)throw Error('Duplicate property ownership');
@@ -45,7 +46,7 @@ export function createOriginalIdleDirector(T,root,clip,{enter=.5,exit=.5,onEvent
   action.time=clock;action.paused=true;action.setEffectiveWeight(weight);mixer.update(0);updates++;
   if(phase==='idle')restore();
  },
- dispose(){if(disposed)return;disposed=true;queued=false;action.stop();mixer.uncacheRoot(root);restore();phase='idle';releaseOwner();},
+ dispose(){if(disposed)return;disposed=true;queued=false;const release=()=>{action.stop();mixer.uncacheRoot(root);restore();phase='idle';releaseOwner();};if(preservePoseOnDispose)preserveBodyPose(root,release);else release();},
  get state(){return {phase,paused,clock,entryClock,release,weights:[weight],updates,queued,speed,duration:clip.duration,total:clip.duration,progress:clock/clip.duration,parameters:{enter,exit},pending,clip:clip.name,mode:'REFERENCE_QA',timingOriginal:speed===1,owners:bindings.length,loop:'ONCE'};}
  };
 }

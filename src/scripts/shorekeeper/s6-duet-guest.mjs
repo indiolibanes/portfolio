@@ -1,3 +1,4 @@
+import {createDuetCinematicFrame,createDuetTrace} from './duet-cinematic.mjs';
 /**
  * S6-D duo guest (private preview): one Hsin scene/renderer/RAF, independent
  * body owner per character. Never publishes a Shorekeeper GLB or fetches a
@@ -39,7 +40,7 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
   return ((index+1)%count+count)%count;
 }
 function aborted(signal){return !!signal?.aborted;}
-export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,lowPower=false}={}){
+export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,cameraStage=null,exclusionRects=()=>[],onStatus=()=>{},lowPower=false,traceEnabled=false}={}){
   const prepared=experimentalR6?(preparation??prepareDuetModel({signal})):null;
   const preparedModel=prepared?await prepared.take():null;
   if(prepared&&!preparedModel)return null;
@@ -103,6 +104,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     let active=-1,restSeconds=0,faceSeconds=quietFaceWait(),manualFaceCooldown=0,playing=true;
     const idleChoice=createNonRepeatingChoice(ORIGINAL_IDLE_IDS.length);
     const faceChoice=createNonRepeatingChoice(S6_AUTO_FACE_ROSTER.length);
+    const trace=createDuetTrace(T,model,group);
     let g113=null,vfx=null,g113Loading=null,g113Clips=null,g113Status='NOT_REQUESTED',g113Attempted=false,g113Cooldown=0;
     let musicSnapshot=duetMusicSnapshot();
     const observeMusic=sample=>{if(!disposed)musicSnapshot=duetMusicSnapshot(sample);return musicSnapshot;};
@@ -110,7 +112,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       director?.dispose();director=null;
       active=idleChoice.next();
       director=createOriginalIdleDirector(T,model,loaded.find(c=>c.name===ORIGINAL_IDLE_IDS[active]),
-        {enter:.45,exit:.6});
+        {enter:.65,exit:.6,preservePoseOnDispose:true});
       director.start();
     }
     switchIdle();
@@ -150,31 +152,29 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
           nextVfx=new ShorekeeperVfxR5Director(scene,{camera,mobile:lowPower,reducedMotion:false});
           nextVfx.bindModel(model);
           // One Stellarealm canopy/field contains BOTH performers, never a separate SK scene.
+          let sharedArena=null;
           if(hostModel){
             hostModel.updateMatrixWorld(true);group.updateMatrixWorld(true);
             const box=new T.Box3().setFromObject(hostModel).union(new T.Box3().setFromObject(group));
-            const sz=box.getSize(new T.Vector3()),mid=box.getCenter(new T.Vector3());
-            const radius=Math.max(sz.x,sz.z)/2+.65;
-            const scale=Math.max(nextVfx.scale,radius/1.8);
-            nextVfx.center.copy(mid);nextVfx.scale=scale;
-            nextVfx.floorY=(box.min.y-mid.y)/scale;
-            nextVfx.root.position.copy(mid);nextVfx.root.scale.setScalar(scale);
-            nextVfx.environment.root.position.set(mid.x,box.min.y-.008,mid.z);
-            nextVfx.environment.root.scale.setScalar(scale);
-            nextVfx.renderPose();
+            const mid=box.getCenter(new T.Vector3());
+            sharedArena={x:mid.x,z:mid.z,floorY:box.min.y,radius:box.getSize(new T.Vector3()).length()/2+.75};
           }
           // The Hsin sky/moon stay the background; only the shared Stellarealm
           // field, canopy and G11 score are drawn. Never replace the stage camera.
           nextVfx.environment.sky.visible=false;
           nextVfx.setStage('outer');nextVfx.setState('OFF');
           // Keep camera choreography off so Hsin and Shorekeeper stay in the same frame.
-          const stage={scene,camera:camera??{aspect:1},orbit:{},restoreCamera(){}};
+          if(!cameraStage)throw Error('DUET_CAMERA_STAGE_REQUIRED');
+          const stage=cameraStage;
           // A combo claims the exact body owner currently held by an idle:
           // release the idle BEFORE constructing the G11.3 director.
           director?.dispose();director=null;
           face?.reset();
+          const activeVfx=nextVfx; // Stable lease: cleanup variables are nulled after ownership transfer.
           nextDirector=createR62Integration(T,model,g113Clips,stage,{
-            getVfx:()=>nextVfx,camera:false,
+            getVfx:()=>activeVfx,camera:true,entry:.65,preservePoseOnDispose:true,
+            arena:sharedArena,
+            cameraProfile:{smart:false,frameTransform:createDuetCinematicFrame(T,{camera,host:hostModel,guest:group,exclusionRects})},
             reducedMotion:()=>false,
             onEvent:e=>face?.onAnimationEvent?.(e)
           });
@@ -182,10 +182,11 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
           nextDirector.start();
           g113=nextDirector;vfx=nextVfx;
           nextDirector=null;nextVfx=null;
-          g113Status='PLAYING_G113_S5';
+          g113Status='PLAYING_G113_S5';onStatus(g113Status);
           return true;
-        }catch{
-          g113Status='G113_SOURCE_OR_VFX_UNAVAILABLE';
+        }catch(error){
+          g113Status='G113_SOURCE_OR_VFX_UNAVAILABLE';onStatus(g113Status);
+          console.warn('G11.3 unavailable:',error?.message??'Source or presentation failure');
           return false;
         }finally{
           nextDirector?.dispose();nextVfx?.dispose();
@@ -203,14 +204,17 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     }
     function advance(dt,{paused=false,reducedMotion=false,music=null}={}){
       observeMusic(music);
-      if(disposed||paused||reducedMotion||!(dt>0)||!playing)return;
+      if(reducedMotion&&g113?.state.presentationActive)g113.interrupt();
+      if(disposed||paused||!(dt>0)||!playing)return;
+      if(reducedMotion&&!g113)return;
       const elapsed=Math.min(.09,dt);
       const confirmed=musicSnapshot.playbackConfirmed;
       if(!confirmed&&g113?.state.presentationActive)g113.interrupt();
       if(g113){
         g113.advance(elapsed);vfx?.update(elapsed,1);
+        if(traceEnabled)trace.sample(elapsed,{body:g113.state,music:musicSnapshot,vfx:g113.scoreAdapter?.last??null,camera:g113.cameraTelemetry()??{position:camera?.position.toArray(),fov:camera?.fov,director:g113.state.camera}});
         face?.advance(elapsed,{writeFacial:true});
-        if(g113.state.phase==='idle')finishG113();
+        if(g113.state.phase==='idle'&&!g113.state.camera?.returning)finishG113();
         model.updateMatrixWorld(true);return;
       }
       if(confirmed&&g113Cooldown<=0&&!g113Attempted&&!g113Loading){
@@ -250,6 +254,8 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+      interrupt(){if(g113?.state.presentationActive)g113.interrupt();},
+      diagnostics(){return {state:this.state,trace:trace.report(),clips:(g113Clips??loaded).map(c=>({name:c.name,duration:c.duration,tracks:c.tracks.map(t=>({name:t.name,keys:t.times.length,start:t.times[0],end:t.times[t.times.length-1]}))}))};},
       playR6Expression(id){if(!canPlayDuetR6Expression(id))return false;return manualFace(()=>face.playCandidate(id));},
       playFaceSelection(value){
         const selected=resolveFaceMenu(value);

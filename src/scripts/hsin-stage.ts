@@ -87,7 +87,7 @@ export function mountHsinStage(root:HTMLElement){
    if(attempt.signal.aborted||destroyed)return;
    renderer=new T.WebGLRenderer({canvas,context,alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'low-power'});
    renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.NoToneMapping;renderer.shadowMap.enabled=false;renderer.setClearColor(HSIN_STAGE.colors.night);host.append(canvas);
-   if(metrics.enabled)(window as any).__hsinMetrics={report:()=>({...metrics.report(renderer),music:music.sample(),duet:duetGuest?.loadingMetrics??duetPreparation?.report()??null,dance:dance?.diagnostics()??null}),raw:metrics};
+   if(metrics.enabled)(window as any).__hsinMetrics={report:()=>({...metrics.report(renderer),music:music.sample(),duet:duetGuest?.loadingMetrics??duetPreparation?.report()??null,duetCinematic:duetGuest?.diagnostics?.()??null,dance:dance?.diagnostics()??null}),raw:metrics};
    // Small, prebuilt scenery textures. Late results after navigation are disposed immediately.
    const textureLoader=new T.TextureLoader();
    const sceneryTexture=async(url:string)=>{const t=await textureLoader.loadAsync(url+'?v=lunar-terrace-r2');if(cleaned||attempt.signal.aborted){t.dispose();throw Error('Scenery load cancelled.');}t.colorSpace=T.SRGBColorSpace;textures.add(t);return t;};
@@ -197,7 +197,7 @@ export function mountHsinStage(root:HTMLElement){
     if(!ray.ray.intersectPlane(plane,hit))return;inverse.copy(head.matrixWorld).invert();hit.applyMatrix4(inverse).sub(localCenter).divideScalar(profile.calibration.radius).clampLength(0,1);const h=hit.dot(horizontal),v=hit.dot(vertical);hit.copy(horizontal).multiplyScalar(h).addScaledVector(vertical,v).clampLength(0,1);gaze[0]=hit.x;gaze[1]=hit.y;gaze[2]=hit.z;attending=true;touchUntil=event.pointerType==='touch'?face.sample().clock+4.2:Infinity;loop?.invalidate();
    };
    canvas.addEventListener('pointermove',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerdown',input,{passive:true,signal:attempt.signal});canvas.addEventListener('pointerleave',(event:PointerEvent)=>{if(event.pointerType!=='touch'){attending=false;face.clearAttention();}},{passive:true,signal:attempt.signal});
-   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;metrics.count('contextLost');metrics.gap();loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
+   canvas.addEventListener('webglcontextlost',(event:Event)=>{event.preventDefault();lost=true;duetGuest?.interrupt?.();metrics.count('contextLost');metrics.gap();loop?.setVisible(false);root.dataset.state='recovering';status.hidden=false;status.textContent='Aguardando a cena…';},{signal:attempt.signal});
    canvas.addEventListener('webglcontextrestored',()=>{lost=false;metrics.count('contextRestored');metrics.gap();root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
     controlsUpdate:()=>{const changed=orbit.update();const moving=musicTower?.update(camera,orbit.target,motion.matches,!paused&&!motion.matches);return changed||moving;},
@@ -215,7 +215,13 @@ export function mountHsinStage(root:HTMLElement){
         if(cleaned||attempt.signal.aborted||destroyed)return;
         const prepared=await preparation;
         if(cleaned||attempt.signal.aborted||destroyed)return;
-        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch});
+        const guest=await loadS6DuetGuest(T,scene,{signal:attempt.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch,traceEnabled:metrics.enabled,
+          exclusionRects:()=>{const a=musicElement?.getBoundingClientRect(),b=host.getBoundingClientRect();if(!a||!b.width||!b.height)return [];return [{left:2*(a.left-b.left)/b.width-1,right:2*(a.right-b.left)/b.width-1,top:1-2*(a.top-b.top)/b.height,bottom:1-2*(a.bottom-b.top)/b.height}];},
+          onStatus:(s:string)=>{if(duetStatus&&s==='G113_SOURCE_OR_VFX_UNAVAILABLE')duetStatus.textContent='G11.3 indisponível: falha ao verificar as bibliotecas privadas ou preparar a apresentação. Consulte os diagnósticos; nenhuma coreografia alternativa foi iniciada.';},
+          cameraStage:{scene,camera,orbit,canvas,
+            cameraConfig:()=>({position:camera.position.toArray(),target:orbit.target.toArray(),fov:camera.fov,minDistance:orbit.minDistance,maxDistance:orbit.maxDistance}),
+            restoreCamera:(c:any)=>{camera.position.fromArray(c.position);orbit.target.fromArray(c.target);camera.fov=c.fov;camera.updateProjectionMatrix();orbit.minDistance=c.minDistance??orbit.minDistance;orbit.maxDistance=c.maxDistance??orbit.maxDistance;orbit.update();camera.updateMatrixWorld(true);fixedDuetMoon?.resize();}
+          }});
         if(cleaned||attempt.signal.aborted||destroyed||attemptId!==generation){guest?.dispose();return;}
         duetGuest=guest;
         if(duetStatus)duetStatus.textContent=guest?.ready
@@ -249,7 +255,7 @@ export function mountHsinStage(root:HTMLElement){
               duetStatus.textContent='Shorekeeper · ciclo cinematográfico G11.3/S5 com '+(sample.provider==='spotify'?'Spotify':'YouTube')+' confirmado (bibliotecas privadas obrigatórias).';
             }else if(sample.status==='paused')duetStatus.textContent='Música pausada · apresentação G11.3 interrompida; retorno à contemplação.';
             else if(sample.status==='buffering')duetStatus.textContent='Aguardando reprodução confirmada · contemplação da Shorekeeper.';
-            else duetStatus.textContent='Sem música · idles e expressões S6 aleatórios; botão G11.3 disponível para ensaio manual.';
+            else duetStatus.textContent='Sem música · contemplação, idles e expressões S6 aleatórios.';
           };
           const musicUnsubscribe=music.subscribe(updateDuetMusicStatus);
           attempt.signal.addEventListener('abort',musicUnsubscribe,{once:true});
