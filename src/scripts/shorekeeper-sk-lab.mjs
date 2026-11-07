@@ -41,6 +41,7 @@ import {createStage} from './shorekeeper/stage.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel,savePrivateModel,forgetPrivateModel} from './shorekeeper/private-model-cache.mjs';
 import {resolveR6G113Mode,canUseR6G113,R6_G113_CANDIDATES} from './shorekeeper/r6-g113-bridge.mjs';
 import {FACIAL_VARIANTS,FACIAL_VARIANT_MAP,MOUTH_GEOMETRY_PROFILES} from './shorekeeper/facial-variant-catalog.mjs';
+import {resolveFaceMenu,R6_PRIMARY_CHOICES} from './shorekeeper/facial-unified-menu.mjs';
 import {createRenderLoop} from './shorekeeper/render-loop.mjs';
 import {labPhase,permissions} from './shorekeeper/lab-state.mjs';
 export {assertSelfContainedGLB};
@@ -159,9 +160,10 @@ export function mountShorekeeperLab(root){
  for(const button of all('[data-r6-g113-candidate]'))
   button.disabled=!r6StageReady||!R6_G113_CANDIDATES.some(x=>x.id===button.dataset.r6G113Candidate);
  $('[data-r6-g113-neutral]').disabled=!r6StageReady;
- const selectedVariant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
+ const selectedVariant=resolveFaceMenu($('[data-r6-variant-select]').value);
  $('[data-r6-variant-select]').disabled=!r6StageReady;
- $('[data-r6-variant-play]').disabled=!r6StageReady||!selectedVariant||!face?.qaSupport?.(selectedVariant.id)?.available;
+ $('[data-r6-variant-play]').disabled=!r6StageReady||!selectedVariant||(selectedVariant.kind==='baseline'&&!face?.qaSupport?.(selectedVariant.id)?.available);
+ $('[data-r6-main-blink]').disabled=!r6StageReady||!inspection?.names.includes('E_Close');
  for(const option of all('[data-r6-only]'))option.hidden=!r6Stage;
  const approvedGeometry=$('[data-approved-geometry]');
  approvedGeometry.disabled=!metadata||metadata.sha256!==SHOREKEEPER_CANONICAL.sha256||mouthQA||!can.inspect||!expressive||userPaused||control('presentationMode').value==='combat';
@@ -444,29 +446,50 @@ export function mountShorekeeperLab(root){
    $('[data-r6-g113-status]').textContent=msg;status(msg);sync(true);stage?.invalidate();loop?.wake();
   }catch(e){warn('R6 · '+e.message);}
  });
- // Recipe/time and geometry are separate, explicit QA axes. No timer or auto-classification.
+ // One visible selector. R6 candidates and historic V2/R2/R3 baselines remain distinct.
  function describeR6Variant(){
-  const selected=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
-  if(!selected)return;
+  const selection=resolveFaceMenu($('[data-r6-variant-select]').value);
+  if(!selection)return;
   const geometry=$('[data-approved-geometry]').value;
-  const recipeTiming=Object.entries(selected.timing).map(([key,value])=>key+' '+value+' s').join(' · ');
-  const guidance=geometry===selected.suggestedGeometry?'Perfil sugerido.':'Perfil '+geometry+' ≠ perfil sugerido '+selected.suggestedGeometry+'.';
-  $('[data-r6-variant-info]').textContent=selected.label+' · pesos '+Object.keys(selected.weights).length+' canais · '+recipeTiming+' · '+guidance+' Ajustes R6 anatômicos são outras curvas; não confundir com estes presets históricos.';
+  if(selection.kind==='r6'){
+   $('[data-r6-variant-info]').textContent=selection.label+' · atuação anatômica R6 · geometria '+geometry+' · QA visual pendente. A origem dos morphs e a duração não são clipes PSA.';
+  }else{
+   const historical=FACIAL_VARIANT_MAP[selection.id];
+   const times=Object.entries(historical.timing).map(([key,value])=>key+' '+value+' s').join(' · ');
+   const hint=geometry===historical.suggestedGeometry?'perfil sugerido':('sugestão de perfil '+historical.suggestedGeometry);
+   $('[data-r6-variant-info]').textContent=selection.label+' · '+Object.keys(historical.weights).length+' morphs · '+times+' · '+hint+' · preservado para comparação.';
+  }
  }
  on($('[data-r6-variant-select]'),'change',()=>{describeR6Variant();sync(true);});
+ on($('[data-r6-history-toggle]'),'click',()=>{
+  if(!r6Stage)return;
+  const toggle=$('[data-r6-history-toggle]'),expanded=toggle.getAttribute('aria-expanded')!=='true';
+  toggle.setAttribute('aria-expanded',String(expanded));
+  toggle.textContent=expanded?'Ocultar versões anteriores':'Mostrar versões anteriores';
+  for(const option of all('[data-r6-historic-option]')){option.hidden=!expanded;option.disabled=!expanded;}
+  for(const group of all('[data-r6-historic-group]'))group.hidden=!expanded;
+  if(!expanded&&resolveFaceMenu($('[data-r6-variant-select]').value)?.kind==='baseline')
+   $('[data-r6-variant-select]').value='r6:'+R6_PRIMARY_CHOICES[0].id;
+  describeR6Variant();sync(true);
+ });
  on($('[data-r6-variant-play]'),'click',()=>{
-  if(!r6Stage||$('[data-r6-variant-play]').disabled||!face?.playBaseline)return;
-  const variant=FACIAL_VARIANT_MAP[$('[data-r6-variant-select]').value];
-  if(!variant)return;
+  if(!r6Stage||$('[data-r6-variant-play]').disabled)return;
+  const selected=resolveFaceMenu($('[data-r6-variant-select]').value);
+  if(!selected||!face)return;
   scheduler?.setEnabled(false);control('actingAuto').checked=false;
   try{
    face.setFrozen(false);face.setIntensity(1);
-   const ok=face.playBaseline(variant.id);
-   const msg=ok?'Comparação '+variant.label+' · geometria '+$('[data-approved-geometry]').value+' · timings originais desta receita, QA visual pendente.':'Variante indisponível no F2.0-A.';
+   const ok=selected.kind==='r6'?face.playCandidate(selected.id):face.playBaseline(selected.id);
+   const label=selected.kind==='r6'?'R6':'Histórico';
+   const msg=ok?label+' · '+selected.label+' · contorno '+$('[data-approved-geometry]').value+' · visual QA pendente.':'Morphs ou estado indisponíveis neste GLB.';
    $('[data-r6-g113-status]').textContent=msg;status(msg);describeR6Variant();sync(true);stage?.invalidate();loop?.wake();
-  }catch(e){warn('Variante facial: '+e.message);}
+  }catch(e){warn('Expressão: '+e.message);}
  });
- on($('[data-r6-g113-neutral]'),'click',()=>{
+ on($('[data-r6-main-blink]'),'click',()=>{
+  if(!r6Stage||$('[data-r6-main-blink]').disabled)return;
+  if(face?.trigger('blink')){$('[data-r6-g113-status]').textContent='Piscada bilateral preservada.';sync(true);loop?.wake();}
+ });
+  on($('[data-r6-g113-neutral]'),'click',()=>{
   if(!r6Stage||!face?.triggerQA||$('[data-r6-g113-neutral]').disabled)return;
   face.setFrozen(false);face.triggerQA('NEUTRAL');
   $('[data-r6-g113-status]').textContent='R6 · retorno ao neutro solicitado.';
@@ -518,6 +541,14 @@ export function mountShorekeeperLab(root){
 
  // R6.1: opt-in authorial cinematic presentation; no invented PSA markers.
  $('[data-r6-g113-panel]').hidden=!r6Stage;
+ if(r6Stage){
+  // One expression menu. Old controls stay in DOM for QA route compatibility, but are not presented twice.
+  for(const selector of ['[data-approved-gallery]','[data-facial-qa]','.sk-expressions','.sk-face-guide']){
+   const el=$(selector);if(el)el.hidden=true;
+  }
+  const geometry=$('[data-approved-geometry]').closest('label');
+  if(geometry)$('[data-r6-mouth-slot]').append(geometry);
+ }
  const r61Enabled=new URLSearchParams(location.search).get('r61')==='1';
  const r62Enabled=r61Enabled&&new URLSearchParams(location.search).get('r62')==='s5';
  // The G11.3 direction is the only end-user S5 choice. Older VFX/R6 variants
