@@ -68,7 +68,9 @@ test('fixed lunar mesh stays centre of view on orbit, without covering foregroun
  const scene=new T.Scene(),camera=new T.PerspectiveCamera(34,16/9,.03,45);
  const moon=new T.Mesh(new T.SphereGeometry(1,8,6),new T.MeshBasicMaterial());
  const halo=new T.Mesh(new T.PlaneGeometry(3,3),new T.MeshBasicMaterial({transparent:true}));
+ moon.matrixAutoUpdate=false;halo.matrixAutoUpdate=false;
  const result=attachFixedDuetMoon(T,{scene,camera,moon,halo});
+ assert(moon.matrixAutoUpdate&&halo.matrixAutoUpdate,'reparented moon must escape frozen Hsin scene matrices');
  assert.equal(result.mode,'CAMERA_LOCKED_BACKGROUND');
  assert.equal(moon.parent,camera);assert.equal(halo.visible,false);
  assert.equal(moon.material.depthTest,false);assert.equal(moon.material.depthWrite,false);

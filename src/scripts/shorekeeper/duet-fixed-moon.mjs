@@ -10,9 +10,12 @@ export function attachFixedDuetMoon(T,{scene,camera,moon,halo}){
  if(!(depth>camera.near))throw Error('Invalid backdrop depth');
  const sourceRadius=moon.geometry?.parameters?.radius;
  if(!(sourceRadius>0))throw Error('Invalid lunar sphere');
+ // The Hsin stage freezes existing world matrices for performance before
+ // this moon is reparented. Re-enable only these two lunar background meshes.
+ moon.matrixAutoUpdate=true;halo.matrixAutoUpdate=true;
  const resize=()=>{
   const r=depth*Math.tan(camera.fov*Math.PI/360)*(camera.aspect<.8?.30:.42);
-  moon.scale.setScalar(r/sourceRadius);
+  moon.scale.setScalar(r/sourceRadius);moon.updateMatrix();
  };
  resize();
  moon.position.set(0,0,-depth);
@@ -25,7 +28,7 @@ export function attachFixedDuetMoon(T,{scene,camera,moon,halo}){
  halo.material.depthTest=false;halo.material.depthWrite=false;halo.material.opacity=.10;
  // Transparent render passes would draw after the characters. Avoid a halo overlay.
  halo.visible=false;
- camera.add(halo,moon);
+ halo.updateMatrix();moon.updateMatrix();camera.add(halo,moon);
  if(!camera.parent)scene.add(camera);
  return {depth,resize,screenCenter:Object.freeze([0,0]),mode:'CAMERA_LOCKED_BACKGROUND'};
 }
