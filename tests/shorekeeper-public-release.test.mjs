@@ -42,6 +42,9 @@ test('read-only release manifest drops R2 paths and internal source filenames',a
  assert(!JSON.stringify(data).includes('PRIVATE_'));
  assert(!JSON.stringify(data).includes('key'));
  assert.equal(publicReleaseManifest(manifest).schema,RELEASE_SCHEMA);
+ const extra={...manifest,libraries:[...manifest.libraries,{id:'misc',key:'characters/shorekeeper/animations/misc/additional.glb',name:'additional.glb',bytes:30,sha256:'f'.repeat(64)}]};
+ assert.equal(publicReleaseManifest(extra).libraries.length,3,'unapproved optional libraries never enter public manifest');
+ assert.equal(releaseEntry(extra,{kind:'library',id:'misc',version:'f'.repeat(64)}),null,'unapproved optional library cannot be served');
 });
 test('version-pinned allowlist permits only published R2 objects',async()=>{
  const f=fixture(),u='https://stage.example/api/stage/shorekeeper/asset';

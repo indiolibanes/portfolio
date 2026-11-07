@@ -34,7 +34,7 @@ export function publicReleaseManifest(m){
  return {
   schema:RELEASE_SCHEMA,
   model:publicAsset(source.model,'shorekeeper-main.glb'),
-  libraries:source.libraries.map(x=>({id:x.id,...publicAsset(x,'shorekeeper-'+x.id+'.glb')}))
+  libraries:REQUIRED.map(id=>source.libraries.find(x=>x.id===id)).map(x=>({id:x.id,...publicAsset(x,'shorekeeper-'+x.id+'.glb')}))
  };
 }
 export async function currentRelease(env){
@@ -44,6 +44,7 @@ export async function currentRelease(env){
 export function releaseEntry(manifest,{kind,id,version}){
  if(!/^[0-9a-f]{64}$/.test(version??''))return null;
  if(kind!=='model'&&kind!=='library')return null;
+ if(kind==='library'&&!REQUIRED.includes(id))return null;
  const item=kind==='model'?manifest.model:manifest.libraries.find(x=>x.id===id);
  return item?.sha256===version?item:null;
 }
