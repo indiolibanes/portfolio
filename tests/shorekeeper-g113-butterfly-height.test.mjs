@@ -14,6 +14,7 @@ test('G11.3 giant butterfly clears the stage floor at chest-level source poses',
 test('G11.3 butterfly lift does not lower a preexisting high chest anchor',()=>{
  const floorY=-1,height=1.4,chestY=4;
  assert.equal(giantButterflyCenterY(chestY,floorY,height),chestY+0.05*height);
+ assert.equal(giantButterflyCenterY(1,undefined,1.5),1+0.05*1.5+1.2*1.5,'legacy stage without floor still lifts the effect');
  assert.throws(()=>giantButterflyCenterY(0,0,0),RangeError);
  assert.throws(()=>giantButterflyCenterY(Number.NaN,0,1),RangeError);
 });
