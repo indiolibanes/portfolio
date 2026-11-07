@@ -79,7 +79,8 @@ test('public stage is separate from internal QA and never displays backend detai
  const remote=src('src/scripts/shorekeeper/remote-private-model.mjs');
  assert.match(publicPage,/data-public-stage="true"/);
  assert.match(stage,/publicRelease=duetRequested&&root\.dataset\.publicStage==='true'/);
- assert.match(stage,/releaseSource:publicRelease\?'public':'private'/);
+ assert.match(stage,/releaseSource:publicAssetSource\?'public':'private'/);
+ assert.match(stage,/privatePreview=publicRelease&&new URLSearchParams\(location\.search\)\.get\('privatePreview'\)==='1'/);
  assert.match(remote,/shorekeeper-stage-assets\/v1/);
  assert.match(remote,/source==='public'\?'default':'no-store'/);
  assert(!/Cloudflare Access|private R2|acervo privado|armazenamento separado|private shared-stage/.test(publicPage));
