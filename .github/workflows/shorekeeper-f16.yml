@@ -21,6 +21,10 @@ on:
       - 'tests/shorekeeper-f2-facial-release.test.mjs'
       - 'tests/shorekeeper-r6-g113-bridge.test.mjs'
       - 'tests/shorekeeper-r6-variant-matrix.test.mjs'
+      - 'tests/shorekeeper-r63-menu-duet.test.mjs'
+      - 'src/styles/shorekeeper-duo.css'
+      - 'src/pages/experimentos/duo/index.astro'
+      - 'src/scripts/hsin-stage.ts'
       - 'tests/shorekeeper-b7/**'
       - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'tests/shorekeeper-mouth-weld.test.mjs'
@@ -53,6 +57,10 @@ on:
       - 'tests/shorekeeper-f2-facial-release.test.mjs'
       - 'tests/shorekeeper-r6-g113-bridge.test.mjs'
       - 'tests/shorekeeper-r6-variant-matrix.test.mjs'
+      - 'tests/shorekeeper-r63-menu-duet.test.mjs'
+      - 'src/styles/shorekeeper-duo.css'
+      - 'src/pages/experimentos/duo/index.astro'
+      - 'src/scripts/hsin-stage.ts'
       - 'tests/shorekeeper-b7/**'
       - 'tests/shorekeeper-private-model-cache.test.mjs'
       - 'src/pages/experimentos/sk/**'
@@ -89,6 +97,7 @@ jobs:
       - run: node tests/shorekeeper-f2-facial-release.test.mjs
       - run: node --test tests/shorekeeper-r6-g113-bridge.test.mjs
       - run: node --test tests/shorekeeper-r6-variant-matrix.test.mjs
+      - run: node --test tests/shorekeeper-r63-menu-duet.test.mjs
 
       - run: node tests/shorekeeper-combat.test.mjs
       - run: node tests/shorekeeper-presentation-combat.test.mjs

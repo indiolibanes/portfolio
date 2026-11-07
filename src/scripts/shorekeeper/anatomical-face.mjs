@@ -26,6 +26,7 @@ export const R6_CANDIDATES = Object.freeze({
   SERENITY_ACTING_R6: candidate('Serenidade · candidato R6','HOPE',{B_Happy:.08,C_Down_Face:.04},{binding:'NAMED_APPEARANCE_RECIPE_UNVERIFIED'}),
   WORRIED_FIXED_R6: candidate('Preocupação · boca neutra R6','WORRIED',{}, {oralRepair:true}),
   GLANCE_BILATERAL_R6: candidate('Olhar bilateral · R6','GLANCE',{}, {bilateral:true, duration:6.8}),
+  EYES_WIDE_ACTING_R6: candidate('Olhos arregalados · surpresa R6','SURPRISE_SOFT',{}, {wideEyes:true, status:'R6_MANUAL_VISUAL_QA_PENDING'}),
 });
 const recipeFor = id => MOUTH_QA_RECIPES[id] ?? RECIPES[id];
 // These are per-region ACCENT budgets. Approved baseline channels are never normalized.
@@ -79,7 +80,9 @@ export function createAnatomicalFaceDirector(inspection, {qaRecipes=MOUTH_QA_REC
       if (spec.oralRepair && facialRegion(name)==='mouth') continue; // Isolated M_Ennui produces the second lip line. Keep the neutral canonical mouth.
       if (spec.bilateral && name.startsWith('Pupil_')) continue;
       if (name==='E_Close') throw Error('E_Close belongs to OCULAR_BLINK');
-      tracks.push({name,weight,region:facialRegion(name),accent:false});
+      // Explicit standalone QA expression: stronger E_Stare, never E_Close or blink redefinition.
+      const target=spec.wideEyes&&name==='E_Stare'?Math.min(1,weight+.25):weight;
+      tracks.push({name,weight:target,region:facialRegion(name),accent:false});
     }
     const totals=Object.fromEntries(R6_REGIONS.map(r=>[r,0]));
     for (const [name,weight] of Object.entries(spec.accent)) {
