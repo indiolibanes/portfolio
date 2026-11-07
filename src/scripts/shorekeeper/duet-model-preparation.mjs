@@ -2,7 +2,7 @@
 import {inspectPrivateManifest,getPrivateFile} from './remote-private-model.mjs';
 import {SHOREKEEPER_CANONICAL,readPrivateModel} from './private-model-cache.mjs';
 export function s6DuoModelRequirements(manifest,hash=SHOREKEEPER_CANONICAL.sha256){
- return !!manifest&&manifest.schema==='shorekeeper-private-assets/v1'&&manifest.model?.sha256===hash&&manifest.model?.bytes===SHOREKEEPER_CANONICAL.bytes;
+ return !!manifest&&['shorekeeper-private-assets/v1','shorekeeper-stage-assets/v1'].includes(manifest.schema)&&manifest.model?.sha256===hash&&manifest.model?.bytes===SHOREKEEPER_CANONICAL.bytes;
 }
 export function prepareDuetModel({signal,inspect=inspectPrivateManifest,readCache=readPrivateModel,fetchFile=getPrivateFile,now=()=>performance.now()}={}){
  const controller=new AbortController(),started=now(),timings={};
@@ -23,7 +23,7 @@ export function prepareDuetModel({signal,inspect=inspectPrivateManifest,readCach
     const hex=Array.from(new Uint8Array(hash),n=>n.toString(16).padStart(2,'0')).join('');
     if(bytes.byteLength===manifest.model.bytes&&hex===manifest.model.sha256){buffer=bytes;cache='verified_hit';}else cache='invalid';
    }else cache='miss';mark('cacheVerified');
-   if(!buffer){modelRequests++;const file=await fetchFile(manifest.model,{kind:'model',signal:controller.signal});check();buffer=await file.arrayBuffer();check();modelBytes=buffer.byteLength;mark('downloadVerified');}
+   if(!buffer){modelRequests++;const file=await fetchFile(manifest.model,{kind:'model',signal:controller.signal,asBuffer:true});check();buffer=file instanceof ArrayBuffer?file:await file.arrayBuffer();check();modelBytes=buffer.byteLength;mark('downloadVerified');}
    state='ready';mark('bytesReady');return {ready:true,manifest,buffer};
   }catch(error){state=controller.signal.aborted||disposed?'cancelled':'failed';return state==='cancelled'?null:{ready:false,state};}
   finally{signal?.removeEventListener('abort',cancel);}

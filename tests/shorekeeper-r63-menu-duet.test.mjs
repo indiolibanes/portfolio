@@ -56,7 +56,8 @@ test('opt-in R6 guest can read authenticated F2.0-A for idles without three unus
  const recognition=read('src/scripts/shorekeeper/duet-music-contract.mjs');
  assert.match(guest,/for\(const id of \(experimentalR6\?\[\]:REQUIRED\)\)/);
  assert.match(preparation,/await inspect\(\{signal:controller.signal\}\)/);
- assert.match(guest,/if\(!preparedBuffer\)file=await getPrivateFile/);
+ assert.match(guest,/if\(!preparedBuffer\)file=await fetchBinary/);
+ assert.match(guest,/const fetchBinary=releaseSource==='public'\?getPublicStageFile:getPrivateFile/);
  assert.match(preparation,/crypto\.subtle\.digest\('SHA-256',bytes\)/);
  assert.match(recognition,/sample\?\.playbackConfirmed===true/);
  assert.match(recognition,/status==='playing'/);

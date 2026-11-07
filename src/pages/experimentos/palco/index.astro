@@ -1,0 +1,113 @@
+---
+import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
+import HsinSoundtrack from '../../../components/HsinSoundtrack.astro';
+import '../../../styles/hsin-stage.css';
+import '../../../styles/shorekeeper-duo.css';
+import {R6_PRIMARY_CHOICES,R6_HISTORIC_CHOICES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
+const r5Approved=R6_HISTORIC_CHOICES.filter(x=>x.approvedAppearance);
+const r5Comparatives=R6_HISTORIC_CHOICES.filter(x=>!x.approvedAppearance);
+const posterVersion='2.0.1';
+const posterCache='lunar-terrace-r2';
+---
+<HsinStageLayout title="Palco Lunar — Hsin & Shorekeeper">
+  <main class="hsin-stage" data-hsin-stage data-s6-duo="true" data-public-stage="true" data-state="waiting" aria-label="Hsin e Shorekeeper no palco lunar interativo">
+    <div class="hsin-stage__poster" aria-hidden="true">
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcset={`/assets/models/hsin/hsin-v${posterVersion}-poster-landscape.webp?v=${posterCache}`} width="1280" height="720" />
+        <img src={`/assets/models/hsin/hsin-v${posterVersion}-poster.webp?v=${posterCache}`} width="786" height="1704" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+    </div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin e Shorekeeper em um terraço lunar. Arraste para explorar e use pinça ou a roda do mouse para aproximar." tabindex="0"></div>
+    <header class="hsin-stage__header">
+      <h1>Hsin <span>& Shorekeeper · Palco Lunar</span></h1>
+      <a href="/experimentos/" aria-label="Voltar aos experimentos">↗</a>
+    </header>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando Hsin…</div>
+    <div class="hsin-stage__error" data-stage-error hidden>
+      <p>O palco não está disponível neste navegador.</p>
+      <button type="button" data-stage-retry>Tentar novamente</button>
+    </div>
+    <div class="s6-camera-toolbar" aria-label="Escolha de câmera">
+      <label for="s6-camera-mode">Câmera</label>
+      <select id="s6-camera-mode" data-duo-camera-mode aria-label="Escolher acompanhamento ou câmera livre">
+        <option value="auto">Automática · G11.3 Shorekeeper</option>
+        <option value="free">Exploração livre</option>
+        <option value="hsin">Acompanhar Hsin</option>
+        <option value="shorekeeper" disabled>Acompanhar Shorekeeper</option>
+        <option value="phrolova" disabled>Phrolova · futuramente</option>
+        <option value="sophia" disabled>Sophia · futuramente</option>
+      </select>
+      <span class="s6-camera-help">Roda ou pinça: zoom no ponto escolhido. Arraste para orbitar.</span>
+    </div>
+    <nav class="hsin-stage__tools" aria-label="Controles da cena">
+      <button type="button" data-stage-out aria-label="Afastar" title="Afastar" disabled>−</button>
+      <button type="button" data-stage-in aria-label="Aproximar" title="Aproximar" disabled>＋</button>
+      <button type="button" data-stage-reset aria-label="Redefinir enquadramento" title="Redefinir enquadramento" disabled>⌂</button>
+      <button type="button" data-stage-pause aria-label="Pausar atuação" title="Pausar atuação" aria-pressed="false" disabled>Ⅱ</button>
+    </nav>
+    <div class="s6-duet-status" data-duo-guest-status role="status" aria-live="polite">
+      Hsin e Shorekeeper · preparando o palco…
+    </div>
+    <details class="s6-r6-manual" data-duo-r6-controls hidden>
+      <summary>Expressões da Shorekeeper</summary>
+      <p>Escolha uma expressão ou acompanhe a atuação espontânea durante os momentos de contemplação.</p>
+      <div class="s6-face-groups">
+        <div class="s6-face-category">
+          <h2>Expressões · 9 variações</h2>
+          <div class="s6-face-grid" aria-label="Nove expressões R6 manuais">
+            {R6_PRIMARY_CHOICES.map(({id,label})=><button type="button" data-duo-face={'r6:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </div>
+        <div class="s6-face-category">
+          <h2>Expressões · 7 clássicas</h2>
+          <div class="s6-face-grid" aria-label="Sete receitas R5 preservadas">
+            {r5Approved.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </div>
+        <details class="s6-face-comparatives">
+          <summary>Mais {r5Comparatives.length} expressões</summary>
+          <div class="s6-face-grid" aria-label="Comparativos R5 manuais">
+            {r5Comparatives.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
+          </div>
+        </details>
+      </div>
+      <div class="s6-r6-buttons">
+        <button type="button" data-duo-r6-blink disabled>Piscar</button>
+        <button type="button" data-duo-r6-neutral disabled>Neutro</button>
+      </div>
+      <p data-duo-r6-status role="status" aria-live="polite">Preparando expressões…</p>
+    </details>
+    <details class="hsin-stage__credits">
+      <summary>Créditos e projeto</summary>
+      <p>Hsin, Shorekeeper e personagens relacionados: Kuro Games. Adaptação da Hsin: Lvoxx. Re-rig: imblue__. Shaders do modelo: LSCherry.</p>
+      <p>Experiência independente de pesquisa e atuação tridimensional, sem associação ou endosso oficial da Kuro Games. Os movimentos e efeitos cinematográficos foram reorganizados para esta apresentação.</p>
+    </details>
+    <HsinSoundtrack />
+    <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar o palco tridimensional.</p></noscript>
+  </main>
+</HsinStageLayout>
+<style>
+  .s6-duet-status{position:absolute;z-index:6;bottom:clamp(88px,14vh,160px);left:50%;transform:translateX(-50%);width:min(84vw,650px);
+  padding:10px 14px;border:1px solid rgba(187,211,239,.35);border-radius:10px;
+  background:rgba(6,18,37,.85);color:#e4edff;font:13px/1.5 system-ui,sans-serif;
+  text-align:center;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+  @media(max-width:600px){.s6-duet-status{bottom:120px;width:min(87vw,460px);font-size:12px}}
+  .s6-r6-manual{position:absolute;z-index:8;bottom:clamp(185px,29vh,290px);right:clamp(12px,3vw,42px);width:min(350px,76vw);max-height:46vh;overflow:auto;padding:12px 14px;border-radius:17px;background:rgba(235,247,255,.94);color:#24495f;box-shadow:0 8px 24px rgba(5,23,41,.2);font:12px/1.55 system-ui,sans-serif}
+  .s6-r6-manual summary{font-weight:650;cursor:pointer}
+  .s6-r6-manual label{display:block;margin:8px 0}
+  .s6-r6-manual .s6-face-groups{display:grid;gap:10px;margin:8px 0}
+  .s6-r6-manual .s6-face-category h2{font:600 12px/1.4 system-ui,sans-serif;margin:4px 0 6px}
+  .s6-r6-manual .s6-face-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:6px}
+  .s6-r6-manual .s6-face-comparatives{border-top:1px solid #bbd5e3;padding-top:6px}
+  .s6-r6-manual .s6-face-comparatives summary{font-size:11px;margin:4px 0 10px}
+  .s6-r6-buttons{display:flex;flex-wrap:wrap;gap:6px}
+  .s6-face-grid button,.s6-r6-buttons button{min-height:40px;padding:7px 8px;border:1px solid #bbd5e3;border-radius:11px;background:#fff;color:#27526b;font:inherit;line-height:1.3;text-align:left}
+  .s6-face-grid button[aria-pressed="true"]{border-color:#4787aa;background:#d7edf7;box-shadow:inset 0 0 0 1px #4787aa}
+  .s6-face-grid button:disabled,.s6-r6-buttons button:disabled{opacity:.42}
+  @media(max-width:600px){.s6-r6-manual{bottom:195px;right:12px;width:min(310px,84vw)}}
+</style>
+<script>
+  import {mountHsinStage} from '../../../scripts/hsin-stage';
+  const root=document.querySelector<HTMLElement>('[data-hsin-stage][data-public-stage]');
+  if(root)mountHsinStage(root);
+</script>

@@ -10,7 +10,7 @@ test('S6 private duet has one Hsin stage, uses original renderer and existing fr
  assert.match(h,/duetGuest\.advance\(dt/);
  assert.match(h,/loadS6DuetGuest\(T,scene,\{signal:attempt\.signal,experimentalR6:duetR6,preparation:prepared,hostModel:model,camera,lowPower:touch,traceEnabled:metrics\.enabled/);
  assert.match(h,/cameraStage:\{scene,camera,orbit,canvas/);
- assert.match(h,/const duetR6=duetRequested&&new URLSearchParams\(location\.search\)\.get\('r6Guest'\)==='1'/);
+ assert.match(h,/const duetR6=duetRequested&&\(publicRelease\|\|new URLSearchParams\(location\.search\)\.get\('r6Guest'\)==='1'\)/);
  assert.match(h,/if\(duetControls\)duetControls\.hidden=!duetR6/);
  assert.match(h,/duetGuest\?\.dispose\(\)/);
  assert.match(h,/const duetRequested=root\.dataset\.s6Duo==='true'/);
