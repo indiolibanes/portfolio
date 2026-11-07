@@ -10,7 +10,7 @@ const manifest={
  model:{key:'characters/shorekeeper/models/shorekeeper-v1.glb',name:'shorekeeper-v1.glb',bytes:39487548,sha256:CANONICAL_MODEL_SHA},
  libraries:['basic','advanced','burst'].map((id,i)=>({
   id,key:'characters/shorekeeper/animations/combat/'+id+'.glb',name:id+'.glb',
-  bytes:22+i,sha256:('a'+i).repeat(64)
+  bytes:22+i,sha256:('a'+i).repeat(32)
  }))
 };
 const body=new TextEncoder().encode(JSON.stringify(manifest));
