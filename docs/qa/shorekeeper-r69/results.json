@@ -1,0 +1,65 @@
+{
+  "technical_recommendation": "PARTIAL",
+  "distribution": "BLOCKED_PUBLIC_RELEASE",
+  "base": "39567c8a23a2baebb77ac9abee7ab9d2f72b39ec",
+  "tests": {
+    "command": "node --test tests/shorekeeper*.test.mjs",
+    "total": 263,
+    "pass": 263,
+    "fail": 0
+  },
+  "check": "PASS",
+  "production_build": "PASS",
+  "diff_check": "PASS",
+  "hosted_scene": "BLOCKED_BY_ACCESS_SIGN_IN",
+  "Samsung_Internet": "NOT_RUN",
+  "compression": "NOT_RUN",
+  "performance": {
+    "cold_download": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "warm_download": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "cache_hit_miss": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "model_parse": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "materials_setup": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "first_visible_frame": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "gpu_memory": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "heap_memory": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    },
+    "fps": {
+      "before": null,
+      "after": null,
+      "status": "NOT_RUN"
+    }
+  },
+  "remote_access_r2_mutations": false
+}

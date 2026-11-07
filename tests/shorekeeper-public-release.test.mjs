@@ -1,3 +1,5 @@
+import {createHash} from 'node:crypto';
+import {releaseDescriptor} from '../functions/_lib/shorekeeper-public.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -20,7 +22,7 @@ function fixture(active=true){
  objects.set(manifest.model.key,{size:manifest.model.bytes,body:new ReadableStream({start(controller){controller.close()}})});
  let reads=0;
  const bucket={async get(key){reads++;return objects.get(key)??null;},async head(key){reads++;const value=objects.get(key);return value?{size:value.size}:null;}};
- return {env:{SK_PUBLIC_STAGE_ENABLED:active?'1':'0',SHOREKEEPER_ASSETS_R2:bucket},get reads(){return reads;}};
+ return {env:{SK_PUBLIC_STAGE_ENABLED:active?'1':'0',SK_PUBLIC_STAGE_RELEASE_SHA256:createHash('sha256').update(releaseDescriptor(manifest)).digest('hex'),SHOREKEEPER_ASSETS_R2:bucket},get reads(){return reads;}};
 }
 test('public release is fail-closed without exact environment opt-in',async()=>{
  const f=fixture(false);
@@ -32,7 +34,7 @@ test('public release is fail-closed without exact environment opt-in',async()=>{
 test('read-only release manifest drops R2 paths and internal source filenames',async()=>{
  const f=fixture(),res=await manifestGet({env:f.env});
  assert.equal(res.status,200);
- assert.equal(res.headers.get('Cache-Control').includes('max-age=60'),true);
+ assert.equal(res.headers.get('Cache-Control'),'no-store');
  const data=await res.json();
  assert.equal(data.schema,RELEASE_SCHEMA);
  assert.equal(data.model.name,'shorekeeper-main.glb');
@@ -56,7 +58,7 @@ test('version-pinned allowlist permits only published R2 objects',async()=>{
  const head=await assetHead({env:f.env,request:new Request(u+'?kind=model&v='+CANONICAL_MODEL_SHA,{method:'HEAD'})});
  assert.equal(head.status,200);
  assert.equal(head.headers.get('Content-Length'),'39487548');
- assert.match(head.headers.get('Cache-Control'),/immutable/);
+ assert.match(head.headers.get('Cache-Control'),/must-revalidate/);
  assert.equal(head.headers.get('X-Asset-SHA256'),CANONICAL_MODEL_SHA);
  assert.equal(head.headers.get('Content-Disposition'),'inline; filename="shorekeeper-main.glb"');
  const lib=manifest.libraries[0];
@@ -90,4 +92,12 @@ test('public playback, facial QA and fallback statuses use public-safe copy',()=
  assert.match(stage,/publicRelease\?label\+' · expressão aplicada\.'\s*:\s*label\+' · manual/);
  assert.match(stage,/publicRelease\?'Expressões da Shorekeeper · seleção manual e atuação espontânea\.'\s*:\s*'Painel manual/);
  assert.match(stage,/publicRelease\?'A Shorekeeper não pôde ser carregada\. A Hsin permanece disponível\.'\s*:\s*'Hsin ready\. Shorekeeper private guest/);
+});
+
+test('release pin rejects a changed approved library and disable denies previously served versions',async()=>{
+ const f=fixture();f.env.SK_PUBLIC_STAGE_RELEASE_SHA256='f'.repeat(64);
+ assert.equal((await manifestGet({env:f.env})).status,503);
+ f.env.SK_PUBLIC_STAGE_ENABLED='0';
+ const res=await assetHead({env:f.env,request:new Request('https://stage.example/api/stage/shorekeeper/asset?kind=model&v='+CANONICAL_MODEL_SHA)});
+ assert.equal(res.status,404);assert.equal(res.headers.get('Cache-Control'),'no-store');
 });

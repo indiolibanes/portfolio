@@ -8,8 +8,10 @@ export async function onRequestGet({env}){
    status:200,headers:{
     ...RELEASE_BASE_HEADERS,
     'Content-Type':'application/json; charset=utf-8',
-    'Cache-Control':'public, max-age=60, stale-while-revalidate=120'
+    'Cache-Control':'no-store'
    }
   });
  }catch{return releaseError(503);}
 }
+
+export async function onRequestHead(context){const r=await onRequestGet(context);return new Response(null,{status:r.status,headers:r.headers});}

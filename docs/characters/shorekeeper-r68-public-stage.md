@@ -1,5 +1,7 @@
 # Shorekeeper R6.8 — Public stage delivery: controlled release plan
 
+> Historical R6.8 plan. R6.9 supersedes its max-age/immutable cache and activation settings: see shorekeeper-r69-readiness.md. Public delivery additionally requires an exact release digest; manifest is no-store and assets require revalidation. Distribution remains BLOCKED_PUBLIC_RELEASE.
+
 **Draft stacked on PR #260.** This change prepares **/experimentos/palco/** as a candidate public stage while keeping /experimentos/ (Hsin solo) and the private QA endpoints intact. No production merge. No hidden or invented Cloudflare bindings.
 
 ## Technical model

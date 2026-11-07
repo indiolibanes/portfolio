@@ -22,10 +22,10 @@ const posterCache='lunar-terrace-r2';
       <h1>Hsin <span>& Shorekeeper · Palco Lunar</span></h1>
       <a href="/experimentos/" aria-label="Voltar aos experimentos">↗</a>
     </header>
-    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparing Hsin…</div>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando Hsin…</div>
     <div class="hsin-stage__error" data-stage-error hidden>
-      <p>The stage is unavailable in this browser.</p>
-      <button type="button" data-stage-retry>Try again</button>
+      <p>O palco não está disponível neste navegador.</p>
+      <button type="button" data-stage-retry>Tentar novamente</button>
     </div>
     <div class="s6-camera-toolbar" aria-label="Escolha de câmera">
       <label for="s6-camera-mode">Câmera</label>
@@ -39,11 +39,11 @@ const posterCache='lunar-terrace-r2';
       </select>
       <span class="s6-camera-help">Roda ou pinça: zoom no ponto escolhido. Arraste para orbitar.</span>
     </div>
-    <nav class="hsin-stage__tools" aria-label="Scene controls">
-      <button type="button" data-stage-out aria-label="Zoom out" title="Zoom out" disabled>−</button>
-      <button type="button" data-stage-in aria-label="Zoom in" title="Zoom in" disabled>＋</button>
-      <button type="button" data-stage-reset aria-label="Reset framing" title="Reset framing" disabled>⌂</button>
-      <button type="button" data-stage-pause aria-label="Pause acting" title="Pause acting" aria-pressed="false" disabled>Ⅱ</button>
+    <nav class="hsin-stage__tools" aria-label="Controles da cena">
+      <button type="button" data-stage-out aria-label="Afastar" title="Afastar" disabled>−</button>
+      <button type="button" data-stage-in aria-label="Aproximar" title="Aproximar" disabled>＋</button>
+      <button type="button" data-stage-reset aria-label="Redefinir enquadramento" title="Redefinir enquadramento" disabled>⌂</button>
+      <button type="button" data-stage-pause aria-label="Pausar atuação" title="Pausar atuação" aria-pressed="false" disabled>Ⅱ</button>
     </nav>
     <div class="s6-duet-status" data-duo-guest-status role="status" aria-live="polite">
       Hsin e Shorekeeper · preparando o palco…
@@ -53,19 +53,19 @@ const posterCache='lunar-terrace-r2';
       <p>Escolha uma expressão ou acompanhe a atuação espontânea durante os momentos de contemplação.</p>
       <div class="s6-face-groups">
         <div class="s6-face-category">
-          <h2>R6 · 9 candidatas</h2>
+          <h2>Expressões · 9 variações</h2>
           <div class="s6-face-grid" aria-label="Nove expressões R6 manuais">
             {R6_PRIMARY_CHOICES.map(({id,label})=><button type="button" data-duo-face={'r6:'+id} aria-pressed="false" disabled>{label}</button>)}
           </div>
         </div>
         <div class="s6-face-category">
-          <h2>R5 · 7 receitas preservadas</h2>
+          <h2>Expressões · 7 clássicas</h2>
           <div class="s6-face-grid" aria-label="Sete receitas R5 preservadas">
             {r5Approved.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
           </div>
         </div>
         <details class="s6-face-comparatives">
-          <summary>R5 · {r5Comparatives.length} estados intermediários / comparativos</summary>
+          <summary>Mais {r5Comparatives.length} expressões</summary>
           <div class="s6-face-grid" aria-label="Comparativos R5 manuais">
             {r5Comparatives.map(({id,label})=><button type="button" data-duo-face={'baseline:'+id} aria-pressed="false" disabled>{label}</button>)}
           </div>

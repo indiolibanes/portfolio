@@ -41,6 +41,7 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
 }
 function aborted(signal){return !!signal?.aborted;}
 export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false,preparation=null,hostModel=null,camera=null,cameraStage=null,exclusionRects=()=>[],onStatus=()=>{},lowPower=false,traceEnabled=false,releaseSource='private'}={}){
+  const guestStart=performance.now();let firstGuestFrameMs=null,preparationMs=null;
   if(releaseSource!=='private'&&releaseSource!=='public')throw Error('Invalid guest source');
   const inspect=releaseSource==='public'?inspectPublicStageManifest:inspectPrivateManifest;
   const fetchBinary=releaseSource==='public'?getPublicStageFile:getPrivateFile;
@@ -66,10 +67,11 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
     async function parseFile(entry,kind){
       let file=null;
       const preparedBuffer=kind==='model'?preparedModel?.buffer:null;
-      if(!preparedBuffer)file=await fetchBinary(entry,{kind,signal});
+      if(!preparedBuffer)file=await fetchBinary(entry,{kind,signal,asBuffer:true});
       if(aborted(signal))throw new DOMException('Cancelled','AbortError');
-      const buffer=preparedBuffer??await file.arrayBuffer(),json=assertSelfContainedGLB(buffer);
+      const buffer=preparedBuffer??(file instanceof ArrayBuffer?file:await file.arrayBuffer()),json=assertSelfContainedGLB(buffer);
       const parseStarted=performance.now();const gltf=await parser.parseAsync(buffer,'');
+      if(disposed||aborted(signal)){disposeObject(gltf.scene);throw new DOMException('Cancelled','AbortError');}
       if(kind==='model')modelParseMs=performance.now()-parseStarted;
       if(kind==='model'&&preparedModel)preparedModel.buffer=null;
       ownedScene(gltf.scene);
@@ -267,7 +269,9 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       if(disposed)return;
       disposed=true;g113?.dispose();vfx?.dispose();director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
+    preparationMs=performance.now()-guestStart-(modelParseMs??0);
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,observeMusic,
+      markRendered(){if(firstGuestFrameMs===null)firstGuestFrameMs=performance.now()-guestStart;},
       setCameraPreference(mode){
         if(!['auto','free','hsin','shorekeeper'].includes(mode)||disposed)return false;
         cameraPreference=mode;
@@ -287,7 +291,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,exper
       },
       neutralR6(){return manualFace(()=>face.reset());},
       blinkR6(){return manualFace(()=>face.trigger('blink'));},
-      get loadingMetrics(){return {...prepared?.report(),modelParseMs,firstGuestFrame:'NOT_MEASURED'};},
+      get loadingMetrics(){return {...prepared?.report(),modelParseMs,preparationExcludingParseMs:preparationMs,firstGuestFrameMs,firstGuestFrame:'CPU_RENDER_SUBMISSION_NOT_GPU_PRESENTATION'};},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',cameraPreference,librariesLoaded:experimentalR6?'MODEL_ONLY_IDLE_FACIAL':'FULL_COMBAT',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
         G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',music:musicSnapshot,g113:{status:g113Status,mode:g113?.state.mode??null,cue:g113?.state.cue??null,musicExclusive:true,librariesLoaded:!!g113Clips,stellarealm:vfx?.state??'OFF',interludeSecondsRemaining:g113Cooldown,interludeActive:g113Cooldown>0&&!g113},quiet:{idlePolicy:'RANDOM_NON_REPEAT',facialPolicy:'S6_CURATED_BASELINE_RANDOM'},visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
