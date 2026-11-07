@@ -29,12 +29,25 @@ gltf.scene.position.y-=bounds.min.y;
 async function decode(path){return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});}
 let presentation;
 if(dance){const profile=JSON.parse(await readFile('public/assets/models/hsin/hsin-v2.1-profile.json')),baked=decodeDanceData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-'+(options.r2?'r2':'r1')+'.json'))),meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];createCinematicReference({bones,profile}).apply();gltf.scene.updateMatrixWorld(true);presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:profile.bounds});presentation.apply();if(options.r3&&dance!=='idle'){const reverie=createReveriePose({THREE:T,data:decodeReverieData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r3'+(options.grand?'-grand':'')+'.json'))),bones,model:gltf.scene});reverie.apply(dance,Number(options.phase??.5),Number(options.weight??1),Number(options.amplitude??1));}else if(dance!=='idle')createDancePose({THREE:T,data:baked,bones,model:gltf.scene}).apply(dance,Number(options.phase??.5),Number(options.weight??1));gltf.scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();}
+if(options.combat){
+ const {decodeCombatData}=await import('../src/scripts/hsin-combat-data.mjs');
+ const {createBakedPose}=await import('../src/scripts/hsin-baked-pose.mjs');
+ const data=decodeCombatData(JSON.parse(await readFile('public/assets/animations/hsin/combat-r1.json')));
+ const meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});
+ const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];
+ createBakedPose({THREE:T,data,bones}).apply(Math.min(1,Math.max(0,Number(options.time??0)/data.seconds)));
+ gltf.scene.updateMatrixWorld(true);for(const mesh of meshes)mesh.skeleton.update();
+}
 const resource=dance?LUNAR_TERRACE:MOONLIT,sky=await decode(new URL('../public'+resource.sky,import.meta.url).pathname);
 async function scenery(url){const t=new T.Texture();t.userData.cpu=await decode(new URL('../public'+url,import.meta.url).pathname);return t;}
 const moonTexture=await scenery(resource.moon),env=dance?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await scenery(resource.stone),atlasTexture:await scenery(resource.atlas),waterTexture:await scenery(resource.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 if(!dance){const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);}
 const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45),yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
-camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
+camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);if(options.detail){
+ const head=gltf.scene.getObjectByName('ORG-Bip001Head'),focus=head.getWorldPosition(new T.Vector3());focus.y-=.03;
+ camera.position.set(focus.x+Math.sin(yaw)*.6,focus.y+.025,focus.z+Math.cos(yaw)*.6);target.copy(focus);
+}
+camera.lookAt(target);camera.updateMatrixWorld();env.frameSky(camera,target);scene.updateMatrixWorld(true);
 if(options.pavilion){
  const factory=options.towerPath?(await import(pathToFileURL(options.towerPath).href)).createMusicTower:createMusicTower;
  const element={dataset:{soundtrackSide:'right',provider:'youtube'},offsetWidth:Math.min(280,W*.23),offsetHeight:H*.46,style:{setProperty(){},removeProperty(){}},addEventListener(){},removeAttribute(){},closest:()=>({getBoundingClientRect:()=>({width:W,height:H})})};

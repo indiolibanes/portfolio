@@ -1,0 +1,143 @@
+{
+  "state": "COMPLETE",
+  "time": 0.5,
+  "paused": false,
+  "cycle": 3,
+  "owned": false,
+  "available": {
+    "BASIC": true,
+    "SKILL": true,
+    "HEAVY": false
+  },
+  "trace": [
+    {
+      "cycle": 0,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 0.7,
+      "state": "PREPARATION",
+      "event": "energy"
+    },
+    {
+      "cycle": 1,
+      "time": 1.3,
+      "state": "BASIC",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 1.666667,
+      "state": "BASIC",
+      "event": "arc"
+    },
+    {
+      "cycle": 1,
+      "time": 1.666667,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 1.666667,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0.7,
+      "state": "PREPARATION",
+      "event": "energy"
+    },
+    {
+      "cycle": 2,
+      "time": 1.3,
+      "state": "BASIC",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 1.666667,
+      "state": "BASIC",
+      "event": "arc"
+    },
+    {
+      "cycle": 2,
+      "time": 2.2,
+      "state": "SKILL",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 3.366667,
+      "state": "SKILL",
+      "event": "ring"
+    },
+    {
+      "cycle": 2,
+      "time": 3.866667,
+      "state": "RECOVERY",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 3.866667,
+      "state": "RECOVERY",
+      "event": "recovery"
+    },
+    {
+      "cycle": 2,
+      "time": 5.8,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0.5,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0.5,
+      "state": "COMPLETE",
+      "event": "state"
+    }
+  ],
+  "preparationMs": 38.65387000000001,
+  "lastCpuMs": 0.00012000000000966793,
+  "bakeBytes": 466403,
+  "decodedBytes": 663600,
+  "recoveryBytes": 7584,
+  "extraDrawCalls": 2,
+  "geometries": 2,
+  "textures": 0,
+  "camera": "free"
+}
