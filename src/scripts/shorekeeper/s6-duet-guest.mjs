@@ -14,6 +14,9 @@ import {createInspection} from './inspection.mjs';
 import {createGentleFace} from './gentle-acting.mjs';
 import {APPROVED_MANUAL_RECIPES} from './approved-manual-gallery.mjs';
 import {S6_AUTO_FACE_ROSTER} from './s6-autonomy.mjs';
+import {createAnatomicalFaceDirector} from './anatomical-face.mjs';
+import {createMouthR5} from './mouth-r5.mjs';
+import {R6_G113_CANDIDATES} from './r6-g113-bridge.mjs';
 
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
 export const S6_DUO_STATUS=Object.freeze({
@@ -31,7 +34,7 @@ export function nextDuoIdle(index,count=ORIGINAL_IDLE_IDS.length) {
   return ((index+1)%count+count)%count;
 }
 function aborted(signal){return !!signal?.aborted;}
-export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55}={}){
+export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55,experimentalR6=false}={}){
   const inspected=await inspectPrivateManifest({signal});
   if(inspected.state!=='ready')return {ready:false,status:inspected.state==='denied'?S6_DUO_STATUS.NO_ACCESS:S6_DUO_STATUS.MISSING,
     advance(){},dispose(){}};
@@ -43,7 +46,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55}={}){
     return url;
   });
   const parser=new GLTFLoader(manager),scenes=[],loaded=[];
-  let model=null,group=null,director=null,face=null,disposed=false;
+  let model=null,group=null,director=null,face=null,mouthCorrection=null,disposed=false;
   const ownedScene=s=>{scenes.push(s);return s;};
   try{
     // Authenticated R2 endpoint verifies HTTP size, header SHA-256, byte length
@@ -79,8 +82,9 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55}={}){
     model.position.y-=bounds.min.y*scale;
     group.position.set(.85,0,0);
     group.add(model);
+    if(experimentalR6)mouthCorrection=createMouthR5(model); // Reversible; preserves F2.0-A source bytes and morph dictionaries.
     const inspection=createInspection(model);
-    face=createGentleFace(inspection,{qaRecipes:APPROVED_MANUAL_RECIPES});face.reset();
+    face=experimentalR6?createAnatomicalFaceDirector(inspection):createGentleFace(inspection,{qaRecipes:APPROVED_MANUAL_RECIPES});face.reset();
     scene.add(group);
     for(const s of scenes)if(s!==model)disposeObject(s);
     scenes.length=0;
@@ -103,7 +107,7 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55}={}){
       }
       face?.advance(elapsed,{writeFacial:true});
       faceSeconds-=elapsed;
-      if(faceSeconds<=0&&!face?.state.busy) {
+      if(!experimentalR6&&faceSeconds<=0&&!face?.state.busy) {
         for(let tries=0;tries<S6_AUTO_FACE_ROSTER.length;tries++){
           const row=S6_AUTO_FACE_ROSTER[faceIndex++%S6_AUTO_FACE_ROSTER.length];
           if(face.qaSupport(row.id).available && face.triggerQA(row.id))break;
@@ -114,13 +118,16 @@ export async function loadS6DuetGuest(T,scene,{signal,preferredHeight=1.55}={}){
     }
     function dispose(){
       if(disposed)return;
-      disposed=true;director?.dispose();face?.dispose();scene.remove(group);disposeObject(model);
+      disposed=true;director?.dispose();face?.dispose();mouthCorrection?.dispose();scene.remove(group);disposeObject(model);
     }
     return {ready:true,status:S6_DUO_STATUS.READY,group,advance,dispose,
+      playR6Expression(id){if(!experimentalR6||disposed||!R6_G113_CANDIDATES.some(x=>x.id===id))return false;face.setFrozen(false);return face.playCandidate(id);},
+      neutralR6(){if(!experimentalR6||disposed)return false;face.setFrozen(false);return face.reset();},
+      blinkR6(){if(!experimentalR6||disposed)return false;return face.trigger('blink');},
       get state(){return {source:'AUTHENTICATED_R2_PRIVATE',idle:ORIGINAL_IDLE_IDS[active],face:face?.state.expression,
-        G7:'NO_GO',visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
+        G7:'NO_GO',R6:experimentalR6?'MANUAL_R5_CANDIDATE':'DISABLED',visualQA:'PENDING',duo:'ONE_SCENE_SINGLE_RAF'};}};
   }catch(error){
-    director?.dispose();face?.dispose();if(group)scene.remove(group);
+    director?.dispose();face?.dispose();mouthCorrection?.dispose();if(group)scene.remove(group);
     for(const s of new Set([...scenes,...(model?[model]:[])]))disposeObject(s);
     if(error?.name==='AbortError')return null;
     return {ready:false,status:S6_DUO_STATUS.FAILED,reason:'ASSET_OR_RIG_VALIDATION_FAILED',advance(){},dispose(){}};
