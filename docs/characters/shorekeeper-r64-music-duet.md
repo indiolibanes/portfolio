@@ -46,7 +46,7 @@ O guest recebe exclusivamente musicForStage().sample() e subscribe(). O snapshot
 ## Validação e reprodução
 
 - Base antes das mudanças: 224 Shorekeeper e 47 Hsin; check/build exit0.
-- Candidata: **235 Shorekeeper**, **47 Hsin**, **288 Node no total**; os conjuntos estão incluídos nos 288. Onze casos novos cobrem menu, preparação/cancelamento/cache, projeção e reconhecimento musical. check/build/diff-check exit0.
+- Candidata: **235 Shorekeeper**, **47 Hsin**, **288 Node no total**; os conjuntos estão incluídos nos 288. Onze casos novos cobrem menu, preparação/cancelamento/cache, projeção e reconhecimento musical. O workflow sintético inclui agora esse comando e filtros de arquivos para CI contínuo. check/build/diff-check exit0.
 - Golden facial e suítes de segurança/lifecycle, pausa, reduced-motion, context loss e descarte passaram nas verificações estruturais/sintéticas herdadas. Não foi realizado novo WebGL real ou context loss físico, nem sessão Samsung/GPU.
 
 ```bash
@@ -67,4 +67,4 @@ Evidência compacta public-safe e matriz: `docs/qa/shorekeeper-r64/`. As ferrame
 
 Não há mudanças em main, PR259, R2, Access, funções privadas, GLB/PSA, shaders, morph dictionaries, receitas, materiais, controlador R6, reparo geométrico R5, fontes de idle/combate ou renderer/RAF. Sem novos binários ou hashes privados em relatórios. O único escritor anatômico e o único mixer corporal do guest continuam sendo os existentes.
 
-Rollback: voltar a usar a preview da branch PR259, ou reverter o único commit R6.4 na branch filha após revisão; nunca reset/force-push na base. Nenhum dado privado/cache precisa ser apagado. A revisão recomenda **draft para QA e revisão técnica**, sem merge até comparar o dueto real nas duas resoluções móveis e desktop, validar rostos/controles, waterfall e lifecycle físico. Se o buffer antecipado piorar memória/contensão, desabilitar apenas o prefetch da filha, preservando o modelo-only da R6.3.
+Rollback: voltar a usar a preview da branch PR259, ou reverter os commits R6.4 na branch filha após revisão; nunca reset/force-push na base. Nenhum dado privado/cache precisa ser apagado. A revisão recomenda **draft para QA e revisão técnica**, sem merge até comparar o dueto real nas duas resoluções móveis e desktop, validar rostos/controles, waterfall e lifecycle físico. Se o buffer antecipado piorar memória/contensão, desabilitar apenas o prefetch da filha, preservando o modelo-only da R6.3.
