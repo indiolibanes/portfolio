@@ -41,7 +41,7 @@ test('manual bridge gates geometry, versions and private Hsin duet without addin
  assert.match(lab,/const chosen=\['canonical','r2','r3','r4','r5'\]\.includes\(mode\)\?mode:'r5'/);
  assert.match(lab,/face\.playBaseline\(selected\.id\)/);
  assert.match(lab,/\['canonical','r2','r3','r4','r5'\]:\['canonical','r4','r5'\]/);
- assert.match(page,/data-r6-variant-select/);
+ assert.match(page,/data-r65-face=\{v\.value\}/);
  assert.match(page,/FACE_MENU_VALUES\.primary\.map/);
  assert.match(page,/data-r6-history-toggle/);
  assert.match(page,/data-r6-main-blink/);
