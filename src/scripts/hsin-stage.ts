@@ -77,7 +77,7 @@ export function mountHsinStage(root:HTMLElement){
    const cinematic=HSIN_CINEMATIC_IDLE.enabled;
    const threeModules=Promise.all([import('three'),import('three/addons/loaders/GLTFLoader.js'),import('three/addons/controls/OrbitControls.js'),import('three/addons/utils/BufferGeometryUtils.js')]);threeModules.catch(()=>{});
    // Private bytes overlap Hsin loading only after the WebGL capability gate; no guest parse/attachment yet.
-   const preparation=duetR6?import('./shorekeeper/duet-model-preparation.mjs').then(({prepareDuetModel})=>{
+   const preparation=duetR6?import('./shorekeeper/duet-model-preparation.mjs').then(async ({prepareDuetModel})=>{
     if(cleaned||attempt.signal.aborted||destroyed)return null;
     if(publicRelease){
        const {inspectPublicStageManifest,getPublicStageFile}=await import('./shorekeeper/remote-private-model.mjs');

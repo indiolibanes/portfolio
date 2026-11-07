@@ -9,7 +9,7 @@ export const RELEASE_SCHEMA='shorekeeper-stage-assets/v1';
 export const CANONICAL_MODEL_SHA='4f03b6fdf859ece1eaa9b334ff7eeb9a1979c678ba7a8a0b90a5e5aea3e7bc30';
 export const CANONICAL_MODEL_BYTES=39487548;
 const REQUIRED=Object.freeze(['basic','advanced','burst']);
-const RELEASE_BASE_HEADERS=Object.freeze({
+export const RELEASE_BASE_HEADERS=Object.freeze({
  'X-Content-Type-Options':'nosniff',
  'Referrer-Policy':'no-referrer',
  'Cross-Origin-Resource-Policy':'same-origin'
