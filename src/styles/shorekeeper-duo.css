@@ -33,3 +33,22 @@
  .hsin-stage[data-s6-duo="true"] .hsin-stage__tools{right:235px}
  .hsin-stage[data-s6-duo="true"] .s6-r6-manual{right:235px;bottom:12px;max-height:48vh}
 }
+/* R6.4: give the native player a separate region rather than framing faces behind it. */
+.hsin-stage[data-s6-duo="true"] .hsin-stage__canvas,
+.hsin-stage[data-s6-duo="true"] .hsin-stage__poster{right:calc(clamp(210px,22vw,252px) + 48px)}
+.hsin-stage[data-s6-duo="true"] .hsin-stage__tools{
+ left:12px;right:auto;top:auto;bottom:14px;transform:none;flex-direction:row;
+}
+@media(max-width:599px) and (min-height:541px){
+ .hsin-stage[data-s6-duo="true"] .hsin-music-tower__facade{max-height:min(34dvh,290px)}
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__canvas,
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__poster{
+  right:0;top:calc(106px + min(34dvh,290px));bottom:146px;
+ }
+ .hsin-stage[data-s6-duo="true"] .s6-duet-status{bottom:66px;font-size:10px;padding:6px 10px;max-height:66px;overflow:auto}
+ .hsin-stage[data-s6-duo="true"] .s6-r6-manual{bottom:82px}
+}
+@media(min-width:600px) and (max-height:540px){
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__canvas,
+ .hsin-stage[data-s6-duo="true"] .hsin-stage__poster{right:226px;top:0;bottom:0}
+}

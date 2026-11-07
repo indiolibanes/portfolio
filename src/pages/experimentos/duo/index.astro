@@ -3,7 +3,7 @@ import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
 import HsinSoundtrack from '../../../components/HsinSoundtrack.astro';
 import '../../../styles/hsin-stage.css';
 import '../../../styles/shorekeeper-duo.css';
-import {R6_G113_CANDIDATES} from '../../../scripts/shorekeeper/r6-g113-bridge.mjs';
+import {R6_PRIMARY_CHOICES} from '../../../scripts/shorekeeper/facial-unified-menu.mjs';
 const posterVersion='2.0.1';
 const posterCache='lunar-terrace-r2';
 ---
@@ -38,7 +38,7 @@ const posterCache='lunar-terrace-r2';
       <summary>Shorekeeper · expressões anatômicas R6 (R5)</summary>
       <p>Ensaio manual no mesmo palco da Hsin. Nenhuma R7/G7 automática; a textura e a geometria originais permanecem privadas.</p>
       <label>Expressão R6
-        <select data-duo-r6-select disabled>{R6_G113_CANDIDATES.map(({id,label})=><option value={id}>{label} · R6</option>)}</select>
+        <select data-duo-r6-select disabled>{R6_PRIMARY_CHOICES.map(({id,label})=><option value={id}>{label} · R6</option>)}</select>
       </label>
       <div class="s6-r6-buttons">
         <button type="button" data-duo-r6-play disabled>Apresentar</button>

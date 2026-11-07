@@ -51,11 +51,14 @@ test('opt-in R6 guest can read authenticated F2.0-A for idles without three unus
  const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
  const stage=read('src/scripts/hsin-stage.ts');
  const style=read('src/styles/shorekeeper-duo.css');
+ const preparation=read('src/scripts/shorekeeper/duet-model-preparation.mjs');
+ const recognition=read('src/scripts/shorekeeper/duet-music-contract.mjs');
  assert.match(guest,/for\(const id of \(experimentalR6\?\[\]:REQUIRED\)\)/);
- assert.match(guest,/const inspected=await inspectPrivateManifest/);
- assert.match(guest,/if\(!file\)file=await getPrivateFile/);
- assert.match(guest,/crypto\.subtle\.digest\('SHA-256',buffer\)/);
- assert.match(guest,/music\?\.playbackConfirmed===true&&music\?\.status==='playing'/);
+ assert.match(preparation,/await inspect\(\{signal:controller.signal\}\)/);
+ assert.match(guest,/if\(!preparedBuffer\)file=await getPrivateFile/);
+ assert.match(preparation,/crypto\.subtle\.digest\('SHA-256',bytes\)/);
+ assert.match(recognition,/sample\?\.playbackConfirmed===true/);
+ assert.match(recognition,/status==='playing'/);
  assert.match(stage,/music:music\.sample\(\)/);
  assert.match(stage,/const minimumGap=\.52/);
  assert.match(stage,/duetEnvelope=\{width:extent\.x,height:extent\.y/);

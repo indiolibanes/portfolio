@@ -1,0 +1,52 @@
+{
+  "baseline-shorekeeper": {
+    "exit": 0,
+    "tests": 224,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "baseline-hsin": {
+    "exit": 0,
+    "tests": 47,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "baseline-check": {
+    "exit": 0,
+    "tests": 2,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "baseline-build": {
+    "exit": 0,
+    "tests": null,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "shorekeeper": {
+    "exit": 0,
+    "tests": 235,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "hsin": {
+    "exit": 0,
+    "tests": 47,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "node": {
+    "exit": 0,
+    "tests": 288,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "check": {
+    "exit": 0,
+    "tests": 2,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "build": {
+    "exit": 0,
+    "tests": null,
+    "rawLog": "local evidence; reproducible commands in report"
+  },
+  "diff-check": {
+    "exit": 0,
+    "tests": null,
+    "rawLog": "local evidence; reproducible commands in report"
+  }
+}

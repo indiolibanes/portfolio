@@ -1,0 +1,49 @@
+{
+  "fixture": "retained canonical bytes; synthetic Access responses, no network; textures not decoded",
+  "guestReadyCpuWallMs": 404.8680939999999,
+  "fixtureTotalWallMs": 3159.091328,
+  "candidates": 9,
+  "wideEyeWeight": 0.85,
+  "pauseAndReducedMotionUnchanged": true,
+  "blinkAccepted": true,
+  "sourceClipsUnchanged": true,
+  "disposeIdempotent": true,
+  "coldRequests": [
+    "/api/shorekeeper/manifest",
+    "/api/shorekeeper/asset?kind=model"
+  ],
+  "warmRequests": [
+    "/api/shorekeeper/manifest"
+  ],
+  "coldMetrics": {
+    "state": "ready",
+    "cache": "miss",
+    "modelRequests": 1,
+    "modelBytes": 39487548,
+    "libraryRequests": 0,
+    "timingsMs": {
+      "manifest": 5.183287000000007,
+      "cacheVerified": 5.379696999999993,
+      "downloadVerified": 149.432065,
+      "bytesReady": 149.45586
+    },
+    "note": "Attempt wall times; not CPU render, TTFP, GPU or VRAM.",
+    "modelParseMs": 106.74815100000001,
+    "firstGuestFrame": "NOT_MEASURED"
+  },
+  "warmMetrics": {
+    "state": "ready",
+    "cache": "verified_hit",
+    "modelRequests": 0,
+    "modelBytes": 0,
+    "libraryRequests": 0,
+    "timingsMs": {
+      "manifest": 1.4002110000001267,
+      "cacheVerified": 80.23255100000006,
+      "bytesReady": 80.23664800000006
+    },
+    "note": "Attempt wall times; not CPU render, TTFP, GPU or VRAM."
+  },
+  "WebGL": "NOT_TESTED",
+  "physicalGPU": "NOT_MEASURED"
+}

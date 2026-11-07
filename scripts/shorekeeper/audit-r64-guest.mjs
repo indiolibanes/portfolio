@@ -1,0 +1,32 @@
+/** Actual guest loader against retained private bytes and in-process synthetic responses. NO network or rendering. */
+import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import {fileURLToPath,pathToFileURL} from 'node:url';
+if(process.argv.length!==4)throw Error('Expected PRIVATE_MODEL_DIRECTORY OUTPUT_DIRECTORY');
+const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),[input,out]=process.argv.slice(2).map(x=>path.resolve(x));
+if(out===repo||out.startsWith(repo+path.sep))throw Error('Output must be outside checkout');
+const at=p=>import(pathToFileURL(path.join(repo,p)).href),T=await at('node_modules/three/build/three.module.js');
+const {GLTFLoader}=await at('node_modules/three/examples/jsm/loaders/GLTFLoader.js');
+const {loadS6DuetGuest}=await at('src/scripts/shorekeeper/s6-duet-guest.mjs');
+const {R6_PRIMARY_CHOICES}=await at('src/scripts/shorekeeper/facial-unified-menu.mjs');
+const {prepareDuetModel}=await at('src/scripts/shorekeeper/duet-model-preparation.mjs');
+const {SHOREKEEPER_CANONICAL:C}=await at('src/scripts/shorekeeper/private-model-cache.mjs');
+const bytes=fs.readFileSync(path.join(input,'shorekeeper-f20a.glb')),buffer=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
+if(bytes.length!==C.bytes||crypto.createHash('sha256').update(bytes).digest('hex')!==C.sha256)throw Error('Wrong canonical bytes');
+const manifest={schema:'shorekeeper-private-assets/v1',model:{name:'shorekeeper-f20a.glb',bytes:C.bytes,sha256:C.sha256},libraries:[]},requests=[];
+const oldFetch=globalThis.fetch,oldParse=GLTFLoader.prototype.parseAsync;
+globalThis.fetch=async url=>{requests.push(String(url));if(url==='/api/shorekeeper/manifest')return Response.json(manifest);if(url==='/api/shorekeeper/asset?kind=model')return new Response(bytes,{headers:{'Content-Length':String(C.bytes),'X-Asset-SHA256':C.sha256}});throw Error('Network forbidden in fixture');};
+GLTFLoader.prototype.parseAsync=function(b,p){this.register(()=>({name:'R64_DATA_ONLY',loadTexture:async()=>new T.Texture()}));return oldParse.call(this,b,p);};
+const scene=new T.Scene(),start=performance.now(),guest=await loadS6DuetGuest(T,scene,{experimentalR6:true});
+if(!guest?.ready)throw Error('Local loader failed');const guestReadyCpuWallMs=performance.now()-start;
+const rows=[];const model=guest.group.children[0],mesh=model.getObjectByName('Shorekeeper_Face');
+const influences=()=>JSON.stringify(mesh.morphTargetInfluences),fingerprint=()=>crypto.createHash('sha256').update(JSON.stringify(model.userData.skClips.map(c=>c.toJSON()))).digest('hex'),before=fingerprint();
+for(const choice of R6_PRIMARY_CHOICES){if(!guest.playR6Expression(choice.id))throw Error('Candidate rejected');for(let i=0;i<34;i++)guest.advance(.05);rows.push({id:choice.id,expression:guest.state.face});guest.neutralR6();}
+if(!guest.playR6Expression('EYES_WIDE_ACTING_R6'))throw Error('Wide eyes rejected');for(let i=0;i<34;i++)guest.advance(.05);
+const wideEyeWeight=mesh.morphTargetInfluences[mesh.morphTargetDictionary.E_Stare];if(!(wideEyeWeight>.65))throw Error('Wide eyes did not apply');
+const held=influences();guest.advance(1,{paused:true});if(influences()!==held)throw Error('Pause changed face');guest.advance(1,{reducedMotion:true});if(influences()!==held)throw Error('Reduced motion changed face');
+if(!guest.blinkR6())throw Error('Bilateral blink refused');guest.advance(.1);guest.neutralR6();
+guest.observeMusic({provider:'youtube',status:'paused',epoch:2,positionSeconds:17,synchronizationQuality:'verified',playbackConfirmed:false});if(guest.state.music.status!=='paused')throw Error('Paused music not recognized');
+if(fingerprint()!==before)throw Error('Source animation mutation');const metrics=guest.loadingMetrics;guest.dispose();guest.dispose();if(scene.children.length)throw Error('Disposal leaked scene subtree');
+const warmRequestsBefore=requests.length,prefetched=prepareDuetModel({readCache:async()=>({sha256:C.sha256,file:new File([buffer],'shorekeeper-f20a.glb')})}),warm=await prefetched.take();if(!warm?.ready||prefetched.report().modelRequests!==0)throw Error('Warm cache failed');
+fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'guest-fixture-summary.json'),JSON.stringify({fixture:'retained canonical bytes; synthetic Access responses, no network; textures not decoded',guestReadyCpuWallMs,fixtureTotalWallMs:performance.now()-start,candidates:rows.length,wideEyeWeight,pauseAndReducedMotionUnchanged:true,blinkAccepted:true,sourceClipsUnchanged:true,disposeIdempotent:true,coldRequests:requests.slice(0,warmRequestsBefore),warmRequests:requests.slice(warmRequestsBefore),coldMetrics:metrics,warmMetrics:prefetched.report(),WebGL:'NOT_TESTED',physicalGPU:'NOT_MEASURED'},null,2));
+globalThis.fetch=oldFetch;GLTFLoader.prototype.parseAsync=oldParse;
+console.log('Local guest fixture PASS');
