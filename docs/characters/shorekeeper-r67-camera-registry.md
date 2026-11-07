@@ -26,7 +26,7 @@ See `astral-tidal-garden-design.md`. This delivery intentionally uses the reques
 
 ## Validation and limits
 
-109/109 focused R6/combo tests passed, including three new registry behavior tests: explicit priority/readiness/free/disposal, cancellable position/target/FOV interpolation with one write per step, and mode switches at all seven G11.3 segments over three synthetic cycles without body termination. Existing R6.5/R6.6 suites passed. npm run check and production build passed; 8 routes, OG and hygiene checks passed. These are synthetic/code validations, not GPU FPS or private-source visual evidence.
+112/112 focused R6/combo tests passed, including three new registry behavior tests: explicit priority/readiness/free/disposal, cancellable position/target/FOV interpolation with one write per step, and mode switches at all seven G11.3 segments over three synthetic cycles without body termination. Existing R6.5/R6.6 suites passed. npm run check and production build passed; 8 routes, OG and hygiene checks passed. These are synthetic/code validations, not GPU FPS or private-source visual evidence.
 
 Authenticated visual QA is pending: previous Work browser reached Cloudflare Access sign-in and no credential/session was provided. No private bytes or Access/R2 configurations are changed. Physical Android/Samsung pinch/pan, 1280×720/390×844/832×384 composition, player occlusion, real concurrent performers, context restoration and GPU performance are NOT_RUN. No 30 FPS claim is made.
 
@@ -46,3 +46,7 @@ Authenticated visual QA is pending: previous Work browser reached Cloudflare Acc
 - [ ] Measure FPS/frame-time distribution/CPU/GPU on identified mobile hardware; 30 FPS is a target only.
 
 No merge, main update, GLB publication or G7 reopening.
+
+## Concurrent base reconciliation
+
+While publishing, #260 advanced to a89c87cdadb2daf7a789ed0dd397d82bc0c217c9 (5–8s interludes, arena/terrace and moon refinements). That commit is merged into this draft, preserving its runtime changes. Two older quiet-only source-text assertions were aligned with the new expressly permitted interlude facial condition. No body/VFX schedule or idle repertoire was replaced. Repeated merged validation is recorded below.

@@ -15,9 +15,9 @@ export function attachFixedDuetMoon(T,{scene,camera,moon,halo}){
  moon.matrixAutoUpdate=true;halo.matrixAutoUpdate=true;
  const resize=()=>{
   const halfHeight=depth*Math.tan(camera.fov*Math.PI/360);
-  // Dramatically larger than R6.4.2: ~2.7-3.3x diameter, fixed horizontally
-  // centred and elevated in screen-space, as a photographic lunar backdrop.
-  const r=halfHeight*(camera.aspect<.8?.98:1.14);
+  // Duet: monumental but bounded, about 44% portrait / 52% landscape
+  // of viewport height. Camera-relative for a fixed horizontal center.
+  const r=halfHeight*(camera.aspect<.8?.44:.52);
   moon.scale.setScalar(r/sourceRadius);
   moon.position.set(0,halfHeight*.46,-depth);
   moon.updateMatrix();

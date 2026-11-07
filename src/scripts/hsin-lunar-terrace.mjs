@@ -4,8 +4,12 @@ export const LUNAR_TERRACE=Object.freeze({
  water:'/assets/scenes/hsin/water-v201.webp',stone:'/assets/scenes/hsin/stone-v201.webp',atlas:'/assets/scenes/hsin/terrace-atlas-v201.webp',floorY:0,
 });
 
+export const DUET_TERRACE=Object.freeze({
+ width:36,depth:24,centerZ:4,rearEdge:-8,railZ:-7.25,sideRailX:16
+});
+
 /** Static, batched stone architecture. No animation clock, render targets or extra lights. */
-export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet=[[-.09,.003,0],[.09,.003,0]],rootDegrees=0}){
+export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet=[[-.09,.003,0],[.09,.003,0]],rootDegrees=0,duetArena=false}){
  const base=createMoonlitEnvironment({THREE:T,skyTexture,moonTexture,includeTerrace:false}),group=base.group;group.name='Lunar Terrace · V2.0.1';
  base.fog=new T.Fog(0x22364e,10,42);
  const lake=group.getObjectByName('Lake · still water');lake.material.color.setHex(0xffffff);lake.material.vertexColors=true;
@@ -20,6 +24,12 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   for(let i=180;i>=0;i--){const x=-45+i*.5,envelope=.46+.22*Math.sin(x*.19+phase)+.13*Math.sin(x*.43+phase*.7),detail=.08*Math.sin(x*1.17)+.027*Math.sin(x*2.8+phase);shape.lineTo(x,height*(envelope+detail));}
   shape.closePath();ridge.geometry.dispose();ridge.geometry=new T.ShapeGeometry(shape);ridge.position.z=z;ridge.material.color.setHex(color);
  }
+ const width=duetArena?DUET_TERRACE.width:22,depth=duetArena?DUET_TERRACE.depth:14;
+ const centerZ=duetArena?DUET_TERRACE.centerZ:3;
+ const backEdge=duetArena?DUET_TERRACE.rearEdge:-4,railZ=duetArena?DUET_TERRACE.railZ:-3.25;
+ const sideX=duetArena?DUET_TERRACE.sideRailX:8;
+ const railPillars=duetArena?[-16,-12,-8,-4,0,4,8,12,16]:[-8,-6,-4,-2,0,2,4,6,8];
+ const lanternXs=duetArena?[-12,-4,4,12]:[-4.5,-1,1,4.5];
  const solid=new T.MeshBasicMaterial({vertexColors:true}),cutout=new T.MeshBasicMaterial({map:atlasTexture,vertexColors:true,alphaTest:.08,side:T.DoubleSide});
  const blended=new T.MeshBasicMaterial({map:atlasTexture,vertexColors:true,transparent:true,depthWrite:false,side:T.DoubleSide,forceSinglePass:true});
  const stoneParts=[],roofParts=[],paneParts=[],glowParts=[],branchParts=[],flowerParts=[];
@@ -57,23 +67,23 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   for(const sign of [-1,1])box(roofParts,x,y+.02,z+sign*d*.47,w*.82,.025,.025,0x786b55);
  }
  // Continuous rectangular paving, on the actual foot plane. No disc, cylinder, ring or elevated stand.
- stoneTexture.wrapS=stoneTexture.wrapT=T.RepeatWrapping;stoneTexture.repeat.set(4,3);stoneTexture.anisotropy=1;
- const paving=new T.PlaneGeometry(22,14,22,14),tones=[];
+ stoneTexture.wrapS=stoneTexture.wrapT=T.RepeatWrapping;stoneTexture.repeat.set(duetArena?6.5:4,duetArena?5:3);stoneTexture.anisotropy=1;
+ const paving=new T.PlaneGeometry(width,depth,duetArena?30:22,duetArena?20:14),tones=[];
  // Sparse vertex gradients: rail occlusion and warm pools painted into the stone, once at mount.
  for(let i=0;i<paving.attributes.position.count;i++){
-  const x=paving.attributes.position.getX(i),z=3-paving.attributes.position.getY(i),rail=Math.exp(-(((z+3.25)/.7)**2)),shade=1-.30*rail;
-  let warmth=0;for(const lamp of [-4.5,-1,1,4.5])warmth+=Math.exp(-(((x-lamp)/.7)**2)-((z+2.8)/1.3)**2)*.10;
+  const x=paving.attributes.position.getX(i),z=centerZ-paving.attributes.position.getY(i),rail=Math.exp(-(((z-railZ)/.7)**2)),shade=1-.30*rail;
+  let warmth=0;for(const lamp of lanternXs)warmth+=Math.exp(-(((x-lamp)/.7)**2)-((z-(railZ+.45))/1.3)**2)*.10;
   const c=new T.Color(.58*shade+warmth,.66*shade+warmth*.53,.79*shade+warmth*.14);tones.push(c.r,c.g,c.b);
  }
  paving.setAttribute('color',new T.Float32BufferAttribute(tones,3));
- const floor=new T.Mesh(paving,new T.MeshBasicMaterial({map:stoneTexture,vertexColors:true,color:0xffffff}));floor.name='Continuous stone terrace';floor.rotation.x=-Math.PI/2;floor.position.set(0,0,3);group.add(floor);
- box(stoneParts,0,-.10,-4,22,.20,.20,0x48566a);
+ const floor=new T.Mesh(paving,new T.MeshBasicMaterial({map:stoneTexture,vertexColors:true,color:0xffffff}));floor.name='Continuous stone terrace';floor.rotation.x=-Math.PI/2;floor.position.set(0,0,centerZ);group.add(floor);
+ box(stoneParts,0,-.10,backEdge,width,.20,.20,0x48566a);
  // A low rear balustrade and short side returns. Its open bays frame, rather than occlude, Hsin.
- for(const x of [-8,-6,-4,-2,0,2,4,6,8]){
-  box(stoneParts,x,.10,-3.25,.36,.20,.36,0x737b87);box(stoneParts,x,.43,-3.25,.14,.50,.14,0x657181);box(stoneParts,x,.74,-3.25,.34,.12,.34,0x9b9b94);
+ for(const x of railPillars){
+  box(stoneParts,x,.10,railZ,.36,.20,.36,0x737b87);box(stoneParts,x,.43,railZ,.14,.50,.14,0x657181);box(stoneParts,x,.74,railZ,.34,.12,.34,0x9b9b94);
  }
- for(const y of [.19,.71])box(stoneParts,0,y,-3.25,16,.09,.15,0x828991);
- for(const side of [-1,1]){box(stoneParts,side*8,.71,-1.7,.15,.09,3.1,0x828991);box(stoneParts,side*8,.19,-1.7,.15,.09,3.1,0x657181);}
+ for(const y of [.19,.71])box(stoneParts,0,y,railZ,sideX*2,.09,.15,0x828991);
+ for(const side of [-1,1]){box(stoneParts,side*sideX,.71,railZ+1.55,.15,.09,3.1,0x828991);box(stoneParts,side*sideX,.19,railZ+1.55,.15,.09,3.1,0x657181);}
  // Architectural silhouettes across the lake: clustered timber volumes and upturned pagoda roofs.
  const city=[[-10,1.0],[-7.4,1.4],[-5.2,1.05],[-3.5,.8],[-1.9,.75],[.4,.7],[2.1,.95],[3.8,1.15],[6.2,1.7],[8.8,1.1],[11.5,.9]];
  for(const [i,[x,originalHeight]]of city.entries()){
@@ -84,8 +94,8 @@ export function createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,
   if(i===1||i===8){box(stoneParts,x,.13+h+.24,z,w*.65,.42,d*.7,0x565761);roof(x,.13+h+.45,z,w*.95,d*.95,.28,0x44505c);for(let col=0;col<3;col++)plane(paneParts,x-.30+col*.30,.13+h+.26,z+d*.35+.01,.17,.21,1);}
  }
  // Four lanterns share meshes/materials, with painted panels/halos, not individual light objects.
- for(const x of [-4.5,-1,1,4.5]){
-  const z=-3.25,y=.98,w=.26,h=.39,d=.22;
+ for(const x of lanternXs){
+  const z=railZ,y=.98,w=.26,h=.39,d=.22;
   box(stoneParts,x,.82,z,.34,.12,.32,0x8f8a7d);roof(x,y+h/2+.02,z,.42,.36,.13,0x4d4949);
   for(const dx of [-w/2,w/2])for(const dz of [-d/2,d/2])box(roofParts,x+dx,y,z+dz,.025,h,.025,0x5b4437);
   box(roofParts,x,y-h/2,z,w+.035,.04,d+.035,0x5b4437);
