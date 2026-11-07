@@ -1,14 +1,19 @@
-# Shorekeeper — storyboard autoral proposto (não implementado)
+# Shorekeeper — dueto: rotação básica aprovada
 
-**CHOREOGRAPHY_PENDING.** Nenhum movimento, timestamp ou sincronismo artístico foi produzido/certificado nesta PR. A biblioteca atual oferece idles originais, não uma dança autenticada. G7 NO_GO; autonomia facial R6/R7 continua bloqueada.
+**Aprovação do usuário:** durante reprodução musical confirmada, a coreografia da Shorekeeper é simplesmente uma rotação básica em torno do próprio eixo vertical. Não foi solicitada dança nova, habilidade Skill/Burst nem rastreamento de batidas. G7 permanece NO_GO para novos movimentos cinematográficos.
 
-| Fase proposta | Intenção artística a validar | Condição/limite técnico |
-|---|---|---|
-| Preparação | Orientar a atenção para a experiência compartilhada sem arrancada de posição | Só após playback confirmado e permissões artísticas específicas; entrada a partir da pose atual |
-| Frase corporal | Um gesto autoral curto de corpo inteiro, com arco e contraposto, evitando oscilação diagonal repetida | Necessita asset/curvas novas autorizadas e A/B visual; nunca Skill/Burst renomeada; mesmo body owner |
-| Continuidade | Sustentar a intenção e concluir a frase, em vez de alternar clipes abruptamente | Relógio de apresentação existente; phase/seek determinísticos; nenhum segundo mixer ou timer |
-| Recuperação | Devolver peso e postura a um dos três idles sem snap ou apoio inventado | Pause/buffering/ended, mudança de epoch, hidden e interrupção devem ter política explícita e prova visual |
+## Comportamento implementado na R6.4.1
 
-Contrato para uma implementação futura: consumir snapshot read-only de musicForStage, com epoch e qualidade; não iniciar por simples seleção de provedor. Posição observada não significa beat tracking. Metadados incompletos devem reduzir a pretensão de sincronismo, não inventar batidas. Uma futura score deve ser função de tempo absoluto da apresentação já existente; nenhum relógio local acumulado paralelo. Seek e retorno devem ser reversíveis; reduced-motion devolve pose estável, sem escrita facial concorrente. Descarte cancela preparação e devolve ownership.
+| Estado | Movimento | Expressões |
+| --- | --- | --- |
+| Sem música | Idles originais 01, 02 e 03, sorteados desde o primeiro uso e sem repetição consecutiva | Três famílias S6/R5 curadas em ordem aleatória; R6 só manual |
+| Playing confirmado | Rotação suave do grupo da Shorekeeper, 360° em ~14 s, sem criar ação de rig nem segundo mixer | Não iniciar uma nova expressão automática; comandos manuais disponíveis |
+| Ready, paused, buffering, ended | Retorno controlado à orientação frontal pelo menor arco | Retomada de contemplação |
+| Página pausada / movimento reduzido | Não avançar o relógio corporal nem a rotação | Nenhuma nova expressão automática |
+| Dispose | Restaurar orientação e liberar os owners existentes | Liberar o escritor facial existente |
 
-Sem confirmação artística de uma frase completa (entrada, execução, continuidade e recuperação), o guest preserva idles e reconhecimento musical. Aprovar esta PR técnica não aprova automaticamente coreografia, autonomia R6/R7, curvas derivadas ou G7.
+A rotação ocorre no grupo de apresentação, não no Root/bones. O diretor corporal original continua com o controle dos tracks; o diretor facial anatômico permanece com o único writer para morphs. Nenhum novo WebGLRenderer, requestAnimationFrame, domínio público de assets ou download de biblioteca é criado.
+
+## Limites
+
+A aprovação é artística quanto à ideia básica de rotação, não uma certificação do ritmo exato, da silhueta 360°, das roupas/cabelos, do modelo, da lua maior, do pavilhão, do desempenho ou da renderização no Samsung Internet. PlaybackConfirmed não fornece BPM ou sincronização de batida; não apresentar isso como dança sincronizada. É necessário QA do dueto autenticado em navegadores reais.

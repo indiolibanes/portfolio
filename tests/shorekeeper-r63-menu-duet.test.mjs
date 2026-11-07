@@ -62,7 +62,8 @@ test('opt-in R6 guest can read authenticated F2.0-A for idles without three unus
  assert.match(stage,/music:music\.sample\(\)/);
  assert.match(stage,/const minimumGap=\.52/);
  assert.match(stage,/duetEnvelope=\{width:extent\.x,height:extent\.y/);
- assert.match(stage,/if\(musicElement&&!duetRequested\)/);
+ assert.match(stage,/if\(musicElement\)\{musicTower=createMusicTower/);
+ assert.match(stage,/duetMode:duetRequested/);
  assert.match(style,/\[data-s6-duo="true"\]/);
  assert(!/requestAnimationFrame|WebGLRenderer/.test(guest),'guest creates no renderer or animation loop');
 });

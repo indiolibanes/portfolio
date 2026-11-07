@@ -107,7 +107,19 @@ export function mountHsinStage(root:HTMLElement){
    const meshes:any[]=[];model.traverse((o:any)=>{if(o.isSkinnedMesh)meshes.push(o);});const bones:any[]=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];const byName=new Map(bones.map(b=>[b.name,b])),head:any=byName.get('ORG-Bip001Head');if(!head)throw Error('Head rig missing.');
    reference=createCinematicReference({bones,profile,enabled:cinematic});reference.apply();scene.updateMatrixWorld(true);
    presentation=createLunarPresentation({THREE:T,model,bones,bounds:profile.bounds,cameraAzimuth:HSIN_LUNAR_PRESENTATION.cameraAzimuth});presentation.apply();
-   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
+   const moonlit=createLunarTerrace({THREE:T,skyTexture,moonTexture,stoneTexture,atlasTexture,waterTexture,feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees});
+   if(duetRequested){
+     // Duo only: a much larger moon off to the side, at world depth behind
+     // the two performers. Smaller halo opacity protects facial readability.
+     const lunar=moonlit.group.getObjectByName('Full moon · sculpted static sphere');
+     const halo=moonlit.group.getObjectByName('Moon · restrained atmospheric halo');
+     if(lunar&&halo){
+       lunar.scale.setScalar(1.9);lunar.position.x-=1.25;lunar.position.y+=.15;
+       halo.position.copy(lunar.position);halo.position.z-=.025;
+       halo.scale.setScalar(1.55);(halo.material as any).opacity=.12;
+     }
+   }
+   scene.background=moonlit.background;scene.fog=moonlit.fog;scene.add(moonlit.group);
    scene.add(...createStageLights(T).all);
    // Face only: the GLB marks the face unlit, so it ignored every light. Same texture, lit response, reversible; applied before the programs compile.
    faceSkin=createFaceSkin({THREE:T,meshes});faceSkin.apply();
@@ -115,7 +127,7 @@ export function mountHsinStage(root:HTMLElement){
    scene.traverse((o:any)=>{o.updateMatrix();o.matrixAutoUpdate=false;});scene.updateMatrixWorld(true);
    const camera=new T.PerspectiveCamera(HSIN_STAGE.fov,1,.03,45);orbit=new OrbitControls(camera,canvas);orbit.enablePan=false;orbit.enableDamping=true;orbit.dampingFactor=HSIN_STAGE.damping;orbit.rotateSpeed=HSIN_STAGE.rotateSpeed;orbit.zoomSpeed=HSIN_STAGE.zoomSpeed;orbit.minDistance=HSIN_STAGE.minDistance;orbit.minPolarAngle=HSIN_STAGE.minPolar;orbit.maxPolarAngle=HSIN_STAGE.maxPolar;orbit.minAzimuthAngle=-HSIN_STAGE.maxAzimuth;orbit.maxAzimuthAngle=HSIN_STAGE.maxAzimuth;
    const musicElement=root.querySelector<HTMLElement>('[data-music-tower]');
-   if(musicElement&&!duetRequested){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,model,bounds:profile.bounds,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics});scene.add(musicTower.group);} // Duo: lightweight HTML player, no additional volumetric pavilion in the shared scene.
+   if(musicElement){musicTower=createMusicTower({THREE:T,mergeGeometries,element:musicElement,host,bones,model,bounds:profile.bounds,moon:moonlit.group.getObjectByName('Full moon · sculpted static sphere'),metrics,duetMode:duetRequested});scene.add(musicTower.group);} // Reuse the same 3D pavilion; in duo it floats above the performers while the native player remains in its own side region.
    root.addEventListener('hsin:tower-layout',()=>{musicTower?.invalidateLayout();loop?.invalidate();},{signal:attempt.signal});
    let initialDistance=3.5,worldDirty=true,firstFit=true,initialTarget=[0,HSIN_STAGE.baseTargetY,0];
    let duetEnvelope:null|{width:number;height:number;depth:number;center:[number,number,number]}=null;

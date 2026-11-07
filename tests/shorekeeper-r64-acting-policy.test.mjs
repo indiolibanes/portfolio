@@ -1,0 +1,67 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {BASIC_TURN_SECONDS,createNonRepeatingChoice,createDuetBasicTurn,quietFaceWait} from '../src/scripts/shorekeeper/duet-acting-policy.mjs';
+import {R6_PRIMARY_CHOICES,R6_HISTORIC_CHOICES,resolveFaceMenu} from '../src/scripts/shorekeeper/facial-unified-menu.mjs';
+const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
+test('idle randomizes the first selection and never repeats the same original idle consecutively',()=>{
+ const values=[.99,0,.45,.2,.65,.9,.1,.8];let i=0;
+ const choice=createNonRepeatingChoice(3,{random:()=>values[i++%values.length]});
+ const selected=Array.from({length:60},()=>choice.next());
+ assert.equal(selected[0],2,'first idle can be SK_IDLE_03 instead of fixed Idle 01');
+ assert(selected.every(x=>x>=0&&x<3));
+ for(let n=1;n<selected.length;n++)assert.notEqual(selected[n],selected[n-1]);
+ assert(new Set(selected).size===3);
+ assert.equal(createNonRepeatingChoice(1).next(),0);
+ assert.throws(()=>createNonRepeatingChoice(0));
+ assert.throws(()=>createNonRepeatingChoice(3,{random:()=>1}).next());
+});
+test('manual face groups resolve nine R6 and sixteen preserved R5 states without a combo box',()=>{
+ const labels=[...R6_PRIMARY_CHOICES.map(x=>'r6:'+x.id),...R6_HISTORIC_CHOICES.map(x=>'baseline:'+x.id)];
+ assert.equal(labels.length,25);assert.equal(new Set(labels).size,25);
+ for(const id of labels)assert(resolveFaceMenu(id));
+ const page=read('src/pages/experimentos/duo/index.astro');
+ const stage=read('src/scripts/hsin-stage.ts');
+ assert.match(page,/data-duo-face/);assert.match(page,/s6-face-comparatives/);
+ assert(!page.includes('data-duo-r6-select'));assert(!page.includes('data-duo-r6-play'));
+ assert.match(stage,/playFaceSelection/);assert.match(stage,/faceButtons/);
+});
+test('approved turn moves only the guest group without a second clock or mixer',()=>{
+ const group={rotation:{y:.22}},turn=createDuetBasicTurn(group);
+ assert.equal(turn.state.beatSynced,false);assert.equal(turn.state.angularVelocity,0);
+ turn.advance(.5,{playing:false});assert.equal(group.rotation.y,.22);
+ turn.advance(.5,{playing:true});
+ assert(group.rotation.y>.22);assert(turn.state.angularVelocity>0);
+ const a=group.rotation.y;
+ turn.advance(.5,{playing:true,paused:true});assert.equal(group.rotation.y,a);
+ turn.advance(.5,{playing:true,reducedMotion:true});assert.equal(group.rotation.y,a);
+ let count=0;while(Math.abs(group.rotation.y-.22)>1e-5&&count++<200)turn.advance(.1,{playing:false});
+ assert(count<200,'returns to neutral with a bounded shortest arc');
+ assert(Math.abs(group.rotation.y-.22)<1e-5);
+ for(let n=0;n<25*BASIC_TURN_SECONDS;n++)turn.advance(.05,{playing:true});
+ assert(turn.state.turns>=1);
+ turn.dispose();assert.equal(group.rotation.y,.22);
+ turn.advance(1,{playing:true});assert.equal(group.rotation.y,.22);
+ assert.throws(()=>createDuetBasicTurn(group,{periodSeconds:2}));
+});
+test('quiet face timing and soundtrack gating stay bounded and do not auto-trigger R6',()=>{
+ assert.equal(quietFaceWait(()=>0),5);
+ assert.equal(quietFaceWait(()=>.999),5+.999*9);
+ const guest=read('src/scripts/shorekeeper/s6-duet-guest.mjs');
+ assert.match(guest,/const idleChoice=createNonRepeatingChoice/);
+ assert.match(guest,/active=idleChoice\.next\(\)/);
+ assert.match(guest,/if\(!musicPlaying&&manualFaceCooldown<=0\)/);
+ assert.match(guest,/faceChoice\.next\(\)/);
+ assert.match(guest,/turn\.advance\(elapsed,\{playing:musicPlaying\}\)/);
+ assert.match(guest,/R6 QA candidates stay manual/);
+ assert(!guest.includes('requestAnimationFrame('));
+ assert(!guest.includes('new WebGLRenderer('));
+});
+test('pavilion and enlarged moon are duet-only and keep solo stage behavior intact',()=>{
+ const stage=read('src/scripts/hsin-stage.ts'),tower=read('src/scripts/hsin-music-tower.mjs');
+ assert.match(stage,/if\(duetRequested\)\{\s*\/\/ Duo only: a much larger moon/);
+ assert.match(stage,/lunar\.scale\.setScalar\(1\.9\)/);
+ assert.match(stage,/duetMode:duetRequested/);
+ assert.match(tower,/element\.dataset\.towerAnchor=duetMode\?'duo'/);
+ assert.match(tower,/const paneW=duetMode\?/);
+});

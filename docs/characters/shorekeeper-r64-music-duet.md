@@ -1,6 +1,6 @@
 # Shorekeeper R6.4 — dueto, preparação privada e contrato musical
 
-**Candidata para revisão em draft, empilhada sobre PR259 (`5cdadef92dc804e5cecfef9c6563fe5c24d25019`). Sem merge. QA artístico/hospedado/físico pendente; CHOREOGRAPHY_PENDING; G7 NO_GO.**
+**Candidata para revisão em draft, empilhada sobre PR259 (`5cdadef92dc804e5cecfef9c6563fe5c24d25019`). Sem merge. Rotação básica aprovada pelo usuário para reprodução confirmada; QA hospedado/físico pendente; G7 NO_GO.**
 
 ## Auditoria da base e regressões corrigidas
 
@@ -33,15 +33,15 @@ Prefetch pode competir por banda e manter até um buffer de modelo enquanto Hsin
 
 ## Player e câmera
 
-O player nativo fica na região superior direita; a área renderizada é separada dele por CSS. Desktop usa reserva lateral; 832×384 usa canvas de 606×384 antes de bordas; 390×844 usa faixa superior para o player e região de cena abaixo, com espaço inferior para controles. ResizeObserver mede a área efetiva do canvas, não a tela inteira. O embed mantém seus próprios controles; a fachada pode rolar em telas pequenas. O pavilhão 3D continua ausente no dueto, e o solo permanece com seu componente original.
+O player nativo fica na região superior direita; a área renderizada é separada dele por CSS. Desktop usa reserva lateral; 832×384 usa canvas de 606×384 antes de bordas; 390×844 usa faixa superior para o player e região de cena abaixo, com espaço inferior para controles. ResizeObserver mede a área efetiva do canvas, não a tela inteira. O embed mantém seus próprios controles; a fachada pode rolar em telas pequenas. Nesta revisão, o dueto reutiliza o pavilhão volumétrico acima das personagens dentro do canvas (sem segundo renderer); o player nativo permanece no painel HTML lateral. A lua foi ampliada apenas na rota do dueto, com halo atenuado para preservar a legibilidade. A Hsin solo permanece igual.
 
 Testes de projeção usam Three como oráculo para os cantos, com diferentes azimutes e aspectos. **Ainda faltam:** legibilidade/tamanho das personagens, extremos da Hsin, cabelo/roupas, lua, painel manual aberto, zoom/orientação e interação com o player nos dispositivos. A separação de regiões em código não substitui essa aceitação visual.
 
-## Resposta musical — contrato implementado, coreografia não
+## Resposta musical — rotação básica aprovada
 
 O guest recebe exclusivamente musicForStage().sample() e subscribe(). O snapshot mantém provider, status, playbackConfirmed, epoch, posição reportada, observedAt e synchronizationQuality. Só marca PLAYING_CONFIRMED para um provedor válido em playing confirmado; ready/paused/buffering/ended/unavailable ficam distintos. Não extrapola posição nem infere BPM/batidas. A assinatura atualiza reconhecimento mesmo se a atuação estiver pausada, sem avançar face/corpo. Troca de epoch invalida callbacks antigos no contrato Hsin existente.
 
-**CHOREOGRAPHY_PENDING.** Os três idles continuam originais; não há dança nova, Skill/Burst como dança, rotação diagonal periódica ou emoções R6/R7 automáticas. A atuação musical da Hsin não foi substituída. Ver storyboard/contrato proposto em `shorekeeper-r64-music-storyboard.md`.
+**BASIC_ROTATION_USER_APPROVED.** Durante reprodução musical confirmada, a Shorekeeper gira suavemente no eixo Y do próprio grupo de cena em cerca de 14 segundos por volta; usa o mesmo RAF do dueto, não altera bones/Root, não infere batidas e não executa Skill/Burst. Sem reprodução, retorna à orientação frontal pelo arco mais curto, e retoma os três idles originais sorteados desde a primeira entrada, sem repetição consecutiva. As três famílias faciais S6 curadas são sorteadas no silêncio; as nove candidatas R6 continuam manuais. Pause/reduced-motion não avançam movimento. A atuação da Hsin não foi substituída. A aprovação do conceito não substitui QA WebGL/Android. Ver storyboard/contrato atualizado.
 
 ## Validação e reprodução
 
@@ -62,6 +62,15 @@ node scripts/shorekeeper/audit-r64-guest.mjs PRIVATE_GLBS PRIVATE_OUTPUT
 ```
 
 Evidência compacta public-safe e matriz: `docs/qa/shorekeeper-r64/`. As ferramentas offline não baixam ou publicam modelos. Comparativos visuais e waterfall autenticado, cache nativo, primeiro frame, memória/GPU físicos continuam PENDING/BLOCKED. Não se declara 60 FPS, aprovação artística ou liberação de G7.
+
+
+## R6.4.1 — ajustes solicitados
+
+- Seleção dos idles 01/02/03 por sorteio desde a primeira apresentação; não há mais início obrigatório por Idle 01 nem repetição imediata.
+- No silêncio, três famílias faciais S6/R5 curadas são alternadas por sorteio e conservam o escritor facial existente. Pressionar uma expressão manual suspende temporariamente o agendamento automático. As nove candidatas R6 não são reproduzidas automaticamente.
+- Painel do dueto com 25 botões, separando nove R6, sete R5 preservados e nove intermediários/comparativos recolhíveis. O laboratório SK independente não foi alterado.
+- Pavilhão original volumétrico em tamanho compacto, pairando sobre as personagens na cena; player oficial HTML mantém controles e região próprios. Lua 1,9x apenas no dueto, com halo enfraquecido. Posição, desempenho e colisões visuais exigem teste em dispositivo.
+- O modelo GLB privado, as bibliotecas, o R2, Access, as animações originais e a implementação da Hsin solo permanecem inalterados.
 
 ## Preservação e rollback
 
