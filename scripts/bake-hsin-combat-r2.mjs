@@ -43,19 +43,24 @@ function value(field,t){let i=0;while(i<keys.length-2&&t>keys[i+1].t)i++;const a
  * pole = elbow direction; palm = where the palm faces; ext = wrist extension towards the back of the hand (degrees).
  * The hand leads every action; the elbow only articulates; the wrist orients; the clavicle follows high reaches.
  */
+// Palm directions are chosen roughly perpendicular to the forearm: pronation can only turn the palm about that axis.
 const GUARD={to:[.08,-.22,.20],pole:[.55,-.75,-.35],palm:[-.8,-.4,.2],ext:0};
 const LOW_GUARD={to:[.10,-.27,.15],pole:[.55,-.75,-.35],palm:[-.7,-.6,.2],ext:0};
-const WIND={to:[.16,-.34,-.05],pole:[.3,-.5,-.8],palm:[-.3,-.9,-.2],ext:5};
-const STRIKE={to:[.08,.04,.41],pole:[.75,-.65,0],palm:[0,.1,1],ext:25};
-const GATHER={to:[-.07,-.26,.26],pole:[.8,-.55,-.1],palm:[-1,0,.1],ext:0};
-const RELEASE={to:[.14,.22,.32],pole:[.75,-.6,-.2],palm:[0,.45,.9],ext:30};
-const OPEN_LOW={to:[.30,-.22,.12],pole:[0,-.55,-.85],palm:[.2,-.9,.3],ext:5};
-const DECAY={to:[.12,0,.30],pole:[.7,-.65,-.15],palm:[0,.1,1],ext:15};
+const WIND={to:[.16,-.34,-.05],pole:[.3,-.5,-.8],palm:[-.9,0,.2],ext:0};
+// Basic: a knife-hand sweep led by the fingers, palm turned down and in, wrist nearly straight.
+const STRIKE={to:[.08,.04,.41],pole:[.75,-.65,0],palm:[-.35,-.9,.1],ext:8};
+// Skill charge: "holding the sphere" — right palm down above, left palm up below, hands apart.
+const GATHER_R={to:[-.04,-.16,.27],pole:[.8,-.55,-.1],palm:[0,-1,.1],ext:0};
+const GATHER_L={to:[-.04,-.36,.24],pole:[.8,-.55,-.1],palm:[0,1,.1],ext:0};
+// Skill release: right arm opens up and forward, palm presented forward; left arm opens low to the side.
+const RELEASE={to:[.14,.22,.32],pole:[.75,-.6,-.2],palm:[0,.2,1],ext:25};
+const OPEN_LOW={to:[.30,-.22,.12],pole:[0,-.55,-.85],palm:[-.2,-.3,.9],ext:5};
+const DECAY={to:[.12,0,.30],pole:[.7,-.65,-.15],palm:[-.3,-.9,.1],ext:8};
 const DECAY_L={to:[.20,-.30,.12],pole:[.4,-.6,-.6],palm:[-.3,-.9,.2],ext:0};
 const mix=(a,b,w)=>({to:a.to.map((v,i)=>v+(b.to[i]-v)*w),pole:a.pole.map((v,i)=>v+(b.pole[i]-v)*w),palm:a.palm.map((v,i)=>v+(b.palm[i]-v)*w),ext:a.ext+(b.ext-a.ext)*w});
 const armKeys=[
  [0,'rest','rest'],[.8,GUARD,GUARD],[1.5,WIND,GUARD],[2.05,STRIKE,LOW_GUARD],[2.5,GUARD,WIND],[3.05,LOW_GUARD,STRIKE],[3.6,GUARD,GUARD],
- [4.5,GATHER,GATHER],[5.35,RELEASE,OPEN_LOW],[6,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
+ [4.5,GATHER_R,GATHER_L],[5.35,RELEASE,OPEN_LOW],[6,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
 ].map(([t,R,L])=>({t,R,L}));
 for(const k of armKeys)for(const s of SIDES)k[s]=k[s]==='rest'?restIntent[s]:k[s]==='settle'?mix(restIntent[s],GUARD,.35):k[s];
 /** Monotone cubic Hermite, zero slope at the ends: C1 between keys, no stop-and-go at every key. */

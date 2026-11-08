@@ -21,4 +21,4 @@ for(const [side,s] of Object.entries(report.summary)){
 const {perFrame,...summary}=report;
 await mkdir('docs/hsin-combat-r201',{recursive:true});
 await writeFile('docs/hsin-combat-r201/arm-anatomy-after.json',JSON.stringify(summary,null,2)+'\n');
-console.log('Combat R2.0.1 arm anatomy PASS',JSON.stringify(Object.fromEntries(Object.entries(report.summary).map(([k,s])=>[k,{flex:s.flexRange,hinge:s.maxHingeOffPlane,roll:s.maxForearmRoll,wrist:s.maxWristSwing,projectedWrist:s.maxProjectedWrist,surface:s.surface,clearance:s.minClearanceMm,step:s.maxStep}]))));
+console.log('Combat R2.0.1 arm anatomy PASS',JSON.stringify(Object.fromEntries(Object.entries(report.summary).map(([k,s])=>[k,{flex:s.flexRange,hinge:s.maxHingeOffPlane,roll:s.maxForearmRoll,wrist:s.maxWristSwing,pronation:s.maxPronation,projectedWrist:s.maxProjectedWrist,surface:s.surface,clearance:s.minClearanceMm,step:s.maxStep}]))));

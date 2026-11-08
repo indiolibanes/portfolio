@@ -35,8 +35,11 @@ export function measureArmRest(T, by, side) {
   // Palm side is where the resting fingers curl.
   const curl = P('midTip').sub(P('midBase')); curl.addScaledVector(fingerWorld, -curl.dot(fingerWorld));
   if (curl.lengthSq() > 1e-10 && palm.dot(curl) < 0) palm.negate();
+  const spine = by.get('ORG-Bip001Spine2').getWorldQuaternion(new T.Quaternion()).normalize();
   return {
-    side, names: n, S, E, W, C, l1: S.distanceTo(E), l2: E.distanceTo(W), flex: Math.acos(Math.min(1, u.dot(f))) * DEG, sigma,
+    side, names: n, S, E, W, C, l1: S.distanceTo(E),
+    clavicleSpineLocal: S.clone().sub(C).normalize().applyQuaternion(spine.clone().invert()),
+    handOverDistalForearm: Q('defFore2').invert().multiply(handQ.clone()), l2: E.distanceTo(W), flex: Math.acos(Math.min(1, u.dot(f))) * DEG, sigma,
     hingeOffPlaneDegrees: Math.acos(Math.min(1, Math.abs(hinge.dot(normal)))) * DEG,
     world: Object.fromEntries(['clav', 'upper', 'fore', 'hand', 'defClav', 'defUpper', 'defUpper2', 'defFore', 'defFore2', 'defHand'].map(k => [k, Q(k)])),
     local: Object.fromEntries(['clav', 'upper', 'fore', 'hand', 'defUpper2', 'defFore2'].map(k => [k, by.get(n[k]).quaternion.clone()])),
@@ -69,10 +72,15 @@ export function armState(T, by, rest) {
   const offPlane = sinA > Math.sin(8 / DEG) ? Math.acos(Math.min(1, Math.abs(hinge.dot(cross.normalize())))) * DEG : 0;
   const Y = new T.Vector3(0, 1, 0);
   const foreLocal = rest.local.fore.clone().invert().multiply(by.get(n.fore).quaternion).normalize(), foreSplit = swingTwist(T, foreLocal, Y);
-  const foreSwingAxis = new T.Vector3(foreLocal.x, foreLocal.y, foreLocal.z); const foreSwingOffHinge = foreSwingAxis.lengthSq() > 1e-10 ? Math.acos(Math.min(1, Math.abs(foreSwingAxis.normalize().x))) * DEG : 0;
+  // The axis of a near-identity rotation is noise: judge the hinge direction only once the forearm has moved 3°.
+  const foreSwingAxis = new T.Vector3(foreLocal.x, foreLocal.y, foreLocal.z), foreAngle = 2 * Math.acos(Math.min(1, Math.abs(foreLocal.w))) * DEG;
+  const foreSwingOffHinge = foreAngle > 3 && foreSwingAxis.lengthSq() > 1e-12 ? Math.acos(Math.min(1, Math.abs(foreSwingAxis.normalize().x))) * DEG : 0;
   const handLocal = rest.local.hand.clone().invert().multiply(by.get(n.hand).quaternion).normalize(), handSplit = swingTwist(T, handLocal, Y);
   const fore2 = swingTwist(T, rest.local.defFore2.clone().invert().multiply(by.get(n.defFore2).quaternion).normalize(), Y);
-  const clavElevation = Math.acos(Math.min(1, S.clone().sub(C).normalize().dot(rest.S.clone().sub(rest.C).normalize()))) * DEG;
+  // Clavicle motion relative to the chest that carries it (a torso yaw is not a shoulder shrug).
+  const spineQ = by.get('ORG-Bip001Spine2').getWorldQuaternion(new T.Quaternion()).normalize();
+  const clavElevation = Math.acos(Math.min(1, S.clone().sub(C).normalize().applyQuaternion(spineQ.clone().invert()).dot(rest.clavicleSpineLocal))) * DEG;
+  const overDistal = rest.handOverDistalForearm.clone().invert().multiply(Q('defFore2').invert().multiply(Q('hand'))).normalize(), wristOverSkin = swingTwist(T, overDistal, Y);
   const handQ = Q('hand'), finger = rest.fingerLocal.clone().applyQuaternion(handQ), palm = rest.palmLocal.clone().applyQuaternion(handQ);
   const tip = P('midTip');
   const dS = by.get(n.defUpper).getWorldPosition(new T.Vector3()), dE = by.get(n.defFore).getWorldPosition(new T.Vector3()), dW = by.get(n.defHand).getWorldPosition(new T.Vector3());
@@ -82,7 +90,8 @@ export function armState(T, by, rest) {
     orgDefGapMm: Math.max(S.distanceTo(dS), E.distanceTo(dE), W.distanceTo(dW)) * 1000,
     signedFlexDegrees: signedFlex, hingeOffPlaneDegrees: offPlane,
     forearmTwistDegrees: foreSplit.twistDegrees, forearmSwingOffHingeDegrees: foreSwingOffHinge,
-    wristSwingDegrees: handSplit.swingDegrees, wristTwistDegrees: handSplit.twistDegrees, distalForearmTwistDegrees: fore2.twistDegrees,
+    // Pronation is a forearm rotation; on this rig it is shared by the distal forearm skin bone and the hand.
+    wristSwingDegrees: handSplit.swingDegrees, pronationDegrees: handSplit.twistDegrees, wristTwistDegrees: wristOverSkin.twistDegrees, distalForearmTwistDegrees: fore2.twistDegrees,
     // How far the hand deviates from continuing the forearm: 0 = straight line elbow→wrist→fingers.
     wristBendDegrees: Math.acos(Math.max(-1, Math.min(1, f.dot(finger)))) * DEG,
     clavicleDegrees: clavElevation,
@@ -93,9 +102,14 @@ export function armState(T, by, rest) {
 /** Screen-space chain for silhouette checks. Cameras are plain {matrixWorldInverse, projectionMatrix} three cameras. */
 export function projectedChain(T, state, camera, aspect = 1) {
   const pts = [state.S, state.E, state.W, state.tip].map(p => { const v = p.clone().project(camera); return new T.Vector2(v.x * aspect, v.y); });
+  // Foreshortening: 1 when a segment lies in the image plane, 0 when it points at the camera. A projected angle at a
+  // joint is only a silhouette fact when both adjacent segments are visibly long.
+  const seen = (a, b) => { const s = b.clone().sub(a), c = a.clone().add(b).multiplyScalar(.5).sub(camera.position).normalize(), l = s.length(); return l > 1e-9 ? s.addScaledVector(c, -s.dot(c)).length() / l : 0; };
+  const fu = seen(state.S, state.E), ff = seen(state.E, state.W), fh = seen(state.W, state.tip);
   const bend = (a, b, c) => { const x = b.clone().sub(a), y = c.clone().sub(b); if (x.length() < 1e-6 || y.length() < 1e-6) return 0; return Math.acos(Math.max(-1, Math.min(1, x.normalize().dot(y.normalize())))) * DEG; };
   const turn = (a, b, c) => { const x = b.clone().sub(a), y = c.clone().sub(b); return Math.sign(x.x * y.y - x.y * y.x); };
   return {elbowBend: bend(pts[0], pts[1], pts[2]), wristBend: bend(pts[1], pts[2], pts[3]), elbowTurn: turn(pts[0], pts[1], pts[2]),
+    elbowVisible: Math.min(fu, ff) > .45, wristVisible: Math.min(ff, fh) > .45, foreshortening: [fu, ff, fh],
     upperScreen: pts[0].distanceTo(pts[1]), foreScreen: pts[1].distanceTo(pts[2])};
 }
 
@@ -124,7 +138,8 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
   const corr = k => rest.world[k === 'defClav' ? 'clav' : k === 'defUpper' || k === 'defUpper2' ? 'upper' : k === 'defFore' || k === 'defFore2' ? 'fore' : 'hand'].clone().invert().multiply(rest.world[k]);
   const corrections = Object.fromEntries(['defClav', 'defUpper', 'defUpper2', 'defFore', 'defFore2', 'defHand'].map(k => [k, corr(k)]));
   const restU = rest.E.clone().sub(rest.S).normalize();
-  function solve({target, pole, palm = null, extension = 0, frame}) {
+  let lastPerp = null;
+  function solve({target, pole, palm = null, extension = 0, frame, maxPronation = 70}) {
     // Clavicle: only when the hand rises above the shoulder.
     bone('clav').quaternion.copy(rest.local.clav); bone('clav').updateMatrix(); bone('clav').updateMatrixWorld(true);
     const C = P('clav'), S0 = P('upper'), reachDir = target.clone().sub(S0).normalize(), up = frame.up;
@@ -136,9 +151,11 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
     const d = Math.max(minReach, Math.min(maxReach, toTarget.length())), e = toTarget.normalize();
     const reachClamped = Math.abs(d - target.clone().sub(S).length()) > 1e-4;
     const x = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - x * x));
-    const perp = pole.clone().addScaledVector(e, -pole.dot(e));
+    // Elbow pole, kept temporally coherent when the authored pole nearly aligns with the reach direction.
+    const perp = pole.clone().addScaledVector(e, -pole.dot(e)), strength = perp.length();
+    if (lastPerp) { const prior = lastPerp.clone().addScaledVector(e, -lastPerp.dot(e)); const k = Math.max(0, Math.min(1, (strength - .2) / .25)); perp.multiplyScalar(k).addScaledVector(prior, 1 - k); }
     if (perp.lengthSq() < 1e-8) throw Error('Degenerate elbow pole ' + rest.side);
-    perp.normalize();
+    perp.normalize(); lastPerp = perp.clone();
     const elbow = S.clone().addScaledVector(e, x).addScaledVector(perp, h), wrist = S.clone().addScaledVector(e, d);
     const u1 = elbow.clone().sub(S).normalize(), f1 = wrist.clone().sub(elbow).normalize();
     // Upper arm: swing from rest direction (after the clavicle moved its parent) then roll the hinge onto the plane normal.
@@ -158,7 +175,9 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
     let qH = W('hand'), pronation = 0;
     if (palm) {
       const current = rest.palmLocal.clone().applyQuaternion(qH), a = current.clone().addScaledVector(f1, -current.dot(f1)), b = palm.clone().addScaledVector(f1, -palm.dot(f1));
-      if (a.lengthSq() > 1e-8 && b.lengthSq() > 1e-8) { a.normalize(); b.normalize(); pronation = Math.max(-75 / DEG, Math.min(75 / DEG, Math.atan2(a.clone().cross(b).dot(f1), a.dot(b)))); }
+      // A palm direction almost along the forearm cannot be reached by pronation: fade its influence instead of spinning.
+      const reach = b.length(), weight = Math.max(0, Math.min(1, (reach - .25) / .3));
+      if (a.lengthSq() > 1e-8 && b.lengthSq() > 1e-8) { a.normalize(); b.normalize(); pronation = weight * Math.max(-maxPronation / DEG, Math.min(maxPronation / DEG, Math.atan2(a.clone().cross(b).dot(f1), a.dot(b)))); }
     }
     qH = new T.Quaternion().setFromAxisAngle(f1, pronation).multiply(qH);
     if (extension) {
