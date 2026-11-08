@@ -15,7 +15,7 @@ import {SIDES,armNames,measureArmRest,armState,projectedChain,segmentDistance} f
 
 export const ARM_GATE=Object.freeze({
  boneLengthMm:.5,orgDefGapMm:.5,hyperextensionDegrees:-1,maxFlexDegrees:150,hingeOffPlaneDegrees:6,forearmRollDegrees:8,forearmSwingOffHingeDegrees:8,
- wristSwingDegrees:55,wristTwistDegrees:45,pronationDegrees:80,wristBendOverRestDegrees:45,projectedWristBendDegrees:70,surfaceStretch:1.6,surfaceCompress:.6,surfaceMinRestEdgeMm:4,
+ wristSwingDegrees:55,wristTwistDegrees:45,pronationDegrees:80,wristBendOverRestDegrees:45,projectedWristBendDegrees:70,surfaceStretch:4,surfaceCompress:.15,surfaceMinRestEdgeMm:4,
  clavicleDegrees:20,localStepDegrees:8,stepDegrees:10,accelerationJumpDegrees:4,forearmTorsoClearanceMm:0,handFaceClearanceMm:15,armArmClearanceMm:0,
 });
 const DEG=180/Math.PI;

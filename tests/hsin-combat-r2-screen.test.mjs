@@ -23,7 +23,7 @@ for(let frame=0;frame<=64;frame++){
   for(const c of cameras){const center=face.clone().project(c),right=new T.Vector3(1,0,0).applyQuaternion(c.quaternion),up=new T.Vector3(0,1,0).applyQuaternion(c.quaternion),rx=face.clone().addScaledVector(right,.048).project(c).distanceTo(center),ry=face.clone().addScaledVector(up,.068).project(c).distanceTo(center);
    for(let i=0;i<idx.length;i+=3){if(!sample.left.has(idx[i])||!sample.left.has(idx[i+1])||!sample.left.has(idx[i+2]))continue;metrics.screenTriangleProbes++;const tri=[0,1,2].map(j=>mesh.getVertexPosition(idx[i+j],new T.Vector3()).applyMatrix4(mesh.matrixWorld).project(c));
     // Triangles can cross the face even when none of their vertices do: include edges and interior barycentric probes.
-    for(const w of [[1,0,0],[0,1,0],[0,0,1],[.5,.5,0],[0,.5,.5],[.5,0,.5],[1/3,1/3,1/3]]){v.set(0,0,0);for(let j=0;j<3;j++)v.addScaledVector(tri[j],w[j]);if(((v.x-center.x)/rx)**2+((v.y-center.y)/ry)**2<1&&v.z<center.z+.0001)metrics.leftForearmScreenIntrusions++;}
+    for(const w of [[1,0,0],[0,1,0],[0,0,1],[.5,.5,0],[0,.5,.5],[.5,0,.5],[1/3,1/3,1/3]]){v.set(0,0,0);for(let j=0;j<3;j++)v.addScaledVector(tri[j],w[j]);if(((v.x-center.x)/rx)**2+((v.y-center.y)/ry)**2<1&&v.z<center.z+.0001){metrics.leftForearmScreenIntrusions++;(metrics.intrusionFrames??={})[frame]=(metrics.intrusionFrames[frame]??0)+1;}}
    }
   }
  }

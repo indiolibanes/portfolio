@@ -36,6 +36,8 @@ if(options.combat){
  const data=decodeCombatData(JSON.parse(await readFile(options.combatPath??('public/assets/animations/hsin/combat-'+version+'.json'))));
  const meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});
  const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];
+ // Body facing in the reference pose, from the shoulders — the same frame the Combat bake authors arms in.
+ {gltf.scene.updateMatrixWorld(true);const l=gltf.scene.getObjectByName('ORG-Bip001UpperArmL').getWorldPosition(new T.Vector3()),r=gltf.scene.getObjectByName('ORG-Bip001UpperArmR').getWorldPosition(new T.Vector3());globalThis.__hsinFacing=l.sub(r).setY(0).normalize().cross(new T.Vector3(0,1,0));}
  createCombatPose({T,data,bones,model:gltf.scene}).apply(Math.min(1,Math.max(0,Number(options.time??0)/data.seconds)));
  if(options.expression){
   const {snapshotFace,createFaceBinding}=await import('../src/scripts/hsin-face-binding.mjs');
@@ -51,11 +53,10 @@ async function scenery(url){const t=new T.Texture();t.userData.cpu=await decode(
 const moonTexture=await scenery(resource.moon),env=dance?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await scenery(resource.stone),atlasTexture:await scenery(resource.atlas),waterTexture:await scenery(resource.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 if(!dance){const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);}
 const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);let yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
-// --relYaw=DEG: camera azimuth relative to the body's own facing (from the planted thighs), so "front", "three-quarter"
+// --relYaw=DEG: camera azimuth relative to the body's own facing (reference-pose shoulders), so "front", "three-quarter"
 // and "profile" mean the same thing whatever root yaw the pose carries.
 if(options.relYaw!==undefined){
- const l=gltf.scene.getObjectByName('ORG-Bip001ThighL').getWorldPosition(new T.Vector3()),r=gltf.scene.getObjectByName('ORG-Bip001ThighR').getWorldPosition(new T.Vector3());
- const facing=l.sub(r).setY(0).normalize().cross(new T.Vector3(0,1,0));yaw=Math.atan2(facing.x,facing.z)+Number(options.relYaw)*Math.PI/180;
+ const facing=globalThis.__hsinFacing;if(!facing)throw Error('--relYaw needs --combat');yaw=Math.atan2(facing.x,facing.z)+Number(options.relYaw)*Math.PI/180;
 }
 camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);
 // QA close-ups on an arm joint (Combat R2.0.1): --focus=handR|elbowR|handL|elbowL [--dist=0.55] [--lift=0].

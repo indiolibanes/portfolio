@@ -131,7 +131,7 @@ export function segmentDistance(T, a, b, c, d) {
  *   forearm skin bone, which carries the whole forearm skin), then wrist extension towards the back of the hand.
  * - clavicle: elevates only for hands above shoulder level, at a scapulohumeral ratio, clamped.
  */
-export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14, maxFlexDegrees = 85} = {}) {
+export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14, maxFlexDegrees = 80} = {}) {
   const n = rest.names, bone = k => by.get(n[k]);
   const setWorld = (b, q) => { b.quaternion.copy(b.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q)).normalize(); b.updateMatrix(); b.updateMatrixWorld(true); };
   const W = k => bone(k).getWorldQuaternion(new T.Quaternion()).normalize(), P = k => bone(k).getWorldPosition(new T.Vector3());
