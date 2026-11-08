@@ -21,6 +21,7 @@ import '../styles/sophia-room2d-temp.css';
         const enabled = !!window.WebGL2RenderingContext
           && !matchMedia('(prefers-reduced-motion: reduce)').matches
           && !navigator.connection?.saveData
+          && !(navigator.deviceMemory <= 4)
           && document.documentElement.dataset.legacyMode !== 'true'
           && document.documentElement.dataset.seriousMode !== 'true';
         if (enabled) document.documentElement.dataset.sophia404 = 'loading';

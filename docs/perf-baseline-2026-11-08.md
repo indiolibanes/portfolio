@@ -31,7 +31,9 @@ Alvo: desktop com 4 GB de RAM e Motorola G35 (celular de entrada).
 | `experimental/sophia-7b-e1-latest.glb` | 16,3 MiB | `sophia-404-renderer.js` (lounge) |
 | `assets/models/hsin/hsin-v2.0.glb` | 9,4 MiB | scripts e páginas do Shorekeeper |
 
-A página 404 importa `sophia-404-stage.js`, que usa o renderer acima. Os dois GLBs da Sophia somam ≈ 36 MiB. **O gatilho de carregamento (quando e se espera a viewport, o tipo de aparelho ou o consentimento) não foi auditado nesta fase.**
+A página 404 importa `sophia-404-stage.js`, que usa o renderer acima. Os dois GLBs da Sophia somam ≈ 36 MiB.
+
+**Gatilho (auditado depois da primeira versão deste documento):** o renderer é importado sob demanda, só quando o palco chega a 160 px da viewport (`IntersectionObserver`); não carrega com `prefers-reduced-motion`, `saveData`, modo Legacy ou Serious, e as ilustrações SVG e a comédia 2D são sempre a alternativa. **Lacuna encontrada:** nada decidia pelo aparelho. Um celular de 4 GB sem `saveData` baixava os modelos. Corrigido na branch `perf/fase-1-peso-morto`: com `navigator.deviceMemory ≤ 4` o 3D não inicia (teste: `tests/sophia-404-device-gate.test.mjs`). Em Firefox e Safari, que não expõem `deviceMemory`, nada muda.
 
 ## Correções à análise inicial
 
@@ -68,7 +70,7 @@ Registrar os resultados em `docs/perf-medicoes-AAAA-MM-DD.md` antes de qualquer 
 
 ## Candidatos (ainda não implementados, na ordem proposta)
 
-1. **404**: auditar e, se preciso, adiar/condicionar o carregamento dos dois GLBs (≈ 36 MiB). Reduzir os modelos exige ferramenta de glTF (ex.: `gltf-transform`/meshopt/KTX2), indisponível nesta sessão.
+1. **404**: ~~condicionar o carregamento dos dois GLBs por aparelho~~ (feito, ver acima). Falta reduzir os próprios modelos para quem tem ≥ 8 GB; exige ferramenta de glTF (ex.: `gltf-transform`/meshopt/KTX2), indisponível nesta sessão.
 2. **Renderização sob demanda**: `content-visibility: auto` nas seções e pausa das animações CSS fora da tela.
 3. **Nível "lite"** por aparelho (`deviceMemory`, `hardwareConcurrency`, `saveData`, quadros lentos): desliga blur, backdrop-filter, mix-blend e animações decorativas infinitas.
 4. **Mídia animada**: reduzir quadros/dimensões do GIF e do `typing-left.webp`. Os *stills* são gerados por `scripts/generate-motion-stills.mjs`, então a troca de formato precisa de build e revisão visual.
