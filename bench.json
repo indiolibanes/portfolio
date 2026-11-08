@@ -1,0 +1,24 @@
+{
+  "runs": 4,
+  "steps": 504,
+  "withEnv": [],
+  "heap": {
+    "baseline": {
+      "bytes": 5200432,
+      "updates": 2020
+    },
+    "withEnv": {
+      "bytes": -410304,
+      "updates": 2020
+    }
+  },
+  "envUpdateMs": {
+    "mean": 0.0098,
+    "p50": 0,
+    "p95": 0.1,
+    "p99": 0.1,
+    "max": 0.1,
+    "samples": 2020
+  },
+  "note": "JS CPU time of env.update (skeleton sampling + simulation + instance write) in headless Chromium on a CI VM; not a phone measurement."
+}

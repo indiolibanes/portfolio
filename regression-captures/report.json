@@ -1,0 +1,3982 @@
+{
+  "status": "SOFTWARE_WEBGL",
+  "errors": [],
+  "shots": [
+    {
+      "version": "before",
+      "file": "before-basic02-3.3-front.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 21,
+      "textures": 20,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.3-three-quarter.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 22,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.3-profile.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.32-front.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.32-three-quarter.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.32-profile.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.4-front.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.4-three-quarter.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.4-profile.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.5-front.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.5-three-quarter.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-basic02-3.5-profile.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-1.55.png",
+      "time": 1.55,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        }
+      ],
+      "cue": {
+        "squint": 0.0997964891975309,
+        "mouthSquint": 0.04989824459876545,
+        "brow": 0.06015263310185183,
+        "smileCut": 0.6994912229938272,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06015263310185183,
+            0.06015263310185183,
+            0,
+            0,
+            0,
+            0,
+            0.0997964891975309,
+            0.0997964891975309,
+            0,
+            0,
+            0.6357943346469238,
+            0.5407841364546093,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-1.7333333333333334.png",
+      "time": 1.7333333333333334,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        }
+      ],
+      "cue": {
+        "squint": 0.10365605925925926,
+        "mouthSquint": 0.052437372839506176,
+        "brow": 0.05634394074074074,
+        "smileCut": 0.7121868641975309,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 23,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05634394074074074,
+            0.05634394074074074,
+            0,
+            0,
+            0,
+            0,
+            0.10365605925925926,
+            0.10365605925925926,
+            0,
+            0,
+            0.6367676671190285,
+            0.5420113818113257,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-1.9666666666666666.png",
+      "time": 1.9666666666666666,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        }
+      ],
+      "cue": {
+        "squint": 0.12634394074074073,
+        "mouthSquint": 0.06756262716049383,
+        "brow": 0.033656059259259255,
+        "smileCut": 0.7878131358024691,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 25,
+      "triangles": 124037,
+      "geometries": 24,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.033656059259259255,
+            0.033656059259259255,
+            0,
+            0,
+            0,
+            0,
+            0.12634394074074073,
+            0.12634394074074073,
+            0,
+            0,
+            0.6425656811552024,
+            0.5493219216402124,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-2.066666666666667.png",
+      "time": 2.066666666666667,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        }
+      ],
+      "cue": {
+        "squint": 0.12991976296296298,
+        "mouthSquint": 0.06994650864197532,
+        "brow": 0.03008023703703702,
+        "smileCut": 0.7997325432098766,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 25,
+      "triangles": 124037,
+      "geometries": 24,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.03008023703703702,
+            0.03008023703703702,
+            0,
+            0,
+            0,
+            0,
+            0.12991976296296298,
+            0.12991976296296298,
+            0,
+            0,
+            0.643479502370825,
+            0.5504741310608193,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-2.2.png",
+      "time": 2.2,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        }
+      ],
+      "cue": {
+        "squint": 0.125859375,
+        "mouthSquint": 0.0679296875,
+        "brow": 0.0320703125,
+        "smileCut": 0.78447265625,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 26,
+      "triangles": 124085,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.0320703125,
+            0.0320703125,
+            0,
+            0,
+            0,
+            0,
+            0.125859375,
+            0.125859375,
+            0,
+            0,
+            0.6427063876157626,
+            0.5494993341434747,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "basic01-energy-2.3.png",
+      "time": 2.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        }
+      ],
+      "cue": {
+        "squint": 0.11000000000000004,
+        "mouthSquint": 0.060000000000000026,
+        "brow": 0.03999999999999998,
+        "smileCut": 0.7250000000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 26,
+      "triangles": 124085,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.03999999999999998,
+            0.03999999999999998,
+            0,
+            0,
+            0,
+            0,
+            0.11000000000000004,
+            0.11000000000000004,
+            0,
+            0,
+            0.6396666741371155,
+            0.545666651725769,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-face-preparation.png",
+      "time": 1.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        }
+      ],
+      "cue": {
+        "squint": 0.08,
+        "mouthSquint": 0.04,
+        "brow": 0.075,
+        "smileCut": 0.6499999999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.075,
+            0.075,
+            0,
+            0,
+            0,
+            0,
+            0.08,
+            0.08,
+            0,
+            0,
+            0.6320000076293946,
+            0.5359999847412109,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-face-basic01-impact.png",
+      "time": 2.2,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        }
+      ],
+      "cue": {
+        "squint": 0.125859375,
+        "mouthSquint": 0.0679296875,
+        "brow": 0.0320703125,
+        "smileCut": 0.78447265625,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.0320703125,
+            0.0320703125,
+            0,
+            0,
+            0,
+            0,
+            0.125859375,
+            0.125859375,
+            0,
+            0,
+            0.6427063876157626,
+            0.5494993341434747,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-face-skill-release.png",
+      "time": 5.45,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        }
+      ],
+      "cue": {
+        "squint": 0.145,
+        "mouthSquint": 0.078,
+        "brow": 0.04,
+        "smileCut": 0.8,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 5,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04,
+            0.04,
+            0,
+            0,
+            0,
+            0,
+            0.145,
+            0.145,
+            0,
+            0,
+            0.6465666739940643,
+            0.5543666520118713,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0.0014680331531333121,
+            0.002298645056486379,
+            0.0022986015357691946,
+            0.0016168606163888036,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "before",
+      "file": "before-face-recovery.png",
+      "time": 6.6,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        },
+        {
+          "name": "recovery",
+          "time": 6
+        }
+      ],
+      "cue": {
+        "squint": 0.019420800000000005,
+        "mouthSquint": 0.009420800000000005,
+        "brow": 0.02,
+        "smileCut": 0.19420800000000008,
+        "smileAdd": 0.009420800000000005,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.015000000000000006,
+            0.015000000000000006,
+            6.669894286462617e-26,
+            6.669894286462617e-26,
+            0,
+            0,
+            0.01456560000000001,
+            0.01456560000000001,
+            0.007065600000000007,
+            0.007065600000000007,
+            0.6193751545578003,
+            0.5200816908843994,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.001147164555847688,
+            0,
+            0.002282260355917492,
+            0.00228221721022916,
+            0,
+            0.0013238806413382277
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.3-front.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.3-three-quarter.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.3-profile.png",
+      "time": 3.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.12436640000000004,
+        "mouthSquint": 0.06388960000000003,
+        "brow": 0.04269759999999997,
+        "smileCut": 0.7523840000000002,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04269759999999997,
+            0.04269759999999997,
+            0,
+            0,
+            0,
+            0,
+            0.12436640000000004,
+            0.12436640000000004,
+            0,
+            0,
+            0.641157687439537,
+            0.5475466251209259,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.32-front.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.32-three-quarter.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.32-profile.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.4-front.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.4-three-quarter.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.4-profile.png",
+      "time": 3.4,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.10063360000000003,
+        "mouthSquint": 0.051110400000000014,
+        "brow": 0.05730239999999998,
+        "smileCut": 0.6976160000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.05730239999999998,
+            0.05730239999999998,
+            0,
+            0,
+            0,
+            0,
+            0.10063360000000003,
+            0.10063360000000003,
+            0,
+            0,
+            0.6362589942077637,
+            0.5413700115844726,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.5-front.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.5-three-quarter.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 22,
+      "triangles": 120985,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-basic02-3.5-profile.png",
+      "time": 3.5,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.08376479999999999,
+        "mouthSquint": 0.042027199999999994,
+        "brow": 0.06768320000000001,
+        "smileCut": 0.6586879999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.06768320000000001,
+            0.06768320000000001,
+            0,
+            0,
+            0,
+            0,
+            0.08376479999999999,
+            0.08376479999999999,
+            0,
+            0,
+            0.6327771009466171,
+            0.5369797981067658,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-face-preparation.png",
+      "time": 1.3,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        }
+      ],
+      "cue": {
+        "squint": 0.08,
+        "mouthSquint": 0.04,
+        "brow": 0.075,
+        "smileCut": 0.6499999999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.075,
+            0.075,
+            0,
+            0,
+            0,
+            0,
+            0.08,
+            0.08,
+            0,
+            0,
+            0.6320000076293946,
+            0.5359999847412109,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-face-basic01-impact.png",
+      "time": 2.2,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        }
+      ],
+      "cue": {
+        "squint": 0.125859375,
+        "mouthSquint": 0.0679296875,
+        "brow": 0.0320703125,
+        "smileCut": 0.78447265625,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.0320703125,
+            0.0320703125,
+            0,
+            0,
+            0,
+            0,
+            0.125859375,
+            0.125859375,
+            0,
+            0,
+            0.6427063876157626,
+            0.5494993341434747,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-face-skill-release.png",
+      "time": 5.45,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        }
+      ],
+      "cue": {
+        "squint": 0.145,
+        "mouthSquint": 0.078,
+        "brow": 0.04,
+        "smileCut": 0.8,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 5,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04,
+            0.04,
+            0,
+            0,
+            0,
+            0,
+            0.145,
+            0.145,
+            0,
+            0,
+            0.6465666739940643,
+            0.5543666520118713,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0.0014680331531333121,
+            0.002298645056486379,
+            0.0022986015357691946,
+            0.0016168606163888036,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "after-face-recovery.png",
+      "time": 6.6,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        },
+        {
+          "name": "recovery",
+          "time": 6
+        }
+      ],
+      "cue": {
+        "squint": 0.019420800000000005,
+        "mouthSquint": 0.009420800000000005,
+        "brow": 0.02,
+        "smileCut": 0.19420800000000008,
+        "smileAdd": 0.009420800000000005,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 25,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.015000000000000006,
+            0.015000000000000006,
+            6.669894286462617e-26,
+            6.669894286462617e-26,
+            0,
+            0,
+            0.01456560000000001,
+            0.01456560000000001,
+            0.007065600000000007,
+            0.007065600000000007,
+            0.6193751545578003,
+            0.5200816908843994,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.001147164555847688,
+            0,
+            0.002282260355917492,
+            0.00228221721022916,
+            0,
+            0.0013238806413382277
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-energy.png",
+      "time": 0.8,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        }
+      ],
+      "cue": {
+        "squint": 0.0504768,
+        "mouthSquint": 0.023651200000000004,
+        "brow": 0.08365120000000001,
+        "smileCut": 0.5047680000000001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 1,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 26,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.08365120000000001,
+            0.08365120000000001,
+            0,
+            0,
+            0,
+            0,
+            0.0504768,
+            0.0504768,
+            0,
+            0,
+            0.6257329677593231,
+            0.5280980644813538,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-trail.png",
+      "time": 1.8,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        }
+      ],
+      "cue": {
+        "squint": 0.1095232,
+        "mouthSquint": 0.056348800000000004,
+        "brow": 0.0504768,
+        "smileCut": 0.731744,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 26,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.0504768,
+            0.0504768,
+            0,
+            0,
+            0,
+            0,
+            0.1095232,
+            0.1095232,
+            0,
+            0,
+            0.638267047499466,
+            0.5439019050010682,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-arc.png",
+      "time": 2.2,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        }
+      ],
+      "cue": {
+        "squint": 0.125859375,
+        "mouthSquint": 0.0679296875,
+        "brow": 0.0320703125,
+        "smileCut": 0.78447265625,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 26,
+      "triangles": 124085,
+      "geometries": 26,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.0320703125,
+            0.0320703125,
+            0,
+            0,
+            0,
+            0,
+            0.125859375,
+            0.125859375,
+            0,
+            0,
+            0.6427063876157626,
+            0.5494993341434747,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-trail-left.png",
+      "time": 2.78,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        }
+      ],
+      "cue": {
+        "squint": 0.11510759999999998,
+        "mouthSquint": 0.058369199999999996,
+        "brow": 0.04163080000000001,
+        "smileCut": 0.7085843999999999,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 0,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 26,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04163080000000001,
+            0.04163080000000001,
+            0,
+            0,
+            0,
+            0,
+            0.11510759999999998,
+            0.11510759999999998,
+            0,
+            0,
+            0.6390415341500759,
+            0.5448784316998482,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-arc-left.png",
+      "time": 3.32,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        }
+      ],
+      "cue": {
+        "squint": 0.11974260326400005,
+        "mouthSquint": 0.06139986329600003,
+        "brow": 0.04554301337599997,
+        "smileCut": 0.7417136998400001,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 2,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 26,
+      "triangles": 124085,
+      "geometries": 26,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04554301337599997,
+            0.04554301337599997,
+            0,
+            0,
+            0,
+            0,
+            0.11974260326400005,
+            0.11974260326400005,
+            0,
+            0,
+            0.6402032883894571,
+            0.5463432523410859,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0.0009904105546120659,
+            0,
+            0.0005581449464254839,
+            0.0005581344119280575,
+            0,
+            0.000967172696876341
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-charge.png",
+      "time": 3.95,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        }
+      ],
+      "cue": {
+        "squint": 0.08653380594135802,
+        "mouthSquint": 0.04,
+        "brow": 0.08306761188271605,
+        "smileCut": 0.7349394772376543,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 3,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 26,
+      "triangles": 124801,
+      "geometries": 27,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.08306761188271605,
+            0.08306761188271605,
+            0,
+            0,
+            0,
+            0,
+            0.08653380594135802,
+            0.08653380594135802,
+            0,
+            0,
+            0.6320000076293946,
+            0.5359999847412109,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0,
+            0.005184118638429652,
+            0.005184020568400461,
+            0.0005661221587242826,
+            0.0005546399583292836
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-ring.png",
+      "time": 5.45,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        }
+      ],
+      "cue": {
+        "squint": 0.145,
+        "mouthSquint": 0.078,
+        "brow": 0.04,
+        "smileCut": 0.8,
+        "smileAdd": 0,
+        "close": 0
+      },
+      "visibleVfx": 5,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 28,
+      "triangles": 125761,
+      "geometries": 27,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04,
+            0.04,
+            0,
+            0,
+            0,
+            0,
+            0.145,
+            0.145,
+            0,
+            0,
+            0.6465666739940643,
+            0.5543666520118713,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0.0014680331531333121,
+            0.002298645056486379,
+            0.0022986015357691946,
+            0.0016168606163888036,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "version": "after",
+      "file": "event-recovery.png",
+      "time": 6,
+      "events": [
+        {
+          "name": "energy",
+          "time": 0.8
+        },
+        {
+          "name": "trail",
+          "time": 1.8
+        },
+        {
+          "name": "arc",
+          "time": 2.2
+        },
+        {
+          "name": "trail-left",
+          "time": 2.78
+        },
+        {
+          "name": "arc-left",
+          "time": 3.32
+        },
+        {
+          "name": "charge",
+          "time": 3.95
+        },
+        {
+          "name": "ring",
+          "time": 5.45
+        },
+        {
+          "name": "recovery",
+          "time": 6
+        }
+      ],
+      "cue": {
+        "squint": 0.04,
+        "mouthSquint": 0.02,
+        "brow": 0.04,
+        "smileCut": 0.4,
+        "smileAdd": 0.03,
+        "close": 0
+      },
+      "visibleVfx": 7,
+      "visibleEnv": 0,
+      "env": null,
+      "budget": {
+        "meshes": 7,
+        "geometries": 4,
+        "materials": 5,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "triangles": 1886
+      },
+      "calls": 31,
+      "triangles": 125885,
+      "geometries": 27,
+      "textures": 21,
+      "influences": [
+        {
+          "name": "R2T1XinMd10011_LOD0_part_2",
+          "weights": [
+            0.7666666507720947,
+            0.18333333730697632,
+            0.04000000000000001,
+            0.04000000000000001,
+            0,
+            0,
+            0,
+            0,
+            0.04000000000000001,
+            0.04000000000000001,
+            0.030000000000000006,
+            0.030000000000000006,
+            0.6243333411216736,
+            0.5263333177566528,
+            0.28333333134651184,
+            0.36666667461395264,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "R2T1XinMd10011_LOD0_part_7",
+          "weights": [
+            0,
+            0,
+            0,
+            0.006694359611852539,
+            0.0029689347279187608,
+            0.002968878400720153,
+            0.006439214250487624,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "limitation": "No physical GPU, FPS or artistic approval.",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+}

@@ -1,0 +1,186 @@
+{
+  "method": "Exact-clock GLB + face + R2.1 effects + R2.2 environment, software WebGL (SwiftShader)",
+  "fps": 24,
+  "duration": 8.4,
+  "fpsOnDevice": "NOT MEASURED",
+  "physicalGpu": false,
+  "videos": [
+    {
+      "file": "video-a-compare.mp4",
+      "width": 1440,
+      "height": 1080,
+      "frames": 203,
+      "layout": "left R2.1.2 | right R2.2; top full body, bottom 3/4",
+      "bytes": 2394315,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1440,
+            "height": 1080,
+            "pix_fmt": "yuv420p",
+            "nb_frames": "203"
+          }
+        ],
+        "format": {
+          "duration": "8.458333"
+        }
+      }
+    },
+    {
+      "file": "video-b-cinematic.mp4",
+      "width": 1280,
+      "height": 720,
+      "frames": 203,
+      "label": "Cinematic Combat 16:9",
+      "peakDrawCalls": 33,
+      "peakEnvDrawCalls": 3,
+      "bytes": 1902860,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1280,
+            "height": 720,
+            "pix_fmt": "yuv420p",
+            "nb_frames": "203"
+          }
+        ],
+        "format": {
+          "duration": "8.458333"
+        }
+      }
+    },
+    {
+      "file": "video-c-mobile.mp4",
+      "width": 540,
+      "height": 960,
+      "frames": 203,
+      "label": "Mobile preview 9:16",
+      "peakDrawCalls": 33,
+      "peakEnvDrawCalls": 3,
+      "bytes": 1251528,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 540,
+            "height": 960,
+            "pix_fmt": "yuv420p",
+            "nb_frames": "203"
+          }
+        ],
+        "format": {
+          "duration": "8.458333"
+        }
+      }
+    }
+  ],
+  "stills": [
+    "stills/b01-prep-front.png",
+    "stills/b01-prep-tq.png",
+    "stills/b01-prep-profile.png",
+    "stills/b01-prep-phone.png",
+    "stills/b01-path-front.png",
+    "stills/b01-path-tq.png",
+    "stills/b01-path-profile.png",
+    "stills/b01-path-phone.png",
+    "stills/b01-impact-front.png",
+    "stills/b01-impact-tq.png",
+    "stills/b01-impact-profile.png",
+    "stills/b01-impact-phone.png",
+    "stills/b01-dissipation-front.png",
+    "stills/b01-dissipation-tq.png",
+    "stills/b01-dissipation-profile.png",
+    "stills/b01-dissipation-phone.png",
+    "stills/b02-path-front.png",
+    "stills/b02-path-tq.png",
+    "stills/b02-path-profile.png",
+    "stills/b02-path-phone.png",
+    "stills/b02-peak-front.png",
+    "stills/b02-peak-tq.png",
+    "stills/b02-peak-profile.png",
+    "stills/b02-peak-phone.png",
+    "stills/b02-dissipation-front.png",
+    "stills/b02-dissipation-tq.png",
+    "stills/b02-dissipation-profile.png",
+    "stills/b02-dissipation-phone.png",
+    "stills/skill-concentration-front.png",
+    "stills/skill-concentration-tq.png",
+    "stills/skill-concentration-profile.png",
+    "stills/skill-concentration-phone.png",
+    "stills/skill-accumulation-front.png",
+    "stills/skill-accumulation-tq.png",
+    "stills/skill-accumulation-profile.png",
+    "stills/skill-accumulation-phone.png",
+    "stills/skill-release-front.png",
+    "stills/skill-release-tq.png",
+    "stills/skill-release-profile.png",
+    "stills/skill-release-phone.png",
+    "stills/skill-reverb-front.png",
+    "stills/skill-reverb-tq.png",
+    "stills/skill-reverb-profile.png",
+    "stills/skill-reverb-phone.png",
+    "stills/recovery-front.png",
+    "stills/recovery-tq.png",
+    "stills/recovery-profile.png",
+    "stills/recovery-phone.png",
+    "stills/rest-front.png",
+    "stills/rest-tq.png",
+    "stills/rest-profile.png",
+    "stills/rest-phone.png"
+  ],
+  "errors": [],
+  "glErrors": [],
+  "font": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "bench": {
+    "runs": 4,
+    "steps": 504,
+    "withEnv": [],
+    "heap": {
+      "baseline": {
+        "bytes": 5200432,
+        "updates": 2020
+      },
+      "withEnv": {
+        "bytes": -410304,
+        "updates": 2020
+      }
+    },
+    "envUpdateMs": {
+      "mean": 0.0098,
+      "p50": 0,
+      "p95": 0.1,
+      "p99": 0.1,
+      "max": 0.1,
+      "samples": 2020
+    },
+    "note": "JS CPU time of env.update (skeleton sampling + simulation + instance write) in headless Chromium on a CI VM; not a phone measurement."
+  },
+  "cost": {
+    "pairs": 458,
+    "peakExtraDrawCalls": 3,
+    "peakExtraTriangles": 1256,
+    "peakEnvInstances": {
+      "rings": 6,
+      "shards": 45,
+      "glints": 3
+    },
+    "peakEnvTriangles": 1256,
+    "atTime": {
+      "drawCalls": 2.2,
+      "triangles": 6.083333333333333
+    },
+    "budget": {
+      "drawCalls": 4,
+      "triangles": 3000
+    }
+  }
+}

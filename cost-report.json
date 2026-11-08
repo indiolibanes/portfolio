@@ -1,0 +1,19 @@
+{
+  "pairs": 458,
+  "peakExtraDrawCalls": 3,
+  "peakExtraTriangles": 1256,
+  "peakEnvInstances": {
+    "rings": 6,
+    "shards": 45,
+    "glints": 3
+  },
+  "peakEnvTriangles": 1256,
+  "atTime": {
+    "drawCalls": 2.2,
+    "triangles": 6.083333333333333
+  },
+  "budget": {
+    "drawCalls": 4,
+    "triangles": 3000
+  }
+}
