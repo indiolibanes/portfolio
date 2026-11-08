@@ -294,3 +294,16 @@ Detalhes e números estão em `docs/code-audit-2026-11-02.md`.
 **Princípio:** clareza antes de ornamentação; estrutura antes de ferramenta; documentação deve sobreviver a quem a escreveu.
 
 © Kauê Alencar. Código e conteúdo sem licença aberta declarada. Imagens, personagens e marcas de terceiros pertencem aos seus respectivos titulares.
+
+## SEO e indexação
+
+A origem canônica deste portfólio é `https://kaue.pages.dev` (definida em `astro.config.mjs` e `src/config.ts`). Evite publicar uma segunda origem indexável sem redirecionamento permanente para a URL canônica.
+
+- **Indexáveis:** `/`, `/curiosidades/` e `/sophia/`. São as únicas URLs listadas em `public/sitemap.xml`.
+- **Fora do índice:** `/404`, `/modo-experimental/` e `/experimentos/**` (incluindo Hsin, Shorekeeper e o preview de dupla). A exclusão do índice não substitui autenticação.
+- **Metadados:** `src/components/BaseHead.astro` define título, descrição, canonical, Open Graph e Twitter Cards. A página inicial publica um grafo JSON-LD `Person` + `WebSite`; o cartão de compartilhamento continua a ser gerado por `scripts/generate-og.mjs`.
+- **Cabeçalhos:** `public/_headers` aplica `X-Robots-Tag: noindex` às rotas experimentais. Não aplicar `X-Robots-Tag: index` globalmente: isso conflita com páginas que solicitam `noindex`.
+- **Sitemap:** manter apenas as URLs públicas canônicas. Não preencher `lastmod` com a data do build nem datas estimadas; só publicar datas verificáveis de alteração do conteúdo.
+- **Verificação:** `npm run check:seo` inspeciona os arquivos-fonte; `npm run build` também verifica HTML, canonicals, dados estruturados e diretivas dos arquivos compilados. O CI de PR executa ambos.
+
+A presença do site no Google depende também de entrega HTTP, configuração Cloudflare e Google Search Console. O teste local não confirma indexação em serviços externos.
