@@ -13,7 +13,7 @@
 const tris=g=>(g.index?g.index.count:g.attributes.position.count)/3;
 const clamp01=v=>Math.max(0,Math.min(1,v));
 const smoother=u=>u*u*u*(u*(u*6-15)+10);
-const RIBBON_POINTS=20,RIBBON_LIFE=.45,PALM_OFFSET=.085,SPHERE_HZ=2.2,TRAVEL=.95;
+const RIBBON_POINTS=20,RIBBON_LIFE=.45,PALM_OFFSET=.085,SPHERE_HZ=2.2,TRAVEL=.8,COMET_LIFE=.26;
 const CORE_GOLD=0xffc66e,SHELL_AMBER=0xff9a5e;
 export function createCombatVfx({T,scene,camera,by}){
  const group=new T.Group();group.name='Hsin combat R2.1 pooled effects';scene.add(group);
@@ -33,8 +33,8 @@ export function createCombatVfx({T,scene,camera,by}){
  const core=mk(sphereGeometry,coreMaterial,'combat core'),shell=mk(sphereGeometry,shellMaterial,'combat shell');
  const meshes=[ring,echoA,echoB,impact,ribbon,core,shell];
  const bone=name=>by.get(name);
- const hands={R:bone('ORG-Bip001HandR'),L:bone('ORG-Bip001HandL')},forearms={R:bone('ORG-Bip001ForearmR'),L:bone('ORG-Bip001ForearmL')},shoulderR=bone('ORG-Bip001UpperArmR');
- if(!hands.R||!hands.L||!forearms.R||!forearms.L||!shoulderR)throw Error('Combat VFX bones missing');
+ const hands={R:bone('ORG-Bip001HandR'),L:bone('ORG-Bip001HandL')},forearms={R:bone('ORG-Bip001ForearmR'),L:bone('ORG-Bip001ForearmL')},shoulderR=bone('ORG-Bip001UpperArmR'),shoulderL=bone('ORG-Bip001UpperArmL');
+ if(!hands.R||!hands.L||!forearms.R||!forearms.L||!shoulderR||!shoulderL)throw Error('Combat VFX bones missing');
  const v1=new T.Vector3(),v2=new T.Vector3(),v3=new T.Vector3(),v4=new T.Vector3(),palmR=new T.Vector3(),palmL=new T.Vector3(),center=new T.Vector3(),axis=new T.Vector3(),launch=new T.Vector3(),direction=new T.Vector3(),finish=new T.Vector3();
  const q1=new T.Quaternion(),q2=new T.Quaternion(),z=new T.Vector3(0,0,1),colorGold=new T.Color(0xffd9a0),colorRose=new T.Color(0xff8a94),colorComet=new T.Color(0xffd89a);
  const state={energy:-1,trail:'',trailStart:0,trailEnd:0,impact:-1,impactSide:'R',charge:-1,release:-1,radius0:.05,lastTime:-1};
@@ -51,12 +51,12 @@ export function createCombatVfx({T,scene,camera,by}){
   if(ribbonCount===RIBBON_POINTS){ribbonPoints.copyWithin(0,3);ribbonBirth.copyWithin(0,1);ribbonCount--;}
   position.toArray(ribbonPoints,ribbonCount*3);ribbonBirth[ribbonCount]=time;ribbonCount++;lastPoint=time;
  }
- function drawRibbon(time,color,width){
+ function drawRibbon(time,color,width,life=RIBBON_LIFE){
   let alive=0;
   for(let k=0;k<RIBBON_POINTS;k++){
    const live=k<ribbonCount,i=Math.min(k,ribbonCount-1);
    if(ribbonCount===0){ribbonPositions.fill(0,k*6,k*6+6);ribbonColors.fill(0,k*6,k*6+6);continue;}
-   const age=live?time-ribbonBirth[i]:RIBBON_LIFE,a=clamp01(1-age/RIBBON_LIFE),s=ribbonCount>1?i/(ribbonCount-1):1;
+   const age=live?time-ribbonBirth[i]:life,a=clamp01(1-age/life),s=ribbonCount>1?i/(ribbonCount-1):1;
    if(live&&a>.01)alive++;
    const p0=Math.max(0,i-1),p1=Math.min(ribbonCount-1,i+1);
    v1.set(ribbonPoints[i*3],ribbonPoints[i*3+1],ribbonPoints[i*3+2]);
@@ -66,7 +66,7 @@ export function createCombatVfx({T,scene,camera,by}){
    const w=width*(.12+.88*s)*a;
    ribbonPositions[k*6]=v1.x-v2.x*w;ribbonPositions[k*6+1]=v1.y-v2.y*w;ribbonPositions[k*6+2]=v1.z-v2.z*w;
    ribbonPositions[k*6+3]=v1.x+v2.x*w;ribbonPositions[k*6+4]=v1.y+v2.y*w;ribbonPositions[k*6+5]=v1.z+v2.z*w;
-   const c=a*a*(live?1:0)*.62;
+   const c=a*a*(live?1:0)*.45;
    ribbonColors[k*6]=ribbonColors[k*6+3]=color.r*c;ribbonColors[k*6+1]=ribbonColors[k*6+4]=color.g*c;ribbonColors[k*6+2]=ribbonColors[k*6+5]=color.b*c;
   }
   ribbonGeometry.attributes.position.needsUpdate=true;ribbonGeometry.attributes.color.needsUpdate=true;
@@ -95,6 +95,9 @@ export function createCombatVfx({T,scene,camera,by}){
     launch.copy(center);
     hands.R.updateWorldMatrix(true,false);shoulderR.updateWorldMatrix(true,false);hands.R.getWorldPosition(direction);shoulderR.getWorldPosition(v1);
     direction.sub(v1);direction.y*=.35;direction.normalize();
+    // lean the launch towards Hsin's own forward (her left-right axis x up) so the energy stays in front of her instead of leaving the frame sideways
+    shoulderL.updateWorldMatrix(true,false);shoulderL.getWorldPosition(v2);v2.sub(v1);v2.y=0;
+    if(v2.lengthSq()>1e-8){v2.normalize();v3.set(0,1,0);v3.crossVectors(v2,v3);direction.multiplyScalar(.6).addScaledVector(v3,.4).normalize();}
     state.release=time;clearRibbon();
    }
   },
@@ -112,7 +115,7 @@ export function createCombatVfx({T,scene,camera,by}){
     if(time>=state.trailEnd)state.trail='';
     else if(time>=state.trailStart){
      if(advancing){palm(state.trail,v1);addPoint(v1,time);}
-     tint=state.trail==='R'?colorGold:colorRose;tintWidth=.026;
+     tint=state.trail==='R'?colorGold:colorRose;tintWidth=.016;
     }
    }
    // impact accent where the strike peaked
@@ -141,22 +144,22 @@ export function createCombatVfx({T,scene,camera,by}){
     palm('R',v2);
     v1.copy(launch).lerp(v2,pull).addScaledVector(direction,TRAVEL*s);
     if(age<.55){
-     const fade=1-smoother(clamp01((age-.34)/.2));
-     core.position.copy(v1);core.scale.setScalar(Math.max(1e-4,state.radius0*(1-.4*u)));coreMaterial.opacity=.62*fade;core.visible=true;
+     const fade=1-smoother(clamp01((age-.24)/.2));
+     core.position.copy(v1);core.scale.setScalar(Math.max(1e-4,state.radius0*(1-.7*u)));coreMaterial.opacity=.62*fade;core.visible=true;
      if(advancing&&age<.5)addPoint(v1,time);
-     tint=colorComet;tintWidth=Math.max(.006,state.radius0*.24);
+     tint=colorComet;tintWidth=Math.max(.005,state.radius0*.13);
      q1.setFromUnitVectors(z,direction);
-     ring.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s);ring.quaternion.copy(q1);ring.scale.setScalar(.3+age*.9);ringMaterial.opacity=(1-clamp01(age/.5))*.5;ring.visible=true;
-     for(const [echo,k] of [[echoA,1],[echoB,2]]){echo.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s-.1*k);echo.quaternion.copy(q1);echo.scale.setScalar((.45+age*.7)*k*.5);echo.visible=true;}
+     ring.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s);ring.quaternion.copy(q1);ring.scale.setScalar(.26+age*.75);ringMaterial.opacity=(1-clamp01(age/.5))*.35;ring.visible=true;
+     for(const [echo,k] of [[echoA,1],[echoB,2]]){echo.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s-.1*k);echo.quaternion.copy(q1);echo.scale.setScalar((.4+age*.6)*k*.42);echo.visible=true;}
     }
     if(age>=.4&&age<.85){const w=(age-.4)/.45;finish.copy(launch).addScaledVector(direction,TRAVEL);impact.position.copy(finish);impact.quaternion.copy(camera.quaternion);impact.scale.setScalar(1+w*2.2);impactMaterial.color.set(0xffd89a);impactMaterial.opacity=(1-w)*.55;impact.visible=true;}
     // dissipation: a faint amber remnant on the dominant palm that drifts up and fades while the body recovers
     const glow=clamp01(age/.95);
     if(glow<1){
-     shell.position.copy(v2);shell.position.y+=.04*glow;shell.scale.setScalar(Math.max(1e-4,state.radius0*(1.1+.5*glow)));shellMaterial.opacity=.14*(1-glow)*(1-glow);shell.visible=true;
+     shell.position.copy(v2);shell.position.y+=.04*glow;shell.scale.setScalar(Math.max(1e-4,state.radius0*(.9+.4*glow)));shellMaterial.opacity=.11*(1-glow)*(1-glow);shell.visible=true;
     }
    }
-   if(ribbonCount>0){const alive=drawRibbon(time,tint,tintWidth);ribbon.visible=alive;if(!alive&&ribbonCount>=2)clearRibbon();}
+   if(ribbonCount>0){const alive=drawRibbon(time,tint,tintWidth,tint===colorComet?COMET_LIFE:RIBBON_LIFE);ribbon.visible=alive;if(!alive&&ribbonCount>=2)clearRibbon();}
   },
   clear(){resetState();hide();},
   /** QA probe: world positions, radii and NDC of the pieces that carry the Skill read. Read-only, allocates, call from diagnostics only. */
