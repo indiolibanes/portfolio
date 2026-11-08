@@ -118,7 +118,7 @@ export function createEnvSim({density=1}={}){
     }
     glint(t,PALE,now.pr[0],now.pr[1],now.pr[2],.2,.085,.1);
     glint(t,GOLD,now.pr[0]+dx*.16,now.pr[1]+dy*.16,now.pr[2]+dz*.16,.26,.05,.8);
-    ripple(t,now.mid[0],now.mid[2],.15,1.15,1.05,.75,PALE,.4);
+    ripple(t,now.mid[0],now.mid[2],.15,.9,1,.55,GOLD,.4);
     footRipple(t,loadedFoot(.02),PALE,.9);state.stats.bursts++;break;}
    case 'clear':reset();break;
    default:break;
@@ -165,20 +165,20 @@ export function createEnvSim({density=1}={}){
      if(rand()<11/60*dens){const a=rand()*6.2832,rad=mandalaRadius(1,tt);
       shard(tt,0,rand()<.6?GOLD:ROSE,inp.mid[0]+Math.cos(a)*rad,ev.floorY+.01,inp.mid[2]+Math.sin(a)*rad,Math.cos(a)*.04,.2+.1*rand(),Math.sin(a)*.04,.6,.05,.9+.4*rand(),.008+.004*rand(),2.2);}
     }
-    if(!(ev.reverbDone&1)&&age2>=.3){ev.reverbDone|=1;ripple(ev.release+.3,inp.mid[0],inp.mid[2],.2,1,.95,.5,ROSE,-.5);}
-    if(!(ev.reverbDone&2)&&age2>=.62){ev.reverbDone|=2;ripple(ev.release+.62,inp.mid[0],inp.mid[2],.2,.9,.9,.32,GOLD,.5);}
+    if(!(ev.reverbDone&1)&&age2>=.3){ev.reverbDone|=1;ripple(ev.release+.3,inp.mid[0],inp.mid[2],.2,.8,.9,.36,ROSE,-.5);}
+    if(!(ev.reverbDone&2)&&age2>=.62){ev.reverbDone|=2;ripple(ev.release+.62,inp.mid[0],inp.mid[2],.2,.7,.85,.24,GOLD,.5);}
    }
   }
  }
  function mandalaRadius(i,t){
   const base=i?.8:.5;if(ev.release<0||t<ev.release)return base;
-  const u=t-ev.release;return i?base+.36*smooth(0,.9,u):base-.06*smooth(0,.5,u);
+  const u=t-ev.release;return i?base+.22*smooth(0,.9,u):base-.06*smooth(0,.5,u);
  }
  function mandalaBrightness(t){
   if(ev.charge<0)return 0;
   const fadeIn=smooth(ev.charge+.6,ev.charge+1.35,t);if(fadeIn<=0)return 0;
   if(ev.release<0||t<ev.release)return fadeIn*.5*(.8+.2*Math.sin(6.9*(t-ev.charge)));
-  const u=t-ev.release;return (.5+.6*Math.exp(-u*6))*(1-smooth(.95,1.75,u));
+  const u=t-ev.release;return (.5+.45*Math.exp(-u*6))*(1-smooth(.95,1.75,u));
  }
  /**
   * Advance the effects to the combat clock `t`. `pose` carries the freshly sampled skeleton:
@@ -249,7 +249,7 @@ export function createEnvSim({density=1}={}){
     px=sP[i*3]+(sV[i*3]*(1-ek))/k;pz=sP[i*3+2]+(sV[i*3+2]*(1-ek))/k;
     py=sP[i*3+1]+gk*age+(sV[i*3+1]-gk)*(1-ek)/k;
     vx=sV[i*3]*ek;vz=sV[i*3+2]*ek;vy=gk+(sV[i*3+1]-gk)*ek;
-    b=smooth(0,.12,u)*(1-smooth(.55,1,u))*.92;sz=sSize[i]*(.6+.4*smooth(0,.2,u))*(1-.5*smooth(.7,1,u));
+    b=smooth(0,.12,u)*(1-smooth(.55,1,u))*.8;sz=sSize[i]*(.6+.4*smooth(0,.2,u))*(1-.5*smooth(.7,1,u));
    }
    // orientation: long axis along the velocity
    let yx=vx,yy=vy,yz=vz,yl=Math.hypot(yx,yy,yz);if(yl<.02){yx=0;yy=1;yz=0;yl=1;}yx/=yl;yy/=yl;yz/=yl;
