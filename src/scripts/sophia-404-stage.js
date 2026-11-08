@@ -4,7 +4,13 @@
  * Loads Three.js and the large GLB only when a scene actually enters view.
  */
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-const saveData = navigator.connection?.saveData === true;
+// Constrained device: Save-Data, or ≤ 4 GB of RAM as reported by Chromium
+// (navigator.deviceMemory; absent in Firefox/Safari, where nothing changes).
+// There the ≈36 MiB of GLB + Three.js never start downloading and the SVG
+// illustration and the 2D comedy stay. Keep in sync with the inline gate in
+// src/pages/404.astro.
+const saveData = navigator.connection?.saveData === true
+  || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4);
 const stages = [...document.querySelectorAll('[data-sophia-stage]')];
 // Mark intended 3D stages before asynchronous imports; the old SVG is a
 // fallback, never a transient "first frame" that gets swapped after seconds.
