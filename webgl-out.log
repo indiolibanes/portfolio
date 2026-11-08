@@ -1,0 +1,342 @@
+{
+ "views": {
+  "desktop": {
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.633299999999991,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1269,
+     "coreOpacity": 0.206,
+     "shellOpacity": 0.048,
+     "ringOpacity": 0.169
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.2666999999999975,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1106,
+     "coreOpacity": 0.598,
+     "shellOpacity": 0.145,
+     "ringOpacity": 0.162
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.616699999999996,
+     "coreToPalmMidNdc": 0.5762,
+     "corePalmSpanNdc": 0.4579,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.078,
+     "ringOpacity": 0.245
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.966699999999995,
+     "coreToPalmMidNdc": 0.8714,
+     "corePalmSpanNdc": 0.6184,
+     "coreOpacity": 0,
+     "shellOpacity": 0.025,
+     "ringOpacity": 0
+    }
+   ],
+   "panel": {
+    "expanded": 0.1212,
+    "playing": 0.0518,
+    "toggle": [
+     "false",
+     "true"
+    ]
+   },
+   "yaw": [
+    -22.8,
+    -28.3,
+    -32.9,
+    -23.5,
+    -18.6,
+    -16.6,
+    -16.3,
+    -18.7,
+    -19.4,
+    -2.3
+   ]
+  },
+  "phone": {
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.599799999999996,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.281,
+     "coreOpacity": 0.195,
+     "shellOpacity": 0.046,
+     "ringOpacity": 0.164
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.2664,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.2276,
+     "coreOpacity": 0.602,
+     "shellOpacity": 0.146,
+     "ringOpacity": 0.161
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.649799999999993,
+     "coreToPalmMidNdc": 1.1801,
+     "corePalmSpanNdc": 0.8138,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.072,
+     "ringOpacity": 0.222
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.983099999999995,
+     "coreToPalmMidNdc": 1.4945,
+     "corePalmSpanNdc": 1.0261,
+     "coreOpacity": 0,
+     "shellOpacity": 0.023,
+     "ringOpacity": 0
+    }
+   ],
+   "panel": {
+    "expanded": 0.2628,
+    "playing": 0.1107,
+    "toggle": [
+     "false",
+     "true"
+    ]
+   },
+   "yaw": [
+    -23.4,
+    -28.6,
+    -33,
+    -24.2,
+    -18.7,
+    -16.6,
+    -16.5,
+    -18.8,
+    -19.7,
+    -4
+   ]
+  },
+  "sideRight": {
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.550000000000003,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1579,
+     "coreOpacity": 0.173,
+     "shellOpacity": 0.041,
+     "ringOpacity": 0.152
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.233300000000004,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1005,
+     "coreOpacity": 0.598,
+     "shellOpacity": 0.145,
+     "ringOpacity": 0.162
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.633300000000003,
+     "coreToPalmMidNdc": 0.3593,
+     "corePalmSpanNdc": 0.3975,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.078,
+     "ringOpacity": 0.245
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.983199999999996,
+     "coreToPalmMidNdc": 0.5551,
+     "corePalmSpanNdc": 0.5125,
+     "coreOpacity": 0,
+     "shellOpacity": 0.025,
+     "ringOpacity": 0
+    }
+   ],
+   "panel": {
+    "expanded": 0.1212,
+    "playing": 0.0518,
+    "toggle": [
+     "false",
+     "true"
+    ]
+   },
+   "yaw": [
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6,
+    -39.6
+   ]
+  },
+  "sideLeft": {
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.550099999999999,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0477,
+     "coreOpacity": 0.173,
+     "shellOpacity": 0.041,
+     "ringOpacity": 0.152
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.250099999999996,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0326,
+     "coreOpacity": 0.602,
+     "shellOpacity": 0.146,
+     "ringOpacity": 0.161
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.583499999999989,
+     "coreToPalmMidNdc": 0.2365,
+     "corePalmSpanNdc": 0.1686,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.081,
+     "ringOpacity": 0.257
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.983499999999988,
+     "coreToPalmMidNdc": 0.3854,
+     "corePalmSpanNdc": 0.2457,
+     "coreOpacity": 0,
+     "shellOpacity": 0.021,
+     "ringOpacity": 0
+    }
+   ],
+   "panel": {
+    "expanded": 0.1212,
+    "playing": 0.0518,
+    "toggle": [
+     "false",
+     "true"
+    ]
+   },
+   "yaw": [
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6,
+    39.6
+   ]
+  },
+  "video": {
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.6497999999999955,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1252,
+     "coreOpacity": 0.241,
+     "shellOpacity": 0.057,
+     "ringOpacity": 0.183
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.299799999999993,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1461,
+     "coreOpacity": 0.611,
+     "shellOpacity": 0.148,
+     "ringOpacity": 0.16
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.6332,
+     "coreToPalmMidNdc": 0.5862,
+     "corePalmSpanNdc": 0.4823,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.078,
+     "ringOpacity": 0.245
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.9665999999999935,
+     "coreToPalmMidNdc": 0.8705,
+     "corePalmSpanNdc": 0.6185,
+     "coreOpacity": 0,
+     "shellOpacity": 0.027,
+     "ringOpacity": 0.012
+    }
+   ],
+   "panel": {
+    "expanded": 0.1212,
+    "playing": 0.0518,
+    "toggle": [
+     "false",
+     "true"
+    ]
+   },
+   "yaw": [
+    -22.6,
+    -28.6,
+    -32.6,
+    -23.3,
+    -18.6,
+    -16.5,
+    -16.4,
+    -18.7,
+    -18.6,
+    -1.1
+   ]
+  }
+ },
+ "status": "WEBGL_QA_SOFTWARE",
+ "renderer": {
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+ },
+ "errors": 0,
+ "desktop": {
+  "prepCalls": 24,
+  "skillHoldCalls": 26,
+  "releaseCalls": 30,
+  "skillHoldExtraCalls": 2,
+  "releaseExtraCalls": 6,
+  "skillHoldExtraTriangles": 360,
+  "releaseExtraTriangles": 1396
+ },
+ "phone": {
+  "prepCalls": 23,
+  "skillHoldCalls": 25,
+  "releaseCalls": 29,
+  "skillHoldExtraCalls": 2,
+  "releaseExtraCalls": 6,
+  "skillHoldExtraTriangles": 360,
+  "releaseExtraTriangles": 1396
+ },
+ "stable": [
+  true,
+  true
+ ],
+ "camera": [
+  {
+   "afterToggle": "automatic",
+   "afterWheel": "free"
+  },
+  {
+   "afterToggle": "automatic",
+   "afterWheel": "free"
+  }
+ ]
+}
