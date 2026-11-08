@@ -6,14 +6,14 @@
   "footVertices": 3608,
   "bounds": {
     "min": [
-      -0.47958034802278576,
+      -0.5337008351498395,
       0.00003503754806438025,
-      -0.6284442398466549
+      -0.6236863187753074
     ],
     "max": [
       0.8473916606881261,
       1.7516986856345336,
-      0.5812998368296519
+      0.542241083618358
     ]
   },
   "limitation": "Surface sampling and screen triangle probes, not continuous cloth/hair collision detection or artistic approval.",
@@ -34,6 +34,6 @@
       "yaw": 48
     }
   ],
-  "minArmBelowEyeCenter": -0.043827304210643625,
+  "minArmBelowEyeCenter": -0.04057743634878719,
   "status": "SAMPLED_SCREEN_PROBES_CLEAR"
 }
