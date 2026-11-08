@@ -6,7 +6,7 @@
  * solver on the real rig (scripts/lib/hsin-arm-anatomy.mjs). Hips, sink, torso yaw, head, legs, support and the
  * secondary layer keep the R2 curves, so the validated support and recovery lattice are unchanged.
  */
-import {readFile,writeFile} from 'node:fs/promises';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {createLowerSolver} from './lib/hsin-dance-lower.mjs';
 import {danceRig} from './lib/hsin-dance-rig.mjs';
@@ -139,4 +139,5 @@ await writeFile('public/assets/animations/hsin/combat-r2.json',text);
 await writeFile('src/data/hsin-combat-r2.json',JSON.stringify({url:'/assets/animations/hsin/combat-r2.json',sha256:hash(text),bytes:Buffer.byteLength(text),modelSha256:data.modelSha256,profileSha256:data.profileSha256},null,2)+'\n');
 report.restIntent=restIntent;report.armRest=Object.fromEntries(SIDES.map(s=>[s,{l1:armRest[s].l1,l2:armRest[s].l2,flex:armRest[s].flex,sigma:armRest[s].sigma,hingeOffPlaneDegrees:armRest[s].hingeOffPlaneDegrees}]));
 console.log(JSON.stringify({bones:names.length,frames:frames.length,bytes:Buffer.byteLength(text),report},null,1));
+await mkdir('docs/hsin-combat-r201',{recursive:true});
 await writeFile('docs/hsin-combat-r201/bake-report.json',JSON.stringify({bones:names.length,frames:frames.length,bytes:Buffer.byteLength(text),...report},null,2)+'\n');

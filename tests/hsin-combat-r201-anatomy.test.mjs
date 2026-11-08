@@ -4,7 +4,7 @@
  * cameras, skinned surface stretch, clearances and temporal stability. Quaternion normalisation alone proves nothing here.
  */
 import assert from 'node:assert/strict';
-import {readFile,writeFile} from 'node:fs/promises';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {auditArms,ARM_GATE} from '../scripts/qa-hsin-combat-arms.mjs';
 const text=await readFile('public/assets/animations/hsin/combat-r2.json','utf8'),data=JSON.parse(text);
 assert.equal(data.revision,'r2.0.1','R2.0.1 bake expected');
@@ -19,5 +19,6 @@ for(const [side,s] of Object.entries(report.summary)){
  assert.ok(s.surface.maxStretch<ARM_GATE.surfaceStretch&&s.surface.minCompress>ARM_GATE.surfaceCompress,side+' arm surface '+JSON.stringify(s.surface));
 }
 const {perFrame,...summary}=report;
+await mkdir('docs/hsin-combat-r201',{recursive:true});
 await writeFile('docs/hsin-combat-r201/arm-anatomy-after.json',JSON.stringify(summary,null,2)+'\n');
 console.log('Combat R2.0.1 arm anatomy PASS',JSON.stringify(Object.fromEntries(Object.entries(report.summary).map(([k,s])=>[k,{flex:s.flexRange,hinge:s.maxHingeOffPlane,roll:s.maxForearmRoll,wrist:s.maxWristSwing,projectedWrist:s.maxProjectedWrist,surface:s.surface,clearance:s.minClearanceMm,step:s.maxStep}]))));
