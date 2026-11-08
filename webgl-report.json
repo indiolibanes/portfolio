@@ -1,0 +1,8606 @@
+{
+ "status": "WEBGL_QA_SOFTWARE",
+ "renderer": {
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+ },
+ "viewports": {
+  "desktop": {
+   "viewport": {
+    "width": 1280,
+    "height": 720
+   },
+   "dpr": 1,
+   "view": "front",
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 8,
+    "vfx": {
+     "palmR": [
+      -0.235,
+      0.8838,
+      -0.2901
+     ],
+     "palmL": [
+      0.0972,
+      0.8862,
+      0.3579
+     ],
+     "palmMid": [
+      -0.0689,
+      0.885,
+      0.0339
+     ],
+     "palmMidNdc": [
+      -0.0928,
+      0.0032
+     ],
+     "palmRNdc": [
+      -0.1425,
+      0.0218
+     ],
+     "palmLNdc": [
+      -0.032,
+      -0.0194
+     ],
+     "core": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "shell": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "ring": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "opacity": {
+      "core": 0,
+      "shell": 0,
+      "ring": 0
+     },
+     "ribbonVisible": false
+    },
+    "env": {
+     "instances": {
+      "rings": 0,
+      "shards": 0,
+      "glints": 0
+     },
+     "triangles": 0,
+     "stats": {
+      "ripples": 0,
+      "shards": 0,
+      "glints": 0,
+      "bursts": 0,
+      "transfers": 0
+     },
+     "baseline": {
+      "toe": [
+       0.06,
+       0.06
+      ],
+      "foot": [
+       0.09,
+       0.09
+      ],
+      "shift": 0,
+      "measured": false
+     },
+     "planted": [
+      1,
+      1
+     ],
+     "heights": {
+      "toe": [
+       0,
+       0
+      ],
+      "foot": [
+       0,
+       0
+      ]
+     },
+     "pelvisShift": 0,
+     "density": 0.6,
+     "budget": {
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 1,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "capacity": {
+       "rings": 8,
+       "shards": 56,
+       "glints": 20
+      },
+      "triangles": 2016,
+      "maxDrawCalls": 3
+     }
+    },
+    "cycle": 0,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 0.9500000000000022,
+     "state": "PREPARATION",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0372,
+        0.0372
+       ],
+       "foot": [
+        0.1442,
+        0.1442
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0263
+     },
+     "renderer": {
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1,
+     "panel": "collapsed",
+     "cameraYawDeg": -22.1,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3364,
+       1.1128,
+       -0.051
+      ],
+      "palmL": [
+       -0.2028,
+       1.1212,
+       0.2747
+      ],
+      "palmMid": [
+       -0.2696,
+       1.117,
+       0.1118
+      ],
+      "palmMidNdc": [
+       -0.1375,
+       0.2612
+      ],
+      "palmRNdc": [
+       -0.2035,
+       0.2524
+      ],
+      "palmLNdc": [
+       -0.0658,
+       0.2708
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3364,
+        1.1128,
+        -0.051
+       ],
+       "scale": 0.5455,
+       "ndc": [
+        -0.2035,
+        0.2524
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.364
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.7000000000000028,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 2,
+       "glints": 0
+      },
+      "triangles": 212,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0547,
+        0.0547
+       ],
+       "foot": [
+        0.1617,
+        0.1617
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0267
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124173,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 15
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -28.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2094,
+       1.0188,
+       -0.3812
+      ],
+      "palmL": [
+       -0.1976,
+       1.0875,
+       0.2618
+      ],
+      "palmMid": [
+       -0.2035,
+       1.0531,
+       -0.0597
+      ],
+      "palmMidNdc": [
+       -0.1217,
+       0.1708
+      ],
+      "palmRNdc": [
+       -0.1948,
+       0.1376
+      ],
+      "palmLNdc": [
+       -0.0348,
+       0.2103
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.2165999999999935,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 20,
+       "glints": 1
+      },
+      "triangles": 496,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0442,
+        0.0442
+       ],
+       "foot": [
+        0.1512,
+        0.1512
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0491
+     },
+     "renderer": {
+      "calls": 29,
+      "triangles": 124581,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -32.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4475,
+       1.3045,
+       0.0856
+      ],
+      "palmL": [
+       -0.0103,
+       1.097,
+       0.3603
+      ],
+      "palmMid": [
+       -0.2289,
+       1.2007,
+       0.2229
+      ],
+      "palmMidNdc": [
+       -0.0481,
+       0.3067
+      ],
+      "palmRNdc": [
+       -0.209,
+       0.422
+      ],
+      "palmLNdc": [
+       0.1119,
+       0.1919
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.2331999999999956,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 16,
+       "glints": 0
+      },
+      "triangles": 268,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0503,
+        0.0503
+       ],
+       "foot": [
+        0.1573,
+        0.1573
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0499
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124305,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 3,
+     "panel": "collapsed",
+     "cameraYawDeg": -23.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2801,
+       1.0528,
+       -0.1543
+      ],
+      "palmL": [
+       -0.2256,
+       1.332,
+       0.4294
+      ],
+      "palmMid": [
+       -0.2529,
+       1.1924,
+       0.1376
+      ],
+      "palmMidNdc": [
+       -0.1118,
+       0.2767
+      ],
+      "palmRNdc": [
+       -0.1834,
+       0.1247
+      ],
+      "palmLNdc": [
+       -0.0264,
+       0.4579
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.599799999999997,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 2
+      },
+      "triangles": 16,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0541,
+        0.0541
+       ],
+       "foot": [
+        0.1611,
+        0.1611
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0034
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124817,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 4,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3694,
+       1.1768,
+       0.043
+      ],
+      "palmL": [
+       -0.2419,
+       1.178,
+       0.2835
+      ],
+      "palmMid": [
+       -0.3057,
+       1.1774,
+       0.1633
+      ],
+      "palmMidNdc": [
+       -0.1775,
+       0.1627
+      ],
+      "palmRNdc": [
+       -0.2409,
+       0.1628
+      ],
+      "palmLNdc": [
+       -0.1092,
+       0.1626
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3057,
+        1.1774,
+        0.1633
+       ],
+       "scale": 0.0518,
+       "ndc": [
+        -0.1775,
+        0.1627
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3057,
+        1.1774,
+        0.1633
+       ],
+       "scale": 0.0695,
+       "ndc": [
+        -0.1775,
+        0.1627
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3057,
+        1.1774,
+        0.1633
+       ],
+       "scale": 0.7212,
+       "ndc": [
+        -0.1775,
+        0.1627
+       ]
+      },
+      "opacity": {
+       "core": 0.206,
+       "shell": 0.048,
+       "ring": 0.169
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.2330999999999825,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 8,
+       "glints": 0
+      },
+      "triangles": 440,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0526,
+        0.0526
+       ],
+       "foot": [
+        0.1596,
+        0.1596
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0041
+     },
+     "renderer": {
+      "calls": 28,
+      "triangles": 125241,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3751,
+       1.2337,
+       0.0668
+      ],
+      "palmL": [
+       -0.2916,
+       1.228,
+       0.2357
+      ],
+      "palmMid": [
+       -0.3334,
+       1.2308,
+       0.1512
+      ],
+      "palmMidNdc": [
+       -0.2189,
+       0.1926
+      ],
+      "palmRNdc": [
+       -0.2612,
+       0.1959
+      ],
+      "palmLNdc": [
+       -0.174,
+       0.1891
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3334,
+        1.2308,
+        0.1512
+       ],
+       "scale": 0.0561,
+       "ndc": [
+        -0.2189,
+        0.1926
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3334,
+        1.2308,
+        0.1512
+       ],
+       "scale": 0.0704,
+       "ndc": [
+        -0.2189,
+        0.1926
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3334,
+        1.2308,
+        0.1512
+       ],
+       "scale": 0.5175,
+       "ndc": [
+        -0.2189,
+        0.1926
+       ]
+      },
+      "opacity": {
+       "core": 0.598,
+       "shell": 0.145,
+       "ring": 0.162
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.633099999999981,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 10,
+       "glints": 2
+      },
+      "triangles": 872,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0348,
+        0.0348
+       ],
+       "foot": [
+        0.1418,
+        0.1418
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0502
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126709,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.4,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4655,
+       1.3558,
+       0.0737
+      ],
+      "palmL": [
+       -0.0723,
+       1.1366,
+       0.4123
+      ],
+      "palmMid": [
+       -0.2689,
+       1.2462,
+       0.243
+      ],
+      "palmMidNdc": [
+       -0.1577,
+       0.2081
+      ],
+      "palmRNdc": [
+       -0.3337,
+       0.3566
+      ],
+      "palmLNdc": [
+       0.0348,
+       0.0457
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.9051,
+        1.3485,
+        0.3531
+       ],
+       "scale": 0.0905,
+       "ndc": [
+        -0.7167,
+        0.3841
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4655,
+        1.3621,
+        0.0737
+       ],
+       "scale": 0.1103,
+       "ndc": [
+        -0.3338,
+        0.3653
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6013,
+        1.3562,
+        0.1539
+       ],
+       "scale": 0.3725,
+       "ndc": [
+        -0.4381,
+        0.3675
+       ]
+      },
+      "opacity": {
+       "core": 0.62,
+       "shell": 0.078,
+       "ring": 0.245
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.916499999999974,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 5,
+       "shards": 4,
+       "glints": 0
+      },
+      "triangles": 1036,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0275,
+        0.0275
+       ],
+       "foot": [
+        0.1344,
+        0.1344
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0251
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126921,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.4,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4575,
+       1.3692,
+       0.0011
+      ],
+      "palmL": [
+       0.1064,
+       1.0935,
+       0.4539
+      ],
+      "palmMid": [
+       -0.1755,
+       1.2313,
+       0.2275
+      ],
+      "palmMidNdc": [
+       -0.0777,
+       0.1954
+      ],
+      "palmRNdc": [
+       -0.3232,
+       0.3726
+      ],
+      "palmLNdc": [
+       0.1938,
+       -0.0007
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -1.1448,
+        1.3715,
+        0.4069
+       ],
+       "scale": 0.045,
+       "ndc": [
+        -0.9328,
+        0.4525
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4575,
+        1.3874,
+        0.0011
+       ],
+       "scale": 0.124,
+       "ndc": [
+        -0.3233,
+        0.3965
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6637,
+        1.3699,
+        0.1228
+       ],
+       "scale": 0.585,
+       "ndc": [
+        -0.4729,
+        0.3922
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0.033,
+       "ring": 0.047
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.733099999999977,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 3,
+       "shards": 5,
+       "glints": 0
+      },
+      "triangles": 632,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0109,
+        0.0109
+       ],
+       "foot": [
+        0.1179,
+        0.1179
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0027
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124593,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3846,
+       1.1297,
+       -0.1575
+      ],
+      "palmL": [
+       -0.0202,
+       0.9871,
+       0.3525
+      ],
+      "palmMid": [
+       -0.2024,
+       1.0584,
+       0.0975
+      ],
+      "palmMidNdc": [
+       -0.1206,
+       0.001
+      ],
+      "palmRNdc": [
+       -0.28,
+       0.0916
+      ],
+      "palmLNdc": [
+       0.0624,
+       -0.1029
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1275,
+        1.3638,
+        0.372
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4194,
+        1.3952,
+        -0.0911
+       ],
+       "scale": 0.1489,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6452,
+        1.3621,
+        0.0873
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.666399999999962,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0028,
+        0.0028
+       ],
+       "foot": [
+        0.1098,
+        0.1098
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0014
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 0,
+     "panel": "collapsed",
+     "cameraYawDeg": -2.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2467,
+       0.9169,
+       -0.2524
+      ],
+      "palmL": [
+       0.0408,
+       0.933,
+       0.3511
+      ],
+      "palmMid": [
+       -0.103,
+       0.9249,
+       0.0493
+      ],
+      "palmMidNdc": [
+       -0.0982,
+       -0.038
+      ],
+      "palmRNdc": [
+       -0.1771,
+       -0.0306
+      ],
+      "palmLNdc": [
+       -0.0022,
+       -0.047
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1275,
+        1.3638,
+        0.372
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4194,
+        1.3952,
+        -0.0911
+       ],
+       "scale": 0.1489,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6452,
+        1.3621,
+        0.0873
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    }
+   ],
+   "repetitions": [
+    {
+     "rep": 1,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 24398346,
+     "frameInterval": {
+      "samples": 716,
+      "windowSamples": 240,
+      "mean": 369.007,
+      "p50": 367,
+      "p95": 393.5,
+      "max": 756.2
+     },
+     "render": {
+      "samples": 718,
+      "windowSamples": 240,
+      "mean": 1.346,
+      "p50": 1,
+      "p95": 3.1,
+      "max": 6
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 2,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 24441558,
+     "frameInterval": {
+      "samples": 888,
+      "windowSamples": 240,
+      "mean": 368.527,
+      "p50": 368.2,
+      "p95": 388.8,
+      "max": 768.6
+     },
+     "render": {
+      "samples": 890,
+      "windowSamples": 240,
+      "mean": 1.569,
+      "p50": 1.1,
+      "p95": 3.6,
+      "max": 6
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 3,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 25826538,
+     "frameInterval": {
+      "samples": 1060,
+      "windowSamples": 240,
+      "mean": 366.754,
+      "p50": 366.8,
+      "p95": 395.5,
+      "max": 744.7
+     },
+     "render": {
+      "samples": 1062,
+      "windowSamples": 240,
+      "mean": 1.663,
+      "p50": 1.1,
+      "p95": 3.6,
+      "max": 4.3
+     },
+     "state": "COMPLETE"
+    }
+   ],
+   "camera": {
+    "afterToggle": "automatic",
+    "afterWheel": "free"
+   },
+   "panel": {
+    "expanded": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": null,
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "playing": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "afterToggleOpen": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": "false",
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "afterToggleFold": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "complete": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    }
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "panel": "expanded",
+     "cameraYawDeg": -5,
+     "vfx": {
+      "palmR": [
+       -0.2352,
+       0.8839,
+       -0.29
+      ],
+      "palmL": [
+       0.0969,
+       0.8863,
+       0.3581
+      ],
+      "palmMid": [
+       -0.0692,
+       0.8851,
+       0.034
+      ],
+      "palmMidNdc": [
+       -0.0715,
+       -0.0073
+      ],
+      "palmRNdc": [
+       -0.1644,
+       0.0055
+      ],
+      "palmLNdc": [
+       0.0407,
+       -0.0228
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1288,
+        1.3639,
+        0.3697
+       ],
+       "scale": 0.0335,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4196,
+        1.3955,
+        -0.0896
+       ],
+       "scale": 0.1452,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6456,
+        1.3622,
+        0.0866
+       ],
+       "scale": 0.6725,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     },
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+       "ripples": 0,
+       "shards": 0,
+       "glints": 0,
+       "bursts": 0,
+       "transfers": 0
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0005,
+        0.0005
+       ],
+       "foot": [
+        0.1074,
+        0.1074
+       ]
+      },
+      "pelvisShift": 0.0009,
+      "density": 0.6,
+      "budget": {
+       "meshes": 3,
+       "geometries": 3,
+       "materials": 1,
+       "textures": 0,
+       "renderTargets": 0,
+       "customShaders": 0,
+       "capacity": {
+        "rings": 8,
+        "shards": 56,
+        "glints": 20
+       },
+       "triangles": 2016,
+       "maxDrawCalls": 3
+      }
+     },
+     "cycle": 5,
+     "extraDrawCalls": 10,
+     "visibleDrawCalls": 0,
+     "geometries": 7,
+     "materials": 6,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.40000000002328306,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 30,
+     "textures": 21,
+     "programs": 17
+    },
+    "frameInterval": {
+     "samples": 1060,
+     "windowSamples": 240,
+     "mean": 366.754,
+     "p50": 366.8,
+     "p95": 395.5,
+     "max": 744.7
+    },
+    "render": {
+     "samples": 1062,
+     "windowSamples": 240,
+     "mean": 1.663,
+     "p50": 1.1,
+     "p95": 3.6,
+     "max": 4.3
+    },
+    "heap": 26021298
+   },
+   "effectDelta": {
+    "prepCalls": 24,
+    "skillHoldCalls": 28,
+    "releaseCalls": 33,
+    "skillHoldExtraCalls": 4,
+    "releaseExtraCalls": 9,
+    "skillHoldExtraTriangles": 800,
+    "releaseExtraTriangles": 2268
+   },
+   "stable": {
+    "geometriesPerRepetition": [
+     30,
+     30,
+     30
+    ],
+    "texturesPerRepetition": [
+     21,
+     21,
+     21
+    ],
+    "noGrowth": true,
+    "heapMiB": [
+     23.3,
+     23.3,
+     24.6
+    ]
+   },
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.599799999999997,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1317,
+     "coreOpacity": 0.206,
+     "shellOpacity": 0.048,
+     "ringOpacity": 0.169
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.2330999999999825,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0875,
+     "coreOpacity": 0.598,
+     "shellOpacity": 0.145,
+     "ringOpacity": 0.162
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.633099999999981,
+     "coreToPalmMidNdc": 0.5861,
+     "corePalmSpanNdc": 0.4821,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.078,
+     "ringOpacity": 0.245
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.916499999999974,
+     "coreToPalmMidNdc": 0.8929,
+     "corePalmSpanNdc": 0.6377,
+     "coreOpacity": 0,
+     "shellOpacity": 0.033,
+     "ringOpacity": 0.047
+    }
+   ]
+  },
+  "phone": {
+   "viewport": {
+    "width": 390,
+    "height": 844
+   },
+   "dpr": 2,
+   "view": "front",
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 8,
+    "vfx": {
+     "palmR": [
+      -0.2349,
+      0.8838,
+      -0.2902
+     ],
+     "palmL": [
+      0.0972,
+      0.8862,
+      0.3579
+     ],
+     "palmMid": [
+      -0.0688,
+      0.885,
+      0.0339
+     ],
+     "palmMidNdc": [
+      -0.3559,
+      0.0027
+     ],
+     "palmRNdc": [
+      -0.5011,
+      0.0129
+     ],
+     "palmLNdc": [
+      -0.1874,
+      -0.0092
+     ],
+     "core": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "shell": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "ring": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "opacity": {
+      "core": 0,
+      "shell": 0,
+      "ring": 0
+     },
+     "ribbonVisible": false
+    },
+    "env": {
+     "instances": {
+      "rings": 0,
+      "shards": 0,
+      "glints": 0
+     },
+     "triangles": 0,
+     "stats": {
+      "ripples": 0,
+      "shards": 0,
+      "glints": 0,
+      "bursts": 0,
+      "transfers": 0
+     },
+     "baseline": {
+      "toe": [
+       0.06,
+       0.06
+      ],
+      "foot": [
+       0.09,
+       0.09
+      ],
+      "shift": 0,
+      "measured": false
+     },
+     "planted": [
+      1,
+      1
+     ],
+     "heights": {
+      "toe": [
+       0,
+       0
+      ],
+      "foot": [
+       0,
+       0
+      ]
+     },
+     "pelvisShift": 0,
+     "density": 0.6,
+     "budget": {
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 1,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "capacity": {
+       "rings": 8,
+       "shards": 56,
+       "glints": 20
+      },
+      "triangles": 2016,
+      "maxDrawCalls": 3
+     }
+    },
+    "cycle": 0,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 1.0332999999999977,
+     "state": "PREPARATION",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0406,
+        0.0406
+       ],
+       "foot": [
+        0.1476,
+        0.1476
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0302
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 121465,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1,
+     "panel": "collapsed",
+     "cameraYawDeg": -24.2,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3354,
+       1.1113,
+       -0.057
+      ],
+      "palmL": [
+       -0.2076,
+       1.1211,
+       0.271
+      ],
+      "palmMid": [
+       -0.2715,
+       1.1162,
+       0.107
+      ],
+      "palmMidNdc": [
+       -0.2959,
+       0.1476
+      ],
+      "palmRNdc": [
+       -0.4478,
+       0.1434
+      ],
+      "palmLNdc": [
+       -0.1369,
+       0.152
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3354,
+        1.1113,
+        -0.057
+       ],
+       "scale": 0.5667,
+       "ndc": [
+        -0.4478,
+        0.1434
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.333
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.6832999999999945,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 2,
+       "glints": 0
+      },
+      "triangles": 212,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0554,
+        0.0554
+       ],
+       "foot": [
+        0.1624,
+        0.1624
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0292
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 121195,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 15
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -28.8,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.1978,
+       1.0041,
+       -0.3707
+      ],
+      "palmL": [
+       -0.2012,
+       1.0888,
+       0.2593
+      ],
+      "palmMid": [
+       -0.1995,
+       1.0465,
+       -0.0557
+      ],
+      "palmMidNdc": [
+       -0.2562,
+       0.0924
+      ],
+      "palmRNdc": [
+       -0.4182,
+       0.0695
+      ],
+      "palmLNdc": [
+       -0.0781,
+       0.1176
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7788,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.03
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.1832999999999942,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 14,
+       "glints": 0
+      },
+      "triangles": 464,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0444,
+        0.0444
+       ],
+       "foot": [
+        0.1514,
+        0.1514
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0502
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 121523,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 3,
+     "panel": "collapsed",
+     "cameraYawDeg": -32.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4563,
+       1.2989,
+       0.0695
+      ],
+      "palmL": [
+       -0.0076,
+       1.096,
+       0.3604
+      ],
+      "palmMid": [
+       -0.2319,
+       1.1975,
+       0.215
+      ],
+      "palmMidNdc": [
+       -0.1081,
+       0.1653
+      ],
+      "palmRNdc": [
+       -0.4464,
+       0.2246
+      ],
+      "palmLNdc": [
+       0.23,
+       0.106
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7788,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.03
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.2665999999999933,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 17,
+       "glints": 0
+      },
+      "triangles": 272,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0504,
+        0.0504
+       ],
+       "foot": [
+        0.1573,
+        0.1573
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0489
+     },
+     "renderer": {
+      "calls": 26,
+      "triangles": 121333,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 3,
+     "panel": "collapsed",
+     "cameraYawDeg": -23.3,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2795,
+       1.053,
+       -0.1555
+      ],
+      "palmL": [
+       -0.2495,
+       1.3653,
+       0.4031
+      ],
+      "palmMid": [
+       -0.2645,
+       1.2092,
+       0.1238
+      ],
+      "palmMidNdc": [
+       -0.2529,
+       0.1599
+      ],
+      "palmRNdc": [
+       -0.3924,
+       0.069
+      ],
+      "palmLNdc": [
+       -0.1,
+       0.2595
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7788,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.03
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.633299999999994,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 3
+      },
+      "triangles": 24,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.055,
+        0.055
+       ],
+       "foot": [
+        0.162,
+        0.162
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0038
+     },
+     "renderer": {
+      "calls": 26,
+      "triangles": 121849,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 4,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3683,
+       1.1783,
+       0.0483
+      ],
+      "palmL": [
+       -0.2456,
+       1.1795,
+       0.2796
+      ],
+      "palmMid": [
+       -0.307,
+       1.1789,
+       0.1639
+      ],
+      "palmMidNdc": [
+       -0.3659,
+       0.09
+      ],
+      "palmRNdc": [
+       -0.4987,
+       0.0899
+      ],
+      "palmLNdc": [
+       -0.2279,
+       0.0902
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.307,
+        1.1789,
+        0.1639
+       ],
+       "scale": 0.0498,
+       "ndc": [
+        -0.3659,
+        0.09
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.307,
+        1.1789,
+        0.1639
+       ],
+       "scale": 0.0669,
+       "ndc": [
+        -0.3659,
+        0.09
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.307,
+        1.1789,
+        0.1639
+       ],
+       "scale": 0.6935,
+       "ndc": [
+        -0.3659,
+        0.09
+       ]
+      },
+      "opacity": {
+       "core": 0.206,
+       "shell": 0.048,
+       "ring": 0.169
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.200000000000004,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 8,
+       "glints": 0
+      },
+      "triangles": 440,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0556,
+        0.0556
+       ],
+       "foot": [
+        0.1626,
+        0.1626
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0049
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 122265,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.8,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3708,
+       1.2257,
+       0.0589
+      ],
+      "palmL": [
+       -0.2992,
+       1.23,
+       0.2259
+      ],
+      "palmMid": [
+       -0.335,
+       1.2279,
+       0.1424
+      ],
+      "palmMidNdc": [
+       -0.45,
+       0.1049
+      ],
+      "palmRNdc": [
+       -0.5338,
+       0.1032
+      ],
+      "palmLNdc": [
+       -0.3636,
+       0.1066
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.335,
+        1.2279,
+        0.1424
+       ],
+       "scale": 0.0546,
+       "ndc": [
+        -0.45,
+        0.1049
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.335,
+        1.2279,
+        0.1424
+       ],
+       "scale": 0.0647,
+       "ndc": [
+        -0.45,
+        0.1049
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.335,
+        1.2279,
+        0.1424
+       ],
+       "scale": 0.4923,
+       "ndc": [
+        -0.45,
+        0.1049
+       ]
+      },
+      "opacity": {
+       "core": 0.579,
+       "shell": 0.14,
+       "ring": 0.165
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.600000000000002,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 10,
+       "glints": 2
+      },
+      "triangles": 872,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0349,
+        0.0349
+       ],
+       "foot": [
+        0.1419,
+        0.1419
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0498
+     },
+     "renderer": {
+      "calls": 32,
+      "triangles": 123733,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.3,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4661,
+       1.3536,
+       0.0736
+      ],
+      "palmL": [
+       -0.1189,
+       1.1515,
+       0.3895
+      ],
+      "palmMid": [
+       -0.2925,
+       1.2525,
+       0.2315
+      ],
+      "palmMidNdc": [
+       -0.3597,
+       0.1182
+      ],
+      "palmRNdc": [
+       -0.6861,
+       0.1916
+      ],
+      "palmLNdc": [
+       -0.0179,
+       0.0414
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.9086,
+        1.3469,
+        0.348
+       ],
+       "scale": 0.087,
+       "ndc": [
+        -1.3551,
+        0.196
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4661,
+        1.3599,
+        0.0736
+       ],
+       "scale": 0.106,
+       "ndc": [
+        -0.6862,
+        0.1962
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6027,
+        1.354,
+        0.1524
+       ],
+       "scale": 0.3725,
+       "ndc": [
+        -0.8814,
+        0.1947
+       ]
+      },
+      "opacity": {
+       "core": 0.62,
+       "shell": 0.078,
+       "ring": 0.245
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.983300000000004,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 5,
+       "shards": 6,
+       "glints": 0
+      },
+      "triangles": 1044,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0256,
+        0.0256
+       ],
+       "foot": [
+        0.1326,
+        0.1326
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0221
+     },
+     "renderer": {
+      "calls": 32,
+      "triangles": 123953,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.8,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4451,
+       1.3646,
+       -0.0247
+      ],
+      "palmL": [
+       0.0846,
+       1.0931,
+       0.4523
+      ],
+      "palmMid": [
+       -0.1803,
+       1.2288,
+       0.2138
+      ],
+      "palmMidNdc": [
+       -0.1667,
+       0.105
+      ],
+      "palmRNdc": [
+       -0.6553,
+       0.1989
+      ],
+      "palmLNdc": [
+       0.3522,
+       0.0053
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -1.1379,
+        1.367,
+        0.3754
+       ],
+       "scale": 0.033,
+       "ndc": [
+        -1.6618,
+        0.218
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4451,
+        1.387,
+        -0.0247
+       ],
+       "scale": 0.1238,
+       "ndc": [
+        -0.6554,
+        0.2145
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.653,
+        1.3653,
+        0.0953
+       ],
+       "scale": 0.66,
+       "ndc": [
+        -0.9291,
+        0.2041
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0.021,
+       "ring": 0
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.71659999999999,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 3,
+       "shards": 5,
+       "glints": 0
+      },
+      "triangles": 632,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0111,
+        0.0111
+       ],
+       "foot": [
+        0.1181,
+        0.1181
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0029
+     },
+     "renderer": {
+      "calls": 24,
+      "triangles": 121617,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -19.4,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3919,
+       1.1473,
+       -0.1532
+      ],
+      "palmL": [
+       -0.0198,
+       0.9877,
+       0.3538
+      ],
+      "palmMid": [
+       -0.2059,
+       1.0675,
+       0.1003
+      ],
+      "palmMidNdc": [
+       -0.2605,
+       0.0071
+      ],
+      "palmRNdc": [
+       -0.6239,
+       0.0627
+      ],
+      "palmLNdc": [
+       0.1307,
+       -0.0527
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1379,
+        1.367,
+        0.3754
+       ],
+       "scale": 0.033,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4206,
+        1.3945,
+        -0.0847
+       ],
+       "scale": 0.1415,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.653,
+        1.3653,
+        0.0953
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.733399999999989,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0024,
+        0.0024
+       ],
+       "foot": [
+        0.1094,
+        0.1094
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0013
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 0,
+     "panel": "collapsed",
+     "cameraYawDeg": -3.4,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2453,
+       0.9119,
+       -0.2581
+      ],
+      "palmL": [
+       0.0483,
+       0.9267,
+       0.353
+      ],
+      "palmMid": [
+       -0.0985,
+       0.9193,
+       0.0475
+      ],
+      "palmMidNdc": [
+       -0.3023,
+       -0.0234
+      ],
+      "palmRNdc": [
+       -0.5236,
+       -0.0211
+      ],
+      "palmLNdc": [
+       -0.0502,
+       -0.0261
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1379,
+        1.367,
+        0.3754
+       ],
+       "scale": 0.033,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4206,
+        1.3945,
+        -0.0847
+       ],
+       "scale": 0.1415,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.653,
+        1.3653,
+        0.0953
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    }
+   ],
+   "repetitions": [
+    {
+     "rep": 1,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 24018767,
+     "frameInterval": {
+      "samples": 728,
+      "windowSamples": 240,
+      "mean": 263.447,
+      "p50": 263.9,
+      "p95": 489.9,
+      "max": 537.4
+     },
+     "render": {
+      "samples": 731,
+      "windowSamples": 240,
+      "mean": 1.458,
+      "p50": 1.1,
+      "p95": 3.8,
+      "max": 5.8
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 2,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 24399615,
+     "frameInterval": {
+      "samples": 900,
+      "windowSamples": 240,
+      "mean": 265.338,
+      "p50": 264.5,
+      "p95": 275.2,
+      "max": 548.6
+     },
+     "render": {
+      "samples": 903,
+      "windowSamples": 240,
+      "mean": 1.578,
+      "p50": 1.1,
+      "p95": 4.3,
+      "max": 6.4
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 3,
+     "peak": {
+      "calls": 33,
+      "triangles": 126929
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "heap": 24892355,
+     "frameInterval": {
+      "samples": 1071,
+      "windowSamples": 240,
+      "mean": 263.699,
+      "p50": 263.5,
+      "p95": 275.5,
+      "max": 548.6
+     },
+     "render": {
+      "samples": 1074,
+      "windowSamples": 240,
+      "mean": 1.633,
+      "p50": 1,
+      "p95": 4.3,
+      "max": 5.9
+     },
+     "state": "COMPLETE"
+    }
+   ],
+   "camera": {
+    "afterToggle": "automatic",
+    "afterWheel": "free"
+   },
+   "panel": {
+    "expanded": {
+     "x": 16,
+     "y": 525.546875,
+     "w": 358,
+     "h": 241.65625,
+     "viewportW": 390,
+     "viewportH": 844,
+     "areaFraction": 0.2628,
+     "collapsed": null,
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "playing": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 366,
+     "h": 99.53125,
+     "viewportW": 390,
+     "viewportH": 844,
+     "areaFraction": 0.1107,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "afterToggleOpen": {
+     "x": 16,
+     "y": 525.546875,
+     "w": 358,
+     "h": 241.65625,
+     "viewportW": 390,
+     "viewportH": 844,
+     "areaFraction": 0.2628,
+     "collapsed": "false",
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "afterToggleFold": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 366,
+     "h": 99.53125,
+     "viewportW": 390,
+     "viewportH": 844,
+     "areaFraction": 0.1107,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "complete": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 366,
+     "h": 99.53125,
+     "viewportW": 390,
+     "viewportH": 844,
+     "areaFraction": 0.1107,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    }
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "panel": "expanded",
+     "cameraYawDeg": -6.8,
+     "vfx": {
+      "palmR": [
+       -0.2353,
+       0.8839,
+       -0.29
+      ],
+      "palmL": [
+       0.0968,
+       0.8863,
+       0.3581
+      ],
+      "palmMid": [
+       -0.0692,
+       0.8851,
+       0.0341
+      ],
+      "palmMidNdc": [
+       -0.2382,
+       -0.0053
+      ],
+      "palmRNdc": [
+       -0.5018,
+       0.0004
+      ],
+      "palmLNdc": [
+       0.0602,
+       -0.0117
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1242,
+        1.3621,
+        0.3673
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4193,
+        1.3952,
+        -0.0911
+       ],
+       "scale": 0.1489,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.642,
+        1.3605,
+        0.0826
+       ],
+       "scale": 0.6725,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     },
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+       "ripples": 0,
+       "shards": 0,
+       "glints": 0,
+       "bursts": 0,
+       "transfers": 0
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0005,
+        0.0005
+       ],
+       "foot": [
+        0.1074,
+        0.1074
+       ]
+      },
+      "pelvisShift": 0.0009,
+      "density": 0.6,
+      "budget": {
+       "meshes": 3,
+       "geometries": 3,
+       "materials": 1,
+       "textures": 0,
+       "renderTargets": 0,
+       "customShaders": 0,
+       "capacity": {
+        "rings": 8,
+        "shards": 56,
+        "glints": 20
+       },
+       "triangles": 2016,
+       "maxDrawCalls": 3
+      }
+     },
+     "cycle": 5,
+     "extraDrawCalls": 10,
+     "visibleDrawCalls": 0,
+     "geometries": 7,
+     "materials": 6,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.39999999990686774,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 30,
+     "textures": 21,
+     "programs": 17
+    },
+    "frameInterval": {
+     "samples": 1071,
+     "windowSamples": 240,
+     "mean": 263.699,
+     "p50": 263.5,
+     "p95": 275.5,
+     "max": 548.6
+    },
+    "render": {
+     "samples": 1074,
+     "windowSamples": 240,
+     "mean": 1.633,
+     "p50": 1,
+     "p95": 4.3,
+     "max": 5.9
+    },
+    "heap": 25087311
+   },
+   "effectDelta": {
+    "prepCalls": 23,
+    "skillHoldCalls": 27,
+    "releaseCalls": 32,
+    "skillHoldExtraCalls": 4,
+    "releaseExtraCalls": 9,
+    "skillHoldExtraTriangles": 800,
+    "releaseExtraTriangles": 2268
+   },
+   "stable": {
+    "geometriesPerRepetition": [
+     30,
+     30,
+     30
+    ],
+    "texturesPerRepetition": [
+     21,
+     21,
+     21
+    ],
+    "noGrowth": true,
+    "heapMiB": [
+     22.9,
+     23.3,
+     23.7
+    ]
+   },
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.633299999999994,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.2708,
+     "coreOpacity": 0.206,
+     "shellOpacity": 0.048,
+     "ringOpacity": 0.169
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.200000000000004,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1702,
+     "coreOpacity": 0.579,
+     "shellOpacity": 0.14,
+     "ringOpacity": 0.165
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.600000000000002,
+     "coreToPalmMidNdc": 0.9984,
+     "corePalmSpanNdc": 0.6849,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.078,
+     "ringOpacity": 0.245
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.983300000000004,
+     "coreToPalmMidNdc": 1.4994,
+     "corePalmSpanNdc": 1.0259,
+     "coreOpacity": 0,
+     "shellOpacity": 0.021,
+     "ringOpacity": 0
+    }
+   ]
+  },
+  "sideRight": {
+   "viewport": {
+    "width": 1280,
+    "height": 720
+   },
+   "dpr": 1,
+   "view": "side-right",
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 8,
+    "vfx": {
+     "palmR": [
+      -0.2349,
+      0.8838,
+      -0.2902
+     ],
+     "palmL": [
+      0.0972,
+      0.8862,
+      0.3579
+     ],
+     "palmMid": [
+      -0.0689,
+      0.885,
+      0.0339
+     ],
+     "palmMidNdc": [
+      -0.0928,
+      0.0032
+     ],
+     "palmRNdc": [
+      -0.1425,
+      0.0218
+     ],
+     "palmLNdc": [
+      -0.0319,
+      -0.0194
+     ],
+     "core": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "shell": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "ring": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "opacity": {
+      "core": 0,
+      "shell": 0,
+      "ring": 0
+     },
+     "ribbonVisible": false
+    },
+    "env": {
+     "instances": {
+      "rings": 0,
+      "shards": 0,
+      "glints": 0
+     },
+     "triangles": 0,
+     "stats": {
+      "ripples": 0,
+      "shards": 0,
+      "glints": 0,
+      "bursts": 0,
+      "transfers": 0
+     },
+     "baseline": {
+      "toe": [
+       0.06,
+       0.06
+      ],
+      "foot": [
+       0.09,
+       0.09
+      ],
+      "shift": 0,
+      "measured": false
+     },
+     "planted": [
+      1,
+      1
+     ],
+     "heights": {
+      "toe": [
+       0,
+       0
+      ],
+      "foot": [
+       0,
+       0
+      ]
+     },
+     "pelvisShift": 0,
+     "density": 0.6,
+     "budget": {
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 1,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "capacity": {
+       "rings": 8,
+       "shards": 56,
+       "glints": 20
+      },
+      "triangles": 2016,
+      "maxDrawCalls": 3
+     }
+    },
+    "cycle": 0,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 0.9665999999999988,
+     "state": "PREPARATION",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0379,
+        0.0379
+       ],
+       "foot": [
+        0.1449,
+        0.1449
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0271
+     },
+     "renderer": {
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3362,
+       1.1125,
+       -0.0521
+      ],
+      "palmL": [
+       -0.2037,
+       1.1212,
+       0.274
+      ],
+      "palmMid": [
+       -0.27,
+       1.1168,
+       0.111
+      ],
+      "palmMidNdc": [
+       -0.1212,
+       0.2255
+      ],
+      "palmRNdc": [
+       -0.2074,
+       0.2208
+      ],
+      "palmLNdc": [
+       -0.0302,
+       0.2304
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3362,
+        1.1125,
+        -0.0521
+       ],
+       "scale": 0.5348,
+       "ndc": [
+        -0.2074,
+        0.2208
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.379
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.7000000000000008,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 2,
+       "glints": 0
+      },
+      "triangles": 212,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0547,
+        0.0547
+       ],
+       "foot": [
+        0.1617,
+        0.1617
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0267
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124173,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 15
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.2094,
+       1.0188,
+       -0.3812
+      ],
+      "palmL": [
+       -0.1976,
+       1.0875,
+       0.2618
+      ],
+      "palmMid": [
+       -0.2035,
+       1.0531,
+       -0.0597
+      ],
+      "palmMidNdc": [
+       -0.1469,
+       0.1616
+      ],
+      "palmRNdc": [
+       -0.2458,
+       0.1336
+      ],
+      "palmLNdc": [
+       -0.0319,
+       0.194
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.2,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 20,
+       "glints": 1
+      },
+      "triangles": 496,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0443,
+        0.0443
+       ],
+       "foot": [
+        0.1513,
+        0.1513
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0497
+     },
+     "renderer": {
+      "calls": 29,
+      "triangles": 124581,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.451,
+       1.3026,
+       0.0807
+      ],
+      "palmL": [
+       -0.0083,
+       1.0964,
+       0.3604
+      ],
+      "palmMid": [
+       -0.2296,
+       1.1995,
+       0.2206
+      ],
+      "palmMidNdc": [
+       -0.0627,
+       0.3147
+      ],
+      "palmRNdc": [
+       -0.2227,
+       0.4285
+      ],
+      "palmLNdc": [
+       0.093,
+       0.2039
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.2332999999999994,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 16,
+       "glints": 0
+      },
+      "triangles": 268,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0503,
+        0.0503
+       ],
+       "foot": [
+        0.1573,
+        0.1573
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0499
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124305,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 3,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.2801,
+       1.0528,
+       -0.1543
+      ],
+      "palmL": [
+       -0.2256,
+       1.3321,
+       0.4293
+      ],
+      "palmMid": [
+       -0.2529,
+       1.1925,
+       0.1375
+      ],
+      "palmMidNdc": [
+       -0.1039,
+       0.3057
+      ],
+      "palmRNdc": [
+       -0.2122,
+       0.1617
+      ],
+      "palmLNdc": [
+       0.0207,
+       0.4714
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2586,
+        1.0251,
+        -0.1721
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.649900000000001,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 3
+      },
+      "triangles": 24,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0554,
+        0.0554
+       ],
+       "foot": [
+        0.1624,
+        0.1624
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.004
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124825,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 4,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.368,
+       1.1792,
+       0.0504
+      ],
+      "palmL": [
+       -0.2472,
+       1.1804,
+       0.2782
+      ],
+      "palmMid": [
+       -0.3076,
+       1.1798,
+       0.1643
+      ],
+      "palmMidNdc": [
+       -0.1209,
+       0.2935
+      ],
+      "palmRNdc": [
+       -0.19,
+       0.2917
+      ],
+      "palmLNdc": [
+       -0.0496,
+       0.2954
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.0507,
+       "ndc": [
+        -0.1209,
+        0.2935
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.0691,
+       "ndc": [
+        -0.1209,
+        0.2935
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.705,
+       "ndc": [
+        -0.1209,
+        0.2935
+       ]
+      },
+      "opacity": {
+       "core": 0.217,
+       "shell": 0.051,
+       "ring": 0.174
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.283200000000002,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 9,
+       "glints": 0
+      },
+      "triangles": 444,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0474,
+        0.0474
+       ],
+       "foot": [
+        0.1544,
+        0.1544
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0183
+     },
+     "renderer": {
+      "calls": 28,
+      "triangles": 125245,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3964,
+       1.2596,
+       0.0704
+      ],
+      "palmL": [
+       -0.2768,
+       1.2223,
+       0.2532
+      ],
+      "palmMid": [
+       -0.3366,
+       1.241,
+       0.1618
+      ],
+      "palmMidNdc": [
+       -0.1363,
+       0.3605
+      ],
+      "palmRNdc": [
+       -0.1979,
+       0.3791
+      ],
+      "palmLNdc": [
+       -0.0735,
+       0.3416
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.0671,
+       "ndc": [
+        -0.1363,
+        0.3605
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.0874,
+       "ndc": [
+        -0.1363,
+        0.3605
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.6328,
+       "ndc": [
+        -0.1363,
+        0.3605
+       ]
+      },
+      "opacity": {
+       "core": 0.602,
+       "shell": 0.146,
+       "ring": 0.161
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.583200000000001,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 10,
+       "glints": 2
+      },
+      "triangles": 872,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0349,
+        0.0349
+       ],
+       "foot": [
+        0.1419,
+        0.1419
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0495
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126709,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4663,
+       1.3525,
+       0.0732
+      ],
+      "palmL": [
+       -0.1391,
+       1.1591,
+       0.3774
+      ],
+      "palmMid": [
+       -0.3027,
+       1.2558,
+       0.2253
+      ],
+      "palmMidNdc": [
+       -0.0966,
+       0.3782
+      ],
+      "palmRNdc": [
+       -0.2334,
+       0.4836
+      ],
+      "palmLNdc": [
+       0.0407,
+       0.2723
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.7396,
+        1.3127,
+        0.3308
+       ],
+       "scale": 0.0985,
+       "ndc": [
+        -0.2986,
+        0.4713
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4663,
+        1.3567,
+        0.0732
+       ],
+       "scale": 0.1079,
+       "ndc": [
+        -0.2334,
+        0.4883
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.5672,
+        1.3529,
+        0.1328
+       ],
+       "scale": 0.335,
+       "ndc": [
+        -0.2676,
+        0.4941
+       ]
+      },
+      "opacity": {
+       "core": 0.62,
+       "shell": 0.088,
+       "ring": 0.28
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.999899999999997,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 5,
+       "shards": 6,
+       "glints": 0
+      },
+      "triangles": 1044,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0252,
+        0.0252
+       ],
+       "foot": [
+        0.1322,
+        0.1322
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0214
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126929,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4417,
+       1.3631,
+       -0.03
+      ],
+      "palmL": [
+       0.0796,
+       1.0927,
+       0.4515
+      ],
+      "palmMid": [
+       -0.1811,
+       1.2279,
+       0.2107
+      ],
+      "palmMidNdc": [
+       -0.0434,
+       0.3438
+      ],
+      "palmRNdc": [
+       -0.2541,
+       0.4868
+      ],
+      "palmLNdc": [
+       0.1688,
+       0.1998
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": [
+        -0.5492,
+        0.5762
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4417,
+        1.3849,
+        -0.03
+       ],
+       "scale": 0.128,
+       "ndc": [
+        -0.2543,
+        0.51
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": [
+        -0.3264,
+        0.5087
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0.023,
+       "ring": 0
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.666500000000029,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 6,
+       "glints": 0
+      },
+      "triangles": 840,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0119,
+        0.0119
+       ],
+       "foot": [
+        0.1189,
+        0.1189
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0034
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124801,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4092,
+       1.2017,
+       -0.1397
+      ],
+      "palmL": [
+       -0.0185,
+       0.9897,
+       0.3581
+      ],
+      "palmMid": [
+       -0.2138,
+       1.0957,
+       0.1092
+      ],
+      "palmMidNdc": [
+       -0.0951,
+       0.2034
+      ],
+      "palmRNdc": [
+       -0.2707,
+       0.3121
+      ],
+      "palmLNdc": [
+       0.0874,
+       0.0905
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4203,
+        1.3938,
+        -0.0863
+       ],
+       "scale": 0.1465,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.733100000000031,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0024,
+        0.0024
+       ],
+       "foot": [
+        0.1094,
+        0.1094
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0013
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 0,
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.2453,
+       0.9119,
+       -0.2581
+      ],
+      "palmL": [
+       0.0483,
+       0.9267,
+       0.353
+      ],
+      "palmMid": [
+       -0.0985,
+       0.9193,
+       0.0475
+      ],
+      "palmMidNdc": [
+       -0.0635,
+       0.0276
+      ],
+      "palmRNdc": [
+       -0.2264,
+       0.0284
+      ],
+      "palmLNdc": [
+       0.1143,
+       0.0267
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4203,
+        1.3938,
+        -0.0863
+       ],
+       "scale": 0.1465,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    }
+   ],
+   "repetitions": [],
+   "camera": {},
+   "panel": {
+    "expanded": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": null,
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "playing": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "afterToggleOpen": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": "false",
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "afterToggleFold": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "complete": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    }
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "panel": "collapsed",
+     "cameraYawDeg": -39.6,
+     "vfx": {
+      "palmR": [
+       -0.2354,
+       0.8839,
+       -0.2899
+      ],
+      "palmL": [
+       0.0968,
+       0.8864,
+       0.3582
+      ],
+      "palmMid": [
+       -0.0693,
+       0.8852,
+       0.0341
+      ],
+      "palmMidNdc": [
+       -0.0551,
+       -0.0044
+      ],
+      "palmRNdc": [
+       -0.231,
+       0.0037
+      ],
+      "palmLNdc": [
+       0.1368,
+       -0.0133
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4203,
+        1.3938,
+        -0.0863
+       ],
+       "scale": 0.1465,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     },
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+       "ripples": 0,
+       "shards": 0,
+       "glints": 0,
+       "bursts": 0,
+       "transfers": 0
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0005,
+        0.0005
+       ],
+       "foot": [
+        0.1074,
+        0.1074
+       ]
+      },
+      "pelvisShift": 0.0009,
+      "density": 0.6,
+      "budget": {
+       "meshes": 3,
+       "geometries": 3,
+       "materials": 1,
+       "textures": 0,
+       "renderTargets": 0,
+       "customShaders": 0,
+       "capacity": {
+        "rings": 8,
+        "shards": 56,
+        "glints": 20
+       },
+       "triangles": 2016,
+       "maxDrawCalls": 3
+      }
+     },
+     "cycle": 1,
+     "extraDrawCalls": 10,
+     "visibleDrawCalls": 0,
+     "geometries": 7,
+     "materials": 6,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.7999999999301508,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 30,
+     "textures": 21,
+     "programs": 17
+    },
+    "frameInterval": {
+     "samples": 525,
+     "windowSamples": 240,
+     "mean": 336.274,
+     "p50": 335.9,
+     "p95": 674.1,
+     "max": 679.1
+    },
+    "render": {
+     "samples": 528,
+     "windowSamples": 240,
+     "mean": 1.69,
+     "p50": 1.2,
+     "p95": 4,
+     "max": 5.4
+    },
+    "heap": 23730009
+   },
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.649900000000001,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1404,
+     "coreOpacity": 0.217,
+     "shellOpacity": 0.051,
+     "ringOpacity": 0.174
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.283200000000002,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1299,
+     "coreOpacity": 0.602,
+     "shellOpacity": 0.146,
+     "ringOpacity": 0.161
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.583200000000001,
+     "coreToPalmMidNdc": 0.2224,
+     "corePalmSpanNdc": 0.3461,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.088,
+     "ringOpacity": 0.28
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.999899999999997,
+     "coreToPalmMidNdc": 0.5566,
+     "corePalmSpanNdc": 0.5111,
+     "coreOpacity": 0,
+     "shellOpacity": 0.023,
+     "ringOpacity": 0
+    }
+   ]
+  },
+  "sideLeft": {
+   "viewport": {
+    "width": 1280,
+    "height": 720
+   },
+   "dpr": 1,
+   "view": "side-left",
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 8,
+    "vfx": {
+     "palmR": [
+      -0.2349,
+      0.8838,
+      -0.2902
+     ],
+     "palmL": [
+      0.0972,
+      0.8862,
+      0.3579
+     ],
+     "palmMid": [
+      -0.0689,
+      0.885,
+      0.0339
+     ],
+     "palmMidNdc": [
+      -0.0927,
+      0.0032
+     ],
+     "palmRNdc": [
+      -0.1425,
+      0.0218
+     ],
+     "palmLNdc": [
+      -0.0319,
+      -0.0194
+     ],
+     "core": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "shell": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "ring": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "opacity": {
+      "core": 0,
+      "shell": 0,
+      "ring": 0
+     },
+     "ribbonVisible": false
+    },
+    "env": {
+     "instances": {
+      "rings": 0,
+      "shards": 0,
+      "glints": 0
+     },
+     "triangles": 0,
+     "stats": {
+      "ripples": 0,
+      "shards": 0,
+      "glints": 0,
+      "bursts": 0,
+      "transfers": 0
+     },
+     "baseline": {
+      "toe": [
+       0.06,
+       0.06
+      ],
+      "foot": [
+       0.09,
+       0.09
+      ],
+      "shift": 0,
+      "measured": false
+     },
+     "planted": [
+      1,
+      1
+     ],
+     "heights": {
+      "toe": [
+       0,
+       0
+      ],
+      "foot": [
+       0,
+       0
+      ]
+     },
+     "pelvisShift": 0,
+     "density": 0.6,
+     "budget": {
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 1,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "capacity": {
+       "rings": 8,
+       "shards": 56,
+       "glints": 20
+      },
+      "triangles": 2016,
+      "maxDrawCalls": 3
+     }
+    },
+    "cycle": 0,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 1.0000000000000002,
+     "state": "PREPARATION",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0392,
+        0.0392
+       ],
+       "foot": [
+        0.1462,
+        0.1462
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0286
+     },
+     "renderer": {
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3358,
+       1.1119,
+       -0.0545
+      ],
+      "palmL": [
+       -0.2056,
+       1.1211,
+       0.2726
+      ],
+      "palmMid": [
+       -0.2707,
+       1.1165,
+       0.109
+      ],
+      "palmMidNdc": [
+       -0.1867,
+       0.2242
+      ],
+      "palmRNdc": [
+       -0.1518,
+       0.2199
+      ],
+      "palmLNdc": [
+       -0.2251,
+       0.229
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3358,
+        1.1119,
+        -0.0545
+       ],
+       "scale": 0.5773,
+       "ndc": [
+        -0.1518,
+        0.2199
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.318
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.6500000000000008,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 2,
+       "glints": 0
+      },
+      "triangles": 212,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0568,
+        0.0568
+       ],
+       "foot": [
+        0.1638,
+        0.1638
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.034
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124173,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 15
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.176,
+       0.9786,
+       -0.3482
+      ],
+      "palmL": [
+       -0.2077,
+       1.0912,
+       0.2546
+      ],
+      "palmMid": [
+       -0.1919,
+       1.0349,
+       -0.0468
+      ],
+      "palmMidNdc": [
+       -0.1023,
+       0.1509
+      ],
+      "palmRNdc": [
+       0.0006,
+       0.1073
+      ],
+      "palmLNdc": [
+       -0.2187,
+       0.2003
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.2166000000000063,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 20,
+       "glints": 1
+      },
+      "triangles": 496,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0442,
+        0.0442
+       ],
+       "foot": [
+        0.1512,
+        0.1512
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0491
+     },
+     "renderer": {
+      "calls": 29,
+      "triangles": 124581,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4475,
+       1.3045,
+       0.0856
+      ],
+      "palmL": [
+       -0.0103,
+       1.097,
+       0.3603
+      ],
+      "palmMid": [
+       -0.2289,
+       1.2007,
+       0.2229
+      ],
+      "palmMidNdc": [
+       -0.2147,
+       0.3043
+      ],
+      "palmRNdc": [
+       -0.2411,
+       0.3908
+      ],
+      "palmLNdc": [
+       -0.1844,
+       0.205
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.2000000000000117,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 13,
+       "glints": 0
+      },
+      "triangles": 52,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0495,
+        0.0495
+       ],
+       "foot": [
+        0.1565,
+        0.1565
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0503
+     },
+     "renderer": {
+      "calls": 26,
+      "triangles": 124089,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.2819,
+       1.0531,
+       -0.1511
+      ],
+      "palmL": [
+       -0.2014,
+       1.3026,
+       0.4497
+      ],
+      "palmMid": [
+       -0.2417,
+       1.1778,
+       0.1493
+      ],
+      "palmMidNdc": [
+       -0.1913,
+       0.2814
+      ],
+      "palmRNdc": [
+       -0.1,
+       0.1691
+      ],
+      "palmLNdc": [
+       -0.2974,
+       0.4119
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.3053,
+        1.0709,
+        -0.1197
+       ],
+       "scale": 0.7682,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.045
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.58330000000001,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 2
+      },
+      "triangles": 16,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0536,
+        0.0536
+       ],
+       "foot": [
+        0.1606,
+        0.1606
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0032
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124817,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 4,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3703,
+       1.1761,
+       0.0399
+      ],
+      "palmL": [
+       -0.2397,
+       1.1773,
+       0.2859
+      ],
+      "palmMid": [
+       -0.305,
+       1.1767,
+       0.1629
+      ],
+      "palmMidNdc": [
+       -0.2194,
+       0.2798
+      ],
+      "palmRNdc": [
+       -0.1973,
+       0.277
+      ],
+      "palmLNdc": [
+       -0.2433,
+       0.2828
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.305,
+        1.1767,
+        0.1629
+       ],
+       "scale": 0.0491,
+       "ndc": [
+        -0.2194,
+        0.2798
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.305,
+        1.1767,
+        0.1629
+       ],
+       "scale": 0.0642,
+       "ndc": [
+        -0.2194,
+        0.2798
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.305,
+        1.1767,
+        0.1629
+       ],
+       "scale": 0.6864,
+       "ndc": [
+        -0.2194,
+        0.2798
+       ]
+      },
+      "opacity": {
+       "core": 0.184,
+       "shell": 0.043,
+       "ring": 0.158
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.283300000000008,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 9,
+       "glints": 0
+      },
+      "triangles": 444,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0474,
+        0.0474
+       ],
+       "foot": [
+        0.1544,
+        0.1544
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0184
+     },
+     "renderer": {
+      "calls": 28,
+      "triangles": 125245,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3965,
+       1.2597,
+       0.0704
+      ],
+      "palmL": [
+       -0.2768,
+       1.2223,
+       0.2532
+      ],
+      "palmMid": [
+       -0.3366,
+       1.241,
+       0.1618
+      ],
+      "palmMidNdc": [
+       -0.2306,
+       0.3385
+      ],
+      "palmRNdc": [
+       -0.2178,
+       0.3516
+      ],
+      "palmLNdc": [
+       -0.2442,
+       0.3245
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.0653,
+       "ndc": [
+        -0.2306,
+        0.3385
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.0885,
+       "ndc": [
+        -0.2306,
+        0.3385
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3366,
+        1.241,
+        0.1618
+       ],
+       "scale": 0.632,
+       "ndc": [
+        -0.2306,
+        0.3385
+       ]
+      },
+      "opacity": {
+       "core": 0.606,
+       "shell": 0.146,
+       "ring": 0.161
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.61660000000001,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 10,
+       "glints": 2
+      },
+      "triangles": 872,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0348,
+        0.0348
+       ],
+       "foot": [
+        0.1418,
+        0.1418
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.05
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126709,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4658,
+       1.3547,
+       0.0736
+      ],
+      "palmL": [
+       -0.0959,
+       1.1442,
+       0.4018
+      ],
+      "palmMid": [
+       -0.2809,
+       1.2494,
+       0.2377
+      ],
+      "palmMidNdc": [
+       -0.2397,
+       0.3497
+      ],
+      "palmRNdc": [
+       -0.2432,
+       0.4342
+      ],
+      "palmLNdc": [
+       -0.2357,
+       0.2529
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.8566,
+        1.3384,
+        0.3447
+       ],
+       "scale": 0.0932,
+       "ndc": [
+        -0.4727,
+        0.4177
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4658,
+        1.3603,
+        0.0736
+       ],
+       "scale": 0.1096,
+       "ndc": [
+        -0.2432,
+        0.4392
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.5909,
+        1.3551,
+        0.1475
+       ],
+       "scale": 0.36,
+       "ndc": [
+        -0.3124,
+        0.4333
+       ]
+      },
+      "opacity": {
+       "core": 0.62,
+       "shell": 0.081,
+       "ring": 0.257
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.950000000000003,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 5,
+       "shards": 6,
+       "glints": 0
+      },
+      "triangles": 1044,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0265,
+        0.0265
+       ],
+       "foot": [
+        0.1335,
+        0.1335
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0234
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126929,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.4517,
+       1.3673,
+       -0.0129
+      ],
+      "palmL": [
+       0.095,
+       1.0935,
+       0.4535
+      ],
+      "palmMid": [
+       -0.1784,
+       1.2304,
+       0.2203
+      ],
+      "palmMidNdc": [
+       -0.1949,
+       0.3334
+      ],
+      "palmRNdc": [
+       -0.2073,
+       0.4419
+      ],
+      "palmLNdc": [
+       -0.1796,
+       0.2008
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -1.1404,
+        1.3696,
+        0.3937
+       ],
+       "scale": 0.0397,
+       "ndc": [
+        -0.5736,
+        0.4367
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4517,
+        1.3869,
+        -0.0129
+       ],
+       "scale": 0.1256,
+       "ndc": [
+        -0.2074,
+        0.4591
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6583,
+        1.368,
+        0.1091
+       ],
+       "scale": 0.61,
+       "ndc": [
+        -0.3198,
+        0.4403
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0.028,
+       "ring": 0.023
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.733399999999994,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 3,
+       "shards": 5,
+       "glints": 0
+      },
+      "triangles": 632,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0109,
+        0.0109
+       ],
+       "foot": [
+        0.1179,
+        0.1179
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0027
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124593,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.3844,
+       1.1294,
+       -0.1576
+      ],
+      "palmL": [
+       -0.0202,
+       0.9871,
+       0.3525
+      ],
+      "palmMid": [
+       -0.2023,
+       1.0582,
+       0.0974
+      ],
+      "palmMidNdc": [
+       -0.1572,
+       0.1704
+      ],
+      "palmRNdc": [
+       -0.1341,
+       0.2348
+      ],
+      "palmLNdc": [
+       -0.1847,
+       0.0939
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4199,
+        1.3945,
+        -0.088
+       ],
+       "scale": 0.1474,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.733399999999991,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0024,
+        0.0024
+       ],
+       "foot": [
+        0.1094,
+        0.1094
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0013
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 0,
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "cameraMode": "free",
+     "vfx": {
+      "palmR": [
+       -0.2453,
+       0.9119,
+       -0.2581
+      ],
+      "palmL": [
+       0.0483,
+       0.9267,
+       0.353
+      ],
+      "palmMid": [
+       -0.0985,
+       0.9193,
+       0.0475
+      ],
+      "palmMidNdc": [
+       -0.0997,
+       0.0411
+      ],
+      "palmRNdc": [
+       -0.0523,
+       0.05
+      ],
+      "palmLNdc": [
+       -0.1569,
+       0.0305
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4199,
+        1.3945,
+        -0.088
+       ],
+       "scale": 0.1474,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    }
+   ],
+   "repetitions": [],
+   "camera": {},
+   "panel": {
+    "expanded": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": null,
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "playing": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "afterToggleOpen": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": "false",
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "afterToggleFold": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "complete": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    }
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "panel": "collapsed",
+     "cameraYawDeg": 39.6,
+     "vfx": {
+      "palmR": [
+       -0.2354,
+       0.8839,
+       -0.2899
+      ],
+      "palmL": [
+       0.0967,
+       0.8864,
+       0.3582
+      ],
+      "palmMid": [
+       -0.0693,
+       0.8852,
+       0.0341
+      ],
+      "palmMidNdc": [
+       -0.0837,
+       0.0091
+      ],
+      "palmRNdc": [
+       -0.0388,
+       0.0272
+      ],
+      "palmLNdc": [
+       -0.1387,
+       -0.013
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1305,
+        1.3654,
+        0.3768
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4199,
+        1.3945,
+        -0.088
+       ],
+       "scale": 0.1474,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6483,
+        1.3638,
+        0.092
+       ],
+       "scale": 0.6475,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     },
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+       "ripples": 0,
+       "shards": 0,
+       "glints": 0,
+       "bursts": 0,
+       "transfers": 0
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0005,
+        0.0005
+       ],
+       "foot": [
+        0.1074,
+        0.1074
+       ]
+      },
+      "pelvisShift": 0.0009,
+      "density": 0.6,
+      "budget": {
+       "meshes": 3,
+       "geometries": 3,
+       "materials": 1,
+       "textures": 0,
+       "renderTargets": 0,
+       "customShaders": 0,
+       "capacity": {
+        "rings": 8,
+        "shards": 56,
+        "glints": 20
+       },
+       "triangles": 2016,
+       "maxDrawCalls": 3
+      }
+     },
+     "cycle": 1,
+     "extraDrawCalls": 10,
+     "visibleDrawCalls": 0,
+     "geometries": 7,
+     "materials": 6,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.5999999998603016,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 30,
+     "textures": 21,
+     "programs": 17
+    },
+    "frameInterval": {
+     "samples": 536,
+     "windowSamples": 240,
+     "mean": 363.123,
+     "p50": 364.3,
+     "p95": 723.6,
+     "max": 741
+    },
+    "render": {
+     "samples": 540,
+     "windowSamples": 240,
+     "mean": 1.372,
+     "p50": 1.1,
+     "p95": 3.7,
+     "max": 7.8
+    },
+    "heap": 23772205
+   },
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.58330000000001,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0464,
+     "coreOpacity": 0.184,
+     "shellOpacity": 0.043,
+     "ringOpacity": 0.158
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.283300000000008,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0378,
+     "coreOpacity": 0.606,
+     "shellOpacity": 0.146,
+     "ringOpacity": 0.161
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.61660000000001,
+     "coreToPalmMidNdc": 0.2427,
+     "corePalmSpanNdc": 0.1815,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.081,
+     "ringOpacity": 0.257
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.950000000000003,
+     "coreToPalmMidNdc": 0.3925,
+     "corePalmSpanNdc": 0.2427,
+     "coreOpacity": 0,
+     "shellOpacity": 0.028,
+     "ringOpacity": 0.023
+    }
+   ]
+  },
+  "video": {
+   "viewport": {
+    "width": 1280,
+    "height": 720
+   },
+   "dpr": 1,
+   "view": "front-auto-video",
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 8,
+    "vfx": {
+     "palmR": [
+      -0.2349,
+      0.8838,
+      -0.2902
+     ],
+     "palmL": [
+      0.0973,
+      0.8862,
+      0.3579
+     ],
+     "palmMid": [
+      -0.0688,
+      0.885,
+      0.0339
+     ],
+     "palmMidNdc": [
+      -0.0927,
+      0.0032
+     ],
+     "palmRNdc": [
+      -0.1425,
+      0.0217
+     ],
+     "palmLNdc": [
+      -0.0319,
+      -0.0194
+     ],
+     "core": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "shell": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "ring": {
+      "visible": false,
+      "position": [
+       0,
+       0,
+       0
+      ],
+      "scale": 1,
+      "ndc": null
+     },
+     "opacity": {
+      "core": 0,
+      "shell": 0,
+      "ring": 0
+     },
+     "ribbonVisible": false
+    },
+    "env": {
+     "instances": {
+      "rings": 0,
+      "shards": 0,
+      "glints": 0
+     },
+     "triangles": 0,
+     "stats": {
+      "ripples": 0,
+      "shards": 0,
+      "glints": 0,
+      "bursts": 0,
+      "transfers": 0
+     },
+     "baseline": {
+      "toe": [
+       0.06,
+       0.06
+      ],
+      "foot": [
+       0.09,
+       0.09
+      ],
+      "shift": 0,
+      "measured": false
+     },
+     "planted": [
+      1,
+      1
+     ],
+     "heights": {
+      "toe": [
+       0,
+       0
+      ],
+      "foot": [
+       0,
+       0
+      ]
+     },
+     "pelvisShift": 0,
+     "density": 0.6,
+     "budget": {
+      "meshes": 3,
+      "geometries": 3,
+      "materials": 1,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "capacity": {
+       "rings": 8,
+       "shards": 56,
+       "glints": 20
+      },
+      "triangles": 2016,
+      "maxDrawCalls": 3
+     }
+    },
+    "cycle": 0,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 1.0332999999999997,
+     "state": "PREPARATION",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0406,
+        0.0406
+       ],
+       "foot": [
+        0.1476,
+        0.1476
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0302
+     },
+     "renderer": {
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1,
+     "panel": "collapsed",
+     "cameraYawDeg": -23,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3354,
+       1.1113,
+       -0.057
+      ],
+      "palmL": [
+       -0.2076,
+       1.1211,
+       0.271
+      ],
+      "palmMid": [
+       -0.2715,
+       1.1162,
+       0.107
+      ],
+      "palmMidNdc": [
+       -0.136,
+       0.2603
+      ],
+      "palmRNdc": [
+       -0.2017,
+       0.2508
+      ],
+      "palmLNdc": [
+       -0.0647,
+       0.2706
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3354,
+        1.1113,
+        -0.057
+       ],
+       "scale": 0.5985,
+       "ndc": [
+        -0.2017,
+        0.2508
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.288
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.6500000000000046,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 2,
+       "glints": 0
+      },
+      "triangles": 212,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0568,
+        0.0568
+       ],
+       "foot": [
+        0.1638,
+        0.1638
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.034
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124173,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 15
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -28.1,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.176,
+       0.9786,
+       -0.3482
+      ],
+      "palmL": [
+       -0.2077,
+       1.0912,
+       0.2546
+      ],
+      "palmMid": [
+       -0.1919,
+       1.0349,
+       -0.0468
+      ],
+      "palmMidNdc": [
+       -0.113,
+       0.1554
+      ],
+      "palmRNdc": [
+       -0.171,
+       0.1029
+      ],
+      "palmLNdc": [
+       -0.0443,
+       0.2177
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2849,
+        1.0485,
+        -0.1451
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.2665999999999955,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 22,
+       "glints": 1
+      },
+      "triangles": 504,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0438,
+        0.0438
+       ],
+       "foot": [
+        0.1508,
+        0.1508
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0471
+     },
+     "renderer": {
+      "calls": 29,
+      "triangles": 124589,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -33,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4404,
+       1.306,
+       0.0885
+      ],
+      "palmL": [
+       -0.0166,
+       1.0969,
+       0.3596
+      ],
+      "palmMid": [
+       -0.2285,
+       1.2014,
+       0.224
+      ],
+      "palmMidNdc": [
+       -0.0466,
+       0.3057
+      ],
+      "palmRNdc": [
+       -0.2035,
+       0.422
+      ],
+      "palmLNdc": [
+       0.1095,
+       0.19
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2849,
+        1.0485,
+        -0.1451
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.249999999999994,
+     "state": "BASIC",
+     "env": {
+      "instances": {
+       "rings": 1,
+       "shards": 17,
+       "glints": 0
+      },
+      "triangles": 272,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0503,
+        0.0503
+       ],
+       "foot": [
+        0.1573,
+        0.1573
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": -0.0494
+     },
+     "renderer": {
+      "calls": 27,
+      "triangles": 124309,
+      "geometries": 29,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 3,
+     "panel": "collapsed",
+     "cameraYawDeg": -23.5,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2798,
+       1.0529,
+       -0.1549
+      ],
+      "palmL": [
+       -0.238,
+       1.3488,
+       0.4166
+      ],
+      "palmMid": [
+       -0.2589,
+       1.2009,
+       0.1309
+      ],
+      "palmMidNdc": [
+       -0.1173,
+       0.2856
+      ],
+      "palmRNdc": [
+       -0.1833,
+       0.1245
+      ],
+      "palmLNdc": [
+       -0.0388,
+       0.4772
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        0,
+        0,
+        0
+       ],
+       "scale": 1,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.2849,
+        1.0485,
+        -0.1451
+       ],
+       "scale": 0.7894,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0.015
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.6499999999999755,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 0,
+       "glints": 3
+      },
+      "triangles": 432,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0554,
+        0.0554
+       ],
+       "foot": [
+        0.1624,
+        0.1624
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.004
+     },
+     "renderer": {
+      "calls": 28,
+      "triangles": 125233,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.368,
+       1.1792,
+       0.0504
+      ],
+      "palmL": [
+       -0.2472,
+       1.1804,
+       0.2782
+      ],
+      "palmMid": [
+       -0.3076,
+       1.1798,
+       0.1643
+      ],
+      "palmMidNdc": [
+       -0.1805,
+       0.161
+      ],
+      "palmRNdc": [
+       -0.2408,
+       0.1611
+      ],
+      "palmLNdc": [
+       -0.1157,
+       0.1608
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.0539,
+       "ndc": [
+        -0.1805,
+        0.161
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.0752,
+       "ndc": [
+        -0.1805,
+        0.161
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3076,
+        1.1798,
+        0.1643
+       ],
+       "scale": 0.7446,
+       "ndc": [
+        -0.1805,
+        0.161
+       ]
+      },
+      "opacity": {
+       "core": 0.241,
+       "shell": 0.057,
+       "ring": 0.183
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.250099999999965,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 2,
+       "shards": 8,
+       "glints": 0
+      },
+      "triangles": 440,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0508,
+        0.0508
+       ],
+       "foot": [
+        0.1578,
+        0.1578
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0089
+     },
+     "renderer": {
+      "calls": 28,
+      "triangles": 125241,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 5,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.7,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3815,
+       1.2414,
+       0.0686
+      ],
+      "palmL": [
+       -0.2869,
+       1.2263,
+       0.2415
+      ],
+      "palmMid": [
+       -0.3342,
+       1.2339,
+       0.1551
+      ],
+      "palmMidNdc": [
+       -0.2194,
+       0.1962
+      ],
+      "palmRNdc": [
+       -0.2663,
+       0.2059
+      ],
+      "palmLNdc": [
+       -0.1697,
+       0.1861
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.3342,
+        1.2339,
+        0.1551
+       ],
+       "scale": 0.0594,
+       "ndc": [
+        -0.2194,
+        0.1962
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.3342,
+        1.2339,
+        0.1551
+       ],
+       "scale": 0.0774,
+       "ndc": [
+        -0.2194,
+        0.1962
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.3342,
+        1.2339,
+        0.1551
+       ],
+       "scale": 0.5606,
+       "ndc": [
+        -0.2194,
+        0.1962
+       ]
+      },
+      "opacity": {
+       "core": 0.602,
+       "shell": 0.146,
+       "ring": 0.161
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.566699999999971,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 4,
+       "shards": 21,
+       "glints": 2
+      },
+      "triangles": 916,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.035,
+        0.035
+       ],
+       "foot": [
+        0.142,
+        0.142
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0493
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126753,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -16.2,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4665,
+       1.3515,
+       0.0729
+      ],
+      "palmL": [
+       -0.1581,
+       1.1662,
+       0.3641
+      ],
+      "palmMid": [
+       -0.3123,
+       1.2588,
+       0.2185
+      ],
+      "palmMidNdc": [
+       -0.1974,
+       0.2253
+      ],
+      "palmRNdc": [
+       -0.3359,
+       0.3506
+      ],
+      "palmLNdc": [
+       -0.0472,
+       0.0895
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -0.6742,
+        1.2996,
+        0.3217
+       ],
+       "scale": 0.1012,
+       "ndc": [
+        -0.4983,
+        0.2957
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4665,
+        1.355,
+        0.0729
+       ],
+       "scale": 0.1072,
+       "ndc": [
+        -0.3359,
+        0.3554
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.5536,
+        1.3518,
+        0.1243
+       ],
+       "scale": 0.3225,
+       "ndc": [
+        -0.402,
+        0.3571
+       ]
+      },
+      "opacity": {
+       "core": 0.62,
+       "shell": 0.092,
+       "ring": 0.292
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.916699999999969,
+     "state": "SKILL",
+     "env": {
+      "instances": {
+       "rings": 5,
+       "shards": 5,
+       "glints": 0
+      },
+      "triangles": 1040,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0275,
+        0.0275
+       ],
+       "foot": [
+        0.1344,
+        0.1344
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.025
+     },
+     "renderer": {
+      "calls": 33,
+      "triangles": 126925,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 9,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.4,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.4575,
+       1.3691,
+       0.001
+      ],
+      "palmL": [
+       0.1064,
+       1.0935,
+       0.4539
+      ],
+      "palmMid": [
+       -0.1756,
+       1.2313,
+       0.2274
+      ],
+      "palmMidNdc": [
+       -0.0777,
+       0.1954
+      ],
+      "palmRNdc": [
+       -0.3231,
+       0.3726
+      ],
+      "palmLNdc": [
+       0.1938,
+       -0.0007
+      ],
+      "core": {
+       "visible": true,
+       "position": [
+        -1.1447,
+        1.3715,
+        0.4068
+       ],
+       "scale": 0.0451,
+       "ndc": [
+        -0.9326,
+        0.4525
+       ]
+      },
+      "shell": {
+       "visible": true,
+       "position": [
+        -0.4575,
+        1.3874,
+        0.001
+       ],
+       "scale": 0.1241,
+       "ndc": [
+        -0.3232,
+        0.3965
+       ]
+      },
+      "ring": {
+       "visible": true,
+       "position": [
+        -0.6636,
+        1.3698,
+        0.1227
+       ],
+       "scale": 0.585,
+       "ndc": [
+        -0.4728,
+        0.3922
+       ]
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0.033,
+       "ring": 0.047
+      },
+      "ribbonVisible": true
+     }
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.749999999999955,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 3,
+       "shards": 5,
+       "glints": 0
+      },
+      "triangles": 632,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0107,
+        0.0107
+       ],
+       "foot": [
+        0.1177,
+        0.1177
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0026
+     },
+     "renderer": {
+      "calls": 25,
+      "triangles": 124593,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 2,
+     "panel": "collapsed",
+     "cameraYawDeg": -18.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.3765,
+       1.1124,
+       -0.1616
+      ],
+      "palmL": [
+       -0.0204,
+       0.9865,
+       0.3512
+      ],
+      "palmMid": [
+       -0.1984,
+       1.0494,
+       0.0948
+      ],
+      "palmMidNdc": [
+       -0.1189,
+       -0.0087
+      ],
+      "palmRNdc": [
+       -0.275,
+       0.0726
+      ],
+      "palmLNdc": [
+       0.0608,
+       -0.1022
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1274,
+        1.3637,
+        0.372
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4196,
+        1.3948,
+        -0.0896
+       ],
+       "scale": 0.1482,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6452,
+        1.3621,
+        0.0873
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.66679999999994,
+     "state": "RECOVERY",
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0028,
+        0.0028
+       ],
+       "foot": [
+        0.1098,
+        0.1098
+       ]
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "pelvisShift": 0.0014
+     },
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 30,
+      "textures": 21,
+      "programs": 17
+     },
+     "visibleDrawCalls": 0,
+     "panel": "collapsed",
+     "cameraYawDeg": -2.6,
+     "cameraMode": "automatic",
+     "vfx": {
+      "palmR": [
+       -0.2467,
+       0.9168,
+       -0.2524
+      ],
+      "palmL": [
+       0.0408,
+       0.933,
+       0.3511
+      ],
+      "palmMid": [
+       -0.1029,
+       0.9249,
+       0.0493
+      ],
+      "palmMidNdc": [
+       -0.0982,
+       -0.038
+      ],
+      "palmRNdc": [
+       -0.1771,
+       -0.0306
+      ],
+      "palmLNdc": [
+       -0.0022,
+       -0.047
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1274,
+        1.3637,
+        0.372
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4196,
+        1.3948,
+        -0.0896
+       ],
+       "scale": 0.1482,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6452,
+        1.3621,
+        0.0873
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     }
+    }
+   ],
+   "repetitions": [],
+   "camera": {},
+   "panel": {
+    "expanded": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": null,
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "playing": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "afterToggleOpen": {
+     "x": 16,
+     "y": 363.46875,
+     "w": 416,
+     "h": 268.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.1212,
+     "collapsed": "false",
+     "toggle": "true",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera",
+      "trace"
+     ]
+    },
+    "afterToggleFold": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    },
+    "complete": {
+     "x": 12,
+     "y": 73.59375,
+     "w": 480,
+     "h": 99.53125,
+     "viewportW": 1280,
+     "viewportH": 720,
+     "areaFraction": 0.0518,
+     "collapsed": "true",
+     "toggle": "false",
+     "controlsVisible": [
+      "play",
+      "pause",
+      "restart",
+      "stop",
+      "camera"
+     ]
+    }
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "panel": "collapsed",
+     "cameraYawDeg": 5.2,
+     "vfx": {
+      "palmR": [
+       -0.235,
+       0.8838,
+       -0.2901
+      ],
+      "palmL": [
+       0.0971,
+       0.8862,
+       0.358
+      ],
+      "palmMid": [
+       -0.069,
+       0.885,
+       0.0339
+      ],
+      "palmMidNdc": [
+       -0.0893,
+       -0.0201
+      ],
+      "palmRNdc": [
+       -0.1498,
+       -0.0035
+      ],
+      "palmLNdc": [
+       -0.0149,
+       -0.0405
+      ],
+      "core": {
+       "visible": false,
+       "position": [
+        -1.1274,
+        1.3637,
+        0.372
+       ],
+       "scale": 0.0344,
+       "ndc": null
+      },
+      "shell": {
+       "visible": false,
+       "position": [
+        -0.4196,
+        1.3948,
+        -0.0896
+       ],
+       "scale": 0.1482,
+       "ndc": null
+      },
+      "ring": {
+       "visible": false,
+       "position": [
+        -0.6452,
+        1.3621,
+        0.0873
+       ],
+       "scale": 0.66,
+       "ndc": null
+      },
+      "opacity": {
+       "core": 0,
+       "shell": 0,
+       "ring": 0
+      },
+      "ribbonVisible": false
+     },
+     "env": {
+      "instances": {
+       "rings": 0,
+       "shards": 0,
+       "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+       "ripples": 0,
+       "shards": 0,
+       "glints": 0,
+       "bursts": 0,
+       "transfers": 0
+      },
+      "baseline": {
+       "toe": [
+        0.0011636548531594043,
+        0.0011651886643823522
+       ],
+       "foot": [
+        0.10815425298240916,
+        0.10815321186335897
+       ],
+       "shift": -0.0009,
+       "measured": true
+      },
+      "planted": [
+       1,
+       1
+      ],
+      "heights": {
+       "toe": [
+        0.0005,
+        0.0005
+       ],
+       "foot": [
+        0.1074,
+        0.1074
+       ]
+      },
+      "pelvisShift": 0.0008,
+      "density": 0.6,
+      "budget": {
+       "meshes": 3,
+       "geometries": 3,
+       "materials": 1,
+       "textures": 0,
+       "renderTargets": 0,
+       "customShaders": 0,
+       "capacity": {
+        "rings": 8,
+        "shards": 56,
+        "glints": 20
+       },
+       "triangles": 2016,
+       "maxDrawCalls": 3
+      }
+     },
+     "cycle": 1,
+     "extraDrawCalls": 10,
+     "visibleDrawCalls": 0,
+     "geometries": 7,
+     "materials": 6,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.7999999998137355,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 30,
+     "textures": 21,
+     "programs": 17
+    },
+    "frameInterval": {
+     "samples": 464,
+     "windowSamples": 240,
+     "mean": 420.23,
+     "p50": 420.5,
+     "p95": 852,
+     "max": 885.8
+    },
+    "render": {
+     "samples": 468,
+     "windowSamples": 240,
+     "mean": 1.563,
+     "p50": 1.2,
+     "p95": 3.8,
+     "max": 6.3
+    },
+    "heap": 23733842
+   },
+   "skillRead": [
+    {
+     "id": "04-skill-charge",
+     "time": 4.6499999999999755,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.1251,
+     "coreOpacity": 0.241,
+     "shellOpacity": 0.057,
+     "ringOpacity": 0.183
+    },
+    {
+     "id": "05-skill-hold",
+     "time": 5.250099999999965,
+     "coreToPalmMidNdc": 0,
+     "corePalmSpanNdc": 0.0986,
+     "coreOpacity": 0.602,
+     "shellOpacity": 0.146,
+     "ringOpacity": 0.161
+    },
+    {
+     "id": "06-skill-release",
+     "time": 5.566699999999971,
+     "coreToPalmMidNdc": 0.309,
+     "corePalmSpanNdc": 0.3893,
+     "coreOpacity": 0.62,
+     "shellOpacity": 0.092,
+     "ringOpacity": 0.292
+    },
+    {
+     "id": "07-afterglow",
+     "time": 5.916699999999969,
+     "coreToPalmMidNdc": 0.8927,
+     "corePalmSpanNdc": 0.6376,
+     "coreOpacity": 0,
+     "shellOpacity": 0.033,
+     "ringOpacity": 0.047
+    }
+   ]
+  }
+ },
+ "limitation": "Headless Chromium on SwiftShader (CPU). Frame times here are not GPU times and say nothing about phones or desktops with a GPU.",
+ "variant": "r22",
+ "errors": []
+}
