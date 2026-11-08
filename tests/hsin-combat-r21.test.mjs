@@ -87,8 +87,9 @@ const sec=JSON.parse(readFileSync('public/assets/animations/hsin/lunar-dance-r3.
 const caps={hair:1.1,ornament:1.5,sleeve:1.8,tail:1.4},kindOf=i=>{const g=sec.groups[sec.group[i]].id;return g.startsWith('sleeve')?'sleeve':g==='tail'?'tail':/Piao/.test(sec.names[i])?'ornament':'hair';};
 const index=new Map(data.names.map((n,i)=>[n,i])),maxAngle={},maxStep={};
 const qa=new T.Quaternion(),qb=new T.Quaternion();
-sec.names.forEach((name,i)=>{const k=index.get(name);assert.ok(k!==undefined,'secondary channel '+name);let prior=qa.fromArray(data.rest,k*4).clone();
- for(let f=0;f<data.frameCount;f++){qb.fromArray(data.frames[f],k*4);const rest=new T.Quaternion().fromArray(data.rest,k*4);const a=qb.angleTo(rest)*180/Math.PI,s=qb.angleTo(prior)*180/Math.PI;prior=qb.clone();const kind=kindOf(i);maxAngle[kind]=Math.max(maxAngle[kind]??0,a);maxStep[kind]=Math.max(maxStep[kind]??0,s);}});
+sec.names.forEach((name,i)=>{const k=index.get(name);assert.ok(k!==undefined,'secondary channel '+name);let prior=qa.fromArray(data.rest,k*4).normalize().clone();
+ for(let f=0;f<data.frameCount;f++){qb.fromArray(data.frames[f],k*4).normalize();const rest=new T.Quaternion().fromArray(data.rest,k*4).normalize();// int16 quantisation leaves |q| near 1 +- 1e-4, which inflates angles near zero by ~0.5 degrees: measure on unit quaternions.
+ const a=qb.angleTo(rest)*180/Math.PI,s=qb.angleTo(prior)*180/Math.PI;prior=qb.clone();const kind=kindOf(i);maxAngle[kind]=Math.max(maxAngle[kind]??0,a);maxStep[kind]=Math.max(maxStep[kind]??0,s);}});
 for(const [kind,cap] of Object.entries(caps))assert.ok(maxAngle[kind]<=cap+.1,`${kind} secondary bounded: ${maxAngle[kind]} <= ${cap}`);
 for(const [kind,s] of Object.entries(maxStep))assert.ok(s<=1,`${kind} secondary step ${s}`);
 const sleeveRoots=sec.names.map((n,i)=>i).filter(i=>kindOf(i)==='sleeve'&&sec.depth[i]===0),sleeveFree=sec.names.map((n,i)=>i).filter(i=>kindOf(i)==='sleeve'&&sec.depth[i]>=5);
