@@ -8,7 +8,7 @@
 }
 .music-shelf .music-heading.music-heading--gallery {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "heading" "player" "scene";
+  grid-template-areas: "heading" "player";
   gap: 1.6rem;
 }
 .music-shelf .music-heading--gallery .music-heading-copy {
@@ -148,7 +148,7 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track
 @media (max-width: 1199px) {
   .music-shelf .music-heading.music-heading--gallery {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "heading" "player" "scene";
+    grid-template-areas: "heading" "player";
   }
   .music-shelf .music-heading--gallery .music-listening-panel { grid-area: player; align-self: center; }
   .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card { grid-template-columns: 72px minmax(0, 1fr); padding: 1rem; }
@@ -158,7 +158,7 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track
 @media (max-width: 680px) {
   .music-shelf .music-heading.music-heading--gallery {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "heading" "player" "scene";
+    grid-template-areas: "heading" "player";
     gap: 1.4rem;
   }
   .music-shelf .music-heading--gallery .music-heading-copy { grid-template-columns: minmax(0, 1fr); gap: .7rem; }

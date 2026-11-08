@@ -5,9 +5,9 @@ const component=await readFile('src/components/MusicShelf.astro','utf8');
 const css=await readFile('src/styles/music-gallery.css','utf8');
 const js=await readFile('public/scripts/music-experimental-transition.js','utf8');
 
-assert.match(component,/href="\/experimentos\/"/);
-assert.match(component,/data-music-experimental-mode/);
-assert.match(component,/music-experimental-transition\.js/);
+assert.doesNotMatch(component,/href="\/experimentos\/"/);
+assert.doesNotMatch(component,/data-music-experimental-mode/);
+assert.doesNotMatch(component,/music-experimental-transition\.js/);
 assert.match(js,/const TRANSITION_MS = 1680/);
 assert.match(js,/const REDUCED_MS = 380/);
 assert.match(js,/prefers-reduced-motion: reduce/);
