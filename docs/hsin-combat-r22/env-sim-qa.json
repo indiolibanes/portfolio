@@ -3,7 +3,7 @@
   "rings": 6,
   "shards": 37,
   "glints": 3,
-  "tris": 1000
+  "tris": 1300
  },
  "spawned": {
   "ripples": 7,
@@ -25,6 +25,6 @@
   "rings": 8,
   "shards": 56,
   "glints": 20,
-  "maxTriangles": 1760
+  "maxTriangles": 2240
  }
 }

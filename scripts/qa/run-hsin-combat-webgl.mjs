@@ -11,13 +11,13 @@ import {chromium} from 'playwright';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 const out=process.argv[2],flag=(n,d='')=>(process.argv.find(a=>a.startsWith(`--${n}=`))??`--${n}=${d}`).split('=').slice(1).join('=');
-const stageUrl=flag('stage-url','http://127.0.0.1:4321');
+const stageUrl=flag('stage-url','http://127.0.0.1:4321'),variant=flag('variant','');
 if(!out)throw Error('Usage: OUT_DIR --stage-url=URL');
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist','--enable-precise-memory-info']});
 const report={status:'WEBGL_QA_SOFTWARE',renderer:null,viewports:{},limitation:'Headless Chromium on SwiftShader (CPU). Frame times here are not GPU times and say nothing about phones or desktops with a GPU.'};
 const SHOTS=[['00-preparation',.9],['01-basic01-windup',1.6],['02-basic01-impact',2.12],['03-basic02-impact',3.12],['04-skill-charge',4.5],['05-skill-hold',5.15],['06-skill-release',5.5],['07-afterglow',5.85],['08-recovery',6.6],['09-settle',7.6]];
-async function pageState(page){return page.evaluate(()=>{const c=window.__hsinCombat?.diagnostics?.();const m=window.__hsinMetrics?.report?.();return {combat:c?{state:c.state,time:c.time,camera:c.camera,panel:c.panel,cameraYawDeg:c.cameraYawDeg,vfx:c.vfx,cycle:c.cycle,extraDrawCalls:c.extraDrawCalls,visibleDrawCalls:c.visibleDrawCalls,geometries:c.geometries,materials:c.materials,decodedBytes:c.decodedBytes,bakeBytes:c.bakeBytes,lastCpuMs:c.lastCpuMs,revision:c.revision}:null,renderer:m?.renderer??null,frameInterval:m?.timingsMs?.frameInterval??null,render:m?.timingsMs?.render??null,heap:performance.memory?.usedJSHeapSize??null};});}
+async function pageState(page){return page.evaluate(()=>{const c=window.__hsinCombat?.diagnostics?.();const m=window.__hsinMetrics?.report?.();return {combat:c?{state:c.state,time:c.time,camera:c.camera,panel:c.panel,cameraYawDeg:c.cameraYawDeg,vfx:c.vfx,env:c.env??null,cycle:c.cycle,extraDrawCalls:c.extraDrawCalls,visibleDrawCalls:c.visibleDrawCalls,geometries:c.geometries,materials:c.materials,decodedBytes:c.decodedBytes,bakeBytes:c.bakeBytes,lastCpuMs:c.lastCpuMs,revision:c.revision}:null,renderer:m?.renderer??null,frameInterval:m?.timingsMs?.frameInterval??null,render:m?.timingsMs?.render??null,heap:performance.memory?.usedJSHeapSize??null};});}
 async function run(name,viewport,opts){
  const context=await browser.newContext({viewport,deviceScaleFactor:opts.dpr,hasTouch:!!opts.touch,isMobile:!!opts.touch,...(opts.video?{recordVideo:{dir:join(out,'video-raw'),size:viewport}}:{})});
  const page=await context.newPage(),errors=[],warnings=[];
@@ -26,8 +26,9 @@ async function run(name,viewport,opts){
  await page.goto(`${stageUrl}/experimentos/combate/?hsin-metrics`);
  await page.waitForSelector('[data-hsin-stage][data-state="ready"]',{timeout:240000});
  const gpu=await page.evaluate(()=>{const g=document.createElement('canvas').getContext('webgl2')||document.createElement('canvas').getContext('webgl');const e=g?.getExtension('WEBGL_debug_renderer_info');return g?{renderer:e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'n/a',version:g.getParameter(g.VERSION)}:null;});
- report.renderer??=gpu;
+ report.renderer??=gpu;report.variant=variant||'r2';
  const before=await pageState(page);
+ if(variant)await page.selectOption('[data-combat-version]',variant);
  await page.click('[data-combat-load]');
  await page.waitForFunction(()=>!document.querySelector('[data-combat-controls]')?.hidden,null,{timeout:120000});
  const loaded=await pageState(page);
@@ -46,7 +47,7 @@ async function run(name,viewport,opts){
   await page.click('[data-combat-action="pause"]');await page.waitForTimeout(500);
   const s=await pageState(page);await shot(id);
   if(id==='01-basic01-windup')result.panel.playing=await panelRect();
-  result.shots.push({id,target:time,time:s.combat?.time,state:s.combat?.state,renderer:s.renderer,visibleDrawCalls:s.combat?.visibleDrawCalls,panel:s.combat?.panel,cameraYawDeg:s.combat?.cameraYawDeg,cameraMode:s.combat?.camera,vfx:s.combat?.vfx});
+  result.shots.push({id,target:time,time:s.combat?.time,state:s.combat?.state,env:s.combat?.env?{instances:s.combat.env.instances,triangles:s.combat.env.triangles,planted:s.combat.env.planted,pelvisShift:s.combat.env.pelvisShift}:null,renderer:s.renderer,visibleDrawCalls:s.combat?.visibleDrawCalls,panel:s.combat?.panel,cameraYawDeg:s.combat?.cameraYawDeg,cameraMode:s.combat?.camera,vfx:s.combat?.vfx});
   await page.click('[data-combat-action="pause"]');
  }
  // --- the collapsed panel can be expanded and folded again by the user, and its controls stay reachable

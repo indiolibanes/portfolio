@@ -5,7 +5,7 @@
  */
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {createEnvSim,CAPACITY} from '../src/scripts/hsin-combat-env-sim.mjs';
+import {createEnvSim,CAPACITY,GEOMETRY_TRIANGLES,WORST_CASE_TRIANGLES} from '../src/scripts/hsin-combat-env-sim.mjs';
 import {MARKERS,torso} from '../scripts/lib/hsin-combat-r21-score.mjs';
 const DT=1/30,END=8.4;
 const markers=new Map(MARKERS.map(([n,t])=>[n,t]));
@@ -28,7 +28,7 @@ function run({steps,over=()=>({}),density=1,sim=createEnvSim({density}),stopAt=E
   const p=pose(t,over(t));
   for(const [name,mt] of markers)if(mt<=t&&!fired.has(name)){fired.add(name);sim.event(name,mt,{pr:p.pr,pl:p.pl,vr:[-1.2,.2,.8],vl:[.4,1.4,.2],c:p.c,s:p.s,mid:p.mid});}
   sim.update(t,p);sim.write(t,view,out);
-  peak.rings=Math.max(peak.rings,out.rings);peak.shards=Math.max(peak.shards,out.shards);peak.glints=Math.max(peak.glints,out.glints);peak.tris=Math.max(peak.tris,out.rings*144+out.shards*8+out.glints*8);
+  peak.rings=Math.max(peak.rings,out.rings);peak.shards=Math.max(peak.shards,out.shards);peak.glints=Math.max(peak.glints,out.glints);peak.tris=Math.max(peak.tris,out.rings*GEOMETRY_TRIANGLES.ring+out.shards*GEOMETRY_TRIANGLES.shard+out.glints*GEOMETRY_TRIANGLES.glint);
   trace.push([+t.toFixed(4),out.rings,out.shards,out.glints,+out.ringC.slice(0,out.rings*3).reduce((a,b)=>a+b,0).toFixed(5),+out.shardC.slice(0,out.shards*3).reduce((a,b)=>a+b,0).toFixed(5)]);
  }
  return {sim,out,trace,peak};
@@ -40,6 +40,7 @@ assert.deepEqual(a.trace,b.trace,'same clock -> same effects');
 // 2. budget: pool capacities, triangles, draw calls
 assert.ok(a.peak.rings<=CAPACITY.rings&&a.peak.shards<=CAPACITY.shards&&a.peak.glints<=CAPACITY.glints,'pool capacity '+JSON.stringify(a.peak));
 assert.ok(a.peak.tris<=3000,'peak triangles '+a.peak.tris);
+assert.ok(WORST_CASE_TRIANGLES<=3000,'worst-case triangles with every pool full '+WORST_CASE_TRIANGLES);
 assert.ok(a.peak.rings>0&&a.peak.shards>0&&a.peak.glints>0,'all three layers are used');
 // 3. nothing before the first marker that owns it, nothing left after the dissipation
 const early=a.trace.filter(r=>r[0]<1.4);assert.ok(early.every(r=>r[2]===0&&r[1]===0),'no shards or ripples before the first verified weight transfer (1.55 s hip peak)');
@@ -68,5 +69,5 @@ assert.ok(Math.abs(slow.sim.state.stats.ripples-fast.sim.state.stats.ripples)<=1
  assert.ok(sim.state.stats.transfers>=2,'verified weight-transfer peaks '+sim.state.stats.transfers);
  const near=(x,c)=>times.some(t=>Math.abs(t-x)<.35);for(const x of [2.2,3.32,5.45])assert.ok(near(x,times),'a ripple near '+x+' s: '+times.join(','));
  mkdirSync('docs/hsin-combat-r22',{recursive:true});
- writeFileSync('docs/hsin-combat-r22/env-sim-qa.json',JSON.stringify({peak:a.peak,spawned:a.sim.state.stats,rippleTimes:times,spawnRatio17vs60:+ratio.toFixed(3),budget:{rings:CAPACITY.rings,shards:CAPACITY.shards,glints:CAPACITY.glints,maxTriangles:CAPACITY.rings*144+CAPACITY.shards*8+CAPACITY.glints*8}},null,1)+'\n');}
+ writeFileSync('docs/hsin-combat-r22/env-sim-qa.json',JSON.stringify({peak:a.peak,spawned:a.sim.state.stats,rippleTimes:times,spawnRatio17vs60:+ratio.toFixed(3),budget:{rings:CAPACITY.rings,shards:CAPACITY.shards,glints:CAPACITY.glints,maxTriangles:WORST_CASE_TRIANGLES}},null,1)+'\n');}
 console.log('hsin-combat-env-sim ok',JSON.stringify(a.peak));

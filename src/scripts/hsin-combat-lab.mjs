@@ -2,15 +2,17 @@ import {createCombatDirector} from './hsin-combat-director.mjs';
 import {decodeCombatData} from './hsin-combat-data.mjs';
 import {createCombatPose} from './hsin-combat-pose.mjs';
 import {createCombatVfx} from './hsin-combat-vfx.mjs';
+import {createCombatEnv} from './hsin-combat-env.mjs';
 import {faceCue,cameraShot} from './hsin-combat-r21.mjs';
 /**
  * Loaded on explicit lab request. Uses the stage's camera, scene, loop and arbiter output.
  * `r1` keeps the first study (two rings). `r2` is Combat R2.1: baked body, face acting by combat clock, pooled effects
  * (hsin-combat-vfx.mjs) and an optional automatic camera that manual input always overrides.
+ * `r22` is Combat R2.2: the same R2.1.2 sequence plus the environmental layer (hsin-combat-env.mjs), opt-in and created only for that choice.
  */
 export async function createCombatLab({T,root,scene,model,bones,body,dance,camera,orbit,canvas,signal,invalidate,modelHash,profileHash}){
  const start=performance.now();
- const version=root.querySelector('[data-combat-version]')?.value==='r2'?'r2':'r1',r2=version==='r2';
+ const choice=root.querySelector('[data-combat-version]')?.value,env22=choice==='r22',version=choice==='r2'||env22?'r2':'r1',r2=version==='r2';
  const {default:manifest}=r2?await import('../data/hsin-combat-r2.json',{with:{type:'json'}}):await import('../data/hsin-combat-r1.json',{with:{type:'json'}});
  const response=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal});
  if(!response.ok)throw Error('Combat bake unavailable');
@@ -24,6 +26,9 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  const versionSelect=root.querySelector('[data-combat-version]');if(versionSelect)versionSelect.disabled=true;
  // R2.1: pooled effects. R1: two rings, kept as the first study.
  const vfx=r2?createCombatVfx({T,scene,camera,by}):null;
+ // R2.2: environmental layer, only when explicitly chosen. Fragment density follows the device class and never changes the body animation.
+ const nav=typeof navigator==='undefined'?{}:navigator,lowPower=(nav.hardwareConcurrency||8)<=4||(nav.deviceMemory||8)<=3;
+ const env=env22?createCombatEnv({T,scene,camera,by,vfx,density:lowPower?.6:1}):null;
  let legacy=null;
  if(!r2){
   const group=new T.Group();group.name='Hsin combat R1 pooled effects';scene.add(group);
@@ -61,10 +66,10 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
   if(status)status.textContent=state==='COMPLETE'?'Concluído · adaptação experimental':state;
  };
  const clearLegacy=()=>{if(legacy){legacy.ring.visible=legacy.impact.visible=false;legacy.effect='';}};
- const clear=()=>{vfx?.clear();clearLegacy();};
+ const clear=()=>{vfx?.clear();env?.clear();clearLegacy();};
  const director=createCombatDirector({pose,sequence:data.sequence,onState:setFace,onRelease:()=>{clear();auto=false;faceWeight=0;},onEvent:event=>{
   if(event==='clear'){clear();return;}
-  if(r2){vfx.event(event,director.sample().time);return;}
+  if(r2){const at=director.sample().time;vfx.event(event,at);env?.event(event,at);return;}
   if(event==='recovery'){clear();return;}
   legacy.hand=by.get(event==='arc-left'?'ORG-Bip001HandL':'ORG-Bip001HandR');
   legacy.hand.updateWorldMatrix(true,false);legacy.hand.getWorldPosition(anchor);
@@ -133,9 +138,9 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
    director.advance(dt);
    if(director.owns()&&!wasPaused){
     faceWeight=Math.min(1,faceWeight+dt*5);
-    if(r2)vfx.update(director.sample().time);else advanceLegacy(dt);
+    if(r2){const at=director.sample().time;vfx.update(at);env?.update(at);}else advanceLegacy(dt);
     if(auto)advanceCamera(dt);
-   }else if(r2&&director.owns())vfx.update(director.sample().time);
+   }else if(r2&&director.owns()){const at=director.sample().time;vfx.update(at);env?.update(at);}
    lastCpu=performance.now()-t0;
   },
   face(state){
@@ -153,10 +158,10 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
    state.smileL=cue.smileL*gain;state.smileR=cue.smileR*gain;for(const key of Object.keys(cue.overlays))state.overlays[key]=cue.overlays[key]*gain;return state;
   },
   diagnostics:()=>({...director.diagnostics(),preparationMs,lastCpuMs:lastCpu,bakeBytes:manifest.bytes,decodedBytes:data.frameCount*data.rest.length*4+(data.recovery?.values.byteLength??0),version,revision:data.revision??null,recoveryBytes:pose.bufferBytes,
-   extraDrawCalls:r2?vfx.budget.meshes:2,visibleDrawCalls:r2?vfx.visibleDrawCalls():(legacy.ring.visible?1:0)+(legacy.impact.visible?1:0),geometries:r2?vfx.budget.geometries:3,materials:r2?vfx.budget.materials:2,textures:0,renderTargets:0,camera:auto?'automatic':'free',panel:panelCollapsed?'collapsed':'expanded',cameraYawDeg:+(Math.atan2(camera.position.x-orbit.target.x,camera.position.z-orbit.target.z)*180/Math.PI).toFixed(1),vfx:r2?vfx.probe():null}),
+   extraDrawCalls:r2?vfx.budget.meshes+(env?env.budget.meshes:0):2,visibleDrawCalls:r2?vfx.visibleDrawCalls()+(env?env.visibleDrawCalls():0):(legacy.ring.visible?1:0)+(legacy.impact.visible?1:0),geometries:r2?vfx.budget.geometries+(env?env.budget.geometries:0):3,materials:r2?vfx.budget.materials+(env?env.budget.materials:0):2,env:env?{...env.probe(),budget:env.budget}:null,textures:0,renderTargets:0,camera:auto?'automatic':'free',panel:panelCollapsed?'collapsed':'expanded',cameraYawDeg:+(Math.atan2(camera.position.x-orbit.target.x,camera.position.z-orbit.target.z)*180/Math.PI).toFixed(1),vfx:r2?vfx.probe():null}),
   dispose(){
    if(disposed)return;disposed=true;director.dispose();panelToggle?.removeEventListener?.('click',togglePanel);panel?.removeAttribute?.('data-collapsed');orbit.removeEventListener('start',manual);orbit.enablePan=oldPan;
-   vfx?.dispose();
+   vfx?.dispose();env?.dispose();
    if(legacy){scene.remove(legacy.group);legacy.geometry.dispose();legacy.arcGeometry.dispose();legacy.material.dispose();legacy.impactGeometry.dispose();legacy.impactMaterial.dispose();}
    buttons.forEach(button=>button.removeEventListener('click',act));
   },

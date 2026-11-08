@@ -162,6 +162,10 @@ export function createCombatVfx({T,scene,camera,by}){
    if(ribbonCount>0){const alive=drawRibbon(time,tint,tintWidth,tint===colorComet?COMET_LIFE:RIBBON_LIFE);ribbon.visible=alive;if(!alive&&ribbonCount>=2)clearRibbon();}
   },
   clear(){resetState();hide();},
+  /** R2.2: the same palm centres the effects use, written into the caller's vectors (no allocation). */
+  palms(right,left){palm('R',right);palm('L',left);},
+  /** R2.2: the Skill's release direction (valid after the 'ring' marker). */
+  launch(out){return out.copy(direction);},
   /** QA probe: world positions, radii and NDC of the pieces that carry the Skill read. Read-only, allocates, call from diagnostics only. */
   probe(){
    const ndc=p=>{const q=p.clone().project(camera);return [+q.x.toFixed(4),+q.y.toFixed(4)];};

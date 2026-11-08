@@ -12,6 +12,9 @@
  */
 export const TICK=1/60;
 export const CAPACITY={rings:8,shards:56,glints:20};
+/** Triangles per instance of each shared geometry (hsin-combat-env.mjs builds exactly these). */
+export const GEOMETRY_TRIANGLES={ring:204,shard:8,glint:8};
+export const WORST_CASE_TRIANGLES=CAPACITY.rings*GEOMETRY_TRIANGLES.ring+CAPACITY.shards*GEOMETRY_TRIANGLES.shard+CAPACITY.glints*GEOMETRY_TRIANGLES.glint;
 const MAX_TICKS=24,MANDALA=2;
 const clamp01=v=>v<0?0:v>1?1:v;
 const smooth=(a,b,x)=>{const u=clamp01((x-a)/(b-a));return u*u*(3-2*u);};
@@ -185,7 +188,8 @@ export function createEnvSim({density=1}={}){
   const first=state.last<0||t<state.last-1e-9;
   if(first&&state.last>=0)reset();
   // roll the sampled inputs
-  inp.prP.set(inp.pcP);inp.prL.set(inp.pcL);inp.prC.set(inp.pcC);inp.ps=inp.s;
+  // Repeated calls with the same clock value (pause, extra redraws) refresh the current pose but keep the previous sample, so velocity and spawn interpolation survive.
+  if(state.last<0||t>state.last+1e-9){inp.prP.set(inp.pcP);inp.prL.set(inp.pcL);inp.prC.set(inp.pcC);inp.ps=inp.s;}
   inp.pcP.set(pose.pr);inp.pcL.set(pose.pl);inp.pcC.set(pose.c);inp.s=pose.s;inp.gap=pose.gap;
   inp.have=1;inp.footX.set(pose.footX);inp.footZ.set(pose.footZ);inp.planted.set(pose.planted);inp.mid.set(pose.mid);inp.rd.set(pose.rd);
   if(first){inp.prP.set(inp.pcP);inp.prL.set(inp.pcL);inp.prC.set(inp.pcC);inp.ps=inp.s;state.last=t;state.tick=Math.floor(t/TICK);state.sm=state.smPrev=inp.s;return;}
@@ -268,6 +272,6 @@ export function createEnvSim({density=1}={}){
   }
   out.rings=nr;out.shards=ns;out.glints=ng;return out;
  }
- const active=()=>{let n=0;for(let i=0;i<N;i++)n+=sAlive[i];for(let i=0;i<G;i++)n+=gAlive[i];for(let i=MANDALA;i<R;i++)n+=rAlive[i];return n+(ev.charge>=0&&ev.release<0?1:0)+(ev.release>=0?1:0);};
+ const active=t=>{let n=0;for(let i=0;i<N;i++)n+=sAlive[i];for(let i=0;i<G;i++)n+=gAlive[i];for(let i=MANDALA;i<R;i++)n+=rAlive[i];return n+(ev.charge>=0&&ev.release<0?1:0)+(ev.release>=0&&t-ev.release<1.9?1:0);};
  return {event,update,write,reset,active,state,ev,inp,mandalaBrightness};
 }
