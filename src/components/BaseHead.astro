@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../config';
+import { PROFILE, SITE, SOCIALS } from '../config';
 
 interface Props {
   title?: string;
@@ -11,12 +11,38 @@ const {
   description = SITE.description,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const pathname = Astro.url.pathname;
+const isNotFound = pathname.replace(/\/$/, '') === '/404';
+const canonicalUrl = new URL(pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 // Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
 const hasLandingScenes = Astro.url.pathname === '/';
+// Stable, public identity data for the portfolio's main page only.
+const personId = new URL('/#person', SITE.url).toString();
+const websiteId = new URL('/#website', SITE.url).toString();
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': personId,
+      name: PROFILE.name,
+      url: new URL('/', SITE.url).toString(),
+      sameAs: [PROFILE.linkedin, SOCIALS.github],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      name: SITE.title,
+      description: SITE.description,
+      url: new URL('/', SITE.url).toString(),
+      inLanguage: 'pt-BR',
+      author: { '@id': personId },
+    },
+  ],
+};
 ---
 
 <meta charset="UTF-8" />
@@ -25,7 +51,7 @@ const hasLandingScenes = Astro.url.pathname === '/';
 
 <title>{title}</title>
 <meta name="description" content={description} />
-<meta name="robots" content={isUnlistedStage ? 'noindex, nofollow, noarchive' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+<meta name="robots" content={isNotFound || isUnlistedStage ? 'noindex, nofollow, noarchive' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 <meta name="theme-color" content="#f6efdc" />
 
 <script is:inline>
@@ -67,16 +93,19 @@ const hasLandingScenes = Astro.url.pathname === '/';
 <script is:inline src="/scripts/reveal.js"></script>
 {hasLandingScenes && <script is:inline src="/scripts/scenes.js" defer></script>}
 
-<link rel="canonical" href={canonicalUrl} />
+{!isNotFound && <link rel="canonical" href={canonicalUrl} />}
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+{hasLandingScenes && (
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+)}
 
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Portfólio de Kauê Alencar" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalUrl} />
+{!isNotFound && <meta property="og:url" content={canonicalUrl} />}
 <meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />

@@ -8,10 +8,10 @@
   },
   "scripts": {
     "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro dev",
-    "build": "node scripts/build-hygiene.mjs clean && node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist && node scripts/build-hygiene.mjs verify",
+    "build": "node scripts/build-hygiene.mjs clean && node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist && node scripts/check-seo.mjs --dist && node scripts/build-hygiene.mjs verify",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance && npm run check:shorekeeper-r2",
+    "check": "npm run check:seo && npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance && npm run check:shorekeeper-r2",
     "check:ux": "node scripts/check-ux-contract.mjs",
     "check:api": "node scripts/test-music-api.mjs",
     "check:tetris": "node scripts/test-tetris.mjs",
@@ -22,7 +22,8 @@
     "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb",
     "check:performance": "node tests/performance-route-isolation.test.mjs && node tests/sophia-404-device-gate.test.mjs && node --test tests/build-hygiene.test.mjs",
     "publish:shorekeeper": "node scripts/shorekeeper/publish-private-to-r2.mjs",
-    "check:shorekeeper-r2": "node --test tests/shorekeeper-private-r2.test.mjs"
+    "check:shorekeeper-r2": "node --test tests/shorekeeper-private-r2.test.mjs",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@types/three": "^0.186.0",
