@@ -96,21 +96,21 @@ export function createArmScore({restIntent,halfWidth}){
  const L_NEAR={to:[.30,-.08,.22],pole:[.75,.15,-.45],palm:[-.7,-.2,.5],ext:6};
  const L_APEX={to:[.22,.01,.30],pole:[.7,.35,-.4],palm:[-.75,.05,.55],ext:8};
  const L_SETTLE={to:[.17,-.06,.27],pole:[.6,0,-.45],palm:[-.7,-.1,.4],ext:3};
- // Skill (R2.0.1 composition; replaced in the Skill commit): right palm down above, left palm up below.
- const GATHER_R={to:[-.04,-.16,.27],pole:[.8,-.55,-.1],palm:[0,-1,.1],ext:0};
- const GATHER_L={to:[-.04,-.36,.24],pole:[.8,-.55,-.1],palm:[0,1,.1],ext:0};
- const RELEASE_R={to:[.25,.03,.32],pole:[.7,-.65,-.2],palm:[0,-1,0],ext:22};
- const FOLLOW_R=RELEASE_R;
- const OPEN_L={to:[.30,-.22,.12],pole:[0,-.55,-.85],palm:[-.2,-.3,.9],ext:5};
- const OPEN_L2=OPEN_L;
+ // Skill: hands hold a sphere between them, palms facing (neutral forearm rotation, no supination demand).
+ const sphere=(gap,up,fwd)=>({to:[halfWidth-gap/2,up,fwd],pole:[.7,-.65,-.3],palm:[-1,-.1,.15],ext:0});
+ const RELEASE_R={to:[.14,-.05,.37],pole:[.55,-.6,-.35],palm:[-.3,-.85,.15],ext:22};
+ const FOLLOW_R={to:[.17,-.04,.35],pole:[.6,-.65,-.3],palm:[-.1,-.95,.1],ext:14};
+ const OPEN_L={to:[.28,-.22,.14],pole:[0,-.55,-.85],palm:[-.4,-.4,.7],ext:5};
+ const OPEN_L2={to:[.25,-.24,.15],pole:[.2,-.6,-.7],palm:[-.4,-.6,.5],ext:3};
  const DECAY={to:[.18,-.06,.30],pole:[.6,-.75,-.2],palm:[0,-1,0],ext:8};
  const DECAY_L={to:[.20,-.30,.12],pole:[.4,-.6,-.6],palm:[-.3,-.9,.2],ext:0};
  const rows=[
   [0,'rest','rest'],[.8,GUARD,GUARD],[1.2,GUARD,GUARD],
   [1.55,WIND_R,L_BRACE],[1.82,ARC_OUT_R,L_BRACE],[1.97,NEAR_R,L_BRACE2],[2.07,APEX_R,L_BRACE2],[2.3,SETTLE_R,L_BRACE2],
   [2.6,LOW_GUARD,L_WIND],[2.84,GUARD2,L_ARC],[2.97,GUARD2,L_NEAR],[3.05,GUARD2,L_APEX],[3.3,GUARD,L_SETTLE],[3.7,GUARD,GUARD],
-  [4.5,GATHER_R,GATHER_L],
-  [5.35,RELEASE_R,OPEN_L],[6,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
+  [4.15,sphere(.42,-.20,.25),sphere(.42,-.20,.25)],[4.65,sphere(.27,-.19,.29),sphere(.27,-.19,.29)],
+  [5.0,sphere(.22,-.18,.31),sphere(.22,-.18,.31)],[5.2,sphere(.205,-.17,.315),sphere(.205,-.17,.315)],
+  [5.35,RELEASE_R,sphere(.215,-.17,.31)],[5.62,FOLLOW_R,OPEN_L],[5.85,DECAY,OPEN_L2],[6.2,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
  ].map(([t,R,L])=>({t,R,L}));
  for(const row of rows)for(const s of ['R','L'])row[s]=row[s]==='rest'?restIntent[s]:row[s]==='settle'?mixIntent(restIntent[s],GUARD,.35):row[s];
  const xs=rows.map(r=>r.t),polar=v=>{const d=Math.hypot(...v);return {d,u:v.map(x=>x/d)};};
