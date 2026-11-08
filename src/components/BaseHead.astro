@@ -18,7 +18,7 @@ const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 // Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
-const hasLandingScenes = pathname === '/';
+const hasLandingScenes = Astro.url.pathname === '/';
 // Stable, public identity data for the portfolio's main page only.
 const personId = new URL('/#person', SITE.url).toString();
 const websiteId = new URL('/#website', SITE.url).toString();
