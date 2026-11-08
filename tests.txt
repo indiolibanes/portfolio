@@ -1,0 +1,11 @@
+bake-deterministic exit 0
+anatomy exit 0
+combat-r2 exit 0
+combat-r2-screen exit 0
+lab-r1 exit 0
+lab-r2 exit 0
+reference-ingestion exit 0
+check-hsin exit 0
+check exit 0
+build exit 0
+contemplative-untouched exit 0

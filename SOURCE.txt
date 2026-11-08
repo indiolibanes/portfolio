@@ -1,0 +1,7 @@
+source=experiment/hsin-combat-r201-20261107
+run=42434316126
+sha=4bd0475f7555cf4b670e6aa76c194ce0514e2e30
+before=success
+bake=success
+after=success
+tests=success
