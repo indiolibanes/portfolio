@@ -35,6 +35,8 @@ choose('combo');choose('basic01');for(let i=0;i<25;i++)step(1/30);await settle()
 action('stop');for(let i=0;i<25;i++)step(1/30);const prior=lab.diagnostics().ability;choose('formshift');await settle();assert.equal(lab.diagnostics().ability,prior);assert.ok(!lab.owns());
 // One stable pool across ten ability changes, not ten newly allocated VFX systems.
 const before=new Set();scene.traverse(o=>{if(o.geometry)before.add(o.geometry);});for(let cycle=0;cycle<10;cycle++){choose(cycle%2?'basic01':'basic02');await settle();for(let i=0;i<130;i++)step(1/30);}const after=new Set();scene.traverse(o=>{if(o.geometry)after.add(o.geometry);});assert.deepEqual(after,before);
+// Stop/restart must resume a recovery paused partway through interruption.
+action('stop');for(let i=0;i<25;i++)step(1/30);choose('basic01');await settle();action('stop');step(.15);action('pause');action('restart');for(let i=0;i<25;i++)step(1/30);await settle();assert.ok(lab.owns());assert.notEqual(lab.diagnostics().state,'INTERRUPTED');
 // Latest selection wins in the interval between recovery completion and the next RAF.
 action('stop');for(let i=0;i<25;i++)step(1/30);choose('basic01');await settle();choose('basic02');step(.7);assert.ok(!lab.owns());choose('combo');step(1/60);await settle();assert.equal(lab.diagnostics().ability,'combo');
 action('stop');for(let i=0;i<25;i++)step(1/30);

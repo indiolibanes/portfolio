@@ -49,6 +49,10 @@ jobs:
         if: always()
         with: {name: hsin-combat-r23-gates, path: 'qa', retention-days: 14}
   preview:
+    strategy:
+      fail-fast: false
+      matrix:
+        clip: [basic01, basic02, combo]
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -60,14 +64,14 @@ jobs:
           npm install --no-save --no-audit --no-fund playwright@1.63.0
           npx playwright install --with-deps chromium
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
-      - run: node scripts/qa/render-hsin-combat-r23-video.mjs qa-r23
+      - run: node scripts/qa/render-hsin-combat-r23-video.mjs qa-r23 --only=${{ matrix.clip }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: hsin-combat-r23-preview, path: qa-r23, retention-days: 14}
+        with: {name: hsin-combat-r23-preview-${{ matrix.clip }}, path: qa-r23, retention-days: 14}
       - name: Navigable evidence branch
         if: always()
         run: |
-          B=qa-results/hsin-combat-r23-preview; D=$(mktemp -d); cp -r qa-r23/. "$D/"; cd "$D"
+          B=qa-results/hsin-combat-r23-preview-${{ matrix.clip }}; D=$(mktemp -d); cp -r qa-r23/. "$D/"; cd "$D"
           printf 'sha=%s\nrun=%s\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > SOURCE.txt
           git init -q; git checkout -q -b "$B"; git add -A
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "R2.3 videos $GITHUB_SHA"

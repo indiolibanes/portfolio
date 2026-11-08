@@ -28,7 +28,7 @@ for(const id of ['basic01','basic02','combo','skill']){
   director.reset();events.length=0;assert.ok(director.start());assert.ok(!director.start(),'one owner');assert.ok(!director.select(data.sequence),'cannot swap active');
   for(let i=0;i<Math.ceil(data.seconds*hz)+1;i++)step(1/hz);
   assert.ok(!director.owns());assert.ok(pose.atBaseline());assert.equal(director.sample().state,'COMPLETE');
-  assert.deepEqual(events,data.sequence.markers);states.push(events.slice());
+  assert.deepEqual(events,data.sequence.markers);states.push(director.diagnostics().trace.filter(x=>x.cycle===director.diagnostics().cycle).map(({state,time,event})=>({state,time,event})));
  }
  assert.deepEqual(states[0],states[1]);
  // Pause, restart and interruption on both sides of each actual impact marker.
@@ -38,6 +38,8 @@ for(const id of ['basic01','basic02','combo','skill']){
   const q=bones.map(b=>b.quaternion.toArray());director.pause();step(.5);assert.deepEqual(bones.map(b=>b.quaternion.toArray()),q);director.resume();
   director.interrupt();for(let i=0;i<40;i++)step(1/60);assert.ok(!director.owns());assert.ok(pose.atBaseline());assert.equal(vfx.visibleDrawCalls(),0);assert.equal(env.visibleDrawCalls(),0);
  }
+ // Stop/restart during paused interruption must unfreeze the existing recovery.
+ director.reset();director.start();step(.7);director.interrupt();step(.15);director.pause();director.interrupt();for(let i=0;i<40;i++)step(1/60);assert.ok(!director.owns());assert.ok(pose.atBaseline());
  // Same poses after a long frame and uniform stepping; exact events retain their own marker poses.
  director.reset();director.start();step(2);const dropped=bones.map(b=>b.quaternion.clone()),dropTrace=events.slice();
  director.reset();director.start();for(let i=0;i<120;i++)step(1/60);

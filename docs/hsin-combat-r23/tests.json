@@ -19,7 +19,7 @@
         ]
       ],
       "endpointSpeedMps": 0.013678690504462698,
-      "releases": 19,
+      "releases": 20,
       "anatomy": "PASS",
       "cycles": 10,
       "geometryCount": 16,
@@ -39,7 +39,7 @@
         ]
       ],
       "endpointSpeedMps": 0.0021949854384079657,
-      "releases": 19,
+      "releases": 20,
       "anatomy": "PASS",
       "cycles": 10,
       "geometryCount": 16,
@@ -71,7 +71,7 @@
         ]
       ],
       "endpointSpeedMps": 0.013678690504462698,
-      "releases": 22,
+      "releases": 23,
       "anatomy": "PASS",
       "cycles": 10,
       "geometryCount": 16,
@@ -95,7 +95,7 @@
         ]
       ],
       "endpointSpeedMps": 0.0006321341014368456,
-      "releases": 19,
+      "releases": 20,
       "anatomy": "PASS",
       "cycles": 10,
       "geometryCount": 16,
