@@ -16,7 +16,7 @@
 export const SECONDS=8.4;
 export const PHASES=[['PREPARATION',0],['BASIC',1.5],['SKILL',3.6],['RECOVERY',6],['COMPLETE',8.4]];
 // Events: trails start before the hand arrives; impact markers are unchanged so R2 lab contracts hold.
-export const MARKERS=[['energy',.8],['trail',1.74],['arc',2.14],['trail-left',2.72],['arc-left',3.18],['charge',3.95],['ring',5.45],['recovery',6]];
+export const MARKERS=[['energy',.8],['trail',1.8],['arc',2.2],['trail-left',2.78],['arc-left',3.26],['charge',3.95],['ring',5.45],['recovery',6]];
 
 /** Monotone cubic Hermite, zero slope at the ends and at extrema: C1, no overshoot, no stop-and-go at every key. */
 export function pchip(xs,ys,t){
@@ -39,16 +39,16 @@ export const TORSO_KEYS=[
  [1.2,-9,-.04,-.045,2,6,0],
  [1.55,-20,-.062,-.06,-1,12,0],
  // Hips lead: weight crosses to the left leg before the hand arrives, the spine follows, then the impact settles.
- [1.8,-8,-.02,-.05,2,10,0],
- [2.05,19,.062,-.04,5,4,0],
- [2.14,22,.066,-.044,4.5,3,0],
- [2.45,15,.052,-.042,3,1,0],
+ [1.85,-8,-.02,-.05,2,10,0],
+ [2.1,19,.062,-.04,5,4,0],
+ [2.2,22,.066,-.044,4.5,3,0],
+ [2.5,15,.052,-.042,3,1,0],
  // Basic 02: a quick drop (not a coil) on the already loaded left leg, then the drive across to the right.
- [2.6,17,.06,-.062,1,-6,0],
- [2.82,5,.03,-.05,2,-12,0],
- [3.05,-19,-.062,-.046,4,-6,0],
- [3.15,-22,-.066,-.05,3.5,-5,0],
- [3.6,-5,-.025,-.03,2,0,0],
+ [2.65,17,.06,-.062,1,-6,0],
+ [2.88,5,.03,-.05,2,-12,0],
+ [3.1,-19,-.062,-.046,4,-6,0],
+ [3.2,-22,-.066,-.05,3.5,-5,0],
+ [3.7,-5,-.025,-.03,2,0,0],
  // Skill: gaze follows the hands, spine gathers, coil on the right leg, release thrusts through the left.
  [4.0,-2,-.02,-.04,3,0,5],
  [4.5,0,0,-.05,4,0,8],
@@ -92,10 +92,10 @@ export function createArmScore({restIntent,halfWidth}){
  const L_BRACE2={to:[.12,-.22,.20],pole:[.5,-.75,-.3],palm:[-.65,-.6,.25],ext:0};
  // Basic 02 (left): a rising crescent. Low and out, then up and forward, elbow high and out, palm turned in (thumb up).
  const L_WIND={to:[.22,-.32,.02],pole:[.55,-.45,-.7],palm:[-.4,-.85,.15],ext:0};
- const L_ARC={to:[.35,-.22,.05],pole:[.8,-.2,-.5],palm:[-.5,-.55,.3],ext:2};
- const L_NEAR={to:[.30,-.08,.22],pole:[.75,.15,-.45],palm:[-.65,-.4,.4],ext:6};
- const L_APEX={to:[.22,.01,.30],pole:[.7,.35,-.4],palm:[-.65,-.45,.4],ext:8};
- const L_SETTLE={to:[.17,-.06,.27],pole:[.6,0,-.45],palm:[-.65,-.35,.4],ext:3};
+ const L_ARC={to:[.35,-.22,.05],pole:[.8,-.2,-.5],palm:[-.4,-.7,.3],ext:2};
+ const L_NEAR={to:[.30,-.08,.22],pole:[.75,.15,-.45],palm:[-.35,-.8,.3],ext:6};
+ const L_APEX={to:[.22,.01,.30],pole:[.7,.35,-.4],palm:[-.2,-.9,.3],ext:8};
+ const L_SETTLE={to:[.17,-.06,.27],pole:[.6,0,-.45],palm:[-.4,-.8,.3],ext:3};
  // Skill: hands hold a sphere between them, palms facing (neutral forearm rotation, no supination demand).
  // out is measured from the shoulder joint, which sits halfWidth from the midline: a hand gap/2 from the midline is gap/2-halfWidth out.
  const sphere=(gap,up,fwd)=>({to:[gap/2-halfWidth,up,fwd],pole:[.7,-.65,-.3],palm:[-1,-.1,.15],ext:0});
@@ -107,11 +107,11 @@ export function createArmScore({restIntent,halfWidth}){
  const DECAY_L={to:[.20,-.30,.12],pole:[.4,-.6,-.6],palm:[-.3,-.9,.2],ext:0};
  const rows=[
   [0,'rest','rest'],[.8,GUARD,GUARD],[1.2,GUARD,GUARD],
-  [1.55,WIND_R,L_BRACE],[1.78,ARC_OUT_R,L_BRACE],[2.03,NEAR_R,L_BRACE2],[2.18,APEX_R,L_BRACE2],[2.42,SETTLE_R,L_BRACE2],
-  [2.62,LOW_GUARD,L_WIND],[2.84,GUARD2,L_ARC],[3.07,GUARD2,L_NEAR],[3.22,GUARD2,L_APEX],[3.42,GUARD,L_SETTLE],[3.75,GUARD,GUARD],
-  [4.15,sphere(.42,-.20,.25),sphere(.42,-.20,.25)],[4.65,sphere(.27,-.19,.29),sphere(.27,-.19,.29)],
-  [5.0,sphere(.22,-.18,.31),sphere(.22,-.18,.31)],[5.2,sphere(.205,-.17,.315),sphere(.205,-.17,.315)],
-  [5.45,RELEASE_R,sphere(.215,-.17,.31)],[5.78,FOLLOW_R,OPEN_L],[6.02,DECAY,OPEN_L2],[6.32,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
+  [1.55,WIND_R,L_BRACE],[1.84,ARC_OUT_R,L_BRACE],[2.08,NEAR_R,L_BRACE2],[2.24,APEX_R,L_BRACE2],[2.5,SETTLE_R,mixIntent(L_BRACE2,L_WIND,.45)],
+  [2.72,LOW_GUARD,L_WIND],[2.92,GUARD2,L_ARC],[3.12,GUARD2,L_NEAR],[3.28,GUARD2,L_APEX],[3.52,GUARD,L_SETTLE],[3.88,GUARD,GUARD],
+  [4.15,sphere(.45,-.20,.25),sphere(.45,-.20,.25)],[4.65,sphere(.30,-.19,.29),sphere(.30,-.19,.29)],
+  [5.0,sphere(.25,-.18,.31),sphere(.25,-.18,.31)],[5.2,sphere(.235,-.17,.315),sphere(.235,-.17,.315)],
+  [5.45,RELEASE_R,sphere(.24,-.17,.31)],[5.85,FOLLOW_R,OPEN_L],[6.12,DECAY,OPEN_L2],[6.42,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
  ].map(([t,R,L])=>({t,R,L}));
  for(const row of rows)for(const s of ['R','L'])row[s]=row[s]==='rest'?restIntent[s]:row[s]==='settle'?mixIntent(restIntent[s],GUARD,.35):row[s];
  const xs=rows.map(r=>r.t),polar=v=>{const d=Math.hypot(...v);return {d,u:v.map(x=>x/d)};};

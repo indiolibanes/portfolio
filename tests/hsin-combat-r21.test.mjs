@@ -50,31 +50,31 @@ const pathLength=(s,a,b)=>{let l=0;for(let f=frameOf(a)+1;f<=frameOf(b);f++)l+=M
 const chord=(s,a,b)=>Math.hypot(...track[s][frameOf(b)].map((x,i)=>x-track[s][frameOf(a)][i]));
 const peak=(s,a,b)=>{let m=0,t=0;for(let f=frameOf(a);f<=frameOf(b);f++)if(speeds[s][f-1]>m){m=speeds[s][f-1];t=f/30;}return {speed:m,time:t};};
 // Basic 01 is an arc, not a straight extension: path much longer than its chord, driven by the right hand.
-const arc1=pathLength('R',1.55,2.2)/chord('R',1.55,2.2);assert.ok(arc1>=1.25,'Basic 01 arc ratio '+arc1);
-const arc2=pathLength('L',2.62,3.25)/chord('L',2.62,3.25);assert.ok(arc2>=1.25,'Basic 02 arc ratio '+arc2);
+const arc1=pathLength('R',1.55,2.26)/chord('R',1.55,2.26);assert.ok(arc1>=1.25,'Basic 01 arc ratio '+arc1);
+const arc2=pathLength('L',2.72,3.32)/chord('L',2.72,3.32);assert.ok(arc2>=1.25,'Basic 02 arc ratio '+arc2);
 // Silhouettes differ: Basic 01 stays below the shoulder (low sweep), Basic 02 rises. The second is not a mirror of the first.
 const maxUp=(s,a,b)=>Math.max(...track[s].slice(frameOf(a),frameOf(b)+1).map(p=>p[1]));
 const minUp=(s,a,b)=>Math.min(...track[s].slice(frameOf(a),frameOf(b)+1).map(p=>p[1]));
-const rise1=maxUp('R',1.55,2.5)-minUp('R',1.55,2.5),rise2=maxUp('L',2.62,3.5)-minUp('L',2.62,3.5);
+const rise1=maxUp('R',1.55,2.5)-minUp('R',1.55,2.5),rise2=maxUp('L',2.72,3.6)-minUp('L',2.72,3.6);
 assert.ok(maxUp('R',1.55,2.5)<=-.04,'Basic 01 stays below the shoulder '+maxUp('R',1.55,2.5));
 assert.ok(rise2>rise1+.05,`Basic 02 rises more than Basic 01 (${rise2.toFixed(3)} vs ${rise1.toFixed(3)})`);
 // Frame-independent shape features (height along the spine and distance from the shoulder): Basic 02 is not Basic 01 mirrored.
 let mirrorRms=0,n=0;const feat=p=>[p[1],Math.hypot(...p)];
-for(let f=frameOf(1.55);f<=frameOf(2.5);f++){const a=feat(track.R[f]),b=feat(track.L[f+frameOf(1.07)]);mirrorRms+=(a[0]-b[0])**2+(a[1]-b[1])**2;n++;}
+for(let f=frameOf(1.55);f<=frameOf(2.5);f++){const a=feat(track.R[f]),b=feat(track.L[f+frameOf(1.12)]);mirrorRms+=(a[0]-b[0])**2+(a[1]-b[1])**2;n++;}
 mirrorRms=Math.sqrt(mirrorRms/n);assert.ok(mirrorRms>=.04,'Basic 02 is not a mirrored copy of Basic 01: rms '+mirrorRms);
 // Energy profile: acceleration then deceleration, peak before the impact marker, and Basic 02 is quicker than Basic 01.
-const p1=peak('R',1.55,2.5),p2=peak('L',2.62,3.5);
+const p1=peak('R',1.55,2.5),p2=peak('L',2.72,3.6);
 assert.ok(p1.time<at('arc')&&p2.time<at('arc-left'),'peak velocity precedes impact: '+p1.time+' / '+p2.time);
 assert.ok(p1.speed>=.8&&p2.speed>=.8,'strikes carry energy (m/s) '+p1.speed+' / '+p2.speed);
 assert.ok(p2.speed>=p1.speed*0.8,'Basic 02 carries comparable energy');
 report.attacks={arcRatio:[arc1,arc2],rise:[rise1,rise2],mirrorRms,peak:{basic01:p1,basic02:p2}};
 // Weight transfer: the common skeleton shifts sideways between the loading frame and the impact.
 const lateralShift=a=>Math.abs(root[frameOf(a)][0]-root[frameOf(1.55)][0])+Math.abs(root[frameOf(a)][2]-root[frameOf(1.55)][2]);
-assert.ok(lateralShift(2.05)>=.04,'hips transfer weight into Basic 01: '+lateralShift(2.05));
-report.weightShiftM=lateralShift(2.05);
+assert.ok(lateralShift(2.1)>=.04,'hips transfer weight into Basic 01: '+lateralShift(2.1));
+report.weightShiftM=lateralShift(2.1);
 // Passages are continuous: no frozen arms between attacks and no abrupt energy change (hand speed jump between frames).
 for(const s of ['R','L']){let maxJump=0;for(let f=1;f<speeds[s].length;f++)maxJump=Math.max(maxJump,Math.abs(speeds[s][f]-speeds[s][f-1]));assert.ok(maxJump<2,`${s} hand speed jump m/s ${maxJump}`);report['handSpeedJump'+s]=maxJump;}
-for(const [a,b] of [[2.45,2.7],[3.4,3.7]]){const moving=['R','L'].some(s=>pathLength(s,a,b)>.04);assert.ok(moving,`arms do not freeze between attacks ${a}-${b}`);}
+for(const [a,b] of [[2.55,2.8],[3.5,3.8]]){const moving=['R','L'].some(s=>pathLength(s,a,b)>.04);assert.ok(moving,`arms do not freeze between attacks ${a}-${b}`);}
 // ---- Skill: the hands form a sphere between palms; no supination demand ----
 const hold=[frameOf(4.9),frameOf(5.25)];const gaps=palmGap.slice(hold[0],hold[1]+1);
 assert.ok(Math.min(...gaps)>=.15&&Math.max(...gaps)<=.32,'palm gap while holding '+Math.min(...gaps)+'..'+Math.max(...gaps));
