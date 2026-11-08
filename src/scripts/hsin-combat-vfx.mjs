@@ -97,7 +97,7 @@ export function createCombatVfx({T,scene,camera,by}){
     direction.sub(v1);direction.y*=.35;direction.normalize();
     // lean the launch towards Hsin's own forward (her left-right axis x up) so the energy stays in front of her instead of leaving the frame sideways
     shoulderL.updateWorldMatrix(true,false);shoulderL.getWorldPosition(v2);v2.sub(v1);v2.y=0;
-    if(v2.lengthSq()>1e-8){v2.normalize();v3.set(0,1,0);v3.crossVectors(v2,v3);direction.multiplyScalar(.6).addScaledVector(v3,.4).normalize();}
+    if(v2.lengthSq()>1e-8){v2.normalize();v3.set(0,1,0);v3.crossVectors(v2,v3);direction.multiplyScalar(.4).addScaledVector(v3,.6).normalize();}
     state.release=time;clearRibbon();
    }
   },
@@ -147,7 +147,7 @@ export function createCombatVfx({T,scene,camera,by}){
      const fade=1-smoother(clamp01((age-.24)/.2));
      core.position.copy(v1);core.scale.setScalar(Math.max(1e-4,state.radius0*(1-.7*u)));coreMaterial.opacity=.62*fade;core.visible=true;
      if(advancing&&age<.5)addPoint(v1,time);
-     tint=colorComet;tintWidth=Math.max(.005,state.radius0*.13);
+     tint=colorComet;tintWidth=Math.max(.004,state.radius0*.1);
      q1.setFromUnitVectors(z,direction);
      ring.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s);ring.quaternion.copy(q1);ring.scale.setScalar(.26+age*.75);ringMaterial.opacity=(1-clamp01(age/.5))*.35;ring.visible=true;
      for(const [echo,k] of [[echoA,1],[echoB,2]]){echo.position.copy(v2).addScaledVector(direction,.3*TRAVEL*s-.1*k);echo.quaternion.copy(q1);echo.scale.setScalar((.4+age*.6)*k*.42);echo.visible=true;}
