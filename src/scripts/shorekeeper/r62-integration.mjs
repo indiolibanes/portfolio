@@ -28,7 +28,7 @@ export function createR62Integration(T,model,library,stage,{getVfx,camera=true,o
    ...(camera?{cameraProfile:{smart:true,period:18,returnSeconds:.7,model,arena:()=>arena,reduced,...duetCameraProfile,...(fidelity?{frameTransform:createFidelityFrameTransform(duetCameraProfile?.frameTransform??null)}:{})}}:{})
   });
   Object.defineProperties(director,{
-   integrationStatus:{get:()=>({revision:fidelity?FIDELITY_REVISION:'G113_S5_LOCAL',profile,visualDirection:fidelity?'FIDELITY_NOT_CERTIFIED':'HUMAN_ACCEPTED_DIRECTION',sourceBody:fidelity?'PR256_ORIGINAL_BURST_ROOT_BODY_OWNED':'PR256_ORIGINAL',...(fidelity?{burstEntry:'HARD_CUT_WITH_CAMERA_CUT',camera:'F2_REFERENCE_SHOTS_CANDIDATE'}:{}),...(fidelity?{fidelity:fid.provenance}:{}),G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
+   integrationStatus:{get:()=>({revision:fidelity?FIDELITY_REVISION:'G113_S5_LOCAL',profile,visualDirection:fidelity?'FIDELITY_NOT_CERTIFIED':'HUMAN_ACCEPTED_DIRECTION',sourceBody:fidelity?'PR256_ORIGINAL_BURST_ROOT_BODY_OWNED':'PR256_ORIGINAL',...(fidelity?{burstEntry:'HARD_CUT_WITH_CAMERA_CUT',camera:'F2_REFERENCE_SHOTS_CANDIDATE',stellarealm:'F2_REFERENCE_DERIVED_ORDER_MEDIUM_CONFIDENCE',butterflies:'F2_TORN_WING_PROCEDURAL_CANDIDATE',palette:'BLUE_WHITE_FORWARDED_TO_LIBERATION_LAYER'}:{}),...(fidelity?{fidelity:fid.provenance}:{}),G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
    scoreAdapter:{get:()=>adapter}
   });
   return director;

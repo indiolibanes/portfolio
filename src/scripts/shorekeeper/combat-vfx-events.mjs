@@ -171,6 +171,15 @@ export const S3_RECOVERY_CLIP = 'SK_IDLE_01_ORIGINAL';
 export const S3_PLACEMENT = Object.freeze({
  condense: [0.04, 0.20, 0.34], reveal: [0.26, 0.46, 1.00], peak: [0.50, 0.585, 0.72], decay: [0.24, 0.34, 0.75]
 });
+/**
+ * F2 FIDELIDADE placement (REFERENCE_DERIVED, confidence MEDIUM): in the Liberation cutscene GIF the Stellarealm is NOT visible during shots 1-2
+ * (0-4.20 s: close camera, small butterflies, hand flare) and appears only after the second hard cut (4.20 s of 5.51 s) as a low look up at the dome.
+ * Fractions of the Burst02 segment (x 5.433/5.51 proportional mapping): the reveal starts at the second cut (0.762), the peak sits late, the trigger
+ * butterfly (anchored to condense/reveal) therefore holds through shot 1 and bursts into the hand flare right before the cut.
+ */
+export const S3_PLACEMENT_FIDELITY = Object.freeze({
+ condense: [0.04, 0.20, 0.34], reveal: [0.762, 0.86, 1.00], peak: [0.80, 0.88, 0.97], decay: [0.24, 0.34, 0.75]
+});
 /** Colour variants are AUTHORIAL_COLOR_VARIANTS. Inner/Supernal depend on Intro Skills in the game and are
  *  NEVER selected by elapsed time; only an explicit QA flag may select them. */
 export const S3_COLOR_VARIANTS = Object.freeze({
@@ -190,14 +199,14 @@ function windowIn(seg, frac, minStart) {
 }
 
 /** liberationField events, strictly after the complete Skill segment (S0 also enforces it). */
-export function authorS3Events(schedule) {
+export function authorS3Events(schedule, placement = S3_PLACEMENT) {
  if (!schedule || !Array.isArray(schedule.segments)) fail('schedule');
  const segs = schedule.segments, burst = segs.find(s => s.id === S3_LIBERATION_CLIP), rec = segs.find(s => s.id === S3_RECOVERY_CLIP);
  const skill = segs.find(s => s.id === S2_SKILL_CLIP);
  if (!burst) return [];
  if (!skill) fail('liberation requires the Skill segment to define its start');
  if (burst.end - burst.start < 2) fail('Burst segment too short for the authorial liberation');
- const minStart = skill.end + 0.001, p = S3_PLACEMENT;
+ const minStart = skill.end + 0.001, p = placement;
  const [cs, cp, ce] = windowIn(burst, p.condense, minStart), [rs, rp, re] = windowIn(burst, p.reveal, minStart), [ks, kp, ke] = windowIn(burst, p.peak, minStart);
  const out = [
   {id: 'LIB.condense', clipId: burst.id, channel: 'liberationField', basis: 'AUTHORIAL', evidence: 'PRE_EMISSION_CONDENSATION;camera_close;' + LIB_EVIDENCE, start: cs, peak: cp, end: ce},
@@ -227,10 +236,12 @@ export const G11_PLACEMENT = Object.freeze({
  // G11.1 trigger: ONE butterfly above the right hand, anchored to the condensation / reveal windows.
  triggerInS: 0.10, triggerFullS: 0.35, triggerDissolveLeadS: 0.58, triggerEndTailS: 0.14
 });
+/** F2 FIDELIDADE: violet/gold are skipped by the palette (windows kept only to satisfy the ordering contract, after the trigger); the field is HELD to the end of the clip. */
+export const G11_PLACEMENT_FIDELITY = Object.freeze({...G11_PLACEMENT, violet: [0.80, 0.81], gold: [0.805, 0.815], absorbLeadS: 0.45, butterflyLeadS: 0.05});
 /** @param lib {condenseStart, revealStart} from the authorial LIB.* windows (needed for the trigger butterfly). */
-export function g11Timeline(schedule, decayEnd = null, lib = null) {
+export function g11Timeline(schedule, decayEnd = null, lib = null, placement = G11_PLACEMENT) {
  const burst = schedule?.segments?.find(s => s.id === S3_LIBERATION_CLIP); if (!burst) return null;
- const len = burst.end - burst.start, p = G11_PLACEMENT, at = f => burst.start + f * len;
+ const len = burst.end - burst.start, p = placement, at = f => burst.start + f * len;
  const bfStart = burst.end - p.butterflyLeadS, bfPeak = bfStart + p.butterflyPeakS;
  const bfEnd = Math.min(burst.end + p.butterflyTailS, schedule.duration - 0.05);
  const out = {};
@@ -255,19 +266,19 @@ export function ambientButterflyGate(g, t) {
  return g ? 0 : 1;
 }
 
-export function s3Timeline(schedule) {
- const ev = authorS3Events(schedule).filter(e => e.basis === 'AUTHORIAL'), by = id => ev.find(e => e.id === id);
+export function s3Timeline(schedule, {fidelity = false} = {}) {
+ const ev = authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT).filter(e => e.basis === 'AUTHORIAL'), by = id => ev.find(e => e.id === id);
  if (!by('LIB.condense')) return null;
  const skill = schedule.segments.find(s => s.id === S2_SKILL_CLIP), rec = schedule.segments.find(s => s.id === S3_RECOVERY_CLIP);
  return Object.freeze({skillEnd: skill.end, start: by('LIB.condense').start, closePeak: by('LIB.condense').peak, closeEnd: by('LIB.condense').end,
   revealStart: by('LIB.reveal').start, revealPeak: by('LIB.reveal').peak, peak: by('LIB.peak').peak, revealEnd: by('LIB.reveal').end,
   end: by('LIB.decay')?.end ?? by('LIB.reveal').end, recoveryStart: rec?.start ?? null, duration: schedule.duration,
-  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null, {condenseStart: by('LIB.condense').start, revealStart: by('LIB.reveal').start})});
+  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null, {condenseStart: by('LIB.condense').start, revealStart: by('LIB.reveal').start}, fidelity ? G11_PLACEMENT_FIDELITY : G11_PLACEMENT)});
 }
 
 /** S1 + S2 + S3 bundle. Burst02 -> LIBERATION, Idle01 -> RECOVERY, both SOURCE_ROLE_UNVERIFIED. */
-export function createS3Score(schedule) {
+export function createS3Score(schedule, {fidelity = false} = {}) {
  const extra = {[S2_SKILL_CLIP]: {role: 'SKILL', confidence: 'SOURCE_ROLE_UNVERIFIED'}, [S3_LIBERATION_CLIP]: {role: 'LIBERATION', confidence: 'SOURCE_ROLE_UNVERIFIED'}, [S3_RECOVERY_CLIP]: {role: 'RECOVERY', confidence: 'SOURCE_ROLE_UNVERIFIED'}};
- const b = createS1Score(schedule, extra, [...authorS2Events(schedule), ...authorS3Events(schedule)]);
- return Object.freeze({...b, timeline: s3Timeline(schedule)});
+ const b = createS1Score(schedule, extra, [...authorS2Events(schedule), ...authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT)]);
+ return Object.freeze({...b, timeline: s3Timeline(schedule, {fidelity}), placement: fidelity ? 'F2_REFERENCE_DERIVED' : 'AUTHORIAL'});
 }

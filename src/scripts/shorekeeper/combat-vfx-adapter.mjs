@@ -331,7 +331,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   let libProbe = null;
   if (libLayer) {
-   const g11 = bundle.timeline?.g11, bfLive = !!g11 && t >= g11.absorbStart && t < g11.butterflyEnd; // G11.1: absorption + burst bridge the reveal->decay gap
+   const g11 = bundle.timeline?.g11, bfLive = !!g11 && ((t >= g11.absorbStart && t < g11.butterflyEnd) || (g11.triggerStart !== undefined && t >= g11.triggerStart && t < g11.triggerEnd)); // G11.1: absorption + burst bridge the reveal->decay gap; F2: the trigger butterfly may outlive the condense window (FIDELIDADE holds it through shot 1)
    if ((cue.liberationField > 0.002 || bfLive) && (have || proxyAnchors) && (proxyAnchors || status.chest === 'REAL_BONE')) {
     readPose(); headW.copy(P.head); headW.y += 0.05 * h;
     libProbe = libLayer.update({t, cue, rm, bundle, headW, P: {chest: P.chest, rh: P.rh, lh: P.lh}, stage: arena});
@@ -340,7 +340,9 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   // G11 body motion trails (history table is optional; without it nothing is drawn)
   const energy = fidelity ? 0 : Math.min(1, Math.max(cue.blueAttack, cue.heavyPulse, cue.blueCore * 0.7, libLayer ? cue.liberationField * 0.7 : 0, cue.guidedButterflies ? cue.guidedButterflies * 0.3 : 0)), wide = fidelity ? 1 : 1 + (libLayer ? 0.6 * Math.min(1, cue.liberationField) : 0); // F1 FIDELIDADE: no authorial orbital ribbons
-  const trailProbe = trails.update(trailHistory, t, rm, energy, wide); if (trails.mesh.visible) shown++;
+  // F2: the reference Liberation cutscene (shots 1-3) shows NO body ribbons; FIDELIDADE hides them for the whole Burst clip
+  const burstSeg = fidelity ? bundle.schedule?.segments?.find(sg => sg.id === 'SK_BURST_02_ORIGINAL') : null, noRibbons = !!burstSeg && t >= burstSeg.start && t < burstSeg.end;
+  const trailProbe = noRibbons ? (trails.hide(), null) : trails.update(trailHistory, t, rm, energy, wide); if (trails.mesh.visible) shown++;
   // G11.1 quick attack butterflies (needs the hand history; none in proxy/no-history mode)
   let sparkProbe = null;
   if (trailHistory && (have || proxyAnchors) && !rm) { readPose(); headW.copy(P.head); headW.y += 0.05 * h; sparkProbe = sparks.update({table: sparkTable, hist: trailHistory, t, rm, headW}); } else sparks.hide();
@@ -401,5 +403,5 @@ export function createS2CombatVfx(T, {scene, parent, model, plan, scale, reduced
 
 /** S1 + S2 + S3: adds the Outer Stellarealm Liberation layer (AUTHORIAL; mechanics UNVERIFIED). */
 export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false} = {}) {
- return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
+ return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule, {fidelity}), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
 }

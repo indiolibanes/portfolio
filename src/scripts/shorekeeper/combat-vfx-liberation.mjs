@@ -316,13 +316,15 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
  };
  const focus = v3(), tmp = v3(), bfc = v3();
  // F2: the trigger butterfly leaves the FINGERS (hand anchor + 0.04 h) and rises in a short, controlled arc to +0.15 h: relative path, pure function of time
+ // It starts on the LEFT hand (raised at ~0.6-1.5 s of the clip) and, while that hand lowers and the RIGHT one rises (~3.4-4.1 s), travels across to it so the hand flare is born at the raised arm.
+ const trigHandMix = tau => smooth((tau - 1.6) / 1.7);
  const trigRel = (tau, rm) => ({y: h * (0.04 + 0.11 * smooth(tau / 0.9)), s: rm ? 0 : 0.008 * h * Math.sin(tau * 4.4)});
 
  /** ctx: {t, cue, rm, bundle, headW, P:{chest, rh, lh}, stage:{x, z, floorY}} */
  function update(c) {
   neutralize(); last = null;
   const {t, cue, rm, bundle: b} = c;
-  const g = b.timeline?.g11 ?? null, live = cue.liberationField > 0.002 || (g && t >= g.absorbStart && t < g.butterflyEnd);
+  const g = b.timeline?.g11 ?? null, live = cue.liberationField > 0.002 || (g && ((t >= g.absorbStart && t < g.butterflyEnd) || (g.triggerStart !== undefined && t >= g.triggerStart && t < g.triggerEnd)));
   if (!live) return null;
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
@@ -358,7 +360,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   // ---- G11.1 trigger: ONE butterfly above the right hand, dissolving at once into the field (no swarm, no core, no converging motes) ----
   if (cs.trig.a > 0.002) {
    const k = U(trigger);
-   focus.copy(c.P.lh); focus.y += FID ? trigRel(t - g.triggerStart, rm).y + trigRel(t - g.triggerStart, rm).s : 0.17 * h + (rm ? 0 : 0.010 * h * Math.sin(t * 4.4)); // G11.2: the RAISED hand of the real animation is the LEFT one (measured: LH +0.07 h, RH -0.14 h vs chest)
+   focus.copy(c.P.lh); if (FID) { focus.lerp(c.P.rh, trigHandMix(t - g.triggerStart)); const tr = trigRel(t - g.triggerStart, rm); focus.y += tr.y + tr.s; } else focus.y += 0.17 * h + (rm ? 0 : 0.010 * h * Math.sin(t * 4.4)); // G11.2: the RAISED hand of the real animation is the LEFT one (measured: LH +0.07 h, RH -0.14 h vs chest)
    const ex = cs.trig.dis, exp3 = Math.pow(ex, 1.4);
    k.uCenter.value.copy(focus); k.uSize.value = (FID ? 0.31 : 0.50) * h * (1 + 3.2 * exp3); k.uPush.value = 0.06 * h; k.uA.value = cs.trig.a * (1 - 0.55 * smooth((ex - 0.35) / 0.65));
    k.uTime.value = time; k.uFlap.value = cs.trig.flap; k.uDis.value = cs.trig.dis; if (FID) k.uViolet.value.set(0.42, 0.74, 1.0);
@@ -407,7 +409,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    butterfly: cs.bf.a > 0.002 ? {alpha: cs.bf.a, open: cs.bf.open, scale: cs.bf.scale, burn: cs.bf.burn, flash: cs.bf.flash} : null};
   if ((cs.bf.a > 0.002 || cs.bf.flash > 0.01) && g) {
    const k = U(butterfly);
-   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * (FID ? 0.64 : 1.40); // F2: the whole silhouette stays inside the frame (the authorial billboard overflows it by ~30%) k.uMin.value = 2.4 * h; k.uMax.value = 20 * h;
+   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * (FID ? 0.64 : 1.40); k.uMin.value = (FID ? 0.30 : 2.4) * h; k.uMax.value = (FID ? 0.66 : 20) * h; // F2: the whole silhouette stays inside the frame (the authorial billboard overflows it by ~30%)
    k.uA.value = cs.bf.a * 0.80 * cfg.contrast; k.uOpen.value = cs.bf.open; k.uTime.value = time; k.uBurn.value = cs.bf.burn; k.uFlash.value = cs.bf.flash; k.uChaos.value = cs.bf.chaos;
    k.uGold.value.set(0.90, 0.96, 1.0); k.uBlue.value.set(0.14, 0.46, 1.0); k.uViolet.value.set(0.10, 0.30, 1.0); k.uHotC.value.set(0.80, 0.92, 1.0); // G11.3: blue + white only (first-phase ultimate colours)
    butterfly.visible = true;

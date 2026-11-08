@@ -57,11 +57,39 @@ import {buildR61Plan as buildPlanF2} from '../src/scripts/shorekeeper/r61-plan.m
 test('F2 adapter: FIDELIDADE keeps the Stellarealm uniforms blue-white to the end; artistic still reaches violet and gold',()=>{
  const DUR={SK_ATTACK_01_ORIGINAL:3.633,SK_ATTACK_02_ORIGINAL:5.733,SK_ATTACK_03_ORIGINAL:3.867,SK_ATTACK_L02_ORIGINAL:4.667,SK_SKILL_01_ORIGINAL:5.233,SK_BURST_02_ORIGINAL:5.433,SK_IDLE_01_ORIGINAL:2.5};
  const lib=R61_SOURCE_IDS.map(id=>new T.AnimationClip(id,DUR[id],[new T.VectorKeyframeTrack('Bip001.position',[0,DUR[id]],[0,0,0,0,0,0])]));
- const plan=buildPlanF2(lib),g=createS3Score(plan.schedule).timeline.g11;
+ const plan=buildPlanF2(lib),g=createS3Score(plan.schedule).timeline.g11,gF=createS3Score(plan.schedule,{fidelity:true}).timeline.g11;
  const rig=()=>{const root=new T.Group(),scene=new T.Scene();scene.add(root);for(const [n,p] of Object.entries({Bip001Pelvis:[0,1,0],Bip001Spine2:[0,1.3,0],Bip001Head:[0,1.6,0],Bip001RFoot:[.1,.05,0],Bip001LFoot:[-.1,.05,0],Bip001RThigh:[.1,.9,0],Bip001LThigh:[-.1,.9,0],Bip001RHand:[.4,1.2,.2],Bip001LHand:[-.4,1.2,.2],Bip001RForearm:[.3,1.2,.1],Bip001LForearm:[-.3,1.2,.1]})){const o=new T.Bone();o.name=n;o.position.set(...p);root.add(o);}root.updateMatrixWorld(true);return {root,scene};};
- const hues=(fidelity)=>{const {root,scene}=rig(),a=createS3CombatVfx(T,{scene,model:root,plan,scale:1.6,stageAnchor:{x:0,z:0,floorY:0},fidelity});try{a.setTrailHistory(buildTrailHistory(root,()=>{},plan.schedule.duration));
-  const out=[];for(const t of [g.violetFull+0.1,(g.goldStart+g.goldFull)/2,g.goldFull+0.05]){a.apply(t);const f=scene.getObjectByName('liberationOuterField');out.push(f.visible?Array.from(f.material.uniforms.uHor.value.toArray()):null);}return out;}finally{a.dispose();}};
- const fid=hues(true),art=hues(false);
+ const hues=(fidelity,times)=>{const {root,scene}=rig(),a=createS3CombatVfx(T,{scene,model:root,plan,scale:1.6,stageAnchor:{x:0,z:0,floorY:0},fidelity});try{a.setTrailHistory(buildTrailHistory(root,()=>{},plan.schedule.duration));
+  const out=[];for(const t of times){a.apply(t);const f=scene.getObjectByName('liberationOuterField');out.push(f.visible?Array.from(f.material.uniforms.uHor.value.toArray()):null);}return out;}finally{a.dispose();}};
+ const fid=hues(true,[gF.absorbStart-0.55,gF.absorbStart-0.3,gF.absorbStart-0.05]),art=hues(false,[g.violetFull+0.1,(g.goldStart+g.goldFull)/2,g.goldFull+0.05]);
  for(const c of fid){assert.ok(c,'field visible');assert.ok(c[2]>=0.95&&c[0]<=0.55&&c[1]>=c[0],'blue-white, no violet (r<=g) and no amber: '+c);}
  assert.ok(art[1][0]>0.7&&art[1][2]<0.5,'artistic reaches the warm/gold hand-over: '+art[1]);
+});
+
+test('F2 runtime: 10 FIDELIDADE cycles keep resources flat; manual takeover keeps the camera; long frames and pause/resume across the Burst cut keep a single owner',()=>{
+ const f=make();
+ try{
+  const uniq=()=>{const g=new Set(),m=new Set();f.stage.scene.traverse(o=>{if(o.geometry)g.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(x=>m.add(x));});return [g.size,m.size,f.stage.scene.children.length].join(',');};
+  let steady=null;
+  for(let i=0;i<10;i++){const d=f.create({profile:PROFILE_FIDELITY});try{runCycle(d);}finally{d.dispose();}
+   assert.equal(bodyOwner(f.model),null);assert.equal(cameraOwner(f.stage),null);const u=uniq();if(i===1)steady=u;if(i>1)assert.equal(u,steady,'cycle '+i+' grew: '+u+' vs '+steady);}
+  // manual takeover in the middle of shot 1: the automatic camera must not overwrite the user's camera on the next frames
+  let d=f.create({profile:PROFILE_FIDELITY});
+  try{
+   const burst=d.plan.schedule.segments.find(s=>s.id==='SK_BURST_02_ORIGINAL');d.start();d.setPaused(false);d.seek(burst.start+1.0);d.advance(1/60);
+   f.stage.camera.position.set(3,1,3);d.stopCamera({preserve:true});const p=f.stage.camera.position.toArray();
+   for(let i=0;i<20;i++)d.advance(1/30);
+   assert.deepEqual(f.stage.camera.position.toArray(),p,'camera untouched after manual takeover');
+  }finally{d.dispose();}
+  assert.equal(cameraOwner(f.stage),null);
+  // long frames / pause-resume across the cut (30 and 60 Hz and a 1 s hitch): never throws, ownership single, clock monotonic
+  for(const dt of [1/60,1/30,1.0]){
+   d=f.create({profile:PROFILE_FIDELITY});
+   try{const burst=d.plan.schedule.segments.find(s=>s.id==='SK_BURST_02_ORIGINAL');d.start();d.seek(burst.start-0.01);d.setPaused(true);d.advance(dt);d.setPaused(false);let last=-1;
+    for(let i=0;i<8;i++){d.advance(dt);const t=d.state.clock??d.state.time??0;assert.ok(t>=last-1e-9,'clock monotonic');last=t;}
+    assert.ok(bodyOwner(f.model)!==null,'one body owner while playing');
+   }finally{d.dispose();}
+   assert.equal(bodyOwner(f.model),null);assert.equal(cameraOwner(f.stage),null);
+  }
+ }finally{f.dispose();}
 });
