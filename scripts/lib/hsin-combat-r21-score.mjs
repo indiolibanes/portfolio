@@ -16,7 +16,7 @@
 export const SECONDS=8.4;
 export const PHASES=[['PREPARATION',0],['BASIC',1.5],['SKILL',3.6],['RECOVERY',6],['COMPLETE',8.4]];
 // Events: trails start before the hand arrives; impact markers are unchanged so R2 lab contracts hold.
-export const MARKERS=[['energy',.8],['trail',1.8],['arc',2.2],['trail-left',2.78],['arc-left',3.26],['charge',3.95],['ring',5.45],['recovery',6]];
+export const MARKERS=[['energy',.8],['trail',1.8],['arc',2.2],['trail-left',2.78],['arc-left',3.32],['charge',3.95],['ring',5.45],['recovery',6]];
 
 /** Monotone cubic Hermite, zero slope at the ends and at extrema: C1, no overshoot, no stop-and-go at every key. */
 export function pchip(xs,ys,t){
@@ -46,8 +46,8 @@ export const TORSO_KEYS=[
  // Basic 02: a quick drop (not a coil) on the already loaded left leg, then the drive across to the right.
  [2.65,17,.06,-.062,1,-6,0],
  [2.88,5,.03,-.05,2,-12,0],
- [3.1,-19,-.062,-.046,4,-6,0],
- [3.2,-22,-.066,-.05,3.5,-5,0],
+ [3.14,-18,-.062,-.046,4,-6,0],
+ [3.3,-22,-.066,-.05,3.5,-5,0],
  [3.7,-5,-.025,-.03,2,0,0],
  // Skill: gaze follows the hands, spine gathers, coil on the right leg, release thrusts through the left.
  [4.0,-2,-.02,-.04,3,0,5],
@@ -108,7 +108,7 @@ export function createArmScore({restIntent,halfWidth}){
  const rows=[
   [0,'rest','rest'],[.8,GUARD,GUARD],[1.2,GUARD,GUARD],
   [1.55,WIND_R,L_BRACE],[1.84,ARC_OUT_R,L_BRACE],[2.08,NEAR_R,L_BRACE2],[2.24,APEX_R,L_BRACE2],[2.5,SETTLE_R,mixIntent(L_BRACE2,L_WIND,.45)],
-  [2.72,LOW_GUARD,L_WIND],[2.92,GUARD2,L_ARC],[3.12,GUARD2,L_NEAR],[3.28,GUARD2,L_APEX],[3.52,GUARD,L_SETTLE],[3.88,GUARD,GUARD],
+  [2.72,LOW_GUARD,L_WIND],[2.92,GUARD2,L_ARC],[3.2,GUARD2,L_NEAR],[3.36,GUARD2,L_APEX],[3.58,GUARD,L_SETTLE],[3.92,GUARD,GUARD],
   [4.15,sphere(.45,-.20,.25),sphere(.45,-.20,.25)],[4.65,sphere(.30,-.19,.29),sphere(.30,-.19,.29)],
   [5.0,sphere(.25,-.18,.31),sphere(.25,-.18,.31)],[5.2,sphere(.235,-.17,.315),sphere(.235,-.17,.315)],
   [5.45,RELEASE_R,sphere(.24,-.17,.31)],[5.85,FOLLOW_R,OPEN_L],[6.12,DECAY,OPEN_L2],[6.42,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],
