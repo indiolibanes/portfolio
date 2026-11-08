@@ -1,0 +1,697 @@
+{
+ "status": "WEBGL_QA_SOFTWARE",
+ "renderer": {
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+ },
+ "viewports": {
+  "desktop": {
+   "viewport": {
+    "width": 1280,
+    "height": 720
+   },
+   "dpr": 1,
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "cycle": 0,
+    "extraDrawCalls": 7,
+    "visibleDrawCalls": 0,
+    "geometries": 4,
+    "materials": 5,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 1.049900000000001,
+     "state": "PREPARATION",
+     "renderer": {
+      "calls": 24,
+      "triangles": 124441,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.7499000000000016,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 0
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.249900000000001,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 26,
+      "triangles": 124085,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 2
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.2498999999999976,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 25,
+      "triangles": 124037,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.616699999999989,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 26,
+      "triangles": 124801,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 3
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.300099999999981,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 26,
+      "triangles": 124801,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 3
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.666699999999971,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 30,
+      "triangles": 125837,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 6
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.999999999999973,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 31,
+      "triangles": 125885,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 7
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.749999999999971,
+     "state": "RECOVERY",
+     "renderer": {
+      "calls": 24,
+      "triangles": 124141,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.749999999999967,
+     "state": "RECOVERY",
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 0
+    }
+   ],
+   "repetitions": [
+    {
+     "rep": 1,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 23521716,
+     "frameInterval": {
+      "samples": 694,
+      "windowSamples": 240,
+      "mean": 318.172,
+      "p50": 314.1,
+      "p95": 601.8,
+      "max": 661.7
+     },
+     "render": {
+      "samples": 696,
+      "windowSamples": 240,
+      "mean": 1.078,
+      "p50": 0.9,
+      "p95": 2,
+      "max": 5
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 2,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 23974628,
+     "frameInterval": {
+      "samples": 866,
+      "windowSamples": 240,
+      "mean": 316.954,
+      "p50": 315.3,
+      "p95": 339.5,
+      "max": 661.7
+     },
+     "render": {
+      "samples": 868,
+      "windowSamples": 240,
+      "mean": 1.136,
+      "p50": 0.9,
+      "p95": 3.5,
+      "max": 5
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 3,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 24329872,
+     "frameInterval": {
+      "samples": 1037,
+      "windowSamples": 240,
+      "mean": 316.137,
+      "p50": 316.5,
+      "p95": 335.5,
+      "max": 639
+     },
+     "render": {
+      "samples": 1039,
+      "windowSamples": 240,
+      "mean": 1.012,
+      "p50": 0.8,
+      "p95": 2,
+      "max": 4.6
+     },
+     "state": "COMPLETE"
+    }
+   ],
+   "camera": {
+    "afterToggle": "automatic",
+    "afterWheel": "free"
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "cycle": 5,
+     "extraDrawCalls": 7,
+     "visibleDrawCalls": 0,
+     "geometries": 4,
+     "materials": 5,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.5,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 27,
+     "textures": 21,
+     "programs": 16
+    },
+    "frameInterval": {
+     "samples": 1037,
+     "windowSamples": 240,
+     "mean": 316.137,
+     "p50": 316.5,
+     "p95": 335.5,
+     "max": 639
+    },
+    "render": {
+     "samples": 1039,
+     "windowSamples": 240,
+     "mean": 1.012,
+     "p50": 0.8,
+     "p95": 2,
+     "max": 4.6
+    },
+    "heap": 24473104
+   },
+   "effectDelta": {
+    "prepCalls": 24,
+    "skillHoldCalls": 26,
+    "releaseCalls": 30,
+    "skillHoldExtraCalls": 2,
+    "releaseExtraCalls": 6,
+    "skillHoldExtraTriangles": 360,
+    "releaseExtraTriangles": 1396
+   },
+   "stable": {
+    "geometriesPerRepetition": [
+     27,
+     27,
+     27
+    ],
+    "texturesPerRepetition": [
+     21,
+     21,
+     21
+    ],
+    "noGrowth": true,
+    "heapMiB": [
+     22.4,
+     22.9,
+     23.2
+    ]
+   }
+  },
+  "phone": {
+   "viewport": {
+    "width": 390,
+    "height": 844
+   },
+   "dpr": 2,
+   "errors": [],
+   "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+   ],
+   "before": {
+    "calls": 23,
+    "triangles": 123961,
+    "geometries": 23,
+    "textures": 21,
+    "programs": 13
+   },
+   "loaded": {
+    "state": "IDLE",
+    "time": 0,
+    "camera": "free",
+    "cycle": 0,
+    "extraDrawCalls": 7,
+    "visibleDrawCalls": 0,
+    "geometries": 4,
+    "materials": 5,
+    "decodedBytes": 2141392,
+    "bakeBytes": 1469307,
+    "lastCpuMs": 0,
+    "revision": "r2.1"
+   },
+   "shots": [
+    {
+     "id": "00-preparation",
+     "target": 0.9,
+     "time": 1.049900000000001,
+     "state": "PREPARATION",
+     "renderer": {
+      "calls": 23,
+      "triangles": 121465,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "01-basic01-windup",
+     "target": 1.6,
+     "time": 1.7165000000000035,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 21,
+      "triangles": 120983,
+      "geometries": 24,
+      "textures": 21,
+      "programs": 14
+     },
+     "visibleDrawCalls": 0
+    },
+    {
+     "id": "02-basic01-impact",
+     "target": 2.12,
+     "time": 2.233100000000001,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 24,
+      "triangles": 121107,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 2
+    },
+    {
+     "id": "03-basic02-impact",
+     "target": 3.12,
+     "time": 3.266300000000002,
+     "state": "BASIC",
+     "renderer": {
+      "calls": 24,
+      "triangles": 121061,
+      "geometries": 26,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "04-skill-charge",
+     "target": 4.5,
+     "time": 4.649399999999988,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 25,
+      "triangles": 121825,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 3
+    },
+    {
+     "id": "05-skill-hold",
+     "target": 5.15,
+     "time": 5.216099999999991,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 25,
+      "triangles": 121825,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 3
+    },
+    {
+     "id": "06-skill-release",
+     "target": 5.5,
+     "time": 5.649499999999984,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 29,
+      "triangles": 122861,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 6
+    },
+    {
+     "id": "07-afterglow",
+     "target": 5.85,
+     "time": 5.966299999999986,
+     "state": "SKILL",
+     "renderer": {
+      "calls": 30,
+      "triangles": 122909,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 7
+    },
+    {
+     "id": "08-recovery",
+     "target": 6.6,
+     "time": 6.749699999999992,
+     "state": "RECOVERY",
+     "renderer": {
+      "calls": 23,
+      "triangles": 121165,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 1
+    },
+    {
+     "id": "09-settle",
+     "target": 7.6,
+     "time": 7.716399999999986,
+     "state": "RECOVERY",
+     "renderer": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "visibleDrawCalls": 0
+    }
+   ],
+   "repetitions": [
+    {
+     "rep": 1,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 22987071,
+     "frameInterval": {
+      "samples": 707,
+      "windowSamples": 240,
+      "mean": 234.615,
+      "p50": 230.2,
+      "p95": 439.1,
+      "max": 724.5
+     },
+     "render": {
+      "samples": 709,
+      "windowSamples": 240,
+      "mean": 1.065,
+      "p50": 0.9,
+      "p95": 2.3,
+      "max": 4.8
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 2,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 23706331,
+     "frameInterval": {
+      "samples": 879,
+      "windowSamples": 240,
+      "mean": 229.131,
+      "p50": 229.6,
+      "p95": 241.9,
+      "max": 464.4
+     },
+     "render": {
+      "samples": 881,
+      "windowSamples": 240,
+      "mean": 1.05,
+      "p50": 0.9,
+      "p95": 2.4,
+      "max": 4.8
+     },
+     "state": "COMPLETE"
+    },
+    {
+     "rep": 3,
+     "peak": {
+      "calls": 31,
+      "triangles": 125885
+     },
+     "after": {
+      "calls": 23,
+      "triangles": 123961,
+      "geometries": 27,
+      "textures": 21,
+      "programs": 16
+     },
+     "heap": 24086595,
+     "frameInterval": {
+      "samples": 1051,
+      "windowSamples": 240,
+      "mean": 230.72,
+      "p50": 230.2,
+      "p95": 244.8,
+      "max": 468.3
+     },
+     "render": {
+      "samples": 1053,
+      "windowSamples": 240,
+      "mean": 1.075,
+      "p50": 0.9,
+      "p95": 2.7,
+      "max": 4.5
+     },
+     "state": "COMPLETE"
+    }
+   ],
+   "camera": {
+    "afterToggle": "automatic",
+    "afterWheel": "free"
+   },
+   "final": {
+    "combat": {
+     "state": "COMPLETE",
+     "time": 8.4,
+     "camera": "free",
+     "cycle": 5,
+     "extraDrawCalls": 7,
+     "visibleDrawCalls": 0,
+     "geometries": 4,
+     "materials": 5,
+     "decodedBytes": 2141392,
+     "bakeBytes": 1469307,
+     "lastCpuMs": 0.40000000002328306,
+     "revision": "r2.1"
+    },
+    "renderer": {
+     "calls": 23,
+     "triangles": 123961,
+     "geometries": 27,
+     "textures": 21,
+     "programs": 16
+    },
+    "frameInterval": {
+     "samples": 1051,
+     "windowSamples": 240,
+     "mean": 230.72,
+     "p50": 230.2,
+     "p95": 244.8,
+     "max": 468.3
+    },
+    "render": {
+     "samples": 1053,
+     "windowSamples": 240,
+     "mean": 1.075,
+     "p50": 0.9,
+     "p95": 2.7,
+     "max": 4.5
+    },
+    "heap": 24235475
+   },
+   "effectDelta": {
+    "prepCalls": 23,
+    "skillHoldCalls": 25,
+    "releaseCalls": 29,
+    "skillHoldExtraCalls": 2,
+    "releaseExtraCalls": 6,
+    "skillHoldExtraTriangles": 360,
+    "releaseExtraTriangles": 1396
+   },
+   "stable": {
+    "geometriesPerRepetition": [
+     27,
+     27,
+     27
+    ],
+    "texturesPerRepetition": [
+     21,
+     21,
+     21
+    ],
+    "noGrowth": true,
+    "heapMiB": [
+     21.9,
+     22.6,
+     23
+    ]
+   }
+  }
+ },
+ "limitation": "Headless Chromium on SwiftShader (CPU). Frame times here are not GPU times and say nothing about phones or desktops with a GPU.",
+ "errors": []
+}
