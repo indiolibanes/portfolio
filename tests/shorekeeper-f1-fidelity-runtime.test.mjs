@@ -48,3 +48,20 @@ test('F1 toggle ARTISTICO <-> FIDELIDADE x3 with start/interrupt/restart: owners
   assert.ok(steady>=base);
  }finally{f.dispose();}
 });
+
+// F2: the F1 palette flag never reached the Liberation layer (adapter did not forward it). This test exercises the real adapter.
+import {buildTrailHistory} from '../src/scripts/shorekeeper/combat-vfx-trails.mjs';
+import {createS3CombatVfx} from '../src/scripts/shorekeeper/combat-vfx-adapter.mjs';
+import {createS3Score} from '../src/scripts/shorekeeper/combat-vfx-events.mjs';
+import {buildR61Plan as buildPlanF2} from '../src/scripts/shorekeeper/r61-plan.mjs';
+test('F2 adapter: FIDELIDADE keeps the Stellarealm uniforms blue-white to the end; artistic still reaches violet and gold',()=>{
+ const DUR={SK_ATTACK_01_ORIGINAL:3.633,SK_ATTACK_02_ORIGINAL:5.733,SK_ATTACK_03_ORIGINAL:3.867,SK_ATTACK_L02_ORIGINAL:4.667,SK_SKILL_01_ORIGINAL:5.233,SK_BURST_02_ORIGINAL:5.433,SK_IDLE_01_ORIGINAL:2.5};
+ const lib=R61_SOURCE_IDS.map(id=>new T.AnimationClip(id,DUR[id],[new T.VectorKeyframeTrack('Bip001.position',[0,DUR[id]],[0,0,0,0,0,0])]));
+ const plan=buildPlanF2(lib),g=createS3Score(plan.schedule).timeline.g11;
+ const rig=()=>{const root=new T.Group(),scene=new T.Scene();scene.add(root);for(const [n,p] of Object.entries({Bip001Pelvis:[0,1,0],Bip001Spine2:[0,1.3,0],Bip001Head:[0,1.6,0],Bip001RFoot:[.1,.05,0],Bip001LFoot:[-.1,.05,0],Bip001RThigh:[.1,.9,0],Bip001LThigh:[-.1,.9,0],Bip001RHand:[.4,1.2,.2],Bip001LHand:[-.4,1.2,.2],Bip001RForearm:[.3,1.2,.1],Bip001LForearm:[-.3,1.2,.1]})){const o=new T.Bone();o.name=n;o.position.set(...p);root.add(o);}root.updateMatrixWorld(true);return {root,scene};};
+ const hues=(fidelity)=>{const {root,scene}=rig(),a=createS3CombatVfx(T,{scene,model:root,plan,scale:1.6,stageAnchor:{x:0,z:0,floorY:0},fidelity});try{a.setTrailHistory(buildTrailHistory(root,()=>{},plan.schedule.duration));
+  const out=[];for(const t of [g.violetFull+0.1,(g.goldStart+g.goldFull)/2,g.goldFull+0.05]){a.apply(t);const f=scene.getObjectByName('liberationOuterField');out.push(f.visible?Array.from(f.material.uniforms.uHor.value.toArray()):null);}return out;}finally{a.dispose();}};
+ const fid=hues(true),art=hues(false);
+ for(const c of fid){assert.ok(c,'field visible');assert.ok(c[2]>=0.95&&c[0]<=0.55&&c[1]>=c[0],'blue-white, no violet (r<=g) and no amber: '+c);}
+ assert.ok(art[1][0]>0.7&&art[1][2]<0.5,'artistic reaches the warm/gold hand-over: '+art[1]);
+});

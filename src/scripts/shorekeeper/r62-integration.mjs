@@ -6,6 +6,7 @@
 import {createR62Cinematic} from './r62-cinematic.mjs';
 import {createS3CombatVfx} from './combat-vfx-adapter.mjs';
 import {createSkinnedBoundsFollower} from './skinned-bounds.mjs';
+import {createFidelityFrameTransform} from './fidelity-camera.mjs';
 import {PROFILE_ARTISTIC,PROFILE_FIDELITY,applyFidelityBody,FIDELITY_STATUS,FIDELITY_REVISION} from './fidelity-profile.mjs';
 
 export function createR62Integration(T,model,library,stage,{getVfx,camera=true,onEvent=()=>{},reducedMotion=false,bodyStability='off',entry=0,preservePoseOnDispose=false,cameraProfile:duetCameraProfile=null,arena:sharedArena=null,profile=PROFILE_ARTISTIC}={}) {
@@ -22,12 +23,12 @@ export function createR62Integration(T,model,library,stage,{getVfx,camera=true,o
  try {
   const fid=fidelity?applyFidelityBody(T,model,library):null;
   const director=createR62Cinematic(T,model,fid?fid.library:library,stage,{
-   getVfx,camera,onEvent,entry,preservePoseOnDispose,bodyStability:'off',liberationMode:'layer',boundsFollower:bounds,
+   getVfx,camera,onEvent,entry,preservePoseOnDispose,bodyStability:'off',liberationMode:'layer',boundsFollower:bounds,...(fidelity?{planOptions:{burstEntry:'cut'}}:{}),
    scoreVfx:({plan})=>(adapter=createS3CombatVfx(T,{scene:stage.scene,model,plan,scale:v.scale,stageAnchor:arena,reducedMotion:reduced,fidelity,...(sharedArena?.radius?{liberation:{radius:Math.max(8.6,sharedArena.radius/v.scale)}}:{})})),
-   ...(camera?{cameraProfile:{smart:true,period:18,returnSeconds:.7,model,arena:()=>arena,reduced,...duetCameraProfile}}:{})
+   ...(camera?{cameraProfile:{smart:true,period:18,returnSeconds:.7,model,arena:()=>arena,reduced,...duetCameraProfile,...(fidelity?{frameTransform:createFidelityFrameTransform(duetCameraProfile?.frameTransform??null)}:{})}}:{})
   });
   Object.defineProperties(director,{
-   integrationStatus:{get:()=>({revision:fidelity?FIDELITY_REVISION:'G113_S5_LOCAL',profile,visualDirection:fidelity?'FIDELITY_NOT_CERTIFIED':'HUMAN_ACCEPTED_DIRECTION',sourceBody:fidelity?'PR256_ORIGINAL_BURST_ROOT_BODY_OWNED':'PR256_ORIGINAL',...(fidelity?{fidelity:fid.provenance}:{}),G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
+   integrationStatus:{get:()=>({revision:fidelity?FIDELITY_REVISION:'G113_S5_LOCAL',profile,visualDirection:fidelity?'FIDELITY_NOT_CERTIFIED':'HUMAN_ACCEPTED_DIRECTION',sourceBody:fidelity?'PR256_ORIGINAL_BURST_ROOT_BODY_OWNED':'PR256_ORIGINAL',...(fidelity?{burstEntry:'HARD_CUT_WITH_CAMERA_CUT',camera:'F2_REFERENCE_SHOTS_CANDIDATE'}:{}),...(fidelity?{fidelity:fid.provenance}:{}),G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
    scoreAdapter:{get:()=>adapter}
   });
   return director;

@@ -69,7 +69,9 @@ export function weightsAt(schedule, t, out = new Array(schedule.segments.length)
   const segs = schedule.segments, w = out.fill(0), tt = clamp(t, 0, schedule.duration);
   for (let i = 0; i < segs.length; i++) {
     const s = segs[i]; if (tt < s.start || tt > s.end) continue;
-    const next = segs[i + 1], rampIn = s.fade > 0 ? smooth((tt - s.start) / s.fade) : 1, rampOut = next && next.fade > 0 ? 1 - smooth((tt - next.start) / next.fade) : 1;
+    const next = segs[i + 1];
+    // F2: an explicit hard cut (fade 0 on a non-first step) is half-open, so exactly one clip owns every instant (no 50/50 frame on the boundary).
+    const rampIn = s.fade > 0 ? smooth((tt - s.start) / s.fade) : i > 0 ? (tt >= s.start ? 1 : 0) : 1, rampOut = next && next.fade > 0 ? 1 - smooth((tt - next.start) / next.fade) : next ? (tt < next.start ? 1 : 0) : 1;
     w[i] = Math.min(rampIn, rampOut);
   }
   const sum = w.reduce((a, b) => a + b, 0); if (sum > 0) for (let i = 0; i < w.length; i++) w[i] /= sum;

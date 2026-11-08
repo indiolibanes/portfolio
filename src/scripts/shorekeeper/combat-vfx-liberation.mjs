@@ -13,7 +13,7 @@
  *  - no coreCrystal/coreCage polyhedron, no Inner/Supernal stage triggered by time
  *    (colour variants are explicit AUTHORIAL flags only), no gameplay radius in metres.
  */
-import {BILLBOARD_VS, FACE_FS, TAIL, BUTTERFLY_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
+import {BILLBOARD_VS, FACE_FS, TAIL, BUTTERFLY_GLSL, BUTTERFLY_FID_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
 import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
 
 export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butterfly
@@ -196,6 +196,58 @@ void main(){
  col*=keep; col+=vec3(.9,.95,1.)*exp(-pow((n-thr)/.05,2.))*step(.001,uDis)*(ins+halo*.4)*.9;
  col*=uA*faceMask(vP); if(max(col.r,max(col.g,col.b))<.004) discard;
  gl_FragColor=vec4(min(col,vec3(1.)),1.);${TAIL}`;
+// F2 FIDELIDADE trigger butterfly: torn translucent wings, veins, white core, asymmetric flap that turns edge-on into a V. Blue-white only.
+const TRG_FS_FID = `${FACE_FS}
+uniform vec3 uTint, uViolet; uniform float uA, uTime, uFlap, uDis;
+varying vec2 vP; varying vec2 vD;
+${BUTTERFLY_GLSL}
+${NOISE_GLSL}
+${BUTTERFLY_FID_GLSL}
+void main(){
+ vec2 pb=vP*1.10; float tt=uTime;
+ float roll=.10*sin(tt*3.1+.7), cr=cos(roll), sr=sin(roll); pb=vec2(cr*pb.x-sr*pb.y,sr*pb.x+cr*pb.y);
+ vec2 q=bfFlapSpace(pb,uFlap,.14*sin(tt*4.3+1.3),.40);
+ float rr,wing; vec4 s=bfFidShade(q,.85,2.7,tt,rr,wing);
+ float sqm=1.-smoothstep(.55,.98,max(abs(vP.x),abs(vP.y)));
+ float halo=(wing>0.?exp(-pow(wing/.07,2.)):0.)*sqm;
+ float core=exp(-rr*rr*30.)*s.x, body=bfBody(pb);
+ vec3 W=mix(vec3(.90,.97,1.),uTint,smoothstep(.12,.72,rr));
+ vec3 col=W*(s.w*.9+s.z*.85+core*.95)+uTint*(s.y*1.0)+vec3(.90,.97,1.)*(body*.75+s.y*.28)+uViolet*halo*.22;
+ float n=fbm(pb*5.)-.45*(rr-.4), thr=uDis*1.3, keep=smoothstep(thr-.14,thr+.04,n+.02);
+ col*=keep; col+=vec3(.9,.96,1.)*exp(-pow((n-thr)/.05,2.))*step(.001,uDis)*(s.x+halo*.4)*.9;
+ col*=uA*faceMask(vP); if(max(col.r,max(col.g,col.b))<.004) discard;
+ gl_FragColor=vec4(min(col,vec3(1.)),1.);${TAIL}`;
+// F2 FIDELIDADE burst butterfly: same wing family, open/close from the score, torn margins, tip-first erosion and embers born in the wing.
+const BF_FS_FID = `uniform vec3 uGold, uViolet, uHotC, uBlue; uniform float uA, uOpen, uTime, uBurn, uFlash, uChaos; varying vec2 vP;
+${BUTTERFLY_GLSL}
+${NOISE_GLSL}
+${BUTTERFLY_FID_GLSL}
+void main(){
+ vec2 pb=vP; float tt=uTime;
+ float roll=.07*sin(tt*1.9+.4), cr=cos(roll), sr=sin(roll); vec2 pr=vec2(cr*pb.x-sr*pb.y,sr*pb.x+cr*pb.y);
+ vec2 wv=vec2(fbm(pr*3.2+vec2(0.,tt*1.3)),fbm(pr*3.2+vec2(5.2,-tt*1.1)))-.5;
+ vec2 pw=pr+wv*(.025+.07*uChaos);
+ vec2 q=bfFlapSpace(pw,uOpen,.10*sin(tt*2.6+1.1),.30);
+ float rr,wing; vec4 s=bfFidShade(q,.55+.55*uChaos,5.3,tt,rr,wing);
+ float n=.55*fbm(pb*4.5+vec2(3.1,tt*.6))+.45*fbm(pb*13.+vec2(tt*1.7,7.7));
+ float nn=n-.5*(rr-.4);
+ float keep=smoothstep(uBurn-.06,uBurn+.06,nn);
+ float burnEdge=exp(-pow((nn-uBurn)/.03,2.))*step(.001,uBurn)*step(uBurn,1.2);
+ float sq=1.-smoothstep(.72,1.0,max(abs(pb.x),abs(pb.y)));
+ float halo=(wing>0.?exp(-pow(wing/.07,2.)):0.)*sq;
+ float core=exp(-rr*rr*26.)*s.x, body=bfBody(pr);
+ vec3 W=mix(uHotC,uBlue,smoothstep(.04,.42,rr));
+ vec3 col=W*(s.w*.78+s.z*.80+core*.9)+uBlue*s.y*1.0+uHotC*(s.y*.35+body*.7+core*.3)+uViolet*halo*.22;
+ float m=max(col.r,max(col.g,col.b)); if(m>.95) col*=.95/m;
+ col*=keep;
+ col+=(uHotC*.8+uGold*.3)*burnEdge*(s.x+.4*halo)*.9;
+ float prog=clamp(uBurn/1.2,0.,1.);
+ col+=uHotC*bfEmbers(pb,prog,.55+.55*uChaos,5.3)*1.2*step(.01,uBurn)*step(uBurn,1.19);
+ col*=uA;
+ float fl=uFlash*(exp(-pow(length(pb-vec2(0.,.05))/.30,2.))*.85+exp(-length(pb)*3.2)*.22)*(1.-smoothstep(.55,.98,max(abs(pb.x),abs(pb.y))));
+ col+=uHotC*fl;
+ if(max(col.r,max(col.g,col.b))<.004) discard;
+ gl_FragColor=vec4(col,1.);${TAIL}`;
 const CORE_FS = `${FACE_FS}
 uniform vec3 uBlue, uViolet, uGold; uniform float uA, uTime, uGrow, uViol;
 varying vec2 vP; varying vec2 vD;
@@ -250,10 +302,10 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
  const motes = mk(mg, new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: {uBlue: col('blue'), uGold: col('gold'), ...headU()}, vertexShader: MOTE_VS, fragmentShader: MOTE_FS}), 13, 'liberationMotes');
  const butterfly = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
   uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}},
-  vertexShader: BF_VS, fragmentShader: BF_FS}), 7, 'liberationGiantButterfly');
+  vertexShader: BF_VS, fragmentShader: palette === 'fidelity' ? BF_FS_FID : BF_FS}), 7, 'liberationGiantButterfly');
  const trigger = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
   uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uTint: {value: v3(0.28, 0.66, 1.0)}, uViolet: {value: v3(0.52, 0.30, 1.0)}, uA: {value: 0}, uTime: {value: 0}, uFlap: {value: 1}, uDis: {value: 0}, ...headU()},
-  vertexShader: BILLBOARD_VS, fragmentShader: TRG_FS}), 14, 'liberationTriggerButterfly');
+  vertexShader: BILLBOARD_VS, fragmentShader: palette === 'fidelity' ? TRG_FS_FID : TRG_FS}), 14, 'liberationTriggerButterfly');
  const meshes = {field, canopy, core, motes, butterfly, trigger};
  const U = o => o.material.uniforms;
  const neutral = new Map(Object.values(meshes).map(o => [o, Object.fromEntries(Object.entries(U(o)).map(([k, u]) => [k, u.value?.clone ? u.value.clone() : u.value]))]));
@@ -263,6 +315,8 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   for (const o of Object.values(meshes)) { o.visible = false; o.position.set(0, 0, 0); o.scale.set(1, 1, 1); }
  };
  const focus = v3(), tmp = v3(), bfc = v3();
+ // F2: the trigger butterfly leaves the FINGERS (hand anchor + 0.04 h) and rises in a short, controlled arc to +0.15 h: relative path, pure function of time
+ const trigRel = (tau, rm) => ({y: h * (0.04 + 0.11 * smooth(tau / 0.9)), s: rm ? 0 : 0.008 * h * Math.sin(tau * 4.4)});
 
  /** ctx: {t, cue, rm, bundle, headW, P:{chest, rh, lh}, stage:{x, z, floorY}} */
  function update(c) {
@@ -273,7 +327,8 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
-  const cs = liberationColorScore(t, g, rm, cfg.palette), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
+  const FID = cfg.palette === 'fidelity', cs = liberationColorScore(t, g, rm, cfg.palette), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
+  if (FID) U(motes).uGold.value.set(0.78, 0.90, 1.0); // F2: no amber motes in the blue-white profile
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
   bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
   const probe = {stage: null, levels: {condense: vC, reveal: vR, peak: vK, decay: vD}, starGate: 0, variant: col3.label, radiusH: cfg.radius, contrast: cfg.contrast, mechanics: col3.mechanics, motes: 0};
@@ -303,15 +358,15 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   // ---- G11.1 trigger: ONE butterfly above the right hand, dissolving at once into the field (no swarm, no core, no converging motes) ----
   if (cs.trig.a > 0.002) {
    const k = U(trigger);
-   focus.copy(c.P.lh); focus.y += 0.17 * h + (rm ? 0 : 0.010 * h * Math.sin(t * 4.4)); // G11.2: the RAISED hand of the real animation is the LEFT one (measured: LH +0.07 h, RH -0.14 h vs chest)
+   focus.copy(c.P.lh); focus.y += FID ? trigRel(t - g.triggerStart, rm).y + trigRel(t - g.triggerStart, rm).s : 0.17 * h + (rm ? 0 : 0.010 * h * Math.sin(t * 4.4)); // G11.2: the RAISED hand of the real animation is the LEFT one (measured: LH +0.07 h, RH -0.14 h vs chest)
    const ex = cs.trig.dis, exp3 = Math.pow(ex, 1.4);
-   k.uCenter.value.copy(focus); k.uSize.value = 0.50 * h * (1 + 3.2 * exp3); k.uPush.value = 0.06 * h; k.uA.value = cs.trig.a * (1 - 0.55 * smooth((ex - 0.35) / 0.65));
-   k.uTime.value = time; k.uFlap.value = cs.trig.flap; k.uDis.value = cs.trig.dis;
+   k.uCenter.value.copy(focus); k.uSize.value = (FID ? 0.31 : 0.50) * h * (1 + 3.2 * exp3); k.uPush.value = 0.06 * h; k.uA.value = cs.trig.a * (1 - 0.55 * smooth((ex - 0.35) / 0.65));
+   k.uTime.value = time; k.uFlap.value = cs.trig.flap; k.uDis.value = cs.trig.dis; if (FID) k.uViolet.value.set(0.42, 0.74, 1.0);
    trigger.visible = true;
    if (ex > 0.001) { // vertiginous expansion: an energy bloom born at the butterfly that outgrows it and hands over to the field
     const kc = U(core), fl = smooth(ex * 1.25) * (1 - smooth((ex - 0.72) / 0.28));
-    kc.uCenter.value.copy(focus); kc.uSize.value = (0.6 + 7.5 * exp3) * h; kc.uPush.value = 0.05 * h; kc.uA.value = 0.95 * fl; kc.uTime.value = time; kc.uGrow.value = 1; kc.uViol.value = 0.6;
-    kc.uBlue.value.set(0.22, 0.60, 1.0); kc.uViolet.value.set(0.40, 0.08, 1.0); core.visible = kc.uA.value > 0.003;
+    kc.uCenter.value.copy(focus); kc.uSize.value = (0.6 + 7.5 * exp3) * h; kc.uPush.value = 0.05 * h; kc.uA.value = (FID ? 0.55 : 0.95) * fl; kc.uTime.value = time; kc.uGrow.value = 1; kc.uViol.value = 0.6; // F2: the hand-over bloom stays below white saturation in the blue-white profile
+    kc.uBlue.value.set(0.22, 0.60, 1.0); kc.uViolet.value.set(...(FID ? [0.50, 0.78, 1.0] : [0.40, 0.08, 1.0])); core.visible = kc.uA.value > 0.003;
    }
    probe.trigger = {alpha: cs.trig.a, flap: cs.trig.flap, dissolve: cs.trig.dis, count: 1, anchor: focus.toArray()};
   }
@@ -322,6 +377,10 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   if (cs.trig.dis > 0.001 && cs.trig.dis < 0.999) for (let i = 0; i < 14; i++) {
    const ang = hash(i, 31) * TAU, el = (hash(i, 32) - 0.35) * 1.2, sp = 0.35 + 0.8 * hash(i, 33), u = cs.trig.dis;
    put(focus.x + Math.cos(ang) * Math.cos(el) * sp * u * 0.5 * h, focus.y + Math.sin(el) * sp * u * 0.5 * h, focus.z + Math.sin(ang) * Math.cos(el) * sp * u * 0.5 * h, 0.014 * h * (0.7 + hash(i, 34)), Math.sin(Math.PI * u) * 0.9, 0.0);
+  }
+  if (FID && cs.trig.a > 0.002 && cs.trig.dis < 0.3 && !rm) for (let i = 1; i <= 7; i++) { // discreet trajectory: 7 small motes along the butterfly's own relative path
+   const tau = t - g.triggerStart - 0.07 * i;
+   if (tau > 0) put(focus.x + 0.012 * h * Math.sin(tau * 7 + i) , focus.y - (trigRel(t - g.triggerStart, rm).y + trigRel(t - g.triggerStart, rm).s) + trigRel(tau, rm).y + trigRel(tau, rm).s - 0.02 * h * i * 0.5, focus.z + 0.012 * h * Math.cos(tau * 6 + i), 0.010 * h * (1 - 0.07 * i), cs.trig.a * (1 - i / 8) * 0.8, 0.0);
   }
   const fieldMotes = (lv, kGold, rise0, count) => { for (let i = 0; i < count; i++) {
    const ang = hash(i, 5) * TAU, rr = (0.12 + 0.86 * hash(i, 6) * hash(i, 61)) * R, per = 2.6 + hash(i, 7) * 1.6, ph = rm ? 0.4 : ((t / per + hash(i, 8)) % 1);
@@ -340,7 +399,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    }
    const kc = U(core), grow = rm ? 1 : 0.4 + 0.6 * smooth(ua), atk = cs.bf.a > 0 ? Math.exp(-(t - g.butterflyStart) / 0.10) : 1;
    kc.uCenter.value.copy(focus); kc.uSize.value = (0.55 + 0.9 * smooth(ua)) * h * (rm ? 1 : 1); kc.uPush.value = 0.06 * h; kc.uA.value = 0.85 * smooth(ua * 1.3) * atk; kc.uTime.value = time; kc.uGrow.value = grow; kc.uViol.value = 0.3;
-   kc.uBlue.value.fromArray(G11_TINTS.gold); kc.uViolet.value.fromArray(G11_TINTS.warm);
+   kc.uBlue.value.fromArray(FID ? [0.40, 0.72, 1.0] : G11_TINTS.gold); kc.uViolet.value.fromArray(FID ? [0.62, 0.86, 1.0] : G11_TINTS.warm);
    core.visible = kc.uA.value > 0.003; probe.absorbCore = {grow, focus: focus.toArray(), label: 'ETHEREAL_NO_POLYHEDRON'};
   }
   // ---- G11.1 giant butterfly: an energy burst shaped as two symmetric wings + central axis, then burned into gold motes ----
@@ -348,7 +407,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    butterfly: cs.bf.a > 0.002 ? {alpha: cs.bf.a, open: cs.bf.open, scale: cs.bf.scale, burn: cs.bf.burn, flash: cs.bf.flash} : null};
   if ((cs.bf.a > 0.002 || cs.bf.flash > 0.01) && g) {
    const k = U(butterfly);
-   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * 1.40; k.uMin.value = 2.4 * h; k.uMax.value = 20 * h;
+   k.uCenter.value.copy(bfc); k.uBack.value = 0.4 * h; k.uScale.value = cs.bf.scale * (FID ? 0.64 : 1.40); // F2: the whole silhouette stays inside the frame (the authorial billboard overflows it by ~30%) k.uMin.value = 2.4 * h; k.uMax.value = 20 * h;
    k.uA.value = cs.bf.a * 0.80 * cfg.contrast; k.uOpen.value = cs.bf.open; k.uTime.value = time; k.uBurn.value = cs.bf.burn; k.uFlash.value = cs.bf.flash; k.uChaos.value = cs.bf.chaos;
    k.uGold.value.set(0.90, 0.96, 1.0); k.uBlue.value.set(0.14, 0.46, 1.0); k.uViolet.value.set(0.10, 0.30, 1.0); k.uHotC.value.set(0.80, 0.92, 1.0); // G11.3: blue + white only (first-phase ultimate colours)
    butterfly.visible = true;

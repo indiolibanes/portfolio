@@ -15,7 +15,7 @@ import {BURST_ORIGINAL_IDS} from './liberation-rotation.mjs';
 
 export const PROFILE_ARTISTIC='ARTISTICO_G113';
 export const PROFILE_FIDELITY='FIDELIDADE';
-export const FIDELITY_REVISION='F1_FIDELITY_PREVIEW';
+export const FIDELITY_REVISION='F2_FIDELITY_CANDIDATE';
 /** Per-component acceptance (the owner's visual approval is NOT implied). */
 export const FIDELITY_STATUS=Object.freeze({
  bodyClips:'SOURCE_VERIFIED',

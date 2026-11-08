@@ -42,7 +42,7 @@ function createR61Camera(stage,plan,getVfx,profile=null){
     let f=r62CameraFrame({plan,timeline:profile.timeline,t:time,aspect:stage.camera.aspect,h,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,
      anchors:{pel:read(B.pel),head:read(B.head),rh:read(B.rh),lh:read(B.lh)},period:profile.period??R62_DEFAULT_ORBIT_PERIOD,reduced:!!profile.reduced?.()});
     if(profile.smart && profile.rigReader && profile.guide){const rig=profile.rigReader.read(),secondary=profile.secondary?.()??[];f=smartCameraFrame(profile.T,{base:f,rig,guide:profile.guide,t:time,h,aspect:stage.camera.aspect,width:stage.canvas?.width??960,height:stage.canvas?.height??540,reduced:!!profile.reduced?.(),secondary,plan,timeline:profile.timeline,center:vfx?.center??{x:0,y:1,z:0},arena:profile.arena?.()??null,period:profile.period??R62_DEFAULT_ORBIT_PERIOD});}
-    if(profile.frameTransform)f=profile.frameTransform(f,time);
+    if(profile.frameTransform)f=profile.frameTransform(f,time,{rig:profile.rigReader?.read?.()??null,h,aspect:stage.camera.aspect,plan,timeline:profile.timeline,reduced:!!profile.reduced?.()});
     lastFrame=f;applyProfileCamera({position:f.position,target:f.target,fov:f.fov,preset:f.preset});return;
    }
    const pose=r61CameraPose(plan,time,stage.camera.aspect),vfx=getVfx();
@@ -91,10 +91,10 @@ function createR61Camera(stage,plan,getVfx,profile=null){
  * B1 and the identity of Heavy Attack / Skill / Burst are not canonically proven.
  * The game timelines, sourceFrame PSA and foot-contact markers are NOT invented.
  */
-export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null,bodyStability='off',entry=0,preservePoseOnDispose=false}={}){
+export function createR62Cinematic(T,root,library,stage,{getVfx=()=>null,camera=true,onEvent=()=>{},scoreVfx=null,cameraProfile=null,liberationMode=null,boundsFollower=null,bodyStability='off',entry=0,preservePoseOnDispose=false,planOptions={}}={}){
  if(!stage?.camera||!stage?.orbit||!stage?.restoreCamera)throw Error('R6.1 stage required');
  if(bodyStability!=='off')throw Error('S5: derived body curves require a specific editorial authorization');
- const plan=buildR61Plan(library);
+ const plan=buildR61Plan(library,planOptions);
  const restoreEntry=captureBodyPose(root);
  const body=createComboDirector(T,root,plan.clips,plan.schedule,{entry,onEvent,preservePoseOnDispose});
  // R6.2 opt-in: an isolated score adapter ({apply,release,dispose}) built from the plan. While it

@@ -14,7 +14,12 @@ export const R61_SOURCE_IDS=Object.freeze([
 export const R61_STATUS='R61_AUTHORIAL_PREVIEW_SOURCE_MAPPING_PENDING';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-export function buildR61Plan(library) {
+/**
+ * @param opts.burstEntry 'blend' (default, G11.3: 0.2 s cross-fade) | 'cut' (FIDELIDADE: hard cut into the Burst, to be hidden by a camera cut;
+ *   the Burst clip starts airborne ~0.8 m above where the Skill ends, so any blend is a 1 m slide in 0.2 s).
+ */
+export function buildR61Plan(library, {burstEntry = 'blend'} = {}) {
+ if(!['blend','cut'].includes(burstEntry))throw Error('R6.1 unknown burstEntry');
  if(!Array.isArray(library))throw Error('R6.1 requires an authenticated private animation library');
  const clips={},missing=[];
  for(const id of R61_SOURCE_IDS){
@@ -30,7 +35,7 @@ export function buildR61Plan(library) {
  if(missing.length)throw Error('R6.1 incomplete sources: '+missing.join(', '));
  const steps=R61_SOURCE_IDS.map((id,i)=>{
   const duration=clips[id].duration,exit=i===6?Math.min(1.45,duration):duration;
-  return {id,duration,exit,fade:i===0?0:Math.min(i===6?.38:.20,exit*.24)};
+  return {id,duration,exit,fade:i===0?0:i===5&&burstEntry==='cut'?0:Math.min(i===6?.38:.20,exit*.24)};
  });
  const schedule=buildComboSchedule(steps),s=schedule.segments;
  const burst=s[5],recovery=s[6],burstSpan=burst.end-burst.start;
@@ -48,7 +53,7 @@ export function buildR61Plan(library) {
  return Object.freeze({
   clips,schedule,cues:Object.freeze(cues.map(c=>Object.freeze(c))),
   identity:'SOURCE_ROLE_UNVERIFIED',sourceFrame:null,b1:'NO_SUSTAINED_CUPPED_HAND_POSE_CONFIRMED',
-  performance:'MOBILE_GPU_PENDING',status:R61_STATUS
+  performance:'MOBILE_GPU_PENDING',status:R61_STATUS,burstEntry
  });
 }
 export function r61CueAt(plan,t) {
