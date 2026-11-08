@@ -93,8 +93,8 @@ export function createArmScore({restIntent,halfWidth}){
  // Basic 02 (left): a rising crescent. Low and out, then up and forward, elbow high and out, palm turned in (thumb up).
  const L_WIND={to:[.22,-.32,.02],pole:[.55,-.45,-.7],palm:[-.4,-.85,.15],ext:0};
  const L_ARC={to:[.35,-.22,.05],pole:[.8,-.2,-.5],palm:[-.4,-.7,.3],ext:2};
- const L_NEAR={to:[.30,-.08,.22],pole:[.75,.15,-.45],palm:[-.35,-.8,.3],ext:6};
- const L_APEX={to:[.22,.01,.30],pole:[.7,.35,-.4],palm:[-.2,-.9,.3],ext:8};
+ const L_NEAR={to:[.30,-.08,.22],pole:[.75,-.12,-.5],palm:[-.35,-.8,.3],ext:6};
+ const L_APEX={to:[.22,.01,.30],pole:[.72,-.02,-.45],palm:[-.2,-.9,.3],ext:8};
  const L_SETTLE={to:[.17,-.06,.27],pole:[.6,0,-.45],palm:[-.4,-.8,.3],ext:3};
  // Skill: hands hold a sphere between them, palms facing (neutral forearm rotation, no supination demand).
  // out is measured from the shoulder joint, which sits halfWidth from the midline: a hand gap/2 from the midline is gap/2-halfWidth out.
