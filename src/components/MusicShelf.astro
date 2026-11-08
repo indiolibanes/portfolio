@@ -120,47 +120,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
         </p>
       </div>
     </div>
-
-    <figure class="music-panorama music-panorama--hsin-stage" aria-labelledby="music-panorama-caption" data-music-panorama>
-      <picture class="music-scene-art">
-        <img src="/assets/characters/hsin/music/music-stage-2026-11-02.avif" alt="" width="1024" height="576" loading="lazy" decoding="async" />
-      </picture>
-      <div class="music-panorama-sky" aria-hidden="true">
-        <span class="music-moonglow"></span>
-        <span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span><span class="music-star"></span>
-        <span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span><span class="music-sky-lantern"></span>
-      </div>
-      <div class="music-panorama-glows" aria-hidden="true">
-        <span class="music-glow music-glow--lantern"></span>
-        <span class="music-glow music-glow--lily"></span>
-        <span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span><span class="music-glow music-glow--wing"></span>
-        <span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span><span class="music-glow music-glow--tail"></span>
-      </div>
-      <div class="music-panorama-glint" aria-hidden="true"></div>
-      <div class="music-panorama-shimmer" aria-hidden="true"></div>
-      <div class="music-panorama-motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="music-panorama-effects" data-music-effects aria-hidden="true"></div>
-
-      <a
-        class="music-experimental-mode"
-        href="/experimentos/"
-        data-music-experimental-mode
-        aria-label="Experimental mode: abrir a experiência tridimensional da Hsin"
-      >
-        Experimental mode
-      </a>
-
-      <button
-        class="music-panorama-action"
-        data-music-effect-toggle
-        type="button"
-        aria-label="Animar a ilustração: alternar borboletas celestiais e o bastonete carmesim que se desfaz em pétalas"
-        hidden
-      ></button>
-      <figcaption id="music-panorama-caption" class="music-panorama-caption">
-        No terraço lunar, Hsin ocupa o centro sob uma lua dourada. Phrolova, Shorekeeper e Sophia permanecem como silhuetas em espera: por enquanto, apenas Hsin conduz ao modo experimental tridimensional.
-      </figcaption>
-    </figure>
   </div>
 
   <div class="music-playlist-region">
@@ -230,7 +189,6 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
 
 <script is:inline src="/scripts/cover-fx.js" defer></script>
 <script is:inline src="/scripts/music-note-cursor.js" defer></script>
-<script is:inline src="/scripts/music-experimental-transition.js" defer></script>
 <script is:inline>
   const shelf = document.querySelector('[data-music-shelf]');
   const recentCard = document.querySelector('[data-recent-card]');

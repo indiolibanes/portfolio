@@ -7,10 +7,10 @@ const shelf = await read('../src/components/MusicShelf.astro');
 const css = await read('../src/styles/music-gallery.css');
 const stage = await read('../src/pages/experimentos/index.astro');
 
-const link = shelf.match(/<a\s[\s\S]*?class="music-experimental-mode"[\s\S]*?<\/a>/)?.[0] ?? '';
-assert.ok(link, 'music panorama exposes the experimental mode link');
-assert.match(link, /href="\/experimentos\/"/, 'experimental mode opens the canonical public Hsin stage');
-assert.match(link, />\s*Experimental mode\s*</, 'visible label is Experimental mode');
+// Decisão de 2026-11-08: a colagem das personagens (panorama) saiu da home; /experimentos continua existindo, sem link.
+assert.ok(!shelf.includes('music-experimental-mode'), 'home no longer exposes the experimental mode link');
+assert.ok(!shelf.includes('<figure class="music-panorama'), 'music panorama collage is gone from the home');
+assert.ok(!/href="\/experimentos/.test(shelf), 'music shelf does not link to /experimentos');
 assert.ok(!shelf.includes('data-lunar-fox-cameo'), 'old temporary cameo markup is gone');
 assert.ok(!shelf.includes('data-lunar-fox-call'), 'old one-shot call button is gone');
 

@@ -9,7 +9,7 @@ assert.match(root,/data-hsin-stage/);
 assert.match(root,/mountHsinStage/);
 assert.match(root,/The Moon Fox · V2\.0\.1/);
 assert.match(root,/href="\/#musica"/);
-assert.match(music,/class="music-experimental-mode"[\s\S]*?href="\/experimentos\/"/);
+assert.doesNotMatch(music,/href="\/experimentos\//);
 assert.doesNotMatch(music,/\/experimentos\/hsin\//);
 
 for (const removed of [
