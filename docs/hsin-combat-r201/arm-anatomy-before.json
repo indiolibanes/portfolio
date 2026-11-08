@@ -1,0 +1,464 @@
+{
+ "schema": "hsin.combat.arm-anatomy/1",
+ "label": "R2",
+ "assetSha256": "189f5903cbfa19a36c0550548de519f4c2cc5337e8d0150addc36b3f23af4f27",
+ "revision": "r2",
+ "frames": 253,
+ "gate": {
+  "boneLengthMm": 0.5,
+  "orgDefGapMm": 0.5,
+  "hyperextensionDegrees": -1,
+  "maxFlexDegrees": 150,
+  "hingeOffPlaneDegrees": 6,
+  "forearmRollDegrees": 8,
+  "forearmSwingOffHingeDegrees": 8,
+  "wristSwingDegrees": 55,
+  "wristTwistDegrees": 45,
+  "pronationDegrees": 80,
+  "wristBendOverRestDegrees": 45,
+  "projectedWristBendDegrees": 70,
+  "surfaceStretch": 4,
+  "surfaceCompress": 0.15,
+  "surfaceMinRestEdgeMm": 4,
+  "clavicleDegrees": 20,
+  "localStepDegrees": 8,
+  "stepDegrees": 10,
+  "accelerationJumpDegrees": 4,
+  "forearmTorsoClearanceMm": 0,
+  "handFaceClearanceMm": 15,
+  "armArmClearanceMm": 0
+ },
+ "method": "All baked frames on the real GLB rig and skinning; positions in model world space; clearances minus nominal limb radii; not a render or an artistic verdict.",
+ "summary": {
+  "R": {
+   "firstDeformation": {
+    "check": "forearm roll",
+    "joint": "elbow",
+    "f": 6,
+    "t": 0.2
+   },
+   "fails": {
+    "bone length": {
+     "frames": 0,
+     "first": null,
+     "joint": "shoulder/elbow"
+    },
+    "ORG/DEF gap": {
+     "frames": 0,
+     "first": null,
+     "joint": "chain"
+    },
+    "clavicle": {
+     "frames": 0,
+     "first": null,
+     "joint": "clavicle"
+    },
+    "elbow hyperextension": {
+     "frames": 0,
+     "first": null,
+     "joint": "elbow"
+    },
+    "elbow over-flexion": {
+     "frames": 0,
+     "first": null,
+     "joint": "elbow"
+    },
+    "elbow off its hinge plane": {
+     "frames": 137,
+     "first": 0.7,
+     "joint": "elbow"
+    },
+    "forearm roll": {
+     "frames": 235,
+     "first": 0.2,
+     "joint": "elbow"
+    },
+    "wrist swing": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "wrist twist over forearm skin": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "pronation range": {
+     "frames": 0,
+     "first": null,
+     "joint": "forearm"
+    },
+    "hand not continuing forearm": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "projected hanging wrist": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "forearm into torso": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "hand into face": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "arm into arm": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "temporal step": {
+     "frames": 0,
+     "first": null,
+     "joint": "temporal"
+    }
+   },
+   "maxBoneLengthDeltaMm": 0.0034,
+   "maxOrgDefGapMm": 0.0247,
+   "flexRange": [
+    18.5,
+    78.02
+   ],
+   "maxHingeOffPlane": 8.56,
+   "maxForearmRoll": 0.8,
+   "maxForearmSwingOffHinge": 10.5,
+   "maxWristSwing": 7.87,
+   "maxWristTwist": 1.44,
+   "maxWristBendOverRest": 7.992051376614414,
+   "restWristBend": 14.617948623385585,
+   "maxProjectedWrist": 28.8,
+   "maxPronation": 1.44,
+   "torsoYawCorrelation": 0.554,
+   "perspectiveVsAnatomy": {
+    "frontFramesComparable": 253,
+    "maxDifferenceDegrees": 42.3
+   },
+   "maxClavicle": 0,
+   "maxElevation": 89.59,
+   "minClearanceMm": {
+    "torso": 99.7,
+    "face": 237,
+    "hair": 141.1,
+    "oppositeArm": 295.5
+   },
+   "maxSleeveReach": 0.47,
+   "maxStep": 5.061,
+   "maxJump": 1.181,
+   "maxLocalStep": 6.088,
+   "fastest": {
+    "local": {
+     "t": 1.8,
+     "bone": "ORG-Bip001UpperArmR",
+     "deg": 6.088
+    },
+    "world": {
+     "t": 2.3,
+     "bone": "ORG-Bip001UpperArmR",
+     "deg": 5.061,
+     "spineYaw": 8.87
+    }
+   },
+   "surface": {
+    "maxStretch": 3.5627941169822512,
+    "minCompress": 0.26653682800332773,
+    "at": 160,
+    "compressAt": 44,
+    "edges": 1412748,
+    "over": 15433,
+    "tiny": {
+     "maxStretch": 8.174843290246928,
+     "minCompress": 0.5197426005217664,
+     "at": 160,
+     "compressAt": 160
+    },
+    "compressWhere": {
+     "nearJoint": "elbow",
+     "distanceMm": 17.3,
+     "restEdgeMm": 8.33,
+     "bones": [
+      "DEF-Bip001ForearmR001",
+      "ORG-Bone_Other003_R"
+     ]
+    },
+    "where": {
+     "nearJoint": "shoulder",
+     "distanceMm": 80.8,
+     "restEdgeMm": 4.06,
+     "bones": [
+      "DEF-Bip001UpperArmR",
+      "DEF-Bip001UpperArmR"
+     ]
+    }
+   },
+   "worstFrame": {
+    "t": 1.467,
+    "spineYaw": -17.45,
+    "signedFlex": 77.99,
+    "hingeOffPlane": 8.56,
+    "forearmRoll": 0.8,
+    "wristSwing": 0,
+    "projected": {
+     "front": {
+      "elbow": 78,
+      "wrist": null,
+      "turn": -1,
+      "foreshortening": [
+       0.99,
+       0.5,
+       0.26
+      ]
+     },
+     "threeQuarter": {
+      "elbow": 65.5,
+      "wrist": 2,
+      "turn": -1,
+      "foreshortening": [
+       0.93,
+       0.94,
+       0.81
+      ]
+     },
+     "profile": {
+      "elbow": 91.3,
+      "wrist": 5.8,
+      "turn": -1,
+      "foreshortening": [
+       0.71,
+       0.94,
+       1
+      ]
+     }
+    }
+   },
+   "samples": {
+    "arm": 3279,
+    "triangles": 4194,
+    "sleeve": 2456,
+    "torso": 2506,
+    "face": 9300,
+    "hair": 1356
+   }
+  },
+  "L": {
+   "firstDeformation": {
+    "check": "forearm roll",
+    "joint": "elbow",
+    "f": 7,
+    "t": 0.233
+   },
+   "fails": {
+    "bone length": {
+     "frames": 0,
+     "first": null,
+     "joint": "shoulder/elbow"
+    },
+    "ORG/DEF gap": {
+     "frames": 0,
+     "first": null,
+     "joint": "chain"
+    },
+    "clavicle": {
+     "frames": 0,
+     "first": null,
+     "joint": "clavicle"
+    },
+    "elbow hyperextension": {
+     "frames": 164,
+     "first": 0.6,
+     "joint": "elbow"
+    },
+    "elbow over-flexion": {
+     "frames": 0,
+     "first": null,
+     "joint": "elbow"
+    },
+    "elbow off its hinge plane": {
+     "frames": 153,
+     "first": 0.333,
+     "joint": "elbow"
+    },
+    "forearm roll": {
+     "frames": 233,
+     "first": 0.233,
+     "joint": "elbow"
+    },
+    "wrist swing": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "wrist twist over forearm skin": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "pronation range": {
+     "frames": 0,
+     "first": null,
+     "joint": "forearm"
+    },
+    "hand not continuing forearm": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "projected hanging wrist": {
+     "frames": 0,
+     "first": null,
+     "joint": "wrist"
+    },
+    "forearm into torso": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "hand into face": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "arm into arm": {
+     "frames": 0,
+     "first": null,
+     "joint": "collision"
+    },
+    "temporal step": {
+     "frames": 0,
+     "first": null,
+     "joint": "temporal"
+    }
+   },
+   "maxBoneLengthDeltaMm": 0.0012,
+   "maxOrgDefGapMm": 0.0133,
+   "flexRange": [
+    -25.63,
+    20.47
+   ],
+   "maxHingeOffPlane": 63.66,
+   "maxForearmRoll": 0.46,
+   "maxForearmSwingOffHinge": 19.52,
+   "maxWristSwing": 0,
+   "maxWristTwist": 0,
+   "maxWristBendOverRest": 0.0021511499375801435,
+   "restWristBend": 14.617848850062419,
+   "maxProjectedWrist": 34.7,
+   "maxPronation": 0,
+   "torsoYawCorrelation": 0.536,
+   "perspectiveVsAnatomy": {
+    "frontFramesComparable": 253,
+    "maxDifferenceDegrees": 23.6
+   },
+   "maxClavicle": 0,
+   "maxElevation": 87.3,
+   "minClearanceMm": {
+    "torso": 99.6,
+    "face": 243,
+    "hair": 356.2,
+    "oppositeArm": 294.6
+   },
+   "maxSleeveReach": 0.968,
+   "maxStep": 6.609,
+   "maxJump": 1.287,
+   "maxLocalStep": 4.923,
+   "fastest": {
+    "local": {
+     "t": 3.333,
+     "bone": "ORG-Bip001UpperArmL",
+     "deg": 4.923
+    },
+    "world": {
+     "t": 2.767,
+     "bone": "DEF-Bip001ForearmL001",
+     "deg": 6.609,
+     "spineYaw": -7.21
+    }
+   },
+   "surface": {
+    "maxStretch": 3.284325855604142,
+    "minCompress": 0.1843274393231732,
+    "at": 92,
+    "compressAt": 82,
+    "edges": 1411478,
+    "over": 8936,
+    "tiny": {
+     "maxStretch": 7.5327760631937,
+     "minCompress": 0.5908116774325691,
+     "at": 92,
+     "compressAt": 92
+    },
+    "compressWhere": {
+     "nearJoint": "elbow",
+     "distanceMm": 28.4,
+     "restEdgeMm": 5.5,
+     "bones": [
+      "DEF-Bip001UpperArmL001",
+      "DEF-Bip001UpperArmL001"
+     ]
+    },
+    "where": {
+     "nearJoint": "shoulder",
+     "distanceMm": 81.4,
+     "restEdgeMm": 4.2,
+     "bones": [
+      "DEF-Bip001UpperArmL",
+      "DEF-Bip001UpperArmL"
+     ]
+    }
+   },
+   "worstFrame": {
+    "t": 2.5,
+    "spineYaw": 1.94,
+    "signedFlex": -25.63,
+    "hingeOffPlane": 29.57,
+    "forearmRoll": -0.45,
+    "wristSwing": 0,
+    "projected": {
+     "front": {
+      "elbow": 23.6,
+      "wrist": 13.8,
+      "turn": -1,
+      "foreshortening": [
+       0.97,
+       0.99,
+       1
+      ]
+     },
+     "threeQuarter": {
+      "elbow": 8.1,
+      "wrist": 19.1,
+      "turn": -1,
+      "foreshortening": [
+       0.68,
+       0.96,
+       0.98
+      ]
+     },
+     "profile": {
+      "elbow": 27.5,
+      "wrist": 11.2,
+      "turn": 1,
+      "foreshortening": [
+       0.67,
+       0.9,
+       0.99
+      ]
+     }
+    }
+   },
+   "samples": {
+    "arm": 3299,
+    "triangles": 4192,
+    "sleeve": 3527,
+    "torso": 2506,
+    "face": 9300,
+    "hair": 1356
+   }
+  }
+ }
+}

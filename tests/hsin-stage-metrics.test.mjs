@@ -38,5 +38,6 @@ assert.ok(stage.includes('window.__hsinMetrics') && /if\(metrics\.enabled\)/.tes
 assert.ok(stage.includes("if(metrics.enabled)delete (window as any).__hsinMetrics"), 'performance hook removed during cleanup');
 assert.ok(stage.includes("const policy=()=>{showPause();metrics.gap()"), 'pause clears old frame interval');
 assert.ok(stage.includes("if(!visible())metrics.gap();"), 'tab visibility clears old frame interval');
-assert.equal((stage.match(/requestAnimationFrame/g) ?? []).length, 1, 'still one render loop, supplied to createStageLoop');
+const stageCode = stage.split('\n').filter(line => !line.trimStart().startsWith('//')).join('\n');
+assert.equal((stageCode.match(/requestAnimationFrame/g) ?? []).length, 1, 'still one render loop, supplied to createStageLoop');
 console.log('Hsin stage metrics: no-op when disabled, windowed percentiles, milestones, gaps excluded, opt-in wiring without UI or extra loop PASS');

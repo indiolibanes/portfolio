@@ -30,6 +30,7 @@ export function mountHsinStage(root:HTMLElement){
  const host=q<HTMLDivElement>('[data-stage-canvas]'),status=q<HTMLDivElement>('[data-stage-status]'),errorBox=q<HTMLDivElement>('[data-stage-error]');
  const near=q<HTMLButtonElement>('[data-stage-in]'),far=q<HTMLButtonElement>('[data-stage-out]'),home=q<HTMLButtonElement>('[data-stage-reset]'),pause=q<HTMLButtonElement>('[data-stage-pause]'),retry=q<HTMLButtonElement>('[data-stage-retry]');
  // Opt-in (?hsin-metrics): CPU timings and milestones on window.__hsinMetrics. No UI, no extra loop; disabled it costs one boolean per frame.
+ const combatRequested=root.dataset.combatLab==='true';
  const duetRequested=root.dataset.s6Duo==='true';
  const duetStatus=root.querySelector<HTMLElement>('[data-duo-guest-status]');
  const music=musicForStage(root);
@@ -55,10 +56,11 @@ export function mountHsinStage(root:HTMLElement){
  async function start(){
   if(started||destroyed||!visible())return;started=true;const attemptId=++generation;
   disposeAttempt();const attempt=new AbortController();let renderer:any,scene:any,orbit:any,resize:ResizeObserver|null=null,body:any,binding:any,model:any,reference:any,presentation:any,faceSkin:any,musicTower:any,dance:any,duetGuest:any=null;
+  let combat:any=null,combatLoading=false;
   let cleaned=false;const textures=new Set<any>(),geometries=new Set<any>(),materials=new Set<any>(),skeletons=new Set<any>();
   const collect=(object:any)=>object?.traverse((o:any)=>{if(!o.isMesh)return;geometries.add(o.geometry);if(o.skeleton)skeletons.add(o.skeleton);for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const t of Object.values(m))if((t as any)?.isTexture)textures.add(t);}});
   const releaseCollected=()=>{for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures){t.dispose();t.image?.close?.();}for(const s of skeletons)s.dispose();geometries.clear();materials.clear();textures.clear();skeletons.clear();};
-  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();duetGuest?.dispose();duetGuest=null;musicTower?.dispose();orbit?.dispose();dance?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=dance=null;zoom=()=>{};resetCamera=()=>{};ensureDance=()=>{};};
+  const clean=()=>{if(cleaned)return;cleaned=true;attempt.abort();combat?.dispose();combat=null;loop?.dispose();loop=null;metrics.gap();if(metrics.enabled)delete (window as any).__hsinMetrics;resize?.disconnect();duetGuest?.dispose();duetGuest=null;musicTower?.dispose();orbit?.dispose();dance?.dispose();body?.dispose();presentation?.restore();reference?.restore();binding?.restore();faceSkin?.restore();collect(scene);releaseCollected();renderer?.dispose();renderer?.forceContextLoss();host.replaceChildren();renderer=scene=orbit=model=body=binding=reference=presentation=faceSkin=dance=null;zoom=()=>{};resetCamera=()=>{};ensureDance=()=>{};};
   metrics.mark('stageStart');disposeAttempt=clean;root.dataset.state='loading';status.hidden=false;status.textContent='Preparando Hsin…';errorBox.hidden=true;[near,far,home,pause].forEach(b=>b.disabled=true);
   try{
    // Fail before fetching any asset if this browser cannot create a WebGL2 context. The probe needs no three.js, so it runs first.
@@ -115,7 +117,7 @@ export function mountHsinStage(root:HTMLElement){
    resetCamera=()=>{const azimuth=HSIN_LUNAR_PRESENTATION.cameraAzimuth*Math.PI/180;orbit.target.fromArray(initialTarget);camera.position.set(orbit.target.x+Math.sin(azimuth)*initialDistance,orbit.target.y+.23,orbit.target.z+Math.cos(azimuth)*initialDistance);orbit.update();loop?.invalidate();};
    zoom=(factor:number)=>{const current=camera.position.distanceTo(orbit.target),distance=Math.max(orbit.minDistance,Math.min(orbit.maxDistance,current*factor));camera.position.sub(orbit.target).multiplyScalar(distance/current).add(orbit.target);orbit.update();loop?.invalidate();};
    orbit.addEventListener('change',()=>{
-    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
+    const height=attentionHeight(camera.position.distanceTo(orbit.target),initialDistance)+HSIN_LUNAR_PRESENTATION.cameraTargetOffset[1],delta=height-orbit.target.y;if(!combatRequested&&Math.abs(delta)>1e-6){orbit.target.y=height;camera.position.y+=delta;}moonlit.frameSky(camera,orbit.target);worldDirty=true;loop?.invalidate();
    });
    fit();resize=new ResizeObserver(fit);resize.observe(host);
    const seed=crypto.getRandomValues(new Uint32Array(1))[0],face=createFacialActing({seed,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
@@ -130,7 +132,7 @@ export function mountHsinStage(root:HTMLElement){
    // Choreography is lazy: no download, parsing or dance buffers in the normal silent experience.
    let danceLoading=false;
    ensureDance=()=>{
-    if(dance||danceLoading||paused||motion.matches||!visible()||!dancePlaybackEligible(music.sample()))return;danceLoading=true;
+    if(combat?.owns()||dance||danceLoading||paused||motion.matches||!visible()||!dancePlaybackEligible(music.sample()))return;danceLoading=true;
     (async()=>{try{
      const {default:manifest}=await import('../data/hsin-dance.json');metrics.mark('danceLoadStart');
      const r=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal:attempt.signal});if(!r.ok)return;
@@ -162,6 +164,24 @@ export function mountHsinStage(root:HTMLElement){
     if(!conservative&&!dramatic)return;if(attempt.signal.aborted||destroyed||dance!==director)return;
     director.setSpecial({conservative,dramatic});metrics.mark('reverieReady');
    };
+   if(combatRequested){
+    const loadButton=root.querySelector<HTMLButtonElement>('[data-combat-load]');
+    loadButton?.addEventListener('click',async()=>{
+     if(combatLoading||combat)return;combatLoading=true;loadButton.disabled=true;
+     try{
+      const {createCombatLab}=await import('./hsin-combat-lab.mjs');
+      if(attempt.signal.aborted)return;
+      const candidate=await createCombatLab({T,root,scene,model,bones,body,dance:()=>dance,camera,orbit,canvas,signal:attempt.signal,invalidate:()=>loop?.invalidate(),modelHash:asset.sha256,profileHash:poseManifest?.profileSha256});
+      if(attempt.signal.aborted){candidate.dispose();return;}
+      combat=candidate;(window as any).__hsinCombat=combat;
+      const controls=root.querySelector<HTMLElement>('[data-combat-controls]');if(controls)controls.hidden=false;
+      loadButton.hidden=true;
+     }catch{
+      const message=root.querySelector('[data-combat-status]');if(message)message.textContent='Falha ao carregar. Tente novamente.';loadButton.disabled=false;
+     }finally{combatLoading=false;}
+    },{signal:attempt.signal});
+    attempt.signal.addEventListener('abort',()=>{delete (window as any).__hsinCombat;},{once:true});
+   }
    const unsubscribeMusic=music.subscribe(ensureDance);attempt.signal.addEventListener('abort',unsubscribeMusic,{once:true});ensureDance();
    // Reusable vectors. Pointer projection runs only on input, not in the animation hot path.
    const ray=new T.Raycaster(),plane=new T.Plane(),normal=new T.Vector3(),center=new T.Vector3(),hit=new T.Vector3(),inverse=new T.Matrix4(),ndc=new T.Vector2(),localCenter=new T.Vector3(...profile.calibration.focusCenter);
@@ -176,7 +196,7 @@ export function mountHsinStage(root:HTMLElement){
    canvas.addEventListener('webglcontextrestored',()=>{lost=false;metrics.count('contextRestored');metrics.gap();root.dataset.state='ready';status.hidden=true;loop?.setVisible(visible());},{signal:attempt.signal});
    loop=createStageLoop({requestFrame:requestAnimationFrame,cancelFrame:cancelAnimationFrame,fps:HSIN_STAGE.fps,active:()=>!paused&&!motion.matches,
     controlsUpdate:()=>{const changed=orbit.update();const moving=musicTower?.update(camera,orbit.target,motion.matches,!paused&&!motion.matches);return changed||moving;},
-    step:(dt:number)=>{const t0=metrics.now();if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}const state=face.advance(dt);binding.apply(state);const context=face.diagnostics().expressions?.context;if(dance){const d0=metrics.now();dance.advance(dt,{context});if(metrics.enabled)metrics.sample('danceDirector',metrics.now()-d0);}else body.advance(dt,{enabled:true,context});if(duetGuest?.ready)duetGuest.advance(dt,{paused,reducedMotion:motion.matches});worldDirty=true;if(metrics.enabled)metrics.sample('acting',metrics.now()-t0);},
+    step:(dt:number)=>{const t0=metrics.now();if(attending&&face.sample().clock<=touchUntil)face.attention(gaze,1.3);else if(attending){attending=false;face.clearAttention();}if(combat?.needsAdvance())combat.advance(dt);const state=face.advance(dt);binding.apply(combat?.owns()?combat.face(state):state);const context=face.diagnostics().expressions?.context;if(combat?.owns()){/* Combat is the sole body writer. */}else if(dance){const d0=metrics.now();dance.advance(dt,{context});if(metrics.enabled)metrics.sample('danceDirector',metrics.now()-d0);}else body.advance(dt,{enabled:true,context});if(duetGuest?.ready)duetGuest.advance(dt,{paused,reducedMotion:motion.matches});worldDirty=true;if(metrics.enabled)metrics.sample('acting',metrics.now()-t0);},
     draw:()=>{const t0=metrics.now();if(worldDirty){scene.updateMatrixWorld();worldDirty=false;}if(metrics.enabled)metrics.sample('sceneUpdate',metrics.now()-t0);const t1=metrics.now();renderer.render(scene,camera);if(metrics.enabled){metrics.sample('render',metrics.now()-t1);metrics.frame();}},
    });
    loop.setVisible(false);

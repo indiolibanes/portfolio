@@ -1,0 +1,95 @@
+[
+  {
+    "timestamp_ms": 0,
+    "mean_rgb_difference": 0,
+    "changed_fraction": 0,
+    "bright_saturated_fraction": 0.051215277777777776,
+    "motion_centroid": null,
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 500,
+    "mean_rgb_difference": 4.653645833333333,
+    "changed_fraction": 0.03689236111111111,
+    "bright_saturated_fraction": 0.05295138888888889,
+    "motion_centroid": [
+      0.5061274509803921,
+      0.551470588235294
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 1000,
+    "mean_rgb_difference": 3.8602430555555554,
+    "changed_fraction": 0.027777777777777776,
+    "bright_saturated_fraction": 0.0546875,
+    "motion_centroid": [
+      0.5026041666666666,
+      0.6145833333333334
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 1500,
+    "mean_rgb_difference": 4.061197916666667,
+    "changed_fraction": 0.03211805555555555,
+    "bright_saturated_fraction": 0.05078125,
+    "motion_centroid": [
+      0.5160472972972973,
+      0.5653153153153153
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 2000,
+    "mean_rgb_difference": 3.240451388888889,
+    "changed_fraction": 0.018229166666666668,
+    "bright_saturated_fraction": 0.051215277777777776,
+    "motion_centroid": [
+      0.43303571428571425,
+      0.6984126984126985
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 2500,
+    "mean_rgb_difference": 3.7262731481481484,
+    "changed_fraction": 0.025607638888888888,
+    "bright_saturated_fraction": 0.05164930555555555,
+    "motion_centroid": [
+      0.4689265536723164,
+      0.5120056497175142
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 3000,
+    "mean_rgb_difference": 4.9897280092592595,
+    "changed_fraction": 0.042534722222222224,
+    "bright_saturated_fraction": 0.05078125,
+    "motion_centroid": [
+      0.4815051020408163,
+      0.5501700680272109
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 3500,
+    "mean_rgb_difference": 4.021846064814815,
+    "changed_fraction": 0.027777777777777776,
+    "bright_saturated_fraction": 0.057291666666666664,
+    "motion_centroid": [
+      0.482421875,
+      0.6097005208333334
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  }
+]

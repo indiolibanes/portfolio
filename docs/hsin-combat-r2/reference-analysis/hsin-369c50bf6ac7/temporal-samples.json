@@ -1,0 +1,95 @@
+[
+  {
+    "timestamp_ms": 0,
+    "mean_rgb_difference": 0,
+    "changed_fraction": 0,
+    "bright_saturated_fraction": 0.059027777777777776,
+    "motion_centroid": null,
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 500,
+    "mean_rgb_difference": 94.9793113425926,
+    "changed_fraction": 0.8797743055555556,
+    "bright_saturated_fraction": 0.5915798611111112,
+    "motion_centroid": [
+      0.5129501726689689,
+      0.5009661239927644
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  },
+  {
+    "timestamp_ms": 1000,
+    "mean_rgb_difference": 29.407841435185187,
+    "changed_fraction": 0.5056423611111112,
+    "bright_saturated_fraction": 0.5646701388888888,
+    "motion_centroid": [
+      0.5218705293276108,
+      0.4757331902718169
+    ],
+    "near_duplicate": false,
+    "cut_candidate": false
+  },
+  {
+    "timestamp_ms": 1500,
+    "mean_rgb_difference": 60.23538773148148,
+    "changed_fraction": 0.7725694444444444,
+    "bright_saturated_fraction": 0.5021701388888888,
+    "motion_centroid": [
+      0.5059691011235955,
+      0.4514161985018727
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  },
+  {
+    "timestamp_ms": 2000,
+    "mean_rgb_difference": 58.08940972222222,
+    "changed_fraction": 0.8537326388888888,
+    "bright_saturated_fraction": 0.5160590277777778,
+    "motion_centroid": [
+      0.49900440603287577,
+      0.48990637180138963
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  },
+  {
+    "timestamp_ms": 2500,
+    "mean_rgb_difference": 41.02821180555556,
+    "changed_fraction": 0.6723090277777778,
+    "bright_saturated_fraction": 0.3988715277777778,
+    "motion_centroid": [
+      0.4778486120077469,
+      0.4824752528513019
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  },
+  {
+    "timestamp_ms": 3000,
+    "mean_rgb_difference": 52.2388599537037,
+    "changed_fraction": 0.7912326388888888,
+    "bright_saturated_fraction": 0.2712673611111111,
+    "motion_centroid": [
+      0.48558923020661915,
+      0.4912004022673249
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  },
+  {
+    "timestamp_ms": 3500,
+    "mean_rgb_difference": 68.58043981481481,
+    "changed_fraction": 0.8077256944444444,
+    "bright_saturated_fraction": 0.3663194444444444,
+    "motion_centroid": [
+      0.498410352856887,
+      0.5000223893963819
+    ],
+    "near_duplicate": false,
+    "cut_candidate": true
+  }
+]

@@ -1,0 +1,419 @@
+{
+  "source_id": "hsin-5679446ce7b6",
+  "sample_rate_hz": 1,
+  "uncertainty_ms": 1000,
+  "samples": [
+    {
+      "timestamp_ms": 0,
+      "text": ""
+    },
+    {
+      "timestamp_ms": 1000,
+      "text": "BASI"
+    },
+    {
+      "timestamp_ms": 2000,
+      "text": "BASIC 4"
+    },
+    {
+      "timestamp_ms": 3000,
+      "text": "BASIC ATT"
+    },
+    {
+      "timestamp_ms": 4000,
+      "text": "SZ i\nBASIC ATTACK 6"
+    },
+    {
+      "timestamp_ms": 5000,
+      "text": "BASIGATIACK ="
+    },
+    {
+      "timestamp_ms": 6000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 7000,
+      "text": "BASIC ATIACK G"
+    },
+    {
+      "timestamp_ms": 8000,
+      "text": "BASIC ATTACK ,"
+    },
+    {
+      "timestamp_ms": 9000,
+      "text": "BASIC ATTACK y"
+    },
+    {
+      "timestamp_ms": 10000,
+      "text": "BASIC ATTACK\n%"
+    },
+    {
+      "timestamp_ms": 11000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 12000,
+      "text": "BASIC ATTACK J"
+    },
+    {
+      "timestamp_ms": 13000,
+      "text": "BASIC ATTACK y"
+    },
+    {
+      "timestamp_ms": 14000,
+      "text": "BASIC ATTACK y"
+    },
+    {
+      "timestamp_ms": 15000,
+      "text": "\u201cBASIC ATTACK Y"
+    },
+    {
+      "timestamp_ms": 16000,
+      "text": "BISIGATIACK ="
+    },
+    {
+      "timestamp_ms": 17000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 18000,
+      "text": "-BASIC ATTACK | 3"
+    },
+    {
+      "timestamp_ms": 19000,
+      "text": "BASIC ATTACK |"
+    },
+    {
+      "timestamp_ms": 20000,
+      "text": "BASIC ATTACK . y"
+    },
+    {
+      "timestamp_ms": 21000,
+      "text": "BASIC ATTACK | a"
+    },
+    {
+      "timestamp_ms": 22000,
+      "text": "BASIC ATTACK ox ;"
+    },
+    {
+      "timestamp_ms": 23000,
+      "text": "BASIC ATTACK | ZL"
+    },
+    {
+      "timestamp_ms": 24000,
+      "text": "BASIC ATTACK . 7"
+    },
+    {
+      "timestamp_ms": 25000,
+      "text": "BASIC ATTACK NAS"
+    },
+    {
+      "timestamp_ms": 26000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 27000,
+      "text": "BASIC ATTACK ."
+    },
+    {
+      "timestamp_ms": 28000,
+      "text": "4\nBASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 29000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 30000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 31000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 32000,
+      "text": "BASIC ATTACK"
+    },
+    {
+      "timestamp_ms": 33000,
+      "text": "SIC ATTACK"
+    },
+    {
+      "timestamp_ms": 34000,
+      "text": "C ATTACK"
+    },
+    {
+      "timestamp_ms": 35000,
+      "text": "TTACK"
+    },
+    {
+      "timestamp_ms": 36000,
+      "text": "\\CK"
+    },
+    {
+      "timestamp_ms": 37000,
+      "text": "ofa,\n2 _\nZ s F ff"
+    },
+    {
+      "timestamp_ms": 38000,
+      "text": "RESIN =f |<"
+    },
+    {
+      "timestamp_ms": 39000,
+      "text": "RESONANCE SKILL"
+    },
+    {
+      "timestamp_ms": 40000,
+      "text": "RESONANCE SKILL"
+    },
+    {
+      "timestamp_ms": 41000,
+      "text": "RESONANCE SKILL /"
+    },
+    {
+      "timestamp_ms": 42000,
+      "text": "RESONANCE SKILL"
+    },
+    {
+      "timestamp_ms": 43000,
+      "text": "RESONANCE SKILL"
+    },
+    {
+      "timestamp_ms": 44000,
+      "text": "RESONANCE SKILL \\"
+    },
+    {
+      "timestamp_ms": 45000,
+      "text": "RESONANCE SKILL"
+    },
+    {
+      "timestamp_ms": 46000,
+      "text": "RESONANGE SKILL"
+    },
+    {
+      "timestamp_ms": 47000,
+      "text": "if .\nRESONANGE SKILL y."
+    },
+    {
+      "timestamp_ms": 48000,
+      "text": "fl y\nESONANGE SKILL / ~"
+    },
+    {
+      "timestamp_ms": 49000,
+      "text": "a Me iff,"
+    },
+    {
+      "timestamp_ms": 50000,
+      "text": "FOR P a ya"
+    },
+    {
+      "timestamp_ms": 51000,
+      "text": "FORTE CIRC"
+    },
+    {
+      "timestamp_ms": 52000,
+      "text": "FORTE CIRCUIT"
+    },
+    {
+      "timestamp_ms": 53000,
+      "text": "FORTE CIRCUIT /"
+    },
+    {
+      "timestamp_ms": 54000,
+      "text": "FORTE CIRCUIT y"
+    },
+    {
+      "timestamp_ms": 55000,
+      "text": "FORTE CIRCUIT )"
+    },
+    {
+      "timestamp_ms": 56000,
+      "text": "FORTE CIRCUIT *"
+    },
+    {
+      "timestamp_ms": 57000,
+      "text": "FORTE CIRCUIT ,"
+    },
+    {
+      "timestamp_ms": 58000,
+      "text": "FORTE CIRCUIT"
+    },
+    {
+      "timestamp_ms": 59000,
+      "text": "FORTE CIRCUIT ;"
+    },
+    {
+      "timestamp_ms": 60000,
+      "text": "FORTE CIRCUIT i"
+    },
+    {
+      "timestamp_ms": 61000,
+      "text": "FORTECIRCU Gh"
+    },
+    {
+      "timestamp_ms": 62000,
+      "text": ""
+    },
+    {
+      "timestamp_ms": 63000,
+      "text": "FORTE CIRCUIT ."
+    },
+    {
+      "timestamp_ms": 64000,
+      "text": "a\nFORTECIRCUIT =~"
+    },
+    {
+      "timestamp_ms": 65000,
+      "text": "CIRCUIT ~\u2014"
+    },
+    {
+      "timestamp_ms": 66000,
+      "text": ""
+    },
+    {
+      "timestamp_ms": 67000,
+      "text": ""
+    },
+    {
+      "timestamp_ms": 68000,
+      "text": "7 =\nRESONANCELIBERA; ="
+    },
+    {
+      "timestamp_ms": 69000,
+      "text": "RESONANCE LIBERATION S"
+    },
+    {
+      "timestamp_ms": 70000,
+      "text": "RESONANCE LIBERATION :"
+    },
+    {
+      "timestamp_ms": 71000,
+      "text": "RESONANCE LIBERATION-"
+    },
+    {
+      "timestamp_ms": 72000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 73000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 74000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 75000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 76000,
+      "text": "RESONANCE LIBERATION -"
+    },
+    {
+      "timestamp_ms": 77000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 78000,
+      "text": "RESONANCE LIBERATION"
+    },
+    {
+      "timestamp_ms": 79000,
+      "text": "RESONANCE LIBERATION |"
+    },
+    {
+      "timestamp_ms": 80000,
+      "text": "RESONANCE LIBERATION =~"
+    },
+    {
+      "timestamp_ms": 81000,
+      "text": "CE LIBERATION"
+    },
+    {
+      "timestamp_ms": 82000,
+      "text": "NS\n\\ ION\n\\ \\"
+    },
+    {
+      "timestamp_ms": 83000,
+      "text": "INTR"
+    },
+    {
+      "timestamp_ms": 84000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 85000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 86000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 87000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 88000,
+      "text": "INTRO SKILL \\ ;"
+    },
+    {
+      "timestamp_ms": 89000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 90000,
+      "text": "INTROSKL GY"
+    },
+    {
+      "timestamp_ms": 91000,
+      "text": "INTRO SKILL"
+    },
+    {
+      "timestamp_ms": 92000,
+      "text": "ILL"
+    },
+    {
+      "timestamp_ms": 93000,
+      "text": "uTRO i"
+    },
+    {
+      "timestamp_ms": 94000,
+      "text": "OUTROSKILL ' \u00a3"
+    },
+    {
+      "timestamp_ms": 95000,
+      "text": "OUTRO SKILL"
+    },
+    {
+      "timestamp_ms": 96000,
+      "text": "OUTRO SKILL"
+    },
+    {
+      "timestamp_ms": 97000,
+      "text": "OUTRO SKILL ="
+    },
+    {
+      "timestamp_ms": 98000,
+      "text": "=~\nOUTRO SKILL | w"
+    },
+    {
+      "timestamp_ms": 99000,
+      "text": ""
+    },
+    {
+      "timestamp_ms": 100000,
+      "text": "OUTRO SKILL a"
+    },
+    {
+      "timestamp_ms": 101000,
+      "text": "QUTRO SKILL\u201d"
+    },
+    {
+      "timestamp_ms": 102000,
+      "text": "EE \u2014"
+    }
+  ]
+}

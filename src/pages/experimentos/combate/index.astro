@@ -1,0 +1,74 @@
+---
+import HsinStageLayout from '../../../layouts/HsinStageLayout.astro';
+import '../../../styles/hsin-stage.css';
+const posterVersion='2.0.1';
+const posterCache='lunar-terrace-r2';
+---
+<HsinStageLayout title="Hsin · Combat R2.1 Laboratory">
+  <main class="hsin-stage" data-hsin-stage data-combat-lab="true" data-state="waiting" aria-label="Hsin · palco ao luar">
+    <div class="hsin-stage__poster" aria-hidden="true">
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcset={`/assets/models/hsin/hsin-v${posterVersion}-poster-landscape.webp?v=${posterCache}`} width="1280" height="720" />
+        <img src={`/assets/models/hsin/hsin-v${posterVersion}-poster.webp?v=${posterCache}`} width="786" height="1704" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+    </div>
+    <div class="hsin-stage__canvas" data-stage-canvas role="img" aria-label="Hsin no centro de um terraço sobre um lago noturno, sob a lua cheia. Arraste para girar; use a roda do mouse ou dois dedos para aproximar." tabindex="0"></div>
+    <header class="hsin-stage__header">
+      <h1>Hsin <span>The Moon Fox · V2.0.1</span></h1>
+      <a href="/#musica" aria-label="Voltar à seção Música">↗</a>
+    </header>
+    <div class="hsin-stage__status" data-stage-status role="status" aria-live="polite">Preparando Hsin…</div>
+    <div class="hsin-stage__error" data-stage-error hidden>
+      <p>A cena não abriu neste navegador.</p>
+      <button type="button" data-stage-retry>Tentar novamente</button>
+    </div>
+    <nav class="hsin-stage__tools" aria-label="Controles da cena">
+      <button type="button" data-stage-out aria-label="Afastar" title="Afastar" disabled>−</button>
+      <button type="button" data-stage-in aria-label="Aproximar" title="Aproximar" disabled>＋</button>
+      <button type="button" data-stage-reset aria-label="Restaurar enquadramento" title="Restaurar enquadramento" disabled>⌂</button>
+      <button type="button" data-stage-pause aria-label="Pausar atuação" title="Pausar atuação" aria-pressed="false" disabled>Ⅱ</button>
+    </nav>
+    <details class="hsin-stage__credits">
+      <summary>Créditos</summary>
+      <p>Personagem e recursos: Kuro Games. Adaptação: Lvoxx. Re-rig: imblue__. Shaders do asset: LSCherry.</p>
+      <p>Estudo de apresentação e atuação. O cenário usa uma aproximação dos materiais, sem reproduzir os shaders do jogo.</p>
+      <p>Terraço lunar: pedra, balustrada, vila iluminada, lanternas e flores. Lua dourada e céu procedurais.</p>
+    </details>
+    <section class="combat-panel" aria-label="Laboratório de combate">
+      <p>Answering Form · R2.1 experimental</p>
+      <p>Coreografia autoral · dois golpes em crescente e a Skill com a esfera entre as mãos. Pesado e segunda forma aguardam referência.</p>
+      <label>Sequência <select data-combat-version><option value="r2">R2.1 · golpes, Skill e atuação</option><option value="r1">R1 · estudo inicial</option></select></label>
+      <button data-combat-load>Carregar combate</button>
+      <div data-combat-controls hidden>
+        <button data-combat-action="play">Executar</button>
+        <button data-combat-action="pause">Pausar / retomar</button>
+        <button data-combat-action="restart">Reiniciar</button>
+        <button data-combat-action="stop">Interromper</button>
+        <button data-combat-action="camera">Câmera automática</button>
+        <button data-combat-action="trace">Baixar trace</button>
+      </div>
+      <output data-combat-status aria-live="polite">Pronto para carregar · câmera livre</output>
+      <button type="button" class="combat-panel__toggle" data-combat-panel-toggle aria-expanded="true" aria-label="Recolher ou expandir o painel do laboratório"></button>
+    </section>
+    <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar a cena.</p></noscript>
+  </main>
+</HsinStageLayout>
+<script>
+  import {mountHsinStage} from '../../../scripts/hsin-stage';
+  const root=document.querySelector<HTMLElement>('[data-hsin-stage]');
+  if(root)mountHsinStage(root);
+</script>
+
+<style>
+.combat-panel{position:absolute;z-index:6;bottom:5.5rem;left:1rem;max-width:min(26rem,calc(100vw - 2rem));padding:1rem;background:#091327ed;border:1px solid #cdb27c66;border-radius:.65rem;color:#f2e7d3;font:14px system-ui}
+.combat-panel p{margin:0 0 .6rem}.combat-panel p+p{font-size:12px;color:#c5cbd5}.combat-panel button{background:#24324a;color:#fff2d5;border:1px solid #9d8a62;border-radius:.3rem;padding:.5rem;margin:.15rem;cursor:pointer}.combat-panel output{display:block;margin-top:.5rem;font-size:12px}
+@media(max-width:600px){.combat-panel{padding:.65rem;bottom:4.8rem}.combat-panel button{font-size:12px;padding:.4rem}}
+/* R2.1.1: during playback the panel folds into one slim strip under the header so it never covers the body or the effects. */
+.combat-panel__toggle::after{content:'Recolher ▴'}
+.combat-panel__toggle[aria-expanded="false"]::after{content:'Painel ▾'}
+.combat-panel[data-collapsed="true"]{top:4.6rem;bottom:auto;left:.75rem;right:auto;max-width:min(30rem,calc(100vw - 1.5rem));padding:.3rem .4rem;background:#091327b8;display:flex;flex-wrap:wrap;align-items:center;gap:.1rem}
+.combat-panel[data-collapsed="true"]>p,.combat-panel[data-collapsed="true"]>label,.combat-panel[data-collapsed="true"]>[data-combat-load],.combat-panel[data-collapsed="true"] [data-combat-action="trace"]{display:none}
+.combat-panel[data-collapsed="true"] [data-combat-controls]:not([hidden]){display:flex;flex-wrap:wrap}
+.combat-panel[data-collapsed="true"] button{font-size:12px;padding:.3rem .45rem;margin:.1rem}
+.combat-panel[data-collapsed="true"] output{margin:0 .3rem;font-size:11px}
+</style>
