@@ -31,11 +31,19 @@ let presentation;
 if(dance){const profile=JSON.parse(await readFile('public/assets/models/hsin/hsin-v2.1-profile.json')),baked=decodeDanceData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-'+(options.r2?'r2':'r1')+'.json'))),meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];createCinematicReference({bones,profile}).apply();gltf.scene.updateMatrixWorld(true);presentation=createLunarPresentation({THREE:T,model:gltf.scene,bones,bounds:profile.bounds});presentation.apply();if(options.r3&&dance!=='idle'){const reverie=createReveriePose({THREE:T,data:decodeReverieData(JSON.parse(await readFile('public/assets/animations/hsin/lunar-dance-r3'+(options.grand?'-grand':'')+'.json'))),bones,model:gltf.scene});reverie.apply(dance,Number(options.phase??.5),Number(options.weight??1),Number(options.amplitude??1));}else if(dance!=='idle')createDancePose({THREE:T,data:baked,bones,model:gltf.scene}).apply(dance,Number(options.phase??.5),Number(options.weight??1));gltf.scene.updateMatrixWorld(true);for(const m of meshes)m.skeleton.update();}
 if(options.combat){
  const {decodeCombatData}=await import('../src/scripts/hsin-combat-data.mjs');
- const {createBakedPose}=await import('../src/scripts/hsin-baked-pose.mjs');
- const data=decodeCombatData(JSON.parse(await readFile('public/assets/animations/hsin/combat-r1.json')));
+ const {createCombatPose}=await import('../src/scripts/hsin-combat-pose.mjs');
+ const version=options.combat==='r2'?'r2':'r1';
+ const data=decodeCombatData(JSON.parse(await readFile('public/assets/animations/hsin/combat-'+version+'.json')));
  const meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});
  const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];
- createBakedPose({THREE:T,data,bones}).apply(Math.min(1,Math.max(0,Number(options.time??0)/data.seconds)));
+ createCombatPose({T,data,bones,model:gltf.scene}).apply(Math.min(1,Math.max(0,Number(options.time??0)/data.seconds)));
+ if(options.expression){
+  const {snapshotFace,createFaceBinding}=await import('../src/scripts/hsin-face-binding.mjs');
+  const profile=JSON.parse(await readFile('public/assets/models/hsin/hsin-v2.1-profile.json'));
+  const binding=createFaceBinding(meshes,snapshotFace(meshes),profile.calibration,profile);
+  const effort=options.expression==='effort'?.05:0;
+  binding.apply({policy:'b1',gaze:[0,0,0],closeL:0,closeR:0,smileL:options.expression==='serene'?.045:0,smileR:0,overlays:{E_Squint_L:effort,E_Squint_R:effort,M_Squint_L:effort*.5,M_Squint_R:effort*.5,B_Up_Add_R:options.expression==='anticipation'?.05:0}});
+ }
  gltf.scene.updateMatrixWorld(true);for(const mesh of meshes)mesh.skeleton.update();
 }
 const resource=dance?LUNAR_TERRACE:MOONLIT,sky=await decode(new URL('../public'+resource.sky,import.meta.url).pathname);

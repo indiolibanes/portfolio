@@ -1,0 +1,2113 @@
+{
+  "hsin-7751533624ea": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 1412
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 773
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          144
+        ],
+        "count": 740
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 644
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 547
+      },
+      {
+        "rgb": [
+          208,
+          16,
+          16
+        ],
+        "count": 513
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          48
+        ],
+        "count": 490
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 395
+      },
+      {
+        "rgb": [
+          208,
+          48,
+          48
+        ],
+        "count": 353
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          176
+        ],
+        "count": 323
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          112
+        ],
+        "count": 316
+      },
+      {
+        "rgb": [
+          176,
+          48,
+          48
+        ],
+        "count": 313
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 2500,
+        "end_ms": 3500
+      },
+      {
+        "start_ms": 4500,
+        "end_ms": 5500
+      },
+      {
+        "start_ms": 12500,
+        "end_ms": 13000
+      },
+      {
+        "start_ms": 16000,
+        "end_ms": 16997
+      }
+    ],
+    "threshold_fraction": 0.1462673611111111
+  },
+  "hsin-16eda9d91cef": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          208,
+          240
+        ],
+        "count": 531
+      },
+      {
+        "rgb": [
+          48,
+          112,
+          176
+        ],
+        "count": 524
+      },
+      {
+        "rgb": [
+          16,
+          112,
+          208
+        ],
+        "count": 521
+      },
+      {
+        "rgb": [
+          16,
+          112,
+          176
+        ],
+        "count": 481
+      },
+      {
+        "rgb": [
+          16,
+          80,
+          176
+        ],
+        "count": 389
+      },
+      {
+        "rgb": [
+          48,
+          112,
+          208
+        ],
+        "count": 336
+      },
+      {
+        "rgb": [
+          144,
+          176,
+          208
+        ],
+        "count": 282
+      },
+      {
+        "rgb": [
+          112,
+          144,
+          176
+        ],
+        "count": 223
+      },
+      {
+        "rgb": [
+          80,
+          144,
+          176
+        ],
+        "count": 205
+      },
+      {
+        "rgb": [
+          144,
+          208,
+          240
+        ],
+        "count": 203
+      },
+      {
+        "rgb": [
+          80,
+          144,
+          208
+        ],
+        "count": 199
+      },
+      {
+        "rgb": [
+          48,
+          144,
+          208
+        ],
+        "count": 131
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 1000,
+        "end_ms": 1500
+      },
+      {
+        "start_ms": 2000,
+        "end_ms": 2500
+      },
+      {
+        "start_ms": 3000,
+        "end_ms": 3500
+      }
+    ],
+    "threshold_fraction": 0.2708333333333333
+  },
+  "hsin-5679446ce7b6": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          112,
+          176,
+          176
+        ],
+        "count": 8708
+      },
+      {
+        "rgb": [
+          144,
+          208,
+          208
+        ],
+        "count": 4773
+      },
+      {
+        "rgb": [
+          112,
+          208,
+          208
+        ],
+        "count": 3984
+      },
+      {
+        "rgb": [
+          80,
+          176,
+          176
+        ],
+        "count": 2519
+      },
+      {
+        "rgb": [
+          112,
+          208,
+          176
+        ],
+        "count": 2246
+      },
+      {
+        "rgb": [
+          176,
+          240,
+          240
+        ],
+        "count": 1162
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 1145
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 1138
+      },
+      {
+        "rgb": [
+          240,
+          240,
+          176
+        ],
+        "count": 1107
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 1089
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 1038
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 973
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 1500,
+        "end_ms": 2000
+      },
+      {
+        "start_ms": 4500,
+        "end_ms": 5000
+      },
+      {
+        "start_ms": 6000,
+        "end_ms": 6500
+      },
+      {
+        "start_ms": 10500,
+        "end_ms": 11000
+      },
+      {
+        "start_ms": 11500,
+        "end_ms": 12500
+      },
+      {
+        "start_ms": 25500,
+        "end_ms": 26500
+      },
+      {
+        "start_ms": 27000,
+        "end_ms": 27500
+      },
+      {
+        "start_ms": 31500,
+        "end_ms": 32500
+      },
+      {
+        "start_ms": 33500,
+        "end_ms": 35000
+      },
+      {
+        "start_ms": 38500,
+        "end_ms": 39000
+      },
+      {
+        "start_ms": 39500,
+        "end_ms": 40000
+      },
+      {
+        "start_ms": 50500,
+        "end_ms": 51500
+      },
+      {
+        "start_ms": 52500,
+        "end_ms": 53000
+      },
+      {
+        "start_ms": 56500,
+        "end_ms": 57500
+      },
+      {
+        "start_ms": 62500,
+        "end_ms": 63000
+      },
+      {
+        "start_ms": 67500,
+        "end_ms": 68500
+      },
+      {
+        "start_ms": 69000,
+        "end_ms": 69500
+      },
+      {
+        "start_ms": 70000,
+        "end_ms": 71000
+      },
+      {
+        "start_ms": 75500,
+        "end_ms": 76500
+      },
+      {
+        "start_ms": 77000,
+        "end_ms": 79500
+      },
+      {
+        "start_ms": 80000,
+        "end_ms": 80500
+      },
+      {
+        "start_ms": 83500,
+        "end_ms": 84500
+      },
+      {
+        "start_ms": 90500,
+        "end_ms": 91000
+      },
+      {
+        "start_ms": 94000,
+        "end_ms": 95000
+      },
+      {
+        "start_ms": 95500,
+        "end_ms": 96000
+      },
+      {
+        "start_ms": 99500,
+        "end_ms": 100000
+      }
+    ],
+    "threshold_fraction": 0.11067708333333333
+  },
+  "hsin-eecb85541a28": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          112,
+          144,
+          176
+        ],
+        "count": 4737
+      },
+      {
+        "rgb": [
+          80,
+          112,
+          176
+        ],
+        "count": 3924
+      },
+      {
+        "rgb": [
+          80,
+          144,
+          176
+        ],
+        "count": 2870
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 1059
+      },
+      {
+        "rgb": [
+          48,
+          112,
+          176
+        ],
+        "count": 757
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 670
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 350
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 309
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          112
+        ],
+        "count": 178
+      },
+      {
+        "rgb": [
+          208,
+          208,
+          144
+        ],
+        "count": 107
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 99
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 87
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 500,
+        "end_ms": 2000
+      },
+      {
+        "start_ms": 19500,
+        "end_ms": 21500
+      },
+      {
+        "start_ms": 22000,
+        "end_ms": 24500
+      },
+      {
+        "start_ms": 25000,
+        "end_ms": 26000
+      }
+    ],
+    "threshold_fraction": 0.12890625
+  },
+  "hsin-cdfc7564ab1c": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          112,
+          144,
+          176
+        ],
+        "count": 7458
+      },
+      {
+        "rgb": [
+          112,
+          176,
+          176
+        ],
+        "count": 5655
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 4399
+      },
+      {
+        "rgb": [
+          176,
+          48,
+          48
+        ],
+        "count": 3853
+      },
+      {
+        "rgb": [
+          80,
+          144,
+          176
+        ],
+        "count": 3443
+      },
+      {
+        "rgb": [
+          208,
+          80,
+          80
+        ],
+        "count": 2714
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 2598
+      },
+      {
+        "rgb": [
+          144,
+          176,
+          208
+        ],
+        "count": 2568
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 1379
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 1356
+      },
+      {
+        "rgb": [
+          208,
+          48,
+          48
+        ],
+        "count": 1007
+      },
+      {
+        "rgb": [
+          144,
+          176,
+          176
+        ],
+        "count": 811
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 0,
+        "end_ms": 500
+      },
+      {
+        "start_ms": 1000,
+        "end_ms": 2500
+      },
+      {
+        "start_ms": 3000,
+        "end_ms": 23000
+      },
+      {
+        "start_ms": 23500,
+        "end_ms": 30000
+      },
+      {
+        "start_ms": 30500,
+        "end_ms": 31000
+      },
+      {
+        "start_ms": 31500,
+        "end_ms": 33500
+      },
+      {
+        "start_ms": 52500,
+        "end_ms": 53500
+      },
+      {
+        "start_ms": 109500,
+        "end_ms": 111000
+      },
+      {
+        "start_ms": 120500,
+        "end_ms": 121000
+      },
+      {
+        "start_ms": 121500,
+        "end_ms": 122000
+      },
+      {
+        "start_ms": 123500,
+        "end_ms": 124000
+      },
+      {
+        "start_ms": 146500,
+        "end_ms": 147000
+      },
+      {
+        "start_ms": 150000,
+        "end_ms": 151000
+      },
+      {
+        "start_ms": 151500,
+        "end_ms": 152500
+      },
+      {
+        "start_ms": 153000,
+        "end_ms": 154000
+      },
+      {
+        "start_ms": 154500,
+        "end_ms": 155000
+      },
+      {
+        "start_ms": 156000,
+        "end_ms": 157000
+      },
+      {
+        "start_ms": 157500,
+        "end_ms": 159000
+      },
+      {
+        "start_ms": 160500,
+        "end_ms": 162000
+      },
+      {
+        "start_ms": 162500,
+        "end_ms": 163000
+      },
+      {
+        "start_ms": 187500,
+        "end_ms": 188000
+      },
+      {
+        "start_ms": 188500,
+        "end_ms": 189500
+      },
+      {
+        "start_ms": 194000,
+        "end_ms": 194500
+      },
+      {
+        "start_ms": 197000,
+        "end_ms": 197500
+      },
+      {
+        "start_ms": 198000,
+        "end_ms": 203000
+      },
+      {
+        "start_ms": 203500,
+        "end_ms": 211000
+      },
+      {
+        "start_ms": 211500,
+        "end_ms": 213000
+      }
+    ],
+    "threshold_fraction": 0.04904513888888889
+  },
+  "hsin-6f4bfc8b4a13": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          112,
+          112,
+          176
+        ],
+        "count": 3665
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 3136
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 2550
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 2363
+      },
+      {
+        "rgb": [
+          80,
+          80,
+          176
+        ],
+        "count": 2362
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 2233
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 2148
+      },
+      {
+        "rgb": [
+          112,
+          112,
+          208
+        ],
+        "count": 2083
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 1923
+      },
+      {
+        "rgb": [
+          144,
+          144,
+          208
+        ],
+        "count": 1861
+      },
+      {
+        "rgb": [
+          80,
+          112,
+          176
+        ],
+        "count": 1746
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 1706
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 8000,
+        "end_ms": 8500
+      },
+      {
+        "start_ms": 9000,
+        "end_ms": 10000
+      },
+      {
+        "start_ms": 10500,
+        "end_ms": 11500
+      },
+      {
+        "start_ms": 13000,
+        "end_ms": 14000
+      },
+      {
+        "start_ms": 15000,
+        "end_ms": 18500
+      },
+      {
+        "start_ms": 19500,
+        "end_ms": 20000
+      },
+      {
+        "start_ms": 21500,
+        "end_ms": 22000
+      },
+      {
+        "start_ms": 22500,
+        "end_ms": 23000
+      },
+      {
+        "start_ms": 24500,
+        "end_ms": 25000
+      },
+      {
+        "start_ms": 29000,
+        "end_ms": 29500
+      },
+      {
+        "start_ms": 33000,
+        "end_ms": 33500
+      },
+      {
+        "start_ms": 34500,
+        "end_ms": 35000
+      },
+      {
+        "start_ms": 42500,
+        "end_ms": 43000
+      },
+      {
+        "start_ms": 44500,
+        "end_ms": 46500
+      },
+      {
+        "start_ms": 57000,
+        "end_ms": 57500
+      },
+      {
+        "start_ms": 58500,
+        "end_ms": 59000
+      },
+      {
+        "start_ms": 62000,
+        "end_ms": 64500
+      },
+      {
+        "start_ms": 68500,
+        "end_ms": 69500
+      },
+      {
+        "start_ms": 70500,
+        "end_ms": 71500
+      },
+      {
+        "start_ms": 73500,
+        "end_ms": 74000
+      },
+      {
+        "start_ms": 75500,
+        "end_ms": 76500
+      },
+      {
+        "start_ms": 84500,
+        "end_ms": 85000
+      },
+      {
+        "start_ms": 86500,
+        "end_ms": 87000
+      },
+      {
+        "start_ms": 87500,
+        "end_ms": 88500
+      },
+      {
+        "start_ms": 107500,
+        "end_ms": 108000
+      },
+      {
+        "start_ms": 108500,
+        "end_ms": 109000
+      }
+    ],
+    "threshold_fraction": 0.24739583333333334
+  },
+  "hsin-641a241b8f96": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 863
+      },
+      {
+        "rgb": [
+          176,
+          48,
+          16
+        ],
+        "count": 820
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 471
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 377
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          48
+        ],
+        "count": 288
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 227
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 217
+      },
+      {
+        "rgb": [
+          176,
+          16,
+          16
+        ],
+        "count": 183
+      },
+      {
+        "rgb": [
+          176,
+          48,
+          48
+        ],
+        "count": 182
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 179
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 149
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 99
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 8000,
+        "end_ms": 9000
+      },
+      {
+        "start_ms": 13000,
+        "end_ms": 14000
+      },
+      {
+        "start_ms": 15000,
+        "end_ms": 16000
+      },
+      {
+        "start_ms": 17500,
+        "end_ms": 18000
+      },
+      {
+        "start_ms": 26500,
+        "end_ms": 30000
+      }
+    ],
+    "threshold_fraction": 0.04210069444444445
+  },
+  "hsin-8491dd35cda0": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 521
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 419
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 379
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 279
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 222
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          112
+        ],
+        "count": 209
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          80
+        ],
+        "count": 160
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 134
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 116
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 102
+      },
+      {
+        "rgb": [
+          240,
+          240,
+          176
+        ],
+        "count": 95
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 84
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 0,
+        "end_ms": 2000
+      },
+      {
+        "start_ms": 3000,
+        "end_ms": 3500
+      }
+    ],
+    "threshold_fraction": 0.06336805555555555
+  },
+  "hsin-a50f15714983": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 102
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 83
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          176
+        ],
+        "count": 43
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          176
+        ],
+        "count": 39
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          144
+        ],
+        "count": 19
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          144
+        ],
+        "count": 17
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          112
+        ],
+        "count": 14
+      },
+      {
+        "rgb": [
+          240,
+          144,
+          176
+        ],
+        "count": 12
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          176
+        ],
+        "count": 10
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          144
+        ],
+        "count": 10
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 3
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [],
+    "threshold_fraction": 0.04
+  },
+  "hsin-1f7f1b3d01d0": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 93
+      },
+      {
+        "rgb": [
+          208,
+          80,
+          48
+        ],
+        "count": 91
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          48
+        ],
+        "count": 82
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 79
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 63
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 61
+      },
+      {
+        "rgb": [
+          240,
+          112,
+          80
+        ],
+        "count": 59
+      },
+      {
+        "rgb": [
+          240,
+          80,
+          48
+        ],
+        "count": 53
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          80
+        ],
+        "count": 52
+      },
+      {
+        "rgb": [
+          240,
+          144,
+          112
+        ],
+        "count": 44
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 38
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 33
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 1000,
+        "end_ms": 1500
+      },
+      {
+        "start_ms": 3500,
+        "end_ms": 4020
+      }
+    ],
+    "threshold_fraction": 0.0546875
+  },
+  "hsin-11c2edbbc6a5": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 2001
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 1677
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 1489
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 1406
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          112
+        ],
+        "count": 1288
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 982
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 754
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 569
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          80
+        ],
+        "count": 519
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          80
+        ],
+        "count": 224
+      },
+      {
+        "rgb": [
+          240,
+          240,
+          176
+        ],
+        "count": 198
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          112
+        ],
+        "count": 100
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 500,
+        "end_ms": 1500
+      }
+    ],
+    "threshold_fraction": 0.7100694444444444
+  },
+  "hsin-369c50bf6ac7": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          144,
+          80
+        ],
+        "count": 1176
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 987
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          112
+        ],
+        "count": 920
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 694
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 669
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          112
+        ],
+        "count": 610
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          80
+        ],
+        "count": 474
+      },
+      {
+        "rgb": [
+          240,
+          240,
+          144
+        ],
+        "count": 379
+      },
+      {
+        "rgb": [
+          240,
+          240,
+          176
+        ],
+        "count": 312
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          112
+        ],
+        "count": 311
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 295
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 246
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 500,
+        "end_ms": 1500
+      }
+    ],
+    "threshold_fraction": 0.5646701388888888
+  },
+  "hsin-6f98cf177efa": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 2842
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 1755
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 1630
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 1189
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 638
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 547
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 442
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 281
+      },
+      {
+        "rgb": [
+          208,
+          208,
+          176
+        ],
+        "count": 257
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          144
+        ],
+        "count": 181
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          176
+        ],
+        "count": 158
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          176
+        ],
+        "count": 139
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 0,
+        "end_ms": 1500
+      }
+    ],
+    "threshold_fraction": 0.4518229166666667
+  },
+  "hsin-9cdbfdf4cddb": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 1726
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 936
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          80
+        ],
+        "count": 438
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          80
+        ],
+        "count": 338
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          48
+        ],
+        "count": 114
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          112
+        ],
+        "count": 90
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 62
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          80
+        ],
+        "count": 29
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 18
+      },
+      {
+        "rgb": [
+          240,
+          144,
+          112
+        ],
+        "count": 18
+      },
+      {
+        "rgb": [
+          208,
+          80,
+          48
+        ],
+        "count": 15
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 15
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 1500,
+        "end_ms": 1900
+      }
+    ],
+    "threshold_fraction": 0.57421875
+  },
+  "hsin-8a5397d4af26": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 134
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 104
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          80
+        ],
+        "count": 72
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 68
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 64
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          176
+        ],
+        "count": 50
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 47
+      },
+      {
+        "rgb": [
+          176,
+          144,
+          112
+        ],
+        "count": 43
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 40
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 32
+      },
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 30
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 29
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 2000,
+        "end_ms": 2510
+      }
+    ],
+    "threshold_fraction": 0.1540798611111111
+  },
+  "hsin-ea7e6cdb2f56": {
+    "space": "approximate display sRGB",
+    "mask": "central 80% width / 80% height; max>160 and chroma>55",
+    "colors": [
+      {
+        "rgb": [
+          240,
+          208,
+          176
+        ],
+        "count": 3662
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          144
+        ],
+        "count": 3253
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          112
+        ],
+        "count": 2216
+      },
+      {
+        "rgb": [
+          208,
+          176,
+          144
+        ],
+        "count": 1419
+      },
+      {
+        "rgb": [
+          208,
+          144,
+          144
+        ],
+        "count": 1078
+      },
+      {
+        "rgb": [
+          240,
+          176,
+          176
+        ],
+        "count": 894
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          80
+        ],
+        "count": 871
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          80
+        ],
+        "count": 820
+      },
+      {
+        "rgb": [
+          176,
+          112,
+          112
+        ],
+        "count": 785
+      },
+      {
+        "rgb": [
+          176,
+          80,
+          80
+        ],
+        "count": 679
+      },
+      {
+        "rgb": [
+          240,
+          144,
+          112
+        ],
+        "count": 532
+      },
+      {
+        "rgb": [
+          208,
+          112,
+          112
+        ],
+        "count": 492
+      }
+    ],
+    "caveat": "Color bins include costume/background. Exposure and bloom prevent recovery of original shader values.",
+    "luminous_event_candidates": [
+      {
+        "start_ms": 0,
+        "end_ms": 500
+      },
+      {
+        "start_ms": 8500,
+        "end_ms": 10500
+      }
+    ],
+    "threshold_fraction": 0.6519097222222222
+  }
+}

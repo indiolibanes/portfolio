@@ -1,0 +1,21 @@
+source_id,start_ms,end_ms,shot,motion,interactive_proposal,confidence
+hsin-7751533624ea,0,16997,contact-sheet reviewed,Plano varia e aproxima. Útil ao atraso de mãos e mangas; não estabelece uma rotação de combate.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-16eda9d91cef,0,6223,contact-sheet reviewed,Comparação editada em blocos. Corpo da raposa não existe no GLB atual.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-5679446ce7b6,0,103050,contact-sheet reviewed,Legendas editoriais identificam famílias. Sequências reiniciam e alternam formas.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-eecb85541a28,0,33785,contact-sheet reviewed,"Movimento contínuo de idle, com câmera orbitando e aproximando.",full-body during strikes; stable three-quarter; user takeover,medium
+hsin-cdfc7564ab1c,0,295822,contact-sheet reviewed,Quase cinco minutos. Excluir a metade com personagem de cabelo vermelho do retarget Hsin.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-6f4bfc8b4a13,0,114498,contact-sheet reviewed,"Legenda dos inputs ajuda a ordem, mas cortes, efeitos de equipe e trechos repetidos impedem atribuição direta de cada deslocamento.",full-body during strikes; stable three-quarter; user takeover,medium
+hsin-641a241b8f96,0,33855,contact-sheet reviewed,Pilares vermelhos de apresentação. Não tratar como Pilares Através dos Céus em combate.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-8491dd35cda0,0,10588,contact-sheet reviewed,Montagem com cortes. A mudança de expressão pode depender de luz e sombra.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-a50f15714983,0,4340,contact-sheet reviewed,Nome cry não comprova lágrimas nem emoção. Falta morph de abertura mandibular independente.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-1f7f1b3d01d0,0,4020,contact-sheet reviewed,Pose parcial de tronco. Duração do GIF não prova timing original.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-11c2edbbc6a5,0,3840,contact-sheet reviewed,Recorte cinematográfico. Comparar com close dourado B sem declarar equivalência exata.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-369c50bf6ac7,0,4040,contact-sheet reviewed,Efeito e câmera dominam a leitura; o root real fica ambíguo.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-6f98cf177efa,0,5450,contact-sheet reviewed,Trecho de comprimento diferente. Pode sobrepor o close A; não é duplicata por hash.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-9cdbfdf4cddb,0,1900,contact-sheet reviewed,Identidade Hsin não comprovada nesta amostra. Excluir de morph/rig até identificação.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-8a5397d4af26,0,2510,contact-sheet reviewed,Luz pulsante e enquadramento impedem inferência precisa da cinemática.,full-body during strikes; stable three-quarter; user takeover,medium
+hsin-ea7e6cdb2f56,0,10930,contact-sheet reviewed,"Montagem com muitos cortes. Útil à direção artística, inadequada como ataque contínuo.",full-body during strikes; stable three-quarter; user takeover,medium
+hsin-5679446ce7b6,0,15000,whole body / fixed arena,floor and target remain visible; body translates/turns; VFX briefly occlude,continuous wide/follow; omit hard cuts,medium; endpoints approximate
+hsin-5679446ce7b6,38000,44500,wide action,fast actor movement; no 3D camera/body separation from pixels,continuous wide/follow; omit hard cuts,medium; endpoints approximate
+hsin-5679446ce7b6,68000,73500,hand close + graphic cut,cut into palm/face and red fox graphic,continuous wide/follow; omit hard cuts,medium; endpoints approximate
+hsin-5679446ce7b6,73500,82500,close + monumental wide,cut from hands to architectural scale; bright exposure conceals body,continuous wide/follow; omit hard cuts,medium; endpoints approximate

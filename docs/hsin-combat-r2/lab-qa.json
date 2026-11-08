@@ -1,0 +1,234 @@
+{
+  "state": "COMPLETE",
+  "time": 0.4,
+  "paused": false,
+  "cycle": 5,
+  "owned": false,
+  "available": {
+    "BASIC": true,
+    "SKILL": true,
+    "HEAVY": false
+  },
+  "trace": [
+    {
+      "cycle": 0,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 0.833333,
+      "state": "PREPARATION",
+      "event": "energy"
+    },
+    {
+      "cycle": 1,
+      "time": 1.5,
+      "state": "BASIC",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 1.666667,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 1.666667,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 1,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0.833333,
+      "state": "PREPARATION",
+      "event": "energy"
+    },
+    {
+      "cycle": 2,
+      "time": 1.5,
+      "state": "BASIC",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 2.066667,
+      "state": "BASIC",
+      "event": "arc"
+    },
+    {
+      "cycle": 2,
+      "time": 3.066667,
+      "state": "BASIC",
+      "event": "arc-left"
+    },
+    {
+      "cycle": 2,
+      "time": 3.633333,
+      "state": "SKILL",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 5.366667,
+      "state": "SKILL",
+      "event": "ring"
+    },
+    {
+      "cycle": 2,
+      "time": 6.033333,
+      "state": "RECOVERY",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 6.033333,
+      "state": "RECOVERY",
+      "event": "recovery"
+    },
+    {
+      "cycle": 2,
+      "time": 8.4,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 2,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0.5,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0.5,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 3,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 0.833333,
+      "state": "PREPARATION",
+      "event": "energy"
+    },
+    {
+      "cycle": 4,
+      "time": 1.5,
+      "state": "BASIC",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 2.066667,
+      "state": "BASIC",
+      "event": "arc"
+    },
+    {
+      "cycle": 4,
+      "time": 3.066667,
+      "state": "BASIC",
+      "event": "arc-left"
+    },
+    {
+      "cycle": 4,
+      "time": 3.633333,
+      "state": "SKILL",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 5.366667,
+      "state": "SKILL",
+      "event": "ring"
+    },
+    {
+      "cycle": 4,
+      "time": 5.533333,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 5.533333,
+      "state": "COMPLETE",
+      "event": "state"
+    },
+    {
+      "cycle": 4,
+      "time": 0,
+      "state": "IDLE",
+      "event": "state"
+    },
+    {
+      "cycle": 5,
+      "time": 0,
+      "state": "PREPARATION",
+      "event": "state"
+    },
+    {
+      "cycle": 5,
+      "time": 0.4,
+      "state": "INTERRUPTED",
+      "event": "state"
+    },
+    {
+      "cycle": 5,
+      "time": 0.4,
+      "state": "COMPLETE",
+      "event": "state"
+    }
+  ],
+  "preparationMs": 114.23883299999997,
+  "lastCpuMs": 0.05486300000001165,
+  "bakeBytes": 1457955,
+  "decodedBytes": 2125200,
+  "version": "r2",
+  "recoveryBytes": 8120,
+  "extraDrawCalls": 5,
+  "geometries": 4,
+  "textures": 0,
+  "camera": "free"
+}
