@@ -7,6 +7,7 @@
  * Effect transforms are world-space and come from the baked hands, never from the camera. Billboarded pieces (the
  * ribbon width, the impact and energy rings) only orient their faces towards the camera at draw time.
  */
+const tris=g=>(g.index?g.index.count:g.attributes.position.count)/3;
 const clamp01=v=>Math.max(0,Math.min(1,v));
 const smoother=u=>u*u*u*(u*(u*6-15)+10);
 const RIBBON_POINTS=20,RIBBON_LIFE=.5,PALM_OFFSET=.085,SPHERE_HZ=2.2;
@@ -152,7 +153,7 @@ export function createCombatVfx({T,scene,camera,by}){
   clear(){resetState();hide();},
   visibleDrawCalls:()=>meshes.reduce((n,m)=>n+(m.visible?1:0),0),
   budget:{meshes:meshes.length,geometries:4,materials:5,textures:0,renderTargets:0,customShaders:0,
-   triangles:ringGeometry.index.count/3*3+impactGeometry.index.count/3+sphereGeometry.index.count/3*2+(RIBBON_POINTS-1)*2},
+   triangles:tris(ringGeometry)*3+tris(impactGeometry)+tris(sphereGeometry)*2+(RIBBON_POINTS-1)*2},
   dispose(){resetState();hide();scene.remove(group);ringGeometry.dispose();impactGeometry.dispose();sphereGeometry.dispose();ribbonGeometry.dispose();ringMaterial.dispose();impactMaterial.dispose();ribbonMaterial.dispose();coreMaterial.dispose();shellMaterial.dispose();},
  };
  hide();

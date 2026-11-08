@@ -21,8 +21,8 @@ export const FACE_KEYS=[
  [3.6,  .05,   .02,    .05,   .35,      0,        0],
  [4.2,  .07,   .03,    .06,   .55,      0,        0],   // Skill charge: attention directed at the sphere
  [5.0,  .09,   .04,    .07,   .65,      0,        0],   // concentration
- [5.35, .14,   .07,    .03,   .7,       0,        0],   // release: momentary intensity
- [5.6,  .08,   .03,    .04,   .5,       .03,      0],   // exhale: serenity returns
+ [5.45, .14,   .07,    .03,   .7,       0,        0],   // release: momentary intensity
+ [5.75, .08,   .03,    .04,   .5,       .03,      0],   // exhale: serenity returns
  [6.0,  .04,   .02,    .03,   .3,       .03,      0],
  [6.3,  .03,   .01,    .02,   .2,       .02,      0],
  [6.37, .03,   .01,    .02,   .2,       .02,      .9],  // one slow, contextual blink after the release
@@ -50,8 +50,8 @@ export const CAMERA_KEYS=[
  [3.25,-16, .88,  .98, .12],   // follows the left counter
  [3.7, -20, .86,  1.00,.12],
  [4.3, -18, .70,  1.12,.10],   // Skill: hands, energy and face share the frame
- [5.3, -15, .66,  1.14,.10],
- [5.8, -22, .76,  1.08,.10],
+ [5.4, -15, .66,  1.14,.10],
+ [5.9, -22, .76,  1.08,.10],
 ];
 const CAMERA_N=CAMERA_KEYS.length,CAMERA_XS=CAMERA_KEYS.map(k=>k[0]);
 function pchip(ys,t){
