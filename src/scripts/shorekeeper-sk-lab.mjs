@@ -1,5 +1,6 @@
 import {createSourceReviewDirector} from './shorekeeper/source-review.mjs';
 import {createR61Director} from './shorekeeper/r61-cinematic.mjs';
+import {PROFILE_ARTISTIC,PROFILE_FIDELITY,resolveProfile} from './shorekeeper/fidelity-profile.mjs';
 import {createR62Integration} from './shorekeeper/r62-integration.mjs';
 import {createS6Autonomy} from './shorekeeper/s6-autonomy.mjs';
 import {R61_SOURCE_IDS} from './shorekeeper/r61-plan.mjs';
@@ -554,6 +555,7 @@ export function mountShorekeeperLab(root){
   if(notes[1])notes[1].textContent='Prévia S5 · fonte corporal original · G7 NO_GO · QA em GPU física pendente. Diagnósticos antigos: acrescente legacyQA=1 à URL; nenhuma fonte ou opção foi apagada.';
  }
  $('[data-r61-preview]').hidden=!r61Enabled;
+ {const f=$('[data-r61-fidelity]');if(f){f.closest('label').hidden=!r62Enabled;f.checked=r62Enabled&&resolveProfile(location.search)===PROFILE_FIDELITY;}}
  on($('[data-r61-start]'),'click',()=>{
   if(!r61Enabled||!model||!stage||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||
      state.loading||state.contextLost||preparation)return;
@@ -564,14 +566,14 @@ export function mountShorekeeperLab(root){
    face?.reset();inspection.restore();narrative?.stop();
    const wantCamera=$('[data-r61-camera]').checked&&!motion.matches;
    director=(r62Enabled?createR62Integration:createR61Director)(T,model,model.userData.skClips??[],stage,{
-    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches}:{}),
+    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches,profile:$('[data-r61-fidelity]')?.checked?PROFILE_FIDELITY:PROFILE_ARTISTIC}:{}),
     onEvent:e=>{face?.onAnimationEvent(e);scheduler?.onEvent(e);}
    });
    control('presentationMode').value='combat';control('originalMode').value='reference';
    control('originalIdle').value='SK_BURST_02_ORIGINAL';
    presentationClock.reset();presentationClock.setSpeed(Number(control('speed').value));
    userPaused=false;director.start();
-   status(r62Enabled?'R6.2.3 · G11.3 integrada · fontes corporais originais · G7 NO_GO; QA em GPU pendente.':'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
+   status(r62Enabled?($('[data-r61-fidelity]')?.checked?'F1 · perfil FIDELIDADE (experimental) · Root da Burst pertence à camada BODY · paleta de campo das referências · G7 NO_GO; aprovação visual pendente.':'R6.2.3 · G11.3 integrada · fontes corporais originais · G7 NO_GO; QA em GPU pendente.'):'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
    $('[data-r61-time]').textContent='Ciclo iniciado · fonte original, cinematografia autoral · sourceFrame PSA indisponível.';
    sync(true);stage.invalidate();
   }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}

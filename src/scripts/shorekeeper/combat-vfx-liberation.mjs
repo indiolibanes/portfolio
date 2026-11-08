@@ -39,10 +39,12 @@ const WHITE = [1, 1, 1];
  * ABSORPTION (the field is pulled into her) -> GIANT BUTTERFLY BURST -> clear.
  * `rm` (reduced motion) keeps the same colours / fades but holds the wings open (no flapping, no scale change, no shrink).
  */
-export function liberationColorScore(t, g, rm = false) {
+export function liberationColorScore(t, g, rm = false, palette = 'authorial') {
  const none = {a: 0, open: 0, scale: 0, ring: 0, ringR: 0, burst: 0, burn: 1.2, flash: 0, chaos: 0};
  if (!g) return {violet: 0, gold: 0, absorb: 0, absorbLin: 0, collapse: 0, phase: 'NO_G11', hue: G11_TINTS.blue, line: G11_TINTS.blue, wash: G11_TINTS.blue, hor: G11_TINTS.blue, trig: {a: 0, flap: 1, dis: 0}, bf: none};
- const violet = smooth((t - g.violetStart) / (g.violetFull - g.violetStart)), gold = smooth((t - g.goldStart) / (g.goldFull - g.goldStart));
+ // F1 FIDELIDADE palette: the in-game cutscene/ingame GIFs show a blue-white field, so the authorial violet/gold hand-over is skipped.
+ const fid = palette === 'fidelity';
+ const violet = fid ? 0 : smooth((t - g.violetStart) / (g.violetFull - g.violetStart)), gold = fid ? 0 : smooth((t - g.goldStart) / (g.goldFull - g.goldStart));
  const absorbLin = clamp01((t - g.absorbStart) / (g.butterflyStart - g.absorbStart)), absorb = smooth(absorbLin);
  const inBf = t >= g.butterflyStart && t < g.butterflyEnd, u = inBf ? t - g.butterflyStart : 0;
  const a = !inBf ? 0 : smooth(u / 0.08) * (1 - smooth((t - g.butterflyDissolve) / (g.butterflyEnd - g.butterflyDissolve)));
@@ -221,10 +223,10 @@ void main(){ float r=length(vUv); if(r>1.) discard; float a=vA*(pow(1.-r,2.2)*.9
  * @param opts.contrast field/canopy gain (A/B presets above)
  * @param opts.variant  'OUTER' | 'INNER_AUTHORIAL' | 'SUPERNAL_AUTHORIAL' (explicit flag only)
  */
-export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER'}) {
+export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER', palette = 'authorial'}) {
  if (!S3_COLOR_VARIANTS[variant]) throw new TypeError('Liberation: unknown colour variant ' + variant);
  if (!(radius > 0.5 && radius < 12) || !(contrast > 0.1 && contrast < 3)) throw new TypeError('Liberation: radius/contrast out of range');
- let disposed = false, last = null, cfg = {radius, contrast, variant};
+ let disposed = false, last = null, cfg = {radius, contrast, variant, palette};
  const mats = [], geos = [];
  const v3 = (...a) => new T.Vector3(...a), col = k => ({value: v3(...LIBERATION_COLORS[k])});
  const additive = extra => ({transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, ...extra});
@@ -271,7 +273,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
-  const cs = liberationColorScore(t, g, rm), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
+  const cs = liberationColorScore(t, g, rm, cfg.palette), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
   bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
   const probe = {stage: null, levels: {condense: vC, reveal: vR, peak: vK, decay: vD}, starGate: 0, variant: col3.label, radiusH: cfg.radius, contrast: cfg.contrast, mechanics: col3.mechanics, motes: 0};
@@ -369,7 +371,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   update, hide() { neutralize(); last = null; },
   configure({radius: r = cfg.radius, contrast: k = cfg.contrast, variant: v = cfg.variant} = {}) {
    if (!S3_COLOR_VARIANTS[v] || !(r > 0.5 && r < 8) || !(k > 0.1 && k < 3)) throw new TypeError('Liberation: invalid configuration');
-   cfg = {radius: r, contrast: k, variant: v};
+   cfg = {radius: r, contrast: k, variant: v, palette: cfg.palette};
   },
   get config() { return {...cfg}; },
   get meshes() { return meshes; },

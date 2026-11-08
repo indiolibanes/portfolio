@@ -125,7 +125,7 @@ void main(){
  * @param opts.reducedMotion boolean or () => boolean
  * @param opts.proxyAnchors  true => use fixed, explicitly MARKED proxy anchors (isolated proof, no skeleton)
  */
-export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, bundle, scale = null, reducedMotion = false, proxyAnchors = false, proxyOrigin = [0, 0, 0], skill = false, targetMode = 'SIMULATED_TARGET', liberation = null, stageAnchor = null} = {}) {
+export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, bundle, scale = null, reducedMotion = false, proxyAnchors = false, proxyOrigin = [0, 0, 0], skill = false, targetMode = 'SIMULATED_TARGET', liberation = null, stageAnchor = null, fidelity = false} = {}) {
  if (!parent?.add || !bundle?.score?.cueAt || !bundle.schedule) fail('scene and S1 bundle required');
  let disposed = false, visible = false, last = null;
  const readReduced = typeof reducedMotion === 'function' ? reducedMotion : () => !!reducedMotion;
@@ -339,7 +339,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
    for (const o of Object.values(libLayer.meshes)) if (o.visible) shown++;
   }
   // G11 body motion trails (history table is optional; without it nothing is drawn)
-  const energy = Math.min(1, Math.max(cue.blueAttack, cue.heavyPulse, cue.blueCore * 0.7, libLayer ? cue.liberationField * 0.7 : 0, cue.guidedButterflies ? cue.guidedButterflies * 0.3 : 0)), wide = 1 + (libLayer ? 0.6 * Math.min(1, cue.liberationField) : 0);
+  const energy = fidelity ? 0 : Math.min(1, Math.max(cue.blueAttack, cue.heavyPulse, cue.blueCore * 0.7, libLayer ? cue.liberationField * 0.7 : 0, cue.guidedButterflies ? cue.guidedButterflies * 0.3 : 0)), wide = fidelity ? 1 : 1 + (libLayer ? 0.6 * Math.min(1, cue.liberationField) : 0); // F1 FIDELIDADE: no authorial orbital ribbons
   const trailProbe = trails.update(trailHistory, t, rm, energy, wide); if (trails.mesh.visible) shown++;
   // G11.1 quick attack butterflies (needs the hand history; none in proxy/no-history mode)
   let sparkProbe = null;
@@ -400,6 +400,6 @@ export function createS2CombatVfx(T, {scene, parent, model, plan, scale, reduced
 }
 
 /** S1 + S2 + S3: adds the Outer Stellarealm Liberation layer (AUTHORIAL; mechanics UNVERIFIED). */
-export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null} = {}) {
- return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor});
+export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false} = {}) {
+ return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
 }

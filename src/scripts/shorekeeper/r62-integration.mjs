@@ -6,8 +6,11 @@
 import {createR62Cinematic} from './r62-cinematic.mjs';
 import {createS3CombatVfx} from './combat-vfx-adapter.mjs';
 import {createSkinnedBoundsFollower} from './skinned-bounds.mjs';
+import {PROFILE_ARTISTIC,PROFILE_FIDELITY,applyFidelityBody,FIDELITY_STATUS,FIDELITY_REVISION} from './fidelity-profile.mjs';
 
-export function createR62Integration(T,model,library,stage,{getVfx,camera=true,onEvent=()=>{},reducedMotion=false,bodyStability='off',entry=0,preservePoseOnDispose=false,cameraProfile:duetCameraProfile=null,arena:sharedArena=null}={}) {
+export function createR62Integration(T,model,library,stage,{getVfx,camera=true,onEvent=()=>{},reducedMotion=false,bodyStability='off',entry=0,preservePoseOnDispose=false,cameraProfile:duetCameraProfile=null,arena:sharedArena=null,profile=PROFILE_ARTISTIC}={}) {
+ if(![PROFILE_ARTISTIC,PROFILE_FIDELITY].includes(profile))throw Error('Unknown presentation profile');
+ const fidelity=profile===PROFILE_FIDELITY;
  if(bodyStability!=='off')throw Error('S5: source body only; G7 editorial exception unavailable');
  const v=getVfx?.();
  if(!v||v.disposed||!v.r5||typeof v.setScoreStarGate!=='function'||typeof v.setScoreButterflyGate!=='function')
@@ -17,13 +20,14 @@ export function createR62Integration(T,model,library,stage,{getVfx,camera=true,o
  const arena=sharedArena??{x:v.center.x,z:v.center.z,floorY:v.center.y+v.floorY*v.scale};
  let adapter=null;const bounds=createSkinnedBoundsFollower(T,model,{h:v.scale});
  try {
-  const director=createR62Cinematic(T,model,library,stage,{
+  const fid=fidelity?applyFidelityBody(T,model,library):null;
+  const director=createR62Cinematic(T,model,fid?fid.library:library,stage,{
    getVfx,camera,onEvent,entry,preservePoseOnDispose,bodyStability:'off',liberationMode:'layer',boundsFollower:bounds,
-   scoreVfx:({plan})=>(adapter=createS3CombatVfx(T,{scene:stage.scene,model,plan,scale:v.scale,stageAnchor:arena,reducedMotion:reduced,...(sharedArena?.radius?{liberation:{radius:Math.max(8.6,sharedArena.radius/v.scale)}}:{})})),
+   scoreVfx:({plan})=>(adapter=createS3CombatVfx(T,{scene:stage.scene,model,plan,scale:v.scale,stageAnchor:arena,reducedMotion:reduced,fidelity,...(sharedArena?.radius?{liberation:{radius:Math.max(8.6,sharedArena.radius/v.scale)}}:{})})),
    ...(camera?{cameraProfile:{smart:true,period:18,returnSeconds:.7,model,arena:()=>arena,reduced,...duetCameraProfile}}:{})
   });
   Object.defineProperties(director,{
-   integrationStatus:{get:()=>({revision:'G113_S5_LOCAL',visualDirection:'HUMAN_ACCEPTED_DIRECTION',sourceBody:'PR256_ORIGINAL',G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
+   integrationStatus:{get:()=>({revision:fidelity?FIDELITY_REVISION:'G113_S5_LOCAL',profile,visualDirection:fidelity?'FIDELITY_NOT_CERTIFIED':'HUMAN_ACCEPTED_DIRECTION',sourceBody:fidelity?'PR256_ORIGINAL_BURST_ROOT_BODY_OWNED':'PR256_ORIGINAL',...(fidelity?{fidelity:fid.provenance}:{}),G7:'NO_GO',S4:'INPUT_NOT_VERIFIED',release:'GATED'})},
    scoreAdapter:{get:()=>adapter}
   });
   return director;
