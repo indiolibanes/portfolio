@@ -1,0 +1,1 @@
+Combat lab: manual controls, pause, safe restart, takeover, recovery and disposal PASS

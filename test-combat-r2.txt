@@ -1,0 +1,14 @@
+{
+  secondsSimulated: 600,
+  frames: 18000,
+  feet: 412,
+  maxSlideMm: 0.3664295812404938,
+  maxRecoverySlideMm: 0.26334791140017927,
+  maxAngularStepDegrees: 7.227085953129199,
+  bakeBytes: 1469307,
+  decodedBytes: 2141392,
+  sequencerTotalMs: 12.073227999999972,
+  sequencerMeanMs: 0.0006707348888888873,
+  traceDeterministic: true,
+  limitations: 'Node CPU and geometric support evidence. Collision and artistic gates require separate review.'
+}

@@ -1,0 +1,84 @@
+{
+  "bakeBytes": 1469307,
+  "attacks": {
+    "arcRatio": [
+      1.3635240711519172,
+      1.2522644257793216
+    ],
+    "rise": [
+      0.22623048400540877,
+      0.35250269488732616
+    ],
+    "mirrorRms": 0.06517325132780756,
+    "peak": {
+      "basic01": {
+        "speed": 0.9562583726613981,
+        "time": 1.7333333333333334
+      },
+      "basic02": {
+        "speed": 1.115630660126037,
+        "time": 3.2666666666666666
+      }
+    }
+  },
+  "weightShiftM": 0.16578857756535098,
+  "handSpeedJumpR": 0.48892390812797804,
+  "handSpeedJumpL": 0.46868169028372,
+  "skill": {
+    "gapHold": [
+      0.1817212458094043,
+      0.2126755813743409
+    ],
+    "maxPronation": {
+      "R": 47.89,
+      "L": 46.85
+    }
+  },
+  "secondary": {
+    "maxAngle": {
+      "hair": 1.1016468569637365,
+      "ornament": 1.5013229196936047,
+      "sleeve": 1.7130514916528545,
+      "tail": 1.4003813433447025
+    },
+    "maxStep": {
+      "hair": 0.3127357195756497,
+      "ornament": 0.8833696548309694,
+      "sleeve": 0.4369440171670316,
+      "tail": 0.43053284422741706
+    },
+    "sleeveRootPeak": 0.8097187940132754,
+    "sleeveFreePeak": 1.7906087290153132
+  },
+  "face": {
+    "faceJump": 0.048975012345680025,
+    "blinkFrames": 2
+  },
+  "camera": {
+    "maxYawStepDegrees": 0.887871350927321,
+    "maxDistanceStep": 0.014385112373746728
+  },
+  "vfx": {
+    "maxVisibleDrawCalls": 7,
+    "budget": {
+      "meshes": 7,
+      "geometries": 4,
+      "materials": 5,
+      "textures": 0,
+      "renderTargets": 0,
+      "customShaders": 0,
+      "triangles": 1886
+    },
+    "minimumSphereClearanceM": 0.03625869763323008,
+    "opacityMax": {
+      "combat ring": 0.5,
+      "combat impact": 0.85,
+      "combat core": 0.62,
+      "combat shell": 0.14997873842738724,
+      "combat echo A": 0.35,
+      "combat echo B": 0.35
+    },
+    "releaseTravelM": 0.849,
+    "maxRibbonWidthM": 0.032
+  }
+}
