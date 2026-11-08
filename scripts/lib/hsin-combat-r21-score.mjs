@@ -125,13 +125,61 @@ export function createArmScore({restIntent,halfWidth}){
 }
 export const armWeight=t=>smooth(0,.5,t)*(1-smooth(7.7,8.4,t));
 
-/* ---------- secondary layer (generic envelope; replaced by the per-group model in the secondary commit) ---------- */
-export function createSecondary(secondary){
- const stats={};
- function angle(i,t){
-  const time=Math.max(0,t-secondary.depth[i]*.025),envelope=Math.sin(Math.PI*t/SECONDS)**2;
-  const value=(torso(time).yaw-torso(Math.max(0,time-.12)).yaw)*.28*envelope*secondary.gain[i];
-  const s=stats.all??={max:0,clamped:0};s.max=Math.max(s.max,Math.abs(value));return value;
+/* ---------- secondary layer ---------- */
+const CAP={hair:1.1,ornament:1.5,sleeve:1.8,tail:1.4};
+const RESPONSE={hair:{f:2.0,z:.45,k:.02},ornament:{f:3.2,z:.35,k:.026},sleeve:{f:2.6,z:.4,k:.03},tail:{f:1.5,z:.5,k:.026}};
+const SUB=120;
+/**
+ * Offline secondary response. One damped second-order response per kind, each fed by what physically moves it:
+ * hair and ornaments by head and torso turn, sleeves by the hand that carries them (lateral velocity) plus the turn,
+ * tail by hip travel. Per-channel delay follows the rig's depth, the elbow-side roots stay quiet (the cuff must not
+ * detach from the arm) and the free ends move most. No physics at runtime: the result is baked.
+ */
+export function createSecondary(secondary,intentFn){
+ const n=Math.round(SECONDS*SUB)+1,dt=1/SUB;
+ const sample=t=>torso(t),prev=t=>torso(Math.max(0,t-dt));
+ const outSign=s=>s==='R'?-1:1;
+ const drivers={hair:new Float64Array(n),ornament:new Float64Array(n),tail:new Float64Array(n),sleeveL:new Float64Array(n),sleeveR:new Float64Array(n)};
+ for(let i=0;i<n;i++){
+  const t=i*dt,a=sample(t),b=prev(t),yawRate=((a.yaw+a.headYaw)-(b.yaw+b.headYaw))/dt,torsoRate=(a.yaw-b.yaw)/dt,pitchRate=(a.headPitch-b.headPitch)/dt+(a.lean-b.lean)/dt*.5;
+  const hipV=(a.hip-b.hip)/dt,sinkV=(a.sink-b.sink)/dt;
+  drivers.hair[i]=yawRate*.6+pitchRate*.4;
+  drivers.ornament[i]=torsoRate*.5+yawRate*.25+pitchRate*.25;
+  drivers.tail[i]=hipV*150+sinkV*60+torsoRate*.25;
+  for(const side of ['L','R']){
+   const x=intentFn(side,t).to,y=intentFn(side,Math.max(0,t-dt)).to;
+   drivers['sleeve'+side][i]=40*outSign(side)*(x[0]-y[0])/dt+.25*torsoRate;
+  }
  }
- return {angle,stats};
+ const filtered={};
+ const respond=(key,response)=>{
+  const w=2*Math.PI*response.f,out=new Float64Array(n),u=drivers[key];let x=0,v=0;
+  for(let i=0;i<n;i++){const h=dt/4;for(let k=0;k<4;k++){const a=w*w*(u[i]-x)-2*response.z*w*v;v+=a*h;x+=v*h;}out[i]=x;}
+  return out;
+ };
+ filtered.hair=respond('hair',RESPONSE.hair);filtered.ornament=respond('ornament',RESPONSE.ornament);filtered.tail=respond('tail',RESPONSE.tail);
+ filtered.sleeveL=respond('sleeveL',RESPONSE.sleeve);filtered.sleeveR=respond('sleeveR',RESPONSE.sleeve);
+ const at=(series,t)=>{const p=Math.max(0,Math.min(n-1,t*SUB)),i=Math.min(n-2,Math.floor(p)),m=p-i;return series[i]*(1-m)+series[i+1]*m;};
+ const kinds=secondary.names.map((name,i)=>{
+  const g=secondary.groups[secondary.group[i]].id;
+  if(g==='sleeveL'||g==='sleeveR')return g;
+  if(g==='tail')return 'tail';
+  return /Piao/.test(name)?'ornament':'hair';
+ });
+ const groupDelay=Object.fromEntries(secondary.groups.map(g=>[g.id,g.delayPerDepth]));
+ const stats={};
+ /** Rotation angle in degrees for secondary channel i at time t. */
+ function angle(i,t){
+  const kind=kinds[i],g=secondary.groups[secondary.group[i]].id,depth=secondary.depth[i];
+  const response=kind==='sleeveL'||kind==='sleeveR'?RESPONSE.sleeve:RESPONSE[kind];
+  // Roots next to the elbow and shoulder stay quiet; the free ends carry the motion.
+  const shape=(kind==='sleeveL'||kind==='sleeveR')?.3+.7*smooth(0,4,depth):1;
+  const delay=depth*groupDelay[g]*.7,time=Math.max(0,t-delay);
+  const cap=kind==='sleeveL'||kind==='sleeveR'?CAP.sleeve:CAP[kind];
+  const raw=at(filtered[kind],time)*response.k*secondary.gain[i]*shape*(1-smooth(7.6,8.4,t));
+  const value=Math.max(-cap,Math.min(cap,raw));
+  const s=stats[kind]??={max:0,clamped:0,channels:0};s.max=Math.max(s.max,Math.abs(value));if(Math.abs(raw)>cap)s.clamped++;
+  return value;
+ }
+ return {angle,kinds,stats,drivers,filtered};
 }
