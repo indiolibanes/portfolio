@@ -108,7 +108,7 @@ export function createArmScore({restIntent,halfWidth}){
  const rows=[
   [0,'rest','rest'],[.8,GUARD,GUARD],[1.2,GUARD,GUARD],
   [1.55,WIND_R,L_BRACE],[1.84,ARC_OUT_R,L_BRACE],[2.08,NEAR_R,L_BRACE2],[2.24,APEX_R,L_BRACE2],[2.5,SETTLE_R,mixIntent(L_BRACE2,L_WIND,.45)],
-  [2.72,LOW_GUARD,L_WIND],[2.92,GUARD2,L_ARC],[3.2,GUARD2,L_NEAR],[3.36,GUARD2,L_APEX],[3.58,GUARD,L_SETTLE],[3.92,GUARD,GUARD],
+  [2.72,LOW_GUARD,L_WIND],[2.92,GUARD2,L_ARC],[3.2,GUARD2,L_NEAR],[3.36,GUARD2,L_APEX],[3.6,GUARD,L_SETTLE],[4.0,GUARD,GUARD],
   [4.15,sphere(.45,-.20,.25),sphere(.45,-.20,.25)],[4.65,sphere(.30,-.19,.29),sphere(.30,-.19,.29)],
   [5.0,sphere(.25,-.18,.31),sphere(.25,-.18,.31)],[5.2,sphere(.235,-.17,.315),sphere(.235,-.17,.315)],
   [5.45,RELEASE_R,sphere(.24,-.17,.31)],[5.85,FOLLOW_R,OPEN_L],[6.12,DECAY,OPEN_L2],[6.42,DECAY,DECAY_L],[7,'settle','settle'],[8.4,'rest','rest'],

@@ -10,6 +10,10 @@ const text=await readFile('public/assets/animations/hsin/combat-r2.json','utf8')
 assert.ok(['r2.0.1','r2.1'].includes(data.revision),'R2.0.1 or R2.1 bake expected');
 const label=data.revision==='r2.1'?'R2.1':'R2.0.1',outDir=data.revision==='r2.1'?'docs/hsin-combat-r21':'docs/hsin-combat-r201';
 const report=await auditArms(text,{label});
+const {perFrame,...summary}=report;
+await mkdir(outDir,{recursive:true});
+await writeFile(outDir+'/arm-anatomy-after.json',JSON.stringify(summary,null,2)+'\n');
+
 assert.equal(report.frames,253);
 for(const [side,s] of Object.entries(report.summary)){
  assert.ok(s.samples.arm>200&&s.samples.triangles>200,'enough skinned arm samples '+side);
@@ -24,7 +28,4 @@ for(const [side,s] of Object.entries(report.summary)){
  assert.ok(s.surface.maxStretch<=R2_SURFACE.stretch*1.1,side+' arm stretch vs R2 '+s.surface.maxStretch);
  assert.ok(s.surface.minCompress>=R2_SURFACE.compress*.8,side+' elbow crease vs R2 '+s.surface.minCompress);
 }
-const {perFrame,...summary}=report;
-await mkdir(outDir,{recursive:true});
-await writeFile(outDir+'/arm-anatomy-after.json',JSON.stringify(summary,null,2)+'\n');
 console.log(`Combat ${label} arm anatomy PASS`,JSON.stringify(Object.fromEntries(Object.entries(report.summary).map(([k,s])=>[k,{flex:s.flexRange,hinge:s.maxHingeOffPlane,roll:s.maxForearmRoll,wrist:s.maxWristSwing,pronation:s.maxPronation,projectedWrist:s.maxProjectedWrist,surface:s.surface,clearance:s.minClearanceMm,step:s.maxStep}]))));
