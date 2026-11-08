@@ -1,0 +1,44 @@
+{
+  "method": "Real GLB, face, R2.2 pooled VFX, software WebGL, exact local clock",
+  "physicalGpu": false,
+  "fpsOnSamsung": "NOT MEASURED",
+  "videos": [
+    {
+      "file": "video-a-basic01.mp4",
+      "frames": 102,
+      "seconds": 4.2,
+      "beforeClockOffset": 0.36,
+      "note": "Impact-synchronised R2.2 sequence excerpt at original speed versus autonomous R2.3; original continues into its next action.",
+      "views": [
+        0,
+        40
+      ],
+      "bytes": 1254026,
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1080,
+            "height": 1200,
+            "pix_fmt": "yuv420p",
+            "nb_frames": "102"
+          }
+        ],
+        "format": {
+          "duration": "4.250000"
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "stills": [
+    "stills/basic01-front.png",
+    "stills/basic01-tq.png",
+    "stills/basic01-profile.png",
+    "stills/basic01-mobile.png"
+  ],
+  "peakEnvCalls": 3,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+}
