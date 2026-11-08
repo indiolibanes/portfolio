@@ -1,0 +1,1344 @@
+{
+  "peak": {
+    "calls": 3,
+    "rings": 6,
+    "shards": 28,
+    "glints": 3,
+    "triangles": 1244
+  },
+  "diagnostics": {
+    "state": "COMPLETE",
+    "time": 4.999999999999992,
+    "paused": false,
+    "cycle": 26,
+    "owned": false,
+    "available": {
+      "BASIC": true,
+      "SKILL": true,
+      "HEAVY": false
+    },
+    "trace": [
+      {
+        "cycle": 0,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 1,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 1,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 1,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 1,
+        "time": 1.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 1,
+        "time": 1.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 1,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 2,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 2,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 2,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 2,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 2,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 2,
+        "time": 5.466667,
+        "state": "SKILL",
+        "event": "ring"
+      },
+      {
+        "cycle": 2,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "recovery"
+      },
+      {
+        "cycle": 2,
+        "time": 8.4,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 2,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 3,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 3,
+        "time": 0.5,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 3,
+        "time": 0.5,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 3,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 4,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 4,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 4,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 4,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 4,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 4,
+        "time": 5.466667,
+        "state": "SKILL",
+        "event": "ring"
+      },
+      {
+        "cycle": 4,
+        "time": 5.533333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 5.533333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 4,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 5,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 5,
+        "time": 0.4,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 5,
+        "time": 0.4,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 5,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 6,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 6,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 6,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 6,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 6,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 6,
+        "time": 5.466667,
+        "state": "SKILL",
+        "event": "ring"
+      },
+      {
+        "cycle": 6,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "recovery"
+      },
+      {
+        "cycle": 6,
+        "time": 8.4,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 6,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 7,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 7,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 7,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 7,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 7,
+        "time": 1.966667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 7,
+        "time": 1.966667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 7,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 8,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 8,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 8,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 8,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 8,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 8,
+        "time": 2.3,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 8,
+        "time": 2.3,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 8,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 9,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 9,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 9,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 9,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 9,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 9,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 9,
+        "time": 2.933333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 9,
+        "time": 2.933333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 9,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 10,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 10,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 10,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 10,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 10,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 10,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 10,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 10,
+        "time": 3.433333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 10,
+        "time": 3.433333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 10,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 11,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 11,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 11,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 11,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 11,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 11,
+        "time": 4.533333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 4.533333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 11,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 12,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 12,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 12,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 12,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 12,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 12,
+        "time": 5.466667,
+        "state": "SKILL",
+        "event": "ring"
+      },
+      {
+        "cycle": 12,
+        "time": 5.633333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 5.633333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 12,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 13,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 13,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 13,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 13,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 13,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 13,
+        "time": 5.466667,
+        "state": "SKILL",
+        "event": "ring"
+      },
+      {
+        "cycle": 13,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 6.033333,
+        "state": "RECOVERY",
+        "event": "recovery"
+      },
+      {
+        "cycle": 13,
+        "time": 6.333333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 6.333333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 13,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 14,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 14,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 14,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 14,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 14,
+        "time": 1.833333,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 14,
+        "time": 1.833333,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 14,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 15,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 15,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 15,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 15,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 16,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 16,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 16,
+        "time": 1.166667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 16,
+        "time": 1.166667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 16,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 17,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 17,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 17,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 17,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 18,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 18,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 18,
+        "time": 1.166667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 18,
+        "time": 1.166667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 18,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 19,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 19,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 19,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 19,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 20,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 20,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 20,
+        "time": 1.166667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 20,
+        "time": 1.166667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 20,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 21,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 21,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 21,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 21,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 22,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 22,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 22,
+        "time": 1.166667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 22,
+        "time": 1.166667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 22,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 23,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 23,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 23,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 23,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 24,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 24,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 24,
+        "time": 1.166667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 24,
+        "time": 1.166667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 24,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 25,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 25,
+        "time": 0.666667,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 25,
+        "time": 0.666667,
+        "state": "COMPLETE",
+        "event": "state"
+      },
+      {
+        "cycle": 25,
+        "time": 0,
+        "state": "IDLE",
+        "event": "state"
+      },
+      {
+        "cycle": 26,
+        "time": 0,
+        "state": "PREPARATION",
+        "event": "state"
+      },
+      {
+        "cycle": 26,
+        "time": 0.833333,
+        "state": "PREPARATION",
+        "event": "energy"
+      },
+      {
+        "cycle": 26,
+        "time": 1.5,
+        "state": "BASIC",
+        "event": "state"
+      },
+      {
+        "cycle": 26,
+        "time": 1.8,
+        "state": "BASIC",
+        "event": "trail"
+      },
+      {
+        "cycle": 26,
+        "time": 2.2,
+        "state": "BASIC",
+        "event": "arc"
+      },
+      {
+        "cycle": 26,
+        "time": 2.8,
+        "state": "BASIC",
+        "event": "trail-left"
+      },
+      {
+        "cycle": 26,
+        "time": 3.333333,
+        "state": "BASIC",
+        "event": "arc-left"
+      },
+      {
+        "cycle": 26,
+        "time": 3.633333,
+        "state": "SKILL",
+        "event": "state"
+      },
+      {
+        "cycle": 26,
+        "time": 3.966667,
+        "state": "SKILL",
+        "event": "charge"
+      },
+      {
+        "cycle": 26,
+        "time": 5,
+        "state": "INTERRUPTED",
+        "event": "state"
+      },
+      {
+        "cycle": 26,
+        "time": 5,
+        "state": "COMPLETE",
+        "event": "state"
+      }
+    ],
+    "preparationMs": 96.02824799999999,
+    "lastCpuMs": 0.04159700000002431,
+    "bakeBytes": 1469307,
+    "decodedBytes": 2141392,
+    "version": "r2",
+    "revision": "r2.1",
+    "recoveryBytes": 8248,
+    "extraDrawCalls": 10,
+    "visibleDrawCalls": 0,
+    "geometries": 7,
+    "materials": 6,
+    "env": {
+      "instances": {
+        "rings": 0,
+        "shards": 0,
+        "glints": 0
+      },
+      "triangles": 0,
+      "stats": {
+        "ripples": 0,
+        "shards": 0,
+        "glints": 0,
+        "bursts": 0,
+        "transfers": 0
+      },
+      "baseline": {
+        "toe": [
+          0.0004534387887958763,
+          0.0004526520850456073
+        ],
+        "foot": [
+          0.10744259888503704,
+          0.10744049383913579
+        ],
+        "shift": -0.0007,
+        "measured": true
+      },
+      "planted": [
+        1,
+        1
+      ],
+      "heights": {
+        "toe": [
+          0.0005,
+          0.0005
+        ],
+        "foot": [
+          0.1074,
+          0.1074
+        ]
+      },
+      "pelvisShift": 0.0006,
+      "density": 0.6,
+      "budget": {
+        "meshes": 3,
+        "geometries": 3,
+        "materials": 1,
+        "textures": 0,
+        "renderTargets": 0,
+        "customShaders": 0,
+        "capacity": {
+          "rings": 8,
+          "shards": 56,
+          "glints": 20
+        },
+        "triangles": 2016,
+        "maxDrawCalls": 3
+      }
+    },
+    "textures": 0,
+    "renderTargets": 0,
+    "camera": "free",
+    "panel": "expanded",
+    "cameraYawDeg": 0,
+    "vfx": {
+      "palmR": [
+        -0.2351,
+        0.8839,
+        -0.2901
+      ],
+      "palmL": [
+        0.097,
+        0.8863,
+        0.358
+      ],
+      "palmMid": [
+        -0.0691,
+        0.8851,
+        0.034
+      ],
+      "palmMidNdc": [
+        3.7382,
+        -85.1681
+      ],
+      "palmRNdc": [
+        -1.4914,
+        9.967
+      ],
+      "palmLNdc": [
+        -0.4984,
+        -8.0966
+      ],
+      "core": {
+        "visible": false,
+        "position": [
+          -0.3284,
+          1.141,
+          0.1588
+        ],
+        "scale": 0.0561,
+        "ndc": null
+      },
+      "shell": {
+        "visible": false,
+        "position": [
+          -0.3284,
+          1.141,
+          0.1588
+        ],
+        "scale": 0.0818,
+        "ndc": null
+      },
+      "ring": {
+        "visible": false,
+        "position": [
+          -0.3284,
+          1.141,
+          0.1588
+        ],
+        "scale": 0.6256,
+        "ndc": null
+      },
+      "opacity": {
+        "core": 0,
+        "shell": 0,
+        "ring": 0
+      },
+      "ribbonVisible": false
+    }
+  }
+}

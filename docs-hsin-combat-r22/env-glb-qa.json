@@ -1,0 +1,69 @@
+{
+ "env": {
+  "peak": {
+   "calls": 3,
+   "triangles": 1256,
+   "rings": 6,
+   "shards": 45,
+   "glints": 3
+  },
+  "colorMax": {
+   "r": 0.9200000166893005,
+   "g": 0.6624000072479248,
+   "b": 0.3495999872684479,
+   "ratio": 0.0806451550549041
+  },
+  "nearestTrailFragmentM": {
+   "basic01": 0.011,
+   "basic02": 0.015
+  },
+  "maxPelvisShiftM": 0.0521,
+  "transfers": 7,
+  "spawned": {
+   "ripples": 7,
+   "shards": 138,
+   "glints": 8,
+   "bursts": 3,
+   "transfers": 7
+  },
+  "pelvisVsBakedHipCorrelation": 0.998,
+  "baseline": {
+   "toe": [
+    0.0004534387887958763,
+    0.0004526520850456073
+   ],
+   "foot": [
+    0.10744259888503704,
+    0.10744049383913579
+   ],
+   "shift": -0.0007,
+   "measured": true
+  },
+  "density06": {
+   "shards": 84,
+   "peak": {
+    "calls": 3,
+    "triangles": 1244,
+    "rings": 6,
+    "shards": 28,
+    "glints": 3
+   }
+  },
+  "budget": {
+   "meshes": 3,
+   "geometries": 3,
+   "materials": 1,
+   "textures": 0,
+   "renderTargets": 0,
+   "customShaders": 0,
+   "capacity": {
+    "rings": 8,
+    "shards": 56,
+    "glints": 20
+   },
+   "triangles": 2016,
+   "maxDrawCalls": 3
+  },
+  "frames": 252
+ }
+}
