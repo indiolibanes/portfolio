@@ -1,0 +1,3 @@
+source=experiment/hsin-combat-r21-20261107
+run=42447336088
+sha=8c4817288702b53c24eb5708e21200d49c03dd9a
