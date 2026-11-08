@@ -33,7 +33,7 @@ if(options.combat){
  const {decodeCombatData}=await import('../src/scripts/hsin-combat-data.mjs');
  const {createCombatPose}=await import('../src/scripts/hsin-combat-pose.mjs');
  const version=options.combat==='r2'?'r2':'r1';
- const data=decodeCombatData(JSON.parse(await readFile('public/assets/animations/hsin/combat-'+version+'.json')));
+ const data=decodeCombatData(JSON.parse(await readFile(options.combatPath??('public/assets/animations/hsin/combat-'+version+'.json'))));
  const meshes=[];gltf.scene.traverse(o=>{if(o.isSkinnedMesh)meshes.push(o);});
  const bones=[...new Set(meshes.flatMap(m=>m.skeleton.bones))];
  createCombatPose({T,data,bones,model:gltf.scene}).apply(Math.min(1,Math.max(0,Number(options.time??0)/data.seconds)));
@@ -51,7 +51,15 @@ async function scenery(url){const t=new T.Texture();t.userData.cpu=await decode(
 const moonTexture=await scenery(resource.moon),env=dance?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await scenery(resource.stone),atlasTexture:await scenery(resource.atlas),waterTexture:await scenery(resource.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 if(!dance){const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);}
 const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45),yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
-camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);if(options.detail){
+camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);
+// QA close-ups on an arm joint (Combat R2.0.1): --focus=handR|elbowR|handL|elbowL [--dist=0.55] [--lift=0].
+if(options.focus){
+ const joint={handR:'ORG-Bip001HandR',elbowR:'ORG-Bip001ForearmR',handL:'ORG-Bip001HandL',elbowL:'ORG-Bip001ForearmL',chest:'ORG-Bip001Spine2'}[options.focus];
+ const node=joint&&gltf.scene.getObjectByName(joint);if(!node)throw Error('Unknown focus '+options.focus);
+ const focus=node.getWorldPosition(new T.Vector3()),d=Number(options.dist??.55);
+ camera.position.set(focus.x+Math.sin(yaw)*d,focus.y+Number(options.lift??0),focus.z+Math.cos(yaw)*d);target.copy(focus);
+}
+if(options.detail){
  const head=gltf.scene.getObjectByName('ORG-Bip001Head'),focus=head.getWorldPosition(new T.Vector3());focus.y-=.03;
  camera.position.set(focus.x+Math.sin(yaw)*.6,focus.y+.025,focus.z+Math.cos(yaw)*.6);target.copy(focus);
 }
@@ -114,6 +122,15 @@ for(const mesh of objects){
     if(mat.depthWrite)depth[at]=z;
    }
   }
+ }
+}
+// QA overlay (Combat R2.0.1): --joints=1 draws shoulder–elbow–wrist–middle fingertip, right arm orange, left arm cyan.
+if(options.joints){
+ const dot=(x,y,c,r=3)=>{for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const X=Math.round(x+i),Y=Math.round(y+j);if(X<0||Y<0||X>=W||Y>=H||i*i+j*j>r*r)continue;const at=(Y*W+X)*4;pixels[at]=c[0];pixels[at+1]=c[1];pixels[at+2]=c[2];}};
+ const line=(a,b,c)=>{const n=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1]));for(let k=0;k<=n;k++)dot(a[0]+(b[0]-a[0])*k/Math.max(1,n),a[1]+(b[1]-a[1])*k/Math.max(1,n),c,1);};
+ for(const [side,color] of [['R',[255,150,40]],['L',[60,220,255]]]){
+  const pts=['UpperArm','Forearm','Hand','Finger22'].map(n=>{const p=gltf.scene.getObjectByName('ORG-Bip001'+n+side).getWorldPosition(new T.Vector3()).project(camera);return [(p.x+1)*W/2,(1-p.y)*H/2];});
+  for(let k=0;k<3;k++)line(pts[k],pts[k+1],color);pts.forEach(p=>dot(p[0],p[1],color,4));
  }
 }
 await writeFile(output,await sharp(pixels,{raw:{width:W,height:H,channels:4}}).webp({quality:88}).toBuffer());
