@@ -96,6 +96,14 @@ const structuredData = {
 {!isNotFound && <link rel="canonical" href={canonicalUrl} />}
 <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+{!pathname.startsWith('/experimentos') && (
+  <>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" /></noscript>
+  </>
+)}
 {hasLandingScenes && (
   <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
 )}

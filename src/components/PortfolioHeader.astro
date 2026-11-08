@@ -69,7 +69,7 @@ const NAV = [
       </div>
     </div>
     <a class="brand" href="/#top" aria-label={`${PROFILE.name}, início`}>
-      <span class="brand-mark" aria-hidden="true" data-brand-mark><img class="brand-still" src="/brand/avatar-poster.jpg" alt="" width="320" height="320" decoding="async" /><video class="brand-video" muted loop playsinline autoplay preload="auto" poster="/brand/avatar-poster.jpg" aria-hidden="true" disablepictureinpicture><source src="/brand/avatar.webm" type="video/webm" /><source src="/brand/avatar.mp4" type="video/mp4" /></video></span>
+      <span class="brand-mark" aria-hidden="true" data-brand-mark><img class="brand-still" src="/brand/avatar-poster.jpg" alt="" width="320" height="320" decoding="async" /><video class="brand-video" muted loop playsinline preload="none" poster="/brand/avatar-poster.jpg" aria-hidden="true" disablepictureinpicture><source src="/brand/avatar.webm" type="video/webm" /><source src="/brand/avatar.mp4" type="video/mp4" /></video></span>
       <span class="brand-copy">
         <strong>{PROFILE.name}</strong>
         <small>{PROFILE.tagline}</small>
@@ -129,6 +129,27 @@ const NAV = [
   </nav>
 </header>
 
+
+<script is:inline>
+  // O vídeo do avatar só é baixado depois do carregamento da página, e nunca com movimento
+  // reduzido, no modo Legacy ou com Economia de dados. Sem JavaScript, fica o quadro estático.
+  (() => {
+    const video = document.querySelector('.brand-video');
+    if (!video) return;
+    const start = () => {
+      const conn = navigator.connection;
+      if (document.documentElement.dataset.legacyMode === 'true') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
+      video.preload = 'auto';
+      const played = video.play();
+      if (played && played.catch) played.catch(() => {});
+    };
+    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 600));
+    if (document.readyState === 'complete') idle();
+    else window.addEventListener('load', idle, { once: true });
+  })();
+</script>
 
 <script is:inline>
   (() => {
