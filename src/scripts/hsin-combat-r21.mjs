@@ -7,27 +7,28 @@ const smoother=u=>u*u*u*(u*(u*6-15)+10);
 const clamp01=v=>Math.max(0,Math.min(1,v));
 
 /* ---------- facial acting ---------- */
-// Channels are small on purpose and sit under the arbiter ceilings: the identity of the face is not changed.
+// Channels sit under the arbiter ceilings (squint .15, mouth squint .08, brow .1, smile cut .8): the identity of the face is not changed.
+// R2.1.1: the cut now holds .6-.8 from the first concentration to the release, so the habitual smile does not return between actions.
 //        t    squint  mouthSq  brow   smileCut  smileAdd  close
 export const FACE_KEYS=[
  [0,    0,     0,      0,     0,        0,        0],
- [.6,   .02,   0,      .05,   .15,      0,        0],   // Preparation: attentive eyes, the resting smile recedes a little
- [1.3,  .05,   .02,    .07,   .4,       0,        0],   // gaze fixes the direction of the attack
- [1.6,  .09,   .04,    .04,   .5,       0,        0],   // Basic 01: concentration while the weight loads
- [2.1,  .11,   .05,    .02,   .55,      0,        0],   // impact
- [2.5,  .07,   .03,    .04,   .4,       0,        0],
- [2.9,  .10,   .05,    .03,   .5,       0,        0],   // Basic 02: quicker, tighter
- [3.1,  .12,   .06,    .02,   .55,      0,        0],
- [3.6,  .05,   .02,    .05,   .35,      0,        0],
- [4.2,  .07,   .03,    .06,   .55,      0,        0],   // Skill charge: attention directed at the sphere
- [5.0,  .09,   .04,    .07,   .65,      0,        0],   // concentration
- [5.45, .14,   .07,    .03,   .7,       0,        0],   // release: momentary intensity
- [5.75, .08,   .03,    .04,   .5,       .03,      0],   // exhale: serenity returns
- [6.0,  .04,   .02,    .03,   .3,       .03,      0],
- [6.3,  .03,   .01,    .02,   .2,       .02,      0],
- [6.37, .03,   .01,    .02,   .2,       .02,      .9],  // one slow, contextual blink after the release
- [6.5,  .02,   .01,    .02,   .15,      .01,      0],
- [7.0,  .01,   0,      .02,   .1,       0,        0],
+ [.5,   .03,   .01,    .07,   .3,       0,        0],   // Preparation: the eyes settle on the task, the resting smile recedes
+ [1.0,  .06,   .03,    .09,   .6,       0,        0],   // concentration: serious, brows lifted with attention
+ [1.6,  .10,   .05,    .06,   .7,       0,        0],   // Basic 01: the weight loads, jaw set
+ [2.1,  .13,   .07,    .03,   .8,       0,        0],   // impact: eyes narrowed, mouth tight
+ [2.5,  .09,   .05,    .05,   .65,      0,        0],   // between the strikes the focus stays
+ [2.9,  .12,   .06,    .04,   .72,      0,        0],   // Basic 02: quicker, tighter
+ [3.1,  .145,  .075,   .03,   .8,       0,        0],
+ [3.6,  .08,   .04,    .07,   .65,      0,        0],   // reset: still concentrated, not smiling
+ [4.2,  .09,   .04,    .09,   .78,      0,        0],   // Skill charge: attention directed at the sphere
+ [5.0,  .10,   .05,    .09,   .8,       0,        0],   // accumulation: held focus
+ [5.45, .145,  .078,   .04,   .8,       0,        0],   // release: momentary peak of effort
+ [5.75, .08,   .03,    .05,   .6,       .03,      0],   // exhale: the face softens
+ [6.0,  .04,   .02,    .04,   .4,       .03,      0],
+ [6.3,  .03,   .01,    .03,   .25,      .02,      0],
+ [6.37, .03,   .01,    .03,   .25,      .02,      .9],  // one slow, contextual blink after the release
+ [6.5,  .02,   .01,    .02,   .2,       .01,      0],
+ [7.0,  .01,   0,      .02,   .1,       0,        0],   // serenity: the habitual smile returns on its own
  [8.4,  0,     0,      0,     0,        0,        0],
 ];
 const FACE_N=FACE_KEYS.length;
