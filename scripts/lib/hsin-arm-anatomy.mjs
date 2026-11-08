@@ -131,7 +131,7 @@ export function segmentDistance(T, a, b, c, d) {
  *   forearm skin bone, which carries the whole forearm skin), then wrist extension towards the back of the hand.
  * - clavicle: elevates only for hands above shoulder level, at a scapulohumeral ratio, clamped.
  */
-export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14} = {}) {
+export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14, maxFlexDegrees = 100} = {}) {
   const n = rest.names, bone = k => by.get(n[k]);
   const setWorld = (b, q) => { b.quaternion.copy(b.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q)).normalize(); b.updateMatrix(); b.updateMatrixWorld(true); };
   const W = k => bone(k).getWorldQuaternion(new T.Quaternion()).normalize(), P = k => bone(k).getWorldPosition(new T.Vector3());
@@ -147,7 +147,8 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
     const lift = Math.max(0, Math.min(clavicleMax, (elevation - 80) * clavicleRatio));
     if (lift > 0) { const out = S0.clone().sub(C).normalize(), axis = out.clone().cross(up).normalize(); if (axis.lengthSq() > 1e-8) setWorld(bone('clav'), new T.Quaternion().setFromAxisAngle(axis, lift / DEG).multiply(W('clav'))); }
     const S = P('upper'), l1 = rest.l1, l2 = rest.l2, toTarget = target.clone().sub(S);
-    const maxReach = (l1 + l2) * .985, minReach = Math.abs(l1 - l2) + .02;
+    // Deep flexion collapses the elbow crease on this rig (the whole forearm skin rides one bone): cap it by reach.
+    const maxReach = (l1 + l2) * .985, minReach = Math.sqrt(l1 * l1 + l2 * l2 + 2 * l1 * l2 * Math.cos(maxFlexDegrees / DEG));
     const d = Math.max(minReach, Math.min(maxReach, toTarget.length())), e = toTarget.normalize();
     const reachClamped = Math.abs(d - target.clone().sub(S).length()) > 1e-4;
     const x = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - x * x));
@@ -168,8 +169,11 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
     qU = new T.Quaternion().setFromAxisAngle(u1, roll).multiply(qU); setWorld(bone('upper'), qU);
     // Forearm: back to its rest local relation, then a swing that is a pure hinge rotation.
     bone('fore').quaternion.copy(rest.local.fore); bone('fore').updateMatrix(); bone('fore').updateMatrixWorld(true);
-    const fNow = P('hand').sub(P('fore')).normalize();
-    setWorld(bone('fore'), new T.Quaternion().setFromUnitVectors(fNow, f1).multiply(W('fore')));
+    // Exact hinge: rotate about the upper arm's +X only, matching the in-plane direction. The rest pose's own small
+    // out-of-plane offset is kept rather than corrected with a forearm roll.
+    const fNow = P('hand').sub(P('fore')).normalize(), axis = new T.Vector3(1, 0, 0).applyQuaternion(W('upper')).normalize();
+    const pa = fNow.clone().addScaledVector(axis, -fNow.dot(axis)).normalize(), pb = f1.clone().addScaledVector(axis, -f1.dot(axis)).normalize();
+    setWorld(bone('fore'), new T.Quaternion().setFromAxisAngle(axis, Math.atan2(pa.clone().cross(pb).dot(axis), pa.dot(pb))).multiply(W('fore')));
     // Hand: rest relation to the forearm, then pronation and extension.
     bone('hand').quaternion.copy(rest.local.hand); bone('hand').updateMatrix(); bone('hand').updateMatrixWorld(true);
     let qH = W('hand'), pronation = 0;

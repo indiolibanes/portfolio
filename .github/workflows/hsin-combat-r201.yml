@@ -55,7 +55,7 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-          set -o pipefail; f=0
+          set +e; f=0
           t(){ n=$1; shift; "$@" > qa/test-$n.txt 2>&1; c=$?; echo "$n exit $c" | tee -a qa/tests.txt; [ $c = 0 ] || f=1; }
           t anatomy node tests/hsin-combat-r201-anatomy.test.mjs
           t combat-r2 node tests/hsin-combat-r2.test.mjs

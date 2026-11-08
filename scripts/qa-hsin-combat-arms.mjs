@@ -16,7 +16,7 @@ import {SIDES,armNames,measureArmRest,armState,projectedChain,segmentDistance} f
 export const ARM_GATE=Object.freeze({
  boneLengthMm:.5,orgDefGapMm:.5,hyperextensionDegrees:-1,maxFlexDegrees:150,hingeOffPlaneDegrees:6,forearmRollDegrees:8,forearmSwingOffHingeDegrees:8,
  wristSwingDegrees:55,wristTwistDegrees:45,pronationDegrees:80,wristBendOverRestDegrees:45,projectedWristBendDegrees:70,surfaceStretch:1.6,surfaceCompress:.6,surfaceMinRestEdgeMm:4,
- clavicleDegrees:20,stepDegrees:8,accelerationJumpDegrees:3,forearmTorsoClearanceMm:0,handFaceClearanceMm:15,armArmClearanceMm:0,
+ clavicleDegrees:20,stepDegrees:10,accelerationJumpDegrees:4,forearmTorsoClearanceMm:0,handFaceClearanceMm:15,armArmClearanceMm:0,
 });
 const DEG=180/Math.PI;
 
@@ -52,6 +52,8 @@ export async function auditArms(assetText,{label='asset'}={}){
  const spine=by.get('ORG-Bip001Spine2'),spineRest=spine.getWorldQuaternion(new T.Quaternion());
  const N=data.frameCount,per={R:[],L:[]},previous={R:null,L:null};
  const surface=Object.fromEntries(['R','L'].map(s=>[s,{maxStretch:1,minCompress:1,at:null,compressAt:null,edges:0,over:0,tiny:{maxStretch:1,minCompress:1,at:null,compressAt:null}}]));
+ // Where a surface extreme sits, in the reference pose: nearest arm joint and distance, and the edge's dominant bones.
+ const locate=(s,tri,j)=>{const a=arm[s].get(tri.mesh.uuid+':'+tri.ids[j]).p,b=arm[s].get(tri.mesh.uuid+':'+tri.ids[(j+1)%3]).p,m=a.clone().add(b).multiplyScalar(.5),R=rest[s];const d={shoulder:m.distanceTo(R.S),elbow:m.distanceTo(R.E),wrist:m.distanceTo(R.W)};const near=Object.entries(d).sort((x,y)=>x[1]-y[1])[0];const top=id=>{const g=tri.mesh.geometry;let best=null;for(let k=0;k<4;k++){const w=g.attributes.skinWeight.getComponent(id,k);if(!best||w>best.w)best={w,n:tri.mesh.skeleton.bones[g.attributes.skinIndex.getComponent(id,k)].name};}return best.n;};return {nearJoint:near[0],distanceMm:+(near[1]*1000).toFixed(1),restEdgeMm:+(tri.rest[j]*1000).toFixed(2),bones:[top(tri.ids[j]),top(tri.ids[(j+1)%3])]};};
  const chain=s=>{const n=armNames(s);return ['upper','fore','hand','defFore2'].map(k=>by.get(n[k]));};
  for(let f=0;f<N;f++){
   pose.apply(f/(N-1));model.updateMatrixWorld(true);meshes.forEach(m=>m.skeleton.update());
@@ -71,7 +73,7 @@ export async function auditArms(assetText,{label='asset'}={}){
    // Surface: edge stretch of triangles fully skinned to this arm.
    // Edges shorter than 4 mm at rest (seams, eyelets, welded borders) are reported separately: their ratios explode
    // for sub-millimetre motion and say nothing about a visibly stretched limb.
-   if(f%2===0)for(const tri of armTriangles[s]){const pts=tri.ids.map(id=>tri.mesh.getVertexPosition(id,new T.Vector3()).applyMatrix4(tri.mesh.matrixWorld));for(let j=0;j<3;j++){const ratio=pts[j].distanceTo(pts[(j+1)%3])/Math.max(1e-6,tri.rest[j]),big=tri.rest[j]*1000>=ARM_GATE.surfaceMinRestEdgeMm,bucket=big?surface[s]:surface[s].tiny;if(ratio>bucket.maxStretch){bucket.maxStretch=ratio;bucket.at=f;}if(ratio<bucket.minCompress){bucket.minCompress=ratio;bucket.compressAt=f;}if(big){surface[s].edges++;if(ratio>1.3||ratio<.75)surface[s].over++;}}}
+   if(f%2===0)for(const tri of armTriangles[s]){const pts=tri.ids.map(id=>tri.mesh.getVertexPosition(id,new T.Vector3()).applyMatrix4(tri.mesh.matrixWorld));for(let j=0;j<3;j++){const ratio=pts[j].distanceTo(pts[(j+1)%3])/Math.max(1e-6,tri.rest[j]),big=tri.rest[j]*1000>=ARM_GATE.surfaceMinRestEdgeMm,bucket=big?surface[s]:surface[s].tiny;if(ratio>bucket.maxStretch){bucket.maxStretch=ratio;bucket.at=f;if(big)bucket.where=locate(s,tri,j);}if(ratio<bucket.minCompress){bucket.minCompress=ratio;bucket.compressAt=f;if(big)bucket.compressWhere=locate(s,tri,j);}if(big){surface[s].edges++;if(ratio>1.3||ratio<.75)surface[s].over++;}}}
    const qs=chain(s).map(b=>b.getWorldQuaternion(new T.Quaternion()));
    let step=0,jump=0;if(previous[s]){qs.forEach((q,i)=>{const d=q.angleTo(previous[s].q[i])*DEG;step=Math.max(step,d);jump=Math.max(jump,Math.abs(d-previous[s].d[i]));});}
    previous[s]={q:qs,d:previous[s]?qs.map((q,i)=>q.angleTo(previous[s].q[i])*DEG):qs.map(()=>0)};
