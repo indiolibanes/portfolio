@@ -23,9 +23,9 @@ export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
    col.push(.5,.5,.5,.5,.5,.5,0,0,0);idx.push(base,base+1,base+2);}
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('color',new T.Float32BufferAttribute(col,3));g.setIndex(idx);return g;
  })();
- const shardGeometry=(()=>{ // slim bipyramid, long axis +Y
-  const pos=[1,0,0,0,0,1,-1,0,0,0,0,-1,0,1,0,0,-1,0],col=[1,1,1,1,1,1,1,1,1,1,1,1,.55,.55,.55,.55,.55,.55];
-  const idx=[0,4,1,1,4,2,2,4,3,3,4,0,1,5,0,2,5,1,3,5,2,0,5,3];
+ const shardGeometry=(()=>{ // two crossed flat kites (long axis +Y): 4 triangles, one layer wherever it is seen from, so brightness is not doubled by back faces
+  const pos=[0,1,0,1,0,0,0,-1,0,-1,0,0,0,0,1,0,0,-1],col=[.55,.55,.55,1,1,1,.55,.55,.55,1,1,1,1,1,1,1,1,1];
+  const idx=[0,1,3,2,3,1,0,4,5,2,5,4];
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('color',new T.Float32BufferAttribute(col,3));g.setIndex(idx);return g;
  })();
  const glintGeometry=(()=>{ // four long spikes with short diagonals, facing +Z
@@ -34,7 +34,7 @@ export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
   const idx=[];for(let i=0;i<8;i++)idx.push(0,1+i,1+(i+1)%8);
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('color',new T.Float32BufferAttribute(col,3));g.setIndex(idx);return g;
  })();
- const material=new T.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+ const material=new T.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,forceSinglePass:true}); // additive: order-independent, so one pass (a double-sided transparent material would be drawn twice)
  const make=(geometry,count,name)=>{
   const mesh=new T.InstancedMesh(geometry,material,count);mesh.name=name;mesh.frustumCulled=false;mesh.count=0;mesh.visible=false;
   mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);

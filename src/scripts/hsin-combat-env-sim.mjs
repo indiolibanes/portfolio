@@ -13,9 +13,9 @@
 export const TICK=1/60;
 export const CAPACITY={rings:8,shards:56,glints:20};
 /** Triangles per instance of each shared geometry (hsin-combat-env.mjs builds exactly these). */
-export const GEOMETRY_TRIANGLES={ring:204,shard:8,glint:8};
+export const GEOMETRY_TRIANGLES={ring:204,shard:4,glint:8};
 export const WORST_CASE_TRIANGLES=CAPACITY.rings*GEOMETRY_TRIANGLES.ring+CAPACITY.shards*GEOMETRY_TRIANGLES.shard+CAPACITY.glints*GEOMETRY_TRIANGLES.glint;
-const MAX_TICKS=24,MANDALA=2;
+const MAX_TICKS=24,MANDALA=2,SHARD_SCALE=1.25;
 const clamp01=v=>v<0?0:v>1?1:v;
 const smooth=(a,b,x)=>{const u=clamp01((x-a)/(b-a));return u*u*(3-2*u);};
 // Linear-light tints (the shader output is encoded to sRGB afterwards): warm gold, crimson, rose, pale gold. None reaches white.
@@ -137,12 +137,12 @@ export function createEnvSim({density=1}={}){
   // Basic 01: low horizontal gold-crimson trail with a short dispersion; the dissipation settles downwards
   if(ev.trailR>=0&&tt>=ev.trailR&&tt<ev.trailR+.62){
    seed(k,1);
-   if(rand()<.62*dens)shard(tt,0,rand()<.3?CRIMSON:GOLD,pr[0]+gauss()*.01,pr[1]+gauss()*.01,pr[2]+gauss()*.01,vr[0]*.15+gauss()*.03,vr[1]*.15+gauss()*.03,vr[2]*.15+gauss()*.03,2.4,-.06,.34+.2*rand(),.01+.008*rand(),2.4);
+   if(rand()<.85*dens)shard(tt,0,rand()<.3?CRIMSON:GOLD,pr[0]+gauss()*.01,pr[1]+gauss()*.01,pr[2]+gauss()*.01,vr[0]*.15+gauss()*.03,vr[1]*.15+gauss()*.03,vr[2]*.15+gauss()*.03,2.4,-.06,.45+.25*rand(),.01+.008*rand(),2.4);
   }
   // Basic 02: lighter and rising, rose-gold, longer and thinner
   if(ev.trailL>=0&&tt>=ev.trailL&&tt<ev.trailL+.62){
    seed(k,2);
-   if(rand()<.5*dens)shard(tt,0,rand()<.55?ROSE:GOLD,pl[0]+gauss()*.008,pl[1]+gauss()*.008,pl[2]+gauss()*.008,vl[0]*.12+gauss()*.025,vl[1]*.12+.16+gauss()*.025,vl[2]*.12+gauss()*.025,1.6,.12,.55+.25*rand(),.007+.006*rand(),3);
+   if(rand()<.7*dens)shard(tt,0,rand()<.55?ROSE:GOLD,pl[0]+gauss()*.008,pl[1]+gauss()*.008,pl[2]+gauss()*.008,vl[0]*.12+gauss()*.025,vl[1]*.12+.16+gauss()*.025,vl[2]*.12+gauss()*.025,1.6,.12,.55+.25*rand(),.007+.006*rand(),3);
   }
   if(ev.charge>=0&&tt>=ev.charge){
    const age=tt-ev.charge,toRelease=ev.release<0||tt<ev.release;
@@ -171,14 +171,14 @@ export function createEnvSim({density=1}={}){
   }
  }
  function mandalaRadius(i,t){
-  const base=i?.94:.62;if(ev.release<0||t<ev.release)return base;
-  const u=t-ev.release;return i?base+.5*smooth(0,.9,u):base-.08*smooth(0,.5,u);
+  const base=i?.8:.5;if(ev.release<0||t<ev.release)return base;
+  const u=t-ev.release;return i?base+.36*smooth(0,.9,u):base-.06*smooth(0,.5,u);
  }
  function mandalaBrightness(t){
   if(ev.charge<0)return 0;
   const fadeIn=smooth(ev.charge+.6,ev.charge+1.35,t);if(fadeIn<=0)return 0;
-  if(ev.release<0||t<ev.release)return fadeIn*.34*(.8+.2*Math.sin(6.9*(t-ev.charge)));
-  const u=t-ev.release;return (.34+.5*Math.exp(-u*6))*(1-smooth(.95,1.75,u));
+  if(ev.release<0||t<ev.release)return fadeIn*.5*(.8+.2*Math.sin(6.9*(t-ev.charge)));
+  const u=t-ev.release;return (.5+.6*Math.exp(-u*6))*(1-smooth(.95,1.75,u));
  }
  /**
   * Advance the effects to the combat clock `t`. `pose` carries the freshly sampled skeleton:
@@ -227,7 +227,7 @@ export function createEnvSim({density=1}={}){
   for(let i=MANDALA;i<R;i++){
    if(!rAlive[i])continue;const age=t-rBorn[i];
    if(age<0||age>=rDur[i])continue;
-   const u=age/rDur[i],e=1-(1-u)*(1-u),rad=rR0[i]+(rR1[i]-rR0[i])*e,a=rSpin[i]*age,cs=Math.cos(a)*rad,sn=Math.sin(a)*rad,b=rAmp[i]*Math.pow(1-u,1.5)*smooth(0,.06,u)*.62,o=nr*16,tint=TINT[rColor[i]];
+   const u=age/rDur[i],e=1-(1-u)*(1-u),rad=rR0[i]+(rR1[i]-rR0[i])*e,a=rSpin[i]*age,cs=Math.cos(a)*rad,sn=Math.sin(a)*rad,b=rAmp[i]*Math.pow(1-u,1.5)*smooth(0,.06,u)*.9,o=nr*16,tint=TINT[rColor[i]];
    ringM[o]=cs;ringM[o+1]=0;ringM[o+2]=-sn;ringM[o+3]=0;ringM[o+4]=0;ringM[o+5]=1;ringM[o+6]=0;ringM[o+7]=0;ringM[o+8]=sn;ringM[o+9]=0;ringM[o+10]=cs;ringM[o+11]=0;
    ringM[o+12]=rX[i];ringM[o+13]=ev.floorY;ringM[o+14]=rZ[i];ringM[o+15]=1;
    ringC[nr*3]=tint[0]*b;ringC[nr*3+1]=tint[1]*b;ringC[nr*3+2]=tint[2]*b;nr++;
@@ -241,19 +241,21 @@ export function createEnvSim({density=1}={}){
     const e=Math.pow(u,1.7),rem=1-e,ang=sSpin[i]*e,cs=Math.cos(ang),sn=Math.sin(ang),ox=sV[i*3],oy=sV[i*3+1],oz=sV[i*3+2];
     px=inp.pcC[0]+(ox*cs-oz*sn)*rem;py=inp.pcC[1]+oy*rem;pz=inp.pcC[2]+(ox*sn+oz*cs)*rem;
     const de=1.7*Math.pow(u,.7)/sLife[i];vx=-(ox)*de;vy=-(oy)*de;vz=-(oz)*de;
-    b=smooth(0,.15,u)*(1-smooth(.9,1,u))*.8;sz=sSize[i]*(1-.55*e);
+    b=smooth(0,.15,u)*(1-smooth(.9,1,u))*.9;sz=sSize[i]*(1-.55*e);
+    // the small bodies are absorbed by the release: they fade out over 0.1 s instead of chasing the moving palms
+    if(ev.release>=0&&t>=ev.release){const f=1-smooth(0,.1,t-ev.release);if(f<=0)continue;b*=f;}
    }else{
     const k=sK[i],g=sGy[i],ek=Math.exp(-k*age),gk=g/k;
     px=sP[i*3]+(sV[i*3]*(1-ek))/k;pz=sP[i*3+2]+(sV[i*3+2]*(1-ek))/k;
     py=sP[i*3+1]+gk*age+(sV[i*3+1]-gk)*(1-ek)/k;
     vx=sV[i*3]*ek;vz=sV[i*3+2]*ek;vy=gk+(sV[i*3+1]-gk)*ek;
-    b=smooth(0,.12,u)*(1-smooth(.55,1,u))*.78;sz=sSize[i]*(.6+.4*smooth(0,.2,u))*(1-.5*smooth(.7,1,u));
+    b=smooth(0,.12,u)*(1-smooth(.55,1,u))*.92;sz=sSize[i]*(.6+.4*smooth(0,.2,u))*(1-.5*smooth(.7,1,u));
    }
    // orientation: long axis along the velocity
    let yx=vx,yy=vy,yz=vz,yl=Math.hypot(yx,yy,yz);if(yl<.02){yx=0;yy=1;yz=0;yl=1;}yx/=yl;yy/=yl;yz/=yl;
    let rx=0,ry=0,rz=1;if(Math.abs(yz)>.95){rx=1;rz=0;}
    let xx=yy*rz-yz*ry,xy=yz*rx-yx*rz,xz=yx*ry-yy*rx;const xl=Math.hypot(xx,xy,xz)||1;xx/=xl;xy/=xl;xz/=xl;
-   const zx=xy*yz-xz*yy,zy=xz*yx-xx*yz,zz=xx*yy-xy*yx,st=sStretch[i]*.6,o=ns*16,tint=TINT[sColor[i]];
+   const zx=xy*yz-xz*yy,zy=xz*yx-xx*yz,zz=xx*yy-xy*yx,st=sStretch[i]*.6;sz*=SHARD_SCALE;const o=ns*16,tint=TINT[sColor[i]];
    shardM[o]=xx*sz;shardM[o+1]=xy*sz;shardM[o+2]=xz*sz;shardM[o+3]=0;
    shardM[o+4]=yx*sz*st;shardM[o+5]=yy*sz*st;shardM[o+6]=yz*sz*st;shardM[o+7]=0;
    shardM[o+8]=zx*sz;shardM[o+9]=zy*sz;shardM[o+10]=zz*sz;shardM[o+11]=0;
@@ -263,7 +265,7 @@ export function createEnvSim({density=1}={}){
   for(let i=0;i<G;i++){
    if(!gAlive[i])continue;const age=t-gBorn[i];
    if(age<0||age>=gLife[i])continue;
-   const u=age/gLife[i],env=Math.sin(Math.PI*u),s=gSize[i]*Math.pow(env,.6),b=Math.pow(env,.5)*.85,cr=Math.cos(gRoll[i]+u*.6),sr=Math.sin(gRoll[i]+u*.6),o=ng*16,tint=TINT[gColor[i]];
+   const u=age/gLife[i],env=Math.sin(Math.PI*u),s=gSize[i]*Math.pow(env,.6),b=Math.pow(env,.5)*.92,cr=Math.cos(gRoll[i]+u*.6),sr=Math.sin(gRoll[i]+u*.6),o=ng*16,tint=TINT[gColor[i]];
    glintM[o]=(view.rx*cr+view.ux*sr)*s;glintM[o+1]=(view.ry*cr+view.uy*sr)*s;glintM[o+2]=(view.rz*cr+view.uz*sr)*s;glintM[o+3]=0;
    glintM[o+4]=(-view.rx*sr+view.ux*cr)*s;glintM[o+5]=(-view.ry*sr+view.uy*cr)*s;glintM[o+6]=(-view.rz*sr+view.uz*cr)*s;glintM[o+7]=0;
    glintM[o+8]=view.fx;glintM[o+9]=view.fy;glintM[o+10]=view.fz;glintM[o+11]=0;
