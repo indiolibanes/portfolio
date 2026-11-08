@@ -131,7 +131,7 @@ export function segmentDistance(T, a, b, c, d) {
  *   forearm skin bone, which carries the whole forearm skin), then wrist extension towards the back of the hand.
  * - clavicle: elevates only for hands above shoulder level, at a scapulohumeral ratio, clamped.
  */
-export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14, maxFlexDegrees = 100} = {}) {
+export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicleMax = 14, maxFlexDegrees = 85} = {}) {
   const n = rest.names, bone = k => by.get(n[k]);
   const setWorld = (b, q) => { b.quaternion.copy(b.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q)).normalize(); b.updateMatrix(); b.updateMatrixWorld(true); };
   const W = k => bone(k).getWorldQuaternion(new T.Quaternion()).normalize(), P = k => bone(k).getWorldPosition(new T.Vector3());
@@ -192,10 +192,14 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
     // DEF mirror with twist distribution: the proximal upper-arm skin bone takes half the shoulder roll and the distal
     // forearm skin bone takes half the pronation, so neither segment wrings its skin at one end.
     setWorld(bone('defClav'), W('clav').multiply(corrections.defClav));
-    setWorld(bone('defUpper'), new T.Quaternion().setFromAxisAngle(u1, -roll * .5).multiply(W('upper').multiply(corrections.defUpper)));
+    // Twist about each skin bone's own long axis (+Y), so the split never moves a joint.
+    const ownAxis = q => new T.Vector3(0, 1, 0).applyQuaternion(q).normalize();
+    const defUpperFull = W('upper').multiply(corrections.defUpper);
+    setWorld(bone('defUpper'), new T.Quaternion().setFromAxisAngle(ownAxis(defUpperFull), -roll * .5).multiply(defUpperFull));
     setWorld(bone('defUpper2'), W('upper').multiply(corrections.defUpper2));
     setWorld(bone('defFore'), W('fore').multiply(corrections.defFore));
-    setWorld(bone('defFore2'), new T.Quaternion().setFromAxisAngle(f1, pronation * .5).multiply(W('fore').multiply(corrections.defFore2)));
+    const defFore2Rest = W('fore').multiply(corrections.defFore2);
+    setWorld(bone('defFore2'), new T.Quaternion().setFromAxisAngle(ownAxis(defFore2Rest), pronation * .5).multiply(defFore2Rest));
     setWorld(bone('defHand'), W('hand').multiply(corrections.defHand));
     return {elbow, wrist, reachClamped, wristError: P('hand').distanceTo(wrist), elbowError: P('fore').distanceTo(elbow), clavicleLift: lift, rollDegrees: roll * DEG, pronationDegrees: pronation * DEG, flexDegrees: Math.acos(Math.max(-1, Math.min(1, u1.dot(f1)))) * DEG};
   }

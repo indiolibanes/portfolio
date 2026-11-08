@@ -16,7 +16,7 @@ import {SIDES,armNames,measureArmRest,armState,projectedChain,segmentDistance} f
 export const ARM_GATE=Object.freeze({
  boneLengthMm:.5,orgDefGapMm:.5,hyperextensionDegrees:-1,maxFlexDegrees:150,hingeOffPlaneDegrees:6,forearmRollDegrees:8,forearmSwingOffHingeDegrees:8,
  wristSwingDegrees:55,wristTwistDegrees:45,pronationDegrees:80,wristBendOverRestDegrees:45,projectedWristBendDegrees:70,surfaceStretch:1.6,surfaceCompress:.6,surfaceMinRestEdgeMm:4,
- clavicleDegrees:20,stepDegrees:10,accelerationJumpDegrees:4,forearmTorsoClearanceMm:0,handFaceClearanceMm:15,armArmClearanceMm:0,
+ clavicleDegrees:20,localStepDegrees:8,stepDegrees:10,accelerationJumpDegrees:4,forearmTorsoClearanceMm:0,handFaceClearanceMm:15,armArmClearanceMm:0,
 });
 const DEG=180/Math.PI;
 
@@ -75,14 +75,16 @@ export async function auditArms(assetText,{label='asset'}={}){
    // for sub-millimetre motion and say nothing about a visibly stretched limb.
    if(f%2===0)for(const tri of armTriangles[s]){const pts=tri.ids.map(id=>tri.mesh.getVertexPosition(id,new T.Vector3()).applyMatrix4(tri.mesh.matrixWorld));for(let j=0;j<3;j++){const ratio=pts[j].distanceTo(pts[(j+1)%3])/Math.max(1e-6,tri.rest[j]),big=tri.rest[j]*1000>=ARM_GATE.surfaceMinRestEdgeMm,bucket=big?surface[s]:surface[s].tiny;if(ratio>bucket.maxStretch){bucket.maxStretch=ratio;bucket.at=f;if(big)bucket.where=locate(s,tri,j);}if(ratio<bucket.minCompress){bucket.minCompress=ratio;bucket.compressAt=f;if(big)bucket.compressWhere=locate(s,tri,j);}if(big){surface[s].edges++;if(ratio>1.3||ratio<.75)surface[s].over++;}}}
    const qs=chain(s).map(b=>b.getWorldQuaternion(new T.Quaternion()));
-   let step=0,jump=0;if(previous[s]){qs.forEach((q,i)=>{const d=q.angleTo(previous[s].q[i])*DEG;step=Math.max(step,d);jump=Math.max(jump,Math.abs(d-previous[s].d[i]));});}
-   previous[s]={q:qs,d:previous[s]?qs.map((q,i)=>q.angleTo(previous[s].q[i])*DEG):qs.map(()=>0)};
+   // World steps include the torso yaw carrying the arm; local steps are the arm's own articulation.
+   const locals=chain(s).map(b=>b.quaternion.clone()),boneNames=chain(s).map(b=>b.name);
+   let step=0,jump=0,stepBone=null,localStep=0,localBone=null;if(previous[s]){qs.forEach((q,i)=>{const d=q.angleTo(previous[s].q[i])*DEG;if(d>step){step=d;stepBone=boneNames[i];}jump=Math.max(jump,Math.abs(d-previous[s].d[i]));const l=locals[i].angleTo(previous[s].l[i])*DEG;if(l>localStep){localStep=l;localBone=boneNames[i];}});}
+   previous[s]={q:qs,l:locals,d:previous[s]?qs.map((q,i)=>q.angleTo(previous[s].q[i])*DEG):qs.map(()=>0)};
    per[s].push({f,t:+(f/30).toFixed(3),spineYaw:+spineYaw.toFixed(2),lengthDeltaMm:Object.fromEntries(Object.entries(st.lengthDeltaMm).map(([k,x])=>[k,+x.toFixed(4)])),orgDefGapMm:+st.orgDefGapMm.toFixed(4),
     signedFlex:+st.signedFlexDegrees.toFixed(2),hingeOffPlane:+st.hingeOffPlaneDegrees.toFixed(2),forearmRoll:+st.forearmTwistDegrees.toFixed(2),forearmSwingOffHinge:+st.forearmSwingOffHingeDegrees.toFixed(2),
     wristSwing:+st.wristSwingDegrees.toFixed(2),wristTwist:+st.wristTwistDegrees.toFixed(2),pronation:+st.pronationDegrees.toFixed(2),distalForearmTwist:+st.distalForearmTwistDegrees.toFixed(2),wristBend:+st.wristBendDegrees.toFixed(2),
     clavicle:+st.clavicleDegrees.toFixed(2),elevation:+st.elevationDegrees.toFixed(2),
     projected:Object.fromEntries(Object.entries(views).map(([k,x])=>[k,{elbow:x.elbowVisible?+x.elbowBend.toFixed(1):null,wrist:x.wristVisible?+x.wristBend.toFixed(1):null,turn:x.elbowTurn,foreshortening:x.foreshortening.map(y=>+y.toFixed(2))}])),
-    clearanceMm:{torso:+(torsoMin*1000).toFixed(1),face:+(faceMin*1000).toFixed(1),hair:+(hairMin*1000).toFixed(1),oppositeArm:+(armArm*1000).toFixed(1)},sleeveReach:+sleeveReach.toFixed(3),stepDegrees:+step.toFixed(3),jumpDegrees:+jump.toFixed(3)});
+    clearanceMm:{torso:+(torsoMin*1000).toFixed(1),face:+(faceMin*1000).toFixed(1),hair:+(hairMin*1000).toFixed(1),oppositeArm:+(armArm*1000).toFixed(1)},sleeveReach:+sleeveReach.toFixed(3),stepDegrees:+step.toFixed(3),stepBone,localStepDegrees:+localStep.toFixed(3),localStepBone:localBone,jumpDegrees:+jump.toFixed(3)});
   }
  }
  pose.restore();model.updateMatrixWorld(true);
@@ -102,7 +104,7 @@ export async function auditArms(assetText,{label='asset'}={}){
   ['forearm into torso',x=>x.clearanceMm.torso<G.forearmTorsoClearanceMm,'collision'],
   ['hand into face',x=>x.clearanceMm.face<G.handFaceClearanceMm,'collision'],
   ['arm into arm',x=>x.clearanceMm.oppositeArm<G.armArmClearanceMm,'collision'],
-  ['temporal step',x=>x.stepDegrees>G.stepDegrees||x.jumpDegrees>G.accelerationJumpDegrees,'temporal'],
+  ['temporal step',x=>x.localStepDegrees>G.localStepDegrees||x.stepDegrees>G.stepDegrees||x.jumpDegrees>G.accelerationJumpDegrees,'temporal'],
  ];
  const summary={};
  for(const s of SIDES){
@@ -118,7 +120,8 @@ export async function auditArms(assetText,{label='asset'}={}){
    torsoYawCorrelation:(()=>{const a=rows.map(x=>Math.abs(x.spineYaw)),b=rows.map(x=>x.hingeOffPlane+Math.max(0,-x.signedFlex));const ma=a.reduce((p,c)=>p+c,0)/a.length,mb=b.reduce((p,c)=>p+c,0)/b.length;let sab=0,sa=0,sb=0;a.forEach((v,i)=>{sab+=(v-ma)*(b[i]-mb);sa+=(v-ma)**2;sb+=(b[i]-mb)**2;});return sa&&sb?+(sab/Math.sqrt(sa*sb)).toFixed(3):0;})(),
    perspectiveVsAnatomy:(()=>{const rowsV=rows.filter(x=>x.projected.front.elbow!==null);const diff=rowsV.map(x=>Math.abs(x.projected.front.elbow-Math.max(0,x.signedFlex)));return {frontFramesComparable:rowsV.length,maxDifferenceDegrees:diff.length?+Math.max(...diff).toFixed(1):null};})(),maxClavicle:max('clavicle'),maxElevation:max('elevation'),
    minClearanceMm:{torso:min(x=>x.clearanceMm.torso),face:min(x=>x.clearanceMm.face),hair:min(x=>x.clearanceMm.hair),oppositeArm:min(x=>x.clearanceMm.oppositeArm)},
-   maxSleeveReach:max('sleeveReach'),maxStep:max('stepDegrees'),maxJump:max('jumpDegrees'),surface:surface[s],
+   maxSleeveReach:max('sleeveReach'),maxStep:max('stepDegrees'),maxJump:max('jumpDegrees'),maxLocalStep:max('localStepDegrees'),
+   fastest:(()=>{const x=rows.reduce((a,b)=>b.localStepDegrees>a.localStepDegrees?b:a);const y=rows.reduce((a,b)=>b.stepDegrees>a.stepDegrees?b:a);return {local:{t:x.t,bone:x.localStepBone,deg:x.localStepDegrees},world:{t:y.t,bone:y.stepBone,deg:y.stepDegrees,spineYaw:y.spineYaw}};})(),surface:surface[s],
    worstFrame:{t:worst.t,spineYaw:worst.spineYaw,signedFlex:worst.signedFlex,hingeOffPlane:worst.hingeOffPlane,forearmRoll:worst.forearmRoll,wristSwing:worst.wristSwing,projected:worst.projected},
    samples:{arm:arm[s].size,triangles:armTriangles[s].length,sleeve:sleeve[s].length,torso:torso.length,face:face.length,hair:hair.length}};
  }

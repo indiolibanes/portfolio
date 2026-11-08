@@ -46,14 +46,14 @@ function value(field,t){let i=0;while(i<keys.length-2&&t>keys[i+1].t)i++;const a
 // Palm directions are chosen roughly perpendicular to the forearm: pronation can only turn the palm about that axis.
 const GUARD={to:[.08,-.22,.20],pole:[.55,-.75,-.35],palm:[-.8,-.4,.2],ext:0};
 const LOW_GUARD={to:[.10,-.27,.15],pole:[.55,-.75,-.35],palm:[-.7,-.6,.2],ext:0};
-const WIND={to:[.14,-.30,.02],pole:[.5,-.65,-.55],palm:[-.9,0,.2],ext:0};
+const WIND={to:[.14,-.30,.02],pole:[.5,-.65,-.55],palm:[-.7,-.6,.2],ext:0};
 // Basic: a knife-hand sweep led by the fingers, palm turned down and in, wrist nearly straight.
-const STRIKE={to:[.08,.04,.41],pole:[.7,-.7,-.1],palm:[-.35,-.9,.1],ext:8};
+const STRIKE={to:[.12,-.01,.40],pole:[.7,-.7,-.1],palm:[-.35,-.9,.1],ext:8};
 // Skill charge: "holding the sphere" — right palm down above, left palm up below, hands apart.
 const GATHER_R={to:[-.04,-.16,.27],pole:[.8,-.55,-.1],palm:[0,-1,.1],ext:0};
 const GATHER_L={to:[-.04,-.36,.24],pole:[.8,-.55,-.1],palm:[0,1,.1],ext:0};
 // Skill release: right arm opens up and forward, palm presented forward; left arm opens low to the side.
-const RELEASE={to:[.14,.12,.37],pole:[.75,-.6,-.2],palm:[0,.2,1],ext:22};
+const RELEASE={to:[.16,.06,.38],pole:[.75,-.6,-.2],palm:[0,.2,1],ext:20};
 const OPEN_LOW={to:[.30,-.22,.12],pole:[0,-.55,-.85],palm:[-.2,-.3,.9],ext:5};
 const DECAY={to:[.12,0,.30],pole:[.7,-.65,-.15],palm:[-.3,-.9,.1],ext:8};
 const DECAY_L={to:[.20,-.30,.12],pole:[.4,-.6,-.6],palm:[-.3,-.9,.2],ext:0};
