@@ -1,0 +1,43 @@
+{
+  "frames": 65,
+  "maxFootSurfaceDrift": 0.0033495848810582533,
+  "leftForearmScreenIntrusions": 9560,
+  "screenTriangleProbes": 183300,
+  "footVertices": 3608,
+  "bounds": {
+    "min": [
+      -0.4858056848573275,
+      -0.00013911099738220703,
+      -0.6301045315895958
+    ],
+    "max": [
+      0.8537565211298324,
+      1.7516986855559795,
+      0.5525358516805885
+    ]
+  },
+  "limitation": "Surface sampling and screen triangle probes, not continuous cloth/hair collision detection or artistic approval.",
+  "viewports": [
+    {
+      "w": 390,
+      "h": 640,
+      "yaw": -30
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "yaw": -30
+    },
+    {
+      "w": 1280,
+      "h": 720,
+      "yaw": 48
+    }
+  ],
+  "intrusionFrames": {
+    "25": 2926,
+    "26": 6634
+  },
+  "minArmBelowEyeCenter": 0.03584709558576149,
+  "status": "OCCLUSION_REVIEW_REQUIRED"
+}

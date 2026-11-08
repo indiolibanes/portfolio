@@ -1,0 +1,207 @@
+
+> portfolio@0.1.0 check
+> npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance && npm run check:shorekeeper-r2
+
+
+> portfolio@0.1.0 check:ux
+> node scripts/check-ux-contract.mjs
+
+PASS traducao: section exists
+PASS traducao: H3 heading exists
+PASS reflexao: section exists
+PASS reflexao: H3 heading exists
+PASS arquitetura: section exists
+PASS arquitetura: H3 heading exists
+PASS curadoria: section exists
+PASS curadoria: H3 heading exists
+PASS documentacao: section exists
+PASS documentacao: H3 heading exists
+PASS reflexao: static card, no outbound link
+PASS reflexao: no new-tab notice left behind
+PASS arquitetura: static card, no outbound link
+PASS arquitetura: no new-tab notice left behind
+PASS home: no link to Horologiarius in lab cards
+PASS lab cards: 5 standardized statuses
+PASS music: static section anchor
+PASS music: no-JS fallback
+PASS music: last track is a living album-cover hero (SaintHero pattern), no Moonlight note or piano
+PASS music: cover hero motion stays out of reduced-motion, Editorial and Legacy
+PASS reveal: Curiosidades and Música take random section entrances
+PASS attention: Curiosidades and Contato buttons are animated and respect reduced motion
+PASS music: cover is a vertical half panel with a style-detecting canvas (rain, contour, scales, embers, dust)
+PASS music: cover card spans the whole section, has no bar graph and derives a Material-You-style tonal scheme
+PASS music: cover proxy is allow-listed to the Last.fm CDN
+PASS music: cover animation is quiet in Editorial/Legacy and with reduced motion
+PASS music: title and subtitle live inside the listening widget; eyebrow stays in the heading
+PASS music: widget sits on top as the single layer; title and subtitle come after the player
+PASS modes: the line between the emblems is a vibrating-string model (standing harmonics + closed loop), reduced motion = static frame
+PASS music: the cover is the dominant element (wide left column, title moved to the copy column, no separate band)
+PASS music: section cursor is a musical note that changes figure and colour every 4 s, Autoral + fine pointer only
+PASS music: error/fallback containers
+PASS music: playback state available
+PASS music: polling and visibility pause
+PASS music: only announce track change
+PASS nav: lab label aligned
+PASS nav: music static link
+PASS nav: scrollspy state
+PASS hero: actions follow manifesto
+PASS hero: download action
+PASS contact: LinkedIn action
+PASS contact: decorative glyph hidden
+PASS footer: Last.fm uses configured handle
+PASS sophia: named sigil control
+PASS sophia: accessible numbered controls
+PASS curiosidades: page has one H1 and a labelled list
+PASS curiosidades: every item has a heading and a reason
+PASS curiosidades: external links open safely and announce the new tab
+PASS curiosidades: content kept in one data file
+PASS curiosidades: creative process is a labelled section with an ordered list of steps
+PASS curiosidades: creative process content kept in the data file
+PASS curiosidades: creative process steps animate nothing (no motion to gate)
+PASS curiosidades: header link
+PASS curiosidades: home teaser link
+PASS curiosidades: listed in sitemap
+PASS modes: preserve three-state control
+PASS modes: three fixed emblems (alpha, beta, gamma), one pressed at a time
+PASS modes: the current mode is named by a tag beside the emblems, which also opens the translucent legend
+PASS modes: each emblem has its own signature loop (alpha colour, beta pulsar, gamma quasar) and reduced motion skips them
+PASS modes: no separate help button; the tag is polyglot but always returns to Portuguese
+PASS header: Menu button carries a contained plasma that calms when released; standards run inside the drawer
+PASS modes: language change glitches, and the dot colour follows the language
+PASS modes: gamma jets are diagonal (rotated) and chaotic; beta spins fast with a counter-rotating pair; alpha is asymmetric
+PASS brand: looping avatar video replaces the K, keeps a still poster, honours reduced motion and Legacy
+PASS drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint
+PASS footer: sections and resume removed; mathematics canvas pauses off screen and respects reduced motion
+PASS modes: transition uses Web Animations (flat modes zero CSS animation) and honours reduced motion
+PASS modes: pointer locked while the comet runs, and announced to screen readers
+PASS motion: viewport and reduced preference
+PASS motion: two simultaneous loops
+PASS motion: static image fallback
+PASS 404: Tetris board is a keyboard-focusable application with a description
+PASS 404: touch controls are real buttons with names
+PASS 404: status is a polite live region
+PASS 404: pauses when hidden or off screen
+PASS 404: respects reduced motion for the clear flash
+PASS 404: best score storage is guarded
+PASS 404: old runner is gone
+PASS 404: portrait, mascot and temporary 2D room are wired in
+PASS 404: faithful 2D room keeps original architecture but not the old fox
+PASS 404: only the mascot is pixel art; portrait and lounge are vector illustrations
+PASS 404: decorative art is hidden from assistive tech, the 2D room has one label
+PASS 404: illustration animation is off for reduced motion and paused off screen
+PASS 404: illustrations stay visible in Legacy
+PASS 404: pixel palette stays monochrome
+PASS 404: Sophia is faithful to the original (no glasses in the portrait; 3D glasses stay in the lounge)
+PASS 404: game takes keyboard (arrows and WASD), gamepad and touch gestures
+PASS 404: gamepad input pauses on disconnect and never starts the game off screen
+PASS 404: touch gestures do not scroll the page while playing, and help follows the input in use
+PASS 404: the detective sits above the title, is decorative and is observed for pausing
+PASS 404: detective walk cycle only runs without reduced motion (static pose otherwise)
+PASS 404: lounge fox wears the lunar dress and a giant CRT TV faces her in profile (no screen content)
+PASS curiosidades: the home band runs Sophia through a medieval German town, decorative and paused off screen
+PASS curiosidades: banner copy stays legible on a translucent veil; runner travels left to right
+PASS curiosidades: run cycle only animates without reduced motion (static mid-stride pose otherwise)
+PASS curiosidades: banner collapses to text in Legacy and keeps no white boxes over the scene in mono modes
+PASS curiosidades: typewriter is wired in the layout and only runs on marked titles and text
+PASS curiosidades: typewriter respects reduced motion, keeps the full text for screen readers and hides the typed copy
+PASS curiosidades: display titles use the Benguiat chapter face and brick ink in the authorial mode
+PASS curiosidades: the home band is shorter than the scene art needs and keeps copy within half its width
+Static UX contract: 100/100 passed.
+
+> portfolio@0.1.0 check:api
+> node scripts/test-music-api.mjs
+
+PASS missing credentials -> 503, no upstream call, not cached
+PASS success -> normalized track, public cache headers, key never in body
+PASS upstream call has a timeout signal
+PASS non-https artwork and url are dropped
+PASS long text is clipped
+PASS upstream error -> 502 with a generic message, no upstream text or code
+PASS network failure -> 500 with a generic message, no internals
+PASS timeout abort -> 500, still generic
+PASS cache key ignores the query string
+PASS empty history -> ok with null track
+
+Music API tests: 10/10 passed.
+
+> portfolio@0.1.0 check:tetris
+> node scripts/test-tetris.mjs
+
+PASS 7-bag: each block of seven pieces holds all seven types
+PASS walls stop sideways movement
+PASS four rotations return every piece to its start
+PASS rotation near a wall kicks inside the board
+PASS hard drop lands on the floor and scores 2 per row
+PASS soft drop scores 1 per row and stops at the floor
+PASS one cleared row: 100 points, row removed, board shifted
+PASS four rows with a vertical I: 800 points
+PASS level rises every 10 lines and gravity speeds up
+PASS no input while rows are clearing or after game over
+PASS stacking without clearing ends the game
+PASS 300 random games keep the board consistent
+Tetris rules: 12 tests passed.
+
+> portfolio@0.1.0 check:music-state
+> node scripts/test-music-state.mjs
+
+Music state tests passed: HTTP error, empty, offline, playing, stale refresh, recent.
+
+> portfolio@0.1.0 check:music-transition
+> node tests/music-experimental-mode.test.mjs && node tests/music-experimental-transition.test.mjs
+
+Music experimental mode: direct Hsin stage link and no temporary cameo PASS
+Music → Hsin transition contract PASS
+
+> portfolio@0.1.0 check:hsin
+> node tests/experimentos-canonical.test.mjs && node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs && node tests/hsin-soundtrack.test.mjs
+
+Experimentos canonical route: Hsin V2.0.1 at /experimentos/, legacy stage/lab removed PASS
+Lunar Terrace V2.0.1: static root/face studies, unchanged arm trajectories and 600s traces, stone contact, reversible frozen matrices, gaze, framing, disposal, textures and budgets PASS (not GPU/FPS or artistic approval)
+{"studies":[{"bodyApparentYaw":35,"headApparentYaw":40,"rootDegrees":-27,"neckDegrees":1.7999999999999998,"headDegrees":3.2,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":25.691537516799066},{"bodyApparentYaw":45,"headApparentYaw":40,"rootDegrees":-37,"neckDegrees":5.3999999999999995,"headDegrees":9.600000000000001,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":24.075590324019164},{"bodyApparentYaw":55,"headApparentYaw":40,"rootDegrees":-47,"neckDegrees":9,"headDegrees":16,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":22.653706303861313},{"bodyApparentYaw":65,"headApparentYaw":40,"rootDegrees":-57,"neckDegrees":12.6,"headDegrees":22.4,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":true,"faceApparentDegrees":21.50089535375308}],"maxRigidHandError":2.2591401799415137e-16,"soleY":1.6525951614110301e-16,"simulationSeconds":600,"sceneMeshes":13,"sceneTriangles":7230,"scenePassCeiling":13,"totalPassCeiling":23,"textureBytes":104546,"textures":[{"url":"/assets/scenes/hsin/night-sky-v201.webp","bytes":5740,"width":1024,"height":512,"sha256":"3d7b07c5413e54b91dad95907561413e2170dd87bb798f1a5e897b908e0d60a6"},{"url":"/assets/scenes/hsin/golden-moon-v201.webp","bytes":50000,"width":512,"height":512,"sha256":"15a181657219989fc99ad0576c558893f13b9c5afb09a1f8031e13ebcac446fc"},{"url":"/assets/scenes/hsin/stone-v201.webp","bytes":28812,"width":1024,"height":1024,"sha256":"d1aacad55f07e3fbef18a6f65a19246db942678ae3db05ed64197a6f45244063"},{"url":"/assets/scenes/hsin/terrace-atlas-v201.webp","bytes":17692,"width":512,"height":256,"sha256":"fa872a26d1d15472bbd259b011c7499d4058417912e7feed21ea9a54151b746b"},{"url":"/assets/scenes/hsin/water-v201.webp","bytes":2302,"width":512,"height":256,"sha256":"b521188aaa7a2b67be66e3bfa308f5c579e8aa04a95047ea28d87411935f97f1"}]}
+Lunar refinement: independent body/face targets, unchanged arm paths, signature hand/face proxy, five camera aspects, exact restoration, textures/disposal/budget PASS; VISUAL_QA_PENDING
+{"studies":[{"bodyApparentYaw":60,"headApparentYaw":30,"rootDegrees":-52,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":30.14555339038461},{"bodyApparentYaw":65,"headApparentYaw":35,"rootDegrees":-57,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":35.14555339038464},{"bodyApparentYaw":70,"headApparentYaw":40,"rootDegrees":-62,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":40.14555339038462},{"bodyApparentYaw":75,"headApparentYaw":45,"rootDegrees":-67,"neckDegrees":4,"headDegrees":18.8,"cameraAzimuth":8,"cameraTargetOffset":[0,0,0],"legacy":false,"measuredFaceYaw":45.145553390384606}],"handFace":[{"weight":0.85,"before":0.1427203412634669,"after":0.14127657909601687,"delta":-0.0014437621674500134},{"weight":1,"before":0.06091116997751844,"after":0.0601741974256656,"delta":-0.0007369725518528436}],"viewports":[{"w":320,"h":740,"perspectiveFaceYaw":41.66145382993993,"distance":4.65,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":5.894920450281174,"peripheralCrop":true},{"w":393,"h":852,"perspectiveFaceYaw":41.66145382993993,"distance":4.65,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":5.541931202078445,"peripheralCrop":true},{"w":768,"h":1024,"perspectiveFaceYaw":42.155284858592,"distance":3.503991076041115,"target":[0.15844289099865125,0.88,-0.02226769615361047],"portrait":true,"fullEnvelopeDistance":3.503991076041115,"peripheralCrop":false},{"w":1280,"h":720,"perspectiveFaceYaw":41.19525748720316,"distance":3.4464244647946964,"target":[0.09902680687415705,0.88,-0.013917310096006545],"portrait":false,"fullEnvelopeDistance":3.4464244647946964,"peripheralCrop":false},{"w":1920,"h":1080,"perspectiveFaceYaw":41.19525748720316,"distance":3.4464244647946964,"target":[0.09902680687415705,0.88,-0.013917310096006545],"portrait":false,"fullEnvelopeDistance":3.4464244647946964,"peripheralCrop":false}],"gpuMeasured":false,"previousFaceYaw":22.653706303861313,"meshes":13,"triangles":7230,"structuralPasses":23,"textureBytes":104546,"estimatedTextureMiB":9.999999999999998,"textures":[{"url":"/assets/scenes/hsin/night-sky-v201.webp","bytes":5740,"width":1024,"height":512,"sha256":"3d7b07c5413e54b91dad95907561413e2170dd87bb798f1a5e897b908e0d60a6"},{"url":"/assets/scenes/hsin/golden-moon-v201.webp","bytes":50000,"width":512,"height":512,"sha256":"15a181657219989fc99ad0576c558893f13b9c5afb09a1f8031e13ebcac446fc"},{"url":"/assets/scenes/hsin/stone-v201.webp","bytes":28812,"width":1024,"height":1024,"sha256":"d1aacad55f07e3fbef18a6f65a19246db942678ae3db05ed64197a6f45244063"},{"url":"/assets/scenes/hsin/terrace-atlas-v201.webp","bytes":17692,"width":512,"height":256,"sha256":"fa872a26d1d15472bbd259b011c7499d4058417912e7feed21ea9a54151b746b"},{"url":"/assets/scenes/hsin/water-v201.webp","bytes":2302,"width":512,"height":256,"sha256":"b521188aaa7a2b67be66e3bfa308f5c579e8aa04a95047ea28d87411935f97f1"}]}
+Hsin music tower PASS: opt-in, persistent iframe, switching, silence, teardown, peripheral placement; 7 draws / 4132 triangles.
+(node:4294) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> portfolio@0.1.0 check:sophia
+> node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb
+
+PASS Sophia 7B E1 latest {"bytes":17054692,"sha256":"b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a","meshes":1,"materials":1,"images":3,"skins":0,"animations":[]}
+OK   Idle: desvio de escala do nó da malha=0.000000 pico de Blink=0.984
+OK   Write: desvio de escala do nó da malha=0.000000 pico de Blink=0.994
+OK   Point: desvio de escala do nó da malha=0.000000 pico de Blink=0.984
+OK   Wave: desvio de escala do nó da malha=0.000000 pico de Blink=0.994
+OK   Walk: desvio de escala do nó da malha=0.000000 pico de Blink=0.996
+
+> portfolio@0.1.0 check:performance
+> node tests/performance-route-isolation.test.mjs && node --test tests/build-hygiene.test.mjs
+
+PASS: landing-only Canvas 2D runtime, no scene markers on other known public routes.
+✔ clean removes stale output while preserving sources and symlink targets (8.467762ms)
+Build hygiene: PASS
+✔ output gate rejects accidental private files and allows intended public assets (8.136572ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.460035
+
+> portfolio@0.1.0 check:shorekeeper-r2
+> node --test tests/shorekeeper-private-r2.test.mjs
+
+✔ R2 manifest rejects traversal, unknown hashes, duplicates and overlimit (1.459775ms)
+✔ Access JWT validates RS256, issuer, audience and expiration (33.750954ms)
+✔ Endpoints fail closed without binding, Access vars or JWT (3.478506ms)
+✔ Authenticated manifest and models remain private and no-store (10.015344ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 172.341216
