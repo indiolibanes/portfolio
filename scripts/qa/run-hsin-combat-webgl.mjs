@@ -47,7 +47,7 @@ async function run(name,viewport,opts){
   await page.click('[data-combat-action="pause"]');await page.waitForTimeout(500);
   const s=await pageState(page);await shot(id);
   if(id==='01-basic01-windup')result.panel.playing=await panelRect();
-  result.shots.push({id,target:time,time:s.combat?.time,state:s.combat?.state,env:s.combat?.env?{instances:s.combat.env.instances,triangles:s.combat.env.triangles,planted:s.combat.env.planted,pelvisShift:s.combat.env.pelvisShift}:null,renderer:s.renderer,visibleDrawCalls:s.combat?.visibleDrawCalls,panel:s.combat?.panel,cameraYawDeg:s.combat?.cameraYawDeg,cameraMode:s.combat?.camera,vfx:s.combat?.vfx});
+  result.shots.push({id,target:time,time:s.combat?.time,state:s.combat?.state,env:s.combat?.env?{instances:s.combat.env.instances,triangles:s.combat.env.triangles,planted:s.combat.env.planted,heights:s.combat.env.heights,baseline:s.combat.env.baseline,pelvisShift:s.combat.env.pelvisShift}:null,renderer:s.renderer,visibleDrawCalls:s.combat?.visibleDrawCalls,panel:s.combat?.panel,cameraYawDeg:s.combat?.cameraYawDeg,cameraMode:s.combat?.camera,vfx:s.combat?.vfx});
   await page.click('[data-combat-action="pause"]');
  }
  // --- the collapsed panel can be expanded and folded again by the user, and its controls stay reachable

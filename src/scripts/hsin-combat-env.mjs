@@ -10,7 +10,7 @@ import {createEnvSim,CAPACITY,GEOMETRY_TRIANGLES,WORST_CASE_TRIANGLES} from './h
  * lateral shift over the feet (weight transfer). It never starts a loop of its own: the lab and the acceptance harness call `update(time)`.
  */
 const FOOT=['ORG-Bip001FootR','ORG-Bip001FootL'],TOE=['ORG-Bip001Toe0R','ORG-Bip001Toe0L'];
-const PLANT_TOE=.03,PLANT_FOOT=.045,FALLBACK_TOE=.06,FALLBACK_FOOT=.09;
+const PLANT_TOE=.03,PLANT_FOOT=.045,FALLBACK_TOE=.06,FALLBACK_FOOT=.09,GROUND_SLACK=.12;
 export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
  const group=new T.Group();group.name='Hsin combat R2.2 environment effects';group.visible=false;scene.add(group);
  // --- shared geometries (unit size; the simulation scales them per instance) ---
@@ -54,7 +54,7 @@ export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
  const ex={pr:[0,0,0],pl:[0,0,0],vr:[0,0,0],vl:[0,0,0],c:[0,0,0],s:0,mid:[0,0,0]};
  const pose={pr:[0,0,0],pl:[0,0,0],c:[0,0,0],s:0,gap:.24,footX:[0,0],footZ:[0,0],planted:[1,1],mid:[0,0,0],rd:[0,0,1]};
  const view={rx:1,ry:0,rz:0,ux:0,uy:1,uz:0,fx:0,fy:0,fz:1};
- const prev={pr:[0,0,0],pl:[0,0,0],t:-1};
+ const prev={pr:[0,0,0],pl:[0,0,0],t:-1},hf=[0,0],ht=[0,0];
  const base={toe:[FALLBACK_TOE,FALLBACK_TOE],foot:[FALLBACK_FOOT,FALLBACK_FOOT],s:0,set:false};
  let lastTime=-1,drawn=0,disposed=false;
  function wp(o,v){o.updateWorldMatrix(true,false);return o.getWorldPosition(v);}
@@ -67,9 +67,13 @@ export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
   for(let f=0;f<2;f++){
    wp(feet[f],a);wp(toes[f],b);
    pose.footX[f]=(a.x+b.x)*.5;pose.footZ[f]=(a.z+b.z)*.5;mx+=pose.footX[f]*.5;mz+=pose.footZ[f]*.5;
+   hf[f]=a.y;ht[f]=b.y;
    if(!base.set&&t<.5){base.toe[f]=Math.min(b.y,FALLBACK_TOE*4);base.foot[f]=Math.min(a.y,FALLBACK_FOOT*4);}
-   pose.planted[f]=(b.y-base.toe[f])<PLANT_TOE&&(a.y-base.foot[f])<PLANT_FOOT?1:0;
   }
+  // A foot is planted when its toe and ankle are no higher than the other foot's by more than a step's worth, and the lower foot is on the rest contact height
+  // (relative test: robust to any uniform vertical offset the stage applies to the whole body; the rest heights are measured, not assumed).
+  const lowToe=Math.min(ht[0],ht[1]),lowFoot=Math.min(hf[0],hf[1]),groundOk=lowToe-Math.min(base.toe[0],base.toe[1])<GROUND_SLACK;
+  for(let f=0;f<2;f++)pose.planted[f]=groundOk&&(ht[f]-lowToe)<PLANT_TOE&&(hf[f]-lowFoot)<PLANT_FOOT?1:0;
   pose.mid[0]=mx;pose.mid[1]=0;pose.mid[2]=mz;
   wp(pelvis,a);const raw=(a.x-mx)*left.x+(a.z-mz)*left.z;
   if(!base.set&&t<.5){base.s=raw;base.set=true;}
@@ -121,7 +125,7 @@ export function createCombatEnv({T,scene,camera,by,vfx,density=1}){
   get density(){return density0;},
   visibleDrawCalls:()=>group.visible?meshes.reduce((n,m)=>n+(m.visible&&m.count>0?1:0),0):0,
   /** QA probe (allocates; diagnostics only). */
-  probe(){return {instances:{rings:rings.count,shards:shards.count,glints:glints.count},triangles:drawn,stats:{...sim.state.stats},baseline:{toe:[...base.toe],foot:[...base.foot],shift:+base.s.toFixed(4),measured:base.set},planted:[...pose.planted],pelvisShift:+pose.s.toFixed(4),density:density0};},
+  probe(){return {instances:{rings:rings.count,shards:shards.count,glints:glints.count},triangles:drawn,stats:{...sim.state.stats},baseline:{toe:[...base.toe],foot:[...base.foot],shift:+base.s.toFixed(4),measured:base.set},planted:[...pose.planted],heights:{toe:ht.map(x=>+x.toFixed(4)),foot:hf.map(x=>+x.toFixed(4))},pelvisShift:+pose.s.toFixed(4),density:density0};},
   budget:{meshes:3,geometries:3,materials:1,textures:0,renderTargets:0,customShaders:0,capacity:{...CAPACITY},triangles:WORST_CASE_TRIANGLES,maxDrawCalls:3},
   group,
   dispose(){
