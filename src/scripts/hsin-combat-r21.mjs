@@ -45,14 +45,14 @@ export function faceCue(time,out={}){
 export const CAMERA_KEYS=[
  [0,   -28, 1.00, .86, .14],   // Preparation: wide, whole body, feet in frame
  [1.2, -28, 1.00, .86, .14],
- [1.55,-32, .95,  .90, .14],   // Basic: small lateral follow
- [2.2, -36, .90,  .95, .12],   // reveals the arc of the right arm from its side
- [2.7, -26, .90,  .95, .12],
- [3.25,-16, .88,  .98, .12],   // follows the left counter
- [3.7, -20, .86,  1.00,.12],
- [4.3, -18, .70,  1.12,.10],   // Skill: hands, energy and face share the frame
- [5.4, -15, .66,  1.14,.10],
- [5.9, -22, .76,  1.08,.10],
+ [1.55,-32, 1.00, .90, .14],   // Basic: the feet stay in frame while the weight transfers (R2.1.1)
+ [2.2, -36, .98,  .93, .12],   // reveals the arc of the right arm from its side
+ [2.7, -26, .98,  .93, .12],
+ [3.25,-16, .96,  .94, .12],   // follows the left counter
+ [3.7, -20, .94,  .95, .12],
+ [4.3, -18, .78,  1.08,.10],   // Skill: hands, energy and face share the frame without the effect filling it (R2.1.1)
+ [5.4, -15, .76,  1.10,.10],
+ [5.9, -22, .84,  1.06,.10],
 ];
 const CAMERA_N=CAMERA_KEYS.length,CAMERA_XS=CAMERA_KEYS.map(k=>k[0]);
 function pchip(ys,t){

@@ -36,6 +36,12 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  const cameraOrigin=new T.Vector3(),cameraTargetOrigin=new T.Vector3(),desiredTarget=new T.Vector3(),shot={};
  let auto=false,disposed=false,lastPhase='',faceWeight=0,lastCpu=0,pendingRestart=false;
  const status=root.querySelector('[data-combat-status]');
+ // R2.1.1: the lab panel folds into a slim strip while the sequence plays so it never hides the body or the effects.
+ const panel=root.querySelector('.combat-panel'),panelToggle=root.querySelector('[data-combat-panel-toggle]');
+ let panelCollapsed=false,panelChosen=false;
+ const setPanel=value=>{panelCollapsed=value;panel?.setAttribute?.('data-collapsed',String(value));panelToggle?.setAttribute?.('aria-expanded',String(!value));};
+ const togglePanel=()=>{panelChosen=true;setPanel(!panelCollapsed);invalidate();};
+ panelToggle?.addEventListener?.('click',togglePanel);
  const oldPan=orbit.enablePan;orbit.enablePan=true;
  const manual=()=>{auto=false;};
  orbit.addEventListener('start',manual);
@@ -43,6 +49,7 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  const cue={overlays:{},smileL:0,smileR:0},faceOutput={},faceNow={};
  const setFace=state=>{
   lastPhase=state;
+  if(state==='PREPARATION'){panelChosen=false;setPanel(true);}else if(!panelChosen&&(state==='COMPLETE'||state==='INTERRUPTED'))setPanel(false);
   if(state==='RECOVERY'||state==='INTERRUPTED'){if(status)status.textContent=state;return;}
   if(!r2){
    cue.overlays={};cue.smileL=cue.smileR=0;
@@ -146,9 +153,9 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
    state.smileL=cue.smileL*gain;state.smileR=cue.smileR*gain;for(const key of Object.keys(cue.overlays))state.overlays[key]=cue.overlays[key]*gain;return state;
   },
   diagnostics:()=>({...director.diagnostics(),preparationMs,lastCpuMs:lastCpu,bakeBytes:manifest.bytes,decodedBytes:data.frameCount*data.rest.length*4+(data.recovery?.values.byteLength??0),version,revision:data.revision??null,recoveryBytes:pose.bufferBytes,
-   extraDrawCalls:r2?vfx.budget.meshes:2,visibleDrawCalls:r2?vfx.visibleDrawCalls():(legacy.ring.visible?1:0)+(legacy.impact.visible?1:0),geometries:r2?vfx.budget.geometries:3,materials:r2?vfx.budget.materials:2,textures:0,renderTargets:0,camera:auto?'automatic':'free'}),
+   extraDrawCalls:r2?vfx.budget.meshes:2,visibleDrawCalls:r2?vfx.visibleDrawCalls():(legacy.ring.visible?1:0)+(legacy.impact.visible?1:0),geometries:r2?vfx.budget.geometries:3,materials:r2?vfx.budget.materials:2,textures:0,renderTargets:0,camera:auto?'automatic':'free',panel:panelCollapsed?'collapsed':'expanded',cameraYawDeg:+(Math.atan2(camera.position.x-orbit.target.x,camera.position.z-orbit.target.z)*180/Math.PI).toFixed(1),vfx:r2?vfx.probe():null}),
   dispose(){
-   if(disposed)return;disposed=true;director.dispose();orbit.removeEventListener('start',manual);orbit.enablePan=oldPan;
+   if(disposed)return;disposed=true;director.dispose();panelToggle?.removeEventListener?.('click',togglePanel);panel?.removeAttribute?.('data-collapsed');orbit.removeEventListener('start',manual);orbit.enablePan=oldPan;
    vfx?.dispose();
    if(legacy){scene.remove(legacy.group);legacy.geometry.dispose();legacy.arcGeometry.dispose();legacy.material.dispose();legacy.impactGeometry.dispose();legacy.impactMaterial.dispose();}
    buttons.forEach(button=>button.removeEventListener('click',act));

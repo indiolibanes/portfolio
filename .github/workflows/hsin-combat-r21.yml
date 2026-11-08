@@ -85,7 +85,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          B=qa-results/hsin-combat-r21-bake; D=$(mktemp -d); cp -r qa/. $D/; cd $D
+          B=qa-results/hsin-combat-r211-bake; D=$(mktemp -d); cp -r qa/. $D/; cd $D
           printf 'source=%s\nrun=%s\nsha=%s\nbake=%s\nafter=%s\ntests=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" "${{ steps.bake.outcome }}" "${{ steps.after.outcome }}" "${{ steps.tests.outcome }}" > SOURCE.txt
           git init -q; git checkout -q -b $B; git add -A
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.1 bake evidence $GITHUB_SHA"
@@ -123,7 +123,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          B=qa-results/hsin-combat-r21-${{ matrix.part }}; D=$(mktemp -d); cp -r out/. $D/ 2>/dev/null || true; cd $D
+          B=qa-results/hsin-combat-r211-${{ matrix.part }}; D=$(mktemp -d); cp -r out/. $D/ 2>/dev/null || true; cd $D
           printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > SOURCE.txt
           git init -q; git checkout -q -b $B; git add -A
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.1 ${{ matrix.part }} $GITHUB_SHA"
@@ -150,11 +150,16 @@ jobs:
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/combate/ >/dev/null && break; sleep 1; done
       - name: Real-WebGL run of the combat lab (SwiftShader)
         run: node scripts/qa/run-hsin-combat-webgl.mjs webgl-out --stage-url=http://127.0.0.1:4321 2>&1 | tee webgl-out.log
+      - name: Encode the continuous capture (real WebGL, SwiftShader)
+        if: always()
+        run: |
+          for f in webgl-out/video-raw/*.webm; do [ -f "$f" ] || continue; ffmpeg -y -loglevel error -i "$f" -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p webgl-out/combat-r211-continuous-webgl.mp4; done
+          ls -la webgl-out webgl-out/video-raw 2>/dev/null || true
       - name: Publish evidence branch
         if: always()
         shell: bash
         run: |
-          B=qa-results/hsin-combat-r21-webgl; D=$(mktemp -d); cp -r webgl-out/. $D/ 2>/dev/null || true; cp webgl-out.log preview.log $D/ 2>/dev/null || true; cd $D
+          B=qa-results/hsin-combat-r211-webgl; D=$(mktemp -d); cp -r webgl-out/. $D/ 2>/dev/null || true; cp webgl-out.log preview.log $D/ 2>/dev/null || true; cd $D
           printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > SOURCE.txt
           git init -q; git checkout -q -b $B; git add -A
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.1 WebGL (SwiftShader) $GITHUB_SHA"

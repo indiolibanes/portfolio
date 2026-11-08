@@ -129,7 +129,7 @@ export const armWeight=t=>smooth(0,.5,t)*(1-smooth(7.7,8.4,t));
 /* ---------- secondary layer ---------- */
 const CAP={hair:1.1,ornament:1.5,sleeve:1.8,tail:1.4};
 const RESPONSE={hair:{f:2.0,z:.45,k:.02},ornament:{f:3.2,z:.35,k:.026},sleeve:{f:2.6,z:.4,k:.03},tail:{f:1.5,z:.5,k:.026}};
-const SUB=120;
+const SUB=120,ACTIVE_DEGREES=.02;
 /**
  * Offline secondary response. One damped second-order response per kind, each fed by what physically moves it:
  * hair and ornaments by head and torso turn, sleeves by the hand that carries them (lateral velocity) plus the turn,
@@ -168,7 +168,8 @@ export function createSecondary(secondary,intentFn){
   return /Piao/.test(name)?'ornament':'hair';
  });
  const groupDelay=Object.fromEntries(secondary.groups.map(g=>[g.id,g.delayPerDepth]));
- const stats={};
+ const stats={},peak=new Float64Array(kinds.length);
+ for(const kind of kinds)stats[kind]??={max:0,clamped:0,channels:0};
  /** Rotation angle in degrees for secondary channel i at time t. */
  function angle(i,t){
   const kind=kinds[i],g=secondary.groups[secondary.group[i]].id,depth=secondary.depth[i];
@@ -179,8 +180,21 @@ export function createSecondary(secondary,intentFn){
   const cap=kind==='sleeveL'||kind==='sleeveR'?CAP.sleeve:CAP[kind];
   const raw=at(filtered[kind],time)*response.k*secondary.gain[i]*shape*(1-smooth(7.6,8.4,t));
   const value=Math.max(-cap,Math.min(cap,raw));
-  const s=stats[kind]??={max:0,clamped:0,channels:0};s.max=Math.max(s.max,Math.abs(value));if(Math.abs(raw)>cap)s.clamped++;
+  const s=stats[kind];s.max=Math.max(s.max,Math.abs(value));if(Math.abs(raw)>cap)s.clamped++;
+  if(Math.abs(value)>peak[i])peak[i]=Math.abs(value);
   return value;
  }
- return {angle,kinds,stats,drivers,filtered};
+ /**
+  * Per-kind accounting. `channels` is the number of rig channels of that kind (it used to stay 0 because nothing counted it),
+  * `active` those whose baked angle ever exceeded ACTIVE_DEGREES, `idle` the names of the rest (their rig gain or shape is ~0).
+  */
+ function summary(names){
+  const out={};
+  for(const [kind,s] of Object.entries(stats)){
+   const ids=kinds.map((k,i)=>k===kind?i:-1).filter(i=>i>=0),idle=ids.filter(i=>peak[i]<=ACTIVE_DEGREES);
+   out[kind]={max:s.max,clamped:s.clamped,channels:ids.length,active:ids.length-idle.length,idle:idle.length,idleNames:idle.slice(0,12).map(i=>names[i])};
+  }
+  return out;
+ }
+ return {angle,kinds,stats,drivers,filtered,summary};
 }

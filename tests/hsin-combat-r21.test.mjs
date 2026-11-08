@@ -113,6 +113,7 @@ for(const aspect of [.45,1,16/9,2.1]){
  const prep=cameraShot(.5,{aspect},{}),tan=Math.tan(17*Math.PI/180);
  assert.ok(prep.distance*tan>=0.95||prep.distance>=6.99,`Preparation keeps the feet in frame (aspect ${aspect})`);
  assert.ok(prep.targetY-prep.distance*tan<=0.05||prep.distance>=6.99,'feet visible');
+ for(let t=1.5;t<=3.71;t+=.05){const b=cameraShot(t,{aspect},{});assert.ok(b.targetY-b.distance*tan<=.03||b.distance>=6.99,`feet stay in frame while the weight transfers (t ${t.toFixed(2)}, aspect ${aspect})`);}
  const skill=cameraShot(5,{aspect},{});assert.ok(skill.distance*tan>=.5||skill.distance>=6.99,'Skill frame holds hands and face');
  assert.ok(cameraShot(8.4,{aspect},{}).home>.999&&cameraShot(5,{aspect},{}).home===0,'Recovery blends back to the previous framing');
 }
@@ -125,10 +126,15 @@ function simulate(cameraPosition){
  const vfx=createCombatVfx({T,scene,camera,by});
  const p=createCombatPose({T,data:decodeCombatData(JSON.parse(bytes)),bones,model});
  const d=createCombatDirector({pose:p,sequence:data.sequence,onEvent:e=>vfx.event(e,d.sample().time)});
- const trace=[];let maxCalls=0,minGap=Infinity,sphereOverGap=0;d.start();
+ const trace=[];let maxCalls=0,minGap=Infinity,sphereOverGap=0;const opacityMax={},launchAt={};let travelMax=0,ribbonWidthMax=0;d.start();
  const watch=vfx.dispose,meshes=[];scene.traverse(o=>{if(o.isMesh&&o.name.startsWith('combat'))meshes.push(o);});
  for(let i=0;i<300&&d.owns();i++){d.advance(1/30);if(!d.owns())break;vfx.update(d.sample().time);
   maxCalls=Math.max(maxCalls,vfx.visibleDrawCalls());
+  // R2.1.1 presentation limits: the additive layers must not stack to white, the release stays short and thin.
+  for(const m of meshes)if(m.visible&&m.name!=='combat ribbon')opacityMax[m.name]=Math.max(opacityMax[m.name]??0,m.material.opacity);
+  {const tNow=d.sample().time,core=meshes.find(m=>m.name==='combat core');
+   if(tNow>=5.45&&tNow<6&&core.visible){if(!launchAt.p)launchAt.p=core.position.clone();travelMax=Math.max(travelMax,core.position.distanceTo(launchAt.p));}
+   const rb=meshes.find(m=>m.name==='combat ribbon');if(rb.visible){const pos=rb.geometry.attributes.position;for(let k=0;k<pos.count;k+=2){const dx=pos.getX(k)-pos.getX(k+1),dy=pos.getY(k)-pos.getY(k+1),dz=pos.getZ(k)-pos.getZ(k+1);ribbonWidthMax=Math.max(ribbonWidthMax,Math.hypot(dx,dy,dz));}}}
   trace.push(meshes.filter(m=>m.name!=='combat ribbon'&&m.visible).map(m=>[m.name,...m.position.toArray().map(x=>+x.toFixed(5))]));
   const t=d.sample().time;if(t>=4.9&&t<=5.25){const core=meshes.find(m=>m.name==='combat core');const gap=palmGap[Math.round(t*30)];if(core.visible){minGap=Math.min(minGap,gap/2-core.scale.x);if(core.scale.x>gap/2-.03+.003)sphereOverGap++;}}
  }
@@ -137,7 +143,7 @@ function simulate(cameraPosition){
  const budget={...vfx.budget};vfx.dispose();
  assert.equal(scene.children.filter(o=>o.name.startsWith('Hsin combat R2.1')).length,0,'effect group removed');
  scene.remove(model);
- return {trace,maxCalls,visibleAfter,minGap,sphereOverGap,disposed:{geometry:disposed.geometry.size,material:disposed.material.size},budget,meshes:meshes.length};
+ return {trace,maxCalls,visibleAfter,minGap,sphereOverGap,opacityMax,travelMax,ribbonWidthMax,disposed:{geometry:disposed.geometry.size,material:disposed.material.size},budget,meshes:meshes.length};
 }
 const a=simulate(new T.Vector3(1.4,1.2,2.8)),b=simulate(new T.Vector3(-2.2,.9,2.4)),c=simulate(new T.Vector3(1.4,1.2,2.8));
 assert.ok(a.maxCalls<=7,'draw calls '+a.maxCalls);assert.equal(a.visibleAfter,0,'effects hidden when the sequence ends');
@@ -146,7 +152,14 @@ assert.equal(a.disposed.geometry,4,'geometries disposed');assert.equal(a.dispose
 assert.equal(a.sphereOverGap,0,'the sphere never exceeds the space between the palms');
 assert.deepEqual(a.trace,c.trace,'effects are deterministic');
 assert.deepEqual(a.trace,b.trace,'effect transforms do not depend on the camera');
-report.vfx={maxVisibleDrawCalls:a.maxCalls,budget:a.budget,minimumSphereClearanceM:a.minGap};
+const om=a.opacityMax,core=om['combat core']??0,shell=om['combat shell']??0;
+assert.ok(core<=.65,'the gold core stays under .65 so core + shell cannot saturate to white: '+core);
+assert.ok(core+shell<=.8,'core plus shell opacity stays under .8: '+(core+shell));
+assert.ok(shell<=.16,'the shell is a faint glow: '+shell);
+assert.ok((om['combat ring']??0)<=.55&&(om['combat impact']??0)<=.9,'rings and impact are accents, not beams');
+assert.ok(a.travelMax>.6&&a.travelMax<=1.25,'the release leaves the palm and travels a short distance: '+a.travelMax);
+assert.ok(a.ribbonWidthMax<=.06,'trails and the comet stay thin (full width m): '+a.ribbonWidthMax);
+report.vfx={maxVisibleDrawCalls:a.maxCalls,budget:a.budget,minimumSphereClearanceM:a.minGap,opacityMax:a.opacityMax,releaseTravelM:+a.travelMax.toFixed(3),maxRibbonWidthM:+a.ribbonWidthMax.toFixed(4)};
 mkdirSync('docs/hsin-combat-r21',{recursive:true});
 writeFileSync('docs/hsin-combat-r21/acting-qa.json',JSON.stringify(report,null,2)+'\n');
 console.log('Combat R2.1 acting contract PASS',JSON.stringify(report));

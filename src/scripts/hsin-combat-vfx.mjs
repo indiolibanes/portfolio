@@ -105,7 +105,7 @@ export function createCombatVfx({T,scene,camera,by}){
    // energy glint at the right palm
    if(state.energy>=0){
     const u=(time-state.energy)/.55;
-    if(u>=0&&u<1){palm('R',v1);ring.position.copy(v1);ring.quaternion.copy(camera.quaternion);ring.scale.setScalar(.45+u*.35);ringMaterial.opacity=(1-u)*.7;ring.visible=true;}
+    if(u>=0&&u<1){palm('R',v1);ring.position.copy(v1);ring.quaternion.copy(camera.quaternion);ring.scale.setScalar(.45+u*.35);ringMaterial.opacity=(1-u)*.5;ring.visible=true;}
    }
    // Basic trails: the crescent follows the palm that carries the strike
    if(state.trail){

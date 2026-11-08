@@ -100,7 +100,7 @@ data.frameCount=frames.length;data.quaternions=packed.toString('base64');delete 
 const text=JSON.stringify(data);
 await writeFile('public/assets/animations/hsin/combat-r2.json',text);
 await writeFile('src/data/hsin-combat-r2.json',JSON.stringify({url:'/assets/animations/hsin/combat-r2.json',sha256:hash(text),bytes:Buffer.byteLength(text),modelSha256:data.modelSha256,profileSha256:data.profileSha256},null,2)+'\n');
-report.restIntent=restIntent;report.halfWidth=halfWidth;report.secondary=secondaryModel.stats;report.armRest=Object.fromEntries(SIDES.map(s=>[s,{l1:armRest[s].l1,l2:armRest[s].l2,flex:armRest[s].flex,sigma:armRest[s].sigma,hingeOffPlaneDegrees:armRest[s].hingeOffPlaneDegrees}]));
+report.restIntent=restIntent;report.halfWidth=halfWidth;report.secondary=secondaryModel.summary(secondary.names);report.armRest=Object.fromEntries(SIDES.map(s=>[s,{l1:armRest[s].l1,l2:armRest[s].l2,flex:armRest[s].flex,sigma:armRest[s].sigma,hingeOffPlaneDegrees:armRest[s].hingeOffPlaneDegrees}]));
 console.log(JSON.stringify({bones:names.length,frames:frames.length,bytes:Buffer.byteLength(text),report},null,1));
 await mkdir('docs/hsin-combat-r21',{recursive:true});
 await writeFile('docs/hsin-combat-r21/bake-report.json',JSON.stringify({bones:names.length,frames:frames.length,bytes:Buffer.byteLength(text),...report},null,2)+'\n');

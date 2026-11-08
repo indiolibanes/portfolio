@@ -48,6 +48,7 @@ const posterCache='lunar-terrace-r2';
         <button data-combat-action="trace">Baixar trace</button>
       </div>
       <output data-combat-status aria-live="polite">Pronto para carregar · câmera livre</output>
+      <button type="button" class="combat-panel__toggle" data-combat-panel-toggle aria-expanded="true" aria-label="Recolher ou expandir o painel do laboratório"></button>
     </section>
     <noscript><p class="hsin-stage__noscript">Ative JavaScript para explorar a cena.</p></noscript>
   </main>
@@ -62,4 +63,12 @@ const posterCache='lunar-terrace-r2';
 .combat-panel{position:absolute;z-index:6;bottom:5.5rem;left:1rem;max-width:min(26rem,calc(100vw - 2rem));padding:1rem;background:#091327ed;border:1px solid #cdb27c66;border-radius:.65rem;color:#f2e7d3;font:14px system-ui}
 .combat-panel p{margin:0 0 .6rem}.combat-panel p+p{font-size:12px;color:#c5cbd5}.combat-panel button{background:#24324a;color:#fff2d5;border:1px solid #9d8a62;border-radius:.3rem;padding:.5rem;margin:.15rem;cursor:pointer}.combat-panel output{display:block;margin-top:.5rem;font-size:12px}
 @media(max-width:600px){.combat-panel{padding:.65rem;bottom:4.8rem}.combat-panel button{font-size:12px;padding:.4rem}}
+/* R2.1.1: during playback the panel folds into one slim strip under the header so it never covers the body or the effects. */
+.combat-panel__toggle::after{content:'Recolher ▴'}
+.combat-panel__toggle[aria-expanded="false"]::after{content:'Painel ▾'}
+.combat-panel[data-collapsed="true"]{top:4.6rem;bottom:auto;left:.75rem;right:auto;max-width:min(30rem,calc(100vw - 1.5rem));padding:.3rem .4rem;background:#091327b8;display:flex;flex-wrap:wrap;align-items:center;gap:.1rem}
+.combat-panel[data-collapsed="true"]>p,.combat-panel[data-collapsed="true"]>label,.combat-panel[data-collapsed="true"]>[data-combat-load],.combat-panel[data-collapsed="true"] [data-combat-action="trace"]{display:none}
+.combat-panel[data-collapsed="true"] [data-combat-controls]:not([hidden]){display:flex;flex-wrap:wrap}
+.combat-panel[data-collapsed="true"] button{font-size:12px;padding:.3rem .45rem;margin:.1rem}
+.combat-panel[data-collapsed="true"] output{margin:0 .3rem;font-size:11px}
 </style>
