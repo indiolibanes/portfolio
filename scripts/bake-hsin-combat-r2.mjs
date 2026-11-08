@@ -47,15 +47,15 @@ function value(field,t){let i=0;while(i<keys.length-2&&t>keys[i+1].t)i++;const a
 const GUARD={to:[.08,-.22,.20],pole:[.55,-.75,-.35],palm:[-.8,-.4,.2],ext:0};
 const LOW_GUARD={to:[.10,-.27,.15],pole:[.55,-.75,-.35],palm:[-.7,-.6,.2],ext:0};
 const WIND={to:[.14,-.30,.02],pole:[.5,-.65,-.55],palm:[-.7,-.6,.2],ext:0};
-// Basic: a knife-hand sweep led by the fingers, palm turned down and in, wrist nearly straight.
-const STRIKE={to:[.12,-.01,.40],pole:[.7,-.7,-.1],palm:[-.35,-.9,.1],ext:8};
+// Basic: a crescent sweep out and forward at chest height, fingers leading, palm down — clear of the face.
+const STRIKE={to:[.30,-.05,.28],pole:[.45,-.85,-.25],palm:[0,-1,0],ext:10};
 // Skill charge: "holding the sphere" — right palm down above, left palm up below, hands apart.
 const GATHER_R={to:[-.04,-.16,.27],pole:[.8,-.55,-.1],palm:[0,-1,.1],ext:0};
 const GATHER_L={to:[-.04,-.36,.24],pole:[.8,-.55,-.1],palm:[0,1,.1],ext:0};
-// Skill release: right arm opens up and forward, palm presented forward; left arm opens low to the side.
-const RELEASE={to:[.16,.06,.38],pole:[.75,-.6,-.2],palm:[0,.2,1],ext:20};
+// Skill release: right arm opens up, out and forward, wrist extended so the palm presents forward; left opens low.
+const RELEASE={to:[.22,.10,.32],pole:[.75,-.6,-.2],palm:[0,-1,0],ext:22};
 const OPEN_LOW={to:[.30,-.22,.12],pole:[0,-.55,-.85],palm:[-.2,-.3,.9],ext:5};
-const DECAY={to:[.12,0,.30],pole:[.7,-.65,-.15],palm:[-.3,-.9,.1],ext:8};
+const DECAY={to:[.18,-.06,.30],pole:[.6,-.75,-.2],palm:[0,-1,0],ext:8};
 const DECAY_L={to:[.20,-.30,.12],pole:[.4,-.6,-.6],palm:[-.3,-.9,.2],ext:0};
 const mix=(a,b,w)=>({to:a.to.map((v,i)=>v+(b.to[i]-v)*w),pole:a.pole.map((v,i)=>v+(b.pole[i]-v)*w),palm:a.palm.map((v,i)=>v+(b.palm[i]-v)*w),ext:a.ext+(b.ext-a.ext)*w});
 const armKeys=[
@@ -71,7 +71,10 @@ function pchip(xs,ys,t){
  const u=(t-xs[i])/h[i],u2=u*u,u3=u2*u;return (2*u3-3*u2+1)*ys[i]+(u3-2*u2+u)*h[i]*m(i)+(-2*u3+3*u2)*ys[i+1]+(u3-u2)*h[i]*m(i+1);
 }
 const xs=armKeys.map(k=>k.t);
-function intent(side,t){const k=armKeys,pick=f=>pchip(xs,k.map(f),t);return {to:[0,1,2].map(i=>pick(x=>x[side].to[i])),pole:[0,1,2].map(i=>pick(x=>x[side].pole[i])),palm:[0,1,2].map(i=>pick(x=>x[side].palm[i])),ext:pick(x=>x[side].ext)};}
+// Hand targets interpolate in reach (distance) and direction separately: a straight-line blend between two targets
+// can pass close to the shoulder, pinning the elbow at its flexion cap and then releasing it in a snap.
+const polar=v=>{const d=Math.hypot(...v);return {d,u:v.map(x=>x/d)};};
+function intent(side,t){const k=armKeys,pick=f=>pchip(xs,k.map(f),t),d=pick(x=>polar(x[side].to).d),u=[0,1,2].map(i=>pick(x=>polar(x[side].to).u[i])),n=Math.hypot(...u);return {to:u.map(x=>x/n*d),pole:[0,1,2].map(i=>pick(x=>x[side].pole[i])),palm:[0,1,2].map(i=>pick(x=>x[side].palm[i])),ext:pick(x=>x[side].ext)};}
 const smooth=(a,b,x)=>{const u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u);};
 const armWeight=t=>smooth(0,.5,t)*(1-smooth(7.7,8.4,t));
 function setWorld(b,q){b.quaternion.copy(b.parent.getWorldQuaternion(new T.Quaternion()).invert().multiply(q)).normalize();b.updateMatrix();model.updateMatrixWorld(true);}

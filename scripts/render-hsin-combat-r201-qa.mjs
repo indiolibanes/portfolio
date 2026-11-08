@@ -18,23 +18,23 @@ const label=(text,w)=>Buffer.from(`<svg width="${w}" height="30"><rect width="${
 async function tile(file,text,w){return sharp(file).composite([{input:label(text,w),top:0,left:0}]).png().toBuffer();}
 async function grid(rows,cols,w,h,cells,file){const canvas=sharp({create:{width:cols*w,height:rows*h,channels:4,background:'#05080f'}});await canvas.composite(cells.map((c,k)=>({input:c,left:(k%cols)*w,top:Math.floor(k/cols)*h}))).webp({quality:88}).toFile(file);}
 const ACTIONS=[['preparation',1.5],['basic01',2.05],['basic02',3.05],['skill',5.35]];
-const VIEWS=[['front',0],['threeQuarter',40],['profileR',-90],['profileL',90]];
+const VIEWS=[['front',0],['threeQuarter',40],['profileR',-90],['profileL',90]]; // relative to the body's facing
 const ASSETS=[['R2 (antes)',before],['R2.0.1 (depois)',after]];
 if(!opts.only||opts.only==='sheets'){
  const W=330,H=480,tasks=[];
- for(const [action,time] of ACTIONS)for(const [ai,[,asset]] of ASSETS.entries())for(const [view,yaw] of VIEWS)tasks.push(()=>render(`${temp}/${action}-${ai}-${view}.webp`,W,H,asset,[`--time=${time}`,`--yaw=${yaw}`]));
+ for(const [action,time] of ACTIONS)for(const [ai,[,asset]] of ASSETS.entries())for(const [view,yaw] of VIEWS)tasks.push(()=>render(`${temp}/${action}-${ai}-${view}.webp`,W,H,asset,[`--time=${time}`,`--relYaw=${yaw}`]));
  await pool(tasks);
  for(const [action,time] of ACTIONS){const cells=[];for(const [ai,[name]] of ASSETS.entries())for(const [view] of VIEWS)cells.push(await tile(`${temp}/${action}-${ai}-${view}.webp`,`${name} · ${action} ${time}s · ${view}`,W));await grid(2,VIEWS.length,W,H,cells,`${out}/compare-${action}.webp`);}
 }
 if(!opts.only||opts.only==='closeups'){
  const W=420,H=420,shots=[['elbowR-side','elbowR',-90,.62,2.05],['elbowL-side','elbowL',90,.62,3.05],['handR','handR',0,.42,2.05],['handR-skill','handR',20,.45,5.35],['handL','handL',0,.42,3.05],['elbowR-threeQuarter','elbowR',-40,.6,5.35]],tasks=[];
- for(const [id,focus,yaw,dist,time] of shots)for(const [ai,[,asset]] of ASSETS.entries())tasks.push(()=>render(`${temp}/${id}-${ai}.webp`,W,H,asset,[`--time=${time}`,`--yaw=${yaw}`,`--focus=${focus}`,`--dist=${dist}`]));
+ for(const [id,focus,yaw,dist,time] of shots)for(const [ai,[,asset]] of ASSETS.entries())tasks.push(()=>render(`${temp}/${id}-${ai}.webp`,W,H,asset,[`--time=${time}`,`--relYaw=${yaw}`,`--focus=${focus}`,`--dist=${dist}`]));
  await pool(tasks);
  for(const [id,,,,time] of shots){const cells=[];for(const [ai,[name]] of ASSETS.entries())cells.push(await tile(`${temp}/${id}-${ai}.webp`,`${name} · ${id} · ${time}s`,W));await grid(1,2,W,H,cells,`${out}/closeup-${id}.webp`);}
 }
 if(!opts.only||opts.only==='video'){
  const W=400,H=560,fps=Number(opts.fps??10),N=Math.round(8.4*fps)+1,yaw=Number(opts.yaw??30),tasks=[];
- for(let i=0;i<N;i++)for(const [ai,[,asset]] of ASSETS.entries())tasks.push(()=>render(`${temp}/v-${String(i).padStart(4,'0')}-${ai}.webp`,W,H,asset,[`--time=${(i/fps).toFixed(3)}`,`--yaw=${yaw}`]));
+ for(let i=0;i<N;i++)for(const [ai,[,asset]] of ASSETS.entries())tasks.push(()=>render(`${temp}/v-${String(i).padStart(4,'0')}-${ai}.webp`,W,H,asset,[`--time=${(i/fps).toFixed(3)}`,`--relYaw=${yaw}`]));
  await pool(tasks);
  for(let i=0;i<N;i++){const cells=[];for(const [ai,[name]] of ASSETS.entries())cells.push(await tile(`${temp}/v-${String(i).padStart(4,'0')}-${ai}.webp`,`${name} · ${(i/fps).toFixed(2)} s`,W));await sharp({create:{width:2*W,height:H,channels:4,background:'#05080f'}}).composite(cells.map((c,k)=>({input:c,left:k*W,top:0}))).png().toFile(`${temp}/pair-${String(i).padStart(4,'0')}.png`);}
  await run('ffmpeg',['-y','-loglevel','error','-framerate',String(fps),'-i',`${temp}/pair-%04d.png`,'-c:v','libx264','-preset','veryfast','-pix_fmt','yuv420p','-crf','22',`${out}/combat-r2-vs-r201-cpu.mp4`]);

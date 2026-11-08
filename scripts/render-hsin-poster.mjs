@@ -50,7 +50,13 @@ const resource=dance?LUNAR_TERRACE:MOONLIT,sky=await decode(new URL('../public'+
 async function scenery(url){const t=new T.Texture();t.userData.cpu=await decode(new URL('../public'+url,import.meta.url).pathname);return t;}
 const moonTexture=await scenery(resource.moon),env=dance?createLunarTerrace({THREE:T,skyTexture:new T.Texture(),moonTexture,stoneTexture:await scenery(resource.stone),atlasTexture:await scenery(resource.atlas),waterTexture:await scenery(resource.water),feet:presentation.feet(),rootDegrees:presentation.parameters.rootDegrees}):createMoonlitEnvironment({THREE:T,skyTexture:new T.Texture(),moonTexture}),scene=new T.Scene();scene.add(env.group,gltf.scene);
 if(!dance){const platform=new T.Mesh(new T.CylinderGeometry(.79,.84,.075,48),new T.MeshStandardMaterial({color:HSIN_STAGE.colors.platform}));platform.position.y=-.042;scene.add(platform);const ring=new T.Mesh(new T.RingGeometry(.79,.797,64),new T.MeshBasicMaterial({color:HSIN_STAGE.colors.ring,transparent:true,opacity:.42,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=-.002;scene.add(ring);}
-const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45),yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
+const framing=dance?lunarCameraFit(W/H):null,distance=framing?.distance??cameraFit({min:bounds.min.toArray(),max:bounds.max.toArray()},W/H),target=framing?new T.Vector3(...framing.target):new T.Vector3(0,HSIN_STAGE.baseTargetY,0),camera=new T.PerspectiveCamera(HSIN_STAGE.fov,W/H,.03,45);let yaw=Number(options.yaw??(dance?HSIN_LUNAR_PRESENTATION.cameraAzimuth:0))*Math.PI/180;
+// --relYaw=DEG: camera azimuth relative to the body's own facing (from the planted thighs), so "front", "three-quarter"
+// and "profile" mean the same thing whatever root yaw the pose carries.
+if(options.relYaw!==undefined){
+ const l=gltf.scene.getObjectByName('ORG-Bip001ThighL').getWorldPosition(new T.Vector3()),r=gltf.scene.getObjectByName('ORG-Bip001ThighR').getWorldPosition(new T.Vector3());
+ const facing=l.sub(r).setY(0).normalize().cross(new T.Vector3(0,1,0));yaw=Math.atan2(facing.x,facing.z)+Number(options.relYaw)*Math.PI/180;
+}
 camera.position.set(target.x+Math.sin(yaw)*distance,target.y+.23,target.z+Math.cos(yaw)*distance);
 // QA close-ups on an arm joint (Combat R2.0.1): --focus=handR|elbowR|handL|elbowL [--dist=0.55] [--lift=0].
 if(options.focus){

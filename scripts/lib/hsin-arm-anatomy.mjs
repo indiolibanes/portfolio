@@ -138,8 +138,9 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
   const corr = k => rest.world[k === 'defClav' ? 'clav' : k === 'defUpper' || k === 'defUpper2' ? 'upper' : k === 'defFore' || k === 'defFore2' ? 'fore' : 'hand'].clone().invert().multiply(rest.world[k]);
   const corrections = Object.fromEntries(['defClav', 'defUpper', 'defUpper2', 'defFore', 'defFore2', 'defHand'].map(k => [k, corr(k)]));
   const restU = rest.E.clone().sub(rest.S).normalize();
-  let lastPerp = null;
-  function solve({target, pole, palm = null, extension = 0, frame, maxPronation = 70}) {
+  let lastPerp = null, lastPronation = null;
+  // Pronation is rate-limited (degrees per baked frame): a palm request that changes reachability must not spin the hand.
+  function solve({target, pole, palm = null, extension = 0, frame, maxPronation = 70, pronationRate = 3.5}) {
     // Clavicle: only when the hand rises above the shoulder.
     bone('clav').quaternion.copy(rest.local.clav); bone('clav').updateMatrix(); bone('clav').updateMatrixWorld(true);
     const C = P('clav'), S0 = P('upper'), reachDir = target.clone().sub(S0).normalize(), up = frame.up;
@@ -183,6 +184,8 @@ export function createArmSolver(T, by, model, rest, {clavicleRatio = .3, clavicl
       const reach = b.length(), weight = Math.max(0, Math.min(1, (reach - .25) / .3));
       if (a.lengthSq() > 1e-8 && b.lengthSq() > 1e-8) { a.normalize(); b.normalize(); pronation = weight * Math.max(-maxPronation / DEG, Math.min(maxPronation / DEG, Math.atan2(a.clone().cross(b).dot(f1), a.dot(b)))); }
     }
+    if (lastPronation !== null) pronation = Math.max(lastPronation - pronationRate / DEG, Math.min(lastPronation + pronationRate / DEG, pronation));
+    lastPronation = pronation;
     qH = new T.Quaternion().setFromAxisAngle(f1, pronation).multiply(qH);
     if (extension) {
       const finger = rest.fingerLocal.clone().applyQuaternion(qH), palmNow = rest.palmLocal.clone().applyQuaternion(qH), axis = finger.clone().cross(palmNow.negate()).normalize();
