@@ -1,0 +1,30 @@
+{
+ "peak": {
+  "rings": 6,
+  "shards": 37,
+  "glints": 3,
+  "tris": 1000
+ },
+ "spawned": {
+  "ripples": 7,
+  "shards": 126,
+  "glints": 8,
+  "bursts": 3,
+  "transfers": 6
+ },
+ "rippleTimes": [
+  1.53,
+  2.2,
+  3.27,
+  5.47,
+  5.77,
+  6.1
+ ],
+ "spawnRatio17vs60": 1.008,
+ "budget": {
+  "rings": 8,
+  "shards": 56,
+  "glints": 20,
+  "maxTriangles": 1760
+ }
+}
