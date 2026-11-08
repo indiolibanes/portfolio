@@ -59,6 +59,8 @@ jobs:
         run: |
           set +e; f=0
           t(){ n=$1; shift; "$@" > qa/test-$n.txt 2>&1; c=$?; echo "$n exit $c" | tee -a qa/tests.txt; [ $c = 0 ] || f=1; }
+          # The committed asset must be exactly what this bake produces (hash and bytes).
+          t bake-deterministic git diff --exit-code -- public/assets/animations/hsin/combat-r2.json src/data/hsin-combat-r2.json
           t anatomy node tests/hsin-combat-r201-anatomy.test.mjs
           t combat-r2 node tests/hsin-combat-r2.test.mjs
           t combat-r2-screen node tests/hsin-combat-r2-screen.test.mjs
