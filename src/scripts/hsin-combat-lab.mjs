@@ -1,3 +1,8 @@
+import {ABILITIES,abilitySourceTime,abilityEnvelope} from './hsin-combat-abilities.mjs';
+import basic01Manifest from '../data/hsin-combat-r23-basic01.json' with {type:'json'};
+import basic02Manifest from '../data/hsin-combat-r23-basic02.json' with {type:'json'};
+import comboManifest from '../data/hsin-combat-r23-combo.json' with {type:'json'};
+import skillManifest from '../data/hsin-combat-r23-skill.json' with {type:'json'};
 import {createCombatDirector} from './hsin-combat-director.mjs';
 import {decodeCombatData} from './hsin-combat-data.mjs';
 import {createCombatPose} from './hsin-combat-pose.mjs';
@@ -12,17 +17,22 @@ import {faceCue,cameraShot} from './hsin-combat-r21.mjs';
  */
 export async function createCombatLab({T,root,scene,model,bones,body,dance,camera,orbit,canvas,signal,invalidate,modelHash,profileHash}){
  const start=performance.now();
- const choice=root.querySelector('[data-combat-version]')?.value,env22=choice==='r22',version=choice==='r2'||env22?'r2':'r1',r2=version==='r2';
- const {default:manifest}=r2?await import('../data/hsin-combat-r2.json',{with:{type:'json'}}):await import('../data/hsin-combat-r1.json',{with:{type:'json'}});
- const response=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal});
- if(!response.ok)throw Error('Combat bake unavailable');
- const text=await response.text(),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
- const sha=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');
- const data=JSON.parse(text);
- if(sha!==manifest.sha256||data.modelSha256!==modelHash||data.profileSha256!==profileHash)throw Error('Combat identity mismatch');
- decodeCombatData(data);
+ const choice=root.querySelector('[data-combat-version]')?.value,r23=choice==='r23',env22=choice==='r22'||r23,version=choice==='r2'||env22?'r2':'r1',r2=version==='r2';
+ const {default:legacyManifest}=r2?await import('../data/hsin-combat-r2.json',{with:{type:'json'}}):await import('../data/hsin-combat-r1.json',{with:{type:'json'}});
+ const manifests={basic01:basic01Manifest,basic02:basic02Manifest,combo:comboManifest,skill:skillManifest,legacy:legacyManifest};
+ async function readBake(manifest){
+  const response=await fetch(manifest.url+'?v='+manifest.sha256.slice(0,12),{signal});
+  if(!response.ok)throw Error('Combat bake unavailable');
+  const text=await response.text(),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+  const sha=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');
+  const data=JSON.parse(text);
+  if(sha!==manifest.sha256||data.modelSha256!==modelHash||data.profileSha256!==profileHash)throw Error('Combat identity mismatch');
+  return decodeCombatData(data);
+ }
+ let selected=r23?'basic01':'legacy',manifest=manifests[selected],data=await readBake(manifest);
  const by=new Map(bones.map(b=>[b.name,b]));
- const pose=createCombatPose({T,data,bones,model});
+ let pose=createCombatPose({T,data,bones,model});
+ const abilityPanel=root.querySelector('[data-combat-abilities]');if(abilityPanel)abilityPanel.hidden=!r23;
  const versionSelect=root.querySelector('[data-combat-version]');if(versionSelect)versionSelect.disabled=true;
  // R2.1: pooled effects. R1: two rings, kept as the first study.
  const vfx=r2?createCombatVfx({T,scene,camera,by}):null;
@@ -39,7 +49,7 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  }
  const anchor=new T.Vector3(),direction=new T.Vector3(),target=new T.Vector3(),desired=new T.Vector3(),offset=new T.Vector3();
  const cameraOrigin=new T.Vector3(),cameraTargetOrigin=new T.Vector3(),desiredTarget=new T.Vector3(),shot={};
- let auto=false,disposed=false,lastPhase='',faceWeight=0,lastCpu=0,pendingRestart=false;
+ let auto=false,disposed=false,lastPhase='',faceWeight=0,lastCpu=0,pendingRestart=false,pendingAbility=null,selecting=false,selectionGeneration=0;
  const status=root.querySelector('[data-combat-status]');
  // R2.1.1: the lab panel folds into a slim strip while the sequence plays so it never hides the body or the effects.
  const panel=root.querySelector('.combat-panel'),panelToggle=root.querySelector('[data-combat-panel-toggle]');
@@ -67,7 +77,7 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  };
  const clearLegacy=()=>{if(legacy){legacy.ring.visible=legacy.impact.visible=false;legacy.effect='';}};
  const clear=()=>{vfx?.clear();env?.clear();clearLegacy();};
- const director=createCombatDirector({pose,sequence:data.sequence,onState:setFace,onRelease:()=>{clear();auto=false;faceWeight=0;},onEvent:event=>{
+ const director=createCombatDirector({pose:{apply:t=>pose.apply(t),restore:()=>pose.restore(),beginRecovery:()=>pose.beginRecovery(),recover:t=>pose.recover(t)},sequence:data.sequence,onState:setFace,onRelease:()=>{clear();auto=false;faceWeight=0;},onEvent:event=>{
   if(event==='clear'){clear();return;}
   if(r2){const at=director.sample().time;vfx.event(event,at);env?.event(event,at);return;}
   if(event==='recovery'){clear();return;}
@@ -85,14 +95,40 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
   if(!pose.atBaseline()){if(status)status.textContent='Pose de referência incompatível. Recarregue o laboratório.';return false;}
   return director.start();
  }
+ async function selectAbility(id){
+  if(!r23||!ABILITIES[id]?.implemented||disposed)return;
+  const generation=++selectionGeneration;selecting=true;pendingRestart=false;pendingAbility=null;
+  try{
+   const nextManifest=manifests[id],next=id===selected?data:await readBake(nextManifest);
+   if(disposed||generation!==selectionGeneration)return;
+   // A different actor may have acquired the body while this bake was loading.
+   if(dance()?.owns()){if(status)status.textContent='Aguarde a dança retornar ao repouso.';return;}
+   if(body.busy()){if(status)status.textContent='Aguarde o retorno ao repouso.';body.release();return;}
+   director.reset();pose.restore();data=next;manifest=nextManifest;selected=id;
+   abilityButtons.forEach(button=>button.setAttribute?.('aria-pressed',String(button.dataset.combatAbility===id)));
+   pose=createCombatPose({T,data,bones,model});director.select(data.sequence);
+   if(status)status.textContent=ABILITIES[id].label;
+   acquire();
+  }catch(error){if(!disposed&&generation===selectionGeneration&&status)status.textContent='Não foi possível carregar a ação. Tente novamente.';}
+  finally{if(generation===selectionGeneration){selecting=false;invalidate();}}
+ }
+ const abilityButtons=r23?root.querySelectorAll('[data-combat-ability]'):[];
+ const chooseAbility=event=>{
+  const id=event.currentTarget.dataset.combatAbility;
+  if(!ABILITIES[id]?.implemented)return;
+  if(director.owns()){selectionGeneration++;pendingAbility=id;pendingRestart=true;director.interrupt();}
+  else void selectAbility(id);
+  invalidate();
+ };
+ abilityButtons.forEach(button=>button.addEventListener('click',chooseAbility));
  const buttons=root.querySelectorAll('[data-combat-action]');
  const act=event=>{
   const action=event.currentTarget.dataset.combatAction;
   if(action==='play'||action==='restart'){
-   if(director.owns()){pendingRestart=true;director.interrupt();return;}
-   acquire();
+   if(director.owns()){pendingAbility=selected;pendingRestart=true;director.interrupt();return;}
+   if(r23)void selectAbility(selected);else acquire();
   }else if(action==='pause'){const d=director.diagnostics();if(d.paused)director.resume();else director.pause();}
-  else if(action==='stop'){pendingRestart=false;director.interrupt();}
+  else if(action==='stop'){selectionGeneration++;selecting=false;pendingAbility=null;pendingRestart=false;director.interrupt();}
   else if(action==='camera'){cameraOrigin.copy(camera.position);cameraTargetOrigin.copy(orbit.target);auto=true;}
   else if(action==='trace'){
    const blob=new Blob([JSON.stringify(director.diagnostics(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='hsin-combat-'+version+'-trace.json';link.click();URL.revokeObjectURL(url);
@@ -114,10 +150,10 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
  function advanceCamera(dt){
   const sample=director.sample(),pelvis=by.get('ORG-Bip001Pelvis');
   if(r2){
-   cameraShot(sample.time,{fov:camera.fov,aspect:camera.aspect,minDistance:orbit.minDistance||1.05,maxDistance:Math.min(orbit.maxDistance||7,7)},shot);
+   cameraShot(abilitySourceTime(data,sample.time),{fov:camera.fov,aspect:camera.aspect,minDistance:orbit.minDistance||1.05,maxDistance:Math.min(orbit.maxDistance||7,7)},shot);
    pelvis.updateWorldMatrix(true,false);pelvis.getWorldPosition(target);target.y=shot.targetY;
    desired.set(target.x+Math.sin(shot.yaw)*shot.distance,shot.targetY+shot.lift,target.z+Math.cos(shot.yaw)*shot.distance);
-   const home=lastPhase==='INTERRUPTED'?1:shot.home;
+   const home=lastPhase==='INTERRUPTED'?1:data.ability?1-abilityEnvelope(data,Math.max(.7,sample.time)):shot.home;
    desired.lerp(cameraOrigin,home);target.lerp(cameraTargetOrigin,home);
    const gain=1-Math.exp(-dt/.55);
    offset.copy(orbit.target);orbit.target.lerp(target,gain);offset.sub(orbit.target);camera.position.sub(offset).lerp(desired,gain);camera.lookAt(orbit.target);
@@ -133,7 +169,7 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
   owns:director.owns,
   needsAdvance:()=>director.owns()||pendingRestart,
   advance(dt){
-   if(pendingRestart&&!director.owns()){pendingRestart=false;acquire();}
+   if(pendingRestart&&!director.owns()){pendingRestart=false;if(r23)void selectAbility(pendingAbility??selected);else acquire();}
    const t0=performance.now(),wasPaused=director.sample().paused;
    director.advance(dt);
    if(director.owns()&&!wasPaused){
@@ -145,11 +181,11 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
   },
   face(state){
    if(!director.owns())return state;
-   const sample=director.sample(),gain=lastPhase==='INTERRUPTED'?1-sample.recovery:lastPhase==='RECOVERY'?Math.max(0,(data.seconds-sample.time)/(data.version==='combat-r2'?2.4:1.95)):faceWeight;
+   const sample=director.sample(),gain=lastPhase==='INTERRUPTED'?1-sample.recovery:data.ability?abilityEnvelope(data,sample.time):lastPhase==='RECOVERY'?Math.max(0,(data.seconds-sample.time)/(data.version==='combat-r2'?2.4:1.95)):faceWeight;
    state.overlays=faceOutput;for(const key of Object.keys(faceOutput))faceOutput[key]=0;
    if(r2){
     // R2.1: acting by combat clock. The rest smile is reduced, never replaced; blinks stay with the arbiter plus one contextual blink.
-    const f=faceCue(sample.time,faceNow);
+    const f=faceCue(abilitySourceTime(data,sample.time),faceNow);
     faceOutput.E_Squint_R=faceOutput.E_Squint_L=f.squint*gain;faceOutput.M_Squint_R=faceOutput.M_Squint_L=f.mouthSquint*gain;faceOutput.B_Up_Add_R=faceOutput.B_Up_Add_L=f.brow*gain;
     state.smileL=(state.smileL??0)*(1-f.smileCut*gain)+f.smileAdd*gain;state.smileR=(state.smileR??0)*(1-f.smileCut*gain)+f.smileAdd*gain;
     if(f.close>0){state.closeR=Math.max(state.closeR??0,f.close*gain);state.closeL=Math.max(state.closeL??0,f.close*gain);}
@@ -157,12 +193,13 @@ export async function createCombatLab({T,root,scene,model,bones,body,dance,camer
    }
    state.smileL=cue.smileL*gain;state.smileR=cue.smileR*gain;for(const key of Object.keys(cue.overlays))state.overlays[key]=cue.overlays[key]*gain;return state;
   },
-  diagnostics:()=>({...director.diagnostics(),preparationMs,lastCpuMs:lastCpu,bakeBytes:manifest.bytes,decodedBytes:data.frameCount*data.rest.length*4+(data.recovery?.values.byteLength??0),version,revision:data.revision??null,recoveryBytes:pose.bufferBytes,
+  diagnostics:()=>({...director.diagnostics(),preparationMs,lastCpuMs:lastCpu,bakeBytes:manifest.bytes,decodedBytes:data.frameCount*data.rest.length*4+(data.recovery?.values.byteLength??0),version:r23?'r23':version,ability:selected,selecting,seconds:data.seconds,atBaseline:pose.atBaseline(),revision:data.revision??null,recoveryBytes:pose.bufferBytes,
    extraDrawCalls:r2?vfx.budget.meshes+(env?env.budget.meshes:0):2,visibleDrawCalls:r2?vfx.visibleDrawCalls()+(env?env.visibleDrawCalls():0):(legacy.ring.visible?1:0)+(legacy.impact.visible?1:0),geometries:r2?vfx.budget.geometries+(env?env.budget.geometries:0):3,materials:r2?vfx.budget.materials+(env?env.budget.materials:0):2,env:env?{...env.probe(),budget:env.budget}:null,textures:0,renderTargets:0,camera:auto?'automatic':'free',panel:panelCollapsed?'collapsed':'expanded',cameraYawDeg:+(Math.atan2(camera.position.x-orbit.target.x,camera.position.z-orbit.target.z)*180/Math.PI).toFixed(1),vfx:r2?vfx.probe():null}),
   dispose(){
-   if(disposed)return;disposed=true;director.dispose();panelToggle?.removeEventListener?.('click',togglePanel);panel?.removeAttribute?.('data-collapsed');orbit.removeEventListener('start',manual);orbit.enablePan=oldPan;
+   if(disposed)return;disposed=true;selectionGeneration++;selecting=false;pendingRestart=false;pendingAbility=null;director.dispose();panelToggle?.removeEventListener?.('click',togglePanel);panel?.removeAttribute?.('data-collapsed');orbit.removeEventListener('start',manual);orbit.enablePan=oldPan;
    vfx?.dispose();env?.dispose();
    if(legacy){scene.remove(legacy.group);legacy.geometry.dispose();legacy.arcGeometry.dispose();legacy.material.dispose();legacy.impactGeometry.dispose();legacy.impactMaterial.dispose();}
+   abilityButtons.forEach(button=>button.removeEventListener('click',chooseAbility));
    buttons.forEach(button=>button.removeEventListener('click',act));
   },
  };

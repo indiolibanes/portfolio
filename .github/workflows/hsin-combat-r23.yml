@@ -1,0 +1,92 @@
+name: Hsin Combat R2.3 independent Basics
+on:
+  workflow_dispatch:
+  push:
+    branches: ['experiment/hsin-combat-r23-*']
+permissions:
+  contents: write
+concurrency:
+  group: hsin-combat-r23-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  ASTRO_TELEMETRY_DISABLED: 1
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: All prior gates plus independent clips
+        run: |
+          mkdir -p qa
+          exec > >(tee qa/gates.txt) 2>&1
+          node scripts/bake-hsin-combat-r2.mjs > qa/legacy-bake.txt
+          git diff --exit-code -- public/assets/animations/hsin/combat-r2.json src/data/hsin-combat-r2.json
+          for id in basic01 basic02 combo skill; do node scripts/bake-hsin-combat-r23.mjs "$id" > "qa/bake-$id.txt"; done
+          git diff --exit-code -- public/assets/animations/hsin/combat-r23-*.json src/data/hsin-combat-r23-*.json
+          node tests/hsin-combat-r23.test.mjs
+          node tests/hsin-combat-r23-lab.test.mjs
+          node scripts/qa/hsin-combat-r23-feet.mjs
+          node tests/hsin-combat-r201-anatomy.test.mjs
+          node tests/hsin-combat-r21.test.mjs
+          node tests/hsin-combat-r2.test.mjs
+          node tests/hsin-combat-r2-screen.test.mjs
+          node tests/hsin-combat-env-sim.test.mjs
+          node tests/hsin-combat-env.test.mjs
+          node tests/hsin-combat-lab.test.mjs
+          node tests/hsin-combat-lab.test.mjs --r2
+          node tests/hsin-combat-lab.test.mjs --r22
+          node tests/hsin-reference-ingestion.test.mjs
+          npm run check
+          npm run build
+          git diff --exit-code 70c4b47315be527d27d87d66a284d9e209a4859a -- public/assets/models public/assets/animations/hsin/combat-r2.json src/data/hsin-combat-r2.json scripts/lib/hsin-combat-r21-score.mjs src/scripts/hsin-combat-r21.mjs src/scripts/hsin-combat-vfx.mjs src/scripts/hsin-combat-env.mjs src/scripts/hsin-combat-env-sim.mjs src/scripts/hsin-stage.ts src/scripts/hsin-lunar-terrace.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: hsin-combat-r23-gates, path: 'qa', retention-days: 14}
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - run: node scripts/qa/render-hsin-combat-r23-video.mjs qa-r23
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: hsin-combat-r23-preview, path: qa-r23, retention-days: 14}
+      - name: Navigable evidence branch
+        if: always()
+        run: |
+          B=qa-results/hsin-combat-r23-preview; D=$(mktemp -d); cp -r qa-r23/. "$D/"; cd "$D"
+          printf 'sha=%s\nrun=%s\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > SOURCE.txt
+          git init -q; git checkout -q -b "$B"; git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "R2.3 videos $GITHUB_SHA"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$B"
+  webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+          npm run build
+          npx astro preview --ignore-lock --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/combate/ >/dev/null && break; sleep 1; done
+      - run: node scripts/qa/run-hsin-combat-r23-webgl.mjs qa-webgl http://127.0.0.1:4321
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: hsin-combat-r23-webgl, path: qa-webgl, retention-days: 14}

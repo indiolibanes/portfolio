@@ -1,3 +1,4 @@
+import {abilitySourceTime,abilityEnvelope} from '/src/scripts/hsin-combat-abilities.mjs';
 /** QA-only manual rendering. No RAF, input widgets or production entry point. */
 import './hsin-harness.mjs';
 import * as T from 'three';
@@ -42,9 +43,9 @@ function seek({time,yaw=40,detail=false,width=720,height=720,effects=true,enviro
  }
  const actor=createFacialActing({seed:211,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
  for(let at=0;at<time;at+=1/30)actor.advance(Math.min(1/30,time-at));
- const state=actor.sample(),cue=faceCue(time,{});
+ const state=actor.sample(),cue=faceCue(abilitySourceTime(data,time),{});
  state.overlays={E_Squint_R:cue.squint,E_Squint_L:cue.squint,M_Squint_R:cue.mouthSquint,M_Squint_L:cue.mouthSquint,B_Up_Add_R:cue.brow,B_Up_Add_L:cue.brow};
- const gain=time>=6?(8.4-time)/2.4:1;
+ const gain=data.ability?abilityEnvelope(data,time):time>=6?(8.4-time)/2.4:1;
  state.smileL=(state.smileL??0)*(1-cue.smileCut*gain)+cue.smileAdd*gain;
  state.smileR=(state.smileR??0)*(1-cue.smileCut*gain)+cue.smileAdd*gain;
  state.closeL=Math.max(state.closeL??0,cue.close*gain);state.closeR=Math.max(state.closeR??0,cue.close*gain);
@@ -60,7 +61,7 @@ function seek({time,yaw=40,detail=false,width=720,height=720,effects=true,enviro
  if(camMode==='cinematic'){
   // Deterministic cinematic move: the lab's automatic shot list (pchip, so position and speed are continuous), aimed at the standing point instead of the swaying pelvis; after 6 s it eases back to the opening wide shot.
   const lens={fov:camera.fov,aspect:camera.aspect,minDistance:1.05,maxDistance:7};
-  cameraShot(time,lens,shotA);cameraShot(0,lens,shotH);const k=home?shotA.home:0,mix=(a,b)=>a+(b-a)*k;
+  cameraShot(abilitySourceTime(data,time),lens,shotA);cameraShot(0,lens,shotH);const k=home?(data.ability?1-abilityEnvelope(data,Math.max(.7,time)):shotA.home):0,mix=(a,b)=>a+(b-a)*k;
   const dist=Math.max(mix(shotA.distance,shotH.distance),minScale*shotH.distance),ty=mix(shotA.targetY,shotH.targetY),lift=mix(shotA.lift,shotH.lift),yawS=mix(shotA.yaw,shotH.yaw);
   target=new T.Vector3(restPelvis.x,ty,restPelvis.z);
   camera.position.set(target.x+Math.sin(yawS)*dist,ty+lift,target.z+Math.cos(yawS)*dist);

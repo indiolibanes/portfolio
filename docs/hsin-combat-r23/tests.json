@@ -1,0 +1,105 @@
+{
+  "kind": "Node deterministic + real GLB skin; no GPU/FPS evidence",
+  "clips": {
+    "basic01": {
+      "frames": 127,
+      "seconds": 4.2,
+      "markers": [
+        [
+          "energy",
+          0.46
+        ],
+        [
+          "trail",
+          1.37
+        ],
+        [
+          "arc",
+          1.84
+        ]
+      ],
+      "endpointSpeedMps": 0.013678690504462698,
+      "releases": 19,
+      "anatomy": "PASS",
+      "cycles": 10,
+      "geometryCount": 16,
+      "materialCount": 14
+    },
+    "basic02": {
+      "frames": 115,
+      "seconds": 3.8,
+      "markers": [
+        [
+          "trail-left",
+          0.87
+        ],
+        [
+          "arc-left",
+          1.48
+        ]
+      ],
+      "endpointSpeedMps": 0.0021949854384079657,
+      "releases": 19,
+      "anatomy": "PASS",
+      "cycles": 10,
+      "geometryCount": 16,
+      "materialCount": 14
+    },
+    "combo": {
+      "frames": 166,
+      "seconds": 5.5,
+      "markers": [
+        [
+          "energy",
+          0.46
+        ],
+        [
+          "trail",
+          1.37
+        ],
+        [
+          "arc",
+          1.84
+        ],
+        [
+          "trail-left",
+          2.62
+        ],
+        [
+          "arc-left",
+          3.23
+        ]
+      ],
+      "endpointSpeedMps": 0.013678690504462698,
+      "releases": 22,
+      "anatomy": "PASS",
+      "cycles": 10,
+      "geometryCount": 16,
+      "materialCount": 14
+    },
+    "skill": {
+      "frames": 184,
+      "seconds": 6.1,
+      "markers": [
+        [
+          "charge",
+          1.5
+        ],
+        [
+          "ring",
+          3.2
+        ],
+        [
+          "recovery",
+          3.8
+        ]
+      ],
+      "endpointSpeedMps": 0.0006321341014368456,
+      "releases": 19,
+      "anatomy": "PASS",
+      "cycles": 10,
+      "geometryCount": 16,
+      "materialCount": 14
+    }
+  }
+}
