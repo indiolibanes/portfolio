@@ -67,7 +67,7 @@ jobs:
       - run: node scripts/qa/render-hsin-combat-r23-video.mjs qa-r23 --only=${{ matrix.clip }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: hsin-combat-r23-preview-${{ matrix.clip }}, path: qa-r23, retention-days: 14}
+        with: {name: "hsin-combat-r23-preview-${{ matrix.clip }}", path: qa-r23, retention-days: 14}
       - name: Navigable evidence branch
         if: always()
         run: |

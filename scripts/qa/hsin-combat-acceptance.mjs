@@ -22,25 +22,27 @@ const left=by.get('ORG-Bip001UpperArmL').getWorldPosition(new T.Vector3());
 const right=by.get('ORG-Bip001UpperArmR').getWorldPosition(new T.Vector3());
 const facing=left.sub(right).setY(0).normalize().cross(new T.Vector3(0,1,0));
 const baseYaw=Math.atan2(facing.x,facing.z);
-let data,pose;
+let data,pose,cursor=-1;
 async function loadAsset(url){
- pose?.restore();vfx.clear();env.clear();
+ cursor=-1;pose?.restore();vfx.clear();env.clear();
  data=decodeCombatData(await fetch(url).then(response=>response.json()));
  pose=createCombatPose({T,data,bones,model});
 }
-function seek({time,yaw=40,detail=false,width=720,height=720,effects=true,environment=false,density=1,camera:camMode='orbit',distance:distOverride,targetY:targetOverride,minScale=0,home=true}){
+function seek({time,yaw=40,detail=false,width=720,height=720,effects=true,environment=false,density=1,camera:camMode='orbit',distance:distOverride,targetY:targetOverride,minScale=0,home=true,continuous=false}){
  if(!pose||time<0||time>data.seconds)throw Error('Invalid acceptance time');
- pose.restore();vfx.clear();env.clear();env.setDensity(density);
- const times=new Set([0,time]);
- for(let frame=1;frame/30<time;frame++)times.add(frame/30);
- for(const [,at] of data.sequence.markers)if(at<=time)times.add(at);
+ const from=continuous&&time>=cursor?cursor:-1,hz=continuous?60:30;
+ if(from<0){pose.restore();vfx.clear();env.clear();env.setDensity(density);}
+ const times=new Set([Math.max(0,from),time]);
+ for(let frame=Math.max(1,Math.floor(Math.max(0,from)*hz)+1);frame/hz<time;frame++)times.add(frame/hz);
+ for(const [,at] of data.sequence.markers)if(at>from&&at<=time)times.add(at);
  const events=[];
  for(const at of [...times].sort((a,b)=>a-b)){
   pose.apply(at/data.seconds);model.updateMatrixWorld(true);
   if(at===0)pelvisBone.getWorldPosition(restPelvis);
-  for(const [name,marker] of data.sequence.markers)if(marker===at){vfx.event(name,marker);if(environment)env.event(name,marker);events.push({name,time:marker});}
+  for(const [name,marker] of data.sequence.markers)if(marker===at&&marker>from){vfx.event(name,marker);if(environment)env.event(name,marker);events.push({name,time:marker});}
   vfx.update(at);if(environment)env.update(at);
  }
+ cursor=continuous?time:-1;
  const actor=createFacialActing({seed:211,pass:'auto-b1',autonomous:true,intensity:.75,morphLimits:profile.limits,gazeAxes:profile.gazeAxes});
  for(let at=0;at<time;at+=1/30)actor.advance(Math.min(1/30,time-at));
  const state=actor.sample(),cue=faceCue(abilitySourceTime(data,time),{});
