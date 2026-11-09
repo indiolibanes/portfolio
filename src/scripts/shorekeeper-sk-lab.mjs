@@ -618,7 +618,7 @@ export function mountShorekeeperLab(root){
    const study=fidelity&&f14Mode==='study'?{durationS:Number($('[data-f14-duration]').value),holdS:Number($('[data-f14-hold]').value)}:null;
    detachStudyColor();
    director=(r62Enabled?createR62Integration:createR61Director)(T,model,model.userData.skClips??[],stage,{
-    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches,profile:fidelity?PROFILE_FIDELITY:PROFILE_ARTISTIC,study}:{}),
+    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches,profile:fidelity?PROFILE_FIDELITY:PROFILE_ARTISTIC,study,combatStudy:fidelity&&$('[data-f141-enabled]')?.checked?{id:'F141'}:null}:{}),
     onEvent:e=>{face?.onAnimationEvent(e);scheduler?.onEvent(e);}
    });
    control('presentationMode').value='combat';control('originalMode').value='reference';
@@ -627,12 +627,26 @@ export function mountShorekeeperLab(root){
    userPaused=false;director.start();
    root.dataset.cycleProfile=fidelity?(study?'f14-study':'f3'):r62Enabled?'g113-legacy':'r61';
    if(fidelity)attachStudyColor();
+   applyF141Target();
    f14Status(study?`F1.4 ESTUDO · ${director.plan.schedule.duration.toFixed(1)} s · hold ${study.holdS} s (EXPOSITION_HOLD_NOT_CANONICAL_DURATION) · combate 1× original.`:'F3 curto · duração canônica do ciclo.');
    status(r62Enabled?(fidelity?'F3 · apresentação FIDELIDADE · fontes verificadas · Root BODY + câmera F2 + ruptura F3 · CANONICAL_PENDING · G7 NO_GO.':'Legacy · G11.3 artística preservada · mesmas fontes corporais · G7 NO_GO.'):'R6.1 experimental · sequência não canônica.');
    $('[data-r61-time]').textContent=(fidelity?(study?'F1.4 estudo · ':'F3 · '):r62Enabled?'Legacy G11.3 · ':'R6.1 · ')+'ciclo iniciado · fonte corporal original; correspondência canônica pendente.';
+   if(director.scoreAdapter?.combatStudy)f14Status('F1.4.1 · HEAVY_VOLUMETRIC_STUDY + QA_TARGET + câmera elevada · VISUAL_CANDIDATE');
    sync(true);stage.invalidate();
   }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}finally{verifyingF3=false;}
  }
+ function applyF141Target(){
+  const target=director?.scoreAdapter?.combatStudy?.target;if(!target)return;
+  const initial=target.events[0],t=director.state.clock,h=vfx.scale,center=target.origin,mode=$('[data-f141-target]').value;
+  const offset=mode==='left'?-h*.65:mode==='right'?h*.65:0;
+  const front=director.scoreAdapter.combatStudy.front;
+  const pos=[center[0]+offset*front[2],center[1],center[2]-offset*front[0]];
+  if(mode==='far'){pos[0]+=front[0]*h*5;pos[2]+=front[2]*h*5;}
+  try{target.record(t,{position:pos,enabled:mode!=='removed',motion:mode==='moving'});}catch(e){f14Status('QA_TARGET: edições anteriores ao histórico exigem reiniciar o ciclo.');return;}target.select($('[data-f141-selected]').checked);
+  if(director.state.phase!=='idle')director.seek(t);stage?.invalidate();loop?.wake();
+  f14Status('F1.4.1 · QA_TARGET '+mode+' · sem HP/dano · VISUAL_CANDIDATE');
+ }
+ on($('[data-f141-target]'),'change',applyF141Target);on($('[data-f141-selected]'),'change',()=>{const t=director?.scoreAdapter?.combatStudy?.target;if(t){t.select($('[data-f141-selected]').checked);stage?.invalidate();loop?.wake();}});
  on($('[data-r61-start]'),'click',()=>{void playR61Cycle(r62Enabled?PROFILE_FIDELITY:PROFILE_ARTISTIC);});
  on($('[data-r61-legacy-start]'),'click',()=>{void playR61Cycle(PROFILE_ARTISTIC);});
  {const hold=$('[data-f14-hold]'),dur=$('[data-f14-duration]'),mode=$('[data-f14-mode]'),col=$('[data-f14-color]'),back=$('[data-f14-return]');

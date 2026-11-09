@@ -1,0 +1,84 @@
+{
+  "schema": "shorekeeper-f141-gates/1",
+  "base": "8410c9e58c38b5edaa01dc540a01fd7e3f35e169",
+  "overall": "VISUAL_QA_BLOCKED",
+  "canonical": "CANONICAL_PENDING",
+  "G7": "G7_NO_GO",
+  "ownerArtisticApproval": "PENDING",
+  "finalAstraAudit": "DEFERRED_UNTIL_OWNER_VISUAL_REVIEW",
+  "gates": {
+    "HEAVY_VOLUME": {
+      "status": "CONDITIONAL PASS",
+      "evidence": "Real sphere/shell and three merged noncoplanar toroids; geometry/lifecycle tests pass",
+      "pending": "Four-angle render, orbit and reference placement approval"
+    },
+    "SKILL_TARGETING": {
+      "status": "CONDITIONAL PASS",
+      "evidence": "Five target-surface contacts, C1 retarget, moving/absent/out-of-range/removal and bounded late chase tests",
+      "pending": "Real-model flight/contact videos"
+    },
+    "SKILL_ENERGY_TRAJECTORIES": {
+      "status": "CONDITIONAL PASS",
+      "evidence": "Instanced velocity-oriented wings; one ribbon buffer sampled from the same flight",
+      "pending": "Pixel readability, beam appearance and reference matching"
+    },
+    "LIBERATION_CAMERA": {
+      "status": "CONDITIONAL PASS",
+      "evidence": "Shots 1/2 unchanged; real-rig elevated shot-three anchors project inside 16:9 and 9:16 at 35 degrees",
+      "pending": "Hair/face/hand/butterfly composition in real-model video"
+    },
+    "BODY_PRESERVATION": {
+      "status": "PASS",
+      "scope": "DATA_AND_CPU_ONLY",
+      "evidence": "Original file hashes/clip arrays unchanged; sampled Root/Pelvis/Head/hands equal F14 with max error zero; original tests retained"
+    },
+    "VFX_REGRESSION": {
+      "status": "CONDITIONAL PASS",
+      "evidence": "Default/Legacy/F3/F14 regression tests and ten real-source CPU lifecycles",
+      "pending": "New WebGL shader compilation, rendered resource counters and context recovery"
+    },
+    "MOBILE_PERFORMANCE": {
+      "status": "FAIL",
+      "reason": "NOT_RUN_MISSING_ACCEPTANCE_EVIDENCE_NOT_DEMONSTRATED_SLOWNESS",
+      "evidence": "No physical device, renderer GPU or Samsung FPS measurement"
+    },
+    "CANONICAL_EVIDENCE": {
+      "status": "FAIL",
+      "reason": "CANONICAL_PENDING",
+      "evidence": "Original source files verified; skill-role mapping and audiovisual reconstruction not certified"
+    }
+  },
+  "baselineTests": {
+    "pass": 354,
+    "fail": 0
+  },
+  "requiredVideos": {
+    "A": "NOT_PRODUCED",
+    "B": "NOT_PRODUCED",
+    "C": "NOT_PRODUCED",
+    "D": "NOT_PRODUCED"
+  },
+  "blocker": "BROWSER_PRIVATE_ORIGIN_UNREACHABLE_AND_ORGANIZATION_FILE_POLICY; MODEL_AVAILABLE_HASH_VERIFIED",
+  "performance": {
+    "newUniqueGeometries": 6,
+    "newMaterialObjects": 8,
+    "newTextures": 0,
+    "newProductionScenes": 0,
+    "newProductionRenderers": 0,
+    "newProductionRAF": 0,
+    "realDrawCalls": "NOT_RUN",
+    "renderedTriangles": "NOT_RUN",
+    "GPUTime": "NOT_RUN",
+    "SamsungInternet": "NOT_RUN"
+  },
+  "candidateTests": {
+    "pass": 363,
+    "fail": 0,
+    "newTests": 9
+  },
+  "checks": {
+    "npmRunCheck": "PASS",
+    "npmRunBuild": "PASS",
+    "diffCheck": "PASS"
+  }
+}

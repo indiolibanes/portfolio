@@ -14,6 +14,9 @@
  */
 import {createS1Score, createS2Score, createS3Score, resolveClipId, S1_VISUAL_VARIANTS} from './combat-vfx-events.mjs';
 import {BILLBOARD_VS, FACE_FS, TAIL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
+import {createVolumetricHeavy} from './heavy-volumetric.mjs';
+import {createTargetedSkill} from './skill-targeted.mjs';
+import {trailPosition,TRAIL_POINTS} from './combat-vfx-trails.mjs';
 import {createSkillLayer} from './combat-vfx-skill.mjs';
 import {createLiberationLayer} from './combat-vfx-liberation.mjs';
 import {createTrailLayer} from './combat-vfx-trails.mjs';
@@ -125,8 +128,9 @@ void main(){
  * @param opts.reducedMotion boolean or () => boolean
  * @param opts.proxyAnchors  true => use fixed, explicitly MARKED proxy anchors (isolated proof, no skeleton)
  */
-export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, bundle, scale = null, reducedMotion = false, proxyAnchors = false, proxyOrigin = [0, 0, 0], skill = false, targetMode = 'SIMULATED_TARGET', liberation = null, stageAnchor = null, fidelity = false} = {}) {
+export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, bundle, scale = null, reducedMotion = false, proxyAnchors = false, proxyOrigin = [0, 0, 0], skill = false, targetMode = 'SIMULATED_TARGET', liberation = null, stageAnchor = null, fidelity = false, combatStudy = null} = {}) {
  if (!parent?.add || !bundle?.score?.cueAt || !bundle.schedule) fail('scene and S1 bundle required');
+ if(combatStudy&&(!fidelity||combatStudy.id!=='F141'||typeof combatStudy.target?.at!=='function'||!Array.isArray(combatStudy.front)||combatStudy.front.length!==3||!combatStudy.front.every(Number.isFinite)))fail('F141 requires a FIDELIDADE QA_TARGET and finite world front');
  let disposed = false, visible = false, last = null;
  const readReduced = typeof reducedMotion === 'function' ? reducedMotion : () => !!reducedMotion;
 
@@ -201,6 +205,10 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   pulse: quad(mat(PULSE_FS, {uConvA: {value: 0}, uConv: {value: 0}, uRelA: {value: 0}, uRel: {value: 0}}), 10, 'blueHeavyPulse')
  };
  const skillLayer = skill ? createSkillLayer(T, {parent: root, h, bundle, targetMode}) : null;
+ const heavyVolume=combatStudy?createVolumetricHeavy(T,{parent:root,h}):null;
+ const targetedSkill=combatStudy?createTargetedSkill(T,{parent:root,h,bundle,target:combatStudy.target,wingAtlas:skillLayer?.meshes.wings.material.uniforms.atlas.value}):null;
+ if(combatStudy)skillLayer?.setAblation('HEAL_ONLY');
+ let heavyProbe=null,targetProbe=null;
  // S3: Outer field anchored to the arena (fixed world point), never to the levitating/spinning body.
  let arena = null;
  if (liberation) {
@@ -225,7 +233,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
 
  // Coarse centre guard only; the exact per-pixel face exclusion is the screen-space mask (vFace).
  const faceFactor = p => smooth((p.distanceTo(P.head) / h - 0.06) / 0.10);
- const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); trails.hide(); sparks.hide(); root.visible = false; visible = false; };
+ const hide = () => { neutralize(); for (const o of Object.values(fx)) o.visible = false; skillLayer?.hide(); libLayer?.hide(); trails.hide(); sparks.hide(); heavyVolume?.hide();targetedSkill?.hide();root.visible = false; visible = false; };
 
  const placeGlow = (mesh, p, level, v, ring) => {
   const f = faceFactor(p), u = U(mesh);
@@ -250,6 +258,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   return tgtPt.copy(P.chest).addScaledVector(fwdV, (aspect < 1 ? 0.72 : 1.05) * h).setY(P.chest.y - 0.12 * h);
  };
  const placeSing = (tp, radiusH, level, surge, v, timeU, rm) => {
+  if(heavyVolume){const event=bundle.index.get('HEAVY.prep');if(!trailHistory||!event)return 1;const p=trailPosition(trailHistory,TRAIL_POINTS.indexOf('chest'),event.start);const front=combatStudy.front;p[0]+=front[0]*.95*h;p[1]-=.12*h;p[2]+=front[2]*.95*h;heavyProbe=heavyVolume.update({position:p,radius:radiusH*h,level,time:timeU,reduced:rm});return 1;}
   const u = U(fx.sing); u.uCenter.value.copy(tp); u.uSize.value = h * radiusH * 2 / 0.46; u.uPush.value = 0.0; u.uTint.value.set(0.16, 0.42, 1.0); u.uViolet.value.set(0.50, 0.12, 1.0);
   u.uA.value = level; u.uTime.value = rm ? 0 : timeU; u.uSurge.value = surge; fx.sing.visible = level > 0.002; return 1;
  };
@@ -271,6 +280,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   const id = clipId === undefined ? resolveClipId(bundle.schedule, t) : clipId;
   const cue = bundle.score.cueAt(t, id, aspect), rm = !!readReduced();
   neutralize(); for (const o of Object.values(fx)) o.visible = false;
+  heavyVolume?.hide();heavyProbe=null;targetProbe=targetedSkill?.update({t,rm})??null;
   let face = 1, shown = 0;
   const live = (cue.blueAttack > 0.002 || cue.blueCore > 0.002 || cue.heavyPulse > 0.002) && (have || proxyAnchors);
   if (live) {
@@ -363,9 +373,11 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   if (trailHistory && (have || proxyAnchors) && !rm) { readPose(); headW.copy(P.head); headW.y += 0.05 * h; sparkProbe = sparks.update({table: sparkTable, hist: trailHistory, t, rm, headW}); } else sparks.hide();
   if (sparks.mesh.visible) shown++;
   for (const o of Object.values(fx)) if (o.visible) { shown++; if (live) { U(o).uHeadW.value.copy(headW); U(o).uFaceR.value = 0.14 * h; } }
+  if(heavyProbe)shown+=heavyProbe.drawCalls;if(targetProbe)shown+=targetProbe.drawCalls;
   visible = root.visible = shown > 0;
   last = Object.freeze({presentationTime: t, clipId: id, beat: cue.beat, levels: Object.freeze({blueAttack: cue.blueAttack, blueCore: cue.blueCore, heavyPulse: cue.heavyPulse, ...(libLayer ? {liberationField: cue.liberationField} : {}), ...(skillLayer ? {healingPulse: cue.healingPulse, guidedButterflies: cue.guidedButterflies} : {})}),
    skill: skillProbe && Object.freeze(skillProbe),
+   ...(combatStudy?{combatStudy:{heavy:heavyProbe,skill:targetProbe,status:'VISUAL_CANDIDATE'}}:{}),
    trails: trailProbe && Object.freeze(trailProbe), sparks: sparkProbe && Object.freeze(sparkProbe), liberation: libProbe && Object.freeze(libProbe), starGate: libProbe ? libProbe.starGate : 0,
    drawCalls: shown, minFaceFactor: face, anchorStatus, reducedMotion: rm, label: COMBAT_VFX_LABEL, pending: cue.pending, provenance: cue.eventProvenance.map(p => p.id)});
   return last;
@@ -377,17 +389,18 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   release() { if (!disposed) { hide(); last = null; } },
   dispose() {
    if (disposed) return; disposed = true; hide(); root.removeFromParent();
-   skillLayer?.dispose(); libLayer?.dispose(); trails.dispose(); sparks.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
+   heavyVolume?.dispose();targetedSkill?.dispose();skillLayer?.dispose(); libLayer?.dispose(); trails.dispose(); sparks.dispose(); for (const g of geos) g.dispose(); for (const m of mats) m.dispose(); root.clear();
   },
   /** G11: read-only world-position history of the body anchors (see combat-vfx-trails.mjs); null clears it. */
-  setTrailHistory(hist) { trailHistory = hist ?? null; },
+  setTrailHistory(hist) { trailHistory = hist ?? null;targetedSkill?.setHistory(trailHistory); },
   get hasTrailHistory() { return !!trailHistory; },
+  get combatStudy(){return combatStudy?{target:combatStudy.target,front:[...combatStudy.front],heavy:heavyVolume,skill:targetedSkill}:null;},
   get root() { return root; },
   get disposed() { return disposed; },
   get visible() { return visible; },
   get last() { return last; },
   get anchors() { return Object.freeze({overall: anchorStatus, ...status, ...(skill ? {body: bodyOk ? (proxyAnchors ? 'PROXY_MARKED' : 'REAL') : 'UNRESOLVED', ...bodyStatus} : {})}); },
-  get drawCallBudget() { return COMBAT_VFX_MAX_DRAW_CALLS; },
+  get drawCallBudget() { return COMBAT_VFX_MAX_DRAW_CALLS+(combatStudy?8:0); },
   get skill() { return skillLayer; },
   get skillEnabled() { return !!skillLayer; },
   get liberation() { return libLayer; },
@@ -417,6 +430,6 @@ export function createS2CombatVfx(T, {scene, parent, model, plan, scale, reduced
 }
 
 /** S1 + S2 + S3: adds the Outer Stellarealm Liberation layer (AUTHORIAL; mechanics UNVERIFIED). */
-export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false, study = null} = {}) {
- return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule, {fidelity, study}), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
+export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false, study = null, combatStudy = null} = {}) {
+ return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule, {fidelity, study}), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity,combatStudy});
 }
