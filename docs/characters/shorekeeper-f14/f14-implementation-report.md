@@ -62,15 +62,33 @@ Fração visível da borboleta (1,00 = pegada natural do quad sem personagem), G
 - **UI compacta** (F3 curto preservado; Legacy G11.3 preservado): modo `CURTO · F3` / `F1.4 ESTUDO`, hold 15–25 s, duração 60–90 s, perfil de cor, “Voltar ao F3 curto”.
 - Só FIDELIDADE (erro explícito em ARTÍSTICO); parâmetros inválidos falham **antes** de qualquer alocação.
 
-RESULTADOS_P2
+**Duração real medida no GLB real (ciclo estudo padrão 75 s / hold 20 s):** 74,968 s — segmentos: Attack01 0–3,633 · Attack02 3,433–9,167 · Attack03 8,967–12,833 · L02 12,633–17,300 · Skill01 17,100–22,333 · Burst02 22,333–27,767 · Idle01 (estendido, 1×) → 53,487 · Idle02 → 74,968. Hold do Stellarealm 26,47–46,47 s (20 s); fases rotuladas: combate 1× até 27,77 s, `STELLAREALM_EXPOSITION_HOLD` até 46,47 s, `CONTEMPLATIVE_IDLE` depois. Ciclo curto F3 canônico: 28,87 s (FIDELIDADE) — inalterado.
+Vídeo privado `C_study_presentation_long.mp4` (74,96 s, 24 fps) com rótulos de fase e de perfil de cor; o perfil muda AZUL → VIOLETA (33 s) → DOURADO (39 s) → AZUL (44 s) apenas para demonstrar a reversibilidade.
+Vídeo privado `B_stellarealm_colorstudy.mp4`: AZUL × VIOLETA × DOURADO nos mesmos instantes e câmera (26–38 s), com o estado do campo rotulado.
 
 ## 4. Testes e regressão
 
-RESULTADOS_TESTES
+- **Suíte completa:** 354 testes, **351 passam**; 3 falham por `ERR_MODULE_NOT_FOUND: sharp` (testes da Hsin que dependem de um pacote que não pode ser instalado neste ambiente, sem rede; **falham de forma idêntica no commit base**, Hsin intocada).
+- **Novos (F1.4):** `tests/shorekeeper-f14-study.test.mjs`, 11 testes — configuração 60–90 s/15–25 s; combate byte-idêntico ao F3 curto; plano curto inalterado sem estudo; rejeição de caudas/durações inseguras; hold e decaimento; rótulos de fase; `BLUE === FIDELIDADE`, ARTÍSTICO ignora o estudo, reversibilidade; controlador sem importações/relógio/RAF e sem associação a estágio; shader/uniforms do gatilho (FIDELIDADE-only, histórico sem `front`, sem diagnóstico em produção); câmera de estudo (pura, finita em 16:9/9:16, desligada em movimento reduzido); integração só FIDELIDADE, validação antes de alocar e 10 ciclos create/dispose sem resíduos.
+- **Ajustados (esperados):** `shorekeeper-f3-fidelity` (golden do gatilho FIDELIDADE regenerado, histórico F2 preservado, mais prova de animação idêntica ao base) e `shorekeeper-f3-cycle-menu` (novo literal `f14-study`).
+- **`npm run check` / `npm run build`:** `ENV_BLOCKED` — sem instalação de pacotes neste ambiente; verificados apenas `node --check` em todos os módulos e equilíbrio de tags do `.astro`. Precisam rodar no CI/local.
+- **Regressões cobertas pela suíte existente (verde):** três idles originais, rostos R5/R6, clipes originais e Root BODY, câmera F2, G11.3 ARTÍSTICO, gating de música e sistemas de segurança.
 
 ## 5. Recursos e custo
 
-RESULTADOS_RECURSOS
+Medido com Chromium + SwiftShader (**não** representa GPU móvel/Samsung; sem FPS afirmado):
+
+| Item | F3 curto (FID) | Estudo 75 s | ARTÍSTICO |
+|---|---|---|---|
+| Construção do diretor (3 execuções) | 482–548 ms | 1239–1436 ms (≈2,6×, linear na duração: guia de câmera e histórico de trilhas) | — |
+| Draw calls (instantes amostrados) | 15–18 | 13–17 | 18 (ciclos) |
+| Triângulos | ≈96,7–99,2 k | ≈96,2–98,7 k | — |
+| Geometrias / texturas (estado estável após 10 ciclos) | 17 / 14 | 17 / 14 | 18 / 14 |
+| Objetos de cena | 302 | 302 | 302 |
+
+- **Dez ciclos FID / ESTUDO / ART (30 reconfigurações)**: texturas 14→14 e objetos de cena 302→302 nos três; geometrias 15→17 (FID, aquecimento no 1º ciclo e estável depois), 17→17 (ESTUDO), 18→18 (ART). **Sem crescimento.**
+- **Ciclo de vida (estudo):** pausa congela o relógio (2,1166 s antes e depois); interrupção → `idle` / `INTERRUPTED`; reiniciar restaura o plano de 74,968 s; seek ao hold → `STELLAREALM_EXPOSITION_HOLD`; perda e restauração de contexto WebGL → contexto `webgl2` restaurado e estudo reconstruído (18 geometrias / 15 textura / 17 draw calls); descarte → 0 geometrias, 1 textura, 4 objetos, sem diretor.
+- Nenhum draw call, mesh, textura ou RAF novo foi adicionado pelas correções; o custo extra do estudo é o pré-cálculo único mais longo. O custo em dispositivo real continua `NOT_MEASURED` (`MOBILE_GPU_PENDING`).
 
 ## 6. Segurança e privacidade
 
@@ -83,5 +101,19 @@ RESULTADOS_RECURSOS
 - SwiftShader não equivale a GPU real nem a Samsung Internet: nenhum FPS móvel é afirmado.
 - As dez imagens nomeadas não chegaram (`SOURCE_UNAVAILABLE`); o reconhecimento visual cobre só os quadros do ZIP e não verifica fonte, habilidade nem movimento.
 - O tempo extra do estudo é expositivo; a duração canônica do ciclo continua desconhecida.
-- `npm run check` / `npm run build`: ver §4 (ambiente sem instalação de pacotes).
+- `npm run check` / `npm run build`: `ENV_BLOCKED` aqui (ver §4); rodar no CI.
 - A correção da borboleta remove a perda causada pela máscara e reduz a causada pela folga; **oclusão geométrica legítima remanescente** (quad atrás do crânio) é mantida por decisão: a asa não atravessa a cabeça.
+
+## 8. Veredictos por componente
+
+| Componente | Veredito | Observação |
+|---|---|---|
+| Oclusão da borboleta | **PASS** (visual sintético/GLB real) | média 50% → 97%; pior instante 12% → 75–77%; perda remanescente é oclusão geométrica legítima. Aceitação do dono pendente. |
+| Cromatismo (STUDY_COLOR) | **PASS** | BLUE ≡ FIDELIDADE, VIOLETA/DOURADO distintos e reversíveis, ARTÍSTICO intacto; sem relação com estágios. |
+| Estudo longo | **PASS** | 74,97 s no GLB real, combate 1× intacto, hold 20 s rotulado. Câmeras de observação são expositivas, não derivadas de referência. |
+| Regressões | **CONDITIONAL PASS** | 351/354; 3 falhas ambientais (`sharp`, idênticas no base); `npm run check`/`build` bloqueados aqui. |
+| Recursos | **CONDITIONAL PASS** | sem crescimento em 10 ciclos, sem novos draw calls; custo em GPU/Samsung não medido; construção do estudo ≈2,6× mais lenta (CPU). |
+| Segurança | **PASS** | nada privado no repositório; evidência por canal privado. |
+| Fidelidade canônica | **FAIL / CANONICAL_PENDING** (por desenho) | as dez imagens nomeadas não chegaram; sem MOTION_MATCHED; G7 NO_GO. Nenhuma fidelidade canônica é afirmada. |
+
+**F1.4 “visualmente pronta”?** Os três critérios (asa sem o defeito, riqueza cromática estudável, apresentação longa sem regressões) foram atendidos nos testes e nos vídeos; falta a aceitação visual do dono, `npm run check/build` no CI e medição em dispositivo real.
