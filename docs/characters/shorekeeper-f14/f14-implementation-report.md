@@ -30,7 +30,20 @@ Para os 231 passos da linha do tempo sintética, o hash do probe de uniforms do 
 
 ### 1.4 BEFORE / AFTER
 
-RESULTADOS_P0
+Fração visível da borboleta (1,00 = pegada natural do quad sem personagem), GLB real, câmera F2 nativa, 13 instantes (23,6–26,2 s):
+
+| t (s) | 23,6 | 23,9 | 24,2 | 24,4 | 24,6 | 24,8 | 25,0 | 25,2 | 25,4 | 25,6 | 25,8 | 26,0 | 26,2 | mín | média |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| BEFORE 16:9 | 0,54 | 0,74 | 0,66 | 0,53 | 0,12 | 0,23 | 0,82 | 0,56 | 0,36 | 0,35 | 0,14 | 0,43 | 0,95 | **0,12** | **0,50** |
+| AFTER 16:9 | 1,02 | 0,98 | 1,00 | 1,00 | 0,84 | 1,03 | 1,01 | 1,00 | 1,01 | 1,09 | 0,89 | 0,75 | 1,00 | **0,75** | **0,97** |
+| BEFORE 9:16 | 0,54 | 0,74 | 0,66 | 0,53 | 0,12 | 0,26 | 0,83 | 0,56 | 0,35 | 0,35 | 0,16 | 0,43 | 0,94 | **0,12** | **0,50** |
+| AFTER 9:16 | 1,01 | 1,07 | 1,01 | 1,00 | 0,84 | 1,04 | 1,01 | 0,99 | 1,03 | 1,02 | 0,85 | 0,77 | 1,02 | **0,77** | **0,97** |
+
+- A média de visibilidade sobe de ~50% para ~97%; o pior instante vai de 12% para 75–77%.
+- A perda remanescente (24,6 / 25,8 / 26,0 s) é **oclusão geométrica legítima**: o quad está atrás do crânio e o `depthTest` permanece ligado. Não foi “corrigida” de propósito, para a asa não atravessar a cabeça.
+- Razões levemente acima de 1,00 vêm da folga lateral e da suavização da borda (±0,09 máx.); não há aumento de escala (a silhueta é a mesma).
+- Evidência visual privada: vídeo `A_butterfly_mask_ab.mp4` (F3 × F1.4 em 16:9, close da mão/rosto, 9:16, câmera lenta 0,25× e diagnóstico 2×2).
+- Verificação visual dos quadros (câmera F2, close e retrato): a asa aparece inteira onde o F3 a perdia; a borboleta continua atrás/ao lado da cabeça, nunca sobre o rosto.
 
 ## 2. P1 — `STUDY_COLOR` (somente laboratório)
 
