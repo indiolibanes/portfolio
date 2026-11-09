@@ -13,7 +13,7 @@
  *  - no coreCrystal/coreCage polyhedron, no Inner/Supernal stage triggered by time
  *    (colour variants are explicit AUTHORIAL flags only), no gameplay radius in metres.
  */
-import {BILLBOARD_VS, FACE_FS, TAIL, BUTTERFLY_GLSL, BUTTERFLY_FID_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
+import {BILLBOARD_VS, BILLBOARD_VS_FACING, FACE_FS, TAIL, BUTTERFLY_GLSL, BUTTERFLY_FID_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
 import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
 import {fidelityReleaseScore,F3_RUPTURE_FS} from './fidelity-release.mjs';
 
@@ -25,6 +25,11 @@ export const LIBERATION_COLORS = Object.freeze({blue: [0.18, 0.50, 1.0], violet:
 const NM = 224, TAU = Math.PI * 2;
 const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
 const clamp01 = x => Math.max(0, Math.min(1, x));
+/** F1.4: distance (in model heights) the trigger butterfly keeps from the head when it lies behind it along the view ray. */
+/** F1.4 P0 (measured on the real GLB, 14 instants x 16:9/9:16): lateral clearance of the trigger butterfly when its quad is BEHIND the head along the view ray, in head-heights. */
+export const F14_TRIGGER_CLEARANCE_H = 0.30;
+/** F1.4 P0: face-protect disc radius of the FIDELITY trigger butterfly (generic layers keep 0.14h); the disc is also gated by the real head facing. */
+export const F14_TRIGGER_FACE_R_H = 0.05;
 const hash = (i, j = 0) => { let h = (Math.imul(i + 3, 374761393) + Math.imul(j + 11, 668265263)) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 /** Same envelope as the S0 score (smoothstep up to the peak, down to the end), per event. */
 export const eventEnvelope = (e, t) => !e || t < e.start || t >= e.end ? 0 : smooth(t <= e.peak ? (t - e.start) / (e.peak - e.start) : (e.end - t) / (e.end - e.peak));
@@ -40,12 +45,13 @@ const WHITE = [1, 1, 1];
  * ABSORPTION (the field is pulled into her) -> GIANT BUTTERFLY BURST -> clear.
  * `rm` (reduced motion) keeps the same colours / fades but holds the wings open (no flapping, no scale change, no shrink).
  */
-export function liberationColorScore(t, g, rm = false, palette = 'authorial') {
+export function liberationColorScore(t, g, rm = false, palette = 'authorial', study = null) {
  const none = {a: 0, open: 0, scale: 0, ring: 0, ringR: 0, burst: 0, burn: 1.2, flash: 0, chaos: 0};
  if (!g) return {violet: 0, gold: 0, absorb: 0, absorbLin: 0, collapse: 0, phase: 'NO_G11', hue: G11_TINTS.blue, line: G11_TINTS.blue, wash: G11_TINTS.blue, hor: G11_TINTS.blue, trig: {a: 0, flap: 1, dis: 0}, bf: none};
  // F1 FIDELIDADE palette: the in-game cutscene/ingame GIFs show a blue-white field, so the authorial violet/gold hand-over is skipped.
  const fid = palette === 'fidelity';
- const violet = fid ? 0 : smooth((t - g.violetStart) / (g.violetFull - g.violetStart)), gold = fid ? 0 : smooth((t - g.goldStart) / (g.goldFull - g.goldStart));
+ // F1.4 STUDY_COLOR (laboratory only): explicit user-selected weights replace the zero of the FIDELIDADE palette. They are states, never a function of time or of a Stellarealm stage.
+ const violet = fid ? clamp01(study?.violet ?? 0) : smooth((t - g.violetStart) / (g.violetFull - g.violetStart)), gold = fid ? clamp01(study?.gold ?? 0) : smooth((t - g.goldStart) / (g.goldFull - g.goldStart));
  const absorbLin = clamp01((t - g.absorbStart) / (g.butterflyStart - g.absorbStart)), absorb = smooth(absorbLin);
  const inBf = t >= g.butterflyStart && t < g.butterflyEnd, u = inBf ? t - g.butterflyStart : 0;
  const a = !inBf ? 0 : smooth(u / 0.08) * (1 - smooth((t - g.butterflyDissolve) / (g.butterflyEnd - g.butterflyDissolve)));
@@ -279,7 +285,7 @@ void main(){ float r=length(vUv); if(r>1.) discard; float a=vA*(pow(1.-r,2.2)*.9
 export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER', palette = 'authorial'}) {
  if (!S3_COLOR_VARIANTS[variant]) throw new TypeError('Liberation: unknown colour variant ' + variant);
  if (!(radius > 0.5 && radius < 12) || !(contrast > 0.1 && contrast < 3)) throw new TypeError('Liberation: radius/contrast out of range');
- let disposed = false, last = null, cfg = {radius, contrast, variant, palette};
+ let disposed = false, last = null, cfg = {radius, contrast, variant, palette}, study = null; // F1.4: laboratory colour study ({violet, gold} in 0..1) or null
  const mats = [], geos = [];
  const v3 = (...a) => new T.Vector3(...a), col = k => ({value: v3(...LIBERATION_COLORS[k])});
  const additive = extra => ({transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, ...extra});
@@ -305,8 +311,8 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}, ...(palette==='fidelity'?{uDirW:{value:v3(0,0,1)},uSize:{value:1},uPush:{value:0},...headU()}:{})},
   vertexShader: palette==='fidelity'?BILLBOARD_VS:BF_VS, fragmentShader: palette === 'fidelity' ? F3_RUPTURE_FS : BF_FS}), 7, palette==='fidelity'?'liberationEnergyRupture':'liberationGiantButterfly');
  const trigger = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
-  uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uTint: {value: v3(0.28, 0.66, 1.0)}, uViolet: {value: v3(0.52, 0.30, 1.0)}, uA: {value: 0}, uTime: {value: 0}, uFlap: {value: 1}, uDis: {value: 0}, ...headU()},
-  vertexShader: BILLBOARD_VS, fragmentShader: palette === 'fidelity' ? TRG_FS_FID : TRG_FS}), 14, 'liberationTriggerButterfly');
+  uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uTint: {value: v3(0.28, 0.66, 1.0)}, uViolet: {value: v3(0.52, 0.30, 1.0)}, uA: {value: 0}, uTime: {value: 0}, uFlap: {value: 1}, uDis: {value: 0}, ...headU(), ...(palette === 'fidelity' ? {uFaceFwd: {value: v3()}, uClear: {value: 0}} : {})},
+  vertexShader: palette === 'fidelity' ? BILLBOARD_VS_FACING : BILLBOARD_VS, fragmentShader: palette === 'fidelity' ? TRG_FS_FID : TRG_FS}), 14, 'liberationTriggerButterfly');
  const meshes = {field, canopy, core, motes, butterfly, trigger};
  const U = o => o.material.uniforms;
  const neutral = new Map(Object.values(meshes).map(o => [o, Object.fromEntries(Object.entries(U(o)).map(([k, u]) => [k, u.value?.clone ? u.value.clone() : u.value]))]));
@@ -326,18 +332,22 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   if(disposed)return null;
   neutralize(); last = null;
   const {t, cue, rm, bundle: b} = c;
-  const g = b.timeline?.g11 ?? null, live = cue.liberationField > 0.002 || (g && ((t >= g.absorbStart && t < g.butterflyEnd) || (g.triggerStart !== undefined && t >= g.triggerStart && t < g.triggerEnd)));
+  const g = b.timeline?.g11 ?? null, hold = b.timeline?.studyHold ?? null, live = cue.liberationField > 0.002 || (!!hold && t >= hold.start && t < hold.end + hold.fadeS) || (g && ((t >= g.absorbStart && t < g.butterflyEnd) || (g.triggerStart !== undefined && t >= g.triggerStart && t < g.triggerEnd)));
   if (!live) return null;
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
-  const FID = cfg.palette === 'fidelity', release=FID?fidelityReleaseScore(t,b.schedule,rm):null, raw=liberationColorScore(t,g,rm,cfg.palette);
+  const FID = cfg.palette === 'fidelity', release=FID?fidelityReleaseScore(t,b.schedule,rm):null, raw=liberationColorScore(t,g,rm,cfg.palette,FID?study:null);
   // The late absorption/giant-wing ending was authorial, not a verified End Loop event.
   // Keep F2's trigger score byte-for-byte while removing that ending ONLY in FIDELIDADE.
   const cs=FID?{...raw,absorb:0,absorbLin:0,collapse:0,bf:{...raw.bf,a:0,ring:0,burst:0,flash:0},phase:release.active?release.phase:'OUTER_CANDIDATE'}:raw;
   const setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
-  if (FID) U(motes).uGold.value.set(0.78, 0.90, 1.0); // F2: no amber motes in the blue-white profile
+  // F2: no amber motes in the blue-white profile. F1.4: with a colour study the light accents follow the selected hue (still pale, never saturated).
+  const accent = FID && study ? mix3(cs.hue, WHITE, 0.45) : [0.78, 0.90, 1.0], shockTint = FID && study ? mix3(cs.hue, WHITE, 0.40) : [0.70, 0.90, 1.0];
+  if (FID) U(motes).uGold.value.fromArray(accent);
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
+  // F1.4 (FIDELIDADE only): perspective face mask + wing clearance for the trigger. `front` absent -> historical always-on mask, no clearance.
+  if (FID) { const ut = U(trigger); ut.uFaceR.value = F14_TRIGGER_FACE_R_H * h; if (c.front) { ut.uFaceFwd.value.set(c.front.x, 0, c.front.z); ut.uClear.value = F14_TRIGGER_CLEARANCE_H * h; } else { ut.uFaceFwd.value.set(0, 0, 0); ut.uClear.value = 0; } }
   bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
   const probe = {stage: null, levels: {condense: vC, reveal: vR, peak: vK, decay: vD}, starGate: 0, variant: col3.label, radiusH: cfg.radius, contrast: cfg.contrast, mechanics: col3.mechanics, motes: 0};
   // ---- Outer field + canopy ----
@@ -347,7 +357,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const fadeEnd = g ? 1 - smooth((t - (g.butterflyStart - 0.28)) / 0.28) : 1;
   const burst=b.schedule?.segments?.find(s=>s.id==='SK_BURST_02_ORIGINAL');
   // Fade releases this bounded presentation, not an in-game Stellarealm termination.
-  const fieldLv = FID&&eR&&burst ? smooth((t-eR.start)/.18)*(1-smooth((t-burst.end)/Math.max(.1,(b.timeline?.end??burst.end+.6)-burst.end))) : holdLv * fadeEnd;
+  const fieldLv = FID&&eR&&burst ? smooth((t-eR.start)/.18)*(1-smooth((t-(hold?hold.end:burst.end))/(hold?hold.fadeS:Math.max(.1,(b.timeline?.end??burst.end+.6)-burst.end)))) : holdLv * fadeEnd;
   if (fieldLv > 0.002 && (FID||vR > 0.002)) {
    const uR = phase(eR, t), grow = rm ? 1.05 : FID?.05+smooth((t-eR.start)/.22):0.05 + 1.0 * smooth(uR / 0.42), rise = rm ? 1 : FID?smooth((t-eR.start)/.28):smooth((uR - 0.10) / 0.40);
    const ab = rm ? 0 : cs.absorb, reveal = grow + (0.03 - grow) * ab, domeRise = rise * (1 - ab);
@@ -368,7 +378,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   if(release?.wave>.002){
    const f=U(field);field.position.set(c.stage.x,c.stage.floorY+.006*h,c.stage.z);field.scale.set(2.3*R,1,2.3*R);
    if(!field.visible){setTint(f);f.uA.value=0;f.uReveal.value=1.05;f.uContrast.value=cfg.contrast;field.visible=true;}
-   f.uShock.value=release.radius;f.uShockA.value=release.wave;f.uGold.value.set(.70,.90,1.0);
+   f.uShock.value=release.radius;f.uShockA.value=release.wave;f.uGold.value.fromArray(shockTint);
    // Existing field/canopy respond to the advancing front, without lights or a new scene pass.
    if(canopy.visible)U(canopy).uA.value*=1+release.fieldResponse;
    probe.shock=release.radius;
@@ -459,6 +469,14 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    if (!S3_COLOR_VARIANTS[v] || !(r > 0.5 && r < 8) || !(k > 0.1 && k < 3)) throw new TypeError('Liberation: invalid configuration');
    cfg = {radius: r, contrast: k, variant: v, palette: cfg.palette};
   },
+  /** F1.4 laboratory colour study: {violet, gold} in 0..1, or null for the plain FIDELIDADE blue-white. Ignored outside the FIDELIDADE palette. */
+  setStudyColor(v) {
+   if (v === null) { study = null; return; }
+   if (!v || !Number.isFinite(v.violet) || !Number.isFinite(v.gold)) throw new TypeError('Liberation: study colour needs finite violet/gold');
+   const violet = clamp01(v.violet), gold = clamp01(v.gold);
+   study = violet === 0 && gold === 0 ? null : {violet, gold}; // zero weights ARE the plain FIDELIDADE blue-white (byte-identical path)
+  },
+  get studyColor() { return study ? {...study} : null; },
   get config() { return {...cfg}; },
   get meshes() { return meshes; },
   get probe() { return last; },

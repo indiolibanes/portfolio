@@ -12,6 +12,33 @@ void main(){
   mv.z+=uPush; mv.xy+=position.xy*uSize;
   gl_Position=projectionMatrix*mv;
 }`;
+/**
+ * F1.4: billboard vertex stage for the TRIGGER butterfly only (FIDELIDADE). Same transform as BILLBOARD_VS plus two camera-aware
+ * rules that act on the VISIBILITY of the wing, never on its shape, colour, flap or trajectory:
+ *  1. perspective face mask: the screen-space face disc protects a face that the camera can see. `uFaceFwd` is her horizontal
+ *     anatomic front (zero vector = rule off, i.e. the historical always-on mask); seen from behind the mask radius is 0.
+ *  2. wing clearance: only when the butterfly plane lies BEHIND the head along the view ray, the quad slides sideways (view plane,
+ *     away from the head's projection) until its centre is `uClear` from the head. Nothing is pushed through the head and the
+ *     depth test stays on, so the crown/hair still occlude anything that overlaps them. uClear = 0 disables the rule.
+ */
+export const BILLBOARD_VS_FACING = `
+uniform vec3 uCenter, uDirW, uHeadW, uFaceFwd; uniform float uSize, uPush, uFaceR, uClear;
+varying vec2 vP; varying vec2 vD; varying vec3 vFace;
+void main(){
+  vP=position.xy*2.;
+  mat4 mvm=viewMatrix*modelMatrix; vec4 mv=mvm*vec4(uCenter,1.);
+  vec3 dv=mat3(mvm)*uDirW; vD=dv.xy/max(length(dv.xy),1e-4);
+  vec4 hv=mvm*vec4(uHeadW,1.); vec2 hp=hv.xy*(mv.z/min(hv.z,-1e-3));
+  if(uClear>0.&&hv.z<-1e-3){
+    float behind=smoothstep(-.04*uClear,.30*uClear,hv.z-mv.z);
+    vec2 d=mv.xy-hp; float len=length(d); vec2 dir=len>1e-4?d/len:vec2(1.,0.);
+    mv.xy+=dir*max(uClear-len,0.)*behind; }
+  float fOn=1.;
+  if(dot(uFaceFwd,uFaceFwd)>.25){ vec3 tc=cameraPosition-uHeadW; tc.y=0.; fOn=smoothstep(-.05,.35,dot(uFaceFwd,tc/max(length(tc),1e-4))); }
+  vFace=vec3((hp-mv.xy)/uSize*2., (hv.z<-1e-3&&fOn>.01)?uFaceR*fOn/uSize*2.:0.);
+  mv.z+=uPush; mv.xy+=position.xy*uSize;
+  gl_Position=projectionMatrix*mv;
+}`;
 export const FACE_FS = `
 varying vec3 vFace;
 float faceMask(vec2 p){ if(vFace.z<=0.) return 1.; return smoothstep(vFace.z*.75,vFace.z*1.35,length(p-vFace.xy)); }`;

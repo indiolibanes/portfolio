@@ -1,5 +1,7 @@
 # Matriz de referências visuais — Shorekeeper F1.4
 
+> **Atualização F1.4 (Sonnet):** as dez imagens nomeadas abaixo NÃO chegaram ao workspace (`SOURCE_UNAVAILABLE`); todas as linhas seguem como hipótese de pareamento. O que o ZIP recebido realmente trouxe está em `reference-recognition.md` (quadros identificados por hash, classes OBSERVED/INFERRED separadas; `VERIFIED_SOURCE` e `MOTION_MATCHED` vazias).
+
 **Critério:** os pares foram associados pela semelhança visual das imagens enviadas; a correspondência de habilidade e do timecode NÃO foi comprovada. Confirmar arquivo, vídeo e frame no material recebido antes de promover confiança.
 
 | Laboratório | Referência de gameplay | Observação demonstrável | Identidade candidata | Estado / verificação exigida |

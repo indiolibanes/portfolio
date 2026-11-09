@@ -22,8 +22,10 @@ test('F3 fast radial release is deterministic, bounded, independent of frame rat
 });
 test('F3 artistic uniforms/shaders and F2 small butterfly are identical to base golden over the complete synthetic timeline',()=>{
  const golden=JSON.parse(readFileSync('docs/qa/shorekeeper-f3/baseline-synthetic.json','utf8'));
- for(const palette of ['authorial','fidelity']){const parent=new T.Group(),plan=buildR61Plan(library(),{burstEntry:palette==='fidelity'?'cut':'blend'}),bundle=createS3Score(plan.schedule,{fidelity:palette==='fidelity'}),L=createLiberationLayer(T,{parent,h:1.6,bundle,palette}),actual=[];
-  try{for(let t=0;t<plan.schedule.duration;t+=.125){L.update({t,rm:false,cue:{liberationField:1},bundle,headW:new T.Vector3(0,1.6,0),P:{chest:new T.Vector3(0,1,0),rh:new T.Vector3(.3,1.1,.2),lh:new T.Vector3(-.3,1.2,.2)},stage:{x:0,z:0,floorY:0}});actual.push(hash(palette==='authorial'?L.uniformsProbe():L.uniformsProbe().trigger));}
+ for(const palette of ['authorial','fidelity']){const parent=new T.Group(),plan=buildR61Plan(library(),{burstEntry:palette==='fidelity'?'cut':'blend'}),bundle=createS3Score(plan.schedule,{fidelity:palette==='fidelity'}),L=createLiberationLayer(T,{parent,h:1.6,bundle,palette}),actual=[],anim=[];
+  try{for(let t=0;t<plan.schedule.duration;t+=.125){L.update({t,rm:false,cue:{liberationField:1},bundle,headW:new T.Vector3(0,1.6,0),P:{chest:new T.Vector3(0,1,0),rh:new T.Vector3(.3,1.1,.2),lh:new T.Vector3(-.3,1.2,.2)},stage:{x:0,z:0,floorY:0}});actual.push(hash(palette==='authorial'?L.uniformsProbe():L.uniformsProbe().trigger));if(palette==='fidelity'){const o=JSON.parse(JSON.stringify(L.uniformsProbe().trigger));for(const k of ['uFaceFwd','uClear','uFaceR'])delete o[k];anim.push(hash(o));}}
+   // F1.4 P0: besides the face mask / clearance uniforms, the trigger butterfly (silhouette, transparency, venation, animation) is IDENTICAL to the F1.3 base.
+   if(palette==='fidelity')assert.deepEqual(anim,golden.triggerAnimationUnchangedF2);
    assert.deepEqual(actual,golden[palette==='authorial'?'artistic':'trigger']);
    assert.equal(hash(palette==='authorial'?parent.children.map(o=>[o.name,o.material.vertexShader,o.material.fragmentShader]):[L.meshes.trigger.material.vertexShader,L.meshes.trigger.material.fragmentShader]),golden[palette+'Shaders']);
    assert.equal(parent.children.length,6,'no added mesh/draw slot');

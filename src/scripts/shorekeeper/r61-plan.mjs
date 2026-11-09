@@ -18,8 +18,12 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  * @param opts.burstEntry 'blend' (default, G11.3: 0.2 s cross-fade) | 'cut' (FIDELIDADE: hard cut into the Burst, to be hidden by a camera cut;
  *   the Burst clip starts airborne ~0.8 m above where the Skill ends, so any blend is a 1 m slide in 0.2 s).
  */
-export function buildR61Plan(library, {burstEntry = 'blend'} = {}) {
+export function buildR61Plan(library, {burstEntry = 'blend', study = null} = {}) {
  if(!['blend','cut'].includes(burstEntry))throw Error('R6.1 unknown burstEntry');
+ // F1.4 STUDY_PRESENTATION: the SEVEN combat steps stay byte-identical (same indices, durations, fades). The extra time is ONLY more of the
+ // original idle clips at 1x: the recovery step (SK_IDLE_01) is allowed to keep playing instead of being cut at 1.45 s, and up to two further
+ // original idles follow. No clip is retimed, edited or repeated (the score requires unique segment ids).
+ if(study!==null&&(typeof study!=='object'||!Number.isFinite(study.recoveryS)||!(study.recoveryS>=1.45)||!Array.isArray(study.tail)))throw Error('R6.1 invalid study plan');
  if(!Array.isArray(library))throw Error('R6.1 requires an authenticated private animation library');
  const clips={},missing=[];
  for(const id of R61_SOURCE_IDS){
@@ -34,9 +38,19 @@ export function buildR61Plan(library, {burstEntry = 'blend'} = {}) {
  // Never silently replace a missing HA, Skill or Burst with another movement.
  if(missing.length)throw Error('R6.1 incomplete sources: '+missing.join(', '));
  const steps=R61_SOURCE_IDS.map((id,i)=>{
-  const duration=clips[id].duration,exit=i===6?Math.min(1.45,duration):duration;
-  return {id,duration,exit,fade:i===0?0:i===5&&burstEntry==='cut'?0:Math.min(i===6?.38:.20,exit*.24)};
+  const duration=clips[id].duration,exit=i===6?Math.min(study?study.recoveryS:1.45,duration):duration;
+  // the Burst->Recovery cross-fade is a COMBAT blend: it is computed on the canonical 1.45 s recovery exit even when a study keeps the idle playing longer
+  return {id,duration,exit,fade:i===0?0:i===5&&burstEntry==='cut'?0:Math.min(i===6?.38:.20,(i===6?Math.min(1.45,duration):exit)*.24)};
  });
+ const tailIds=new Set();
+ if(study)for(const t of study.tail){
+  const matches=library.filter(c=>c?.name===t.id);
+  if(R61_SOURCE_IDS.includes(t.id)||tailIds.has(t.id)||matches.length!==1||!/^SK_IDLE_0[1-3]_ORIGINAL$/.test(t.id))throw Error('R6.1 invalid study tail: '+t.id);
+  const c=matches[0];
+  if(!Number.isFinite(c.duration)||c.duration<=0||!c.tracks?.length||c.tracks.some(k=>! /\.(?:position|quaternion|scale)$/.test(k.name)))throw Error('R6.1 invalid body source: '+t.id);
+  if(!(t.exit>1&&t.exit<=c.duration))throw Error('R6.1 study tail window outside the clip: '+t.id);
+  tailIds.add(t.id);clips[t.id]=c;steps.push({id:t.id,duration:c.duration,exit:t.exit,fade:Math.min(.6,t.exit*.24)});
+ }
  const schedule=buildComboSchedule(steps),s=schedule.segments;
  const burst=s[5],recovery=s[6],burstSpan=burst.end-burst.start;
  const cues=[
@@ -48,12 +62,13 @@ export function buildR61Plan(library, {burstEntry = 'blend'} = {}) {
   {t:burst.start+burstSpan*.53,state:'RESONANCE_PEAK',beat:'LIBERATION_PEAK_AUTHORIAL'},
   {t:burst.start+burstSpan*.76,state:'STELLAREALM',beat:'FIELD_PERSIST_AUTHORIAL'},
   {t:recovery.start,state:'RECOVERY',beat:'RETURN_NO_CERTIFIED_LANDING'},
+  ...(study?[{t:Math.min(schedule.duration,recovery.start+1.45),state:'AMBIENT',beat:'STUDY_CONTEMPLATIVE_IDLE_NOT_CANONICAL'}]:[]),
   {t:schedule.duration,state:'AMBIENT',beat:'IDLE'}
  ];
  return Object.freeze({
   clips,schedule,cues:Object.freeze(cues.map(c=>Object.freeze(c))),
   identity:'SOURCE_ROLE_UNVERIFIED',sourceFrame:null,b1:'NO_SUSTAINED_CUPPED_HAND_POSE_CONFIRMED',
-  performance:'MOBILE_GPU_PENDING',status:R61_STATUS,burstEntry
+  performance:'MOBILE_GPU_PENDING',status:R61_STATUS,burstEntry,study:study?Object.freeze({recoveryS:study.recoveryS,tail:Object.freeze(study.tail.map(t=>Object.freeze({...t})))}):null
  });
 }
 export function r61CueAt(plan,t) {

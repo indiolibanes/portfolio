@@ -78,6 +78,47 @@ export function fidelityCameraFrame({base, tClip, anchors, front, h, aspect = 16
  return Object.freeze({...base, position, target, fov: fovDeg, phase: shot.id, preset: 'f2-fidelity-cuts', cut: true});
 }
 
+
+/**
+ * F1.4 STUDY_PRESENTATION observation shots (exposition only, NOT reference-derived): after the Burst clip, while the Stellarealm is HELD, the camera
+ * keeps looking at the dome and then observes her from the ground and from behind the shoulder. Hard cuts between the three shots (montage language),
+ * the first one continues the reference low look-up without a cut. Pure function of time + read-only anchors; the base camera takes over after the hold.
+ */
+export const STUDY_OBSERVATION_SHOTS = Object.freeze([
+ Object.freeze({id: 'STUDY_DOME_LOOKUP_DRIFT', from: 0, to: 0.40}),
+ Object.freeze({id: 'STUDY_GROUND_WIDE', from: 0.40, to: 0.70}),
+ Object.freeze({id: 'STUDY_SHOULDER_TO_DOME', from: 0.70, to: 1.0})
+]);
+export function studyObservationFrame({base, t, burstEnd, holdEnd, anchors, front, h, aspect = 16 / 9, reduced = false}) {
+ if (!base?.position || !base?.target) throw new TypeError('study camera: base frame required');
+ if (![t, burstEnd, holdEnd].every(Number.isFinite) || !(holdEnd > burstEnd)) throw new TypeError('study camera: finite window required');
+ if (reduced || t < burstEnd || t >= holdEnd || !anchors?.pel || !front || !(h > 0)) return base;
+ const fl = Math.hypot(front[0], front[2]); if (!(fl > 1e-3)) return base;
+ const fx = front[0] / fl, fz = front[2] / fl, span = holdEnd - burstEnd, x = (t - burstEnd) / span;
+ const shot = STUDY_OBSERVATION_SHOTS.find(s => x >= s.from && x < s.to) ?? STUDY_OBSERVATION_SHOTS.at(-1);
+ const u = clamp((x - shot.from) / (shot.to - shot.from), 0, 1), su = smooth(u);
+ const pel = anchors.pel, feet = anchors.rf && anchors.lf ? Math.min(anchors.rf[1], anchors.lf[1]) : pel[1] - 0.55 * h, portrait = aspect < 1;
+ const rot = (a) => [fx * Math.cos(a) + fz * Math.sin(a), fz * Math.cos(a) - fx * Math.sin(a)]; // direction at azimuth a from her front (PI = behind)
+ let position, target, fov;
+ if (shot.id === 'STUDY_DOME_LOOKUP_DRIFT') {
+  const theta = 0.30 * su, [dx, dz] = rot(theta), D = 2.7 * h, pitch = (26 - 4 * su) * Math.PI / 180;
+  fov = portrait ? 78 : 64;
+  position = [pel[0] + dx * D, feet + 0.15 * h, pel[2] + dz * D];
+  target = [position[0] - dx * Math.cos(pitch) * 5 * h, position[1] + Math.sin(pitch) * 5 * h, position[2] - dz * Math.cos(pitch) * 5 * h];
+ } else if (shot.id === 'STUDY_GROUND_WIDE') {
+  const [dx, dz] = rot(Math.PI * (0.30 + 0.12 * su)), D = (portrait ? 5.4 : 4.2) * h;
+  fov = portrait ? 58 : 46;
+  position = [pel[0] + dx * D, feet + 0.30 * h, pel[2] + dz * D];
+  target = [pel[0], feet + 0.62 * h, pel[2]];
+ } else {
+  const [dx, dz] = rot(Math.PI * (0.86 - 0.06 * su)), D = (portrait ? 3.4 : 2.8) * h, pitch = (7 + 4 * su) * Math.PI / 180;
+  fov = portrait ? 74 : 58;
+  position = [pel[0] + dx * D, feet + 0.85 * h, pel[2] + dz * D];
+  target = [position[0] - dx * Math.cos(pitch) * 5 * h, position[1] + Math.sin(pitch) * 5 * h, position[2] - dz * Math.cos(pitch) * 5 * h];
+ }
+ return Object.freeze({...base, position, target, fov, phase: shot.id, preset: 'f14-study-observation', cut: shot.id !== 'STUDY_DOME_LOOKUP_DRIFT'});
+}
+
 /**
  * frameTransform factory for createR62Cinematic's cameraProfile. ctx comes from the cinematic: {rig, h, aspect, plan, reduced}.
  * `inner` (optional) is another transform to apply after (duet integrations).
@@ -87,8 +128,9 @@ export function createFidelityFrameTransform(inner = null) {
   let f = frame;
   const seg = ctx.plan?.schedule?.segments?.find(s => s.id === 'SK_BURST_02_ORIGINAL');
   if (seg && ctx.rig?.anchors && Number.isFinite(time)) {
-   const A = ctx.rig.anchors;
-   f = fidelityCameraFrame({base: frame, tClip: time - seg.start, anchors: {head: A.head, rh: A.rh, lh: A.lh, pel: A.pel, rf: A.rf, lf: A.lf}, front: ctx.rig.front, h: ctx.h, aspect: ctx.aspect, reduced: ctx.reduced});
+   const A = ctx.rig.anchors, anchors = {head: A.head, rh: A.rh, lh: A.lh, pel: A.pel, rf: A.rf, lf: A.lf}, hold = ctx.plan?.study ? ctx.timeline?.studyHold : null;
+   f = fidelityCameraFrame({base: frame, tClip: time - seg.start, anchors, front: ctx.rig.front, h: ctx.h, aspect: ctx.aspect, reduced: ctx.reduced});
+   if (hold && time >= seg.end && time < hold.end) f = studyObservationFrame({base: frame, t: time, burstEnd: seg.end, holdEnd: hold.end, anchors, front: ctx.rig.front, h: ctx.h, aspect: ctx.aspect, reduced: ctx.reduced});
   }
   return inner ? inner(f, time, ctx) : f;
  };

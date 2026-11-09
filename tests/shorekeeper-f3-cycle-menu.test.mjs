@@ -25,7 +25,7 @@ test('F3 validates the BODY twin; Legacy preserves the original G11.3 entry and 
  assert.ok(lab.includes("requireCanonicalSources(model.userData.skClips??[],[...R61_SOURCE_IDS,'SK_BURST_02_ORIGINAL_BODY'])"));
  assert.match(lab,/const button=r62Enabled\?\$\('\[data-r61-legacy-start\]'\):\$\('\[data-r61-start\]'\);/);
  assert.match(lab,/\$\('\[data-r61-legacy-start\]'\)\.disabled=!r62Enabled\|\|cycleBlocked;/);
- assert.match(lab,/root\.dataset\.cycleProfile=fidelity\?'f3':r62Enabled\?'g113-legacy':'r61'/);
+ assert.match(lab,/root\.dataset\.cycleProfile=fidelity\?\(study\?'f14-study':'f3'\):r62Enabled\?'g113-legacy':'r61'/);
 });
 
 test('presentation selector remains distinct from unverified canonical source inspection',()=>{

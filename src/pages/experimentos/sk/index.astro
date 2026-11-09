@@ -127,6 +127,18 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
   <button type="button" data-r61-start disabled>Reproduzir ciclo · F3</button>
   <label class="sk-toggle"><input type="checkbox" data-r61-camera checked/> Câmera cinematográfica (desativada em movimento reduzido)</label>
  </div>
+ <details data-f14-study hidden open class="sk-vfx-controls">
+  <summary>F1.4 · Estudo de fidelidade visual (laboratório)</summary>
+  <p class="sk-help" data-f14-help>Modo de estudo: os clipes de combate mantêm curvas, duração e velocidade 1× originais. O tempo extra é <strong>exposição</strong> (idles originais, campo do Stellarealm mantido, câmeras de observação) — rotulado <code>EXPOSITION_HOLD_NOT_CANONICAL_DURATION</code>, não é duração canônica. Cores são estados de estudo, sem relação com Outer/Inner/Supernal.</p>
+  <div class="sk-actions">
+   <label>Modo<select data-f14-mode><option value="short">CURTO · F3</option><option value="study">F1.4 ESTUDO</option></select></label>
+   <label>Hold do Stellarealm<input data-f14-hold type="range" min="15" max="25" step="1" value="20"/> <output data-f14-hold-out>20 s</output></label>
+   <label>Duração alvo<input data-f14-duration type="range" min="60" max="90" step="5" value="75"/> <output data-f14-duration-out>75 s</output></label>
+   <label>Perfil de cor<select data-f14-color><option value="BLUE">AZUL · FIDELIDADE</option><option value="VIOLET">VIOLETA · estudo</option><option value="GOLD">DOURADO · estudo</option></select></label>
+   <button type="button" data-f14-return hidden>Voltar ao F3 curto</button>
+  </div>
+  <p data-f14-status class="sk-help" role="status">F3 curto selecionado · cor AZUL (FIDELIDADE).</p>
+ </details>
  <details data-r61-legacy hidden>
   <summary>Legacy · G11.3 (comparar apresentação anterior)</summary>
   <p class="sk-help">Reproduz os mesmos clipes corporais com câmera, Root e VFX artísticos originais da G11.3. Não é uma rotação canônica certificada.</p>

@@ -157,6 +157,20 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
    else bodyFound[k].getWorldPosition(B[k]);
   }
  };
+ // F1.4: horizontal direction the HEAD faces (the body's own heading spins in the airborne Burst, so it cannot gate a face mask).
+ // The head bone's local forward axis is captured ONCE, at creation, from the standing pose (hip-line forward, same convention as the Skill layer)
+ // and is then read back through the live head orientation. Read-only; null (= historical always-on mask) whenever it is not trustworthy.
+ let faceAxis = null; const faceQ = new T.Quaternion(), faceV = new T.Vector3();
+ if (bodyOk && !proxyAnchors && found.head) try {
+  model.updateMatrixWorld(true); readBody();
+  const r = new T.Vector3().copy(B.rt).sub(B.lt); r.y = 0;
+  if (r.length() > 0.02 * h) { r.normalize(); const fwd = new T.Vector3(r.z, 0, -r.x); found.head.getWorldQuaternion(faceQ); faceAxis = fwd.applyQuaternion(faceQ.invert()); }
+ } catch (e) { faceAxis = null; }
+ const readFaceFront = () => {
+  if (!faceAxis || !found.head) return null;
+  found.head.getWorldQuaternion(faceQ); faceV.copy(faceAxis).applyQuaternion(faceQ); faceV.y = 0;
+  const l = faceV.length(); return l > 0.25 ? {x: faceV.x / l, z: faceV.z / l} : null;
+ };
  const readPose = () => {
   for (const k of Object.keys(P)) {
    if (proxyAnchors) P[k].set(proxyOrigin[0] + PROXY[k][0] * h, proxyOrigin[1] + PROXY[k][1] * h, proxyOrigin[2] + PROXY[k][2] * h);
@@ -331,10 +345,11 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   }
   let libProbe = null;
   if (libLayer) {
-   const g11 = bundle.timeline?.g11, bfLive = !!g11 && ((t >= g11.absorbStart && t < g11.butterflyEnd) || (g11.triggerStart !== undefined && t >= g11.triggerStart && t < g11.triggerEnd)); // G11.1: absorption + burst bridge the reveal->decay gap; F2: the trigger butterfly may outlive the condense window (FIDELIDADE holds it through shot 1)
+   const g11 = bundle.timeline?.g11, sh = bundle.timeline?.studyHold, bfLive = (!!sh && t >= sh.start && t < sh.end + sh.fadeS) || (!!g11 && ((t >= g11.absorbStart && t < g11.butterflyEnd) || (g11.triggerStart !== undefined && t >= g11.triggerStart && t < g11.triggerEnd))); // G11.1: absorption + burst bridge the reveal->decay gap; F2: the trigger butterfly may outlive the condense window (FIDELIDADE holds it through shot 1)
    if ((cue.liberationField > 0.002 || bfLive) && (have || proxyAnchors) && (proxyAnchors || status.chest === 'REAL_BONE')) {
     readPose(); headW.copy(P.head); headW.y += 0.05 * h;
-    libProbe = libLayer.update({t, cue, rm, bundle, headW, P: {chest: P.chest, rh: P.rh, lh: P.lh}, stage: arena});
+    const front = readFaceFront();
+    libProbe = libLayer.update({t, cue, rm, bundle, headW, front, P: {chest: P.chest, rh: P.rh, lh: P.lh}, stage: arena});
    } else libLayer.hide();
    for (const o of Object.values(libLayer.meshes)) if (o.visible) shown++;
   }
@@ -402,6 +417,6 @@ export function createS2CombatVfx(T, {scene, parent, model, plan, scale, reduced
 }
 
 /** S1 + S2 + S3: adds the Outer Stellarealm Liberation layer (AUTHORIAL; mechanics UNVERIFIED). */
-export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false} = {}) {
- return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule, {fidelity}), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
+export function createS3CombatVfx(T, {scene, parent, model, plan, scale, reducedMotion, proxyAnchors = false, proxyOrigin, targetMode = 'SIMULATED_TARGET', liberation = true, stageAnchor = null, fidelity = false, study = null} = {}) {
+ return createCombatVfxAdapter(T, {scene, parent, model, bundle: createS3Score(plan.schedule, {fidelity, study}), scale, reducedMotion, proxyAnchors, proxyOrigin, skill: true, targetMode, liberation, stageAnchor, fidelity});
 }

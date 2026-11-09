@@ -199,7 +199,7 @@ function windowIn(seg, frac, minStart) {
 }
 
 /** liberationField events, strictly after the complete Skill segment (S0 also enforces it). */
-export function authorS3Events(schedule, placement = S3_PLACEMENT) {
+export function authorS3Events(schedule, placement = S3_PLACEMENT, {recoveryRefS = null} = {}) {
  if (!schedule || !Array.isArray(schedule.segments)) fail('schedule');
  const segs = schedule.segments, burst = segs.find(s => s.id === S3_LIBERATION_CLIP), rec = segs.find(s => s.id === S3_RECOVERY_CLIP);
  const skill = segs.find(s => s.id === S2_SKILL_CLIP);
@@ -213,7 +213,8 @@ export function authorS3Events(schedule, placement = S3_PLACEMENT) {
   {id: 'LIB.reveal', clipId: burst.id, channel: 'liberationField', basis: 'AUTHORIAL', evidence: 'OUTER_STELLAREALM_REVEAL;' + LIB_EVIDENCE, start: rs, peak: rp, end: re},
   {id: 'LIB.peak', clipId: burst.id, channel: 'liberationField', basis: 'AUTHORIAL', evidence: 'PEAK_BLUE_VIOLET_GOLD_ACCENT;' + LIB_EVIDENCE, start: ks, peak: kp, end: ke}
  ];
- if (rec) { const [ds, dp, de] = windowIn(rec, p.decay, minStart); out.push({id: 'LIB.decay', clipId: rec.id, channel: 'liberationField', basis: 'AUTHORIAL', evidence: 'DISSIPATION_RECOVERY;' + LIB_EVIDENCE, start: ds, peak: dp, end: de}); }
+ // F1.4: a STUDY_PRESENTATION keeps playing the original idle after the combat; the decay window stays tied to the COMBAT recovery length (recoveryRefS), never to the extra exposition time.
+ if (rec) { const [ds, dp, de] = windowIn(recoveryRefS ? {...rec, end: Math.min(rec.end, rec.start + recoveryRefS)} : rec, p.decay, minStart); out.push({id: 'LIB.decay', clipId: rec.id, channel: 'liberationField', basis: 'AUTHORIAL', evidence: 'DISSIPATION_RECOVERY;' + LIB_EVIDENCE, start: ds, peak: dp, end: de}); }
  out.push(
   {id: 'LIB.source_frame', clipId: burst.id, channel: 'liberationField', basis: 'PENDING', evidence: 'PENDING:Burst_activation_frame_requires_authorized_video_or_PSA(sourceFrame:null)', start: null, peak: null, end: null},
   {id: 'LIB.intro_skill_stage', clipId: burst.id, channel: 'liberationField', basis: 'PENDING', evidence: 'PENDING:Inner/Supernal_require_Intro_Skill_events_not_modeled', start: null, peak: null, end: null},
@@ -266,19 +267,25 @@ export function ambientButterflyGate(g, t) {
  return g ? 0 : 1;
 }
 
-export function s3Timeline(schedule, {fidelity = false} = {}) {
- const ev = authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT).filter(e => e.basis === 'AUTHORIAL'), by = id => ev.find(e => e.id === id);
+/** F1.4 STUDY_PRESENTATION constants: the combat recovery length the decay window was authored on, and the soft release of the held field. */
+export const STUDY_RECOVERY_REF_S = 1.45, STUDY_HOLD_FADE_S = 0.8;
+export function s3Timeline(schedule, {fidelity = false, study = null} = {}) {
+ if (study && !fidelity) fail('study presentation requires the FIDELIDADE profile');
+ if (study && !(study.holdS >= 15 && study.holdS <= 25)) fail('study hold must be 15-25 s');
+ const ev = authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT, study ? {recoveryRefS: STUDY_RECOVERY_REF_S} : {}).filter(e => e.basis === 'AUTHORIAL'), by = id => ev.find(e => e.id === id);
  if (!by('LIB.condense')) return null;
  const skill = schedule.segments.find(s => s.id === S2_SKILL_CLIP), rec = schedule.segments.find(s => s.id === S3_RECOVERY_CLIP);
  return Object.freeze({skillEnd: skill.end, start: by('LIB.condense').start, closePeak: by('LIB.condense').peak, closeEnd: by('LIB.condense').end,
   revealStart: by('LIB.reveal').start, revealPeak: by('LIB.reveal').peak, peak: by('LIB.peak').peak, revealEnd: by('LIB.reveal').end,
   end: by('LIB.decay')?.end ?? by('LIB.reveal').end, recoveryStart: rec?.start ?? null, duration: schedule.duration,
-  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null, {condenseStart: by('LIB.condense').start, revealStart: by('LIB.reveal').start}, fidelity ? G11_PLACEMENT_FIDELITY : G11_PLACEMENT)});
+  g11: g11Timeline(schedule, by('LIB.decay')?.end ?? null, {condenseStart: by('LIB.condense').start, revealStart: by('LIB.reveal').start}, fidelity ? G11_PLACEMENT_FIDELITY : G11_PLACEMENT),
+  // EXPOSITION time, not a game duration: the reveal is HELD for study.holdS seconds from its start and then released softly.
+  studyHold: study ? Object.freeze({start: by('LIB.reveal').start, end: by('LIB.reveal').start + study.holdS, fadeS: STUDY_HOLD_FADE_S, label: 'EXPOSITION_HOLD_NOT_CANONICAL_DURATION'}) : null});
 }
 
 /** S1 + S2 + S3 bundle. Burst02 -> LIBERATION, Idle01 -> RECOVERY, both SOURCE_ROLE_UNVERIFIED. */
-export function createS3Score(schedule, {fidelity = false} = {}) {
+export function createS3Score(schedule, {fidelity = false, study = null} = {}) {
  const extra = {[S2_SKILL_CLIP]: {role: 'SKILL', confidence: 'SOURCE_ROLE_UNVERIFIED'}, [S3_LIBERATION_CLIP]: {role: 'LIBERATION', confidence: 'SOURCE_ROLE_UNVERIFIED'}, [S3_RECOVERY_CLIP]: {role: 'RECOVERY', confidence: 'SOURCE_ROLE_UNVERIFIED'}};
- const b = createS1Score(schedule, extra, [...authorS2Events(schedule), ...authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT)]);
- return Object.freeze({...b, timeline: s3Timeline(schedule, {fidelity}), placement: fidelity ? 'F2_REFERENCE_DERIVED' : 'AUTHORIAL'});
+ const b = createS1Score(schedule, extra, [...authorS2Events(schedule), ...authorS3Events(schedule, fidelity ? S3_PLACEMENT_FIDELITY : S3_PLACEMENT, study ? {recoveryRefS: STUDY_RECOVERY_REF_S} : {})]);
+ return Object.freeze({...b, timeline: s3Timeline(schedule, {fidelity, study}), placement: fidelity ? 'F2_REFERENCE_DERIVED' : 'AUTHORIAL'});
 }

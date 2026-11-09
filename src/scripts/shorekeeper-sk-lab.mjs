@@ -5,6 +5,8 @@ import {fidelityRestFrame} from './shorekeeper/fidelity-rest-frame.mjs';
 import {canonicalCatalogue,createCanonicalSourceInspection} from './shorekeeper/canonical-abilities.mjs';
 import {recordCanonicalSources,requireCanonicalSources} from './shorekeeper/canonical-source-provenance.mjs';
 import {createR62Integration} from './shorekeeper/r62-integration.mjs';
+import {createStudyColorController,STUDY_COLOR_PROFILES} from './shorekeeper/study-color.mjs';
+import {STUDY_LIMITS} from './shorekeeper/study-presentation.mjs';
 import {createS6Autonomy} from './shorekeeper/s6-autonomy.mjs';
 import {R61_SOURCE_IDS} from './shorekeeper/r61-plan.mjs';
 import {setSourceReviewVfxIsolation} from './shorekeeper/source-review-visuals.mjs';
@@ -66,6 +68,7 @@ export function mountShorekeeperLab(root){
  const state={webgl:false,contextLost:false,loading:false,error:false,model:false,phase:'idle',paused:false};
  let stage=null,model=null,inspection=null,director=null,selected=null,metadata=null,disposed=false,loadId=0,suspended=false,userPaused=false,last=0,summaryAt=0,metricsStart=0,frames=0,frameMs=0,renderFrameMs=0;
  const presentationClock=createPresentationClock(),frameMetrics=createFrameMetrics(),renderMetrics=createFrameMetrics();
+ let f14Mode='short',f14Colour='BLUE',studyColor=null,studyColorLayer=null;
  let loop=null,preparation=null,preparationSequence=0,preparationReport={status:'IDLE'};
  let comboCamera=null,exemplarCamera=null,narrative=null,vfx=null,vfxPaused=false,vfxDemoCameraSet=false;
  let r6QaDispose=null,s6Autonomy=null,refreshF3=()=>{},verifyingF3=false;
@@ -559,6 +562,7 @@ export function mountShorekeeperLab(root){
   panel.querySelector('summary').textContent='Shorekeeper · ciclo cinematográfico F3 (experimental)';
   $('[data-r61-start]').textContent='Reproduzir ciclo · F3';
   $('[data-r61-legacy]').hidden=false;
+  {const p=$('[data-f14-study]');if(p)p.hidden=false;}
   $('[data-r61-intro]').textContent='F3 (principal): a sequência corporal de sete fontes originais da G11.3, com Root BODY da F1, cortes de câmera F2 e ruptura energética F3. É um estudo de apresentação, não uma nova rotação corporal canônica.';
   $('[data-r61-footnote]').textContent='Fontes privadas autenticadas obrigatórias · correspondência de habilidades CANONICAL_PENDING · G7 NO_GO. A versão G11.3 anterior está preservada em Legacy; inspeção de fontes fica em painel separado.';
  }
@@ -582,6 +586,19 @@ export function mountShorekeeperLab(root){
    }catch(e){if(e.name!=='AbortError'){status(e.message);if(!director&&model&&!disposed&&!state.contextLost)buildDirector();}}finally{verifyingF3=false;}
   });
  }}
+
+ function f14Status(text){const e=$('[data-f14-status]');if(e)e.textContent=text+' · CANONICAL_PENDING · G7 NO_GO.';}
+ function detachStudyColor(){studyColor?.dispose();studyColor=null;studyColorLayer=null;}
+ function attachStudyColor(){
+  detachStudyColor();const layer=director?.scoreAdapter?.liberation??null;if(!layer)return;
+  studyColorLayer=layer;studyColor=createStudyColorController(layer);studyColor.select(f14Colour,0);studyColor.complete(performance.now()/1000);
+ }
+ function selectStudyColour(id){
+  f14Colour=id;if(!studyColor)return;
+  const now=performance.now()/1000;studyColor.select(id,now);
+  if(userPaused||motion.matches){studyColor.complete(now);if(director?.state.mode==='R61_EXPERIMENTAL'&&director.state.phase!=='idle')director.seek(director.state.clock);stage?.invalidate();}
+  loop?.wake();
+ }
  async function playR61Cycle(requestedProfile){
   if(!r61Enabled||!model||!stage||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||
      state.loading||state.contextLost||preparation||verifyingF3)return;
@@ -598,22 +615,36 @@ export function mountShorekeeperLab(root){
    director?.dispose();director=null;setSourceReviewVfxIsolation(vfx,false);
    face?.reset();inspection.restore();narrative?.stop();
    const wantCamera=$('[data-r61-camera]').checked&&!motion.matches;
+   const study=fidelity&&f14Mode==='study'?{durationS:Number($('[data-f14-duration]').value),holdS:Number($('[data-f14-hold]').value)}:null;
+   detachStudyColor();
    director=(r62Enabled?createR62Integration:createR61Director)(T,model,model.userData.skClips??[],stage,{
-    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches,profile:fidelity?PROFILE_FIDELITY:PROFILE_ARTISTIC}:{}),
+    getVfx:()=>vfx,camera:wantCamera,...(r62Enabled?{reducedMotion:()=>motion.matches,profile:fidelity?PROFILE_FIDELITY:PROFILE_ARTISTIC,study}:{}),
     onEvent:e=>{face?.onAnimationEvent(e);scheduler?.onEvent(e);}
    });
    control('presentationMode').value='combat';control('originalMode').value='reference';
    control('originalIdle').value='SK_BURST_02_ORIGINAL';
    presentationClock.reset();presentationClock.setSpeed(Number(control('speed').value));
    userPaused=false;director.start();
-   root.dataset.cycleProfile=fidelity?'f3':r62Enabled?'g113-legacy':'r61';
+   root.dataset.cycleProfile=fidelity?(study?'f14-study':'f3'):r62Enabled?'g113-legacy':'r61';
+   if(fidelity)attachStudyColor();
+   f14Status(study?`F1.4 ESTUDO · ${director.plan.schedule.duration.toFixed(1)} s · hold ${study.holdS} s (EXPOSITION_HOLD_NOT_CANONICAL_DURATION) · combate 1× original.`:'F3 curto · duração canônica do ciclo.');
    status(r62Enabled?(fidelity?'F3 · apresentação FIDELIDADE · fontes verificadas · Root BODY + câmera F2 + ruptura F3 · CANONICAL_PENDING · G7 NO_GO.':'Legacy · G11.3 artística preservada · mesmas fontes corporais · G7 NO_GO.'):'R6.1 experimental · sequência não canônica.');
-   $('[data-r61-time]').textContent=(fidelity?'F3 · ':r62Enabled?'Legacy G11.3 · ':'R6.1 · ')+'ciclo iniciado · fonte corporal original; correspondência canônica pendente.';
+   $('[data-r61-time]').textContent=(fidelity?(study?'F1.4 estudo · ':'F3 · '):r62Enabled?'Legacy G11.3 · ':'R6.1 · ')+'ciclo iniciado · fonte corporal original; correspondência canônica pendente.';
    sync(true);stage.invalidate();
   }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}finally{verifyingF3=false;}
  }
  on($('[data-r61-start]'),'click',()=>{void playR61Cycle(r62Enabled?PROFILE_FIDELITY:PROFILE_ARTISTIC);});
  on($('[data-r61-legacy-start]'),'click',()=>{void playR61Cycle(PROFILE_ARTISTIC);});
+ {const hold=$('[data-f14-hold]'),dur=$('[data-f14-duration]'),mode=$('[data-f14-mode]'),col=$('[data-f14-color]'),back=$('[data-f14-return]');
+  if(hold&&dur&&mode&&col&&back){
+   hold.min=String(STUDY_LIMITS.holdMinS);hold.max=String(STUDY_LIMITS.holdMaxS);dur.min=String(STUDY_LIMITS.minS);dur.max=String(STUDY_LIMITS.maxS);
+   const labels=()=>{$('[data-f14-hold-out]').textContent=hold.value+' s';$('[data-f14-duration-out]').textContent=dur.value+' s';};
+   const setMode=m=>{f14Mode=m;mode.value=m;back.hidden=m!=='study';$('[data-r61-start]').textContent=m==='study'?'Reproduzir ciclo · F1.4 estudo':'Reproduzir ciclo · F3';f14Status(m==='study'?'F1.4 ESTUDO selecionado (aplica-se ao próximo ciclo)':'F3 curto selecionado');};
+   on(hold,'input',labels);on(dur,'input',labels);labels();
+   on(mode,'change',()=>setMode(mode.value==='study'?'study':'short'));
+   on(col,'change',()=>{if(!STUDY_COLOR_PROFILES[col.value])return;selectStudyColour(col.value);f14Status('Cor '+STUDY_COLOR_PROFILES[col.value].label);});
+   on(back,'click',()=>{if(director?.state.mode==='R61_EXPERIMENTAL'&&director.state.phase!=='idle'&&root.dataset.cycleProfile==='f14-study')director.interrupt();setMode('short');sync(true);});
+  }}
  // S6 autonomous rehearsal is isolated behind an explicit preview flag.
  // No change to S5 original curves, G11.3 VFX, camera or face ownership.
  const s6AutoRequested=r62Enabled&&!r6Active&&!mouthQA&&new URLSearchParams(location.search).get('s6Auto')==='1';
@@ -792,11 +823,13 @@ export function mountShorekeeperLab(root){
  if(sweep&&now-sweepLast>=900){sweepLast=now;sweep.index++;if(sweep.index>4)stopSweep();else{inspection.setMorph('E_Close',sweep.index*.25);syncFace();}}
  const sourceIsolated=director?.state.mode==='SOURCE_REVIEW';
  vfx?.setSuspended(vfxPaused||userPaused||sourceIsolated);
+ if(studyColor&&studyColorLayer!==director?.scoreAdapter?.liberation)detachStudyColor();
+ if(studyColor?.transitioning)studyColor.apply(now/1000);
  if(sourceIsolated)setSourceReviewVfxIsolation(vfx,true);
  else{setSourceReviewVfxIsolation(vfx,false);if(!vfxPaused&&!userPaused)narrative?.advance(dt);vfx?.update(dt,stage.renderer.getPixelRatio());}
  const continuous=needsContinuousFrame({paused:userPaused,body:!!director&&director.state.phase!=='idle',face:!!face?.state.busy&&!face?.state.frozen,scheduler:!!scheduler?.state.enabled,sweep:!!sweep,narrative:!sourceIsolated&&!vfxPaused&&!!narrative?.state.running,vfx:!sourceIsolated&&!vfxPaused&&!!vfx?.needsContinuousFrame,camera:!!comboCamera?.active||!!director?.state.camera?.returning});const renderStart=performance.now();const drew=stage.draw({onlyIfDirty:!continuous});const renderCpuMs=Math.max(0,performance.now()-renderStart);if(drew)frames++;frameMs+=performance.now()-start;if(drew)renderFrameMs+=renderCpuMs;if(!metricsStart){metricsStart=now;frames=0;frameMs=0;renderFrameMs=0;}
  const current=director?.state.phase??'idle';if(current==='idle'&&lastDirectorPhase!=='idle'&&inspection){restError=inspection.restError();$('[data-rest-check]').textContent=(director?.state.mode==='SOURCE_REVIEW'?'Endpoint original · diferença ao repouso (não é teste de pouso): ':'Retorno à referência · maior diferença: ')+restError.toExponential(2)+(restError<1e-5?' · PASS numérico':' · verificar');}lastDirectorPhase=current;sync();
- if(now-summaryAt>=750){const autoBadge=$('[data-s6-auto-status]');if(autoBadge)autoBadge.textContent='S6 · '+s6Autonomy?.state.phase+' · G7 NO_GO · ensaio privado, não certificado.';const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuTotalMs:Number((frameMs/frames).toFixed(2)),cpuRenderMs:Number((renderFrameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;renderFrameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;if(d?.mode==='SOURCE_REVIEW'){$('[data-source-seek]').value=d.progress;$('[data-source-time]').textContent='clipTime '+d.clock.toFixed(6)+' s / '+d.duration.toFixed(6)+' s · presentationTime '+presentationClock.state.presentationTime.toFixed(6)+' s · sourceFrame PSA desconhecido';}if(d?.mode==='R61_EXPERIMENTAL'){$('[data-r61-seek]').value=d.progress;$('[data-r61-time]').textContent=d.cue+' · '+d.clock.toFixed(2)+' / '+d.duration.toFixed(2)+' s · '+d.vfxCue+' · sourceFrame indisponível · cinematografia autoral';}$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} / ${d.duration.toFixed(2)} s · ${presentationClock.state.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
+ if(now-summaryAt>=750){const autoBadge=$('[data-s6-auto-status]');if(autoBadge)autoBadge.textContent='S6 · '+s6Autonomy?.state.phase+' · G7 NO_GO · ensaio privado, não certificado.';const duration=now-metricsStart;if(duration>0&&frames>0)observed={fps:Number((frames*1000/duration).toFixed(1)),frameTimeMs:Number((duration/frames).toFixed(2)),cpuTotalMs:Number((frameMs/frames).toFixed(2)),cpuRenderMs:Number((renderFrameMs/frames).toFixed(2))};summaryAt=now;metricsStart=now;frames=0;frameMs=0;renderFrameMs=0;diagnostics();const d=director?.state;$('[data-timeline]').value=d?.progress??0;if(d?.mode==='SOURCE_REVIEW'){$('[data-source-seek]').value=d.progress;$('[data-source-time]').textContent='clipTime '+d.clock.toFixed(6)+' s / '+d.duration.toFixed(6)+' s · presentationTime '+presentationClock.state.presentationTime.toFixed(6)+' s · sourceFrame PSA desconhecido';}if(d?.mode==='R61_EXPERIMENTAL'){$('[data-r61-seek]').value=d.progress;$('[data-r61-time]').textContent=d.cue+' · '+d.clock.toFixed(2)+' / '+d.duration.toFixed(2)+' s · '+d.vfxCue+' · sourceFrame indisponível · cinematografia autoral'+(director.studyInfo?' · '+director.studyInfo.phaseAt(d.clock).label:'');}$('[data-acting-state]').textContent=d?`${d.phase} · ${d.clock.toFixed(2)} / ${d.duration.toFixed(2)} s · ${presentationClock.state.speed}×${d.queued?' · repetição agendada':''}${d.pending?'\nNovos tempos: próximo ciclo':''}`:'Clipes de atuação indisponíveis.';}
  if(drew){const cpuMs=Math.max(0,performance.now()-start);frameMetrics.add(delta,cpuMs);renderMetrics.add(delta,renderCpuMs);stage.observeFrame(renderCpuMs,now,1000/Math.min(60,Number(control('fps').value)));}
  return continuous||drew;
  }

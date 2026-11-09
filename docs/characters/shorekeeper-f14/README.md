@@ -1,6 +1,6 @@
 # Shorekeeper F1.4 — Visual Fidelity & Study Presentation
 
-**Status:** handoff preparado para o Sonnet; NENHUMA correção de runtime implementada neste commit. Evidência visual/aceitação: PENDING.
+**Status:** implementação F1.4 (Sonnet) aplicada neste PR draft — ver `f14-implementation-report.md` (causa medida da borboleta, perfis de cor, estudo longo, custos e limites) e `reference-recognition.md` (P3). Evidência visual privada entregue por canal privado; aceitação canônica: `CANONICAL_PENDING`, `G7_NO_GO`. O handoff original abaixo é preservado como contrato.
 **Base imutável de comparação:** PR #285, head `936bf64ff1728c000a257eaf14ff6215a016dbd5`, empilhado sobre #284 (F3), #283 (F2), #282 (F1).
 **Objetivo:** resolver oclusão da borboleta, recuperar variação azul/violeta/dourado em um *modo de estudo* separado e criar apresentação expositiva 60–90 s sem retimar as animações originais.
 
@@ -24,7 +24,11 @@ P4: três MP4s privados + inspeção skinnada real + regressões.
 ### Entrega posterior do Sonnet
 Continuar nesta mesma branch e PR draft F1.4, em vez de abrir um PR para cada microcorreção. Respeitar a base #285 e NÃO executar merge. Implementar somente depois de confirmar as fontes reais. Prioridade visual: borboleta > cromatismo > apresentação longa. Se faltar GLB/modelo, entregar diagnóstico e status bloqueado, não simular aceitação visual.
 
-**Documentos deste handoff:**
+**Documentos deste PR:**
+- `f14-implementation-report.md` — BEFORE/AFTER, causa confirmada, perfis de cor, duração real do estudo, recursos, veredictos por componente.
+- `reference-recognition.md` — reconhecimento visual P3 (OBSERVED / INFERRED / VERIFIED_SOURCE / MOTION_MATCHED, `SOURCE_UNAVAILABLE`).
+
+**Documentos do handoff original:**
 - `reference-matrix.md` — comparação com as dez capturas e suas incertezas.
 - `qa-contract.md` — testes e critérios de aceitação.
 - `sonnet-prompt.md` — instruções operativas prontas para colar no Sonnet.
