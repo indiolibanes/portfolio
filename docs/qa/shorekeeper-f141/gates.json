@@ -1,0 +1,119 @@
+{
+  "schema": "shorekeeper-f141-revision-b/1",
+  "base": "8410c9e58c38b5edaa01dc540a01fd7e3f35e169",
+  "previousHead": "e83435abdf0d1dafaffb73077f985f67e522e02f",
+  "overall": "INCOMPLETE_VISUAL_QA_BLOCKED",
+  "canonical": "CANONICAL_PENDING",
+  "G7": "G7_NO_GO",
+  "ownerArtisticApproval": "PENDING_REVISION_B; INITIAL_REVISION_REJECTED",
+  "gates": {
+    "HEAVY_HORIZONTAL_ORIENTATION": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "Native toroids rotated into XZ; fixed tilts under 7 degrees; Y-only animation; sphere volume retained",
+      "visualEvidence": "NOT_RUN"
+    },
+    "HEAVY_3D_PARALLAX": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "True sphere/shell/toroid geometry; no rendered viewpoint comparison",
+      "visualEvidence": "NOT_RUN"
+    },
+    "SKILL_INVISIBLE_TARGET": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "Default hidden from construction; diagnostic toggle changes no target/history/flight state",
+      "visualEvidence": "NOT_RUN"
+    },
+    "SKILL_BEAM_FIDELITY": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "0.68s trajectory-sampled ribbons with speed/decay width and soft edge gradient",
+      "visualEvidence": "NOT_RUN"
+    },
+    "SKILL_IMPACT": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "Instanced local star fragments from actual target surface contacts; no visible QA solid in presentation",
+      "visualEvidence": "NOT_RUN"
+    },
+    "LIBERATION_SMALL_BUTTERFLY": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "F141-only constant 0.31h trigger quad; unchanged wing shader/occlusion/flap rules",
+      "visualEvidence": "NOT_RUN"
+    },
+    "LIBERATION_ENERGY_RELEASE": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "One existing F3 onset, bounded pre-glow, old competing bloom disabled; <=100ms flash",
+      "visualEvidence": "NOT_RUN"
+    },
+    "LIBERATION_ELEVATED_CAMERA": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "Unchanged Burst-only third shot; close-ups/cuts/outside-window frames retained; real-rig anchor fit",
+      "visualEvidence": "NOT_RUN"
+    },
+    "BODY_AND_FACE_PRESERVATION": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "Original clips/model hashes unchanged; sampled CPU body error zero; facial modules unchanged",
+      "visualEvidence": "NOT_RUN"
+    },
+    "MOBILE_RESOURCE_BUDGET": {
+      "verdict": "VISUAL_QA_BLOCKED",
+      "artisticApproval": false,
+      "technicalEvidence": "+1 geometry, zero new material/texture/draw batches; ten CPU lifecycles stable; no GPU/device measurement",
+      "visualEvidence": "NOT_RUN"
+    }
+  },
+  "node": {
+    "pass": 368,
+    "fail": 0,
+    "priorPass": 363,
+    "newTests": 5
+  },
+  "npmRunCheck": "PASS",
+  "productionBuild": "PASS",
+  "diffCheck": "PASS",
+  "astroTypecheck": {
+    "status": "FAIL_PREEXISTING",
+    "baselineErrors": 36,
+    "candidateErrors": 36,
+    "newDiagnostics": 0
+  },
+  "references": [
+    {
+      "name": "201990.jpg",
+      "status": "SOURCE_UNAVAILABLE",
+      "basis": "USER_DESCRIPTION_ONLY",
+      "sha256": null,
+      "dimensions": null,
+      "gameTimecode": null
+    },
+    {
+      "name": "201988.jpg",
+      "status": "SOURCE_UNAVAILABLE",
+      "basis": "USER_DESCRIPTION_ONLY",
+      "sha256": null,
+      "dimensions": null,
+      "gameTimecode": null
+    },
+    {
+      "name": "201976.jpg",
+      "status": "SOURCE_UNAVAILABLE",
+      "basis": "USER_DESCRIPTION_ONLY",
+      "sha256": null,
+      "dimensions": null,
+      "gameTimecode": null
+    }
+  ],
+  "requiredVideos": {
+    "A": "NOT_PRODUCED",
+    "B": "NOT_PRODUCED",
+    "C": "NOT_PRODUCED"
+  },
+  "SamsungInternet": "NOT_RUN",
+  "GPU": "NOT_RUN"
+}

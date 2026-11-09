@@ -27,6 +27,14 @@ export function fidelityReleaseScore(t,schedule,reduced=false){
   fragments:reduced?0:Math.sin(Math.PI*progress)*(1-smooth((age-.55)/.35)),
   fieldResponse:wave*(reduced?.12:.6),evidence:F3_RELEASE_EVIDENCE};
 }
+/** Revision B opt-in: ONE F3 pulse, with a small local pre-glow and a trigger fade.
+ * Proposed presentation envelopes, not original game timings or a second explosion. */
+export function butterflyDetonationScore(t,schedule,reduced=false){
+ const base=fidelityReleaseScore(t,schedule,reduced),age=base.age;
+ const triggerGain=Number.isFinite(age)?1-smooth((age+.04)/.075):1;
+ if(Number.isFinite(age)&&age>=-.16&&age<0)return {...base,active:true,phase:'LOCAL_CONCENTRATION',concentration:smooth((age+.16)/.16),triggerGain};
+ return {...base,concentration:0,triggerGain};
+}
 /** Reuses the old large-butterfly quad. No wing SDF, texture, noise octave loop or postprocess. */
 export const F3_RUPTURE_FS=`
 ${FACE_FS}
