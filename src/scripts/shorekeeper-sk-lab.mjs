@@ -1,6 +1,9 @@
 import {createSourceReviewDirector} from './shorekeeper/source-review.mjs';
 import {createR61Director} from './shorekeeper/r61-cinematic.mjs';
 import {PROFILE_ARTISTIC,PROFILE_FIDELITY,resolveProfile} from './shorekeeper/fidelity-profile.mjs';
+import {fidelityRestFrame} from './shorekeeper/fidelity-rest-frame.mjs';
+import {canonicalCatalogue,createCanonicalSourceInspection} from './shorekeeper/canonical-abilities.mjs';
+import {recordCanonicalSources,requireCanonicalSources} from './shorekeeper/canonical-source-provenance.mjs';
 import {createR62Integration} from './shorekeeper/r62-integration.mjs';
 import {createS6Autonomy} from './shorekeeper/s6-autonomy.mjs';
 import {R61_SOURCE_IDS} from './shorekeeper/r61-plan.mjs';
@@ -65,7 +68,7 @@ export function mountShorekeeperLab(root){
  const presentationClock=createPresentationClock(),frameMetrics=createFrameMetrics(),renderMetrics=createFrameMetrics();
  let loop=null,preparation=null,preparationSequence=0,preparationReport={status:'IDLE'};
  let comboCamera=null,exemplarCamera=null,narrative=null,vfx=null,vfxPaused=false,vfxDemoCameraSet=false;
- let r6QaDispose=null,s6Autonomy=null;
+ let r6QaDispose=null,s6Autonomy=null,refreshF3=()=>{},verifyingF3=false;
  let face=null,scheduler=null,outOfView=false,mouthIsolation=null,mouthWeld=null,referenceUrl=null;
  let activePrivateFile=null,cachedPrivateSha=null,manualFileChosen=false,remoteAttempt=null;
  let r2Manifest=null,r2Connection='checking',r2HttpStatus=null,r2Checking=false;
@@ -193,7 +196,7 @@ export function mountShorekeeperLab(root){
  function showBone(){if(!inspection||!selected){$('[data-bone-data]').textContent='Selecione um bone para inspecionar.';return;}const info=inspection.boneInfo(selected);$('[data-bone-data]').textContent=JSON.stringify(info,null,2);const offset=inspection.offsets.get(selected.name)??[0,0,0];all('[data-bone-axis]').forEach((el,i)=>{el.value=String(offset[i]);$('[data-bone-angle="'+el.dataset.boneAxis+'"]').textContent=offset[i]+'°';});}
  function settings(){return Object.fromEntries(['enter','transfer','exit'].map(k=>[k,Number(control(k).value)]));}
  function cancelPreparation(reason='cancelled'){if(preparation)invalidateComboCache(model);preparationSequence++;preparation?.abort();preparation=null;if(preparationReport.status==='PREPARING')preparationReport={...preparationReport,status:'CANCELLED',reason};syncPreparation();}
- function release(){s6Autonomy?.reset();presentationClock.reset();invalidateComboCache(model);cancelPreparation('model-release');comboCamera?.stop();comboCamera=null;narrative?.stop();setSourceReviewVfxIsolation(vfx,false);vfx?.bindModel(null);mouthIsolation?.dispose();mouthIsolation=null;mouthWeld?.dispose();mouthWeld=null;activePrivateFile=null;libraryGeneration++;libraryLoader.cancel();animationLibraries.length=0;r6QaDispose?.();r6QaDispose=null;if(face?.dispose)face.dispose();else face?.reset();face=null;scheduler=null;stopSweep(false);director?.dispose();director=null;if(model){stage?.detach(model);releaseCounts=disposeObject(model,inspection?.extraMaterials??[]);}model=null;inspection=null;selected=null;metadata=null;restError=null;}
+ function release(){s6Autonomy?.reset();presentationClock.reset();invalidateComboCache(model);cancelPreparation('model-release');comboCamera?.stop();comboCamera=null;narrative?.stop();setSourceReviewVfxIsolation(vfx,false);vfx?.bindModel(null);mouthIsolation?.dispose();mouthIsolation=null;mouthWeld?.dispose();mouthWeld=null;activePrivateFile=null;libraryGeneration++;libraryLoader.cancel();animationLibraries.length=0;r6QaDispose?.();r6QaDispose=null;if(face?.dispose)face.dispose();else face?.reset();face=null;scheduler=null;stopSweep(false);director?.dispose();director=null;if(model){stage?.detach(model);releaseCounts=disposeObject(model,inspection?.extraMaterials??[]);}model=null;inspection=null;selected=null;metadata=null;restError=null;refreshF3();}
  function restoreRig(){if(phase()!=='ready')return;director?.dispose();inspection.restore();buildDirector();showBone();status('Pose original restaurada.');sync(true);}
  function buildDirector(){
  if(director)face?.onAnimationEvent({type:'end',clip:director.state.clip??'SK_COMBO_EXPERIMENTAL'});
@@ -230,10 +233,15 @@ export function mountShorekeeperLab(root){
  const r6Module=r6Active?await import('./shorekeeper/anatomical-face.mjs'):null;
  const r6QaModule=facialR6?await import('./shorekeeper/facial-r6-qa.mjs'):null;
  if(id!==loadId||disposed||state.contextLost){disposeObject(result.gltf.scene);return;}
+ recordCanonicalSources(result,{file});if(id!==loadId||disposed||state.contextLost){disposeObject(result.gltf.scene);return;}
  release();model=result.gltf.scene;model.userData.skClips=result.gltf.animations;inspection=createInspection(model);if(r6Module)face=r6Module.createAnatomicalFaceDirector(inspection);else face=createGentleFace(inspection,{qaRecipes:mouthQA||facialQA?MOUTH_QA_RECIPES:APPROVED_MANUAL_RECIPES});face.reset();control('expressionIntensity').value='1';$('[data-value="expressionIntensity"]').textContent='100%';scheduler=createContemplativeScheduler({face,available:()=>ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model?.userData.skClips??[],id,'composed')),start:id=>{if(!model||(director&&director.state.phase!=='idle')||control('originalMode').value!=='expressive')return false;director?.dispose();director=null;control('originalIdle').value=id;control('originalLayer').value='composed';buildDirector();if(!director)return false;presentationClock.setSpeed(Number(control('speed').value));director.setSpeed(1);presentationClock.setSpeed(1);control('speed').value='1';$('[data-value="speed"]').textContent='1×';director.start();sync(true);return true;}});scheduler.setReducedMotion(motion.matches);control('actingAuto').checked=false;control('originalMode').value='expressive';stage.adopt(model);vfx?.bindModel(model);if(vfx?.r5&&!mouthQA)vfx.setState('AMBIENT');if(vfx?.r4&&!mouthQA)stage.restoreCamera((vfx?.r5?celestialCameraFitR5:celestialCameraFit)({center:vfx.center.toArray(),height:vfx.scale,aspect:stage.camera.aspect}));if(mouthQA)setMouthGeometry(new URLSearchParams(location.search).get('mouthR5')==='1'?'r5':new URLSearchParams(location.search).get('mouthR4')==='1'?'r4':new URLSearchParams(location.search).get('mouthR2')==='1'?'r2':new URLSearchParams(location.search).get('mouthR3')==='1'||new URLSearchParams(location.search).get('mouthR2')==='r3'?'r3':'canonical');
  if(facialR6)r6QaDispose=r6QaModule.mountFacialR6Qa($('[data-facial-r6]'),{face,allowed:()=>mouthAllowed()&&!face.report().combat,geometry:()=>$('[data-mouth-geometry]').value,setGeometry:setMouthGeometry,captureCamera:()=>({...stage.cameraConfig(),orbitLimits:{min:stage.orbit.minDistance,max:stage.orbit.maxDistance}}),restoreCamera:c=>{stage.orbit.minDistance=c.orbitLimits.min;stage.orbit.maxDistance=c.orbitLimits.max;stage.restoreCamera(c);},camera:yaw=>{stopCameraOwners();const m=model.getObjectByName('Shorekeeper_Face'),target=new T.Box3().setFromBufferAttribute(m.geometry.attributes.position).getCenter(new T.Vector3());m.localToWorld(target);const a=yaw*Math.PI/180;stage.orbit.minDistance=.025;stage.restoreCamera({position:[target.x+Math.sin(a)*.37,target.y,target.z+Math.cos(a)*.37],target:target.toArray(),preset:'facial-r6-'+yaw});},exportReport:r=>save({...r,canonicalSha256:metadata?.sha256,geometry:$('[data-mouth-geometry]').value,camera:stage.cameraConfig(),renderer:stage.info()},'shorekeeper-r6-QA.json'),invalidate:()=>stage.invalidate()});
  if(facialR6)$('[data-tab="face"]').click();
  metadata={file:file.name,bytes:file.size,sha256:result.sha256,version:result.version,origin:source};activePrivateFile=file;
+ if(resolveProfile(location.search)===PROFILE_FIDELITY&&metadata.sha256===SHOREKEEPER_CANONICAL.sha256){
+  try{stage.restoreCamera(fidelityRestFrame(T,model,{h:vfx.scale,aspect:stage.camera.aspect}));}catch(e){log('F3 enquadramento não aplicado: '+e.message,'warning');}
+ }
+ refreshF3();
  if(!mouthQA&&metadata.sha256===SHOREKEEPER_CANONICAL.sha256){
   // R5 is the only active presentation geometry. Preserve old patches
   // solely as internal forensic/rollback modules.
@@ -297,11 +305,11 @@ export function mountShorekeeperLab(root){
   state.loading=true;sync(true);status('Lendo biblioteca local de animações…');
   for(const file of files){
    const result=await libraryLoader.load(file);if(!result)return;if(token!==libraryGeneration||disposed||state.contextLost){disposeObject(result.gltf.scene);return;}
-   try{const clips=result.json.asset?.extras?.skCombatLibrary==='2.1-c'?validateCombatLibrary(T,model,result):validateOriginalLibrary(T,model,result);director?.dispose();director=null;inspection.restore();const originalBursts=clips.filter(c=>BURST_ORIGINAL_IDS.includes(c.name));const rebased=originalBursts.map(c=>createRebasedBurstClip(T,model,c));const rootOwned=originalBursts.map(c=>createBindRootBurstClip(T,model,c));const allClips=[...clips,...rebased.map(row=>row.clip),...rootOwned.map(row=>row.clip)];for(const row of rebased)log('CL.1 QA · '+row.diagnostic.source+' · Root delta '+row.diagnostic.bindDeltaDegrees+'° · reancorada disponível.','warning');for(const row of rootOwned)log('CL.1.1 QA · '+row.diagnostic.source+' · Root no bind · variante opcional para A/B, sem aprovação visual.','warning');const incoming=new Set(allClips.map(c=>c.name));model.userData.skClips=[...model.userData.skClips.filter(c=>!incoming.has(c.name)),...allClips];if(!animationLibraries.some(x=>x.sha256===result.sha256))animationLibraries.push({file:file.name,sha256:result.sha256,clips:allClips.map(c=>c.name)});if(animationLibraries.length>9)animationLibraries.shift();if(control('originalIdle').value==='legacy'){const ids=control('presentationMode').value==='combat'?COMBAT_CLIP_IDS:ORIGINAL_IDLE_IDS;control('originalIdle').value=ids.find(id=>model.userData.skClips.some(c=>c.name===id))??'legacy';}buildDirector();}
+   try{recordCanonicalSources(result,{file});if(token!==libraryGeneration||disposed||state.contextLost)return;const clips=result.json.asset?.extras?.skCombatLibrary==='2.1-c'?validateCombatLibrary(T,model,result):validateOriginalLibrary(T,model,result);director?.dispose();director=null;inspection.restore();const originalBursts=clips.filter(c=>BURST_ORIGINAL_IDS.includes(c.name));const rebased=originalBursts.map(c=>createRebasedBurstClip(T,model,c));const rootOwned=originalBursts.map(c=>createBindRootBurstClip(T,model,c));const allClips=[...clips,...rebased.map(row=>row.clip),...rootOwned.map(row=>row.clip)];for(const row of rebased)log('CL.1 QA · '+row.diagnostic.source+' · Root delta '+row.diagnostic.bindDeltaDegrees+'° · reancorada disponível.','warning');for(const row of rootOwned)log('CL.1.1 QA · '+row.diagnostic.source+' · Root no bind · variante opcional para A/B, sem aprovação visual.','warning');const incoming=new Set(allClips.map(c=>c.name));model.userData.skClips=[...model.userData.skClips.filter(c=>!incoming.has(c.name)),...allClips];if(!animationLibraries.some(x=>x.sha256===result.sha256))animationLibraries.push({file:file.name,sha256:result.sha256,clips:allClips.map(c=>c.name)});if(animationLibraries.length>9)animationLibraries.shift();if(control('originalIdle').value==='legacy'){const ids=control('presentationMode').value==='combat'?COMBAT_CLIP_IDS:ORIGINAL_IDLE_IDS;control('originalIdle').value=ids.find(id=>model.userData.skClips.some(c=>c.name===id))??'legacy';}buildDirector();}
    finally{disposeObject(result.gltf.scene);}
   }
   const available=ORIGINAL_IDLE_IDS.filter(id=>findOriginalClip(model.userData.skClips,id));$('[data-original-availability]').textContent='Disponíveis: '+available.join(', ')+'. Arquivos lidos localmente; QA visual pendente.';status('Bibliotecas privadas adicionadas. Habilidades aéreas e ataques longos podem deslocar a personagem: mantenha câmera aberta e avalie a recuperação. QA visual pendente.');sync(true);
- }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;sync(true);loop?.reconcile();}}
+ }catch(err){if(token===libraryGeneration){warn(err.message);if(!director&&model)buildDirector();}}finally{if(token===libraryGeneration){state.loading=false;refreshF3();sync(true);loop?.reconcile();}}
  }
  async function recheckR2AndLoad(){
   if(disposed||!state.webgl||state.contextLost||state.loading||r2Checking||(model&&phase()!=='ready'))return;
@@ -555,10 +563,34 @@ export function mountShorekeeperLab(root){
   if(notes[1])notes[1].textContent='Prévia S5 · fonte corporal original · G7 NO_GO · QA em GPU física pendente. Diagnósticos antigos: acrescente legacyQA=1 à URL; nenhuma fonte ou opção foi apagada.';
  }
  $('[data-r61-preview]').hidden=!r61Enabled;
- {const f=$('[data-r61-fidelity]');if(f){f.closest('label').hidden=!r62Enabled;f.checked=r62Enabled&&resolveProfile(location.search)===PROFILE_FIDELITY;}}
- on($('[data-r61-start]'),'click',()=>{
+ {const f=$('[data-r61-fidelity]');if(f){f.closest('label').hidden=!r62Enabled;f.checked=r62Enabled&&resolveProfile(location.search)===PROFILE_FIDELITY;
+  const panel=$('[data-f3-canonical]'),selection=$('[data-f3-action]'),source=$('[data-f3-source]'),readout=$('[data-f3-status]');
+  const refresh=()=>{panel.hidden=!r62Enabled||!f.checked;const selectedSource=source.value;source.replaceChildren();const row=canonicalCatalogue(model?.userData.skClips??[]).find(r=>r.id===selection.value);if(!row)return;
+   for(const s of row.sources){const option=document.createElement('option');option.value=s.id;option.textContent=s.id+(s.available?' · '+s.durationS.toFixed(3)+' s':' · '+s.sourceStatus);source.append(option);}
+   if(row.sources.some(s=>s.id===selectedSource))source.value=selectedSource;
+   readout.textContent=row.label+' · CANONICAL_PENDING. '+(row.sources.length?'Inspeção de fonte não comprova correspondência canônica.':'Sem fonte identificada: reprodução bloqueada; nenhum gesto substituto.');};
+  for(const row of canonicalCatalogue()){const option=document.createElement('option');option.value=row.id;option.textContent=row.label;selection.append(option);}
+  refreshF3=refresh;on(f,'change',refresh);on(selection,'change',refresh);refresh();
+  for(const button of all('[data-f3-rest-view]'))on(button,'click',()=>{if(!f.checked||!model||!stage||state.loading||state.contextLost||director?.state.presentationActive||!['idle',undefined].includes(director?.state.phase))return;
+   try{stopCameraOwners();stage.restoreCamera(fidelityRestFrame(T,model,{h:vfx.scale,aspect:stage.camera.aspect,view:button.dataset.f3RestView}));stage.invalidate();}catch(e){status(e.message);}});
+  on($('[data-f3-inspect]'),'click',async()=>{if(!f.checked||!model||!stage||state.loading||state.contextLost||preparation||verifyingF3||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256)return;
+   const row=canonicalCatalogue(model.userData.skClips??[]).find(r=>r.id===selection.value),id=source.value;if(!row?.sources.some(s=>s.available&&s.id===id)){refresh();return;}
+   const subject=model,generation=libraryGeneration;verifyingF3=true;
+   try{const selectedLibrary=model.userData.skClips??[];await requireCanonicalSources(selectedLibrary,[id,...(id.startsWith('SK_BURST_')?[id+'_BODY']:[])]);if(disposed||subject!==model||generation!==libraryGeneration||state.loading||state.contextLost||!f.checked)return;cancelPreparation('f3-source');stopCameraOwners();stopSweep();scheduler?.setEnabled(false);director?.dispose();director=null;inspection.restore();face?.reset();narrative?.stop();
+    director=await createCanonicalSourceInspection(T,model,model.userData.skClips??[],{actionId:row.id,sourceId:id,explicitSourceQA:true,admit:()=>!disposed&&subject===model&&generation===libraryGeneration&&!state.contextLost&&!state.loading&&f.checked,onEvent:e=>{face?.onAnimationEvent(e);scheduler?.onEvent(e);}});
+    control('presentationMode').value='combat';control('originalMode').value='reference';setSourceReviewVfxIsolation(vfx,true);presentationClock.reset();userPaused=false;director.start();status(id+' · fonte isolada; CANONICAL_PENDING; VFX OFF; sem pouso inventado.');sync(true);stage.invalidate();
+   }catch(e){if(e.name!=='AbortError'){status(e.message);if(!director&&model&&!disposed&&!state.contextLost)buildDirector();}}finally{verifyingF3=false;}
+  });
+ }}
+ on($('[data-r61-start]'),'click',async()=>{
   if(!r61Enabled||!model||!stage||metadata?.sha256!==SHOREKEEPER_CANONICAL.sha256||
-     state.loading||state.contextLost||preparation)return;
+     state.loading||state.contextLost||preparation||verifyingF3)return;
+  const subject=model,generation=libraryGeneration;
+  if(r62Enabled&&$('[data-r61-fidelity]')?.checked){
+   verifyingF3=true;
+   try{await requireCanonicalSources(model.userData.skClips??[],[...R61_SOURCE_IDS,'SK_BURST_02_ORIGINAL_BODY']);if(disposed||model!==subject||libraryGeneration!==generation||state.loading||state.contextLost||preparation||!$('[data-r61-fidelity]')?.checked)return;}
+   catch(e){status(e.message);return;}finally{verifyingF3=false;}
+  }
   try{
    cancelPreparation('r61-stage');stopCameraOwners();stopSweep();
    scheduler?.setEnabled(false);control('actingAuto').checked=false;
@@ -573,10 +605,10 @@ export function mountShorekeeperLab(root){
    control('originalIdle').value='SK_BURST_02_ORIGINAL';
    presentationClock.reset();presentationClock.setSpeed(Number(control('speed').value));
    userPaused=false;director.start();
-   status(r62Enabled?($('[data-r61-fidelity]')?.checked?'F1 · perfil FIDELIDADE (experimental) · Root da Burst pertence à camada BODY · paleta de campo das referências · G7 NO_GO; aprovação visual pendente.':'R6.2.3 · G11.3 integrada · fontes corporais originais · G7 NO_GO; QA em GPU pendente.'):'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
+   status(r62Enabled?($('[data-r61-fidelity]')?.checked?'F3 · candidato FIDELIDADE · fontes verificadas, identidade dos clipes pendente · Root BODY preservado · formação radial de campo em reconstrução visual · G7 NO_GO.':'R6.2.3 · G11.3 integrada · fontes corporais originais · G7 NO_GO; QA em GPU pendente.'):'R6.1 experimental: 3 BA → candidato HA → candidato RS → Burst02 → campo Outer autoral → Idle. B1 não certificada.');
    $('[data-r61-time]').textContent='Ciclo iniciado · fonte original, cinematografia autoral · sourceFrame PSA indisponível.';
    sync(true);stage.invalidate();
-  }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}
+  }catch(e){warn((r62Enabled?'R6.2.3 S5: ':'R6.1: ')+e.message);director?.dispose();director=null;if(model)buildDirector();sync(true);}finally{verifyingF3=false;}
  });
  // S6 autonomous rehearsal is isolated behind an explicit preview flag.
  // No change to S5 original curves, G11.3 VFX, camera or face ownership.

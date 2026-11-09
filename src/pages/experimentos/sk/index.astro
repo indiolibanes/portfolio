@@ -124,6 +124,14 @@ const branch=process.env.CF_PAGES_BRANCH || 'experiment/shorekeeper-r3-integrati
  <summary>R6.1 · Apresentação cinematográfica experimental</summary>
  <p class="sk-help"><strong>Uma sequência completa, não canônica:</strong> três clipes de ataque básico → L02 (candidato HA) → Skill01 (candidato RS) → Burst02 (candidato Liberation) → campo Outer autoral → Idle01. O movimento B1 de mãos em concha continua sem correspondência comprovada; não é sintetizado.</p>
  <div class="sk-actions"><button type="button" data-r61-start disabled>Executar R6.1 · ciclo completo</button><label class="sk-toggle"><input type="checkbox" data-r61-camera checked/> Câmera cinematográfica (desativada em movimento reduzido)</label><label class="sk-toggle" hidden><input type="checkbox" data-r61-fidelity/> Perfil FIDELIDADE (experimental: Root da Burst pelo corpo, campo azul-branco das referências; o artístico G11.3 continua padrão)</label></div>
+ <details data-f3-canonical hidden>
+  <summary>F3 · biblioteca canônica em reconhecimento</summary>
+  <p class="sk-help">A identidade de cada movimento continua CANONICAL_PENDING. A inspeção abaixo toca somente a fonte selecionada, sem montar uma nova rotação.</p>
+  <label>Ação<select data-f3-action></select></label><label>Fonte candidata<select data-f3-source></select></label>
+  <button type="button" data-f3-inspect>Inspecionar fonte · não certificada</button>
+  <div class="sk-actions"><button type="button" data-f3-rest-view="front">Repouso · frontal anatômico</button><button type="button" data-f3-rest-view="quarter">Repouso · ¾ discreto</button><button type="button" data-f3-rest-view="side">Repouso · perfil</button></div>
+  <p data-f3-status class="sk-help" role="status">Aguardando fontes verificadas.</p>
+ </details>
  <label>Inspeção temporal da sequência<input data-r61-seek disabled type="range" min="0" max="1" step=".0001" value="0"/></label>
  <p data-r61-time class="sk-help" role="status" aria-live="polite">Aguardando fontes originais autenticadas. Controles de pausa, velocidade e interrupção são compartilhados.</p>
  <p class="sk-help">Exige os sete clipes de origem; não utiliza fallback silencioso. Sem música automática. A câmera e os VFX são uma interpretação autoral, independente de markers PSA e da coreografia original. Sem certificação de aterrissagem, fidelidade, GPU ou teste Samsung. Acesso opt-in via <code>?r61=1</code>.</p>

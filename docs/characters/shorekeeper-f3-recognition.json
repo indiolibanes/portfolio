@@ -1,0 +1,123 @@
+{
+  "title": "Canonical Motion Recognition F3 — public status ledger",
+  "base": "bbc7774e94940ff9307831810f6b0eee76d15201",
+  "fullInventory": "PRIVATE_DELIVERABLE_ONLY_NO_REFERENCE_BYTES_IN_REPO",
+  "gateCreatedBeforeRuntimeEdits": true,
+  "availableMediaCount": 28,
+  "verifiedAnimationLibraries": 3,
+  "missing": [
+    "shorekeeper_prints.zip",
+    "canonical skinned model + three idles in current authorized workspace"
+  ],
+  "recognition": {
+    "basics": "Four independent source clips exist; semantic matching pending. L02 never aliases Basic04.",
+    "Unbound Form": "FLIGHT_REFERENCE_VERIFIED; BODY_AND_ENERGY_ASSET_MATCH_PENDING",
+    "Illation": "DARK_CORE_AND_RING_CANDIDATE; NOT_LIBERATION; L02_UNVERIFIED",
+    "Chaos Theory": "FIVE_BUTTERFLY_REFERENCE_PENDING_EXACT_TIMECODES; SKILL01_UNVERIFIED",
+    "End Loop": "HAND_BUTTERFLY_TO_FLARE_TO_OUTER; BURST02_CANDIDATE_NOT_MATCHED",
+    "Discernment": "CUPPED_HAND_RADIAL_DISCHARGE_CANDIDATE; DISTINCT_FROM_END_LOOP",
+    "Stellarealm": "Outer/Inner/Supernal transitions require explicit Intro events, never elapsed color ramps."
+  },
+  "sourceClips": [
+    {
+      "id": "SK_ATTACK_01_ORIGINAL",
+      "library": "basic.glb",
+      "librarySha256": "2efd607ea7d47f9d43c67eb1e0da7bb08445acb63eed60b66296966bb6fd318e",
+      "durationS": 3.633333444595337,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_ATTACK_02_ORIGINAL",
+      "library": "basic.glb",
+      "librarySha256": "2efd607ea7d47f9d43c67eb1e0da7bb08445acb63eed60b66296966bb6fd318e",
+      "durationS": 5.733333110809326,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_ATTACK_03_ORIGINAL",
+      "library": "basic.glb",
+      "librarySha256": "2efd607ea7d47f9d43c67eb1e0da7bb08445acb63eed60b66296966bb6fd318e",
+      "durationS": 3.866666555404663,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_ATTACK_04_ORIGINAL",
+      "library": "basic.glb",
+      "librarySha256": "2efd607ea7d47f9d43c67eb1e0da7bb08445acb63eed60b66296966bb6fd318e",
+      "durationS": 6.0,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_BURST_01_ORIGINAL",
+      "library": "burst.glb",
+      "librarySha256": "984f7b58ae5b32560509834d75793fd298e51b49a2a062a4a7a7fba85b6fc35e",
+      "durationS": 6.0,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_BURST_02_ORIGINAL",
+      "library": "burst.glb",
+      "librarySha256": "984f7b58ae5b32560509834d75793fd298e51b49a2a062a4a7a7fba85b6fc35e",
+      "durationS": 5.433333396911621,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_ATTACK_L02_ORIGINAL",
+      "library": "advanced.glb",
+      "librarySha256": "dfb8086c4c41cdc65a71ca5a9e8465e77f23cd2e50223cb5e79522d32363306a",
+      "durationS": 4.666666507720947,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_SKILL_01_ORIGINAL",
+      "library": "advanced.glb",
+      "librarySha256": "dfb8086c4c41cdc65a71ca5a9e8465e77f23cd2e50223cb5e79522d32363306a",
+      "durationS": 5.233333110809326,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_SKILL_QTE_01_ORIGINAL",
+      "library": "advanced.glb",
+      "librarySha256": "dfb8086c4c41cdc65a71ca5a9e8465e77f23cd2e50223cb5e79522d32363306a",
+      "durationS": 5.133333206176758,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    },
+    {
+      "id": "SK_AIR_SKILL_01_ORIGINAL",
+      "library": "advanced.glb",
+      "librarySha256": "dfb8086c4c41cdc65a71ca5a9e8465e77f23cd2e50223cb5e79522d32363306a",
+      "durationS": 2.1666667461395264,
+      "channels": 729,
+      "status": "SOURCE_VERIFIED",
+      "motionMatch": "CANONICAL_PENDING"
+    }
+  ],
+  "cuts": {
+    "referenceSeconds": [
+      3.8,
+      4.2
+    ],
+    "runtimeMapping": "PROPORTIONAL_CANDIDATE",
+    "confidence": "MEDIUM",
+    "motionMatch": "CANONICAL_PENDING"
+  },
+  "privacy": "No images, private curves, videos, signed URLs or model geometry in repository"
+}

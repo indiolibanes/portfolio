@@ -1,0 +1,56 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>F3 local · component QA</title>
+<style>body{margin:12px;background:#101724;color:#d4e7f3;font:14px system-ui}button,select{padding:10px;margin:4px}canvas{max-width:98vw;max-height:70vh;border:1px solid #59758c}pre{white-space:pre-wrap;max-width:1000px}</style>
+<h1>FIDELIDADE F3 · QA local privada</h1><p>RIG ORIGINAL SEM MALHA · não é validação visual da personagem, materiais, idles ou GPU física.</p>
+<label>Viewport <select id="viewport"><option value="desktop">1280×720</option><option value="mobile">390×844</option></select></label>
+<button data-record="F2">Gravar componente F2 fixo</button><button data-record="F3fixed">Gravar componente F3 fixo</button><button data-record="F3cinematic">Gravar componente F3 cinematográfico</button><button data-record="rest">Gravar enquadramento do rig em repouso</button><pre id="state">Preparando WebGL…</pre><div id="host"></div>
+<script type="module">
+import * as T from '/node_modules/three/build/three.module.js';
+import {GLTFLoader} from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import {createLiberationLayer} from '/src/scripts/shorekeeper/combat-vfx-liberation.mjs';
+import {createLiberationLayer as baseLayer} from '/@fs/__BASE__/src/scripts/shorekeeper/combat-vfx-liberation.mjs';
+import {createS3Score} from '/src/scripts/shorekeeper/combat-vfx-events.mjs';
+import {buildR61Plan,R61_SOURCE_IDS} from '/src/scripts/shorekeeper/r61-plan.mjs';
+import {applyFidelityBody} from '/src/scripts/shorekeeper/fidelity-profile.mjs';
+import {fidelityCameraFrame} from '/src/scripts/shorekeeper/fidelity-camera.mjs';
+import {fidelityRestFrame} from '/src/scripts/shorekeeper/fidelity-rest-frame.mjs';
+import {createRigCameraReader} from '/src/scripts/shorekeeper/smart-camera.mjs';
+import {createSourceRigLines} from '/scripts/shorekeeper/qa-f3-rig-lines.mjs';
+const status=document.querySelector('#state'),host=document.querySelector('#host');
+try{
+ const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.outputColorSpace=T.SRGBColorSpace;host.append(renderer.domElement);
+ const scene=new T.Scene();scene.background=new T.Color(0x0b182c);const camera=new T.PerspectiveCamera(40,16/9,.01,100);
+ const source=await new GLTFLoader().loadAsync('/private-clips/burst.glb');const model=source.scene;scene.add(model);const observed=createSourceRigLines(T,model);scene.add(observed.lines);
+ const bind=[];model.traverse(o=>bind.push([o,o.position.clone(),o.quaternion.clone(),o.scale.clone()]));
+ const h=1.6,reader=createRigCameraReader(T,model,h),fidelity=applyFidelityBody(T,model,source.animations),clip=fidelity.library.find(c=>c.name==='SK_BURST_02_ORIGINAL');
+ const mixer=new T.AnimationMixer(model),action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();action.paused=true;
+ const floor=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshBasicMaterial({color:0x18263b}));floor.rotation.x=-Math.PI/2;floor.position.y=-.01;scene.add(floor);
+ const duration=[3.633,5.733,3.867,4.667,5.233,clip.duration,2.5],stub=R61_SOURCE_IDS.map((id,i)=>new T.AnimationClip(id,duration[i],[new T.VectorKeyframeTrack('Root.position',[0,duration[i]],[0,0,0,0,0,0])]));
+ // This schedule is a SYNTHETIC VFX harness, not a private idle or an assertion of source timing.
+ const plan=buildR61Plan(stub,{burstEntry:'cut'}),bundle=createS3Score(plan.schedule,{fidelity:true}),burst=plan.schedule.segments.find(s=>s.id==='SK_BURST_02_ORIGINAL');
+ const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info'),gpu=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
+ status.textContent='READY · '+gpu+' · source skeleton only';let running=false;
+ for(const button of document.querySelectorAll('[data-record]'))button.addEventListener('click',async()=>{
+  if(running)return;running=true;for(const b of document.querySelectorAll('button'))b.disabled=true;
+  const mode=button.dataset.record,viewport=document.querySelector('#viewport').value,[w,hh]=viewport==='mobile'?[390,844]:[1280,720];renderer.setSize(w,hh);camera.aspect=w/hh;camera.updateProjectionMatrix();
+  mixer.stopAllAction();if(mode!=='rest'){action.reset().play();action.paused=true;}else for(const [o,p,q,s]of bind){o.position.copy(p);o.quaternion.copy(q);o.scale.copy(s);}
+  const group=new T.Group();scene.add(group);const L=(mode==='F2'?baseLayer:createLiberationLayer)(T,{parent:group,h,bundle,palette:'fidelity'}),rows=[],fps=30,frames=mode==='rest'?90:213;
+  try{for(let i=0;i<frames;i++){
+   const t=burst.start-.6+i/fps,local=Math.max(0,Math.min(clip.duration,t-burst.start));if(mode!=='rest'){action.time=local;mixer.update(0);}model.updateMatrixWorld(true);observed.update();const rig=reader.read(),A=rig.anchors,P={chest:new T.Vector3(...A.chest),rh:new T.Vector3(...A.rh),lh:new T.Vector3(...A.lh)};
+   if(mode==='rest')L.hide();else L.update({t,rm:false,cue:{liberationField:1},bundle,headW:new T.Vector3(...A.head),P,stage:{x:0,z:0,floorY:0}});
+   let pose={position:[0,1.8,9],target:[0,1,0],fov:40};
+   if(mode==='F3cinematic')pose=fidelityCameraFrame({base:pose,tClip:t-burst.start,anchors:A,front:rig.front,h,aspect:camera.aspect});
+   if(mode==='rest')pose=fidelityRestFrame(T,model,{h,aspect:camera.aspect,view:['front','quarter','side'][Math.min(2,Math.floor(i/30))]});
+   camera.position.fromArray(pose.position);camera.fov=pose.fov;camera.lookAt(...pose.target);camera.updateProjectionMatrix();camera.updateMatrixWorld(true);
+   const start=performance.now();renderer.render(scene,camera);gl.finish();const cost=performance.now()-start;
+   rows.push({i,t,cpuAndGpuFinishMs:cost,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,programs:renderer.info.programs.length});
+   const blob=await new Promise(r=>renderer.domElement.toBlob(r,'image/png'));const response=await fetch('/qa-frame?key='+mode+'-'+viewport+'-'+String(i).padStart(4,'0')+'.png',{method:'POST',body:blob});if(!response.ok)throw Error('Private frame save failed');
+   status.textContent=mode+' '+viewport+' '+(i+1)+'/'+frames+' · '+gpu;
+   // Yield through the browser's single UI frame driver. No additional animation physics clock.
+   await new Promise(requestAnimationFrame);
+  }
+  const report={mode,viewport,width:w,height:hh,fpsEncoded:fps,frames,gpu,rigSegments:observed.segments,restSource:mode==='rest'?'BIND_NOT_ORIGINAL_IDLE':null,evidence:'ACTUAL_THREE_WEBGL_COMPONENT_WITH_ORIGINAL_SOURCE_NODE_DIAGRAM_NOT_SKINNED_MODEL_QA',rows};await fetch('/qa-result',{method:'POST',body:JSON.stringify(report)});status.textContent='DONE '+mode+' '+viewport+' · '+gpu;
+  }catch(e){status.textContent='FAIL '+e.message;}
+  finally{L.dispose();group.removeFromParent();running=false;for(const b of document.querySelectorAll('button'))b.disabled=false;}
+ });
+}catch(e){status.textContent='ENVIRONMENT_BLOCKED: '+e.message;}
+</script></html>

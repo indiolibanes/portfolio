@@ -15,6 +15,7 @@
  */
 import {BILLBOARD_VS, FACE_FS, TAIL, BUTTERFLY_GLSL, BUTTERFLY_FID_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
 import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
+import {fidelityReleaseScore,F3_RUPTURE_FS} from './fidelity-release.mjs';
 
 export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butterfly
 /** Radius / contrast A/B presets, relative to the model height (no world-unit or gameplay claim). */
@@ -301,8 +302,8 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
  for (const [n, a, k] of [['iPos', mPos, 3], ['iS', mS, 1], ['iA', mA, 1], ['iK', mK, 1]]) { const at = new T.InstancedBufferAttribute(a, k); at.setUsage(T.DynamicDrawUsage); mg.setAttribute(n, at); }
  const motes = mk(mg, new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: {uBlue: col('blue'), uGold: col('gold'), ...headU()}, vertexShader: MOTE_VS, fragmentShader: MOTE_FS}), 13, 'liberationMotes');
  const butterfly = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
-  uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}},
-  vertexShader: BF_VS, fragmentShader: palette === 'fidelity' ? BF_FS_FID : BF_FS}), 7, 'liberationGiantButterfly');
+  uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}, ...(palette==='fidelity'?{uDirW:{value:v3(0,0,1)},uSize:{value:1},uPush:{value:0},...headU()}:{})},
+  vertexShader: palette==='fidelity'?BILLBOARD_VS:BF_VS, fragmentShader: palette === 'fidelity' ? F3_RUPTURE_FS : BF_FS}), 7, palette==='fidelity'?'liberationEnergyRupture':'liberationGiantButterfly');
  const trigger = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
   uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uTint: {value: v3(0.28, 0.66, 1.0)}, uViolet: {value: v3(0.52, 0.30, 1.0)}, uA: {value: 0}, uTime: {value: 0}, uFlap: {value: 1}, uDis: {value: 0}, ...headU()},
   vertexShader: BILLBOARD_VS, fragmentShader: palette === 'fidelity' ? TRG_FS_FID : TRG_FS}), 14, 'liberationTriggerButterfly');
@@ -322,6 +323,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
 
  /** ctx: {t, cue, rm, bundle, headW, P:{chest, rh, lh}, stage:{x, z, floorY}} */
  function update(c) {
+  if(disposed)return null;
   neutralize(); last = null;
   const {t, cue, rm, bundle: b} = c;
   const g = b.timeline?.g11 ?? null, live = cue.liberationField > 0.002 || (g && ((t >= g.absorbStart && t < g.butterflyEnd) || (g.triggerStart !== undefined && t >= g.triggerStart && t < g.triggerEnd)));
@@ -329,7 +331,11 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
-  const FID = cfg.palette === 'fidelity', cs = liberationColorScore(t, g, rm, cfg.palette), setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
+  const FID = cfg.palette === 'fidelity', release=FID?fidelityReleaseScore(t,b.schedule,rm):null, raw=liberationColorScore(t,g,rm,cfg.palette);
+  // The late absorption/giant-wing ending was authorial, not a verified End Loop event.
+  // Keep F2's trigger score byte-for-byte while removing that ending ONLY in FIDELIDADE.
+  const cs=FID?{...raw,absorb:0,absorbLin:0,collapse:0,bf:{...raw.bf,a:0,ring:0,burst:0,flash:0},phase:release.active?release.phase:'OUTER_CANDIDATE'}:raw;
+  const setTint = u => { u.uLine.value.fromArray(cs.line); u.uWash.value.fromArray(cs.wash); u.uHor.value.fromArray(cs.hor); u.uGold.value.fromArray(G11_TINTS.gold); u.uGoldAmt.value = cs.gold * (1 - 0.12 * cs.absorb); };
   if (FID) U(motes).uGold.value.set(0.78, 0.90, 1.0); // F2: no amber motes in the blue-white profile
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
   bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
@@ -339,9 +345,11 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   // (reveal edge converges, dome curtain lowers and contracts), and only then does the giant butterfly burst.
   const holdLv = !g || t <= eR?.peak ? vR : vR > 0 ? 0.94 : 0;
   const fadeEnd = g ? 1 - smooth((t - (g.butterflyStart - 0.28)) / 0.28) : 1;
-  const fieldLv = holdLv * fadeEnd;
-  if (fieldLv > 0.002 && vR > 0.002) {
-   const uR = phase(eR, t), grow = rm ? 1.05 : 0.05 + 1.0 * smooth(uR / 0.42), rise = rm ? 1 : smooth((uR - 0.10) / 0.40);
+  const burst=b.schedule?.segments?.find(s=>s.id==='SK_BURST_02_ORIGINAL');
+  // Fade releases this bounded presentation, not an in-game Stellarealm termination.
+  const fieldLv = FID&&eR&&burst ? smooth((t-eR.start)/.18)*(1-smooth((t-burst.end)/Math.max(.1,(b.timeline?.end??burst.end+.6)-burst.end))) : holdLv * fadeEnd;
+  if (fieldLv > 0.002 && (FID||vR > 0.002)) {
+   const uR = phase(eR, t), grow = rm ? 1.05 : FID?.05+smooth((t-eR.start)/.22):0.05 + 1.0 * smooth(uR / 0.42), rise = rm ? 1 : FID?smooth((t-eR.start)/.28):smooth((uR - 0.10) / 0.40);
    const ab = rm ? 0 : cs.absorb, reveal = grow + (0.03 - grow) * ab, domeRise = rise * (1 - ab);
    const f = U(field); field.position.set(c.stage.x, c.stage.floorY + 0.006 * h, c.stage.z); field.scale.set(2.3 * R, 1, 2.3 * R);
    setTint(f); f.uA.value = fieldLv; f.uReveal.value = reveal; f.uPeak.value = 0; f.uShock.value = 0; f.uViol.value = cs.violet; f.uGoldW.value = col3.gold; f.uTime.value = time; f.uContrast.value = cfg.contrast; f.uAbsorb.value = cs.absorb;
@@ -356,6 +364,14 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    const f = U(field); field.position.set(c.stage.x, c.stage.floorY + 0.006 * h, c.stage.z); field.scale.set(2.3 * R, 1, 2.3 * R);
    if (!field.visible) { setTint(f); f.uA.value = 0; f.uReveal.value = 1.05; f.uContrast.value = cfg.contrast; field.visible = true; }
    f.uShock.value = cs.bf.ringR; f.uShockA.value = cs.bf.ring; f.uGold.value.set(0.70, 0.90, 1.0); probe.shock = cs.bf.ringR;
+  }
+  if(release?.wave>.002){
+   const f=U(field);field.position.set(c.stage.x,c.stage.floorY+.006*h,c.stage.z);field.scale.set(2.3*R,1,2.3*R);
+   if(!field.visible){setTint(f);f.uA.value=0;f.uReveal.value=1.05;f.uContrast.value=cfg.contrast;field.visible=true;}
+   f.uShock.value=release.radius;f.uShockA.value=release.wave;f.uGold.value.set(.70,.90,1.0);
+   // Existing field/canopy respond to the advancing front, without lights or a new scene pass.
+   if(canopy.visible)U(canopy).uA.value*=1+release.fieldResponse;
+   probe.shock=release.radius;
   }
   // ---- G11.1 trigger: ONE butterfly above the right hand, dissolving at once into the field (no swarm, no core, no converging motes) ----
   if (cs.trig.a > 0.002) {
@@ -422,10 +438,19 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
     put(base.x + Math.cos(ang) * rad * (1 - 0.35 * Math.abs(el)) + wob, base.y + Math.sin(el * 1.1) * rad * 0.75, base.z + Math.sin(ang) * rad * (1 - 0.35 * Math.abs(el)), 0.034 * h * (0.5 + hash(i, 24)) * (1 - 0.5 * uu), Math.sin(Math.PI * Math.min(1, uu * 1.05)) * 0.95, 0.0);
    }
   }
+  if(release?.active){
+   const k=U(butterfly);k.uCenter.value.copy(c.P.rh);k.uCenter.value.y+=.04*h;k.uSize.value=(.45+1.5*release.progress)*h;
+   k.uPush.value=.04*h;k.uA.value=release.core;k.uBurn.value=release.progress;k.uFlash.value=release.flash;k.uBlue.value.set(.14,.46,1);k.uHotC.value.set(.80,.92,1);
+   butterfly.visible=release.core>.003;probe.release={...release,radiusH:release.radius*cfg.radius,kind:'FORMATION_NOT_DISCERNMENT',field:'OUTER_ONLY'};
+   if(release.fragments>.002)for(let i=0;i<112;i++){
+    const ang=hash(i,71)*TAU,el=(hash(i,72)-.5)*1.4,p=release.progress,rad=(.05+release.radius*(.4+.6*hash(i,73)))*R;
+    put(c.stage.x+Math.cos(ang)*rad,c.stage.floorY+(.12+Math.max(0,Math.sin(el))*rad/h)*h,c.stage.z+Math.sin(ang)*rad,.016*h*(.6+hash(i,74)),release.fragments*(.4+.6*hash(i,75)),0);
+   }
+  }
   if (vD > 0.002 && !(cs.bf.a > 0.002)) fieldMotes(vD * 0.5, 0.6, 0.15, 14);
   if (n) { motes.visible = true; for (const a of Object.values(mg.attributes)) if (a.isInstancedBufferAttribute) a.needsUpdate = true; }
   probe.motes = n;
-  probe.stage = cs.bf.a > 0.002 ? 'BUTTERFLY_BURST' : cs.absorbLin > 0 && t < (g?.butterflyStart ?? 0) ? 'ABSORPTION' : cs.trig.a > 0.002 ? 'TRIGGER_BUTTERFLY' : vC >= Math.max(vR, vD) && vC > 0.002 ? 'CONDENSE' : vK > 0.35 ? 'PEAK' : vR > 0.002 && phase(eR, t) < 0.45 ? 'OUTER_REVEAL' : vR > 0.002 ? 'DISSIPATION' : vD > 0.002 ? 'RECOVERY_MOTES' : 'NONE';
+  probe.stage = release?.active?release.phase:cs.bf.a > 0.002 ? 'BUTTERFLY_BURST' : cs.absorbLin > 0 && t < (g?.butterflyStart ?? 0) ? 'ABSORPTION' : cs.trig.a > 0.002 ? 'TRIGGER_BUTTERFLY' : vC >= Math.max(vR, vD) && vC > 0.002 ? 'CONDENSE' : vK > 0.35 ? 'PEAK' : vR > 0.002 && phase(eR, t) < 0.45 ? 'OUTER_REVEAL' : vR > 0.002 ? 'DISSIPATION' : vD > 0.002 ? 'RECOVERY_MOTES' : 'NONE';
   last = probe; return probe;
  }
  return {

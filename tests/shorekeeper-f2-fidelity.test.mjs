@@ -98,13 +98,14 @@ test('F2 plan: burstEntry cut is half-open (exactly one clip owns every instant,
 });
 
 const rig=()=>{const root=new T.Group(),scene=new T.Scene();scene.add(root);for(const [n,p] of Object.entries({Bip001Pelvis:[0,1,0],Bip001Spine2:[0,1.3,0],Bip001Head:[0,1.6,0],Bip001RFoot:[.1,.05,0],Bip001LFoot:[-.1,.05,0],Bip001RThigh:[.1,.9,0],Bip001LThigh:[-.1,.9,0],Bip001RHand:[.4,1.2,.2],Bip001LHand:[-.4,1.2,.2],Bip001RForearm:[.3,1.2,.1],Bip001LForearm:[-.3,1.2,.1]})){const o=new T.Bone();o.name=n;o.position.set(...p);root.add(o);}root.updateMatrixWorld(true);return {root,scene};};
-test('F2 butterflies: FIDELIDADE uses the torn-wing shaders, artistic keeps the G11.1 ones, budgets unchanged, nothing leaks on dispose',()=>{
+test('F2 trigger is frozen; F3 replaces only the fidelity giant wings, artistic keeps G11.1; budgets unchanged',()=>{
  const mk=palette=>{const scene=new T.Scene(),root=new T.Group();scene.add(root);const plan=buildR61Plan(lib()),bundle=createS3Score(plan.schedule);return {scene,L:createLiberationLayer(T,{parent:root,h:1.6,bundle,palette}),root};};
  const f=mk('fidelity'),a=mk('authorial');
  try{
   const fs=(r,n)=>r.getObjectByName(n).material.fragmentShader;
-  for(const n of ['liberationGiantButterfly','liberationTriggerButterfly']){assert.match(fs(f.root,n),/bfFidShade/);assert.doesNotMatch(fs(a.root,n),/bfFidShade/);}
-  assert.match(fs(f.root,'liberationGiantButterfly'),/bfEmbers/);
+  assert.match(fs(f.root,'liberationTriggerButterfly'),/bfFidShade/);assert.doesNotMatch(fs(a.root,'liberationTriggerButterfly'),/bfFidShade/);
+  assert.ok(a.root.getObjectByName('liberationGiantButterfly'));assert.equal(f.root.getObjectByName('liberationGiantButterfly'),undefined);
+  assert.doesNotMatch(fs(f.root,'liberationEnergyRupture'),/bfFidShade|bfEmbers|bfWing/);
   assert.equal(f.root.children.length,a.root.children.length);assert.ok(f.root.children.length<=LIBERATION_MAX_DRAW_CALLS,'draw-call budget kept (no extra mesh)');
  }finally{f.L.dispose?.();a.L.dispose?.();}
 });
