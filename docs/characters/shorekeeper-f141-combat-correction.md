@@ -1,4 +1,6 @@
-# Shorekeeper F1.4.1 — experimental combat correction
+# Shorekeeper F1.4.1 — initial correction (historical)
+
+> Historical record of initial HEAD `e83435abdf0d1dafaffb73077f985f67e522e02f`, artistically rejected. Current code/correction: [Revision B](shorekeeper-f141-revision-b.md).
 
 **VISUAL_CANDIDATE / VISUAL_QA_BLOCKED.** This is an engineering draft, not artistic completion. CANONICAL_PENDING; G7_NO_GO. Owner review must precede the requested final Astra audit. No new body ability, canonical clip mapping, model, skin, morph or source curve was produced.
 

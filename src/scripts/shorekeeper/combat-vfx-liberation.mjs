@@ -15,7 +15,7 @@
  */
 import {BILLBOARD_VS, BILLBOARD_VS_FACING, FACE_FS, TAIL, BUTTERFLY_GLSL, BUTTERFLY_FID_GLSL, NOISE_GLSL} from './combat-vfx-shaders.mjs';
 import {S3_COLOR_VARIANTS} from './combat-vfx-events.mjs';
-import {fidelityReleaseScore,F3_RUPTURE_FS} from './fidelity-release.mjs';
+import {fidelityReleaseScore,butterflyDetonationScore,F3_RUPTURE_FS} from './fidelity-release.mjs';
 
 export const LIBERATION_MAX_DRAW_CALLS = 6; // G11.1: + the single trigger butterfly
 /** Radius / contrast A/B presets, relative to the model height (no world-unit or gameplay claim). */
@@ -282,7 +282,9 @@ void main(){ float r=length(vUv); if(r>1.) discard; float a=vA*(pow(1.-r,2.2)*.9
  * @param opts.contrast field/canopy gain (A/B presets above)
  * @param opts.variant  'OUTER' | 'INNER_AUTHORIAL' | 'SUPERNAL_AUTHORIAL' (explicit flag only)
  */
-export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER', palette = 'authorial'}) {
+export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION_RADIUS_PRESETS.vast, contrast = LIBERATION_CONTRAST_PRESETS.standard, variant = 'OUTER', palette = 'authorial', triggerDetonation = false}) {
+ if(typeof triggerDetonation!=='boolean')throw TypeError('Liberation detonation opt-in must be boolean');
+ const DET=palette==='fidelity'&&triggerDetonation;
  if (!S3_COLOR_VARIANTS[variant]) throw new TypeError('Liberation: unknown colour variant ' + variant);
  if (!(radius > 0.5 && radius < 12) || !(contrast > 0.1 && contrast < 3)) throw new TypeError('Liberation: radius/contrast out of range');
  let disposed = false, last = null, cfg = {radius, contrast, variant, palette}, study = null; // F1.4: laboratory colour study ({violet, gold} in 0..1) or null
@@ -291,6 +293,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
  const additive = extra => ({transparent: true, depthWrite: false, depthTest: true, blending: T.AdditiveBlending, toneMapped: false, ...extra});
  const mk = (geo, mat, order, name) => { const o = new T.Mesh(geo, mat); o.name = name; o.frustumCulled = false; o.renderOrder = order; o.visible = false; mats.push(mat); geos.push(geo); parent.add(o); return o; };
  const headU = () => ({uHeadW: {value: v3()}, uFaceR: {value: 0}});
+ const detU = () => DET?{uFaceFwd:{value:v3()},uClear:{value:0}}:{};
 
  const fg = new T.PlaneGeometry(1, 1); fg.rotateX(-Math.PI / 2);
  const field = mk(fg, new T.ShaderMaterial({...additive({side: T.DoubleSide, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3}),
@@ -301,15 +304,15 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   uniforms: {uLine: col('blue'), uWash: col('blue'), uHor: col('blue'), uGoldAmt: {value: 0}, uBlue: col('blue'), uViolet: col('violet'), uGold: col('gold'), uA: {value: 0}, uRise: {value: 0}, uViol: {value: 0}, uGoldW: {value: 0}, uPeak: {value: 0}, uTime: {value: 0}, uContrast: {value: 1}, uAbsorb: {value: 0}, ...headU()},
   vertexShader: DOME_VS, fragmentShader: DOME_FS}), 5, 'liberationCanopyArcs');
  const core = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
-  uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uBlue: col('blue'), uViolet: col('violet'), uGold: col('gold'), uA: {value: 0}, uTime: {value: 0}, uGrow: {value: 0}, uViol: {value: 0}, ...headU()},
-  vertexShader: BILLBOARD_VS, fragmentShader: CORE_FS}), 12, 'liberationAbsorbCore');
+  uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uBlue: col('blue'), uViolet: col('violet'), uGold: col('gold'), uA: {value: 0}, uTime: {value: 0}, uGrow: {value: 0}, uViol: {value: 0}, ...headU(),...detU()},
+  vertexShader: DET?BILLBOARD_VS_FACING:BILLBOARD_VS, fragmentShader: CORE_FS}), 12, 'liberationAbsorbCore');
  const mg = new T.InstancedBufferGeometry(), mq = new T.PlaneGeometry(1, 1); mg.index = mq.index; mg.setAttribute('position', mq.attributes.position); mg.instanceCount = NM; mq.dispose();
  const mPos = new Float32Array(NM * 3), mS = new Float32Array(NM), mA = new Float32Array(NM), mK = new Float32Array(NM);
  for (const [n, a, k] of [['iPos', mPos, 3], ['iS', mS, 1], ['iA', mA, 1], ['iK', mK, 1]]) { const at = new T.InstancedBufferAttribute(a, k); at.setUsage(T.DynamicDrawUsage); mg.setAttribute(n, at); }
  const motes = mk(mg, new T.ShaderMaterial({...additive({side: T.DoubleSide}), uniforms: {uBlue: col('blue'), uGold: col('gold'), ...headU()}, vertexShader: MOTE_VS, fragmentShader: MOTE_FS}), 13, 'liberationMotes');
  const butterfly = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
-  uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}, ...(palette==='fidelity'?{uDirW:{value:v3(0,0,1)},uSize:{value:1},uPush:{value:0},...headU()}:{})},
-  vertexShader: palette==='fidelity'?BILLBOARD_VS:BF_VS, fragmentShader: palette === 'fidelity' ? F3_RUPTURE_FS : BF_FS}), 7, palette==='fidelity'?'liberationEnergyRupture':'liberationGiantButterfly');
+  uniforms: {uCenter: {value: v3()}, uBack: {value: 0}, uScale: {value: 1}, uMin: {value: 0}, uMax: {value: 1}, uGold: col('gold'), uBlue: col('blue'), uViolet: col('violet'), uHotC: {value: v3(1, 0.80, 0.42)}, uA: {value: 0}, uOpen: {value: 1}, uTime: {value: 0}, uBurn: {value: 1.2}, uFlash: {value: 0}, uChaos: {value: 0}, ...(palette==='fidelity'?{uDirW:{value:v3(0,0,1)},uSize:{value:1},uPush:{value:0},...headU(),...detU()}:{})},
+  vertexShader: palette==='fidelity'?(DET?BILLBOARD_VS_FACING:BILLBOARD_VS):BF_VS, fragmentShader: palette === 'fidelity' ? F3_RUPTURE_FS : BF_FS}), 7, palette==='fidelity'?'liberationEnergyRupture':'liberationGiantButterfly');
  const trigger = mk(new T.PlaneGeometry(1, 1), new T.ShaderMaterial({...additive({side: T.DoubleSide}),
   uniforms: {uCenter: {value: v3()}, uDirW: {value: v3(0, 0, 1)}, uSize: {value: 1}, uPush: {value: 0}, uTint: {value: v3(0.28, 0.66, 1.0)}, uViolet: {value: v3(0.52, 0.30, 1.0)}, uA: {value: 0}, uTime: {value: 0}, uFlap: {value: 1}, uDis: {value: 0}, ...headU(), ...(palette === 'fidelity' ? {uFaceFwd: {value: v3()}, uClear: {value: 0}} : {})},
   vertexShader: palette === 'fidelity' ? BILLBOARD_VS_FACING : BILLBOARD_VS, fragmentShader: palette === 'fidelity' ? TRG_FS_FID : TRG_FS}), 14, 'liberationTriggerButterfly');
@@ -326,6 +329,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
  // It starts on the LEFT hand (raised at ~0.6-1.5 s of the clip) and, while that hand lowers and the RIGHT one rises (~3.4-4.1 s), travels across to it so the hand flare is born at the raised arm.
  const trigHandMix = tau => smooth((tau - 1.6) / 1.7);
  const trigRel = (tau, rm) => ({y: h * (0.04 + 0.11 * smooth(tau / 0.9)), s: rm ? 0 : 0.008 * h * Math.sin(tau * 4.4)});
+ const handFocus=(c,t,g,rm)=>{focus.copy(c.P.lh).lerp(c.P.rh,trigHandMix(t-g.triggerStart));const tr=trigRel(t-g.triggerStart,rm);focus.y+=tr.y+tr.s;return focus;};
 
  /** ctx: {t, cue, rm, bundle, headW, P:{chest, rh, lh}, stage:{x, z, floorY}} */
  function update(c) {
@@ -337,7 +341,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   const ix = id => b.index.get(id), eC = ix('LIB.condense'), eR = ix('LIB.reveal'), eK = ix('LIB.peak'), eD = ix('LIB.decay');
   const vC = eventEnvelope(eC, t), vR = eventEnvelope(eR, t), vK = eventEnvelope(eK, t), vD = eventEnvelope(eD, t);
   const col3 = S3_COLOR_VARIANTS[cfg.variant], R = cfg.radius * h, time = rm ? 0 : t;
-  const FID = cfg.palette === 'fidelity', release=FID?fidelityReleaseScore(t,b.schedule,rm):null, raw=liberationColorScore(t,g,rm,cfg.palette,FID?study:null);
+  const FID = cfg.palette === 'fidelity', release=FID?(DET?butterflyDetonationScore:fidelityReleaseScore)(t,b.schedule,rm):null, raw=liberationColorScore(t,g,rm,cfg.palette,FID?study:null);
   // The late absorption/giant-wing ending was authorial, not a verified End Loop event.
   // Keep F2's trigger score byte-for-byte while removing that ending ONLY in FIDELIDADE.
   const cs=FID?{...raw,absorb:0,absorbLin:0,collapse:0,bf:{...raw.bf,a:0,ring:0,burst:0,flash:0},phase:release.active?release.phase:'OUTER_CANDIDATE'}:raw;
@@ -348,6 +352,7 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
   for (const o of Object.values(meshes)) { const u = U(o); if (u.uHeadW) { u.uHeadW.value.copy(c.headW); u.uFaceR.value = 0.14 * h; } }
   // F1.4 (FIDELIDADE only): perspective face mask + wing clearance for the trigger. `front` absent -> historical always-on mask, no clearance.
   if (FID) { const ut = U(trigger); ut.uFaceR.value = F14_TRIGGER_FACE_R_H * h; if (c.front) { ut.uFaceFwd.value.set(c.front.x, 0, c.front.z); ut.uClear.value = F14_TRIGGER_CLEARANCE_H * h; } else { ut.uFaceFwd.value.set(0, 0, 0); ut.uClear.value = 0; } }
+  if(DET)for(const o of [core,butterfly]){const u=U(o);u.uFaceR.value=F14_TRIGGER_FACE_R_H*h;u.uFaceFwd.value.copy(U(trigger).uFaceFwd.value);u.uClear.value=U(trigger).uClear.value;}
   bfc.set(c.P.chest.x, c.P.chest.y + 0.05 * h, c.P.chest.z);
   const probe = {stage: null, levels: {condense: vC, reveal: vR, peak: vK, decay: vD}, starGate: 0, variant: col3.label, radiusH: cfg.radius, contrast: cfg.contrast, mechanics: col3.mechanics, motes: 0};
   // ---- Outer field + canopy ----
@@ -388,16 +393,18 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    const k = U(trigger);
    focus.copy(c.P.lh); if (FID) { focus.lerp(c.P.rh, trigHandMix(t - g.triggerStart)); const tr = trigRel(t - g.triggerStart, rm); focus.y += tr.y + tr.s; } else focus.y += 0.17 * h + (rm ? 0 : 0.010 * h * Math.sin(t * 4.4)); // G11.2: the RAISED hand of the real animation is the LEFT one (measured: LH +0.07 h, RH -0.14 h vs chest)
    const ex = cs.trig.dis, exp3 = Math.pow(ex, 1.4);
-   k.uCenter.value.copy(focus); k.uSize.value = (FID ? 0.31 : 0.50) * h * (1 + 3.2 * exp3); k.uPush.value = 0.06 * h; k.uA.value = cs.trig.a * (1 - 0.55 * smooth((ex - 0.35) / 0.65));
+   k.uCenter.value.copy(focus); k.uSize.value = (FID ? 0.31 : 0.50) * h * (DET ? 1 : 1 + 3.2 * exp3); k.uPush.value = 0.06 * h; k.uA.value = cs.trig.a * (1 - 0.55 * smooth((ex - 0.35) / 0.65)) * (DET ? release.triggerGain : 1);
    k.uTime.value = time; k.uFlap.value = cs.trig.flap; k.uDis.value = cs.trig.dis; if (FID) k.uViolet.value.set(0.42, 0.74, 1.0);
-   trigger.visible = true;
-   if (ex > 0.001) { // vertiginous expansion: an energy bloom born at the butterfly that outgrows it and hands over to the field
+   trigger.visible = DET ? k.uA.value > .002 : true;
+   if (!DET && ex > 0.001) { // vertiginous expansion: an energy bloom born at the butterfly that outgrows it and hands over to the field
     const kc = U(core), fl = smooth(ex * 1.25) * (1 - smooth((ex - 0.72) / 0.28));
     kc.uCenter.value.copy(focus); kc.uSize.value = (0.6 + 7.5 * exp3) * h; kc.uPush.value = 0.05 * h; kc.uA.value = (FID ? 0.55 : 0.95) * fl; kc.uTime.value = time; kc.uGrow.value = 1; kc.uViol.value = 0.6; // F2: the hand-over bloom stays below white saturation in the blue-white profile
     kc.uBlue.value.set(0.22, 0.60, 1.0); kc.uViolet.value.set(...(FID ? [0.50, 0.78, 1.0] : [0.40, 0.08, 1.0])); core.visible = kc.uA.value > 0.003;
    }
    probe.trigger = {alpha: cs.trig.a, flap: cs.trig.flap, dissolve: cs.trig.dis, count: 1, anchor: focus.toArray()};
   }
+  // Revision B: the old expanding hand-over bloom is OFF. Only a finger-sized pre-glow precedes the existing F3 rupture.
+  if(DET&&release?.concentration>0){const u=U(core);u.uCenter.value.copy(handFocus(c,t,g,rm));u.uSize.value=.13*h*(1+.15*release.concentration);u.uPush.value=.06*h;u.uA.value=.65*release.concentration;u.uTime.value=time;u.uGrow.value=release.concentration;u.uViol.value=0;u.uBlue.value.set(.22,.60,1);u.uViolet.value.set(.50,.78,1);core.visible=true;}
   // ---- Motes ----
   let n = 0;
   const put = (x, y, z, s, a, k) => { if (n >= NM || a < 0.003) return; mPos[n * 3] = x; mPos[n * 3 + 1] = y; mPos[n * 3 + 2] = z; mS[n] = s; mA[n] = a; mK[n] = k; n++; };
@@ -449,9 +456,9 @@ export function createLiberationLayer(T, {parent, h, bundle, radius = LIBERATION
    }
   }
   if(release?.active){
-   const k=U(butterfly);k.uCenter.value.copy(c.P.rh);k.uCenter.value.y+=.04*h;k.uSize.value=(.45+1.5*release.progress)*h;
-   k.uPush.value=.04*h;k.uA.value=release.core;k.uBurn.value=release.progress;k.uFlash.value=release.flash;k.uBlue.value.set(.14,.46,1);k.uHotC.value.set(.80,.92,1);
-   butterfly.visible=release.core>.003;probe.release={...release,radiusH:release.radius*cfg.radius,kind:'FORMATION_NOT_DISCERNMENT',field:'OUTER_ONLY'};
+   const k=U(butterfly);if(DET)k.uCenter.value.copy(handFocus(c,t,g,rm));else{k.uCenter.value.copy(c.P.rh);k.uCenter.value.y+=.04*h;}k.uSize.value=(.45+1.5*release.progress)*h;
+   k.uPush.value=(DET?.06:.04)*h;k.uA.value=release.core;k.uBurn.value=release.progress;k.uFlash.value=release.flash;k.uBlue.value.set(.14,.46,1);k.uHotC.value.set(.80,.92,1);
+   butterfly.visible=release.core>.003;probe.release={...release,radiusH:release.radius*cfg.radius,kind:'FORMATION_NOT_DISCERNMENT',field:'OUTER_ONLY',...(DET?{triggerSizeH:.31,pulseId:release.onset,anchor:'SAME_HAND_BLEND_AND_F14_CLEARANCE',competingBloom:false}:{})};
    if(release.fragments>.002)for(let i=0;i<112;i++){
     const ang=hash(i,71)*TAU,el=(hash(i,72)-.5)*1.4,p=release.progress,rad=(.05+release.radius*(.4+.6*hash(i,73)))*R;
     put(c.stage.x+Math.cos(ang)*rad,c.stage.floorY+(.12+Math.max(0,Math.sin(el))*rad/h)*h,c.stage.z+Math.sin(ang)*rad,.016*h*(.6+hash(i,74)),release.fragments*(.4+.6*hash(i,75)),0);

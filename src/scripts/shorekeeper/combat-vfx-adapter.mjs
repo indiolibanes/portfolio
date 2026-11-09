@@ -219,7 +219,7 @@ export function createCombatVfxAdapter(T, {scene, parent = scene, model = null, 
   arena = Object.freeze(arena);
  }
  // 'TIMELINE_ONLY' = A/B 'legacy-gated' variant: Liberation timing is known but the layer is not drawn.
- const libLayer = liberation && liberation !== 'TIMELINE_ONLY' ? createLiberationLayer(T, {parent: root, h, bundle, ...(fidelity ? {palette: 'fidelity'} : {}), ...(liberation === true ? {} : liberation)}) : null;
+ const libLayer = liberation && liberation !== 'TIMELINE_ONLY' ? createLiberationLayer(T, {parent: root, h, bundle, ...(fidelity ? {palette: 'fidelity'} : {}), ...(combatStudy?{triggerDetonation:true}:{}), ...(liberation === true ? {} : liberation)}) : null;
  const trails = createTrailLayer(T, {parent: root, h});
  const sparks = createSparkLayer(T, {parent: root, h});
  const sparkTable = buildSparkTable(bundle.events, id => bundle.hand?.[id] ?? 'R');
