@@ -7,7 +7,12 @@
  * Bind Cloudflare Pages env.SHOREKEEPER_ASSETS_R2 to R2 bucket private-assets
  * in BOTH Preview and Production environments.
  */
-const MODEL_KEY = 'sophia/models/Sophia_Astronaut_Rocket_v1.1.glb';
+// Exact allowlist: the second key covers a common accidental extra bucket-name folder.
+// Keep these names explicit; never accept arbitrary public R2 keys from query parameters.
+const MODEL_KEYS = Object.freeze([
+  'sophia/models/Sophia_Astronaut_Rocket_v1.1.glb',
+  'private-assets/sophia/models/Sophia_Astronaut_Rocket_v1.1.glb',
+]);
 const HEADERS = {
   'Cache-Control': 'public, max-age=3600',
   'Content-Type': 'model/gltf-binary',
@@ -25,19 +30,22 @@ async function serve({ env }, method) {
     });
   }
   try {
-    const asset = method === 'HEAD'
-      ? await bucket.head(MODEL_KEY)
-      : await bucket.get(MODEL_KEY);
-    if (!asset) {
-      return new Response('Sophia model not found.', {
-        status: 404,
-        headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
-      });
+    // No bucket listing and no access to other character prefixes. The first
+    // existing member of this fixed allowlist is the only asset we expose.
+    for (const key of MODEL_KEYS) {
+      const asset = method === 'HEAD'
+        ? await bucket.head(key)
+        : await bucket.get(key);
+      if (!asset) continue;
+      const headers = new Headers(HEADERS);
+      headers.set('Content-Length', String(asset.size));
+      if (asset.httpEtag) headers.set('ETag', asset.httpEtag);
+      return new Response(method === 'HEAD' ? null : asset.body, { status: 200, headers });
     }
-    const headers = new Headers(HEADERS);
-    headers.set('Content-Length', String(asset.size));
-    if (asset.httpEtag) headers.set('ETag', asset.httpEtag);
-    return new Response(method === 'HEAD' ? null : asset.body, { status: 200, headers });
+    return new Response('Sophia model not found.', {
+      status: 404,
+      headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
+    });
   } catch {
     return new Response('Sophia model temporarily unavailable.', {
       status: 503,
