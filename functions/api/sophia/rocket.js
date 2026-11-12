@@ -21,6 +21,67 @@ const ALLOWED_PREFIXES = Object.freeze([
   'private-assets/sophia/',
 ]);
 
+// Final fallback for unexpected case/parent-path differences.
+// Scan for the ONE explicitly approved basename under a directory segment
+// named "sophia", never publishing or returning any other private object.
+const ROOT_PAGE_LIMIT = 1000;
+const ROOT_MAX_PAGES = 10;
+const rootResolutionCache = new WeakMap();
+function isSophiaModelCandidate(key) {
+  if (typeof key !== 'string') return false;
+  const parts = key.split('/');
+  const filename = parts.pop()?.toLowerCase();
+  return filename === MODEL_NAME.toLowerCase()
+    && parts.some(segment => segment.toLowerCase() === 'sophia');
+}
+async function inspectRootForApprovedModel(bucket) {
+  const prior = rootResolutionCache.get(bucket);
+  if (prior && prior.expiresAt > Date.now()) return prior.result;
+  let cursor;
+  let completed = false;
+  let hasAnyObjects = false;
+  let anySophiaPath = false;
+  let exactFilenameOutsideSophia = false;
+  const candidates = new Set();
+  for (let page = 0; page < ROOT_MAX_PAGES; page++) {
+    const result = await bucket.list({
+      limit: ROOT_PAGE_LIMIT,
+      ...(cursor ? { cursor } : {}),
+    });
+    for (const obj of result.objects || []) {
+      const key = obj.key;
+      if (typeof key !== 'string') continue;
+      hasAnyObjects = true;
+      const parts = key.split('/');
+      const name = parts.pop()?.toLowerCase();
+      const hasSophiaFolder = parts.some(part => part.toLowerCase() === 'sophia');
+      anySophiaPath ||= hasSophiaFolder;
+      if (isSophiaModelCandidate(key)) candidates.add(key);
+      else if (name === MODEL_NAME.toLowerCase()) exactFilenameOutsideSophia = true;
+    }
+    if (!result.truncated) { completed = true; break; }
+    if (!result.cursor) break;
+    cursor = result.cursor;
+  }
+  // If listing was incomplete or multiple copies exist, never select an
+  // arbitrary private object. Resolve deterministically or fail closed.
+  const key = completed && candidates.size === 1 ? [...candidates][0] : null;
+  const result = {
+    key,
+    hasAnyObjects,
+    anySophiaPath,
+    approvedFilenameSeen: candidates.size > 0,
+    filenameOutsideSophiaPath: exactFilenameOutsideSophia,
+    ambiguous: candidates.size > 1,
+    scanIncomplete: !completed,
+  };
+  rootResolutionCache.set(bucket, {
+    result,
+    expiresAt: Date.now() + (key ? 600000 : 30000),
+  });
+  return result;
+}
+
 // Read only within the explicitly approved Sophia subtrees. Never list
 // the entire bucket, expose R2 keys to visitors or accept a user-supplied key.
 async function resolveModel(bucket, method) {
@@ -53,7 +114,8 @@ async function resolveModel(bucket, method) {
       cursor = listing.cursor;
     }
   }
-  return null;
+  const root = await inspectRootForApprovedModel(bucket);
+  return root.key ? read(root.key) : null;
 }
 /**
  * Coarse, public-safe read-only diagnostics. Checks the exact permitted file
@@ -99,18 +161,22 @@ export async function probeSophiaPublicR2(bucket) {
         scanIncomplete: hasMore && !candidateFound,
       });
     }
-    const located = direct.some(Boolean) || folders.some(item => item.filenameMatched);
-    // A single unprefixed list tells whether this binding sees any objects at all.
-    // Never return keys, sizes, folder names from the root, or private metadata.
-    // Do not use root listing to locate/serve the public model.
-    const bucketHasAnyObjects = located
-      ? null
-      : (await bucket.list({ limit: 1 })).objects?.length > 0;
+    const knownPrefixLocated = direct.some(Boolean) || folders.some(item => item.filenameMatched);
+    const root = knownPrefixLocated ? null : await inspectRootForApprovedModel(bucket);
+    const located = knownPrefixLocated || Boolean(root?.key);
     return {
       state: located ? 'model_located' : 'model_not_located',
       direct: { canonical: direct[0], nested: direct[1] },
       folders,
-      bucketHasAnyObjects,
+      bucketHasAnyObjects: root ? root.hasAnyObjects : null,
+      rootScan: root ? {
+        approvedModelFoundOutsideKnownPrefixes: Boolean(root.key),
+        hasSophiaPathAnywhere: root.anySophiaPath,
+        approvedFilenameSeen: root.approvedFilenameSeen,
+        filenameSeenOutsideSophiaPath: root.filenameOutsideSophiaPath,
+        ambiguous: root.ambiguous,
+        incomplete: root.scanIncomplete,
+      } : null,
     };
   } catch {
     return { state: 'storage_probe_failed' };
