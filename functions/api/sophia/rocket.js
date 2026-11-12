@@ -99,11 +99,18 @@ export async function probeSophiaPublicR2(bucket) {
         scanIncomplete: hasMore && !candidateFound,
       });
     }
+    const located = direct.some(Boolean) || folders.some(item => item.filenameMatched);
+    // A single unprefixed list tells whether this binding sees any objects at all.
+    // Never return keys, sizes, folder names from the root, or private metadata.
+    // Do not use root listing to locate/serve the public model.
+    const bucketHasAnyObjects = located
+      ? null
+      : (await bucket.list({ limit: 1 })).objects?.length > 0;
     return {
-      state: direct.some(Boolean) || folders.some(item => item.filenameMatched)
-        ? 'model_located' : 'model_not_located',
+      state: located ? 'model_located' : 'model_not_located',
       direct: { canonical: direct[0], nested: direct[1] },
       folders,
+      bucketHasAnyObjects,
     };
   } catch {
     return { state: 'storage_probe_failed' };
