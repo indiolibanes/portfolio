@@ -48,18 +48,19 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || ''
 <script>
   import * as THREE from 'three';
   import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import type { GLTF } from 'three/addons/loaders/GLTFLoader.js';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-  const stage = document.querySelector('[data-stage]');
-  const page = document.querySelector('[data-sophia-immersive]');
-  const status = document.querySelector('[data-status]');
-  const fileInput = document.querySelector('[data-file]');
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const page = document.querySelector<HTMLElement>('[data-sophia-immersive]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const fileInput = document.querySelector<HTMLInputElement>('[data-file]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const fallbackUrl = '/experimental/sophia-7b-e1-latest.glb';
   const preferredUrl = page?.dataset.astronautUrl || '';
 
   if (stage && page && status && fileInput) {
-    const setStatus = (message) => {
+    const setStatus = (message: string) => {
       status.hidden = !message;
       status.textContent = message;
     };
@@ -97,12 +98,12 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || ''
 
       const loader = new GLTFLoader();
       const clock = new THREE.Clock();
-      let activeModel = null;
-      let mixer = null;
-      let framing = null;
+      let activeModel: THREE.Object3D | null = null;
+      let mixer: THREE.AnimationMixer | null = null;
+      let framing: { box: THREE.Box3; astronaut: boolean } | null = null;
       let loadIndex = 0;
 
-      function getFramingBox(root, astronaut) {
+      function getFramingBox(root: THREE.Object3D, astronaut: boolean) {
         const box = new THREE.Box3();
         if (astronaut) {
           // Ignore far-reaching exhaust and animated trails when centering Sophia and the rocket.
@@ -116,7 +117,7 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || ''
         return box;
       }
 
-      function fitCamera(box, astronaut) {
+      function fitCamera(box: THREE.Box3, astronaut: boolean) {
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
         const aspect = Math.max(0.4, stage.clientWidth / Math.max(1, stage.clientHeight));
@@ -153,7 +154,7 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || ''
       });
       observer.observe(stage);
 
-      function install(gltf, astronaut) {
+      function install(gltf: GLTF, astronaut: boolean) {
         if (mixer) mixer.stopAllAction();
         if (activeModel) scene.remove(activeModel);
         mixer = null;
@@ -178,7 +179,7 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || ''
         setStatus('');
       }
 
-      async function loadUrl(url, astronaut) {
+      async function loadUrl(url: string, astronaut: boolean) {
         const current = ++loadIndex;
         setStatus('Carregando Sophia…');
         const gltf = await loader.loadAsync(url);
