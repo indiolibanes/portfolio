@@ -186,11 +186,43 @@ const astronautAssetUrl = '/api/sophia/rocket';
       // back to the unrelated laboratory model or require visitor uploads.
       async function loadAstronaut() {
         retryButton.hidden = true;
+        setStatus('Carregando Sophia astronauta e foguete…');
+        let modelReachable = false;
         try {
+          // A same-origin, unauthenticated HEAD distinguishes R2 404/503
+          // from glTF parsing or WebGL errors without downloading 47 MB twice.
+          const response = await fetch(preferredUrl, {
+            method: 'HEAD',
+            cache: 'no-store',
+            credentials: 'omit',
+            redirect: 'manual',
+          });
+          if (!response.ok) {
+            if (response.status === 404) {
+              setStatus('O arquivo da Sophia astronauta não foi encontrado no armazenamento R2.');
+            } else if (response.status === 503) {
+              setStatus('O armazenamento R2 da Sophia não está disponível neste ambiente.');
+            } else if (response.status === 0 || (response.status >= 300 && response.status < 400) || response.status === 401 || response.status === 403) {
+              setStatus('O acesso público ao modelo foi bloqueado. Verifique o Cloudflare Access.');
+            } else {
+              setStatus('Falha ao consultar o modelo da Sophia (HTTP ' + response.status + ').');
+            }
+            retryButton.hidden = false;
+            return;
+          }
+          const mime = response.headers.get('content-type') || '';
+          if (!mime.toLowerCase().includes('model/gltf-binary')) {
+            setStatus('O servidor não retornou um arquivo GLB válido (tipo: ' + (mime || 'ausente') + ').');
+            retryButton.hidden = false;
+            return;
+          }
+          modelReachable = true;
           await loadUrl(preferredUrl, true);
         } catch (error) {
-          console.error('Sophia: astronauta e foguete não puderam ser carregados.', error);
-          setStatus('A animação da Sophia astronauta está temporariamente indisponível.');
+          console.error('Sophia: falha ao carregar astronauta/foguete.', error);
+          setStatus(modelReachable
+            ? 'O GLB está acessível, mas não pôde ser interpretado ou renderizado.'
+            : 'Não foi possível conectar ao carregador público da Sophia.');
           retryButton.hidden = false;
         }
       }

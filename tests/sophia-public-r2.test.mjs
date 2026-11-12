@@ -82,3 +82,55 @@ test('immersive route exclusively loads astronaut rocket, never old Sophia or lo
   assert.doesNotMatch(file, /sophia-7b-e1-latest\.glb|fallbackUrl|type="file"|fileInput/);
   assert.match(file, /retryButton\.addEventListener/);
 });
+
+test('scoped discovery finds an approved astronaut GLB in a nested Sophia folder', async () => {
+  const nested = 'sophia/models/archive/Sophia_Astronaut_Rocket_v1.1.glb';
+  const reads = [];
+  const prefixes = [];
+  const bucket = {
+    async get(name) {
+      reads.push(name);
+      return name === nested
+        ? { size: 4, body: new Response('glTF').body, httpEtag: '"found"' }
+        : null;
+    },
+    async list({ prefix }) {
+      prefixes.push(prefix);
+      return {
+        objects: [{ key: 'sophia/models/Not-Public.glb' }, { key: nested }],
+        truncated: false,
+      };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), 'glTF');
+  assert.deepEqual(prefixes, ['sophia/models/']);
+  assert.ok(!reads.some(k => k.includes('shorekeeper') || k.includes('Not-Public')));
+});
+
+test('scoped discovery ignores unrelated models and never lists the entire bucket', async () => {
+  const prefixes = [];
+  const reads = [];
+  const bucket = {
+    async get(name) { reads.push(name); return null; },
+    async list({ prefix }) {
+      prefixes.push(prefix);
+      return { objects: [{ key: 'characters/shorekeeper/models/private.glb' },
+        { key: prefix + 'other-sophia.glb' }], truncated: false };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 404);
+  assert.deepEqual(prefixes, ['sophia/models/', 'private-assets/sophia/models/']);
+  assert.ok(reads.every(k => k.endsWith('/Sophia_Astronaut_Rocket_v1.1.glb')));
+});
+
+test('public immersive page reports remote 404 and 503 instead of a generic unavailable status', async () => {
+  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  assert.match(file, /method: 'HEAD'/);
+  assert.match(file, /credentials: 'omit'/);
+  assert.match(file, /response.status === 404/);
+  assert.match(file, /response.status === 503/);
+  assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
+});
