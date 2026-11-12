@@ -19,7 +19,7 @@
     "check:music-state": "node scripts/test-music-state.mjs",
     "check:music-transition": "node tests/music-experimental-mode.test.mjs && node tests/music-experimental-transition.test.mjs",
     "check:hsin": "node tests/experimentos-canonical.test.mjs && node tests/hsin-lunar-terrace.test.mjs && node tests/hsin-lunar-refinement.test.mjs && node tests/hsin-soundtrack.test.mjs",
-    "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb",
+    "check:sophia": "node scripts/check-sophia-7b.mjs && node scripts/test-sophia-morph-runtime.mjs public/experimental/sophia-alpha.glb && node --test tests/sophia-public-r2.test.mjs",
     "check:performance": "node tests/performance-route-isolation.test.mjs && node tests/sophia-404-device-gate.test.mjs && node --test tests/build-hygiene.test.mjs",
     "publish:shorekeeper": "node scripts/shorekeeper/publish-private-to-r2.mjs",
     "check:shorekeeper-r2": "node --test tests/shorekeeper-private-r2.test.mjs",
