@@ -252,7 +252,10 @@ test('root scan does not expose an unrelated GLB with the same name', async () =
   const forbidden = 'characters/shorekeeper/private/Sophia_Astronaut_Rocket_v1.1.glb';
   const reads = [];
   const bucket = {
-    async get(key) { reads.push(key); return { size: 5, body: new Response('glTF!').body }; },
+    async get(key) {
+      reads.push(key);
+      return key === forbidden ? { size: 5, body: new Response('glTF!').body } : null;
+    },
     async list({ prefix }) {
       return prefix ? { objects: [], truncated: false }
         : { objects: [{ key: forbidden }], truncated: false };
