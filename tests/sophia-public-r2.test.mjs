@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { onRequestGet, onRequestHead } from '../functions/api/sophia/rocket.js';
 
 const key = 'sophia/models/Sophia_Astronaut_Rocket_v1.1.glb';
@@ -52,4 +53,32 @@ test('missing model does not expose private bucket inventory', async () => {
   });
   assert.equal(response.status, 404);
   assert.doesNotMatch(await response.text(), /shorekeeper|bucket key|private-assets/i);
+});
+
+test('finds the explicitly permitted nested-prefix object without reading other characters', async () => {
+  const nested = 'private-assets/sophia/models/Sophia_Astronaut_Rocket_v1.1.glb';
+  const reads = [];
+  const bucket = {
+    async get(key) {
+      reads.push(key);
+      return key === nested
+        ? { size: 4, httpEtag: '"rocket"', body: new Response('glTF').body }
+        : null;
+    },
+  };
+  const response = await onRequestGet({
+    env: { SHOREKEEPER_ASSETS_R2: bucket },
+    request: new Request('https://example.test/api/sophia/rocket?key=characters/shorekeeper/private.glb'),
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(reads, [key, nested]);
+  assert.equal(await response.text(), 'glTF');
+  assert.ok(reads.every(name => name.endsWith('/Sophia_Astronaut_Rocket_v1.1.glb')));
+});
+
+test('immersive route exclusively loads astronaut rocket, never old Sophia or local upload', async () => {
+  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  assert.match(file, /const astronautAssetUrl = '\/api\/sophia\/rocket'/);
+  assert.doesNotMatch(file, /sophia-7b-e1-latest\.glb|fallbackUrl|type="file"|fileInput/);
+  assert.match(file, /retryButton\.addEventListener/);
 });
