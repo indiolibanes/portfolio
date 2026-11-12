@@ -17,10 +17,12 @@ const MODEL_NAME = 'Sophia_Astronaut_Rocket_v1.1.glb';
 const ALLOWED_PREFIXES = Object.freeze([
   'sophia/models/',
   'private-assets/sophia/models/',
+  'sophia/',
+  'private-assets/sophia/',
 ]);
 
-// Read only within Sophia's published models folder. Never list the entire
-// bucket, never expose R2 keys to visitors, and never accept an arbitrary key.
+// Read only within the explicitly approved Sophia subtrees. Never list
+// the entire bucket, expose R2 keys to visitors or accept a user-supplied key.
 async function resolveModel(bucket, method) {
   const read = key => method === 'HEAD' ? bucket.head(key) : bucket.get(key);
   for (const key of MODEL_KEYS) {
@@ -53,6 +55,61 @@ async function resolveModel(bucket, method) {
   }
   return null;
 }
+/**
+ * Coarse, public-safe read-only diagnostics. Checks the exact permitted file
+ * and scans *only* Sophia prefixes. Returns no keys, filenames, object data,
+ * bucket name, credentials, or private Shorekeeper metadata.
+ */
+export async function probeSophiaPublicR2(bucket) {
+  if (!bucket) return { state: 'binding_unavailable' };
+  const direct = [];
+  try {
+    for (const key of MODEL_KEYS) {
+      direct.push(Boolean(await bucket.head(key)));
+    }
+    const folders = [];
+    for (const prefix of ALLOWED_PREFIXES) {
+      let cursor;
+      let objectsSeen = 0;
+      let candidateFound = false;
+      let hasMore = false;
+      for (let page = 0; page < 3; page++) {
+        const listing = await bucket.list({
+          prefix,
+          limit: 100,
+          ...(cursor ? { cursor } : {}),
+        });
+        const objects = listing.objects || [];
+        objectsSeen += objects.length;
+        candidateFound ||= objects.some(({ key }) =>
+          typeof key === 'string' &&
+          key.startsWith(prefix) &&
+          key.split('/').at(-1)?.toLowerCase() === MODEL_NAME.toLowerCase(),
+        );
+        hasMore = Boolean(listing.truncated && listing.cursor);
+        if (candidateFound || !hasMore) break;
+        cursor = listing.cursor;
+      }
+      folders.push({
+        scope: prefix === 'sophia/models/' ? 'models' :
+          prefix === 'private-assets/sophia/models/' ? 'nested_models' :
+          prefix === 'sophia/' ? 'sophia_tree' : 'nested_sophia_tree',
+        hasObjects: objectsSeen > 0,
+        filenameMatched: candidateFound,
+        scanIncomplete: hasMore && !candidateFound,
+      });
+    }
+    return {
+      state: direct.some(Boolean) || folders.some(item => item.filenameMatched)
+        ? 'model_located' : 'model_not_located',
+      direct: { canonical: direct[0], nested: direct[1] },
+      folders,
+    };
+  } catch {
+    return { state: 'storage_probe_failed' };
+  }
+}
+
 const HEADERS = {
   'Cache-Control': 'public, max-age=3600',
   'Content-Type': 'model/gltf-binary',
