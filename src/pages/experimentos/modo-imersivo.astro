@@ -1,0 +1,248 @@
+---
+const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '').trim();
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="description" content="Sophia em uma experiência tridimensional imersiva." />
+    <title>Sophia · Modo Imersivo</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main class="immersive" data-sophia-immersive data-astronaut-url={astronautAssetUrl}>
+      <div class="immersive__stage" data-stage role="img" tabindex="0" aria-label="Sophia em três dimensões, centralizada sobre fundo preto. Arraste para girar; use a roda ou pinça para aproximar."></div>
+      <a class="immersive__back" href="/sophia/" aria-label="Voltar à página da Sophia">← Voltar</a>
+      <p class="immersive__status" data-status role="status" aria-live="polite">Carregando Sophia…</p>
+      <label class="immersive__upload" for="sophia-immersive-file" title="Abrir um modelo GLB local">
+        Abrir GLB
+      </label>
+      <input id="sophia-immersive-file" data-file type="file" accept=".glb,model/gltf-binary" aria-label="Carregar modelo GLB da Sophia" />
+      <noscript><p class="immersive__nojs">Ative JavaScript para visualizar Sophia em 3D.</p></noscript>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(html) { background: #000; color-scheme: dark; }
+  :global(body) { margin: 0; min-height: 100svh; overflow: hidden; background: #000; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  :global(*), :global(*::before), :global(*::after) { box-sizing: border-box; }
+  .immersive { position: relative; isolation: isolate; width: 100%; min-height: 100vh; min-height: 100svh; background: #000; color: #e8e8e8; }
+  .immersive__stage { position: absolute; inset: 0; background: #000; touch-action: none; outline: none; }
+  .immersive__stage:focus-visible { outline: 1px solid #8a9bc4; outline-offset: -5px; }
+  .immersive__stage :global(canvas) { display: block; width: 100%; height: 100%; }
+  .immersive__back, .immersive__upload { position: absolute; z-index: 2; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
+  .immersive__back { top: max(19px, env(safe-area-inset-top)); left: max(19px, env(safe-area-inset-left)); }
+  .immersive__upload { right: max(19px, env(safe-area-inset-right)); bottom: max(19px, env(safe-area-inset-bottom)); cursor: pointer; }
+  .immersive__back:hover, .immersive__upload:hover { background: #303038; }
+  .immersive__back:focus-visible, .immersive__upload:focus-within { outline: 2px solid #aabadd; outline-offset: 3px; }
+  input[type=file] { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; opacity: 0; }
+  .immersive__status, .immersive__nojs { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; color: #bdc5d2; font-size: 13px; text-align: center; max-width: min(80vw, 520px); line-height: 1.6; pointer-events: none; }
+  .immersive__status[hidden] { display: none; }
+  @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__upload { transition: none; } }
+</style>
+
+<script>
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import type { GLTF } from 'three/addons/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const page = document.querySelector<HTMLElement>('[data-sophia-immersive]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const fileInput = document.querySelector<HTMLInputElement>('[data-file]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const fallbackUrl = '/experimental/sophia-7b-e1-latest.glb';
+  const preferredUrl = page?.dataset.astronautUrl || '';
+
+  if (stage && page && status && fileInput) {
+    const setStatus = (message: string) => {
+      status.hidden = !message;
+      status.textContent = message;
+    };
+    try {
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000);
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+      renderer.setClearColor(0x000000, 1);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.22;
+      stage.appendChild(renderer.domElement);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+      const key = new THREE.DirectionalLight(0xf5f5ff, 2.6);
+      key.position.set(-3, 5, 6);
+      scene.add(key);
+      const fill = new THREE.DirectionalLight(0x7695ff, 1.25);
+      fill.position.set(5, 2, -4);
+      scene.add(fill);
+      const rim = new THREE.DirectionalLight(0xffffff, 1.3);
+      rim.position.set(1, 4, -5);
+      scene.add(rim);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = !reduceMotion.matches;
+      controls.dampingFactor = 0.07;
+      controls.enablePan = false;
+      controls.minPolarAngle = 0.13;
+      controls.maxPolarAngle = Math.PI - 0.13;
+      controls.rotateSpeed = 0.65;
+      controls.zoomSpeed = 0.75;
+
+      const loader = new GLTFLoader();
+      const clock = new THREE.Clock();
+      let activeModel: THREE.Object3D | null = null;
+      let mixer: THREE.AnimationMixer | null = null;
+      let framing: { box: THREE.Box3; astronaut: boolean } | null = null;
+      let loadIndex = 0;
+
+      function getFramingBox(root: THREE.Object3D, astronaut: boolean) {
+        const box = new THREE.Box3();
+        if (astronaut) {
+          // Ignore far-reaching exhaust and animated trails when centering Sophia and the rocket.
+          for (const name of ['Fuselage', 'Helmet_Glass', 'Suit_Chest', 'tripo_mesh_315c0594.001']) {
+            const part = root.getObjectByName(name);
+            if (part) box.expandByObject(part);
+          }
+        }
+        if (box.isEmpty()) box.setFromObject(root);
+        if (box.isEmpty()) box.set(new THREE.Vector3(-0.5, 0, -0.5), new THREE.Vector3(0.5, 1, 0.5));
+        return box;
+      }
+
+      function fitCamera(box: THREE.Box3, astronaut: boolean) {
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const aspect = Math.max(0.4, stage.clientWidth / Math.max(1, stage.clientHeight));
+        const halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
+        const widthDistance = size.x / (2 * Math.tan(halfFov) * aspect);
+        const heightDistance = size.y / (2 * Math.tan(halfFov));
+        const depthDistance = size.z * 1.3;
+        const distance = Math.max(widthDistance, heightDistance, depthDistance, 0.55) * 1.38;
+        const direction = astronaut
+          ? new THREE.Vector3(-0.68, 0.22, 1)
+          : new THREE.Vector3(0, 0.12, 1);
+        direction.normalize();
+        controls.target.copy(center);
+        camera.position.copy(center).addScaledVector(direction, distance);
+        controls.minDistance = Math.max(0.15, distance * 0.35);
+        controls.maxDistance = Math.max(3, distance * 5);
+        camera.near = Math.max(0.005, distance / 200);
+        camera.far = Math.max(100, distance * 100);
+        camera.updateProjectionMatrix();
+        controls.update();
+      }
+
+      function resize() {
+        const w = Math.max(1, stage.clientWidth);
+        const h = Math.max(1, stage.clientHeight);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+
+      const observer = new ResizeObserver(() => {
+        resize();
+        if (framing) fitCamera(framing.box, framing.astronaut);
+      });
+      observer.observe(stage);
+
+      function install(gltf: GLTF, astronaut: boolean) {
+        if (mixer) mixer.stopAllAction();
+        if (activeModel) scene.remove(activeModel);
+        mixer = null;
+        const root = gltf.scene;
+        activeModel = root;
+        scene.add(root);
+
+        const preferredClip = gltf.animations.find((clip) => clip.name === 'Sophia_Foguete_Voo_Esquerda_Ondas_R2');
+        const clip = preferredClip || gltf.animations.find((item) => /idle|rocket|foguete/i.test(item.name));
+        if (clip) {
+          mixer = new THREE.AnimationMixer(root);
+          const action = mixer.clipAction(clip);
+          action.setLoop(THREE.LoopRepeat, Infinity);
+          action.play();
+          if (reduceMotion.matches) mixer.setTime(0);
+        }
+
+        root.updateMatrixWorld(true);
+        framing = { box: getFramingBox(root, astronaut), astronaut };
+        resize();
+        fitCamera(framing.box, astronaut);
+        setStatus('');
+      }
+
+      async function loadUrl(url: string, astronaut: boolean) {
+        const current = ++loadIndex;
+        setStatus('Carregando Sophia…');
+        const gltf = await loader.loadAsync(url);
+        if (current === loadIndex) install(gltf, astronaut);
+      }
+
+      (async () => {
+        try {
+          if (preferredUrl) {
+            await loadUrl(preferredUrl, true);
+          } else {
+            await loadUrl(fallbackUrl, false);
+          }
+        } catch (error) {
+          if (preferredUrl) {
+            try {
+              await loadUrl(fallbackUrl, false);
+              return;
+            } catch (fallbackError) {
+              console.error('Sophia: não foi possível carregar a prévia alternativa.', fallbackError);
+            }
+          } else {
+            console.error('Sophia: falha ao carregar a prévia.', error);
+          }
+          setStatus('Não foi possível abrir Sophia. Use “Abrir GLB” para selecionar o modelo local.');
+        }
+      })();
+
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith('.glb')) {
+          setStatus('Selecione um arquivo .glb.');
+          return;
+        }
+        const url = URL.createObjectURL(file);
+        try {
+          await loadUrl(url, /astronauta|foguete|rocket/i.test(file.name));
+        } catch (error) {
+          console.error('Sophia: o arquivo GLB local não pôde ser aberto.', error);
+          setStatus('Arquivo inválido ou incompatível. Selecione outro GLB.');
+        } finally {
+          URL.revokeObjectURL(url);
+          fileInput.value = '';
+        }
+      });
+
+      renderer.domElement.addEventListener('webglcontextlost', (event) => {
+        event.preventDefault();
+        setStatus('A visualização 3D foi interrompida pelo navegador. Atualize a página para reiniciar.');
+      });
+
+      renderer.setAnimationLoop(() => {
+        const delta = Math.min(clock.getDelta(), 0.05);
+        if (document.hidden) return;
+        if (mixer && !reduceMotion.matches) mixer.update(delta);
+        controls.update();
+        renderer.render(scene, camera);
+      });
+      resize();
+    } catch (error) {
+      console.error('Sophia: inicialização WebGL indisponível.', error);
+      setStatus('Este navegador não conseguiu iniciar a cena 3D.');
+    }
+  }
+</script>
