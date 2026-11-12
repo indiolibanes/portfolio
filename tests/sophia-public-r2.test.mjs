@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { onRequestGet, onRequestHead } from '../functions/api/sophia/rocket.js';
+import { onRequestGet as getSophiaStatus } from '../functions/api/sophia/status.js';
 
 const key = 'sophia/models/Sophia_Astronaut_Rocket_v1.1.glb';
 
@@ -122,7 +123,10 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
   };
   const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
   assert.equal(response.status, 404);
-  assert.deepEqual(prefixes, ['sophia/models/', 'private-assets/sophia/models/']);
+  assert.deepEqual(prefixes, [
+    'sophia/models/', 'private-assets/sophia/models/',
+    'sophia/', 'private-assets/sophia/',
+  ]);
   assert.ok(reads.every(k => k.endsWith('/Sophia_Astronaut_Rocket_v1.1.glb')));
 });
 
@@ -133,4 +137,49 @@ test('public immersive page reports remote 404 and 503 instead of a generic unav
   assert.match(file, /response.status === 404/);
   assert.match(file, /response.status === 503/);
   assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
+});
+
+test('public status shows EU-binding-visible prefix presence without revealing object keys', async () => {
+  const listPaths = [];
+  const bucket = {
+    async head() { return null; },
+    async list({ prefix }) {
+      listPaths.push(prefix);
+      return {
+        objects: prefix === 'sophia/'
+          ? [{ key: 'sophia/models/unrelated-private-name.glb' }]
+          : [],
+        truncated: false,
+      };
+    },
+  };
+  const response = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(body.state, 'model_not_located');
+  assert.equal(body.direct.canonical, false);
+  assert.equal(body.folders.find(x => x.scope === 'sophia_tree').hasObjects, true);
+  assert.deepEqual(listPaths, [
+    'sophia/models/', 'private-assets/sophia/models/',
+    'sophia/', 'private-assets/sophia/',
+  ]);
+  assert.doesNotMatch(JSON.stringify(body), /unrelated-private-name|shorekeeper|private-assets/);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+});
+
+test('public status reports the precise allowlisted filename when found', async () => {
+  const bucket = {
+    async head(name) { return name === key ? { size: 46_000_000 } : null; },
+    async list() { return { objects: [], truncated: false }; },
+  };
+  const response = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const body = await response.json();
+  assert.equal(body.state, 'model_located');
+  assert.equal(body.direct.canonical, true);
+});
+
+test('status endpoint does not disclose config if binding is missing', async () => {
+  const response = await getSophiaStatus({ env: {} });
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), { state: 'binding_unavailable' });
 });
