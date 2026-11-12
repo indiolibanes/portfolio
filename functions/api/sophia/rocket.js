@@ -34,10 +34,10 @@ async function resolveModel(bucket, method) {
   // restricting publication to the *exact* approved GLB filename.
   for (const prefix of ALLOWED_PREFIXES) {
     let cursor;
-    for (let page = 0; page < 10; page++) {
+    for (let page = 0; page < 3; page++) {
       const listing = await bucket.list({
         prefix,
-        limit: 500,
+        limit: 100,
         ...(cursor ? { cursor } : {}),
       });
       const matchingKey = listing.objects?.find(
@@ -73,10 +73,10 @@ export async function probeSophiaPublicR2(bucket) {
       let objectsSeen = 0;
       let candidateFound = false;
       let hasMore = false;
-      for (let page = 0; page < 10; page++) {
+      for (let page = 0; page < 3; page++) {
         const listing = await bucket.list({
           prefix,
-          limit: 500,
+          limit: 100,
           ...(cursor ? { cursor } : {}),
         });
         const objects = listing.objects || [];
