@@ -1,5 +1,5 @@
 ---
-const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '/api/sophia/rocket').trim();
+const astronautAssetUrl = '/api/sophia/rocket';
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -14,13 +14,10 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '/
   </head>
   <body>
     <main class="immersive" data-sophia-immersive data-astronaut-url={astronautAssetUrl}>
-      <div class="immersive__stage" data-stage role="img" tabindex="0" aria-label="Sophia em três dimensões, centralizada sobre fundo preto. Arraste para girar; use a roda ou pinça para aproximar."></div>
+      <div class="immersive__stage" data-stage role="img" tabindex="0" aria-label="Sophia astronauta sobre um foguete em três dimensões, centralizada sobre fundo preto. Arraste para girar; use a roda ou pinça para aproximar."></div>
       <a class="immersive__back" href="/sophia/" aria-label="Voltar à página da Sophia">← Voltar</a>
       <p class="immersive__status" data-status role="status" aria-live="polite">Carregando Sophia…</p>
-      <label class="immersive__upload" for="sophia-immersive-file" title="Abrir um modelo GLB local">
-        Abrir GLB
-      </label>
-      <input id="sophia-immersive-file" data-file type="file" accept=".glb,model/gltf-binary" aria-label="Carregar modelo GLB da Sophia" />
+      <button class="immersive__retry" type="button" data-retry hidden>Tentar novamente</button>
       <noscript><p class="immersive__nojs">Ative JavaScript para visualizar Sophia em 3D.</p></noscript>
     </main>
   </body>
@@ -34,12 +31,12 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '/
   .immersive__stage { position: absolute; inset: 0; background: #000; touch-action: none; outline: none; }
   .immersive__stage:focus-visible { outline: 1px solid #8a9bc4; outline-offset: -5px; }
   .immersive__stage :global(canvas) { display: block; width: 100%; height: 100%; }
-  .immersive__back, .immersive__upload { position: absolute; z-index: 2; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
+  .immersive__back, .immersive__retry { position: absolute; z-index: 2; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
   .immersive__back { top: max(19px, env(safe-area-inset-top)); left: max(19px, env(safe-area-inset-left)); }
-  .immersive__upload { right: max(19px, env(safe-area-inset-right)); bottom: max(19px, env(safe-area-inset-bottom)); cursor: pointer; }
-  .immersive__back:hover, .immersive__upload:hover { background: #303038; }
-  .immersive__back:focus-visible, .immersive__upload:focus-within { outline: 2px solid #aabadd; outline-offset: 3px; }
-  input[type=file] { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; opacity: 0; }
+  .immersive__retry { right: max(19px, env(safe-area-inset-right)); bottom: max(19px, env(safe-area-inset-bottom)); cursor: pointer; }
+  .immersive__back:hover, .immersive__retry:hover { background: #303038; }
+  .immersive__back:focus-visible, .immersive__retry:focus-visible { outline: 2px solid #aabadd; outline-offset: 3px; }
+  .immersive__retry[hidden] { display: none; }
   .immersive__status, .immersive__nojs { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; color: #bdc5d2; font-size: 13px; text-align: center; max-width: min(80vw, 520px); line-height: 1.6; pointer-events: none; }
   .immersive__status[hidden] { display: none; }
   @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__upload { transition: none; } }
@@ -54,12 +51,11 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '/
   const stage = document.querySelector<HTMLElement>('[data-stage]');
   const page = document.querySelector<HTMLElement>('[data-sophia-immersive]');
   const status = document.querySelector<HTMLElement>('[data-status]');
-  const fileInput = document.querySelector<HTMLInputElement>('[data-file]');
+  const retryButton = document.querySelector<HTMLButtonElement>('[data-retry]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const fallbackUrl = '/experimental/sophia-7b-e1-latest.glb';
-  const preferredUrl = page?.dataset.astronautUrl || '';
+  const preferredUrl = page?.dataset.astronautUrl || '/api/sophia/rocket';
 
-  if (stage && page && status && fileInput) {
+  if (stage && page && status && retryButton) {
     const setStatus = (message: string) => {
       status.hidden = !message;
       status.textContent = message;
@@ -186,46 +182,21 @@ const astronautAssetUrl = (import.meta.env.PUBLIC_SOPHIA_IMMERSIVE_GLB_URL || '/
         if (current === loadIndex) install(gltf, astronaut);
       }
 
-      (async () => {
+      // This route exclusively displays the astronaut/rocket GLB. Never fall
+      // back to the unrelated laboratory model or require visitor uploads.
+      async function loadAstronaut() {
+        retryButton.hidden = true;
         try {
-          if (preferredUrl) {
-            await loadUrl(preferredUrl, true);
-          } else {
-            await loadUrl(fallbackUrl, false);
-          }
+          await loadUrl(preferredUrl, true);
         } catch (error) {
-          if (preferredUrl) {
-            try {
-              await loadUrl(fallbackUrl, false);
-              return;
-            } catch (fallbackError) {
-              console.error('Sophia: não foi possível carregar a prévia alternativa.', fallbackError);
-            }
-          } else {
-            console.error('Sophia: falha ao carregar a prévia.', error);
-          }
-          setStatus('Não foi possível abrir Sophia. Use “Abrir GLB” para selecionar o modelo local.');
+          console.error('Sophia: astronauta e foguete não puderam ser carregados.', error);
+          setStatus('A animação da Sophia astronauta está temporariamente indisponível.');
+          retryButton.hidden = false;
         }
-      })();
+      }
 
-      fileInput.addEventListener('change', async () => {
-        const file = fileInput.files?.[0];
-        if (!file) return;
-        if (!file.name.toLowerCase().endsWith('.glb')) {
-          setStatus('Selecione um arquivo .glb.');
-          return;
-        }
-        const url = URL.createObjectURL(file);
-        try {
-          await loadUrl(url, /astronauta|foguete|rocket/i.test(file.name));
-        } catch (error) {
-          console.error('Sophia: o arquivo GLB local não pôde ser aberto.', error);
-          setStatus('Arquivo inválido ou incompatível. Selecione outro GLB.');
-        } finally {
-          URL.revokeObjectURL(url);
-          fileInput.value = '';
-        }
-      });
+      retryButton.addEventListener('click', () => { void loadAstronaut(); });
+      void loadAstronaut();
 
       renderer.domElement.addEventListener('webglcontextlost', (event) => {
         event.preventDefault();
