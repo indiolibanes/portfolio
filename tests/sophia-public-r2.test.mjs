@@ -125,7 +125,7 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
   assert.equal(response.status, 404);
   assert.deepEqual(prefixes, [
     'sophia/models/', 'private-assets/sophia/models/',
-    'sophia/', 'private-assets/sophia/',
+    'sophia/', 'private-assets/sophia/', undefined,
   ]);
   assert.ok(reads.every(k => k.endsWith('/Sophia_Astronaut_Rocket_v1.1.glb')));
 });
@@ -201,7 +201,7 @@ test('EU bucket probe distinguishes misplaced model from an entirely empty bindi
   const body = await response.json();
   assert.equal(body.state, 'model_not_located');
   assert.equal(body.bucketHasAnyObjects, true);
-  assert.deepEqual(paths.at(-1), { prefix: undefined, limit: 1 });
+  assert.deepEqual(paths.at(-1), { prefix: undefined, limit: 1000 });
   assert.ok(!JSON.stringify(body).includes('an-unrelated-private-object'));
   assert.ok(!JSON.stringify(body).includes('shorekeeper'));
 });
@@ -215,4 +215,98 @@ test('EU bucket probe reports empty bucket without leaking private metadata', as
   const body = await response.json();
   assert.equal(body.state, 'model_not_located');
   assert.equal(body.bucketHasAnyObjects, false);
+});
+
+test('root scan recovers the EXACT approved rocket file from a differently cased Sophia folder', async () => {
+  const oddKey = 'Characters/SOPHIA/3D/SHARED/Sophia_Astronaut_Rocket_v1.1.GLB';
+  const reads = [];
+  const bucket = {
+    async get(key) {
+      reads.push(key);
+      return key === oddKey
+        ? { size: 4, body: new Response('glTF').body, httpEtag: '"astronaut"' }
+        : null;
+    },
+    async list({ prefix }) {
+      return prefix
+        ? { objects: [], truncated: false }
+        : { objects: [
+          { key: 'characters/shorekeeper/models/top-secret.glb' },
+          { key: oddKey },
+        ], truncated: false };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), 'glTF');
+  assert.ok(!reads.some(key => key.includes('shorekeeper')));
+  const status = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const diagnostic = await status.json();
+  assert.equal(diagnostic.state, 'model_located');
+  assert.equal(diagnostic.rootScan.approvedModelFoundOutsideKnownPrefixes, true);
+  assert.equal(diagnostic.rootScan.hasSophiaPathAnywhere, true);
+  assert.doesNotMatch(JSON.stringify(diagnostic), /Characters|SHARED|top-secret/i);
+});
+
+test('root scan does not expose an unrelated GLB with the same name', async () => {
+  const forbidden = 'characters/shorekeeper/private/Sophia_Astronaut_Rocket_v1.1.glb';
+  const reads = [];
+  const bucket = {
+    async get(key) { reads.push(key); return { size: 5, body: new Response('glTF!').body }; },
+    async list({ prefix }) {
+      return prefix ? { objects: [], truncated: false }
+        : { objects: [{ key: forbidden }], truncated: false };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 404);
+  assert.equal(reads.length, 2);
+  const status = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const diagnostic = await status.json();
+  assert.equal(diagnostic.rootScan.filenameSeenOutsideSophiaPath, true);
+  assert.equal(diagnostic.rootScan.approvedModelFoundOutsideKnownPrefixes, false);
+  assert.doesNotMatch(JSON.stringify(diagnostic), /shorekeeper|private\//i);
+});
+
+test('multiple valid root matches fail closed instead of selecting an arbitrary GLB', async () => {
+  const bucket = {
+    async get() { return null; },
+    async list({ prefix }) {
+      return prefix ? { objects: [], truncated: false }
+        : { objects: [
+          { key: 'Characters/Sophia/Sophia_Astronaut_Rocket_v1.1.glb' },
+          { key: 'Archive/SOPHIA/Sophia_Astronaut_Rocket_v1.1.glb' },
+        ], truncated: false };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 404);
+  const status = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const diagnostic = await status.json();
+  assert.equal(diagnostic.rootScan.ambiguous, true);
+  assert.equal(diagnostic.rootScan.approvedFilenameSeen, true);
+});
+
+test('root scan follows R2 pagination and only uses a complete deterministic match', async () => {
+  const bucket = {
+    async get(key) {
+      return key === 'Gallery/Sophia/Sophia_Astronaut_Rocket_v1.1.glb'
+        ? { size: 4, body: new Response('glTF').body }
+        : null;
+    },
+    async list({ prefix, cursor }) {
+      if (prefix) return { objects: [], truncated: false };
+      if (!cursor) return {
+        objects: [{ key: 'characters/shorekeeper/model.glb' }],
+        truncated: true, cursor: 'next-page',
+      };
+      return {
+        objects: [{ key: 'Gallery/Sophia/Sophia_Astronaut_Rocket_v1.1.glb' }],
+        truncated: false,
+      };
+    },
+  };
+  const response = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), 'glTF');
 });
