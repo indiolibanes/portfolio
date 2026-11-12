@@ -161,7 +161,7 @@ test('public status shows EU-binding-visible prefix presence without revealing o
   assert.equal(body.folders.find(x => x.scope === 'sophia_tree').hasObjects, true);
   assert.deepEqual(listPaths, [
     'sophia/models/', 'private-assets/sophia/models/',
-    'sophia/', 'private-assets/sophia/',
+    'sophia/', 'private-assets/sophia/', undefined,
   ]);
   assert.doesNotMatch(JSON.stringify(body), /unrelated-private-name|shorekeeper|private-assets/);
   assert.equal(response.headers.get('cache-control'), 'no-store');
@@ -182,4 +182,37 @@ test('status endpoint does not disclose config if binding is missing', async () 
   const response = await getSophiaStatus({ env: {} });
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { state: 'binding_unavailable' });
+});
+
+test('EU bucket probe distinguishes misplaced model from an entirely empty binding', async () => {
+  const paths = [];
+  const bucket = {
+    async head() { return null; },
+    async list({ prefix, limit }) {
+      paths.push({prefix, limit});
+      if (prefix === undefined) {
+        return { objects: [{ key: 'an-unrelated-private-object' }], truncated: true };
+      }
+      return { objects: [], truncated: false };
+    },
+  };
+  const response = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.state, 'model_not_located');
+  assert.equal(body.bucketHasAnyObjects, true);
+  assert.deepEqual(paths.at(-1), { prefix: undefined, limit: 1 });
+  assert.ok(!JSON.stringify(body).includes('an-unrelated-private-object'));
+  assert.ok(!JSON.stringify(body).includes('shorekeeper'));
+});
+
+test('EU bucket probe reports empty bucket without leaking private metadata', async () => {
+  const bucket = {
+    async head() { return null; },
+    async list() { return { objects: [], truncated: false }; },
+  };
+  const response = await getSophiaStatus({ env: { SHOREKEEPER_ASSETS_R2: bucket } });
+  const body = await response.json();
+  assert.equal(body.state, 'model_not_located');
+  assert.equal(body.bucketHasAnyObjects, false);
 });
