@@ -1,3 +1,5 @@
+/experimentos/modo-imersivo /modo-imersivo 301
+/experimentos/modo-imersivo/ /modo-imersivo 301
 # Canonical Hsin experience. Legacy experiment URLs remain non-breaking.
 /experimentos/hsin/* /experimentos/ 301
 /experimentos/hsin /experimentos/ 301

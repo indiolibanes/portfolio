@@ -34,7 +34,7 @@ const globalHeaders = headers.split(/\r?\n\r?\n/)[0];
 assert.doesNotMatch(globalHeaders, /^\s*X-Robots-Tag:/mi,
   'Global indexing header can contradict noindex on experiments and 404');
 assert.match(headers, /\/experimentos\/\*\s*\r?\n\s*X-Robots-Tag:\s*noindex,\s*nofollow/i);
-assert.match(headers, /\/modo-experimental\*\s*\r?\n\s*X-Robots-Tag:\s*noindex,\s*nofollow/i);
+assert.match(headers, /\/modo-imersivo\*\s*\r?\n\s*X-Robots-Tag:\s*noindex,\s*nofollow/i);
 
 const head = read('src/components/BaseHead.astro');
 assert.match(head, /const isNotFound =/);
@@ -113,7 +113,7 @@ if (process.argv.includes('--dist')) {
 
   for (const file of ['dist/404.html', 'dist/experimentos/index.html',
     'dist/experimentos/sk/index.html', 'dist/experimentos/duo/index.html',
-    'dist/modo-experimental/index.html']) {
+    'dist/modo-imersivo/index.html']) {
     const html = read(file);
     assert.match(meta(html, 'robots') ?? '', /\bnoindex\b/i, file + ' is indexable');
     if (file === 'dist/404.html') {

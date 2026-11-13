@@ -11,9 +11,11 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Protótipo do modo-experimental: não indexar nem seguir (o robots.txt continua liberado de propósito, para não anunciar a rota).
-/modo-experimental*
+# Experiência imersiva não indexada; texturas GLB embutidas precisam de blob:.
+/modo-imersivo*
   X-Robots-Tag: noindex, nofollow, noarchive
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
 
 # Public Hsin V2.0.1: embedded GLB images need blob:.

@@ -36,14 +36,14 @@ function fixture() {
   const director = createLaunchDirector(gltf, scene, camera, controls, () => false);
   return { director, controls, original, gltf, rider, motion };
 }
-test('director hides rider at reveal, ignores walking root drift, and docks at the real mount', () => {
+test('R3 hides rider at reveal, preserves walking root, and settles on the real mount after liftoff', () => {
   const { director, rider, motion, gltf, original } = fixture();
   assert.equal(director.supported, true);
   director.apply(0); assert.equal(rider.visible, false); assert.equal(director.snapshot().ribbonsVisible, false);
-  director.apply(3); assert.equal(rider.visible, true); assert.ok(Math.abs(motion.position.x) < .001);
-  const before = director.snapshot(); director.apply(5.8); assert.ok(director.snapshot().riderSeatError < 1e-8);
-  director.apply(6.4); assert.ok(director.snapshot().riderSeatError < 1e-8); assert.deepEqual(director.snapshot().baseWorld, before.baseWorld);
-  director.apply(8.2); assert.equal(director.snapshot().controlsEnabled, true);
+  director.apply(4); assert.equal(rider.visible, true); assert.ok(Math.abs(motion.position.x) < .001);
+  const before = director.snapshot(); director.apply(9.4); assert.ok(director.snapshot().riderSeatError < 1e-8);
+  director.apply(11.5); assert.ok(director.snapshot().riderSeatError < 1e-8); assert.deepEqual(director.snapshot().baseWorld, before.baseWorld);
+  director.apply(12); assert.equal(director.snapshot().controlsEnabled, true);
   assert.equal(JSON.stringify(gltf.animations.map(c => THREE.AnimationClip.toJSON(c))), original);
   director.dispose();
 });

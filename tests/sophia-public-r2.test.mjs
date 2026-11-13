@@ -78,10 +78,11 @@ test('finds the explicitly permitted nested-prefix object without reading other 
 });
 
 test('immersive route exclusively loads astronaut rocket, never old Sophia or local upload', async () => {
-  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
+  const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
   assert.match(file, /const astronautAssetUrl = '\/api\/sophia\/rocket'/);
   assert.doesNotMatch(file, /sophia-7b-e1-latest\.glb|fallbackUrl|type="file"|fileInput/);
-  assert.match(file, /retryButton\.addEventListener/);
+  assert.match(file, /retry\.addEventListener/);
 });
 
 test('scoped discovery finds an approved astronaut GLB in a nested Sophia folder', async () => {
@@ -131,11 +132,12 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
 });
 
 test('public immersive page reports remote 404 and 503 instead of a generic unavailable status', async () => {
-  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
-  assert.match(file, /method: 'HEAD'/);
-  assert.match(file, /credentials: 'omit'/);
-  assert.match(file, /response.status === 404/);
-  assert.match(file, /response.status === 503/);
+  const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
+  const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
+  assert.match(file, /method:\s*'HEAD'/);
+  assert.match(file, /credentials:\s*'omit'/);
+  assert.match(file, /head.status\s*===\s*404/);
+  assert.match(file, /head.status\s*===\s*503/);
   assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
 });
 
@@ -319,23 +321,25 @@ test('root scan follows R2 pagination and only uses a complete deterministic mat
 
 
 test('immersive intro restores the original orbital menu and cyberpunk-style start screen', async () => {
-  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
-  assert.match(file, /import ExperimentalMenu from '\.\.\/\.\.\/components\/ExperimentalMenu\.astro'/);
+  const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
+  const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
+  assert.match(file, /import ExperimentalMenu from '\.\.\/components\/ExperimentalMenu\.astro'/);
   assert.match(file, /<ExperimentalMenu \/>/);
   assert.match(file, /PRESS ANY KEY TO/);
   assert.match(file, /immersive__start-main.*START/);
   assert.match(file, /Roguepunk\.ttf/);
-  assert.match(file, /introStart\.addEventListener\('click', requestStart[,)]/);
+  assert.match(file, /start\.addEventListener\('click',\s*requestStart[,)]/);
   assert.match(file, /window\.addEventListener\('keydown'/);
-  assert.match(file, /event\.target\.closest\('a, button, input, select, textarea/);
-  assert.match(file, /phase !== 'intro'/);
+  assert.match(file, /e\.target\.closest\('a,button,input,select,textarea/);
+  assert.match(file, /phase\s*!==\s*'intro'/);
 });
 
 test('immersive page delegates choreography to the tested launch director', async () => {
-  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
+  const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
   assert.match(file, /createLaunchDirector/);
   assert.match(file, /ActiveSceneClock/);
-  assert.match(file, /clock.read\(performance.now\(\)\)/);
+  assert.match(file, /clock.read\(now\)/);
   assert.match(file, /data-launch-hud/);
   assert.match(file, /visibilitychange/);
   assert.doesNotMatch(file, /setInterval|rocket\.position\.(?:x|y|z)|rocket\.translate/);

@@ -1,0 +1,928 @@
+{
+  "result": "CPU_TRANSFORM_RIG_CONTACT_TARGET_PASS",
+  "visual": "VISUAL_QA_PENDING",
+  "modelSha256": "e9bddcd76eae3607227b58f5d1a71ae2fedc51e2ddcaeb0900c013e710d3e674",
+  "bytes": 46787612,
+  "preservedClips": 47,
+  "texturesSkipped": true,
+  "pad": {
+    "triangles": 640,
+    "meshes": 10,
+    "stationary": true,
+    "hullHeight": 0.6560000324249271,
+    "hullRadius": 0.16020000457763692
+  },
+  "grip": {
+    "samples": 97,
+    "maxTargetError": 0.000014921653104965139,
+    "tolerance": 0.009612000274658215,
+    "note": "Bone palm-anchor error, not mesh collision or contact artwork approval"
+  },
+  "cpu": {
+    "p50Ms": 1.6656290000000809,
+    "p95Ms": 2.166836999999987,
+    "hardware": "container CPU; not Samsung/GPU"
+  },
+  "projected": [
+    {
+      "aspect": 1.7777777777777777,
+      "maxNdc": 0.5898879023799483,
+      "inside": true
+    },
+    {
+      "aspect": 0.609375,
+      "maxNdc": 0.7421664064040819,
+      "inside": true
+    }
+  ],
+  "samples": [
+    {
+      "supported": true,
+      "time": 0,
+      "phase": "REVEAL_VERTICAL_PAD",
+      "riderVisible": false,
+      "riderWorld": [
+        0.46248302197385455,
+        -0.1031187378880219,
+        -0.9393104170182119
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 1.2790309214264075,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 0.9,
+      "phase": "ENGINE_PREIGNITION",
+      "riderVisible": false,
+      "riderWorld": [
+        0.46248302197385455,
+        -0.1031187378880219,
+        -0.9393104170182119
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 1.2790309214264075,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 1.6,
+      "phase": "ENGINE_IGNITION",
+      "riderVisible": false,
+      "riderWorld": [
+        0.46248302197385455,
+        -0.1031187378880219,
+        -0.9393104170182119
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 1.2790309214264075,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 2.1,
+      "phase": "COUNTDOWN",
+      "riderVisible": false,
+      "riderWorld": [
+        0.46248302197385455,
+        -0.1031187378880219,
+        -0.9393104170182119
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 1.2790309214264075,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 3.1,
+      "phase": "COUNTDOWN",
+      "riderVisible": true,
+      "riderWorld": [
+        0.4624830141676423,
+        -0.06511875255075611,
+        -0.9393104176352894
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 1.267567386189565,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 4.1,
+      "phase": "COUNTDOWN",
+      "riderVisible": true,
+      "riderWorld": [
+        0.3010829025793837,
+        -0.06511875255075611,
+        -0.5783769118717542
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.8962918622211624,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 5.1,
+      "phase": "COUNTDOWN",
+      "riderVisible": true,
+      "riderWorld": [
+        0.20668986957631486,
+        -0.06511875255075611,
+        -0.3672890260816607
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.6916491826020106,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 5.6,
+      "phase": "COUNTDOWN",
+      "riderVisible": true,
+      "riderWorld": [
+        0.2066898695763149,
+        0.16050749697208858,
+        -0.3672890260816607
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.6037590966029422,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 6.1,
+      "phase": "COUNTDOWN",
+      "riderVisible": true,
+      "riderWorld": [
+        0.20668986957631486,
+        0.05813373028246996,
+        -0.3672890260816607
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.6352685894618765,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 7.1,
+      "phase": "LIFT_AND_ORBIT",
+      "riderVisible": true,
+      "riderWorld": [
+        0.20668986957631486,
+        0.05813373028246996,
+        -0.3672890260816607
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.6352685894618765,
+      "rocketWorld": [
+        0,
+        0,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 7.6,
+      "phase": "LIFT_AND_ORBIT",
+      "riderVisible": true,
+      "riderWorld": [
+        0.3987688806606902,
+        0.09585373214690338,
+        -0.1364012854855444
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.3377200018644333,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.5719811961096224,
+      "rocketWorld": [
+        0,
+        0.037720001864433306,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0.03772000186443331,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 0.7286408742456799,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 8.1,
+      "phase": "LIFT_AND_ORBIT",
+      "riderVisible": true,
+      "riderWorld": [
+        0.19515758500716462,
+        0.20901373774020335,
+        0.373544438962301
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.4508800074577332,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.3752803719194995,
+      "rocketWorld": [
+        0,
+        0.15088000745773322,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0.15088000745773325,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 2.1475731030398983,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 8.7,
+      "phase": "SETTLE_AND_CLEAR",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.20668986957631497,
+        0.44438654937426697,
+        0.3672890260816607
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.6862528190917969,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.36304178244061236,
+      "rocketWorld": [
+        0,
+        0.386252819091797,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0.38625281909179693,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 9.05,
+      "phase": "SETTLE_AND_CLEAR",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.11034493673971033,
+        0.7432880971649503,
+        0.2721961009365608
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        0.8737212283580312,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0.18798354423241953,
+      "rocketWorld": [
+        0,
+        0.5737212283580313,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0.5737212283580313,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 9.4,
+      "phase": "PITCH_TO_LEFT",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.014000000000000096,
+        1.0981552394514091,
+        0.17710317610000006
+      ],
+      "seatedWorld": [
+        -0.014000000000000096,
+        1.0981552394514091,
+        0.17710317610000006
+      ],
+      "riderSeatError": 0,
+      "rocketWorld": [
+        0,
+        0.7981552394514092,
+        2.7755575615628914e-17
+      ],
+      "rocketUpDotWorldY": 1,
+      "carrierWorld": [
+        0,
+        0.7981552394514093,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": false,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 10.3,
+      "phase": "PITCH_TO_LEFT",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.3368315349669388,
+        1.7472438157865418,
+        0.17710317609999998
+      ],
+      "seatedWorld": [
+        -0.3368315349669388,
+        1.7472438157865418,
+        0.17710317609999998
+      ],
+      "riderSeatError": 0,
+      "rocketWorld": [
+        -0.11480000567436255,
+        1.5450112763671895,
+        0
+      ],
+      "rocketUpDotWorldY": 0.7071067811865466,
+      "carrierWorld": [
+        -0.11480000567436255,
+        1.5450112763671895,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": true,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 11.2,
+      "phase": "FLIGHT_LOOP",
+      "riderVisible": true,
+      "riderWorld": [
+        -1.218400045394898,
+        2.5222929253644955,
+        0.17710317609999998
+      ],
+      "seatedWorld": [
+        -1.218400045394898,
+        2.5222929253644955,
+        0.17710317609999998
+      ],
+      "riderSeatError": 0,
+      "rocketWorld": [
+        -0.918400045394898,
+        2.5362929253644952,
+        0
+      ],
+      "rocketUpDotWorldY": -2.220446049250312e-16,
+      "carrierWorld": [
+        -0.9184000453948978,
+        2.5362929253644952,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": true,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 14,
+      "phase": "FLIGHT_LOOP",
+      "riderVisible": true,
+      "riderWorld": [
+        -5.504266923904424,
+        5.352525744996485,
+        0.17710317609999998
+      ],
+      "seatedWorld": [
+        -5.504266923904424,
+        5.352525744996485,
+        0.17710317609999998
+      ],
+      "riderSeatError": 0,
+      "rocketWorld": [
+        -5.204266923904425,
+        5.366525744996485,
+        0
+      ],
+      "rocketUpDotWorldY": -2.220446049250312e-16,
+      "carrierWorld": [
+        -5.204266923904425,
+        5.366525744996485,
+        0
+      ],
+      "baseWorld": [
+        -1.942890293094024e-16,
+        -0.06560000324249271,
+        2.7755575615628914e-17
+      ],
+      "orbitTheta": 3.141592653589793,
+      "gripErrors": [
+        null,
+        null
+      ],
+      "gripTolerance": 0.009612000274658215,
+      "gripStatus": "PROCEDURAL_IK_CANDIDATE",
+      "ribbonsVisible": true,
+      "cradleTriangles": 640,
+      "cradleMeshes": 10,
+      "groundOffset": 0,
+      "unit": 0.6560000324249271,
+      "controlsEnabled": true,
+      "cameraMode": "AUTO",
+      "actorTracks": 275,
+      "walkTracks": 272
+    }
+  ],
+  "limits": [
+    "Textures skipped; no WebGL or GPU timing",
+    "Conservative CPU NDC bounds are not visual composition approval",
+    "IK targets do not certify suit, palm or tail collision",
+    "No new Jump/Grip/Orbit clip in the original GLB"
+  ]
+}
