@@ -1,7 +1,6 @@
 ---
 import { PROFILE } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
-import ExperimentalMenu from './ExperimentalMenu.astro';
 
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
 
@@ -78,7 +77,6 @@ const NAV = [
     </a>
 
     <div class="nav-links">
-      <ExperimentalMenu variant="authorial" />
       <button
         class="nav-menu-toggle"
         type="button"
@@ -110,6 +108,7 @@ const NAV = [
         <span>Menu</span>
       </button>
       <div class="nav-sections" id="nav-sections" data-nav-sections>
+        <div class="xm-glass">
         {NAV.map((item) => (
           <a
             class={item.cta ? 'nav-cta' : undefined}
@@ -125,6 +124,7 @@ const NAV = [
             </span>
           </a>
         ))}
+        </div>
       </div>
       <SeriousModeToggle />
     </div>
@@ -555,41 +555,108 @@ const NAV = [
   }
   html[data-legacy-mode='true'] .site-header .nav-sections a { display: inline-block !important; }
 
-  /* Authorial delegates navigation to the SAME orbital menu as Immersivo.
-     The old bar remains for Editorial/Legacy and as the no-JS fallback. */
-  html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header :is(.nav-menu-toggle, .nav-sections) {
-    display: none !important;
+
+  /* The Autoral keeps its ORIGINAL hamburger trigger, mode emblems and
+     periodic-table destinations. Only the Immersivo drawer's original 500ms
+     glass opening is borrowed; the orbiting trigger is not rendered here. */
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell {
+    position: relative;
   }
-  html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-links {
-    gap: clamp(0.1rem, 0.9vw, 0.65rem);
-    align-items: center;
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections {
+    display: block !important;
+    top: calc(100% + 10px);
+    right: 0;
+    left: auto;
+    width: min(580px, calc(100vw - 2rem));
+    max-width: calc(100vw - 16px);
+    padding: 0;
+    border: 0;
+    border-radius: 22px;
+    background: transparent;
+    box-shadow: none;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 0s linear 500ms;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] {
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections .xm-glass {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.7rem;
+    max-height: calc(100dvh - 7.5rem);
+    border-radius: 22px;
+    clip-path: inset(0 0 100% 100% round 22px);
+    transition: clip-path 500ms cubic-bezier(0.2, 0.85, 0.25, 1);
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true'] .xm-glass {
+    clip-path: inset(0 0 0 0 round 22px);
+  }
+  /* Shadow on a separate layer: a clipped glass panel cannot cast its own. */
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    box-shadow: 0 22px 50px rgba(43,33,24,.26);
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: 100% 0;
+    transition: transform 500ms cubic-bezier(.2,.85,.25,1), opacity 500ms ease;
+    pointer-events: none;
+  }
+  html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections[data-open='true']::before {
+    opacity: 1;
+    transform: none;
+  }
+  /* The original nav-sections fallback remains visible without JavaScript. */
+  html:not([data-nav-js='true']) .site-header .nav-sections .xm-glass {
+    display: contents;
+    clip-path: none;
+    max-height: none;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
   @media (max-width: 820px) {
-    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell {
       flex-wrap: wrap;
       justify-content: center;
-      row-gap: 0.65rem;
+      row-gap: .65rem;
     }
-    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .brand {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .brand {
       flex: 1 1 100%;
       justify-content: center;
     }
-    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-links {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-links {
       flex: 1 1 100%;
       justify-content: center;
       min-width: 0;
-      gap: 0;
+      gap: clamp(.15rem,.7vw,.5rem);
     }
   }
   @media (max-width: 370px) {
-    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-stage {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-stage {
       --side: 36px;
       --pitch: 48px;
       margin-left: 0;
     }
-    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .xm-header--authorial {
-      flex-basis: 72px;
-      width: 72px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections .xm-glass,
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections::before {
+      transition: none;
+    }
+    html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections .xm-glass {
+      clip-path: inset(0 0 0 0 round 22px);
     }
   }
+
 </style>
