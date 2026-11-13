@@ -1,3 +1,5 @@
+> **Preflight obrigatório de 13/11:** antes deste escopo R1.C/R1.D, executar `claude-preflight-handoff.md` e conferir `handoff-artifacts-required.md`. O piloto estrutural do Work ainda não foi entregue na branch. A estrela C1 deve ser uma marca plana **na pele sob a franja**, nunca as três estrelas elevadas da 6H. Sem evidências e aceite, limitar-se ao QA; não integrar em produção.
+
 # Claude Sonnet — SOPHIA Adornments R1.C / R1.D (only after Work source lock)
 
 Repo `indiolibanes/portfolio`; base is a separately approved Work R1.A/B draft/head. Do not begin from the 6H archive alone. Read source-lock report, `asset-manifest.json`, `sockets.json`, GLB source hashes, contact/bone matrix and screenshots first.
