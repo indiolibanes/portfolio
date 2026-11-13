@@ -27,6 +27,14 @@ const astronautAssetUrl = '/api/sophia/rocket';
         </button>
         <div class="immersive__intro-footer" aria-hidden="true"><span>EST. 2026</span><span>AN INTERACTIVE JOURNEY</span></div>
       </section>
+      <div class="immersive__launch-hud" data-launch-hud hidden aria-live="polite" aria-atomic="true">
+        <span class="immersive__launch-label" data-countdown-label>PREPARANDO LANÇAMENTO</span>
+        <strong class="immersive__countdown" data-countdown></strong>
+      </div>
+      <div class="immersive__playback" data-playback hidden>
+        <button type="button" data-pause aria-pressed="false">Pausar</button>
+        <button type="button" data-replay>Repetir lançamento</button>
+      </div>
       <ExperimentalMenu />
       <a class="immersive__back" href="/sophia/" aria-label="Voltar à página da Sophia">← Voltar</a>
       <p class="immersive__status" data-status role="status" aria-live="polite">Carregando Sophia…</p>
@@ -74,13 +82,22 @@ const astronautAssetUrl = '/api/sophia/rocket';
   @keyframes sophia-cursor { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
   @media (max-width: 650px) { .immersive__intro-frame, .immersive__intro-footer { font-size: 8px; letter-spacing: .13em; } .immersive__intro-frame { top: 115px; } .immersive__start-preface { letter-spacing: .17em; } .immersive__start-touch { letter-spacing: .1em; } .immersive__status { top: 79%; font-size: 11px; } }
   @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__retry, .immersive__intro, .immersive__start-main { transition: none; } .immersive__start-cursor { animation: none; } }
+  .immersive__launch-hud { position: absolute; z-index: 20; left: clamp(24px, 5vw, 74px); bottom: max(95px, 12vh); display: grid; gap: 10px; pointer-events: none; }
+  .immersive__launch-hud[hidden], .immersive__playback[hidden] { display: none; }
+  .immersive__launch-label { color: #96aaeb; font: 600 10px/1.5 ui-monospace, monospace; letter-spacing: .18em; }
+  .immersive__countdown { min-height: 1em; color: #ebb047; font: 400 clamp(52px, 7vw, 90px)/1 "Sophia Roguepunk", sans-serif; text-shadow: 0 0 22px #ebb04720; }
+  .immersive__playback { position: absolute; z-index: 30; left: max(20px, env(safe-area-inset-left)); bottom: max(20px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
+  .immersive__playback button { border: 1px solid #ffffff25; border-radius: 99px; padding: 10px 13px; background: #101014a8; color: #e1e3e9; cursor: pointer; font: 500 11px/1 system-ui, sans-serif; }
+  .immersive__playback button:focus-visible { outline: 2px solid #ebb047; outline-offset: 3px; }
+  @media(max-width: 650px) { .immersive__launch-hud { bottom: max(88px, 11vh); } .immersive__launch-label { max-width: 150px; font-size: 8px; } .immersive__countdown { font-size: 48px; } }
 </style>
 
 <script>
   import * as THREE from 'three';
   import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-  import type { GLTF } from 'three/addons/loaders/GLTFLoader.js';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { createLaunchDirector } from '../../scripts/sophia-launch-director';
+  import { ActiveSceneClock, getLaunchStateAt } from '../../scripts/sophia-launch-timeline.mjs';
 
   const stage = document.querySelector<HTMLElement>('[data-stage]');
   const page = document.querySelector<HTMLElement>('[data-sophia-immersive]');
@@ -88,309 +105,121 @@ const astronautAssetUrl = '/api/sophia/rocket';
   const retryButton = document.querySelector<HTMLButtonElement>('[data-retry]');
   const intro = document.querySelector<HTMLElement>('[data-intro]');
   const introStart = document.querySelector<HTMLButtonElement>('[data-intro-start]');
+  const hud = document.querySelector<HTMLElement>('[data-launch-hud]');
+  const count = document.querySelector<HTMLElement>('[data-countdown]');
+  const countLabel = document.querySelector<HTMLElement>('[data-countdown-label]');
+  const playback = document.querySelector<HTMLElement>('[data-playback]');
+  const pauseButton = document.querySelector<HTMLButtonElement>('[data-pause]');
+  const replayButton = document.querySelector<HTMLButtonElement>('[data-replay]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const preferredUrl = page?.dataset.astronautUrl || '/api/sophia/rocket';
 
-  if (stage && page && status && retryButton && intro && introStart) {
-    const setStatus = (message: string) => {
-      status.hidden = !message;
-      status.textContent = message;
-    };
+  if (stage && page && status && retryButton && intro && introStart && hud && count && countLabel && playback && pauseButton && replayButton) {
+    const setStatus = (message: string) => { status.hidden = !message; status.textContent = message; };
     try {
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x000000);
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);
+      const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
+      const camera = new THREE.PerspectiveCamera(38, 1, .005, 1000);
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-      renderer.setClearColor(0x000000, 1);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.22;
+      renderer.setClearColor(0x000000, 1); renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.65));
+      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
       stage.appendChild(renderer.domElement);
-
-      scene.add(new THREE.AmbientLight(0xffffff, 1.4));
-      const key = new THREE.DirectionalLight(0xf5f5ff, 2.6);
-      key.position.set(-3, 5, 6);
-      scene.add(key);
-      const fill = new THREE.DirectionalLight(0x7695ff, 1.25);
-      fill.position.set(5, 2, -4);
-      scene.add(fill);
-      const rim = new THREE.DirectionalLight(0xffffff, 1.3);
-      rim.position.set(1, 4, -5);
-      scene.add(rim);
-
+      scene.add(new THREE.AmbientLight(0xffffff, 1.15));
+      const key = new THREE.DirectionalLight(0xf6ecd6, 2.6); key.position.set(-3, 5, 6); scene.add(key);
+      const fill = new THREE.DirectionalLight(0x96aaeb, 1.2); fill.position.set(5, 2, -4); scene.add(fill);
+      const rim = new THREE.DirectionalLight(0xffffff, 1.3); rim.position.set(1, 4, -5); scene.add(rim);
       const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = !reduceMotion.matches;
-      controls.dampingFactor = 0.07;
-      controls.enablePan = false;
-      controls.enableRotate = false;
-      controls.enableZoom = false;
-      controls.minPolarAngle = 0.13;
-      controls.maxPolarAngle = Math.PI - 0.13;
-      controls.rotateSpeed = 0.65;
-      controls.zoomSpeed = 0.75;
-
-      const loader = new GLTFLoader();
-      const clock = new THREE.Clock();
-      let activeModel: THREE.Object3D | null = null;
-      let mixer: THREE.AnimationMixer | null = null;
-      let framing: { box: THREE.Box3; astronaut: boolean } | null = null;
-      let loadIndex = 0;
-      type ScenePhase = 'intro' | 'waiting' | 'approach' | 'ignite' | 'flight';
-      let phase: ScenePhase = 'intro';
-      let phaseTime = 0;
-      let modelReady = false;
-      let currentGltf: GLTF | null = null;
-      let boarding: { rider: THREE.Object3D; seated: THREE.Vector3; entry: THREE.Vector3; exhaust: THREE.Object3D | null; ribbons: THREE.Object3D[]; flightBox: THREE.Box3 } | null = null;
-      const approachDuration = 3.65;
-      const igniteDuration = 0.72;
-      const smooth = (value: number) => value * value * (3 - 2 * value);
-
-      function getFramingBox(root: THREE.Object3D, astronaut: boolean) {
-        const box = new THREE.Box3();
-        if (astronaut) {
-          // Ignore far-reaching exhaust and animated trails when centering Sophia and the rocket.
-          for (const name of ['Fuselage', 'Helmet_Glass', 'Suit_Chest', 'tripo_mesh_315c0594.001']) {
-            const part = root.getObjectByName(name);
-            if (part) box.expandByObject(part);
-          }
-        }
-        if (box.isEmpty()) box.setFromObject(root);
-        if (box.isEmpty()) box.set(new THREE.Vector3(-0.5, 0, -0.5), new THREE.Vector3(0.5, 1, 0.5));
-        return box;
-      }
-
-      function fitCamera(box: THREE.Box3, astronaut: boolean) {
-        const size = box.getSize(new THREE.Vector3());
-        const center = box.getCenter(new THREE.Vector3());
-        const aspect = Math.max(0.4, stage.clientWidth / Math.max(1, stage.clientHeight));
-        const halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
-        const widthDistance = size.x / (2 * Math.tan(halfFov) * aspect);
-        const heightDistance = size.y / (2 * Math.tan(halfFov));
-        const depthDistance = size.z * 1.3;
-        const distance = Math.max(widthDistance, heightDistance, depthDistance, 0.55) * 1.38;
-        const direction = astronaut
-          ? new THREE.Vector3(-0.68, 0.22, 1)
-          : new THREE.Vector3(0, 0.12, 1);
-        direction.normalize();
-        controls.target.copy(center);
-        camera.position.copy(center).addScaledVector(direction, distance);
-        controls.minDistance = Math.max(0.15, distance * 0.35);
-        controls.maxDistance = Math.max(3, distance * 5);
-        camera.near = Math.max(0.005, distance / 200);
-        camera.far = Math.max(100, distance * 100);
-        camera.updateProjectionMatrix();
-        controls.update();
-      }
-
+      controls.enableDamping = !reduceMotion.matches; controls.dampingFactor = .07;
+      controls.enablePan = false; controls.enableRotate = controls.enableZoom = false;
+      controls.minPolarAngle = .13; controls.maxPolarAngle = Math.PI - .13; controls.rotateSpeed = .65; controls.zoomSpeed = .75;
+      const loader = new GLTFLoader(), clock = new ActiveSceneClock();
+      let director: ReturnType<typeof createLaunchDirector> | null = null;
+      let phase: 'intro' | 'waiting' | 'launch' = 'intro';
+      let loading = false, contextLost = false, loadIndex = 0, userPaused = false;
+      let lastHud = '';
+      const bindings = new AbortController();
       function resize() {
-        const w = Math.max(1, stage.clientWidth);
-        const h = Math.max(1, stage.clientHeight);
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
+        renderer.setSize(Math.max(1, stage!.clientWidth), Math.max(1, stage!.clientHeight), false);
+        camera.aspect = stage!.clientWidth / Math.max(1, stage!.clientHeight); camera.updateProjectionMatrix(); director?.resize();
       }
-
-      const observer = new ResizeObserver(() => {
-        resize();
-        if (framing) fitCamera(framing.box, framing.astronaut);
-      });
-      observer.observe(stage);
-
-      function playClip(name: string, loop: boolean) {
-        if (!currentGltf || !mixer) return;
-        const clip = currentGltf.animations.find((candidate) => candidate.name === name);
-        if (!clip) return;
-        mixer.stopAllAction();
-        const action = mixer.clipAction(clip);
-        action.reset();
-        action.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce, loop ? Infinity : 1);
-        action.clampWhenFinished = !loop;
-        action.play();
-        if (reduceMotion.matches) mixer.setTime(0);
+      const observer = new ResizeObserver(resize); observer.observe(stage);
+      function beginLaunch() {
+        if (!director || phase !== 'waiting') return;
+        phase = 'launch'; intro!.classList.add('is-started'); stage!.inert = false; stage!.tabIndex = 0;
+        director.reset(); clock.start(performance.now()); playback!.hidden = false;
+        setStatus(director.supported ? '' : 'A hierarquia deste modelo difere da referência. Exibindo o voo original.');
       }
-
-      function beginFlight() {
-        phase = 'flight';
-        phaseTime = 0;
-        if (boarding) {
-          boarding.rider.position.copy(boarding.seated);
-          boarding.ribbons.forEach((ribbon) => { ribbon.visible = true; });
-          boarding.exhaust && (boarding.exhaust.visible = true);
-          framing = { box: boarding.flightBox, astronaut: true };
-          fitCamera(boarding.flightBox, true);
-        }
-        playClip('Sophia_Foguete_Voo_Esquerda_Ondas_R2', true);
-        controls.enableRotate = true;
-        controls.enableZoom = true;
-        setStatus('');
+      function requestStart() { if (phase !== 'intro') return; phase = 'waiting'; if (director) beginLaunch(); else setStatus('Preparando a plataforma de lançamento…'); }
+      function updateHud(t: number) {
+        const s = getLaunchStateAt(t);
+        hud!.hidden = !director?.supported || s.countdown === null;
+        page!.dataset.launchPhase = s.phase;
+        const next = String(s.countdown);
+        if (next === lastHud) return; lastHud = next;
+        count!.textContent = s.countdown === null ? '' : s.countdown === 0 ? '0' : String(s.countdown);
+        countLabel!.textContent = s.countdown === 0 ? 'DECOLAGEM' : 'IGNIÇÃO · CONTAGEM REGRESSIVA';
       }
-
-      function beginApproach() {
-        if (!modelReady || phase !== 'waiting') return;
-        intro.classList.add('is-started');
-        stage.inert = false;
-        stage.tabIndex = 0;
-        phaseTime = 0;
-        setStatus('');
-        if (reduceMotion.matches || !boarding) {
-          beginFlight();
-          return;
-        }
-        phase = 'approach';
-        playClip('Andar_R6', true);
-      }
-
-      function requestStart() {
-        if (phase !== 'intro') return;
-        phase = 'waiting';
-        if (modelReady) beginApproach();
-        else setStatus('Preparando a decolagem da Sophia…');
-      }
-
-      function install(gltf: GLTF, astronaut: boolean) {
-        if (mixer) mixer.stopAllAction();
-        if (activeModel) scene.remove(activeModel);
-        mixer = null;
-        currentGltf = gltf;
-        boarding = null;
-        const root = gltf.scene;
-        activeModel = root;
-        scene.add(root);
-        root.updateMatrixWorld(true);
-        const flightBox = getFramingBox(root, astronaut);
-        let cameraBox = flightBox.clone();
-
-        // The delivered GLB has separate parent nodes for its astronaut rider
-        // and rocket. Move only the rider: the rocket remains on its launch mark.
-        const rider = root.getObjectByName('Sophia_Astronauta_Rider_Mount');
-        const rocket = root.getObjectByName('Rocket_Flight_Mount');
-        if (astronaut && rider && rocket) {
-          const size = flightBox.getSize(new THREE.Vector3());
-          const seated = rider.position.clone();
-          const entry = new THREE.Vector3(-Math.max(size.x * 0.88, 1.0), -Math.max(size.y * 0.16, 0.13), 0.12);
-          const ribbons = Array.from({ length: 8 }, (_, i) => root.getObjectByName('SpeedRibbon_' + (i + 1))).filter((node): node is THREE.Object3D => !!node);
-          const exhaust = root.getObjectByName('Plume_Root') || null;
-          rider.position.copy(seated).add(entry);
-          ribbons.forEach((ribbon) => { ribbon.visible = false; });
-          if (exhaust) exhaust.visible = false;
-          root.updateMatrixWorld(true);
-          cameraBox = cameraBox.union(new THREE.Box3().setFromObject(rider));
-          boarding = { rider, seated, entry, exhaust, ribbons, flightBox };
-        }
-
-        mixer = new THREE.AnimationMixer(root);
-        const preferredClip = gltf.animations.find((clip) => clip.name === 'Sophia_Foguete_Voo_Esquerda_Ondas_R2');
-        const fallbackClip = gltf.animations.find((clip) => /rocket|foguete/i.test(clip.name));
-        if (!preferredClip && !fallbackClip) {
-          console.warn('Sophia: o GLB não inclui a animação de voo esperada.');
-        }
-        framing = { box: cameraBox, astronaut };
-        resize();
-        fitCamera(cameraBox, astronaut);
-        modelReady = true;
-        setStatus('');
-        if (phase === 'waiting') beginApproach();
-      }
-
-      async function loadUrl(url: string, astronaut: boolean) {
-        const current = ++loadIndex;
-        setStatus('Carregando Sophia…');
-        const gltf = await loader.loadAsync(url);
-        if (current === loadIndex) install(gltf, astronaut);
-      }
-
-      // This route exclusively displays the astronaut/rocket GLB. Never fall
-      // back to the unrelated laboratory model or require visitor uploads.
       async function loadAstronaut() {
-        retryButton.hidden = true;
-        setStatus('Carregando Sophia astronauta e foguete…');
+        if (loading) return; loading = true; const current = ++loadIndex;
+        retryButton!.hidden = true; setStatus('Carregando Sophia astronauta e foguete…');
         let modelReachable = false;
         try {
-          // A same-origin, unauthenticated HEAD distinguishes R2 404/503
-          // from glTF parsing or WebGL errors without downloading 47 MB twice.
-          const response = await fetch(preferredUrl, {
-            method: 'HEAD',
-            cache: 'no-store',
-            credentials: 'omit',
-            redirect: 'manual',
-          });
+          const response = await fetch(preferredUrl, { method: 'HEAD', cache: 'no-store', credentials: 'omit', redirect: 'manual' });
           if (!response.ok) {
-            if (response.status === 404) {
-              setStatus('O arquivo da Sophia astronauta não foi encontrado no armazenamento R2.');
-            } else if (response.status === 503) {
-              setStatus('O armazenamento R2 da Sophia não está disponível neste ambiente.');
-            } else if (response.status === 0 || (response.status >= 300 && response.status < 400) || response.status === 401 || response.status === 403) {
-              setStatus('O acesso público ao modelo foi bloqueado. Verifique o Cloudflare Access.');
-            } else {
-              setStatus('Falha ao consultar o modelo da Sophia (HTTP ' + response.status + ').');
-            }
-            retryButton.hidden = false;
-            return;
+            if (response.status === 404) setStatus('O arquivo da Sophia astronauta não foi encontrado no armazenamento R2.');
+            else if (response.status === 503) setStatus('O armazenamento R2 da Sophia não está disponível neste ambiente.');
+            else if (response.status === 0 || (response.status >= 300 && response.status < 400) || response.status === 401 || response.status === 403) setStatus('O acesso público ao modelo foi bloqueado. Verifique o Cloudflare Access.');
+            else setStatus('Falha ao consultar o modelo da Sophia (HTTP ' + response.status + ').');
+            retryButton!.hidden = false; return;
           }
           const mime = response.headers.get('content-type') || '';
-          if (!mime.toLowerCase().includes('model/gltf-binary')) {
-            setStatus('O servidor não retornou um arquivo GLB válido (tipo: ' + (mime || 'ausente') + ').');
-            retryButton.hidden = false;
-            return;
-          }
+          if (!mime.toLowerCase().includes('model/gltf-binary')) { setStatus('O servidor não retornou um arquivo GLB válido.'); retryButton!.hidden = false; return; }
           modelReachable = true;
-          await loadUrl(preferredUrl, true);
-        } catch (error) {
-          console.error('Sophia: falha ao carregar astronauta/foguete.', error);
-          setStatus(modelReachable
-            ? 'O GLB está acessível, mas não pôde ser interpretado ou renderizado.'
-            : 'Não foi possível conectar ao carregador público da Sophia.');
-          retryButton.hidden = false;
-        }
+          const gltf = await loader.loadAsync(preferredUrl); // One GET, no second preflight download.
+          if (current !== loadIndex) return;
+          director?.dispose(); director = createLaunchDirector(gltf, scene, camera, controls, () => reduceMotion.matches);
+          gltf.scene.visible = false; resize(); setStatus('');
+          if (phase === 'waiting') beginLaunch();
+          if (import.meta.env.DEV) {
+            (window as unknown as Record<string, unknown>).__SOPHIA_LAUNCH_QA__ = {
+              seek(t: number) { if (phase === 'intro') requestStart(); clock.seconds = Math.max(0, t); clock.anchor = performance.now(); clock.pause('qa', performance.now()); director!.apply(t); updateHud(t); renderer.render(scene, camera); },
+              resume() { clock.resume('qa', performance.now()); },
+              snapshot() { return { ...director!.snapshot(), render: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }, countdown: count!.textContent, viewport: [stage!.clientWidth, stage!.clientHeight] }; },
+            };
+          }
+        } catch (error) { console.error('Sophia: falha na cena de lançamento.', error); setStatus(modelReachable ? 'O GLB está acessível, mas a cena não pôde ser preparada. Tente novamente.' : 'Não foi possível conectar ao carregador público da Sophia.'); retryButton!.hidden = false; }
+        finally { loading = false; }
       }
-
-      introStart.addEventListener('click', requestStart);
-      window.addEventListener('keydown', (event) => {
+      introStart.addEventListener('click', requestStart, { signal: bindings.signal });
+      window.addEventListener('keydown', event => {
         if (phase !== 'intro' || event.repeat || event.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.key === 'Escape' || event.key === 'Tab') return;
         if (event.target instanceof Element && event.target.closest('a, button, input, select, textarea, [role="menu"], [data-xm]')) return;
-        event.preventDefault();
-        requestStart();
-      });
-      retryButton.addEventListener('click', () => { void loadAstronaut(); });
-      void loadAstronaut();
-
-      renderer.domElement.addEventListener('webglcontextlost', (event) => {
-        event.preventDefault();
-        setStatus('A visualização 3D foi interrompida pelo navegador. Atualize a página para reiniciar.');
-      });
-
+        event.preventDefault(); requestStart();
+      }, { signal: bindings.signal });
+      retryButton.addEventListener('click', () => { void loadAstronaut(); }, { signal: bindings.signal });
+      pauseButton.addEventListener('click', () => {
+        userPaused = !userPaused;
+        if (userPaused) clock.pause('user', performance.now()); else clock.resume('user', performance.now());
+        pauseButton.textContent = userPaused ? 'Continuar' : 'Pausar'; pauseButton.setAttribute('aria-pressed', String(userPaused));
+      }, { signal: bindings.signal });
+      replayButton.addEventListener('click', () => {
+        if (!director) return; director.reset(); clock.resume('user', performance.now()); clock.resume('qa', performance.now()); clock.start(performance.now()); userPaused = false;
+        pauseButton.textContent = 'Pausar'; pauseButton.setAttribute('aria-pressed', 'false'); lastHud = ''; setStatus('');
+      }, { signal: bindings.signal });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) clock.pause('hidden', performance.now()); else clock.resume('hidden', performance.now()); }, { signal: bindings.signal });
+      renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); contextLost = true; clock.pause('context', performance.now()); setStatus('A cena foi pausada enquanto o navegador recupera o contexto 3D.'); }, { signal: bindings.signal });
+      renderer.domElement.addEventListener('webglcontextrestored', () => { contextLost = false; clock.resume('context', performance.now()); setStatus(''); }, { signal: bindings.signal });
       renderer.setAnimationLoop(() => {
-        const delta = Math.min(clock.getDelta(), 0.05);
-        if (document.hidden) return;
-        if (!reduceMotion.matches && phase === 'approach' && boarding) {
-          phaseTime += delta;
-          const t = Math.min(1, phaseTime / approachDuration);
-          const ease = smooth(t);
-          boarding.rider.position.copy(boarding.seated).addScaledVector(boarding.entry, 1 - ease);
-          boarding.rider.position.y += Math.sin(t * Math.PI * 5) * 0.025 * (1 - t);
-          if (mixer) mixer.update(delta);
-          if (t >= 1) {
-            boarding.rider.position.copy(boarding.seated);
-            phase = 'ignite';
-            phaseTime = 0;
-            playClip('Engine_Idle', true);
-            if (boarding.exhaust) boarding.exhaust.visible = true;
-          }
-        } else if (phase === 'ignite') {
-          phaseTime += delta;
-          if (mixer) mixer.update(delta);
-          if (phaseTime >= igniteDuration) beginFlight();
-        } else if (phase === 'flight') {
-          if (mixer && !reduceMotion.matches) mixer.update(delta);
-        }
-        controls.update();
-        renderer.render(scene, camera);
+        if (document.hidden || contextLost) return;
+        if (phase === 'launch' && director) { const t = clock.read(performance.now()); director.apply(t); updateHud(t); }
+        controls.update(); renderer.render(scene, camera);
       });
-      resize();
+      window.addEventListener('pagehide', () => { renderer.setAnimationLoop(null); observer.disconnect(); bindings.abort(); director?.dispose(); controls.dispose(); renderer.dispose(); }, { once: true });
+      resize(); void loadAstronaut();
     } catch (error) {
-      console.error('Sophia: inicialização WebGL indisponível.', error);
+      console.error('Sophia: WebGL indisponível.', error);
       setStatus('Este navegador não conseguiu iniciar a cena 3D.');
+      introStart.disabled = true; retryButton.hidden = false;
+      retryButton.addEventListener('click', () => window.location.reload(), { once: true });
     }
   }
 </script>
