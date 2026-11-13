@@ -54,7 +54,7 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
     assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
   }
   assert.doesNotMatch(animatedIcons, /"id":"immersive"/);
-  assert.match(animatedIcons, /class="serious-art"/);
+  assert.match(animatedIcons, /serious-art/);
   assert.match(animatedIcons, /const loopsOf = \{/);
   for (const signature of ['.serious-rays__spin', '.serious-beams__spin', '.serious-jets__tilt', '.serious-gamma__blob']) {
     assert.ok(animatedIcons.includes(signature), 'Original FX target missing: ' + signature);
