@@ -1,6 +1,6 @@
 {
   "schema": "sophia-adornment-recovery-r1",
-  "status": "SOURCE_LOCK_PENDING",
+  "status": "SOURCE_LOCK_PENDING_PILOT_REPORTED_NOT_DELIVERED",
   "evidenceRule": "documented-in-archive does not mean node verified in checked-out GLB",
   "primaryTarget": "Sophia authorial (lab), not Sophia astronaut R3",
   "sources": [
@@ -73,15 +73,14 @@
     {
       "id": "forehead_star",
       "names": [
-        "ForeheadStar",
-        "Star"
+        "C1_Forehead_Skin_Mark"
       ],
-      "archive": "STAR_ON_FOREHEAD_REPORTED",
+      "archive": "6H_ARCHIVE_HAS_THREE_RAISED_STARS_NOT_C1_FLAT_MARK",
       "sourceCandidate": "alpha6h",
-      "rigMode": "HEAD_SOCKET",
-      "decision": "SALVAGE_OR_SIMPLE_PROCEDURAL",
+      "rigMode": "SKIN_SURFACE_TEXTURE_OR_CONFORMAL_MARK_UNDER_FRINGE",
+      "decision": "DO_NOT_REUSE_RAISED_STARS; C1_IDENTITY_GATE_BEFORE_IMPLEMENTATION",
       "tripo": "NO",
-      "confidence": "MEDIUM_DOCUMENT_ONLY"
+      "confidence": "C1_REQUIREMENT_CONFIRMED_SOURCE_GEOMETRY_PENDING"
     },
     {
       "id": "ear_ornaments",
@@ -170,5 +169,22 @@
       "collision-matrix.csv",
       "go-no-go.md"
     ]
+  },
+  "workPilotStatus": {
+    "status": "STRUCTURAL_PILOT_REPORTED_BY_WORK_PRIVATE_NOT_VERIFIED_IN_GITHUB",
+    "reportedEvidence": [
+      "ALPHA6H_ARCHIVE_IDENTITY_MATCH",
+      "BOOK_AND_PEN_SEPARATE_HAND_LINKED_NODES",
+      "INTERMEDIATE_SOCKET_PILOT",
+      "255_POSE_ALIGNMENT_CHECK"
+    ],
+    "requiredBeforeClaudeImplementation": [
+      "PILOT_ASSET_EXPORT",
+      "SOURCE_AND_PILOT_SHA256",
+      "MESH_PROVENANCE_AND_SOCKETS",
+      "REPRODUCIBLE_POSE_TESTS",
+      "REAL_GLTF_RENDER_AND_IDENTITY_GATE"
+    ],
+    "c1Correction": "The single small golden four-point mark is on forehead SKIN under opaque fringe, not a raised hair ornament or three stars."
   }
 }
