@@ -12,9 +12,10 @@ export function sampleImmersiveR3At(seconds) {
  const height=lift+velocity*flightDt/(1+flightDt*.08);
  const pitchDuration=R3.flight-R3.pitchStart,pitchLinear=clamp((t-R3.pitchStart)/pitchDuration);
  const x=-1.4*(pitchLinear**3+3*flightDt/pitchDuration);
- const countdownDigit=t<R3.countdown||t>=R3.launch+.32?null:t>=R3.launch?0:5-Math.floor(t-R3.countdown+1e-9);
+ const rocketVisible = t >= R3.launch + .32; // the 0 is fully displayed before the reveal
+ const countdownDigit=t<R3.countdown||rocketVisible?null:t>=R3.launch?0:5-Math.floor(t-R3.countdown+1e-9);
  const phase=t<R3.reveal?'REVEAL_VERTICAL_PAD':t<R3.ignition?'ENGINE_PREIGNITION':t<R3.countdown?'ENGINE_IGNITION':t<R3.launch?'COUNTDOWN':t<R3.orbitEnd?'LIFT_AND_ORBIT':t<R3.settleEnd?'SETTLE_AND_CLEAR':t<R3.flight?'PITCH_TO_LEFT':'FLIGHT_LOOP';
- return {t,phase,countdownDigit,enginePower:t<R3.reveal?0:t<R3.ignition?.08*smooth((t-R3.reveal)/.7):.3+.35*smooth((t-R3.ignition)/.4)+.35*smooth(dt/.35),
+ return {t,phase,countdownDigit,rocketVisible,enginePower:t<R3.reveal?0:t<R3.ignition?.08*smooth((t-R3.reveal)/.7):.3+.35*smooth((t-R3.ignition)/.4)+.35*smooth(dt/.35),
   release:smooth(dt/.22),riderVisible:t>=R3.enter,walkTime:Math.max(0,Math.min(t,R3.prepare)-R3.enter),
   approach:smooth((t-R3.enter)/(R3.prepare-R3.enter)),jump:smooth((t-R3.jump)/(R3.grip-R3.jump)),
   grip:smooth((t-R3.jump-.25)/.75),orbit,orbitTheta:Math.PI*orbit,settle:smooth((t-R3.orbitEnd)/(R3.settleEnd-R3.orbitEnd)),
