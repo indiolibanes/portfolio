@@ -1,0 +1,123 @@
+{
+  "source": "public/experimental/sophia-alpha.glb",
+  "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+  "pilot": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+  "pilotSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+  "binSha256": "fd95c7c227ad09556ac2b0e82e756daf2e9d0048b5fecba5f30748341ae83064",
+  "binaryPayloadUnchanged": true,
+  "skinsAndAnimationJsonUnchanged": true,
+  "sourceJointCount": 101,
+  "sourceClipNames": [
+    "Idle",
+    "Write",
+    "Point",
+    "Wave",
+    "Walk"
+  ],
+  "sockets": [
+    {
+      "name": "Socket_Hand_L_Notebook",
+      "node": 104,
+      "parent": 21,
+      "parentName": "hand_L",
+      "child": 94,
+      "localMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "calibration": "Original 6H attachment and animated offsets preserved, not a new contact approval"
+    },
+    {
+      "name": "Socket_Hand_R_Pen",
+      "node": 105,
+      "parent": 27,
+      "parentName": "hand_R",
+      "child": 95,
+      "localMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "calibration": "Original 6H attachment and animated offsets preserved, not a new contact approval"
+    },
+    {
+      "name": "Socket_Head_ForeheadStars",
+      "node": 106,
+      "parent": 5,
+      "parentName": "head",
+      "child": 107,
+      "localMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "childMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.0,
+        -0.5600000023841858,
+        -0.0,
+        1.0
+      ],
+      "calibration": "Exact inverse-bind rigid equivalent; existing three-star geometry unchanged"
+    }
+  ],
+  "starPrimitiveIds": [
+    9,
+    10,
+    11
+  ],
+  "starUvSets": [],
+  "starMaterial": 7,
+  "identityGate": "PARTIAL: archived 3D stars have no C1 opaque fringe; no new fringe generated"
+}

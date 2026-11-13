@@ -1,0 +1,51 @@
+{
+  "file": "local-private/adornments-r1/sophia-6h-adornments-pilot.blend",
+  "armatures": [
+    {
+      "name": "SophiaArmature",
+      "bones": 101
+    }
+  ],
+  "meshObjects": [
+    "Book",
+    "Icosphere",
+    "Pen",
+    "Recovered_ForeheadStars_6H",
+    "Sophia.001"
+  ],
+  "actions": [
+    "Idle_Book",
+    "Idle_Pen",
+    "Idle_Sophia.001",
+    "Idle_SophiaArmature",
+    "Point_Book",
+    "Point_Pen",
+    "Point_Sophia.001",
+    "Point_SophiaArmature",
+    "Walk_Book",
+    "Walk_Pen",
+    "Walk_Sophia.001",
+    "Walk_SophiaArmature",
+    "Wave_Book",
+    "Wave_Pen",
+    "Wave_Sophia.001",
+    "Wave_SophiaArmature",
+    "Write_Book",
+    "Write_Pen",
+    "Write_Sophia.001",
+    "Write_SophiaArmature"
+  ],
+  "packedImages": 4,
+  "restState": "All imported NLA tracks muted and armature REST for inspection; choose original track before playback",
+  "origin": "Imported pilot GLB derivative, not recovered native original source",
+  "importerCustomShapeHelpers": [
+    "Icosphere"
+  ],
+  "characterMeshObjects": [
+    "Book",
+    "Pen",
+    "Recovered_ForeheadStars_6H",
+    "Sophia.001"
+  ],
+  "helperNote": "Bone display widgets created by the Blender importer are not character geometry or new body meshes"
+}

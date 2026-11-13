@@ -1,0 +1,3932 @@
+{
+  "status": "OFFLINE_REAL_GLB_RENDER_PASS; WEBGL_AND_ARTISTIC_PENDING",
+  "renderer": "Blender 4.3.2 CPU Cycles, 4\u201316 samples, no denoiser",
+  "poseTiming": "Imported NLA starts at frame 1; source t maps to 1+t*24. Original action data unchanged.",
+  "sharedOrthoFrame": {
+    "scale": 1.55,
+    "targetBlenderZup": [
+      0.15,
+      0.05,
+      0.5
+    ],
+    "imageSize": [
+      640,
+      800
+    ]
+  },
+  "records": [
+    {
+      "file": "source_front.png",
+      "source": "public/experimental/sophia-alpha.glb",
+      "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "front",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        -2.950000047683716,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "5e43cc2903d6912f512b465205a588eb2a20f2ac5da8d1ead68107cca4eabba5",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "source_three-quarter.png",
+      "source": "public/experimental/sophia-alpha.glb",
+      "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "01d2f2986f134a7d10c6a58870c126aa356f5e45f16344362788ad9921da88ee",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "source_profile.png",
+      "source": "public/experimental/sophia-alpha.glb",
+      "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "profile",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        3.1500000953674316,
+        0.05000000074505806,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "273fac7fc87e262d6b8a40a561af58049897d6f3f8f38975461df8891238b37c",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "source_back.png",
+      "source": "public/experimental/sophia-alpha.glb",
+      "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "back",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        3.049999952316284,
+        0.5
+      ],
+      "cameraRotation": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "d6800e3545da1db82f365e60d1f95e8f31512841952284c99d193c4356361c7d",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_front.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": null,
+      "seconds": 0,
+      "angle": "front",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        -2.950000047683716,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "19f56eb3119f8af558050650265055ee4d9ec2d0055b7c870fe6fc04aa751e8c",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_three-quarter.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": null,
+      "seconds": 0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "8406f1ee2f25ef405a51f88fcc8e2ebbcc938a608e2f28fb4de0ff307cfbc3b6",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_profile.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": null,
+      "seconds": 0,
+      "angle": "profile",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        3.1500000953674316,
+        0.05000000074505806,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "da2f1028836fb30ab1f8e0a3e9b8b9d31dcf3aa1cd0ae93e165e5af039b92454",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_back.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": null,
+      "seconds": 0,
+      "angle": "back",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        3.049999952316284,
+        0.5
+      ],
+      "cameraRotation": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "49c9d543e73dbbdb55ab9f801f12a887d087d5176c76999e0a863f093f31cb1a",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_Write.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "fe13df63c103b9e8f6d74255b595ab1c3e447c4628a6a613059c7d89f5cc88be",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Write_cover_grip.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 0.5,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.1213202476501465,
+        -2.350595474243164,
+        0.41685834527015686
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "da08536cc6185ba2c7a90ef3bda22cf133697df2cb3a7947039d95e0ece1fc2d",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Write_page_side_-1.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "book-local-normal",
+      "projection": "ORTHO",
+      "orthoScale": 0.36000001430511475,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        -1.0952039275480274e-07,
+        0.15243519842624664,
+        0.07829177379608154
+      ],
+      "cameraRotation": [
+        -0.8526045680046082,
+        -3.141592502593994,
+        2.166065797837291e-07
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "89bf3d5481482cb7ec31e2b6143f05afa27845067681a3abff08116a40962b0b",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Write_page_side_1.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "book-local-normal",
+      "projection": "ORTHO",
+      "orthoScale": 0.36000001430511475,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        1.0117573623347198e-07,
+        -0.5863590240478516,
+        1.0239044427871704
+      ],
+      "cameraRotation": [
+        0.5353432297706604,
+        2.2666962504560607e-14,
+        2.851892020316882e-07
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "e17b0f56f6225611ffb7ae2bd4a9c0996c33b8da6c76ece52947391194bc1b45",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Write_wrist.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 0.27000001072883606,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.090083122253418,
+        -2.277184009552002,
+        0.4532886743545532
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "7dee9ab0970ff8c8c8b76e67a0e3efa77e20122b1d9a65d16eef55395c75cc42",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Wave.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.2,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "1506cdcecb07b4ed1203b978bb1daabd2945d20497b0f46727615f29048b2a0f",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 29.799999999999997
+    },
+    {
+      "file": "pilot_Walk.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.818181818,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "47d2be976b6f09238159c6327d4c26b20fd73e33704d69e8459bcc6c68ab2804",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 20.636363632
+    },
+    {
+      "file": "pilot_Idle.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.6666667,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "25901043dc26823f873dd8813266875565fc823a101aa8bb5eb74c95b56e6d2c",
+      "imageSize": [
+        640,
+        800
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 65.0000008
+    },
+    {
+      "file": "pilot_Write_960x540.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.7999999523162842,
+      "resolution": [
+        960,
+        540
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "6bce077997a2c35e8f268e679616fccaff51e6ebfd8fbb50d921431e0991bd0e",
+      "imageSize": [
+        960,
+        540
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "pilot_Write_540x960.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.6,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.7999999523162842,
+      "resolution": [
+        540,
+        960
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "032e3d1a8c8c631395102fc269452dd84ca46a13cabdea3a77ddd8cf8bb3c82c",
+      "imageSize": [
+        540,
+        960
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 39.400000000000006
+    },
+    {
+      "file": "loop_Write_00.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9fed96fdb19365c69ea7119eee3f508f929088379dd62f0cddf9235d7584a082",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Write_01.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9fd702cb41e78186079e28a9fd42db20903c63768617e18f75db0e7aa805a623",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Write_02.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "3ed3c43cf463a91edf3fb1e004eae5c157579938af934533194884ad3f2373b4",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Write_03.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "326b5968f372b5204bd055be475831cee1dd0c6f1314231ab7457e5232018ee5",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Write_04.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "8bfd5fca059c9d16ea592fb7138f47f11dd758700b5dcc8da12252a66703b444",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Write_05.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2f0195673263e637447e0fcec18df7b85d437dbc618ad10691ca19c5c5e508a7",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Write_06.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "80ab649ac42f3f43d31fc6f6c4ecf8bd00d8752ce32f6ac3c1029c60be5a5e14",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Write_07.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "ae7ecff459485931922345c5467e450c2a1b46e047063e191bbe98c7817795f4",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "loop_Write_08.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "486b1ef7147f0026cf3c649ecebed9580a45647aad2feb83c14b8467ec5689f9",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 25.0
+    },
+    {
+      "file": "loop_Write_09.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "d7ede96039a8d54bfef6ae0be122eae02f9046818d571164da35a68850c121a6",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 28.0
+    },
+    {
+      "file": "loop_Write_10.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "b7e07d179ebf8a79887a18e05256121c8501c7d3c7ae229287506a83fdddc57c",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 31.0
+    },
+    {
+      "file": "loop_Write_11.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "b0114e514b9054ab901a3ff7027cc2ecff6c905de351582f653fe9305deb6b64",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 34.0
+    },
+    {
+      "file": "loop_Write_12.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a54e7ccb92c84f8185bca161035ee9c226affe68e7cd7ab19546b387b62c18d2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 37.0
+    },
+    {
+      "file": "loop_Write_13.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "522c9148d97037ddb30507300fd5c8976ab266ceb3358d09565a3ac994301ad1",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 40.0
+    },
+    {
+      "file": "loop_Write_14.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "03caf2d004639de001802e74c9a6c173339ddabe4b2853e30941e9175b6b3bc2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 43.0
+    },
+    {
+      "file": "loop_Write_15.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 1.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "95bc3e2413a33789f64a367b241db69e20790bbf7245a7af03215843f0073888",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 46.0
+    },
+    {
+      "file": "loop_Write_16.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "3c590db076828bd074b813d4acfd2bdadd8d4bc57a6faa8d805407e32ff8c2f1",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 49.0
+    },
+    {
+      "file": "loop_Write_17.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "98dc09e26eec2f3dc949b377617f2c986bb527bd0bda21f72853c02b79cf25c6",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 52.0
+    },
+    {
+      "file": "loop_Write_18.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "e053faf36bd6ba80637d362b0ba386a57b519ae1c4f2984753e25888b101fc0b",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 55.0
+    },
+    {
+      "file": "loop_Write_19.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9d522bd1ebb29db3c9ba4998af52a9ea0a47fe718f2b48aed73d8d764f329fc9",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 58.0
+    },
+    {
+      "file": "loop_Write_20.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "320e38a45b9cdf40873cdcf002de70911c4edf773f3c801d3bd48995976a9ed5",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 61.0
+    },
+    {
+      "file": "loop_Write_21.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a1c81c8409fa915ad1a5ecc541711eb2c49255553fea9316eb7dce63a3c83ffb",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 64.0
+    },
+    {
+      "file": "loop_Write_22.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2a8dc74629bc1b8615f7076c269ef08b4be5c1f4e4faf3e7ed7adbe6a6e5c8ef",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 67.0
+    },
+    {
+      "file": "loop_Write_23.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Write",
+      "seconds": 2.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "fe0e7eada3937ad1bba2ecf1834e5a37d4b042d82a817abac987c9723ffdee59",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 70.0
+    },
+    {
+      "file": "loop_Idle_00.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "76fcc6b28f06f7db29b7ab066e1fda39db1e00231c2d24d8ef5e8688ffcf5884",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Idle_01.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "ac4300846a29ac9685058e06d0ec383603e71b139dbc12afd08320f95dd486e9",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Idle_02.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "df38070b3b517d312dd6f53d42380f36e5ea67645a19257571cbf3fd140bc8dd",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Idle_03.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "313a8413db68ae1a7fb0bb530390cdd8730512596f1b1c1cb20c3abb3f887011",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Idle_04.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "c62c2a12b9a88b1c496fd12caa8a5ca1ff29f46176104a06d4c916e7ac9a1308",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Idle_05.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a4ddd68cf49b4f3de6efd536ed2ffa670e32ec9b5a6194fd5efd77336759d00c",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Idle_06.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "581b0aa79e5ade44cd3ef57627d94da2e6ca370cf7abbb321da417a0136039b2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Idle_07.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "0664496f88da98740b1e4157c6ea4dc42d6c5a8bfac16adc5bb2487a4770ed3f",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "loop_Idle_08.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "e1f32c8f5e5acfb06bc7229042ab7656f38341bbfdfe6342cf706ca1b38e05a4",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 25.0
+    },
+    {
+      "file": "loop_Idle_09.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "cbd988a6218784e6e96eed0db3fda03d2a6a39baba5b2854faa2462ce75d0d81",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 28.0
+    },
+    {
+      "file": "loop_Idle_10.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "dfb29cc6deacdc48695b9c88942890c131ae41fea6cb223ca532389de3d5eab8",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 31.0
+    },
+    {
+      "file": "loop_Idle_11.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "82a43e57cb3a6feb944d03d88ca90e812b21133cebfceb2910d36b4e9d09364f",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 34.0
+    },
+    {
+      "file": "loop_Idle_12.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "6b46756b427a985b1faa56a50ef5d24ad5e8c78a5e93e560a84cf0b5818594a5",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 37.0
+    },
+    {
+      "file": "loop_Idle_13.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "4f17bc1527917ed540a2837ea79312cb60f95139c34cda8cd8f9e6e37215199c",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 40.0
+    },
+    {
+      "file": "loop_Idle_14.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "dc1a63253ecccec1df51392dde22fc053632d99c03022d1c34f8e6f937ecbbf4",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 43.0
+    },
+    {
+      "file": "loop_Idle_15.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 1.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "ec625bd97c3823fd72267bfe8533190cfb3506b20d528ffc6afd064217c63bab",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 46.0
+    },
+    {
+      "file": "loop_Idle_16.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "d8b81e49b5e0c15d6b812271281116cb611036bea3e771acc1357a261eca0f1c",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 49.0
+    },
+    {
+      "file": "loop_Idle_17.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "ddcc4dd72ac6bf5028024fc70ac0356aeddd0a7ecadf55343ac8c708f271315a",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 52.0
+    },
+    {
+      "file": "loop_Idle_18.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "50d0f3c032d3956883ae21e92fed5b598f08ebcc5089cc5d720fc2adf58a7e1c",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 55.0
+    },
+    {
+      "file": "loop_Idle_19.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "f70cae9cd53e28f8dd42110d3ce14d5ee0e57db559a9036531834c252474a2b2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 58.0
+    },
+    {
+      "file": "loop_Idle_20.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "32435ca6f4a7eb31f93c83d17dca79daf9e9d809faf5a55c50683ea8d13a942a",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 61.0
+    },
+    {
+      "file": "loop_Idle_21.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "8d1a0d3ece0cfc1b0beb962dc1b0934d4777528a71a1422845463c366583c5cd",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 64.0
+    },
+    {
+      "file": "loop_Idle_22.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "da2020d8c6578c09c4f59295f37c00a67eb8447662e4ef18ac5b2c42ff7c482b",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 67.0
+    },
+    {
+      "file": "loop_Idle_23.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Idle",
+      "seconds": 2.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "67bc2e320d7519a7718be106bcc251fd36827b43e9e943002e39b035f8a17d8f",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 70.0
+    },
+    {
+      "file": "loop_Wave_00.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "c7099b9eae5f671a1c9b77ce8111b72758884922e2f1f72869cb8b8e8f3b3eb8",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Wave_01.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "bf59a56438ac732ff78307e4108bb49165dec3d4b403d1eae55154df994a7eb7",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Wave_02.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "831b0882c36e0e3c02ad03d3b98a5a2c9d77c94dc8e506a3bae5809387ddbfb7",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Wave_03.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9473eb5715951a81428b5af775c1abb9bf72a9ed8dd4b05a9b4d7d23fd494048",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Wave_04.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "63b470da2c49b587121d46a79e7b163621a4cd31e9279a654b792188cc3e1aa7",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Wave_05.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "b3191437ef8e0dd4a72de4778aa55b53babf69cc9aff0fa6815a74287a260f34",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Wave_06.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "34fe6f282af5e22cc80eb9dcd89e1d1ead3cdfe7b40ffe8233ef392b43fb6fe6",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Wave_07.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "dcaa8ac0c2a9d60cad8bac19be53ece58cd8625909bc517e189d892a78af62b1",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "loop_Wave_08.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "3f2eaa0c2c208ec51f012d698565d1e2927e66ace5c99ca81c8000b948a0c1e9",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 25.0
+    },
+    {
+      "file": "loop_Wave_09.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "337dcda613df903d2d4fc5b55d0653bb4cb4df836d1bdd4a0f16179203fee484",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 28.0
+    },
+    {
+      "file": "loop_Wave_10.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "295823d6f46186795d51ef507dae557f77736763a9773eb127372bc252556a4d",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 31.0
+    },
+    {
+      "file": "loop_Wave_11.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "11d90cc17de6782b5c7387b7d32394ac794df3b384a44e5ab2b513a7fe2a7125",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 34.0
+    },
+    {
+      "file": "loop_Wave_12.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a32ffea577fc4d3a4e914f693c0d42603038906a7947af62346e38b544239777",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 37.0
+    },
+    {
+      "file": "loop_Wave_13.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "73c948fe919f12241eeb4126854e484ab8785e56ff24ca6c8feb7a4290f45059",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 40.0
+    },
+    {
+      "file": "loop_Wave_14.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a7a146b93c68f7e461201badc848ee6990213029695df67eccf13c9e85cae5eb",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 43.0
+    },
+    {
+      "file": "loop_Wave_15.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 1.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "d3f87600e6edd5f82b5eada732b536704b7c6cc0ce98c6b500417cac199796b1",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 46.0
+    },
+    {
+      "file": "loop_Wave_16.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 2.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "16eae40af0e803efb53fba28665df1f84ee88456f7e91cd9269c2cd7bc0edb32",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 49.0
+    },
+    {
+      "file": "loop_Wave_17.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 2.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "425e487fb02dd2f06943a3c4589b2df9d6243a04fe0d52dbdc2d699fbf309540",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 52.0
+    },
+    {
+      "file": "loop_Wave_18.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 2.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "744057a00797d93f365e1e623ab18b182c41bd5a34d351f34c0b2b7ca09c2e88",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 55.0
+    },
+    {
+      "file": "loop_Wave_19.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 2.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "0f6f4ea9e0894b636aea7d3ebeaaedb5f6bf93647725f0dd0879504237d4f597",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 58.0
+    },
+    {
+      "file": "loop_Wave_20.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.10000000000000009,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "4a76e40c7168c304d9af7d2d0a0c8467c1eb0841736fb5bd20fb3d06f9826a80",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 3.400000000000002
+    },
+    {
+      "file": "loop_Wave_21.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.2250000000000001,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "5ba0e574baaa94795a47b2812654ec0c6d49409bfd614fc791c3c9c43de4a3a0",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 6.400000000000002
+    },
+    {
+      "file": "loop_Wave_22.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.3500000000000001,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "b221348fa91cd314d45bad8ddf632d0cad9d76fd168da8b907d9ab7fcd401af2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 9.400000000000002
+    },
+    {
+      "file": "loop_Wave_23.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Wave",
+      "seconds": 0.4750000000000001,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "1388c184c7a38252aec75ad2ac9d5196b0f4a2534478ffdab1e6076d9d2fcc97",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 12.400000000000002
+    },
+    {
+      "file": "loop_Walk_00.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2bebf783c746059286149318a57fc771f9239226d0356848ae0912b02f1ea265",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Walk_01.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "ace5718e8fc76dadee6ebd59a1cd37906cce8782762a906eaba2045d43cfc1c2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Walk_02.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "5ae020483f218b77337d441df264b21ffde6345a216998925c9171a3f64989d1",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Walk_03.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "41307485829dd9bef99203fc725ce54b0c56a8965f2755fd287d82fe1b31c93b",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Walk_04.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "62b0079f0b4116659b64c4aa340befbae1bca0f673d710294daad70ec632fe48",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Walk_05.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9dca8b4ce92fba545910f644d9c97207e78f57b2f9d1a071dd22a2029b3f9dc8",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Walk_06.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "3f572d19eb8ca70949cacc9761a7755defb0b4ba1d7f684a71af931d6e65723d",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Walk_07.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "3e12dd8f256a5510bb993cb3def77896f5f759ed70b861c61ecc5aa2e9eebc27",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "loop_Walk_08.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "03d9284a6e79684f32a0e28d12337f51c1200899df31513a7fa3535359a8d5ee",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Walk_09.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "d41abe8ef74316737a2e81174b4adf55141e0e257c60d19000570ec43e8cd989",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Walk_10.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2e919feea71029c265b65a41c6e224a0aa8e50d8027060d901ce2ec01db88bc6",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Walk_11.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2042c34c95cc82f12fc7620f3128d9f3ee05fdc84819f90a8dfe3385680f983b",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Walk_12.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "990e231fbcaaec9b3f766d176bb6c4fdcaaeb2d209d84856db63afb301331448",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Walk_13.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "9639e55c7185789925a715b73c8169931985b61cd13e1d6d73f1cf063c8b727b",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Walk_14.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "7a671914e33374677b76acc7db3ee22d3117c1ed0c340b72002a33ac5d0924b9",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Walk_15.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "87c5eeba1bafe88d840a8d4e04e569d93203dbb39e2eb3b783bd303cadf00bda",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "loop_Walk_16.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "4d01bf4395e5767541e7ea65979c78270287f65200b5339e03ef4cfc462bf36f",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 1.0
+    },
+    {
+      "file": "loop_Walk_17.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.125,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "858054cffd6a7897dfa1858c2b374d7688b3b553c461a12097b27960915eab47",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 4.0
+    },
+    {
+      "file": "loop_Walk_18.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.25,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "c1583f2f560669b8140b223cda85fb1ea60a9b4dc7d49c0285aab413c51715b2",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 7.0
+    },
+    {
+      "file": "loop_Walk_19.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.375,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "39d0d52d8b7f520b6c7daa616fff57f8c3cf8154d7c187e940184ae06ecb6b48",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 10.0
+    },
+    {
+      "file": "loop_Walk_20.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.5,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "360c0b29b8a80eba2f9dd0343d54b261bbacf370bb8ec4c2829dc09b3bf2a2f0",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 13.0
+    },
+    {
+      "file": "loop_Walk_21.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.625,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "887cf1ef59d692e63efd25f9650be195fe49753d1ceb9168712ed611e4aeb183",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 16.0
+    },
+    {
+      "file": "loop_Walk_22.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.75,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "964192b0b58cb8f9a4e25a94d236846615f19a5f0287654a1ab7d9e460864606",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 19.0
+    },
+    {
+      "file": "loop_Walk_23.png",
+      "source": "local-private/adornments-r1/sophia-6h-adornments-pilot.glb",
+      "sourceSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+      "clip": "Walk",
+      "seconds": 0.875,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        320,
+        400
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "6a40cc5f5eb62564f8cfee2af2437e5d4982130c290f2f0ee54238c0eaed7d80",
+      "imageSize": [
+        320,
+        400
+      ],
+      "NlaOffsetFrames": 1,
+      "BlenderFrameFromRecordedTime": 22.0
+    },
+    {
+      "file": "e1_front.png",
+      "source": "public/experimental/sophia-7b-e1-latest.glb",
+      "sourceSha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "front",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        -2.950000047683716,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707964897155762,
+        -0.0,
+        0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "2e633db5a2a0162c10e1e7f446065de74f32b8e57f69356c118a0c62b9e77738",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "e1_three-quarter.png",
+      "source": "public/experimental/sophia-7b-e1-latest.glb",
+      "sourceSha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "three-quarter",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        2.271320343017578,
+        -2.0713202953338623,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -1.490736281084537e-07,
+        0.7853981256484985
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a9fd2a49654c366d8ec5ac24cbd9d8644a77eb28d13d9b807b54d5ccc57c840a",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "e1_profile.png",
+      "source": "public/experimental/sophia-7b-e1-latest.glb",
+      "sourceSha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "profile",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        3.1500000953674316,
+        0.05000000074505806,
+        0.5
+      ],
+      "cameraRotation": [
+        1.5707963705062866,
+        -0.0,
+        1.5707963705062866
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "a00b87ef4ebb73d4f05ab2971295557c1eab9db05eca187b3ad2e188af4add48",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "e1_back.png",
+      "source": "public/experimental/sophia-7b-e1-latest.glb",
+      "sourceSha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+      "clip": null,
+      "seconds": 0,
+      "angle": "back",
+      "projection": "ORTHO",
+      "orthoScale": 1.5499999523162842,
+      "resolution": [
+        640,
+        800
+      ],
+      "cameraPosition": [
+        0.15000000596046448,
+        3.049999952316284,
+        0.5
+      ],
+      "cameraRotation": [
+        -1.570796251296997,
+        3.141592502593994,
+        -0.0
+      ],
+      "method": "Blender 4.3.2 glTF import, original NLA track selection, CPU Cycles; not WebGL",
+      "sha256": "b1acaba6bda79a1ad5641aa740267630021ce176dc8b71918076aee6a63f4cd7",
+      "imageSize": [
+        640,
+        800
+      ]
+    },
+    {
+      "file": "pilot_Write_props_only_-1.png",
+      "source": "sophia-6h-adornments-pilot.blend",
+      "clip": "Write",
+      "seconds": 1.6,
+      "projection": "ORTHO",
+      "orthoScale": 0.3,
+      "bodyHiddenForInspection": true,
+      "geometryChanged": false,
+      "note": "Original props at original posed world coordinates; not proof of body clearance",
+      "sha256": "6e52201ef8428ccc03f98e35960c12114bd8619b08038cc30475d49d2266d34b",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "pilot_Write_props_only_1.png",
+      "source": "sophia-6h-adornments-pilot.blend",
+      "clip": "Write",
+      "seconds": 1.6,
+      "projection": "ORTHO",
+      "orthoScale": 0.3,
+      "bodyHiddenForInspection": true,
+      "geometryChanged": false,
+      "note": "Original props at original posed world coordinates; not proof of body clearance",
+      "sha256": "51bd02260b2e27062d1f5af8538ab9765a0391e8cccb65b24a7e0a0f2cf5b40f",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "collision_chin_collar.png",
+      "clip": "Write",
+      "seconds": 0,
+      "region": "chin_collar",
+      "frame": 1.0,
+      "projection": "ORTHO",
+      "orthoScale": 0.32,
+      "source": "private 6H graph-only pilot",
+      "geometryChanged": false,
+      "note": "View at sampled source crossing; visibility/occlusion must be reviewed, not a no-collision certificate",
+      "sha256": "954c0b0486574e5e0138d298af25cd16ff79b23aa9af1e17e51cba1c9054c26f",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "collision_wrist_sleeve.png",
+      "clip": "Write",
+      "seconds": 0,
+      "region": "wrist_sleeve",
+      "frame": 1.0,
+      "projection": "ORTHO",
+      "orthoScale": 0.34,
+      "source": "private 6H graph-only pilot",
+      "geometryChanged": false,
+      "note": "View at sampled source crossing; visibility/occlusion must be reviewed, not a no-collision certificate",
+      "sha256": "0118407b4792beadcd445e377bf0b7425495b1ab7384f403ff282f3dd51a1747",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "collision_cuff_book.png",
+      "clip": "Point",
+      "seconds": 0,
+      "region": "cuff_book",
+      "frame": 1.0,
+      "projection": "ORTHO",
+      "orthoScale": 0.43,
+      "source": "private 6H graph-only pilot",
+      "geometryChanged": false,
+      "note": "View at sampled source crossing; visibility/occlusion must be reviewed, not a no-collision certificate",
+      "sha256": "01c158c9a6a2ef6872b904ef3892e5af74e5846ec3ca4f34d8309a64b4f51879",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "collision_tail_coat.png",
+      "clip": "Walk",
+      "seconds": 0.272727273,
+      "region": "tail_coat",
+      "frame": 7.545454502105713,
+      "projection": "ORTHO",
+      "orthoScale": 0.52,
+      "source": "private 6H graph-only pilot",
+      "geometryChanged": false,
+      "note": "View at sampled source crossing; visibility/occlusion must be reviewed, not a no-collision certificate",
+      "sha256": "677c93977e1e906845fa9ca0f99457401bad6bbdd38ca885983cb153510523bf",
+      "imageSize": [
+        768,
+        768
+      ]
+    },
+    {
+      "file": "collision_ear_ribbon_mane.png",
+      "clip": "Point",
+      "seconds": 1.309090961,
+      "region": "ear_ribbon_mane",
+      "frame": 32.418182373046875,
+      "projection": "ORTHO",
+      "orthoScale": 0.4,
+      "source": "private 6H graph-only pilot",
+      "geometryChanged": false,
+      "note": "View at sampled source crossing; visibility/occlusion must be reviewed, not a no-collision certificate",
+      "sha256": "3b2a737f1bc9c21226032ac284a68d0bf7123c80269593272a7f5973bc63fc28",
+      "imageSize": [
+        768,
+        768
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "file": "Write_3s.gif",
+      "sha256": "c4b49c340ca81eb6d012557e5695d7c12c649de6a09faa26f177c628d7cc1c34",
+      "bytes": 1124421,
+      "frames": 24,
+      "totalMs": 3000,
+      "sourceClipUnchanged": true,
+      "sampling": "24 source-clip samples over 3 s, GIF timing quantized as 120/130 ms"
+    },
+    {
+      "file": "Idle_3s.gif",
+      "sha256": "643620475e1188b77dd34337038564d65ee5f4a02a3201c601f8811478ae034d",
+      "bytes": 1145235,
+      "frames": 24,
+      "totalMs": 3000,
+      "sourceClipUnchanged": true,
+      "sampling": "24 source-clip samples over 3 s, GIF timing quantized as 120/130 ms"
+    },
+    {
+      "file": "Wave_3s.gif",
+      "sha256": "7e345fcc3871c85326dc83ec8a3ae1c7d5f7b22bd74a565bbade489c4760a09e",
+      "bytes": 1204806,
+      "frames": 24,
+      "totalMs": 3000,
+      "sourceClipUnchanged": true,
+      "sampling": "24 source-clip samples over 3 s, GIF timing quantized as 120/130 ms"
+    },
+    {
+      "file": "Walk_3s.gif",
+      "sha256": "43e55a381bd518beb5a6be1ac6825f4469247090f2a3f1dd34dc95aa4c434e54",
+      "bytes": 1106829,
+      "frames": 24,
+      "totalMs": 3000,
+      "sourceClipUnchanged": true,
+      "sampling": "24 source-clip samples over 3 s, GIF timing quantized as 120/130 ms"
+    }
+  ],
+  "limits": [
+    "Offline renders are not live WebGL screenshots",
+    "Props-only details hide body for visibility; do not prove hand/coat clearance",
+    "Original source star group is three raised stars and does not satisfy C1 fringe/flat-skin marking",
+    "Render noise/occlusion limit visual inspection; no human approval is implied"
+  ]
+}

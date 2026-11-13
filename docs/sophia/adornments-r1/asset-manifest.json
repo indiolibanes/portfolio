@@ -1,0 +1,361 @@
+{
+  "schema": "sophia-adornment-recovery-r1",
+  "status": "SOURCE_MATCHED_PILOT_PARTIAL_NO_PRODUCTION_GO",
+  "evidenceRule": "documented-in-archive does not mean node verified in checked-out GLB",
+  "primaryTarget": "Sophia authorial (lab), not Sophia astronaut R3",
+  "sources": [
+    {
+      "id": "alpha6h",
+      "uri": "public/experimental/sophia-alpha.glb",
+      "reportedType": "legacy 6H alpha rigged",
+      "sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "verifiedNodes": [
+        {
+          "node": 93,
+          "name": "Sophia",
+          "mesh": 0,
+          "primitives": 279,
+          "skin": 0
+        },
+        {
+          "node": 94,
+          "name": "Book",
+          "mesh": 1,
+          "primitives": 5,
+          "parent": 21
+        },
+        {
+          "node": 95,
+          "name": "Pen",
+          "mesh": 2,
+          "primitives": 2,
+          "parent": 27
+        }
+      ],
+      "sourceState": "SOURCE_VERIFIED",
+      "archivedEquivalent": "SHA256_MATCHES_ARCHIVED_DECLARED_6H_CANDIDATE"
+    },
+    {
+      "id": "e1",
+      "uri": "public/experimental/sophia-7b-e1-latest.glb",
+      "reportedType": "7B E1 textured unrigged",
+      "sha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+      "verifiedNodes": [
+        {
+          "node": 0,
+          "mesh": 0,
+          "skins": 0,
+          "clips": 0
+        }
+      ],
+      "sourceState": "SOURCE_VERIFIED_UNRIGGED"
+    },
+    {
+      "id": "astronaut",
+      "uri": "/api/sophia/rocket",
+      "reportedType": "R3 astronaut+rocket",
+      "sha256": "e9bddcd76eae3607227b58f5d1a71ae2fedc51e2ddcaeb0900c013e710d3e674",
+      "clipCountFromPriorReport": 47,
+      "sourceState": "REFERENCE_ONLY_DO_NOT_MODIFY",
+      "executionNote": "Reference-only. Anonymous read returned HTTP 403; binary not reverified. All tracked runtime/API paths are unchanged; no remote write."
+    }
+  ],
+  "assets": [
+    {
+      "id": "lab_coat",
+      "names": [
+        "Jaleco",
+        "Coat",
+        "Sleeve_L",
+        "Sleeve_R"
+      ],
+      "archive": "INCOMPLETE_6H",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "SKIN_TO_EXISTING_BONES",
+      "decision": "SALVAGE_AND_TARGETED_REPAIR_FIRST; FULL_REFIT_NOT_EXECUTED",
+      "tripo": "NO_GO_NOT_PROVEN_UNSALVAGEABLE",
+      "confidence": "SOURCE_VERIFIED_RECOVERABLE",
+      "verifiedSource": {
+        "mesh": 0,
+        "corePrimitives": [
+          4,
+          5
+        ],
+        "lapelPrimitives": [
+          127,
+          130
+        ],
+        "coreAndLapelsTriangles": 28524,
+        "uvOnCore": [
+          4,
+          5
+        ],
+        "existingSkin": 0
+      }
+    },
+    {
+      "id": "notebook",
+      "names": [
+        "Book"
+      ],
+      "archive": "EXISTS_IN_6H_WRITE_REPORT",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "RIGID_LEFT_HAND_SOCKET",
+      "decision": "RECOVERED_INTEGRALLY_SAME_6H_CONTACT_PENDING",
+      "tripo": "NO",
+      "confidence": "SOURCE_VERIFIED",
+      "verifiedSource": {
+        "node": 94,
+        "mesh": 1,
+        "primitives": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "triangles": 224
+      }
+    },
+    {
+      "id": "pen",
+      "names": [
+        "Pen"
+      ],
+      "archive": "EXISTS_IN_6H_WRITE_REPORT",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "RIGID_RIGHT_HAND_SOCKET",
+      "decision": "RECOVERED_INTEGRALLY_SAME_6H_CONTACT_PENDING",
+      "tripo": "NO",
+      "confidence": "SOURCE_VERIFIED",
+      "verifiedSource": {
+        "node": 95,
+        "mesh": 2,
+        "primitives": [
+          0,
+          1
+        ],
+        "triangles": 2936
+      }
+    },
+    {
+      "id": "forehead_star",
+      "names": [
+        "ForeheadStar",
+        "Star"
+      ],
+      "archive": "STAR_ON_FOREHEAD_REPORTED",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "HEAD_SOCKET",
+      "decision": "RECOVERED_ORIGINAL_GROUP_ONLY_C1_FLAT_MARK_UNDER_FRINGE_NOT_SATISFIED",
+      "tripo": "NO",
+      "confidence": "SOURCE_VERIFIED_C1_MISMATCH",
+      "verifiedSource": {
+        "mesh": 0,
+        "primitives": [
+          9,
+          10,
+          11
+        ],
+        "triangles": 864,
+        "uvSets": [],
+        "sourceForm": "three raised stars, fully head-weighted"
+      }
+    },
+    {
+      "id": "ear_ornaments",
+      "names": [
+        "EarCharm_L",
+        "EarCharm_R"
+      ],
+      "archive": "EAR_ACCESSORIES_REPORTED_COLLISIONS",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "EARS_SOCKET",
+      "decision": "RECOVERABLE_PARTS_KEEP_ORIGINAL_WEIGHTS; FIT_PENDING",
+      "tripo": "IF_UNSALVAGEABLE",
+      "confidence": "SOURCE_VERIFIED",
+      "verifiedSource": {
+        "mesh": 0,
+        "primitives": [
+          153,
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180,
+          181,
+          182,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          194,
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219,
+          220,
+          221,
+          222,
+          223,
+          224,
+          225,
+          226,
+          227,
+          228,
+          229,
+          230
+        ],
+        "selection": "phase2c ear cuffs/filigree/chains/ribbons; exclude fur rings 147–152"
+      }
+    },
+    {
+      "id": "bow_brooch",
+      "names": [
+        "Bow",
+        "Brooch"
+      ],
+      "archive": "BOW_AND_LAPELS_REPORTED",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "CHEST_SOCKET",
+      "decision": "RECOVERABLE_PARTS_KEEP_CHEST_BIND; NOT_IN_PILOT",
+      "tripo": "IF_UNSALVAGEABLE",
+      "confidence": "SOURCE_VERIFIED",
+      "verifiedSource": {
+        "mesh": 0,
+        "primitives": [
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          145
+        ]
+      }
+    },
+    {
+      "id": "tail_ribbons",
+      "names": [
+        "TailOrnament",
+        "TailRibbon"
+      ],
+      "archive": "TAIL_AND_BASE_COLLISIONS_REPORTED",
+      "sourceCandidate": "alpha6h",
+      "rigMode": "TAIL_CHAIN",
+      "decision": "KEEP_EXISTING_BACK_WAIST_WEIGHTS; DO_NOT_ASSUME_TAIL_SOCKET",
+      "tripo": "NO_BY_DEFAULT",
+      "confidence": "SOURCE_VERIFIED_BACK_WAIST_RIBBONS",
+      "verifiedSource": {
+        "mesh": 0,
+        "primitives": [
+          272,
+          273
+        ]
+      }
+    },
+    {
+      "id": "headphones",
+      "names": [
+        "Headphones"
+      ],
+      "archive": "2D_MUSIC_VARIANT_NOT_3D_VERIFIED",
+      "sourceCandidate": "2d_music_reference",
+      "rigMode": "HEAD_SOCKET",
+      "decision": "NO_3D_SOURCE_VERIFIED; OUT_OF_PILOT",
+      "tripo": "OPTIONAL",
+      "confidence": "LOW"
+    }
+  ],
+  "inspection": {
+    "required": [
+      "sha256",
+      "nodePath",
+      "meshName",
+      "primitiveCount",
+      "triangleCount",
+      "materials",
+      "images",
+      "uvSets",
+      "skinIndex",
+      "jointNames",
+      "morphTargets",
+      "restMatrix",
+      "worldBounds",
+      "sourceClipNames"
+    ],
+    "statusVocabulary": [
+      "PATH_CONFIRMED",
+      "DOCUMENTED_IN_ARCHIVE",
+      "SOURCE_VERIFIED",
+      "SILHOUETTE_MATCHED",
+      "BONE_BIND_PASSED",
+      "VISUAL_PENDING",
+      "UNSALVAGEABLE",
+      "TRIPO_GENERATED_PENDING_RIG"
+    ],
+    "workProduct": [
+      "model-inventory.json",
+      "mesh-provenance.csv",
+      "sockets.json",
+      "orthos",
+      "collision-matrix.csv",
+      "go-no-go.md"
+    ],
+    "executionResults": "results/",
+    "status": "SOURCE_VERIFIED_WITH_CONTACT_IDENTITY_AND_MOBILE_PENDING"
+  },
+  "executionSourceHead": "d638f6e3a608cf953ffcb0322b41fb0dd051416d"
+}

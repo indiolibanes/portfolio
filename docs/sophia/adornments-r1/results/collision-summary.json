@@ -1,0 +1,159 @@
+{
+  "sourceSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+  "poses": 61,
+  "pairTests": 915,
+  "regionTriangleCounts": {
+    "hands": 2284,
+    "wrists_forearms": 1604,
+    "shoulders": 0,
+    "sleeves": 3806,
+    "cuffs": 1082,
+    "coat": 28524,
+    "collar": 2308,
+    "chin": 13019,
+    "cranium": 32688,
+    "tail": 27648,
+    "body": 23010,
+    "stars": 864,
+    "ear_jewelry": 1936,
+    "ear_ribbons": 384,
+    "mane": 28906,
+    "book": 224,
+    "pages": 72,
+    "pen": 2936
+  },
+  "bodyRegion": "Indexed triangles of body primitives 0 and 261; hands use indexed pelt 261 plus wrist locks; no unused POSITION entries used as collision faces",
+  "method": "numpy glTF LINEAR quaternion slerp + morphs + LBS; Blender BVHTree epsilon=0",
+  "pairs": [
+    {
+      "pair": "hands__book",
+      "status": "SAMPLED",
+      "posesWithCrossing": 49,
+      "maxTrianglePairs": 170,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "hands__pen",
+      "status": "SAMPLED",
+      "posesWithCrossing": 61,
+      "maxTrianglePairs": 286,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "cuffs__book",
+      "status": "SAMPLED",
+      "posesWithCrossing": 60,
+      "maxTrianglePairs": 375,
+      "worstClip": "Point",
+      "worstSeconds": 0.0
+    },
+    {
+      "pair": "pen__book",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "wrists_forearms__sleeves",
+      "status": "SAMPLED",
+      "posesWithCrossing": 12,
+      "maxTrianglePairs": 32,
+      "worstClip": "Write",
+      "worstSeconds": 0.0
+    },
+    {
+      "pair": "shoulders__coat",
+      "status": "REGION_UNRESOLVED",
+      "posesWithCrossing": null,
+      "maxTrianglePairs": null,
+      "worstClip": null,
+      "worstSeconds": null
+    },
+    {
+      "pair": "sleeves__cranium",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "chin__collar",
+      "status": "SAMPLED",
+      "posesWithCrossing": 12,
+      "maxTrianglePairs": 20,
+      "worstClip": "Write",
+      "worstSeconds": 0.0
+    },
+    {
+      "pair": "tail__body",
+      "status": "SAMPLED",
+      "posesWithCrossing": 61,
+      "maxTrianglePairs": 436,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "tail__coat",
+      "status": "SAMPLED",
+      "posesWithCrossing": 61,
+      "maxTrianglePairs": 741,
+      "worstClip": "Walk",
+      "worstSeconds": 0.272727273
+    },
+    {
+      "pair": "stars__cranium",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "cranium__ear_jewelry",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "ear_ribbons__mane",
+      "status": "SAMPLED",
+      "posesWithCrossing": 4,
+      "maxTrianglePairs": 56,
+      "worstClip": "Point",
+      "worstSeconds": 1.309090961
+    },
+    {
+      "pair": "book__chin",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    },
+    {
+      "pair": "pen__chin",
+      "status": "SAMPLED",
+      "posesWithCrossing": 0,
+      "maxTrianglePairs": 0,
+      "worstClip": "REST",
+      "worstSeconds": 0
+    }
+  ],
+  "gate": "CONTACT_FAIL_OR_PENDING; archival defects are retained, not repaired by graph recovery",
+  "limits": [
+    "Sampled triangle crossings only; no continuous collision or containment test",
+    "Hand/sleeve/chin regions selected by documented weight or rest-Y filters, not independent anatomy labels",
+    "Region selections differ from historical audit; triangle-pair counts are not a direct improvement/regression comparison",
+    "No collision-free pose is inferred between samples",
+    "Grip overlap can be intentional but is not silently approved",
+    "Matrices remain source units; source extras declare metres; no separate physical calibration",
+    "Pilot has exactly identical sampled geometry by separate 255-pose Three.js test, so same source collision matrix applies only to this graph-only pilot hash"
+  ]
+}
