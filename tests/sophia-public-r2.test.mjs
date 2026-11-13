@@ -316,3 +316,29 @@ test('root scan follows R2 pagination and only uses a complete deterministic mat
   assert.equal(response.status, 200);
   assert.equal(await response.text(), 'glTF');
 });
+
+
+test('immersive intro restores the original orbital menu and cyberpunk-style start screen', async () => {
+  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  assert.match(file, /import ExperimentalMenu from '\.\.\/\.\.\/components\/ExperimentalMenu\.astro'/);
+  assert.match(file, /<ExperimentalMenu \/>/);
+  assert.match(file, /PRESS ANY KEY TO/);
+  assert.match(file, /immersive__start-main.*START/);
+  assert.match(file, /Roguepunk\.ttf/);
+  assert.match(file, /introStart\.addEventListener\('click', requestStart\)/);
+  assert.match(file, /window\.addEventListener\('keydown'/);
+  assert.match(file, /event\.target\.closest\('a, button, input, select, textarea/);
+  assert.match(file, /phase !== 'intro'/);
+});
+
+test('cinematic approach moves only the astronaut rider while the rocket stays mounted', async () => {
+  const file = await readFile(new URL('../src/pages/experimentos/modo-imersivo.astro', import.meta.url), 'utf8');
+  assert.match(file, /getObjectByName\('Sophia_Astronauta_Rider_Mount'\)/);
+  assert.match(file, /getObjectByName\('Rocket_Flight_Mount'\)/);
+  assert.match(file, /boarding\.rider\.position\.copy\(boarding\.seated\)/);
+  assert.match(file, /playClip\('Andar_R6', true\)/);
+  assert.match(file, /playClip\('Sophia_Foguete_Voo_Esquerda_Ondas_R2', true\)/);
+  assert.match(file, /phase === 'ignite'/);
+  assert.match(file, /reduceMotion\.matches \|\| !boarding/);
+  assert.doesNotMatch(file, /rocket\.position\.(?:x|y|z)|rocket\.translate/);
+});
