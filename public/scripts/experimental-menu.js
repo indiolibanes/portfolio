@@ -143,13 +143,27 @@
     });
   };
 
+  // Keep the Autoral drawer fully on screen even when the menu is beside
+  // the mode emblems in a narrow header. This adjusts only position, never scale.
+  const keepDrawerInView = () => {
+    if (!root.classList.contains('xm-header--authorial')) return;
+    drawer.style.left = '0px';
+    const bounds = drawer.getBoundingClientRect();
+    let shift = Math.min(0, window.innerWidth - 8 - bounds.right);
+    if (bounds.left + shift < 8) shift = 8 - bounds.left;
+    drawer.style.left = shift + 'px';
+  };
+  window.addEventListener('resize', () => {
+    if (drawer.dataset.state === 'open') keepDrawerInView();
+  }, { passive: true });
+
   // ---------------------------------------------------------------- abrir e fechar
   const setOpen = (open, restoreFocus = false) => {
     if ((toggle.getAttribute('aria-expanded') === 'true') === open) return;
     toggle.setAttribute('aria-expanded', String(open));
     drawer.dataset.state = open ? 'open' : 'closed';
     drawer.inert = !open;
-    if (open) play(); else stop();
+    if (open) { keepDrawerInView(); play(); } else stop();
     if (!open && restoreFocus) toggle.focus();
   };
 

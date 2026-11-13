@@ -170,7 +170,7 @@ const showOmega = Astro.url.pathname === '/';
         <span class="serious-omega-node">
           <a class="serious-omega-entry" href="/modo-imersivo/" data-omega-portal aria-label="Ω — Modo Imersivo Experimental. Abrir a experiência tridimensional da Sophia">
             <span class="serious-omega-star" aria-hidden="true"><span class="serious-omega-glyph">Ω</span></span>
-            <span class="serious-omega-caption">MODO IMERSIVO <small>[EXPERIMENTAL]</small></span>
+            
           </a>
         </span>
       </>
@@ -1539,7 +1539,7 @@ const showOmega = Astro.url.pathname === '/';
   /* Ω is a separate fourth Greek entry; α, β, γ remain persistent reading modes. */
   .serious-stage.has-omega {
     width: calc(var(--pitch) * 3 + var(--side));
-    height: calc(var(--side) + 38px);
+    height: var(--side);
   }
   .serious-omega-link {
     position: absolute;
@@ -1616,20 +1616,6 @@ const showOmega = Astro.url.pathname === '/';
     transform: scale(1.13);
     box-shadow: 0 0 14px 6px #c8f5ff, 0 0 38px 16px #54b1ffe0, 0 0 74px 29px #2971e470;
   }
-  .serious-omega-caption {
-    position: absolute;
-    top: calc(100% + 11px);
-    left: 50%;
-    width: 188px;
-    transform: translateX(-50%);
-    color: #b1dfff;
-    font: 800 9px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
-    text-align: center;
-    letter-spacing: .08em;
-    white-space: nowrap;
-    text-shadow: 0 0 12px #5fb6ffc0;
-  }
-  .serious-omega-caption small { display: block; color: #6fa7d6; font-size: 8px; letter-spacing: .13em; }
   @keyframes omega-supergiant-breathe {
     from { filter: brightness(.93) saturate(1.07); transform: scale(.98); }
     to { filter: brightness(1.28) saturate(1.15); transform: scale(1.07); }
@@ -1755,11 +1741,6 @@ const showOmega = Astro.url.pathname === '/';
     58% { opacity: 1; transform: translate(-50%,-50%) scale(9); animation-timing-function: cubic-bezier(.4,0,.6,1); }
     76% { opacity: .62; transform: translate(-50%,-50%) scale(5.2); animation-timing-function: cubic-bezier(.4,0,.8,1); }
     100% { opacity: 0; transform: translate(-50%,-50%) scale(2); }
-  }
-  @media(max-width:560px) {
-    .serious-stage.has-omega { height:calc(var(--side) + 40px); }
-    .serious-omega-caption {font-size:7.5px;width:145px;top:calc(100% + 9px);}
-    .serious-omega-caption small { font-size:7px; }
   }
   @media(prefers-reduced-motion:reduce) {
     .serious-omega-star, .serious-omega-star::before, .serious-omega-star::after {animation:none;}
