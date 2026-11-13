@@ -1,6 +1,7 @@
 ---
 import { PROFILE } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
+import ExperimentalMenu from './ExperimentalMenu.astro';
 
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
 
@@ -77,6 +78,7 @@ const NAV = [
     </a>
 
     <div class="nav-links">
+      <ExperimentalMenu variant="authorial" />
       <button
         class="nav-menu-toggle"
         type="button"
@@ -552,4 +554,42 @@ const NAV = [
     justify-content: flex-end;
   }
   html[data-legacy-mode='true'] .site-header .nav-sections a { display: inline-block !important; }
+
+  /* Authorial delegates navigation to the SAME orbital menu as Immersivo.
+     The old bar remains for Editorial/Legacy and as the no-JS fallback. */
+  html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header :is(.nav-menu-toggle, .nav-sections) {
+    display: none !important;
+  }
+  html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-links {
+    gap: clamp(0.1rem, 0.9vw, 0.65rem);
+    align-items: center;
+  }
+  @media (max-width: 820px) {
+    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell {
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 0.65rem;
+    }
+    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .brand {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-links {
+      flex: 1 1 100%;
+      justify-content: center;
+      min-width: 0;
+      gap: 0;
+    }
+  }
+  @media (max-width: 370px) {
+    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .serious-stage {
+      --side: 36px;
+      --pitch: 48px;
+      margin-left: 0;
+    }
+    html[data-xm-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .xm-header--authorial {
+      flex-basis: 72px;
+      width: 72px;
+    }
+  }
 </style>
