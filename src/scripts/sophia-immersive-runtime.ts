@@ -36,10 +36,15 @@ if(page){
   observer=new ResizeObserver(resize);observer.observe(stage);
   const loader=new GLTFLoader();
   async function loadAstronaut(){if(loading||disposed)return;loading=true;loadFailure=null;const current=++loadIndex;retry.hidden=true;setStatus('Carregando Sophia astronauta e foguete…');
-   try{const url=page!.dataset.astronautUrl||'/api/sophia/rocket',head=await fetch(url,{method:'HEAD',credentials:'omit',redirect:'manual',cache:'no-store',signal:download.signal});
-    if(!head.ok)throw Error(head.status===404?'Modelo da Sophia não encontrado (404).':head.status===503?'Armazenamento da Sophia indisponível (503).':'Modelo público indisponível (HTTP '+head.status+').');
-    if(!head.headers.get('content-type')?.includes('model/gltf-binary'))throw Error('O servidor não retornou um GLB.');
-    const response=await fetch(url,{credentials:'omit',redirect:'error',signal:download.signal});if(!response.ok)throw Error('Falha no download (HTTP '+response.status+').');const bytes=await response.arrayBuffer();if(disposed||current!==loadIndex)return;
+   try{const url=page!.dataset.astronautUrl||'/api/sophia/rocket',response=await fetch(url,{credentials:'omit',redirect:'error',signal:download.signal});
+    if(!response.ok)throw Error(response.status===404?'Modelo da Sophia não encontrado (404).':response.status===503?'Armazenamento da Sophia indisponível (503).':'Modelo público indisponível (HTTP '+response.status+').');
+    if(!response.headers.get('content-type')?.includes('model/gltf-binary')){void response.body?.cancel();throw Error('O servidor não retornou um GLB.');}
+    // One request (no HEAD round trip); the body is streamed so the status shows real progress.
+    const total=response.headers.get('content-encoding')?0:Number(response.headers.get('content-length'))||0,reader=response.body?.getReader();let bytes:ArrayBuffer;
+    if(!reader)bytes=await response.arrayBuffer();
+    else{const chunks:Uint8Array[]=[];let got=0,shown=-1;for(;;){const{done,value}=await reader.read();if(done)break;chunks.push(value);got+=value.byteLength;if(total){const pct=Math.min(99,Math.floor(got/total*100));if(pct!==shown&&(pct-shown>=2||pct===99)){shown=pct;setStatus('Carregando Sophia astronauta e foguete… '+pct+'%');}}if(disposed||current!==loadIndex){void reader.cancel();return;}}
+     const buf=new Uint8Array(got);let at=0;for(const c of chunks){buf.set(c,at);at+=c.byteLength;}chunks.length=0;bytes=buf.buffer;}
+    if(disposed||current!==loadIndex)return;
     const gltf=await loader.parseAsync(bytes,'');
     if(disposed||current!==loadIndex){disposeAstronautAsset(gltf.scene);return;}
     director?.dispose();director=createLaunchDirector(gltf,scene,camera,controls!,()=>motion.matches);gltf.scene.visible=false;resize();setStatus('');if(phase==='waiting')begin();

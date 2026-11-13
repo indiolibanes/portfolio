@@ -27,7 +27,7 @@ test('public GET reads only the exact allowlisted Sophia model', async () => {
   assert.deepEqual(reads, [key]);
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('content-type'), 'model/gltf-binary');
-  assert.equal(response.headers.get('cache-control'), 'public, max-age=3600');
+  assert.equal(response.headers.get('cache-control'), 'public, max-age=86400, stale-while-revalidate=604800');
   assert.equal(response.headers.get('etag'), '"xyz"');
   assert.equal(await response.text(), 'glTF');
 });
@@ -134,10 +134,9 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
 test('public immersive page reports remote 404 and 503 instead of a generic unavailable status', async () => {
   const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
   const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
-  assert.match(file, /method:\s*'HEAD'/);
   assert.match(file, /credentials:\s*'omit'/);
-  assert.match(file, /head.status\s*===\s*404/);
-  assert.match(file, /head.status\s*===\s*503/);
+  assert.match(file, /response.status\s*===\s*404/);
+  assert.match(file, /response.status\s*===\s*503/);
   assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
 });
 
@@ -343,4 +342,49 @@ test('immersive page delegates choreography to the tested launch director', asyn
   assert.match(file, /data-launch-hud/);
   assert.match(file, /visibilitychange/);
   assert.doesNotMatch(file, /setInterval|rocket\.position\.(?:x|y|z)|rocket\.translate/);
+});
+
+// ---- Delivery speed (perf/auditoria-imersivo) -------------------------------------------
+test('delivery: long cache with stale-while-revalidate, still public and same-origin only', async () => {
+  const mock = { async get() { return { size: 4, httpEtag: '"v"', body: new Response('glTF').body }; } };
+  const r = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: mock }, request: new Request('https://x.test/api/sophia/rocket') });
+  assert.equal(r.headers.get('cache-control'), 'public, max-age=86400, stale-while-revalidate=604800');
+  assert.equal(r.headers.get('cross-origin-resource-policy'), 'same-origin');
+  assert.equal(r.headers.get('x-content-type-options'), 'nosniff');
+});
+
+test('delivery: If-None-Match is forwarded to R2 and answered with an empty 304', async () => {
+  let opts;
+  const mock = { async get(_k, o) { opts = o; return { size: 4, httpEtag: '"v"' }; } }; // no body = precondition failed
+  const req = new Request('https://x.test/api/sophia/rocket', { headers: { 'If-None-Match': '"v"' } });
+  const r = await onRequestGet({ env: { SHOREKEEPER_ASSETS_R2: mock }, request: req });
+  assert.equal(opts.onlyIf, req.headers);
+  assert.equal(r.status, 304);
+  assert.equal(r.body, null);
+  assert.equal(r.headers.get('etag'), '"v"');
+  assert.match(r.headers.get('cache-control'), /max-age=86400/);
+});
+
+test('delivery: the resolved key is remembered so later requests skip the fallback listing', async () => {
+  const nested = 'private-assets/sophia/models/Sophia_Astronaut_Rocket_v1.1.glb';
+  const calls = { get: [], list: 0 };
+  const bucket = {
+    async get(k) { calls.get.push(k); return k === nested ? { size: 1, httpEtag: '"n"', body: new Response('g').body } : null; },
+    async list() { calls.list++; return { objects: [], truncated: false }; },
+  };
+  const env = { SHOREKEEPER_ASSETS_R2: bucket };
+  const ok = await onRequestGet({ env, request: new Request('https://x.test/api/sophia/rocket') });
+  assert.equal(ok.status, 200);
+  calls.get.length = 0;
+  await onRequestGet({ env, request: new Request('https://x.test/api/sophia/rocket') });
+  assert.deepEqual(calls.get, [nested], 'second request goes straight to the remembered allowlisted key');
+});
+
+test('immersive loader uses one GET (no HEAD round trip), reports status codes and streams progress', async () => {
+  const src = await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(src, /method:\s*'HEAD'/);
+  assert.match(src, /response\.status\s*===\s*404/);
+  assert.match(src, /response\.status\s*===\s*503/);
+  assert.match(src, /getReader\(\)/);
+  assert.match(src, /credentials:\s*'omit'/);
 });
