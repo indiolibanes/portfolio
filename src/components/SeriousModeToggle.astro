@@ -1,3 +1,7 @@
+---
+// Ω é um portal da página inicial; não altera os três modos de leitura.
+const showOmega = Astro.url.pathname === '/';
+---
 <div
   class="serious-control"
   role="group"
@@ -110,7 +114,7 @@
     </defs>
   </svg>
 
-  <div class="serious-stage" data-mode-stage>
+  <div class:list={["serious-stage", { "has-omega": showOmega }]} data-mode-stage>
     <span class="serious-link" data-mode-link="0" data-lit="true" aria-hidden="true">
       <svg viewBox="0 0 100 16" preserveAspectRatio="none" width="100%" height="100%">
         <path class="serious-link__base" d="M0 8 L100 8"></path>
@@ -160,6 +164,17 @@
         </svg>
       </button>
     </span>
+    {showOmega && (
+      <>
+        <span class="serious-omega-link" aria-hidden="true"></span>
+        <span class="serious-omega-node">
+          <a class="serious-omega-entry" href="/modo-imersivo/" data-omega-portal aria-label="Ω — Modo Imersivo Experimental. Abrir a experiência tridimensional da Sophia">
+            <span class="serious-omega-star" aria-hidden="true"><span class="serious-omega-glyph">Ω</span></span>
+            <span class="serious-omega-caption">MODO IMERSIVO <small>[EXPERIMENTAL]</small></span>
+          </a>
+        </span>
+      </>
+    )}
     <span class="serious-burst" aria-hidden="true" data-mode-burst></span>
     <span class="serious-comet" aria-hidden="true" data-mode-comet>
       <svg viewBox="0 0 88 20" width="100%" height="100%"><polygon points="0,10 72,6.2 72,13.8" fill="url(#serious-trail)"></polygon><path d="M80 1.5 82.5 7.5 88.5 10 82.5 12.5 80 18.5 77.5 12.5 71.5 10 77.5 7.5Z" fill="#fff6d0"></path></svg>
@@ -177,6 +192,13 @@
     <p data-help-row="legacy"><strong>γ · Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
   </div>
 
+  {showOmega && (
+    <div class="serious-omega-transition" data-omega-transition aria-hidden="true">
+      <span class="serious-omega-transition__core"></span>
+      <span class="serious-omega-transition__shock"></span>
+      <span class="serious-omega-transition__flash"></span>
+    </div>
+  )}
   <span class="sr-only" role="status" aria-live="polite" data-mode-status></span>
 </div>
 
@@ -251,6 +273,24 @@
     );
     const links = Array.from(group.querySelectorAll('[data-mode-link]'));
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Ω is a navigation portal, never a fourth persisted reading mode.
+    const omega = group.querySelector('[data-omega-portal]');
+    const omegaTransition = group.querySelector('[data-omega-transition]');
+    let omegaNavigating = false;
+    omega?.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const href = omega.getAttribute('href');
+      if (!href || omegaNavigating) { event.preventDefault(); return; }
+      if (reducedMotion.matches || !omegaTransition) return; // Native link is the accessible fallback.
+      event.preventDefault();
+      omegaNavigating = true;
+      const rect = omega.querySelector('.serious-omega-star').getBoundingClientRect();
+      omegaTransition.style.setProperty('--omega-x', (rect.left + rect.width / 2) + 'px');
+      omegaTransition.style.setProperty('--omega-y', (rect.top + rect.height / 2) + 'px');
+      omegaTransition.classList.add('is-exploding');
+      window.setTimeout(() => { window.location.assign(href); }, 1300);
+    });
+
 
     const normalizeMode = (mode) => (modes.includes(mode) ? mode : 'authorial');
     const nodeFor = (id) => nodes[modes.indexOf(id)];
@@ -1473,4 +1513,164 @@
   :global(html[data-legacy-mode='true']) .serious-art {
     shape-rendering: crispEdges;
   }
+
+  /* Ω is a separate fourth Greek entry; α, β, γ remain persistent reading modes. */
+  .serious-stage.has-omega {
+    width: calc(var(--pitch) * 3 + var(--side));
+    height: calc(var(--side) + 38px);
+  }
+  .serious-omega-link {
+    position: absolute;
+    left: calc(var(--pitch) * 2 + var(--side) + 4px);
+    top: calc(var(--side) / 2 - 2px);
+    width: calc(var(--pitch) - var(--side) - 8px);
+    height: 3px;
+    background: linear-gradient(90deg, rgba(130,192,255,.15), #85cfff, rgba(130,192,255,.8));
+    box-shadow: 0 0 12px #52bfff80;
+    pointer-events: none;
+  }
+  .serious-omega-node {
+    position: absolute;
+    z-index: 4;
+    left: calc(var(--pitch) * 3);
+    top: 0;
+    width: var(--side);
+    height: var(--side);
+  }
+  .serious-omega-entry {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    text-decoration: none;
+    color: #f8fdff;
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .serious-omega-entry:focus-visible { outline: 3px solid #76d9ff; outline-offset: 6px; }
+  .serious-omega-star {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    border-radius: 50%;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 38% 27%, #fff 0 4%, #d6f7ff 10%, #7dd6ff 26%, #2674e4 50%, #092a7b 70%, #020a2a 89%),
+      #071d60;
+    box-shadow: 0 0 9px 4px #90ddff9c, 0 0 25px 9px #3a95ff85, 0 0 48px 15px #1a66df55, inset -9px -8px 19px #050c36;
+    animation: omega-supergiant-breathe 3.1s ease-in-out infinite alternate;
+    transition: transform .4s ease, box-shadow .4s ease;
+  }
+  .serious-omega-star::before {
+    content: "";
+    position: absolute;
+    inset: -16%;
+    border-radius: 50%;
+    background: conic-gradient(from 12deg, transparent 0 10%, #d6f5ffba 16%, transparent 22% 38%, #5eaeff89 47%, transparent 52% 72%, #c8e7ffae 79%, transparent 85%);
+    filter: blur(2px);
+    animation: omega-plasma-spin 6s linear infinite;
+    z-index: -1;
+  }
+  .serious-omega-star::after {
+    content: "";
+    position: absolute;
+    inset: -6%;
+    border-radius: 50%;
+    border: 1px solid rgba(212,246,255,.85);
+    box-shadow: inset 0 0 12px #bbf0ff70, 0 0 17px #59b7ffb8;
+    animation: omega-accretion 1.9s ease-in-out infinite alternate;
+  }
+  .serious-omega-glyph {
+    position: relative;
+    z-index: 2;
+    font: 700 calc(var(--side) * .61)/1 Georgia, 'Times New Roman', serif;
+    color: #f8feff;
+    text-shadow: 0 0 5px white, 0 0 18px #a8e9ff, 0 0 24px #437ef4;
+  }
+  .serious-omega-entry:is(:hover,:focus-visible) .serious-omega-star {
+    transform: scale(1.13);
+    box-shadow: 0 0 14px 6px #c8f5ff, 0 0 38px 16px #54b1ffe0, 0 0 74px 29px #2971e470;
+  }
+  .serious-omega-caption {
+    position: absolute;
+    top: calc(100% + 11px);
+    left: 50%;
+    width: 188px;
+    transform: translateX(-50%);
+    color: #b1dfff;
+    font: 800 9px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-align: center;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    text-shadow: 0 0 12px #5fb6ffc0;
+  }
+  .serious-omega-caption small { display: block; color: #6fa7d6; font-size: 8px; letter-spacing: .13em; }
+  @keyframes omega-supergiant-breathe {
+    from { filter: brightness(.93) saturate(1.07); transform: scale(.98); }
+    to { filter: brightness(1.28) saturate(1.15); transform: scale(1.07); }
+  }
+  @keyframes omega-plasma-spin { to { transform: rotate(360deg); } }
+  @keyframes omega-accretion { from { opacity: .36; transform: scale(.94); } to { opacity: 1; transform: scale(1.13); } }
+
+  .serious-omega-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
+    isolation: isolate;
+    background: #010817;
+  }
+  .serious-omega-transition.is-exploding {
+    visibility: visible;
+    pointer-events: auto;
+    animation: omega-space-fill 1300ms ease-in both;
+  }
+  .serious-omega-transition__core, .serious-omega-transition__shock, .serious-omega-transition__flash {
+    position: absolute;
+    left: var(--omega-x, 50%);
+    top: var(--omega-y, 50%);
+    transform: translate(-50%, -50%) scale(.12);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .serious-omega-transition__core {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #fff 0 13%, #dbfaff 21%, #65b9ff 38%, #175de7 57%, #060e50 79%, transparent 91%);
+    box-shadow: 0 0 70px 20px #80d3ff, 0 0 140px 65px #175aff;
+  }
+  .serious-omega-transition__shock {
+    width: 180px;
+    height: 180px;
+    border: 5px solid #e8faff;
+    box-shadow: 0 0 35px 13px #64beff, inset 0 0 24px #9acbff;
+  }
+  .serious-omega-transition__flash {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, white 0 16%, #bfefff 35%, transparent 73%);
+  }
+  .is-exploding .serious-omega-transition__core { animation: omega-core-supernova 1300ms cubic-bezier(.18,.8,.3,1) both; }
+  .is-exploding .serious-omega-transition__shock { animation: omega-shock-supernova 1300ms ease-out both; }
+  .is-exploding .serious-omega-transition__flash { animation: omega-flash-supernova 1300ms ease-in both; }
+  @keyframes omega-core-supernova { 0% { transform:translate(-50%,-50%) scale(.13); } 24% {transform:translate(-50%,-50%) scale(.08);} 42% {transform:translate(-50%,-50%) scale(1.7);} 100% {transform:translate(-50%,-50%) scale(48);} }
+  @keyframes omega-shock-supernova { 0%,24% {transform:translate(-50%,-50%) scale(.08);opacity:0;} 40% {opacity:1;} 100% {transform:translate(-50%,-50%) scale(60);opacity:0;} }
+  @keyframes omega-flash-supernova { 0%,22% {opacity:0;transform:translate(-50%,-50%) scale(.05);} 55% {opacity:.6;} 100% {opacity:1;transform:translate(-50%,-50%) scale(80);} }
+  @keyframes omega-space-fill { 0% {background:transparent;} 20% {background:#020919;} 100% {background:#edfaff;} }
+  @media(max-width:560px) {
+    .serious-stage.has-omega { height:calc(var(--side) + 40px); }
+    .serious-omega-caption {font-size:7.5px;width:145px;top:calc(100% + 9px);}
+    .serious-omega-caption small { font-size:7px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    .serious-omega-star, .serious-omega-star::before, .serious-omega-star::after {animation:none;}
+    .serious-omega-entry .serious-omega-star {transform:none;}
+    .serious-omega-transition {display:none;}
+  }
+
 </style>
