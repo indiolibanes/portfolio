@@ -27,7 +27,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
         </button>
         <div class="immersive__intro-footer" aria-hidden="true"><span>EST. 2026</span><span>AN INTERACTIVE JOURNEY</span></div>
       </section>
-      <div class="immersive__launch-hud" data-launch-hud hidden aria-live="polite" aria-atomic="true">
+      <div class="immersive__launch-hud" data-launch-hud hidden aria-live="polite" aria-atomic="true" role="status">
         <span class="immersive__launch-label" data-countdown-label>PREPARANDO LANÇAMENTO</span>
         <strong class="immersive__countdown" data-countdown></strong>
       </div>
@@ -85,14 +85,19 @@ const astronautAssetUrl = '/api/sophia/rocket';
   @keyframes sophia-cursor { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
   @media (max-width: 650px) { .immersive__intro-frame, .immersive__intro-footer { font-size: 8px; letter-spacing: .13em; } .immersive__intro-frame { top: 115px; } .immersive__start-preface { letter-spacing: .17em; } .immersive__start-touch { letter-spacing: .1em; } .immersive__status { top: 79%; font-size: 11px; } }
   @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__retry, .immersive__intro, .immersive__start-main { transition: none; } .immersive__start-cursor { animation: none; } }
-  .immersive__launch-hud { position: fixed; z-index: 20; left: 50%; top: 50%; transform: translate(-50%,-50%); display: grid; justify-items:center; text-align:center; gap: 10px; pointer-events: none; }
+  .immersive__launch-hud { position: fixed; z-index: 90; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: grid; align-content: center; justify-items: center; gap: clamp(16px, 3vh, 40px); overflow: hidden; pointer-events: auto; color: #eaf8ff; background: radial-gradient(ellipse 70% 55% at 50% 48%, #17447e 0%, #071b3e 43%, #01050f 100%); text-align: center; isolation: isolate; }
+  .immersive__launch-hud::before { content: ""; position:absolute; inset:-25%; z-index:-1; background: radial-gradient(circle at 50% 50%, transparent 0 19%, rgba(82,187,255,.32) 20%, transparent 20.5% 27%, rgba(132,220,255,.18) 27.5%, transparent 28% 45%, rgba(150,212,255,.12) 45.5%, transparent 46%), conic-gradient(from 40deg at 50% 50%, transparent 0 18%, rgba(96,173,255,.12) 20%, transparent 23% 48%, rgba(150,216,255,.09) 50%, transparent 53% 80%, rgba(104,177,255,.08) 82%, transparent 86%); animation: sophia-count-corona 7s linear infinite; }
+  .immersive__launch-hud::after { content:"";position:absolute;inset:8%;border:1px solid rgba(167,223,255,.14);border-radius:50%;pointer-events:none;box-shadow:0 0 110px rgba(55,148,255,.18),inset 0 0 90px rgba(71,160,255,.08); }
+  @keyframes sophia-count-corona { to { transform:rotate(360deg); } }
+  .immersive__launch-hud[data-counting='true'] .immersive__countdown { text-shadow:0 0 24px rgba(255,255,255,.55),0 0 130px rgba(78,167,255,.75); }
   .immersive__launch-hud[hidden], .immersive__playback[hidden] { display: none; }
-  .immersive__launch-label { color: #96aaeb; font: 600 10px/1.5 ui-monospace, monospace; letter-spacing: .18em; }
-  .immersive__countdown { min-height: 1em; color: #ebb047; font: 400 clamp(80px, 9vw, 128px)/1 "Sophia Roguepunk", sans-serif; text-shadow: 0 0 22px #ebb04720; }
+  .immersive__launch-label { color:#bddfff;font:700 clamp(12px,2vw,20px)/1.5 ui-monospace,monospace;letter-spacing:.32em;padding-inline:20px; }
+  .immersive__countdown { display:block;min-height:1em;color:#ffffff;font:400 min(82vw,76dvh)/.9 "Sophia Roguepunk",Impact,sans-serif;letter-spacing:-.045em;filter:drop-shadow(0 0 40px rgba(90,190,255,.55)); }
   .immersive__playback { position: absolute; z-index: 30; left: max(20px, env(safe-area-inset-left)); bottom: max(20px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
   .immersive__playback button { border: 1px solid #ffffff25; border-radius: 99px; padding: 10px 13px; background: #101014a8; color: #e1e3e9; cursor: pointer; font: 500 11px/1 system-ui, sans-serif; }
   .immersive__playback button:focus-visible { outline: 2px solid #ebb047; outline-offset: 3px; }
-  @media(max-width: 650px) { .immersive__launch-hud { max-width:85vw; } .immersive__launch-label { max-width: 150px; font-size: 8px; } .immersive__countdown { font-size: 80px; } }
+  @media(max-width:650px) { .immersive__launch-label { max-width:95vw;font-size:12px;letter-spacing:.18em; } .immersive__countdown { font-size:min(84vw,67dvh); } }
+  @media(prefers-reduced-motion:reduce) { .immersive__launch-hud::before { animation:none; } }
   .immersive__intro.is-starting .immersive__start { opacity:0; transition:opacity 130ms; pointer-events:none; }
   .immersive__intro.is-starting .immersive__intro-frame, .immersive__intro.is-starting .immersive__intro-footer { opacity:0; }
   .immersive__mute { position:fixed; z-index:72; top:max(22px,env(safe-area-inset-top)); left:max(20px,env(safe-area-inset-left)); border:1px solid #ffffff30; color:#e8e8f0; background:#080a12c0; padding:13px; min-height:44px; border-radius:24px; cursor:pointer; }
