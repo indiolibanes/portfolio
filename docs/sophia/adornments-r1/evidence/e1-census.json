@@ -1,0 +1,127 @@
+{
+ "file": "public/experimental/sophia-7b-e1-latest.glb",
+ "bytes": 17054692,
+ "sha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
+ "asset": {
+  "version": "2.0",
+  "generator": "Tripo"
+ },
+ "extensionsUsed": [
+  "KHR_materials_volume",
+  "FB_ngon_encoding"
+ ],
+ "extensionsRequired": [],
+ "counts": {
+  "scenes": 1,
+  "nodes": 1,
+  "meshes": 1,
+  "skins": 0,
+  "animations": 0,
+  "materials": 1,
+  "textures": 3,
+  "images": 3,
+  "samplers": 3,
+  "accessors": 4,
+  "bufferViews": 7
+ },
+ "sceneRoots": [
+  "tripo_node_15f55fa7-b613-4213-b0d6-424473202e9f"
+ ],
+ "skin": null,
+ "nonJointNodes": [
+  {
+   "index": 0,
+   "name": "tripo_node_15f55fa7-b613-4213-b0d6-424473202e9f",
+   "mesh": 0,
+   "parentChain": []
+  }
+ ],
+ "images": [
+  {
+   "index": 0,
+   "name": "sophia_basecolor.jpg",
+   "mime": "image/jpeg",
+   "bytes": 937585,
+   "sha256": "87222cdb046c420d8ef3491fb1764a0a49b16d47c9412edf1f018eae829392bd"
+  },
+  {
+   "index": 1,
+   "name": "sophia_rm.jpg",
+   "mime": "image/jpeg",
+   "bytes": 600453,
+   "sha256": "f74a39e203b1d44e8ff29371b1014c7c90f554710fc8ef125c176876a1612b82"
+  },
+  {
+   "index": 2,
+   "name": "sophia_normal.png",
+   "mime": "image/png",
+   "bytes": 843940,
+   "sha256": "7ec486ebef2ff2b241ab4972177958ee7104c60622a4ea352c1c396e28b3206e"
+  }
+ ],
+ "textures": [
+  {
+   "index": 0,
+   "source": 0,
+   "sampler": 0
+  },
+  {
+   "index": 1,
+   "source": 1,
+   "sampler": 1
+  },
+  {
+   "index": 2,
+   "source": 2,
+   "sampler": 2
+  }
+ ],
+ "materials": [
+  {
+   "index": 0,
+   "name": "tripo_material_15f55fa7-b613-4213-b0d6-424473202e9f",
+   "baseColorTexture": {
+    "index": 0
+   },
+   "extensions": [],
+   "doubleSided": false
+  }
+ ],
+ "meshes": [
+  {
+   "index": 0,
+   "name": "meshes[0]",
+   "primitiveCount": 1,
+   "totalTriangles": 501780,
+   "totalVertices": 270292,
+   "primitives": [
+    {
+     "index": 0,
+     "material": 0,
+     "materialName": "tripo_material_15f55fa7-b613-4213-b0d6-424473202e9f",
+     "mode": 4,
+     "vertices": 270292,
+     "triangles": 501780,
+     "attributes": [
+      "POSITION",
+      "NORMAL",
+      "TEXCOORD_0"
+     ],
+     "uvSets": 1,
+     "morphTargets": 0,
+     "min": [
+      -0.41911,
+      0,
+      -0.31148
+     ],
+     "max": [
+      0.41911,
+      0.99994,
+      0.31148
+     ]
+    }
+   ]
+  }
+ ],
+ "animations": []
+}

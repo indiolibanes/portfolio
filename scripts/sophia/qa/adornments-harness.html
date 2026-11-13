@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- LOCAL QA HARNESS ONLY. Not under public/ or src/pages/, so it is never routed or deployed.
+     Renders the checked-in sophia-alpha.glb (6H candidate) through the site's own dependency-free
+     WebGL2 renderer, with the ORIGINAL clips, and lets each recovered prop (Book, Pen) be toggled.
+     It never writes to the model, the rig or the clips. -->
+<meta charset="utf-8"><title>Sophia adornments QA harness</title>
+<style>html,body{margin:0;background:#1a1e2b}canvas{display:block;width:900px;height:1100px}</style>
+<canvas id="c" width="900" height="1100"></canvas>
+<script type="module">
+import { Renderer, fetchGLB, hex } from '/public/experimental/gltf-gl.js';
+const canvas = document.getElementById('c');
+const renderer = new Renderer(canvas);
+const model = await renderer.loadModel(await fetchGLB('/public/experimental/sophia-alpha.glb'));
+const sk = model.skeleton, allDraws = model.draws.slice();
+const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
+const env = { sky: hex('#c9d6f5', 0.6), ground: hex('#5a6280', 0.4), d0: norm([-0.4, 0.7, 0.7]), c0: hex('#ffffff', 0.95), d1: norm([0.9, 0.1, 0.4]), c1: hex('#ffb08a', 0.35), pp: [-0.9, 1.5, 1.2], pc: hex('#ffb08a', 0.12), rim: hex('#a9c1ff', 1), rimK: 0.25, exposure: 0.95 };
+const idx = (n) => sk.index[n];
+const nodeOf = (name) => { const i = idx(name); return [sk.world[i * 16 + 12], sk.world[i * 16 + 13], sk.world[i * 16 + 14]]; };
+window.__QA = {
+  info() { return { clips: Object.fromEntries(Object.entries(sk.clips).map(([k, c]) => [k, c.duration])), draws: allDraws.length, bookNode: idx('Book'), penNode: idx('Pen'), joints: sk.joints.length }; },
+  // opts: { clip, time, yaw, props: {Book, Pen}, focus: 'body'|'head'|'props', dist, fov }
+  shot(o = {}) {
+    const { clip = 'Idle', time = 0, yaw = 0, props = { Book: true, Pen: true }, focus = 'body', dist, fov = 30 } = o;
+    model.draws = allDraws.filter((d) => !((sk.names[d.node] === 'Book' && !props.Book) || (sk.names[d.node] === 'Pen' && !props.Pen)));
+    sk.evaluate([{ clip: sk.clips[clip], time, weight: 1, loop: false }]);
+    sk.updateWorld(); sk.updateSkin();
+    let t = [0, 0.5, 0], d = dist ?? 2.6;
+    if (focus === 'head') { t = nodeOf('head'); t[1] += 0.09; d = dist ?? 0.6; }
+    if (focus === 'props') { const a = nodeOf('Book'), b = nodeOf('Pen'); t = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2]; d = dist ?? 0.8; }
+    // yaw rotates the character about world Y at the origin; aim the camera at the target after that rotation
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), tx = t[0] * cy + t[2] * sy, tz = -t[0] * sy + t[2] * cy;
+    renderer.setSize(900, 1100, 1);
+    renderer.render(model, { x: 0, y: 0, z: 0, yaw, scale: 1 }, { fov: (fov * Math.PI) / 180, x: tx, y: t[1], dist: d + tz, tx: 0, ty: 0 }, env, { rx: 0.26, rz: 0.2, alpha: 0.35 });
+    return { target: t, morphWeights: Array.from(sk.morphWeights) };
+  },
+};
+document.documentElement.dataset.ready = '1';
+</script>

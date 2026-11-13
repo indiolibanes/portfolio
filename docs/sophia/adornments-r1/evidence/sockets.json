@@ -1,0 +1,258 @@
+{
+ "schema": "sophia-sockets/v1",
+ "source": {
+  "file": "public/experimental/sophia-alpha.glb",
+  "sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a"
+ },
+ "status": "DERIVED_FROM_REAL_NODES_NO_SOCKET_NODES_EXIST_IN_GLB",
+ "note": "Book and Pen are direct non-joint children of the hand joints. There is no Socket_* node in the GLB; the Socket_* names below are PROPOSED aliases and nothing was created. Local TRS is animated by every clip (Write has 97 keys), so any harness must keep playing a clip and must not re-parent the nodes.",
+ "units": "meters, glTF right-handed, +Y up, +Z forward",
+ "sockets": [
+  {
+   "id": "notebook",
+   "node": "Book",
+   "nodeIndex": 94,
+   "parentJoint": "hand_L",
+   "parentChain": [
+    "Book",
+    "hand_L",
+    "forearm_L",
+    "upper_arm_L",
+    "clavicle_L",
+    "chest",
+    "spine",
+    "hips",
+    "root"
+   ],
+   "proposedAlias": "Socket_Hand_L_Notebook",
+   "restLocalMm": [
+    -53.83,
+    -103.54,
+    -105.03
+   ],
+   "restLocalQuaternionXYZW": [
+    -0.90001,
+    -0.30961,
+    -0.19724,
+    0.23498
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "animatedChannels": {
+    "Idle": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Write": {
+     "Book": [
+      "translation[97 keys]",
+      "rotation[97 keys]"
+     ],
+     "Pen": [
+      "rotation[97 keys]",
+      "translation[97 keys]"
+     ]
+    },
+    "Point": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Wave": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Walk": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    }
+   },
+   "localBoundsMm": {
+    "min": [
+     -97,
+     -81.75,
+     -49.84
+    ],
+    "max": [
+     97,
+     81.75,
+     9.3
+    ]
+   },
+   "primitives": 5,
+   "triangles": 224,
+   "materials": [
+    {
+     "material": "Sophia_cover",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_navybook",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_pages",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_gold",
+     "alsoUsedByBodyPrimitives": 72
+    },
+    {
+     "material": "Sophia_gold",
+     "alsoUsedByBodyPrimitives": 72
+    }
+   ]
+  },
+  {
+   "id": "pen",
+   "node": "Pen",
+   "nodeIndex": 95,
+   "parentJoint": "hand_R",
+   "parentChain": [
+    "Pen",
+    "hand_R",
+    "forearm_R",
+    "upper_arm_R",
+    "clavicle_R",
+    "chest",
+    "spine",
+    "hips",
+    "root"
+   ],
+   "proposedAlias": "Socket_Hand_R_Pen",
+   "restLocalMm": [
+    0,
+    -24.78,
+    0
+   ],
+   "scale": [
+    0.75,
+    0.75,
+    0.75
+   ],
+   "animatedChannels": {
+    "Idle": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Write": {
+     "Book": [
+      "translation[97 keys]",
+      "rotation[97 keys]"
+     ],
+     "Pen": [
+      "rotation[97 keys]",
+      "translation[97 keys]"
+     ]
+    },
+    "Point": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Wave": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    },
+    "Walk": {
+     "Book": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ],
+     "Pen": [
+      "translation[2 keys]",
+      "rotation[2 keys]"
+     ]
+    }
+   },
+   "localBoundsMm": {
+    "min": [
+     -16.99,
+     -100.3,
+     -16.99
+    ],
+    "max": [
+     18.12,
+     115.29,
+     16.99
+    ]
+   },
+   "nibVertexLocalMm": [
+    0.47,
+    -100.3,
+    0
+   ],
+   "primitives": 2,
+   "triangles": 2936,
+   "materials": [
+    {
+     "material": "Sophia_pen",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_gem",
+     "alsoUsedByBodyPrimitives": 8
+    }
+   ]
+  }
+ ],
+ "skeletonChainsForOtherOrnaments": "see node Sophia extras.sophia.chains in the GLB: earrib_L/R(5), earlink_L/R(3), earrib2, sashF_A/B(5), sashB_A/B(5), bow_L/R(4), charm(4), tail(7). All are joints of the single 101-joint skin.",
+ "bindWarning": [
+  "clavicle_L",
+  "upper_arm_L",
+  "forearm_L",
+  "hand_L",
+  "fingers_L",
+  "thumb_L",
+  "clavicle_R",
+  "upper_arm_R",
+  "forearm_R",
+  "hand_R",
+  "fingers_R",
+  "thumb_R"
+ ]
+}
