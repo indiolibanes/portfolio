@@ -1,5 +1,8 @@
 # Sophia R1.C — Contrato QA
 
+> **CORREÇÃO AUTORAL PRIORITÁRIA (2026-11-13):** o alvo desta recuperação é a **Sophia RAPOSINHA / mascote celestial**, **não** a Sophia anime antropomórfica C1. O gate `IDENTITY_BLOCKED` por divergência com rosto/franja/proporções anime utilizou a referência errada e está **SUPERSEDED_WRONG_TARGET**. Consulte obrigatoriamente [`OWNER-CORRECTION-FOX-SOPHIA.md`](OWNER-CORRECTION-FOX-SOPHIA.md) antes das instruções históricas abaixo. As fontes 6H/7B/R5/R6 são candidatas da **raposinha**, e a falta de R2/WebView bloqueia somente a verificação REMOTA, não impede estudo não destrutivo sobre a 6H verificável. Não solicitar `Sophia_v1.1.glb` anime nem master anime como pré-requisito da R1.C.1. Reavaliar a identidade com a **arte 2D da raposinha**, sem aprovação artística automática.
+
+
 ## Verificações obrigatórias
 - **G0 Proveniência:** SHA dos GLBs fonte/piloto, nó, primitiva, UV e material dos objetos que sofrerem alterações. Fonte e BIN 6H originais imutáveis; modificações como derivado com novos hashes.
 - **G1 Identidade:** comparar C1 2D/ortos reais. Marca dourada única plana no tecido cutâneo sob franja. Se 6H continuar divergente de rosto, cabelo ou proporção, marcar `C1_IDENTITY_PARTIAL`, sem promover a personagem.
