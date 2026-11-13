@@ -1,6 +1,6 @@
 {
   "schema": "sophia-adornment-recovery-r1",
-  "status": "SOURCE_LOCK_PENDING_PILOT_REPORTED_NOT_DELIVERED",
+  "status": "SOURCE_VERIFIED_ALPHA_6H_WORK_PILOT_UNAVAILABLE",
   "evidenceRule": "documented-in-archive does not mean node verified in checked-out GLB",
   "primaryTarget": "Sophia authorial (lab), not Sophia astronaut R3",
   "sources": [
@@ -8,18 +8,22 @@
       "id": "alpha6h",
       "uri": "public/experimental/sophia-alpha.glb",
       "reportedType": "legacy 6H alpha rigged",
-      "sha256": null,
-      "verifiedNodes": [],
-      "sourceState": "PATH_CONFIRMED_BINARY_UNINSPECTED",
-      "archivedEquivalent": "UNVERIFIED"
+      "sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+      "verifiedNodes": [
+        "Sophia (mesh 0, 279 prims)",
+        "Book (node 94, hand_L)",
+        "Pen (node 95, hand_R)"
+      ],
+      "sourceState": "SOURCE_VERIFIED_HASH_EQUALS_ARCHIVED_6H_CANDIDATE",
+      "archivedEquivalent": "HASH_MATCH_AGAINST_PRESERVED_REPORT_ARCHIVED_BINARY_NOT_AVAILABLE"
     },
     {
       "id": "e1",
       "uri": "public/experimental/sophia-7b-e1-latest.glb",
       "reportedType": "7B E1 textured unrigged",
-      "sha256": null,
+      "sha256": "b0f2c2e9106768b74b0582a703cf5b1c4d4ac2aac57b461ddc22f5696791c53a",
       "verifiedNodes": [],
-      "sourceState": "PATH_CONFIRMED_GLTF_CONTENTS_UNINSPECTED"
+      "sourceState": "SOURCE_VERIFIED_SINGLE_UNRIGGED_TRIPO_MESH_501780_TRIS"
     },
     {
       "id": "astronaut",
@@ -39,46 +43,46 @@
         "Sleeve_L",
         "Sleeve_R"
       ],
-      "archive": "INCOMPLETE_6H",
+      "archive": "AUDITED_PRIMS_4_5_127_130_PLUS_TRIM",
       "sourceCandidate": "alpha6h",
       "rigMode": "SKIN_TO_EXISTING_BONES",
-      "decision": "INSPECT_THEN_REPAIR",
+      "decision": "RECOVER_AND_REPAIR_WEIGHTS_SHOULDER_AND_CUFF",
       "tripo": "IF_UNSALVAGEABLE",
-      "confidence": "LOW"
+      "confidence": "MEDIUM_STRUCTURAL"
     },
     {
       "id": "notebook",
       "names": [
         "Book"
       ],
-      "archive": "EXISTS_IN_6H_WRITE_REPORT",
+      "archive": "VERIFIED_IN_GLB_NODE_94_PARENT_hand_L",
       "sourceCandidate": "alpha6h",
       "rigMode": "RIGID_LEFT_HAND_SOCKET",
       "decision": "SALVAGE_FIRST",
       "tripo": "NO",
-      "confidence": "MEDIUM_DOCUMENT_ONLY"
+      "confidence": "HIGH_STRUCTURAL_VISUAL_PENDING"
     },
     {
       "id": "pen",
       "names": [
         "Pen"
       ],
-      "archive": "EXISTS_IN_6H_WRITE_REPORT",
+      "archive": "VERIFIED_IN_GLB_NODE_95_PARENT_hand_R",
       "sourceCandidate": "alpha6h",
       "rigMode": "RIGID_RIGHT_HAND_SOCKET",
       "decision": "SALVAGE_FIRST",
       "tripo": "NO",
-      "confidence": "MEDIUM_DOCUMENT_ONLY"
+      "confidence": "HIGH_STRUCTURAL_VISUAL_PENDING"
     },
     {
       "id": "forehead_star",
       "names": [
         "C1_Forehead_Skin_Mark"
       ],
-      "archive": "6H_ARCHIVE_HAS_THREE_RAISED_STARS_NOT_C1_FLAT_MARK",
+      "archive": "VERIFIED_THREE_RAISED_STARS_PRIMS_9_10_11_NOT_C1",
       "sourceCandidate": "alpha6h",
       "rigMode": "SKIN_SURFACE_TEXTURE_OR_CONFORMAL_MARK_UNDER_FRINGE",
-      "decision": "DO_NOT_REUSE_RAISED_STARS; C1_IDENTITY_GATE_BEFORE_IMPLEMENTATION",
+      "decision": "DO_NOT_REUSE_RAISED_STARS; STAR_IDENTITY_PENDING (skull has no UV, 6.5 mm vertex spacing, no fringe in front, C1 reference image missing)",
       "tripo": "NO",
       "confidence": "C1_REQUIREMENT_CONFIRMED_SOURCE_GEOMETRY_PENDING"
     },
@@ -185,6 +189,13 @@
       "REPRODUCIBLE_POSE_TESTS",
       "REAL_GLTF_RENDER_AND_IDENTITY_GATE"
     ],
-    "c1Correction": "The single small golden four-point mark is on forehead SKIN under opaque fringe, not a raised hair ornament or three stars."
+    "c1Correction": "The single small golden four-point mark is on forehead SKIN under opaque fringe, not a raised hair ornament or three stars.",
+    "claudeVerification": {
+      "date": "2026-11-13",
+      "status": "SOURCE_UNAVAILABLE",
+      "foundInRepoBranchesPrsActionsContainer": false,
+      "independentVerification": "docs/sophia/adornments-r1/r1b-provenance-report.md",
+      "evidence": "docs/sophia/adornments-r1/evidence/"
+    }
   }
 }

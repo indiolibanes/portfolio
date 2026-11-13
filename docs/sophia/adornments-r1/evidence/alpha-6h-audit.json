@@ -1,0 +1,917 @@
+{
+ "file": "public/experimental/sophia-alpha.glb",
+ "sha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+ "method": "structural, vertex-level, linear algebra; not visual, not triangle-triangle collision",
+ "bindIntegrity": {
+  "joints": 101,
+  "jointsBoundToNodeRestPose": 89,
+  "jointsWhereBindPoseDiffersFromNodeRestPose": 12,
+  "maxAbsDeviationFromIdentity": 1.389,
+  "offJoints": [
+   [
+    "clavicle_L",
+    0.707
+   ],
+   [
+    "upper_arm_L",
+    0.913
+   ],
+   [
+    "forearm_L",
+    0.938
+   ],
+   [
+    "hand_L",
+    1.199
+   ],
+   [
+    "fingers_L",
+    1.199
+   ],
+   [
+    "thumb_L",
+    1.199
+   ],
+   [
+    "clavicle_R",
+    0.707
+   ],
+   [
+    "upper_arm_R",
+    0.992
+   ],
+   [
+    "forearm_R",
+    1.389
+   ],
+   [
+    "hand_R",
+    0.551
+   ],
+   [
+    "fingers_R",
+    0.551
+   ],
+   [
+    "thumb_R",
+    0.551
+   ]
+  ],
+  "note": "world(node rest) x inverseBind should be identity when the skin is bound to the node rest pose. Here the two arm chains (clavicle..thumb, both sides) are bound in a different pose than their node rest rotations, so a static node-rest display of the arms would not match the skinned mesh: always play a clip. Per the archived 6H report the nodes, skins and IBM are identical to 6G, i.e. inherited."
+ },
+ "attachment": {
+  "Book": {
+   "nodePath": [
+    "Book",
+    "hand_L",
+    "forearm_L",
+    "upper_arm_L",
+    "clavicle_L",
+    "chest",
+    "spine",
+    "hips",
+    "root"
+   ],
+   "restLocal": {
+    "t": [
+     -53.83,
+     -103.54,
+     -105.03
+    ],
+    "q": [
+     -0.90001,
+     -0.30961,
+     -0.19724,
+     0.23498
+    ],
+    "unit": "mm / quaternion xyzw"
+   },
+   "primitives": 5,
+   "triangles": 224,
+   "uvSetsPerPrimitive": [
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   "localBoundsMm": {
+    "min": [
+     -97,
+     -81.75,
+     -49.84
+    ],
+    "max": [
+     97,
+     81.75,
+     9.3
+    ]
+   },
+   "materials": [
+    {
+     "material": "Sophia_cover",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_navybook",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_pages",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_gold",
+     "alsoUsedByBodyPrimitives": 72
+    },
+    {
+     "material": "Sophia_gold",
+     "alsoUsedByBodyPrimitives": 72
+    }
+   ],
+   "isSkinned": false,
+   "morphTargets": 0
+  },
+  "Pen": {
+   "nodePath": [
+    "Pen",
+    "hand_R",
+    "forearm_R",
+    "upper_arm_R",
+    "clavicle_R",
+    "chest",
+    "spine",
+    "hips",
+    "root"
+   ],
+   "restLocal": {
+    "t": [
+     0,
+     -24.78,
+     0
+    ],
+    "s": [
+     0.75,
+     0.75,
+     0.75
+    ],
+    "unit": "mm"
+   },
+   "primitives": 2,
+   "triangles": 2936,
+   "localBoundsMm": {
+    "min": [
+     -16.99,
+     -100.3,
+     -16.99
+    ],
+    "max": [
+     18.12,
+     115.29,
+     16.99
+    ]
+   },
+   "materials": [
+    {
+     "material": "Sophia_pen",
+     "alsoUsedByBodyPrimitives": 0
+    },
+    {
+     "material": "Sophia_gem",
+     "alsoUsedByBodyPrimitives": 8
+    }
+   ],
+   "isSkinned": false,
+   "nibVertexLocalMm": [
+    0.47,
+    -100.3,
+    0
+   ]
+  },
+  "clipChannelsOnProps": {
+   "Idle": {
+    "Book": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ],
+    "Pen": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ]
+   },
+   "Write": {
+    "Book": [
+     "translation[97 keys]",
+     "rotation[97 keys]"
+    ],
+    "Pen": [
+     "rotation[97 keys]",
+     "translation[97 keys]"
+    ]
+   },
+   "Point": {
+    "Book": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ],
+    "Pen": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ]
+   },
+   "Wave": {
+    "Book": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ],
+    "Pen": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ]
+   },
+   "Walk": {
+    "Book": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ],
+    "Pen": [
+     "translation[2 keys]",
+     "rotation[2 keys]"
+    ]
+   }
+  },
+  "sockets": "No dedicated socket nodes exist in the GLB: Book/Pen are direct non-joint children of hand_L/hand_R. Their local TRS is animated by every clip."
+ },
+ "contactMethod": "triangle-triangle SAT on skinned vertices (hands = triangles whose 3 vertices are >50% on hand/fingers/thumb; garment = coat, lining, lapels, gold garment trim, navy cloth). Sampled poses only; counts are pairs, comparable in kind (not in exact number) to the archived 6H audit, whose triangle subsets and sample instants are unknown.",
+ "contact": [
+  {
+   "clip": "Write",
+   "samples": 49,
+   "nibToBookSurfaceMm": {
+    "min": 0.66,
+    "max": 0.72
+   },
+   "pairs": {
+    "handsXBook": {
+     "samplesWithAny": 0,
+     "max": 0,
+     "L": 0,
+     "R": 0
+    },
+    "garmentXBook": {
+     "samplesWithAny": 49,
+     "max": 78
+    },
+    "penXBook": {
+     "samplesWithAny": 0,
+     "max": 0
+    },
+    "handsXPen": {
+     "samplesWithAny": 49,
+     "max": 134
+    },
+    "garmentXPen": {
+     "samplesWithAny": 49,
+     "max": 490
+    }
+   }
+  },
+  {
+   "clip": "Idle",
+   "samples": 5,
+   "nibToBookSurfaceMm": {
+    "min": 31.42,
+    "max": 32.99
+   },
+   "pairs": {
+    "handsXBook": {
+     "samplesWithAny": 5,
+     "max": 96,
+     "L": 52,
+     "R": 44
+    },
+    "garmentXBook": {
+     "samplesWithAny": 5,
+     "max": 1372
+    },
+    "penXBook": {
+     "samplesWithAny": 0,
+     "max": 0
+    },
+    "handsXPen": {
+     "samplesWithAny": 5,
+     "max": 121
+    },
+    "garmentXPen": {
+     "samplesWithAny": 0,
+     "max": 0
+    }
+   }
+  },
+  {
+   "clip": "Wave",
+   "samples": 7,
+   "nibToBookSurfaceMm": {
+    "min": 207.5,
+    "max": 238.49
+   },
+   "pairs": {
+    "handsXBook": {
+     "samplesWithAny": 7,
+     "max": 52,
+     "L": 52,
+     "R": 0
+    },
+    "garmentXBook": {
+     "samplesWithAny": 7,
+     "max": 1037
+    },
+    "penXBook": {
+     "samplesWithAny": 0,
+     "max": 0
+    },
+    "handsXPen": {
+     "samplesWithAny": 7,
+     "max": 1081
+    },
+    "garmentXPen": {
+     "samplesWithAny": 0,
+     "max": 0
+    }
+   }
+  },
+  {
+   "clip": "Point",
+   "samples": 7,
+   "nibToBookSurfaceMm": {
+    "min": 215.39,
+    "max": 215.62
+   },
+   "pairs": {
+    "handsXBook": {
+     "samplesWithAny": 7,
+     "max": 52,
+     "L": 52,
+     "R": 0
+    },
+    "garmentXBook": {
+     "samplesWithAny": 7,
+     "max": 2610
+    },
+    "penXBook": {
+     "samplesWithAny": 0,
+     "max": 0
+    },
+    "handsXPen": {
+     "samplesWithAny": 7,
+     "max": 681
+    },
+    "garmentXPen": {
+     "samplesWithAny": 0,
+     "max": 0
+    }
+   }
+  },
+  {
+   "clip": "Walk",
+   "samples": 5,
+   "nibToBookSurfaceMm": {
+    "min": 55.33,
+    "max": 229.79
+   },
+   "pairs": {
+    "handsXBook": {
+     "samplesWithAny": 5,
+     "max": 52,
+     "L": 52,
+     "R": 0
+    },
+    "garmentXBook": {
+     "samplesWithAny": 5,
+     "max": 1269
+    },
+    "penXBook": {
+     "samplesWithAny": 0,
+     "max": 0
+    },
+    "handsXPen": {
+     "samplesWithAny": 5,
+     "max": 681
+    },
+    "garmentXPen": {
+     "samplesWithAny": 5,
+     "max": 412
+    }
+   }
+  }
+ ],
+ "forehead": {
+  "archivedRaisedStars": [
+   {
+    "primitive": 9,
+    "material": "Sophia_gold",
+    "triangles": 288,
+    "uvSets": 0,
+    "hasMorphTargets": 4,
+    "sizeMm": [
+     15.6,
+     21,
+     16.39
+    ],
+    "centerMm": [
+     0,
+     751.5,
+     100.63
+    ]
+   },
+   {
+    "primitive": 10,
+    "material": "Sophia_gold",
+    "triangles": 288,
+    "uvSets": 0,
+    "hasMorphTargets": 4,
+    "sizeMm": [
+     62,
+     89,
+     32.23
+    ],
+    "centerMm": [
+     0,
+     696.5,
+     125.24
+    ]
+   },
+   {
+    "primitive": 11,
+    "material": "Sophia_gold",
+    "triangles": 288,
+    "uvSets": 0,
+    "hasMorphTargets": 4,
+    "sizeMm": [
+     10.8,
+     15.5,
+     4.97
+    ],
+    "centerMm": [
+     0,
+     641.75,
+     144.22
+    ]
+   }
+  ],
+  "verdictOnRaisedStars": "Three separate head-bound solid gold primitives of 288 triangles each, no UV, with 4 morph targets; the largest is ~62 x 89 x 32 mm. They are raised geometry, not a flat skin mark.",
+  "skullPrimitive": {
+   "index": 274,
+   "material": "Sophia_fur",
+   "triangles": 32688,
+   "uvSets": 0,
+   "hasCOLOR_0": true,
+   "nonWhiteVertexColors": 16417,
+   "vertexCount": 16417,
+   "materialBaseColorTexture": null
+  },
+  "skullVertexDensityNearMainStar": {
+   "radiusMm": 35,
+   "vertices": 165,
+   "edgeLengthMm": {
+    "median": 6.46,
+    "p10": 3.7,
+    "p90": 7.59
+   }
+  },
+  "occlusionColumnsRestPose": {
+   "note": "front-to-back primitives met by a ray along -z at x=0 (and x=±15 mm) for several heights; primitives 275/278 are fringe/mane hair, 274 skull skin, 9-11 the raised stars",
+   "x0": {
+    "y630mm": [
+     {
+      "primitive": 274,
+      "zMm": 148.47
+     },
+     {
+      "primitive": 278,
+      "zMm": -122.97
+     },
+     {
+      "primitive": 274,
+      "zMm": -125.74
+     },
+     {
+      "primitive": 278,
+      "zMm": -144.66
+     }
+    ],
+    "y650mm": [
+     {
+      "primitive": 274,
+      "zMm": 140.99
+     },
+     {
+      "primitive": 278,
+      "zMm": -119.8
+     },
+     {
+      "primitive": 274,
+      "zMm": -131.78
+     },
+     {
+      "primitive": 278,
+      "zMm": -142.38
+     }
+    ],
+    "y670mm": [
+     {
+      "primitive": 10,
+      "zMm": 137.99
+     },
+     {
+      "primitive": 10,
+      "zMm": 137.99
+     },
+     {
+      "primitive": 274,
+      "zMm": 136.14
+     },
+     {
+      "primitive": 278,
+      "zMm": -116.48
+     },
+     {
+      "primitive": 274,
+      "zMm": -131.76
+     }
+    ],
+    "y690mm": [
+     {
+      "primitive": 10,
+      "zMm": 135.24
+     },
+     {
+      "primitive": 10,
+      "zMm": 135.24
+     },
+     {
+      "primitive": 274,
+      "zMm": 132.23
+     },
+     {
+      "primitive": 278,
+      "zMm": -111.38
+     },
+     {
+      "primitive": 274,
+      "zMm": -129.17
+     }
+    ],
+    "y710mm": [
+     {
+      "primitive": 10,
+      "zMm": 128.59
+     },
+     {
+      "primitive": 10,
+      "zMm": 128.59
+     },
+     {
+      "primitive": 274,
+      "zMm": 125.69
+     },
+     {
+      "primitive": 278,
+      "zMm": -113.5
+     },
+     {
+      "primitive": 278,
+      "zMm": -120.29
+     }
+    ],
+    "y730mm": [
+     {
+      "primitive": 10,
+      "zMm": 117.19
+     },
+     {
+      "primitive": 10,
+      "zMm": 117.19
+     },
+     {
+      "primitive": 274,
+      "zMm": 115.62
+     },
+     {
+      "primitive": 274,
+      "zMm": -115.34
+     }
+    ]
+   },
+   "xPlus15": {
+    "y650mm": [
+     {
+      "primitive": 274,
+      "zMm": 139.47
+     },
+     {
+      "primitive": 278,
+      "zMm": -119.45
+     },
+     {
+      "primitive": 274,
+      "zMm": -131.01
+     },
+     {
+      "primitive": 278,
+      "zMm": -143.76
+     }
+    ],
+    "y690mm": [
+     {
+      "primitive": 274,
+      "zMm": 131.57
+     },
+     {
+      "primitive": 278,
+      "zMm": -110.82
+     },
+     {
+      "primitive": 274,
+      "zMm": -128.84
+     },
+     {
+      "primitive": 278,
+      "zMm": -133.86
+     }
+    ],
+    "y730mm": [
+     {
+      "primitive": 274,
+      "zMm": 114.85
+     },
+     {
+      "primitive": 274,
+      "zMm": -114.7
+     }
+    ]
+   }
+  }
+ },
+ "coat": {
+  "primitives": {
+   "coat": 4,
+   "lining": 5,
+   "lapels": [
+    127,
+    130
+   ],
+   "goldGarmentTrim": 86
+  },
+  "coatMesh": {
+   "vertices": 8224,
+   "triangles": 13466,
+   "yRangeMm": [
+    93.85,
+    520
+   ],
+   "uvSets": 1,
+   "texture": {
+    "image": "coat",
+    "pixels": [
+     2048,
+     2048
+    ]
+   },
+   "liningTexture": {
+    "pixels": [
+     2048,
+     2048
+    ]
+   },
+   "doubleSided": false
+  },
+  "uv": {
+   "outsideUnitSquareVertices": 0,
+   "degenerateTriangles": 0,
+   "positiveWinding": 6733,
+   "negativeWinding": 6733,
+   "mirroredLayout": true,
+   "uvToGeometryAreaRatio": 2.5043,
+   "note": "a mixed winding means mirrored UV islands (shared texture halves); not an error by itself"
+  },
+  "skinning": {
+   "vertices": 8224,
+   "influenceHistogram": {
+    "0": 0,
+    "1": 1554,
+    "2": 2522,
+    "3": 1588,
+    "4": 2560
+   },
+   "weightShareByJointFamily": {
+    "thigh": 0.106,
+    "hips": 0.124,
+    "spine": 0.101,
+    "chest": 0.318,
+    "neck": 0.027,
+    "upper_arm": 0.21,
+    "forearm": 0.114
+   }
+  },
+  "regions": [
+   {
+    "region": "shoulder_L (sleeve vertices)",
+    "radiusMm": 70,
+    "vertices": 696,
+    "hardBoundFraction": 0.503,
+    "meanInfluences": 1.51,
+    "weightShareByJoint": {
+     "upper_arm": 0.86,
+     "root": 0,
+     "chest": 0.14
+    }
+   },
+   {
+    "region": "elbow_L (sleeve vertices)",
+    "radiusMm": 60,
+    "vertices": 326,
+    "hardBoundFraction": 0.212,
+    "meanInfluences": 1.9,
+    "weightShareByJoint": {
+     "upper_arm": 0.497,
+     "forearm": 0.503,
+     "root": 0
+    }
+   },
+   {
+    "region": "shoulder_R (sleeve vertices)",
+    "radiusMm": 70,
+    "vertices": 696,
+    "hardBoundFraction": 0.503,
+    "meanInfluences": 1.51,
+    "weightShareByJoint": {
+     "upper_arm": 0.86,
+     "root": 0,
+     "chest": 0.14
+    }
+   },
+   {
+    "region": "elbow_R (sleeve vertices)",
+    "radiusMm": 60,
+    "vertices": 326,
+    "hardBoundFraction": 0.212,
+    "meanInfluences": 1.9,
+    "weightShareByJoint": {
+     "upper_arm": 0.497,
+     "forearm": 0.503,
+     "root": 0
+    }
+   },
+   {
+    "region": "collar band (top 25 mm)",
+    "vertices": 390,
+    "hardBoundFraction": 0,
+    "meanInfluences": 2,
+    "weightShareByJoint": {
+     "chest": 0.634,
+     "neck": 0.319,
+     "root": 0,
+     "spine": 0,
+     "upper_arm": 0.046
+    }
+   },
+   {
+    "region": "hem band (bottom 30 mm)",
+    "vertices": 350,
+    "hardBoundFraction": 0,
+    "meanInfluences": 3.29,
+    "weightShareByJoint": {
+     "thigh": 0.653,
+     "hips": 0.34,
+     "spine": 0.007,
+     "chest": 0
+    }
+   }
+  ],
+  "sleeveEnd": [
+   {
+    "side": "L",
+    "forearmLengthMm": 105.02,
+    "sleeveVerticesOnForearm": 481,
+    "sleeveEndAlongForearmAxisMm": 84.57,
+    "cuffToWristJointMm": 20.45,
+    "verticesInLast20mm_hardBoundToOneJoint": 97
+   },
+   {
+    "side": "R",
+    "forearmLengthMm": 105.02,
+    "sleeveVerticesOnForearm": 481,
+    "sleeveEndAlongForearmAxisMm": 84.57,
+    "cuffToWristJointMm": 20.45,
+    "verticesInLast20mm_hardBoundToOneJoint": 97
+   }
+  ],
+  "blendWidths": [
+   {
+    "segment": "upper_arm->forearm (L)",
+    "segmentLengthMm": 118.85,
+    "transitionVertices": 225,
+    "transitionAxialWidthMm": 55.41,
+    "transitionStartMm": 92.91,
+    "transitionEndMm": 148.32,
+    "note": "axial extent of vertices with 5-95% weight on forearm within 90 mm of the limb axis"
+   },
+   {
+    "segment": "forearm->hand (L)",
+    "segmentLengthMm": 105.02,
+    "transitionVertices": 0,
+    "transitionAxialWidthMm": 0,
+    "transitionStartMm": null,
+    "transitionEndMm": null,
+    "note": "axial extent of vertices with 5-95% weight on hand within 90 mm of the limb axis"
+   },
+   {
+    "segment": "upper_arm->forearm (R)",
+    "segmentLengthMm": 118.85,
+    "transitionVertices": 225,
+    "transitionAxialWidthMm": 55.41,
+    "transitionStartMm": 92.91,
+    "transitionEndMm": 148.32,
+    "note": "axial extent of vertices with 5-95% weight on forearm within 90 mm of the limb axis"
+   },
+   {
+    "segment": "forearm->hand (R)",
+    "segmentLengthMm": 105.02,
+    "transitionVertices": 0,
+    "transitionAxialWidthMm": 0,
+    "transitionStartMm": null,
+    "transitionEndMm": null,
+    "note": "axial extent of vertices with 5-95% weight on hand within 90 mm of the limb axis"
+   },
+   {
+    "segment": "clavicle->upper_arm (L)",
+    "segmentLengthMm": 61.85,
+    "transitionVertices": 265,
+    "transitionAxialWidthMm": 76.3,
+    "transitionStartMm": 14.3,
+    "transitionEndMm": 90.6,
+    "note": "axial extent of vertices with 5-95% weight on upper_arm within 90 mm of the limb axis"
+   },
+   {
+    "segment": "clavicle->upper_arm (R)",
+    "segmentLengthMm": 61.85,
+    "transitionVertices": 265,
+    "transitionAxialWidthMm": 76.3,
+    "transitionStartMm": 14.3,
+    "transitionEndMm": 90.6,
+    "note": "axial extent of vertices with 5-95% weight on upper_arm within 90 mm of the limb axis"
+   }
+  ]
+ },
+ "textures": [
+  {
+   "index": 0,
+   "name": "eye",
+   "pixels": [
+    1024,
+    512
+   ]
+  },
+  {
+   "index": 1,
+   "name": "eye_em",
+   "pixels": [
+    1024,
+    512
+   ]
+  },
+  {
+   "index": 2,
+   "name": "tail_em",
+   "pixels": [
+    2048,
+    1280
+   ]
+  },
+  {
+   "index": 3,
+   "name": "coat",
+   "pixels": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "index": 4,
+   "name": "lining",
+   "pixels": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "index": 5,
+   "name": "cover",
+   "pixels": [
+    512,
+    512
+   ]
+  }
+ ]
+}
