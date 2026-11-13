@@ -11,19 +11,23 @@ export function createCombatPose({T,data,bones,model}){
  const lower=data.recovery?.names.map(name=>by.get(name))??[];
  const lowerSet=new Set(lower);
  const upper=chain.map((bone,i)=>({bone,i})).filter(({bone})=>!lowerSet.has(bone));
+ // Frozen stage matrices need a propagated world update before any palm/foot reads.
+ const sync=()=>model.updateMatrixWorld(true);
  function restore(){
   baked.restore();
-  positions.forEach((node,i)=>{node.position.fromArray(data.positionRest,i*3);node.updateMatrix();});
+  positions.forEach((node,i)=>{node.position.fromArray(data.positionRest,i*3);node.updateMatrix();});sync();
  }
  return {
   apply(t){
-   phase=t;baked.apply(t);
-   if(!positions.length)return;
+   t=Math.max(0,Math.min(1,t));phase=t;
+   if(t===0||t===1){restore();return;}
+   baked.apply(t);
+   if(!positions.length){sync();return;}
    const f=Math.min(data.frameCount-2,Math.floor(t*(data.frameCount-1))),mix=t*(data.frameCount-1)-f;
    positions.forEach((node,i)=>{
     const p=data.positionFrames[f],q=data.positionFrames[f+1];
     node.position.set(p[i*3]+(q[i*3]-p[i*3])*mix,p[i*3+1]+(q[i*3+1]-p[i*3+1])*mix,p[i*3+2]+(q[i*3+2]-p[i*3+2])*mix);node.updateMatrix();
-   });
+   });sync();
   },
   restore,
   beginRecovery(){
@@ -44,7 +48,7 @@ export function createCombatPose({T,data,bones,model}){
      bone.quaternion.copy(a.slerp(c,fm));bone.updateMatrix();
     });
    }
-   if(t===1)restore();
+   sync();
   },
   atBaseline:()=>chain.every((bone,i)=>bone.quaternion.toArray().every((value,k)=>Math.abs(value-data.rest[i*4+k])<2e-5))&&positions.every((node,i)=>node.position.toArray().every((value,k)=>Math.abs(value-data.positionRest[i*3+k])<1e-7)),
   bufferBytes:from.byteLength+positionFrom.byteLength,

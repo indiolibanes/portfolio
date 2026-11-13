@@ -1,0 +1,57 @@
+name: Hsin Combat R2.1.2 preview and regression
+on:
+  workflow_dispatch:
+  push:
+    branches: ['experiment/hsin-combat-r212-*']
+permissions:
+  contents: read
+concurrency:
+  group: hsin-r212-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  qa-and-video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Deterministic bake
+        run: |
+          node scripts/bake-hsin-combat-r2.mjs
+          git diff --exit-code -- public/assets/animations/hsin/combat-r2.json src/data/hsin-combat-r2.json
+      - name: Anatomy, acting, lab, Hsin and production checks
+        run: |
+          node tests/hsin-combat-r201-anatomy.test.mjs
+          node tests/hsin-combat-r21.test.mjs
+          node tests/hsin-combat-lab.test.mjs --r2
+          npm run check:hsin
+          npm run check
+          npm run build
+      - name: Install Chromium and ffmpeg
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Materialize immutable R2.1 reference
+        run: |
+          mkdir -p qa-input
+          git show 8c4817288702b53c24eb5708e21200d49c03dd9a:public/assets/animations/hsin/combat-r2.json > qa-input/before.json
+      - name: Exact-clock image captures
+        run: node scripts/qa/run-hsin-combat-acceptance.mjs qa-output
+      - name: Continuous 3D motion MP4 previews
+        run: node scripts/qa/render-hsin-combat-r212-video.mjs qa-video
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-combat-r212-preview
+          path: |
+            qa-output
+            qa-video
+          retention-days: 14

@@ -4,7 +4,7 @@ import '../../../styles/hsin-stage.css';
 const posterVersion='2.0.1';
 const posterCache='lunar-terrace-r2';
 ---
-<HsinStageLayout title="Hsin · Combat R2.1 Laboratory">
+<HsinStageLayout title="Hsin · Combat R2.3 Laboratory">
   <main class="hsin-stage" data-hsin-stage data-combat-lab="true" data-state="waiting" aria-label="Hsin · palco ao luar">
     <div class="hsin-stage__poster" aria-hidden="true">
       <picture>
@@ -35,10 +35,23 @@ const posterCache='lunar-terrace-r2';
       <p>Terraço lunar: pedra, balustrada, vila iluminada, lanternas e flores. Lua dourada e céu procedurais.</p>
     </details>
     <section class="combat-panel" aria-label="Laboratório de combate">
-      <p>Answering Form · R2.1 experimental</p>
-      <p>Coreografia autoral · dois golpes em crescente e a Skill com a esfera entre as mãos. Pesado e segunda forma aguardam referência.</p>
-      <label>Sequência <select data-combat-version><option value="r2">R2.1 · golpes, Skill e atuação</option><option value="r1">R1 · estudo inicial</option></select></label>
+      <p>Hsin · estudos de combate R2.3</p>
+      <p>Coreografia experimental · movimentos independentes para observar e comparar.</p>
+      <label>Sequência <select data-combat-version><option value="r23">R2.3 · estudos independentes</option><option value="r2">R2.1 · golpes, Skill e atuação</option><option value="r22">R2.2 · R2.1 + resposta ambiental lunar</option><option value="r1">R1 · estudo inicial</option></select></label>
       <button data-combat-load>Carregar combate</button>
+      <div class="combat-abilities" data-combat-abilities hidden>
+        <details open><summary>Basic <span>Answering Form</span></summary>
+          <button data-combat-ability="basic01">Basic 01</button><button data-combat-ability="basic02">Basic 02</button><button data-combat-ability="combo">Combo 01 → 02</button>
+        </details>
+        <details><summary>Resonance Skill</summary>
+          <p>Heartward by Moon · referência canônica pendente</p><button data-combat-ability="skill">Experimental Skill Study · esfera</button>
+        </details>
+        <details><summary>Ultimate</summary>
+          <button disabled>Formshift · futura</button><button disabled>Pillars Across Heaven · futura</button>
+        </details>
+        <p>Forte / Heavy · transições entre habilidades e formas; estudo futuro.</p>
+        <button data-combat-ability="legacy">Referência · sequência R2.2 completa</button>
+      </div>
       <div data-combat-controls hidden>
         <button data-combat-action="play">Executar</button>
         <button data-combat-action="pause">Pausar / retomar</button>
@@ -60,14 +73,14 @@ const posterCache='lunar-terrace-r2';
 </script>
 
 <style>
-.combat-panel{position:absolute;z-index:6;bottom:5.5rem;left:1rem;max-width:min(26rem,calc(100vw - 2rem));padding:1rem;background:#091327ed;border:1px solid #cdb27c66;border-radius:.65rem;color:#f2e7d3;font:14px system-ui}
-.combat-panel p{margin:0 0 .6rem}.combat-panel p+p{font-size:12px;color:#c5cbd5}.combat-panel button{background:#24324a;color:#fff2d5;border:1px solid #9d8a62;border-radius:.3rem;padding:.5rem;margin:.15rem;cursor:pointer}.combat-panel output{display:block;margin-top:.5rem;font-size:12px}
+.combat-panel{position:absolute;z-index:6;bottom:5.5rem;left:1rem;max-height:calc(100dvh - 11rem);overflow:auto;max-width:min(26rem,calc(100vw - 2rem));padding:1rem;background:#1b1223ed;border:1px solid #cdb27c66;border-radius:.65rem;color:#f2e7d3;font:14px system-ui}
+.combat-abilities details{border-top:1px solid #cdb27c44;padding:.35rem 0}.combat-abilities summary{cursor:pointer;color:#edcf99}.combat-abilities summary span{font-size:11px;color:#bdafc5;margin-left:.4rem}.combat-abilities p{font-size:11px;color:#bdafc5}.combat-panel button:disabled{opacity:.45;cursor:default}.combat-panel select{max-width:100%;background:#251b30;color:#f2e7d3;padding:.3rem;border:1px solid #cdb27c66}.combat-panel p{margin:0 0 .6rem}.combat-panel p+p{font-size:12px;color:#c5cbd5}.combat-panel button{background:#482333;color:#fff2d5;border:1px solid #9d8a62;border-radius:.3rem;padding:.5rem;margin:.15rem;cursor:pointer}.combat-panel output{display:block;margin-top:.5rem;font-size:12px}
 @media(max-width:600px){.combat-panel{padding:.65rem;bottom:4.8rem}.combat-panel button{font-size:12px;padding:.4rem}}
 /* R2.1.1: during playback the panel folds into one slim strip under the header so it never covers the body or the effects. */
 .combat-panel__toggle::after{content:'Recolher ▴'}
 .combat-panel__toggle[aria-expanded="false"]::after{content:'Painel ▾'}
 .combat-panel[data-collapsed="true"]{top:4.6rem;bottom:auto;left:.75rem;right:auto;max-width:min(30rem,calc(100vw - 1.5rem));padding:.3rem .4rem;background:#091327b8;display:flex;flex-wrap:wrap;align-items:center;gap:.1rem}
-.combat-panel[data-collapsed="true"]>p,.combat-panel[data-collapsed="true"]>label,.combat-panel[data-collapsed="true"]>[data-combat-load],.combat-panel[data-collapsed="true"] [data-combat-action="trace"]{display:none}
+.combat-panel[data-collapsed="true"]>.combat-abilities,.combat-panel[data-collapsed="true"]>p,.combat-panel[data-collapsed="true"]>label,.combat-panel[data-collapsed="true"]>[data-combat-load],.combat-panel[data-collapsed="true"] [data-combat-action="trace"]{display:none}
 .combat-panel[data-collapsed="true"] [data-combat-controls]:not([hidden]){display:flex;flex-wrap:wrap}
 .combat-panel[data-collapsed="true"] button{font-size:12px;padding:.3rem .45rem;margin:.1rem}
 .combat-panel[data-collapsed="true"] output{margin:0 .3rem;font-size:11px}

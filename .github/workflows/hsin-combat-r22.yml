@@ -1,0 +1,165 @@
+name: Hsin Combat R2.2 (environment VFX, regression gates, audiovisual QA)
+
+# three.js, sharp and Playwright come from the lockfile / CI; the authoring workspace cannot reach the npm registry.
+# Software WebGL (SwiftShader) is visual and structural evidence only: never GPU frame time, FPS or artistic approval.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'experiment/hsin-combat-r22-*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hsin-combat-r22-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  R212_BASE: 07d74804ce8a69196164dd462a7a4c55a1da5d31
+  R21_REF: 8c4817288702b53c24eb5708e21200d49c03dd9a
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: Install ffmpeg (reference-ingestion regression test)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Gates
+        id: tests
+        shell: bash
+        continue-on-error: true
+        run: |
+          mkdir -p qa; set +e; f=0
+          t(){ n=$1; shift; "$@" > qa/test-$n.txt 2>&1; c=$?; echo "$n exit $c" | tee -a qa/tests.txt; [ $c = 0 ] || f=1; }
+          # R2.2 does not touch the body: the baked asset must still be exactly what the bake produces
+          t bake-deterministic bash -c 'node scripts/bake-hsin-combat-r2.mjs && git diff --exit-code -- public/assets/animations/hsin/combat-r2.json src/data/hsin-combat-r2.json'
+          t anatomy node tests/hsin-combat-r201-anatomy.test.mjs
+          t acting node tests/hsin-combat-r21.test.mjs
+          t combat-r2 node tests/hsin-combat-r2.test.mjs
+          t combat-r2-screen node tests/hsin-combat-r2-screen.test.mjs
+          t env-sim node tests/hsin-combat-env-sim.test.mjs
+          t env-glb node tests/hsin-combat-env.test.mjs
+          t lab-r1 node tests/hsin-combat-lab.test.mjs
+          t lab-r2 node tests/hsin-combat-lab.test.mjs --r2
+          t lab-r22 node tests/hsin-combat-lab.test.mjs --r22
+          t reference-ingestion node tests/hsin-reference-ingestion.test.mjs
+          t check-hsin npm run check:hsin
+          t check npm run check
+          t build npm run build
+          # GLB, skin, bake, score, choreography, facial acting, contemplative idle, dance and Shorekeeper/Sophia/Phrolova are byte-identical to #279
+          t protected-untouched git diff --exit-code $R212_BASE -- public/assets/models public/assets/animations src/data scripts/bake-hsin-combat-r2.mjs scripts/lib src/scripts/hsin-combat-director.mjs src/scripts/hsin-combat-pose.mjs src/scripts/hsin-combat-data.mjs src/scripts/hsin-combat-r21.mjs src/scripts/hsin-cinematic-idle.mjs src/scripts/hsin-body-repertoire.mjs src/scripts/hsin-baked-pose.mjs src/scripts/hsin-face-acting.mjs src/scripts/hsin-face-binding.mjs src/scripts/hsin-lunar-terrace.mjs
+          exit $f
+      - name: Collect
+        if: always()
+        run: |
+          cp -r docs/hsin-combat-r22 qa/docs-hsin-combat-r22 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: hsin-combat-r22-tests, retention-days: 14, path: qa}
+      - name: Publish evidence branch
+        if: always()
+        shell: bash
+        run: |
+          B=qa-results/hsin-combat-r22-tests; D=$(mktemp -d); cp -r qa/. $D/; cd $D
+          printf 'source=%s\nrun=%s\nsha=%s\ntests=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" "${{ steps.tests.outcome }}" > SOURCE.txt
+          git init -q; git checkout -q -b $B; git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.2 tests $GITHUB_SHA"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $B
+      - name: Gate
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: Install Chromium and ffmpeg
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - name: Materialize immutable R2.1 reference (regression captures)
+        run: |
+          mkdir -p qa-input
+          git show $R21_REF:public/assets/animations/hsin/combat-r2.json > qa-input/before.json
+      - name: R2.1.2 exact-clock captures (harness regression)
+        run: node scripts/qa/run-hsin-combat-acceptance.mjs qa-output
+      - name: R2.2 audiovisual QA (videos A/B/C, paired stills, CPU bench, measured extra cost)
+        run: node scripts/qa/render-hsin-combat-r22-video.mjs qa-r22
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-combat-r22-preview
+          path: |
+            qa-output
+            qa-r22
+          retention-days: 14
+      - name: Publish evidence branch
+        if: always()
+        shell: bash
+        run: |
+          B=qa-results/hsin-combat-r22-preview; D=$(mktemp -d); cp -r qa-r22/. $D/ 2>/dev/null || true; mkdir -p $D/regression-captures; cp -r qa-output/. $D/regression-captures/ 2>/dev/null || true; cd $D
+          printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > SOURCE.txt
+          git init -q; git checkout -q -b $B; git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.2 preview $GITHUB_SHA"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $B
+
+  webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [r2, r22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version-file: .node-version, cache: npm}
+      - run: npm ci --no-audit --no-fund
+      - name: Install Playwright and ffmpeg (not saved to package.json)
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Build and serve the real site
+        run: |
+          npm run build
+          npx astro preview --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/experimentos/combate/ >/dev/null && break; sleep 1; done
+      - name: Real-WebGL run of the combat lab (SwiftShader), ${{ matrix.variant }}
+        run: node scripts/qa/run-hsin-combat-webgl.mjs webgl-out --stage-url=http://127.0.0.1:4321 --variant=${{ matrix.variant }} 2>&1 | tee webgl-out.log
+      - name: Encode the continuous capture
+        if: always()
+        run: |
+          for f in webgl-out/video-raw/*.webm; do [ -f "$f" ] || continue; ffmpeg -y -loglevel error -i "$f" -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -movflags +faststart -an webgl-out/lab-continuous-${{ matrix.variant }}.mp4; done
+          ls -la webgl-out webgl-out/video-raw 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-combat-r22-webgl-${{ matrix.variant }}
+          retention-days: 14
+          path: |
+            webgl-out
+            webgl-out.log
+      - name: Publish evidence branch
+        if: always()
+        shell: bash
+        run: |
+          B=qa-results/hsin-combat-r22-webgl-${{ matrix.variant }}; D=$(mktemp -d); cp -r webgl-out/. $D/ 2>/dev/null || true; cp webgl-out.log preview.log $D/ 2>/dev/null || true; rm -rf $D/video-raw; cd $D
+          printf 'source=%s\nrun=%s\nsha=%s\n' "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_SHA" > SOURCE.txt
+          git init -q; git checkout -q -b $B; git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Combat R2.2 WebGL ${{ matrix.variant }} $GITHUB_SHA"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $B
