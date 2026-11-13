@@ -3,7 +3,7 @@ import type {GLTF} from 'three/addons/loaders/GLTFLoader.js';
 import type {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createVerticalLaunchPad} from './sophia-vertical-pad.ts';
 import {createGripSolver} from './sophia-grip-ik.ts';
-import {R3,smooth,sampleImmersiveR3At,gripStepAt} from './sophia-immersive-r3-timeline.mjs';
+import {R3,smooth,sampleImmersiveR3At,gripStepAt,thrusterFx} from './sophia-immersive-r3-timeline.mjs';
 
 export function disposeAstronautAsset(root:T.Object3D){const gs=new Set<T.BufferGeometry>(),ms=new Set<T.Material>(),ts=new Set<T.Texture>(),ss=new Set<T.Skeleton>(),images=new Set<ImageBitmap>();root.traverse(n=>{const m=n as T.SkinnedMesh;if(m.geometry)gs.add(m.geometry);if(m.skeleton)ss.add(m.skeleton);if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>ms.add(x));});ms.forEach(m=>{Object.values(m).forEach(t=>{if(t?.isTexture)ts.add(t);});m.dispose();});gs.forEach(g=>g.dispose());ts.forEach(t=>{t.dispose();if(t.image?.close)images.add(t.image);});ss.forEach(s=>s.dispose());images.forEach(i=>i.close());root.removeFromParent();}
 
@@ -52,7 +52,7 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  const left=createGripSolver(rider,'Left'),right=createGripSolver(rider,'Right');
  const anchors=[new T.Object3D(),new T.Object3D()];anchors[0].name='Grip_L';anchors[1].name='Grip_R';rocketFrame.add(...anchors);
  const engineNodes:T.Object3D[]=[],ribbons:T.Object3D[]=[];root.traverse(n=>{if(/Plume|Shock_Diamond|Engine_Coil|Fusion_Halo|Fusion_Core|Plasma_Ring/.test(n.name))engineNodes.push(n);if(/^SpeedRibbon_\d+$/.test(n.name))ribbons.push(n);});
- const plume=root.getObjectByName('Plume_Root'),light=new T.PointLight(0xffb46c,0,unit*5,2);partialLight=light;scene.add(light);
+ const shocks=engineNodes.filter(n=>/Shock_Diamond/.test(n.name)),plume=root.getObjectByName('Plume_Root'),light=new T.PointLight(0xffb46c,0,unit*5,2);partialLight=light;scene.add(light);
  const tangent=new T.Vector3(),followOffset=new T.Vector3(0,unit*.45,0),radial=new T.Vector3(),targetHip=new T.Vector3(),worldTarget=new T.Vector3(),temp=new T.Vector3(),offset=new T.Vector3(),previous=new T.Vector3(),sourceForward=new T.Vector3(0,0,1).applyQuaternion(sourceRiderWorldQ);sourceForward.y=0;sourceForward.normalize();
  const desiredQ=new T.Quaternion(),parentQ=new T.Quaternion(),yawQ=new T.Quaternion(),frameQ=new T.Quaternion(),gripWorld=new T.Vector3();
  let gripErrors:(number|null)[]=[null,null];let lastSample=sampleImmersiveR3At(0);
@@ -95,9 +95,12 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
   sample(walk,s.riderVisible?1-s.settle:0,Math.min(s.walkTime,R3.prepare-R3.enter));sample(flightActor,s.settle,Math.max(0,t-R3.flight));
   sample(idle,s.enginePower*(1-s.release),t-R3.ignition);sample(boost,s.release*(1-s.flightMix),t-R3.launch);sample(effects,s.flightMix,t-R3.flight);mixer.update(0);
   root.updateMatrixWorld(true);placeRider(s);
-  engineNodes.forEach(n=>{n.visible=s.enginePower>.001;});if(plume&&s.t<R3.flight)plume.scale.multiplyScalar(.08+s.enginePower*.8);
+  // Flicker is a pure function of active time (reproducible on seek/replay); steady under reduced motion.
+  const fx=thrusterFx(s.t,s,reducedMotion());
+  engineNodes.forEach(n=>{n.visible=s.enginePower>.001;});if(plume)plume.scale.multiplyScalar((s.t<R3.flight?.08+s.enginePower*.8:1)*fx.plume);
+  shocks.forEach((n,i)=>n.scale.multiplyScalar(i%2?2-fx.shock:fx.shock));
   ribbons.forEach(n=>{n.visible=s.trailPower>.001;n.scale.z*=Math.max(.00001,s.trailPower);});
-  pad.update(t,s.release,s.enginePower,reducedMotion());light.position.copy(nozzle.getWorldPosition(temp));light.intensity=s.enginePower*2;
+  pad.update(t,s.release,s.enginePower,reducedMotion());light.position.copy(nozzle.getWorldPosition(temp));light.intensity=s.enginePower*2*fx.light;light.color.setRGB(1,.55+.2*s.enginePower,.3+.2*s.enginePower);
   fitCamera(s);
   if(manualCamera){temp.copy(carrier.position).sub(previous);camera.position.add(temp);controls.target.add(temp);}
   else if(returnCamera){returnProgress=Math.min(1,returnProgress+dt/.8);camera.position.copy(returnFromP).lerp(autoPosition,smooth(returnProgress));controls.target.copy(returnFromT).lerp(autoTarget,smooth(returnProgress));if(returnProgress===1)returnCamera=false;}
