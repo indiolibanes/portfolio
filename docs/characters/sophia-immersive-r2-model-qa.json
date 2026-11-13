@@ -1,0 +1,416 @@
+{
+  "result": "CPU_GEOMETRY_AND_RIG_PASS",
+  "visual": "VISUAL_QA_PENDING",
+  "modelSha256": "e9bddcd76eae3607227b58f5d1a71ae2fedc51e2ddcaeb0900c013e710d3e674",
+  "bytes": 46787612,
+  "preservedClips": 47,
+  "texturesSkipped": true,
+  "cradle": {
+    "triangles": 1380,
+    "meshes": 15,
+    "contactSections": [
+      {
+        "x": 0.27280000000000004,
+        "radius": 0.16012231516750816,
+        "innerRadius": 0.16012231516750816
+      },
+      {
+        "x": 0.5155200000000001,
+        "radius": 0.13796766439302033,
+        "innerRadius": 0.13796766439302033
+      }
+    ],
+    "stationary": true
+  },
+  "samples": [
+    {
+      "supported": true,
+      "time": 0,
+      "phase": "PAD_REVEAL",
+      "riderVisible": false,
+      "riderWorld": [
+        -1.7234664578355683,
+        0.01214751824943025,
+        -0.1348048666340449
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 1.7407081368421213,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 1.1,
+      "phase": "IGNITION",
+      "riderVisible": false,
+      "riderWorld": [
+        -1.7234664578355683,
+        0.01214751824943025,
+        -0.1348048666340449
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 1.7407081368421213,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 2.1,
+      "phase": "APPROACH",
+      "riderVisible": true,
+      "riderWorld": [
+        -1.7234664578355683,
+        0.01214751824943025,
+        -0.1348048666340449
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 1.7407081368421213,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 4.1,
+      "phase": "APPROACH",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.7446657095277492,
+        0.01214751824943025,
+        -0.1348048666340449
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 0.7837443494728081,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 5.1,
+      "phase": "JUMP_BOARD",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.6118320566045706,
+        0.01214751824943025,
+        -0.1348048666340449
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 0.6588373485717606,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 5.45,
+      "phase": "JUMP_BOARD",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.1288128317058873,
+        0.4553650226605481,
+        -0.19779724037230778
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 0.3361727353374668,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 5.8,
+      "phase": "DOCK",
+      "riderVisible": true,
+      "riderWorld": [
+        0,
+        0.21600000000000003,
+        0
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 2.7755575615628914e-17,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 6.1,
+      "phase": "BOOST",
+      "riderVisible": true,
+      "riderWorld": [
+        0,
+        0.21600000000000003,
+        0
+      ],
+      "seatedWorld": [
+        0,
+        0.216,
+        0
+      ],
+      "riderSeatError": 2.7755575615628914e-17,
+      "rocketWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": false,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 6.4,
+      "phase": "BOOST",
+      "riderVisible": true,
+      "riderWorld": [
+        -0.009239455281061761,
+        0.26326336739927736,
+        0
+      ],
+      "seatedWorld": [
+        -0.009239455281061761,
+        0.26326336739927736,
+        0
+      ],
+      "riderSeatError": 0,
+      "rocketWorld": [
+        0.29076054471893836,
+        0.27726336739927737,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": true,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": false,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 8.2,
+      "phase": "FLIGHT_LOOP",
+      "riderVisible": true,
+      "riderWorld": [
+        -3.1691331614041602,
+        1.0692281588395813,
+        9.860761315262648e-32
+      ],
+      "seatedWorld": [
+        -3.1691331614041607,
+        1.0692281588395816,
+        0
+      ],
+      "riderSeatError": 4.965068306494546e-16,
+      "rocketWorld": [
+        -2.8691331614041604,
+        1.0832281588395816,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": true,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": true,
+      "actorTracks": 275,
+      "walkTracks": 272
+    },
+    {
+      "supported": true,
+      "time": 9,
+      "phase": "FLIGHT_LOOP",
+      "riderVisible": true,
+      "riderWorld": [
+        -6.790999631580347,
+        1.112566731986989,
+        1.9721522630525295e-31
+      ],
+      "seatedWorld": [
+        -6.790999631580348,
+        1.112566731986989,
+        0
+      ],
+      "riderSeatError": 8.881784197001252e-16,
+      "rocketWorld": [
+        -6.490999631580348,
+        1.126566731986989,
+        -0.17710317609999998
+      ],
+      "baseWorld": [
+        0.3000000000000001,
+        0.23,
+        -0.17710317609999998
+      ],
+      "ribbonsVisible": true,
+      "cradleTriangles": 1380,
+      "cradleMeshes": 15,
+      "groundOffset": -0.20385248175056978,
+      "unit": 1.218897369770831,
+      "controlsEnabled": true,
+      "actorTracks": 275,
+      "walkTracks": 272
+    }
+  ],
+  "limits": [
+    "No WebGL context or texture inspection in this script.",
+    "No triangle collision or physical Android approval."
+  ]
+}
