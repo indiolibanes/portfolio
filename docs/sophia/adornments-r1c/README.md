@@ -1,5 +1,8 @@
 # Sophia R1.C — C1 Identity & Contact Repair
 
+> **CORREÇÃO AUTORAL PRIORITÁRIA (2026-11-13):** o alvo desta recuperação é a **Sophia RAPOSINHA / mascote celestial**, **não** a Sophia anime antropomórfica C1. O gate `IDENTITY_BLOCKED` por divergência com rosto/franja/proporções anime utilizou a referência errada e está **SUPERSEDED_WRONG_TARGET**. Consulte obrigatoriamente [`OWNER-CORRECTION-FOX-SOPHIA.md`](OWNER-CORRECTION-FOX-SOPHIA.md) antes das instruções históricas abaixo. As fontes 6H/7B/R5/R6 são candidatas da **raposinha**, e a falta de R2/WebView bloqueia somente a verificação REMOTA, não impede estudo não destrutivo sobre a 6H verificável. Não solicitar `Sophia_v1.1.glb` anime nem master anime como pré-requisito da R1.C.1. Reavaliar a identidade com a **arte 2D da raposinha**, sem aprovação artística automática.
+
+
 **Estado:** execução R1.C parcial: `IDENTITY_BLOCKED`, gola experimental corrigida, contatos/vestuário não aprovados. Resultados verificáveis em [results/](results/), com [QA separado por gate](results/r1c-qa.json) e [reprodução](results/runbook.md). Nenhum asset ou runtime público foi alterado. O handoff histórico abaixo descreve o ponto de partida. Base: PR #304, commit c59335f823f30ed2af4e55ccddc1044277929d61. Preservar draft, sem merge.
 
 ## Source-first obrigatório para continuação com Claude
