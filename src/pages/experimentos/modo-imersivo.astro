@@ -1,4 +1,7 @@
 ---
+import ExperimentalMenu from '../../components/ExperimentalMenu.astro';
+import '../../styles/experimental.css';
+
 const astronautAssetUrl = '/api/sophia/rocket';
 ---
 <!doctype html>
@@ -14,7 +17,17 @@ const astronautAssetUrl = '/api/sophia/rocket';
   </head>
   <body>
     <main class="immersive" data-sophia-immersive data-astronaut-url={astronautAssetUrl}>
-      <div class="immersive__stage" data-stage role="img" tabindex="0" aria-label="Sophia astronauta sobre um foguete em três dimensões, centralizada sobre fundo preto. Arraste para girar; use a roda ou pinça para aproximar."></div>
+      <div class="immersive__stage" data-stage role="img" tabindex="-1" inert aria-label="Sophia astronauta e foguete em três dimensões. Depois da decolagem, arraste para girar e use a roda ou pinça para aproximar."></div>
+      <section class="immersive__intro" data-intro aria-label="Início da jornada da Sophia">
+        <div class="immersive__intro-frame" aria-hidden="true"><span>PROJECT SOPHIA</span><span>CELESTIAL FLIGHT · 01</span></div>
+        <button class="immersive__start" type="button" data-intro-start aria-label="Iniciar a jornada: Sophia vai ao encontro do foguete">
+          <span class="immersive__start-preface">PRESS ANY KEY TO</span>
+          <span class="immersive__start-main" aria-hidden="true">START<span class="immersive__start-cursor">_</span></span>
+          <span class="immersive__start-touch">OU TOQUE PARA COMEÇAR</span>
+        </button>
+        <div class="immersive__intro-footer" aria-hidden="true"><span>EST. 2026</span><span>AN INTERACTIVE JOURNEY</span></div>
+      </section>
+      <ExperimentalMenu />
       <a class="immersive__back" href="/sophia/" aria-label="Voltar à página da Sophia">← Voltar</a>
       <p class="immersive__status" data-status role="status" aria-live="polite">Carregando Sophia…</p>
       <button class="immersive__retry" type="button" data-retry hidden>Tentar novamente</button>
@@ -29,17 +42,38 @@ const astronautAssetUrl = '/api/sophia/rocket';
   :global(*), :global(*::before), :global(*::after) { box-sizing: border-box; }
   .immersive { position: relative; isolation: isolate; width: 100%; min-height: 100vh; min-height: 100svh; background: #000; color: #e8e8e8; }
   .immersive__stage { position: absolute; inset: 0; background: #000; touch-action: none; outline: none; }
+  .immersive__stage[inert] { pointer-events: none; }
   .immersive__stage:focus-visible { outline: 1px solid #8a9bc4; outline-offset: -5px; }
   .immersive__stage :global(canvas) { display: block; width: 100%; height: 100%; }
-  .immersive__back, .immersive__retry { position: absolute; z-index: 2; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
+  .immersive__back, .immersive__retry { position: absolute; z-index: 65; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
   .immersive__back { top: max(19px, env(safe-area-inset-top)); left: max(19px, env(safe-area-inset-left)); }
   .immersive__retry { right: max(19px, env(safe-area-inset-right)); bottom: max(19px, env(safe-area-inset-bottom)); cursor: pointer; }
   .immersive__back:hover, .immersive__retry:hover { background: #303038; }
   .immersive__back:focus-visible, .immersive__retry:focus-visible { outline: 2px solid #aabadd; outline-offset: 3px; }
   .immersive__retry[hidden] { display: none; }
-  .immersive__status, .immersive__nojs { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; color: #bdc5d2; font-size: 13px; text-align: center; max-width: min(80vw, 520px); line-height: 1.6; pointer-events: none; }
+  .immersive__status, .immersive__nojs { position: absolute; z-index: 24; top: 74%; left: 50%; transform: translate(-50%, -50%); margin: 0; color: #bdc5d2; font-size: 13px; text-align: center; max-width: min(80vw, 520px); line-height: 1.6; pointer-events: none; }
   .immersive__status[hidden] { display: none; }
-  @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__upload { transition: none; } }
+  @font-face { font-family: "Sophia Roguepunk"; src: url("../../../assets/fonts/Roguepunk.ttf") format("truetype"); font-style: normal; font-weight: 400; font-display: swap; }
+  :global(html), :global(body) { background: #000 !important; background-image: none !important; overflow: hidden; color-scheme: dark; }
+  :global(.xm-header) { position: absolute; inset: 0 0 auto; z-index: 70; }
+  :global(.xm-drawer) { z-index: 75; }
+  .immersive__intro { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; overflow: hidden; background: #000; transition: opacity 780ms ease, visibility 780ms ease; }
+  .immersive__intro::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.33; background: repeating-linear-gradient(to bottom, transparent 0 5px, rgba(125,165,205,0.052) 6px); }
+  .immersive__intro::after { content: ""; position: absolute; top: 50%; left: 50%; width: min(88vw, 980px); height: 1px; background: linear-gradient(90deg, transparent, rgba(78,207,240,.22), transparent); transform: translate(-50%, 92px); pointer-events: none; }
+  .immersive__intro.is-started { opacity: 0; visibility: hidden; pointer-events: none; }
+  .immersive__intro-frame, .immersive__intro-footer { position: absolute; right: clamp(24px, 5vw, 74px); left: clamp(24px, 5vw, 74px); display: flex; justify-content: space-between; gap: 18px; color: #9da8b7; font: 600 10px/1.3 ui-monospace, Consolas, monospace; letter-spacing: .25em; }
+  .immersive__intro-frame { top: max(45px, env(safe-area-inset-top)); padding-top: 10px; border-top: 1px solid #8792a23c; }
+  .immersive__intro-footer { bottom: max(38px, env(safe-area-inset-bottom)); padding-bottom: 10px; border-bottom: 1px solid #8792a23c; }
+  .immersive__start { position: relative; display: grid; gap: 5px; justify-items: center; width: min(88vw, 820px); padding: 25px 10px; border: 0; background: transparent; color: #f0ecdf; cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; }
+  .immersive__start-preface { font: 500 clamp(13px, 2vw, 22px)/1.4 "Sophia Roguepunk", Impact, sans-serif; letter-spacing: .31em; text-shadow: 0 0 22px #5ce0ff38; }
+  .immersive__start-main { color: #f8ed37; font: 400 clamp(66px, 14vw, 158px)/.95 "Sophia Roguepunk", Impact, sans-serif; letter-spacing: -.025em; transform: skewX(-6deg); text-shadow: 3px 3px #111, -2px 0 #19d7e2; transition: text-shadow 180ms ease, transform 180ms ease; }
+  .immersive__start:hover .immersive__start-main { text-shadow: 4px 4px #f73e8f, -3px -2px #19d7e2, 0 0 42px #f8ed3755; transform: skewX(-8deg) scale(1.025); }
+  .immersive__start-cursor { color: #10d9eb; animation: sophia-cursor 1.12s steps(1, end) infinite; }
+  .immersive__start-touch { margin-top: 32px; color: #8a98a5; font: 600 10px/1.4 ui-monospace, Consolas, monospace; letter-spacing: .28em; }
+  .immersive__start:focus-visible { outline: 2px solid #f8ed37; outline-offset: 5px; }
+  @keyframes sophia-cursor { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @media (max-width: 650px) { .immersive__intro-frame, .immersive__intro-footer { font-size: 8px; letter-spacing: .13em; } .immersive__intro-frame { top: 115px; } .immersive__start-preface { letter-spacing: .17em; } .immersive__start-touch { letter-spacing: .1em; } .immersive__status { top: 79%; font-size: 11px; } }
+  @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__retry, .immersive__intro, .immersive__start-main { transition: none; } .immersive__start-cursor { animation: none; } }
 </style>
 
 <script>
@@ -52,10 +86,12 @@ const astronautAssetUrl = '/api/sophia/rocket';
   const page = document.querySelector<HTMLElement>('[data-sophia-immersive]');
   const status = document.querySelector<HTMLElement>('[data-status]');
   const retryButton = document.querySelector<HTMLButtonElement>('[data-retry]');
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+  const introStart = document.querySelector<HTMLButtonElement>('[data-intro-start]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const preferredUrl = page?.dataset.astronautUrl || '/api/sophia/rocket';
 
-  if (stage && page && status && retryButton) {
+  if (stage && page && status && retryButton && intro && introStart) {
     const setStatus = (message: string) => {
       status.hidden = !message;
       status.textContent = message;
@@ -87,6 +123,8 @@ const astronautAssetUrl = '/api/sophia/rocket';
       controls.enableDamping = !reduceMotion.matches;
       controls.dampingFactor = 0.07;
       controls.enablePan = false;
+      controls.enableRotate = false;
+      controls.enableZoom = false;
       controls.minPolarAngle = 0.13;
       controls.maxPolarAngle = Math.PI - 0.13;
       controls.rotateSpeed = 0.65;
@@ -98,6 +136,15 @@ const astronautAssetUrl = '/api/sophia/rocket';
       let mixer: THREE.AnimationMixer | null = null;
       let framing: { box: THREE.Box3; astronaut: boolean } | null = null;
       let loadIndex = 0;
+      type ScenePhase = 'intro' | 'waiting' | 'approach' | 'ignite' | 'flight';
+      let phase: ScenePhase = 'intro';
+      let phaseTime = 0;
+      let modelReady = false;
+      let currentGltf: GLTF | null = null;
+      let boarding: { rider: THREE.Object3D; seated: THREE.Vector3; entry: THREE.Vector3; exhaust: THREE.Object3D | null; ribbons: THREE.Object3D[]; flightBox: THREE.Box3 } | null = null;
+      const approachDuration = 3.65;
+      const igniteDuration = 0.72;
+      const smooth = (value: number) => value * value * (3 - 2 * value);
 
       function getFramingBox(root: THREE.Object3D, astronaut: boolean) {
         const box = new THREE.Box3();
@@ -150,29 +197,100 @@ const astronautAssetUrl = '/api/sophia/rocket';
       });
       observer.observe(stage);
 
+      function playClip(name: string, loop: boolean) {
+        if (!currentGltf || !mixer) return;
+        const clip = currentGltf.animations.find((candidate) => candidate.name === name);
+        if (!clip) return;
+        mixer.stopAllAction();
+        const action = mixer.clipAction(clip);
+        action.reset();
+        action.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce, loop ? Infinity : 1);
+        action.clampWhenFinished = !loop;
+        action.play();
+        if (reduceMotion.matches) mixer.setTime(0);
+      }
+
+      function beginFlight() {
+        phase = 'flight';
+        phaseTime = 0;
+        if (boarding) {
+          boarding.rider.position.copy(boarding.seated);
+          boarding.ribbons.forEach((ribbon) => { ribbon.visible = true; });
+          boarding.exhaust && (boarding.exhaust.visible = true);
+          framing = { box: boarding.flightBox, astronaut: true };
+          fitCamera(boarding.flightBox, true);
+        }
+        playClip('Sophia_Foguete_Voo_Esquerda_Ondas_R2', true);
+        controls.enableRotate = true;
+        controls.enableZoom = true;
+        setStatus('');
+      }
+
+      function beginApproach() {
+        if (!modelReady || phase !== 'waiting') return;
+        intro.classList.add('is-started');
+        stage.inert = false;
+        stage.tabIndex = 0;
+        phaseTime = 0;
+        setStatus('');
+        if (reduceMotion.matches || !boarding) {
+          beginFlight();
+          return;
+        }
+        phase = 'approach';
+        playClip('Andar_R6', true);
+      }
+
+      function requestStart() {
+        if (phase !== 'intro') return;
+        phase = 'waiting';
+        if (modelReady) beginApproach();
+        else setStatus('Preparando a decolagem da Sophia…');
+      }
+
       function install(gltf: GLTF, astronaut: boolean) {
         if (mixer) mixer.stopAllAction();
         if (activeModel) scene.remove(activeModel);
         mixer = null;
+        currentGltf = gltf;
+        boarding = null;
         const root = gltf.scene;
         activeModel = root;
         scene.add(root);
+        root.updateMatrixWorld(true);
+        const flightBox = getFramingBox(root, astronaut);
+        let cameraBox = flightBox.clone();
 
-        const preferredClip = gltf.animations.find((clip) => clip.name === 'Sophia_Foguete_Voo_Esquerda_Ondas_R2');
-        const clip = preferredClip || gltf.animations.find((item) => /idle|rocket|foguete/i.test(item.name));
-        if (clip) {
-          mixer = new THREE.AnimationMixer(root);
-          const action = mixer.clipAction(clip);
-          action.setLoop(THREE.LoopRepeat, Infinity);
-          action.play();
-          if (reduceMotion.matches) mixer.setTime(0);
+        // The delivered GLB has separate parent nodes for its astronaut rider
+        // and rocket. Move only the rider: the rocket remains on its launch mark.
+        const rider = root.getObjectByName('Sophia_Astronauta_Rider_Mount');
+        const rocket = root.getObjectByName('Rocket_Flight_Mount');
+        if (astronaut && rider && rocket) {
+          const size = flightBox.getSize(new THREE.Vector3());
+          const seated = rider.position.clone();
+          const entry = new THREE.Vector3(-Math.max(size.x * 0.88, 1.0), -Math.max(size.y * 0.16, 0.13), 0.12);
+          const ribbons = Array.from({ length: 8 }, (_, i) => root.getObjectByName('SpeedRibbon_' + (i + 1))).filter((node): node is THREE.Object3D => !!node);
+          const exhaust = root.getObjectByName('Plume_Root') || null;
+          rider.position.copy(seated).add(entry);
+          ribbons.forEach((ribbon) => { ribbon.visible = false; });
+          if (exhaust) exhaust.visible = false;
+          root.updateMatrixWorld(true);
+          cameraBox = cameraBox.union(new THREE.Box3().setFromObject(rider));
+          boarding = { rider, seated, entry, exhaust, ribbons, flightBox };
         }
 
-        root.updateMatrixWorld(true);
-        framing = { box: getFramingBox(root, astronaut), astronaut };
+        mixer = new THREE.AnimationMixer(root);
+        const preferredClip = gltf.animations.find((clip) => clip.name === 'Sophia_Foguete_Voo_Esquerda_Ondas_R2');
+        const fallbackClip = gltf.animations.find((clip) => /rocket|foguete/i.test(clip.name));
+        if (!preferredClip && !fallbackClip) {
+          console.warn('Sophia: o GLB não inclui a animação de voo esperada.');
+        }
+        framing = { box: cameraBox, astronaut };
         resize();
-        fitCamera(framing.box, astronaut);
+        fitCamera(cameraBox, astronaut);
+        modelReady = true;
         setStatus('');
+        if (phase === 'waiting') beginApproach();
       }
 
       async function loadUrl(url: string, astronaut: boolean) {
@@ -227,6 +345,13 @@ const astronautAssetUrl = '/api/sophia/rocket';
         }
       }
 
+      introStart.addEventListener('click', requestStart);
+      window.addEventListener('keydown', (event) => {
+        if (phase !== 'intro' || event.repeat || event.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.key === 'Escape' || event.key === 'Tab') return;
+        if (event.target instanceof Element && event.target.closest('a, button, input, select, textarea, [role="menu"], [data-xm]')) return;
+        event.preventDefault();
+        requestStart();
+      });
       retryButton.addEventListener('click', () => { void loadAstronaut(); });
       void loadAstronaut();
 
@@ -238,7 +363,27 @@ const astronautAssetUrl = '/api/sophia/rocket';
       renderer.setAnimationLoop(() => {
         const delta = Math.min(clock.getDelta(), 0.05);
         if (document.hidden) return;
-        if (mixer && !reduceMotion.matches) mixer.update(delta);
+        if (!reduceMotion.matches && phase === 'approach' && boarding) {
+          phaseTime += delta;
+          const t = Math.min(1, phaseTime / approachDuration);
+          const ease = smooth(t);
+          boarding.rider.position.copy(boarding.seated).addScaledVector(boarding.entry, 1 - ease);
+          boarding.rider.position.y += Math.sin(t * Math.PI * 5) * 0.025 * (1 - t);
+          if (mixer) mixer.update(delta);
+          if (t >= 1) {
+            boarding.rider.position.copy(boarding.seated);
+            phase = 'ignite';
+            phaseTime = 0;
+            playClip('Engine_Idle', true);
+            if (boarding.exhaust) boarding.exhaust.visible = true;
+          }
+        } else if (phase === 'ignite') {
+          phaseTime += delta;
+          if (mixer) mixer.update(delta);
+          if (phaseTime >= igniteDuration) beginFlight();
+        } else if (phase === 'flight') {
+          if (mixer && !reduceMotion.matches) mixer.update(delta);
+        }
         controls.update();
         renderer.render(scene, camera);
       });
