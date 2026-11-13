@@ -1742,11 +1742,6 @@ const showOmega = Astro.url.pathname === '/';
     76% { opacity: .62; transform: translate(-50%,-50%) scale(5.2); animation-timing-function: cubic-bezier(.4,0,.8,1); }
     100% { opacity: 0; transform: translate(-50%,-50%) scale(2); }
   }
-  @media(max-width:560px) {
-    .serious-stage.has-omega { height:calc(var(--side) + 40px); }
-    .serious-omega-caption {font-size:7.5px;width:145px;top:calc(100% + 9px);}
-    .serious-omega-caption small { font-size:7px; }
-  }
   @media(prefers-reduced-motion:reduce) {
     .serious-omega-star, .serious-omega-star::before, .serious-omega-star::after {animation:none;}
     .serious-omega-entry .serious-omega-star {transform:none;}
