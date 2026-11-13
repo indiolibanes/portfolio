@@ -2,6 +2,10 @@
 
 **Estado:** execução R1.C parcial: `IDENTITY_BLOCKED`, gola experimental corrigida, contatos/vestuário não aprovados. Resultados verificáveis em [results/](results/), com [QA separado por gate](results/r1c-qa.json) e [reprodução](results/runbook.md). Nenhum asset ou runtime público foi alterado. O handoff histórico abaixo descreve o ponto de partida. Base: PR #304, commit c59335f823f30ed2af4e55ccddc1044277929d61. Preservar draft, sem merge.
 
+## Source-first obrigatório para continuação com Claude
+
+**Antes de editar geometria, leia `source-access-preflight.md` e `claude-r1c1-live-source-prompt.md`.** O proprietário autorizou inspeção somente de leitura dos assets Sophia necessários no R2 e acesso interativo ao WebView/Cloud Browser autenticado, mediante conexões e login efetivamente disponíveis. Confirmar a versão mais recente, o hash do GLB e o ativo que a página realmente carrega. A fonte 6H é doadora histórica, não C1 autoral certificada; a astronauta R3 tem outro propósito. A autorização não concede credenciais nem permite remover Access, expor R2 ou acessar outras personagens. **Sem `CURRENT_C1_SOURCE_VERIFIED`, suspender a adaptação do jaleco ao corpo final.** Registrar `ACCESS_BLOCKED` quando não houver acesso real.
+
 ## Resultados sólidos da R1.A/B
 - Fonte `public/experimental/sophia-alpha.glb`: SHA-256 `3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a`, compatível com a candidata 6H arquivada.
 - Piloto privado Book, Pen e três estrelas: SHA-256 `fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce`. Preserva payload BIN, rig 101 joints, 5 clipes, 4 morphs; 255 poses verificadas quanto a equivalência geométrica. **Não** certifica contato nem identidade.
