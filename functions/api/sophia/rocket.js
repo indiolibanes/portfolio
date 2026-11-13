@@ -84,11 +84,22 @@ async function inspectRootForApprovedModel(bucket) {
 
 // Read only within the explicitly approved Sophia subtrees. Never list
 // the entire bucket, expose R2 keys to visitors or accept a user-supplied key.
-async function resolveModel(bucket, method) {
-  const read = key => method === 'HEAD' ? bucket.head(key) : bucket.get(key);
+// Remembers which allowlisted/approved key answered last, so warm isolates skip
+// the 1-2 failed reads and the list() scans. The value only ever comes from
+// MODEL_KEYS or from a listing filtered to the approved basename, never from the client.
+const resolvedKeyCache = new WeakMap();
+async function resolveModel(bucket, method, onlyIf) {
+  const opts = onlyIf ? { onlyIf } : undefined;
+  const read = key => method === 'HEAD' ? bucket.head(key) : bucket.get(key, opts);
+  const remembered = resolvedKeyCache.get(bucket);
+  if (remembered) {
+    const asset = await read(remembered);
+    if (asset) return asset;
+    resolvedKeyCache.delete(bucket);
+  }
   for (const key of MODEL_KEYS) {
     const asset = await read(key);
-    if (asset) return asset;
+    if (asset) { resolvedKeyCache.set(bucket, key); return asset; }
   }
   if (typeof bucket.list !== 'function') return null;
   // Helps recover misplaced copies inside Sophia's models subtree while
@@ -108,7 +119,7 @@ async function resolveModel(bucket, method) {
       )?.key;
       if (matchingKey) {
         const asset = await read(matchingKey);
-        if (asset) return asset;
+        if (asset) { resolvedKeyCache.set(bucket, matchingKey); return asset; }
       }
       if (!listing.truncated || !listing.cursor) break;
       cursor = listing.cursor;
@@ -184,14 +195,15 @@ export async function probeSophiaPublicR2(bucket) {
 }
 
 const HEADERS = {
-  'Cache-Control': 'public, max-age=3600',
+  // Versioned file name (v1.1): a day of freshness plus a week of background revalidation.
+  'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
   'Content-Type': 'model/gltf-binary',
   'Content-Disposition': 'inline; filename="Sophia_Astronaut_Rocket_v1.1.glb"',
   'X-Content-Type-Options': 'nosniff',
   'Cross-Origin-Resource-Policy': 'same-origin',
 };
 
-async function serve({ env }, method) {
+async function serve({ env, request }, method) {
   const bucket = env?.SHOREKEEPER_ASSETS_R2;
   if (!bucket) {
     return new Response('Sophia storage not configured.', {
@@ -200,9 +212,17 @@ async function serve({ env }, method) {
     });
   }
   try {
-    const asset = await resolveModel(bucket, method);
+    const onlyIf = method === 'GET' ? request?.headers : undefined;
+    const asset = await resolveModel(bucket, method, onlyIf);
     if (asset) {
       const headers = new Headers(HEADERS);
+      if (method === 'GET' && !asset.body) {
+        // R2 evaluated If-None-Match/If-Modified-Since and the cached copy is still valid.
+        headers.delete('Content-Type');
+        headers.delete('Content-Disposition');
+        if (asset.httpEtag) headers.set('ETag', asset.httpEtag);
+        return new Response(null, { status: 304, headers });
+      }
       headers.set('Content-Length', String(asset.size));
       if (asset.httpEtag) headers.set('ETag', asset.httpEtag);
       return new Response(method === 'HEAD' ? null : asset.body, {
