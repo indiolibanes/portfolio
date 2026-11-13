@@ -1,0 +1,148 @@
+{
+  "runtimeEvents": [
+    {
+      "name": "energy",
+      "planned": 0.8,
+      "actual": 0.8333333333333333,
+      "delayMs": 33.333333333333215
+    },
+    {
+      "name": "trail",
+      "planned": 1.8,
+      "actual": 1.8000000000000023,
+      "delayMs": 2.220446049250313e-12
+    },
+    {
+      "name": "arc",
+      "planned": 2.2,
+      "actual": 2.200000000000002,
+      "delayMs": 1.7763568394002505e-12
+    },
+    {
+      "name": "trail-left",
+      "planned": 2.78,
+      "actual": 2.8,
+      "delayMs": 20.000000000000018
+    },
+    {
+      "name": "arc-left",
+      "planned": 3.32,
+      "actual": 3.3333333333333313,
+      "delayMs": 13.33333333333142
+    },
+    {
+      "name": "charge",
+      "planned": 3.95,
+      "actual": 3.9666666666666623,
+      "delayMs": 16.666666666662167
+    },
+    {
+      "name": "ring",
+      "planned": 5.45,
+      "actual": 5.466666666666657,
+      "delayMs": 16.666666666656837
+    },
+    {
+      "name": "recovery",
+      "planned": 6,
+      "actual": 6.033333333333322,
+      "delayMs": 33.33333333332167
+    }
+  ],
+  "base": "8c4817288702b53c24eb5708e21200d49c03dd9a",
+  "basic01": {
+    "marker": 2.2,
+    "relativePeak": {
+      "time": 1.7333333333333334,
+      "speedMps": 0.9562583726613981
+    },
+    "worldPeak": {
+      "time": 1.9666666666666666,
+      "speedMps": 2.0155749514455565
+    },
+    "speedAtImpact": {
+      "relative": 0.6620440127873486,
+      "world": 0.5938244692419631
+    },
+    "maxForwardReach": {
+      "time": 2.2333333333333334,
+      "meters": 0.37129964729072396
+    },
+    "reachAtImpact": 0.3707402125318528,
+    "samples": [
+      {
+        "time": 1.55,
+        "world": [
+          -0.10220714159883047,
+          0.9365775127430706,
+          -0.33382378175870053
+        ],
+        "worldSpeed": 0.2457149948209909,
+        "relativeSpeed": 0.33128177558741206
+      },
+      {
+        "time": 1.7333333333333334,
+        "world": [
+          -0.17618477971317162,
+          1.0282613461918182,
+          -0.3916765449931597
+        ],
+        "worldSpeed": 1.0689367879652136,
+        "relativeSpeed": 0.9562583726613981
+      },
+      {
+        "time": 1.9,
+        "world": [
+          -0.2938463448933777,
+          1.1423819709751448,
+          -0.292018496041347
+        ],
+        "worldSpeed": 1.6994427462908892,
+        "relativeSpeed": 0.6438488465833663
+      },
+      {
+        "time": 2.066666666666667,
+        "world": [
+          -0.37272491538005115,
+          1.2061138729596115,
+          -0.0210809506227307
+        ],
+        "worldSpeed": 1.2521358209140026,
+        "relativeSpeed": 0.7083002058892587
+      },
+      {
+        "time": 2.2,
+        "world": [
+          -0.3561231259349704,
+          1.2290355980971228,
+          0.09096909938553527
+        ],
+        "worldSpeed": 0.5938244692419631,
+        "relativeSpeed": 0.6620440127873486
+      },
+      {
+        "time": 2.3,
+        "world": [
+          -0.34678179093614914,
+          1.228743166163163,
+          0.08579061344626988
+        ],
+        "worldSpeed": 0.24933766712332459,
+        "relativeSpeed": 0.19537743965594556
+      }
+    ]
+  },
+  "changedQuaternionChannels": [
+    "ORG-Bip001UpperArmL",
+    "DEF-Bip001UpperArmL",
+    "DEF-Bip001UpperArmL001",
+    "ORG-Bip001ForearmL",
+    "DEF-Bip001ForearmL",
+    "DEF-Bip001ForearmL001",
+    "ORG-Bip001HandL",
+    "DEF-Bip001HandL"
+  ],
+  "supportPositionsUnchanged": true,
+  "markersUnchanged": true,
+  "note": "All velocities are finite differences at 30Hz. A marker near maximum reach need not coincide with the peak of the outward sweep."
+}

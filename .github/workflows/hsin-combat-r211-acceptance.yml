@@ -1,0 +1,41 @@
+name: Hsin R2.1.1 exact-clock acceptance
+on:
+  push:
+    branches: ['experiment/hsin-combat-r211-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm install --no-save --no-audit --no-fund playwright@1.63.0
+      - run: npx playwright install --with-deps chromium
+      - name: Materialize immutable comparison bake
+        run: |
+          git fetch --depth=1 origin 8c4817288702b53c24eb5708e21200d49c03dd9a
+          mkdir -p qa-input
+          git show 8c4817288702b53c24eb5708e21200d49c03dd9a:public/assets/animations/hsin/combat-r2.json > qa-input/before.json
+      - name: Anatomy and acting
+        run: |
+          node tests/hsin-combat-r201-anatomy.test.mjs
+          node tests/hsin-combat-r21.test.mjs
+          node tests/hsin-combat-lab.test.mjs --r2
+      - name: Exact-clock software WebGL captures
+        run: node scripts/qa/run-hsin-combat-acceptance.mjs qa-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hsin-r211-acceptance
+          path: |
+            qa-output
+            docs/hsin-combat-r21/arm-anatomy-after.json
+            docs/hsin-combat-r21/acting-qa.json
+          retention-days: 14
