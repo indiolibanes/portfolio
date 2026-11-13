@@ -1,6 +1,6 @@
 # Sophia immersive R3 — vertical launch, orbit and audio
 
-Status: **STRUCTURAL_PASS / CPU_TRANSFORM_RIG_CONTACT_TARGET_PASS / VISUAL_QA_PENDING / ARTISTIC_APPROVAL_PENDING / MOBILE_GPU_PENDING**. No merge, production deploy, asset regeneration or Blendstra job.
+Status: **STRUCTURAL_PASS / CPU_TRANSFORM_RIG_CONTACT_TARGET_PASS / VISUAL_QA_PENDING / ARTISTIC_APPROVAL_PENDING / MOBILE_GPU_PENDING**. No merge, manual/production deploy, asset regeneration or Blendstra job.
 
 ## Continuation and routes
 
@@ -58,6 +58,12 @@ One RAF owner reuses `createRenderLoop`; no animation frame polling while hidden
 ## WebGL and evidence gate
 
 Managed preview was attempted using the supplied preview service. It launched Astro through the local CLI, which returned a background-server result, then the preview service exited/stopped. Status confirmed no running preview. No sandbox/network bypass, alternative browser driver, replacement server or public deployment was used to disguise this limitation. **No new browser screenshots or launch videos were obtained.** No SwiftShader, physical GPU, Samsung or human-artistic PASS is claimed. This differs from R2's prior Chrome WebGL-disabled report; do not count either as a rendered R3 proof.
+
+After the draft was opened, the existing Cloudflare GitHub integration automatically generated a successful branch preview for implementation head `1dd0dfbb599b44fcd380b4a0ffe3531309c3f2fa`. Initial direct navigation to the preview redirected to the existing Cloudflare Access sign-in page. The owner then explicitly authorized access through the browser handoff. Fresh visible state confirmed the actual **Sophia · Modo Imersivo** page at `/modo-imersivo/?launchQA=1`, so authentication completed; no Access policy was changed.
+
+The authorized browser still failed before rendering any 3D scene. Its actual console reported `GL_VENDOR = Disabled`, `GL_RENDERER = Disabled`, `BindToCurrentSequence failed` and `THREE.WebGLRenderer: Error creating WebGL context`. The page exposed the recovery status and retry control. Result: **PREVIEW_AUTHENTICATED / WEBGL_CONTEXT_UNAVAILABLE**, not WEBGL_RENDER_PASS. No 3D capture, audible launch recording, SwiftShader or hardware-GPU validation was obtained. No attempt was made to weaken browser isolation or site authentication. The preview hostname still requires Access for an anonymous visitor; the production Sophia asset GET was anonymous, while the new page remains unmerged/unpublished in production. Existing automatic preview creation is distinct from a manual or production deploy.
+
+GitHub checks on implementation head `1dd0dfbb599b44fcd380b4a0ffe3531309c3f2fa` all completed successfully: Cloudflare Pages, build, lunar-dance and facial-regression. The final documentation-only follow-up records these observations without changing runtime or test inputs.
 
 | Gate | This delivery | Still needed |
 | --- | --- | --- |
