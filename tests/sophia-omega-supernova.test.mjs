@@ -30,7 +30,8 @@ test('Omega is a distinct navigational portal and keeps the other three reading 
   assert.match(component, /const modes = \['authorial', 'editorial', 'legacy'\];/);
   assert.match(component, /data-omega-portal/);
   assert.match(component, /href="\/modo-imersivo\/"/);
-  assert.match(component, /MODO IMERSIVO <small>\[EXPERIMENTAL\]<\/small>/);
+  assert.doesNotMatch(component, /serious-omega-caption|\[EXPERIMENTAL\]/);
+  assert.match(component, /aria-label="Ω — Modo Imersivo Experimental/);
   assert.match(component, /omega-core-supernova/);
   assert.match(component, /if \(reducedMotion\.matches \|\| !omegaTransition\) return/);
   const header = await readFile('src/components/PortfolioHeader.astro', 'utf8');
