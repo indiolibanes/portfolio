@@ -75,3 +75,16 @@ test('thruster flicker is deterministic, bounded, steady when reduced, and calms
   assert.ok(mean(R3.ignition, R3.ignition + .28) > mean(R3.ignition + 1.2, R3.ignition + 1.5) + .15, 'ignition pulse');
   assert.ok(mean(R3.launch, R3.launch + .5) > mean(R3.launch + 2, R3.launch + 2.5) + .15, 'release pulse');
 });
+
+test('countdown digits are filled with Sophia\'s palette (cream → gold → crimson), not flat white', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
+  const rule = page.match(/\n\s*\.immersive__countdown \{[^}]*\}/)?.[0] ?? '';
+  assert.match(rule, /color:transparent/);
+  assert.match(rule, /background-clip:text/);
+  for (const c of ['#fffaf0', '#f0b45a', '#b11626']) assert.ok(rule.includes(c), `palette colour ${c} missing`);
+  assert.match(rule, /font:400 min\(82vw,76dvh\)/, 'font sizing kept');
+  // The timer still counts 5..1 and zero from the one authoritative sampler.
+  assert.equal(sample(R3.countdown).countdownDigit, 5);
+  assert.equal(sample(R3.launch).countdownDigit, 0);
+});
