@@ -287,6 +287,8 @@ const showOmega = Astro.url.pathname === '/';
       const rect = omega.querySelector('.serious-omega-star').getBoundingClientRect();
       omegaTransition.style.setProperty('--omega-x', (rect.left + rect.width / 2) + 'px');
       omegaTransition.style.setProperty('--omega-y', (rect.top + rect.height / 2) + 'px');
+      // Escape the header stacking/overflow context so the supernova covers the viewport.
+      document.body.appendChild(omegaTransition);
       omegaTransition.classList.add('is-exploding');
       window.setTimeout(() => { window.location.assign(href); }, 1300);
     });
