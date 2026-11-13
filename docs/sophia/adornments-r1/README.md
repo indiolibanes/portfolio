@@ -1,3 +1,5 @@
+> **Atualização de 13/11 — handoff condicionado:** Work relatou equivalência alpha↔6H, Book/Pen extraíveis e um piloto estrutural com 255 poses, mas esse piloto **não está publicado no PR #303**. Para Claude, iniciar por [claude-preflight-handoff.md](claude-preflight-handoff.md) e [handoff-artifacts-required.md](handoff-artifacts-required.md). A estrela C1 é uma **marca plana na pele sob a franja**, não três adornos elevados da 6H. Não executar integração final sem export/revisão do piloto.
+
 # SOPHIA — Adornments Recovery R1 · Source Lock & Compatibility
 
 **State:** planning-only handoff. Not a finished costume, not a new GLB, not certified against rendered imagery. Do not merge automatically.
