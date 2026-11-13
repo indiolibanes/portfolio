@@ -1,0 +1,212 @@
+{
+  "status": "CPU_PRESERVATION_PASS_WEBGL_PENDING",
+  "baselineSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+  "candidateSha256": "ce3386a08ce6624fb09cb34a7d9a9028f65f2d7d83033c552c4119363eb62666",
+  "poses": 255,
+  "comparedNodeMatrices": [
+    "Book",
+    "Pen",
+    "head",
+    "hand_L",
+    "hand_R"
+  ],
+  "maxUnchangedNodeMatrixError": 0,
+  "display": {
+    "meshes": 286,
+    "triangles": 291306,
+    "geometries": 286,
+    "materials": 25,
+    "textures": 4,
+    "skeletons": 1
+  },
+  "cycles": [
+    {
+      "cycle": 1,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28164536
+    },
+    {
+      "cycle": 2,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28012264
+    },
+    {
+      "cycle": 3,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28037968
+    },
+    {
+      "cycle": 4,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28058776
+    },
+    {
+      "cycle": 5,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28078568
+    },
+    {
+      "cycle": 6,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28092112
+    },
+    {
+      "cycle": 7,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28145896
+    },
+    {
+      "cycle": 8,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28152624
+    },
+    {
+      "cycle": 9,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28225872
+    },
+    {
+      "cycle": 10,
+      "mounted": {
+        "meshes": 286,
+        "triangles": 291306,
+        "geometries": 286,
+        "materials": 25,
+        "textures": 4,
+        "skeletons": 1
+      },
+      "unmounted": {
+        "sceneDetached": true,
+        "geometryDisposeCalls": 286,
+        "textureDisposeCalls": 4,
+        "materialDisposeCalls": 25
+      },
+      "heapBytes": 28229264
+    }
+  ],
+  "rendererDrawCalls": null,
+  "GpuMemory": null,
+  "decodeLatencyMs": null,
+  "limitations": [
+    "Empty Texture placeholders; no rasterization or decode test",
+    "CPU object disposal only, not GPU leak proof",
+    "No WebGL/Android/artistic PASS"
+  ]
+}

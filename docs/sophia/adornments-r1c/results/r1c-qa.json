@@ -1,0 +1,170 @@
+{
+  "status": "R1C_6H_VISUAL_CANDIDATE",
+  "identity": "IDENTITY_BLOCKED",
+  "integration": "NO_GO",
+  "draftPr": 305,
+  "basePr": 304,
+  "baseSha": "c59335f823f30ed2af4e55ccddc1044277929d61",
+  "handoffSha": "bbd350e8c5a8e9edbd5596282a772f2dd8c3bd9a",
+  "preflight303Sha": "cb1ae5ebeaeee43b0ea26d2d7cdd2363905c7c8b",
+  "gates": [
+    {
+      "gate": "SOURCE",
+      "status": "PASS",
+      "evidence": "r1c-source-diff.json, r1c-preservation.json; recovered pilot SHA + deterministic reproduction"
+    },
+    {
+      "gate": "IDENTITY_C1",
+      "status": "BLOCKED",
+      "evidence": "r1c-identity.md; C1 master inspected, face/fringe/proportions diverge; no mark solution implemented"
+    },
+    {
+      "gate": "BOOK_PEN_RECOVERY",
+      "status": "PASS",
+      "scope": "Bytes, rig sockets, UV/materials, original channels preserved; not grip approval"
+    },
+    {
+      "gate": "WRITING_CONTACT",
+      "status": "FAIL",
+      "evidence": "r1c-writing-contact.md; retained mitten occlusion, cuff/book and forearm/sleeve intersections; source offsets rejected"
+    },
+    {
+      "gate": "COAT",
+      "status": "PARTIAL",
+      "evidence": "r1c-coat-go-no-go.md; chin/collar 12->0/61 and 65->0/100 dense; remaining defects unchanged; no new shoulder clearance claim"
+    },
+    {
+      "gate": "ANIMATION_PRESERVATION",
+      "status": "PASS",
+      "scope": "Exact five animation JSON + input/output accessors/prefix bytes, 101 joints/IBM/weights, four morphs; 255 CPU transform comparisons"
+    },
+    {
+      "gate": "ANIMATION_VISUAL",
+      "status": "PARTIAL",
+      "scope": "Real GLB CPU renders/loops, source garment/contact problems remain; not artistic approval"
+    },
+    {
+      "gate": "PERFORMANCE_WEBGL",
+      "status": "PENDING",
+      "evidence": "Chromium aborts before context: socket() failed: Operation not permitted; no measured draw calls/VRAM/decoder latency"
+    },
+    {
+      "gate": "MOBILE_GPU",
+      "status": "PENDING",
+      "evidence": "No Samsung Internet physical device / 16:9 and 9:16 runtime validation"
+    },
+    {
+      "gate": "SECURITY_PRESERVATION",
+      "status": "PASS",
+      "scope": "Public tracked sources/runtime/config unchanged; private binary/media files excluded; no R2/Access changes"
+    },
+    {
+      "gate": "ARTISTIC",
+      "status": "BLOCKED",
+      "evidence": "C1 unresolved and owner inspection pending; zero BVH count does not approve appearance"
+    }
+  ],
+  "collision": {
+    "posesPerModel": 161,
+    "baselinePoses": 61,
+    "densePoses": 100,
+    "pairs": 17,
+    "pairedTriangleSurfaceTests": 5474,
+    "method": "Actual glTF LBS/morph sampling, frozen R1.B indexed regions, Blender BVH epsilon 0",
+    "shoulders": {
+      "shellTrianglesEach": 1246,
+      "proximalTorsoTrianglesEach": 245,
+      "coverage": "PARTIAL: torso proxy, source has no full under-coat humerus surface"
+    },
+    "depthOrContainmentOrContinuousTest": false
+  },
+  "cpuRuntime": {
+    "status": "PASS_CPU_ONLY",
+    "mountDisposeCycles": 10,
+    "poses": 255,
+    "meshes": 286,
+    "triangles": 291306,
+    "geometries": 286,
+    "materials": 25,
+    "placeholderTextureObjects": 4,
+    "skeletons": 1,
+    "drawCallsMeasured": null,
+    "GpuMemoryMeasured": null,
+    "decodeLatencyMs": null,
+    "renderer": null,
+    "comparedNodeMatrices": [
+      "Book",
+      "Pen",
+      "head",
+      "hand_L",
+      "hand_R"
+    ],
+    "disposeLimit": "Counts of explicit dispose calls and measured scene detachment only; not heap/VRAM release"
+  },
+  "tests": [
+    {
+      "command": "npm run check:sophia-adornments",
+      "status": "PASS",
+      "privateLog": "test-adornments.log",
+      "sha256": "6d301a12636a0ef122cbb64ca7f94dd5bb142d2a4815a931ecfacf60289ae01b"
+    },
+    {
+      "command": "npm run check:sophia-adornments-r1c",
+      "status": "PASS",
+      "privateLog": "test-r1c.log",
+      "sha256": "39bdb6d7c0ae35886bc88794f01e7a2bb1e5fc7cb1a52279df5837f4ae76a5d3"
+    },
+    {
+      "command": "npm run check:sophia",
+      "status": "PASS",
+      "privateLog": "test-sophia.log",
+      "sha256": "51fc5b2e84826e2c7a908f8fc217304219e3ba1166d3b88febd99406659b9f61"
+    },
+    {
+      "command": "npm run check",
+      "status": "PASS",
+      "privateLog": "test-check.log",
+      "sha256": "b0a32c6e794bd374d6fe36e1ed76d452a62c46cc317a9c982f282235e9c409d8"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "privateLog": "test-build.log",
+      "sha256": "f895f7a13968cf96ad06b87022d78934551b97ace1654183ad333b80a0b85515"
+    }
+  ],
+  "r3FreshBinaryRecount": false,
+  "r3ClipsReported": 47,
+  "privateEvidence": "r1c-private-manifest.json; private bundle, no URLs or binary blobs committed",
+  "missingRequiredArtifacts": [
+    {
+      "name": "C1_face_mark.mp4",
+      "reason": "IDENTITY_BLOCKED: no valid cutaneous mark/fringe implemented; diagnostic C1_identity_blocked.mp4 provided instead"
+    },
+    {
+      "name": "Three.js WebGL captures",
+      "reason": "Browser unavailable before graphics context"
+    }
+  ],
+  "independentAstraReview": "PENDING_AFTER_IMPLEMENTATION",
+  "noAutomaticNextStage": [
+    "R1.D",
+    "public integration",
+    "Tripo3D",
+    "merge"
+  ],
+  "skinning": {
+    "poses": 161,
+    "pieces": 11,
+    "rows": 1771,
+    "allChangedPiecesCovered": true,
+    "opposedFaceNormalsMax": 0,
+    "minRelativeTriangleAreaAllPieces": 0.7546292617022259,
+    "limit": "No geometric inversion in sampled faces; not full garment self-collision or artistic approval"
+  },
+  "additionalVerification": {
+    "command": "npm run check:sophia-adornments-r1c",
+    "status": "PASS",
+    "scope": "Rerun after CPU disposal labels and piece material/UV provenance report additions; GLB unchanged"
+  }
+}

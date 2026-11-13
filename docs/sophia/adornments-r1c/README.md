@@ -1,6 +1,6 @@
 # Sophia R1.C — C1 Identity & Contact Repair
 
-**Estado:** handoff documental; nenhuma malha, GLB, animação ou runtime foi alterado neste PR. Base: PR #304, commit c59335f823f30ed2af4e55ccddc1044277929d61. Preservar draft, sem merge.
+**Estado:** execução R1.C parcial: `IDENTITY_BLOCKED`, gola experimental corrigida, contatos/vestuário não aprovados. Resultados verificáveis em [results/](results/), com [QA separado por gate](results/r1c-qa.json) e [reprodução](results/runbook.md). Nenhum asset ou runtime público foi alterado. O handoff histórico abaixo descreve o ponto de partida. Base: PR #304, commit c59335f823f30ed2af4e55ccddc1044277929d61. Preservar draft, sem merge.
 
 ## Resultados sólidos da R1.A/B
 - Fonte `public/experimental/sophia-alpha.glb`: SHA-256 `3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a`, compatível com a candidata 6H arquivada.

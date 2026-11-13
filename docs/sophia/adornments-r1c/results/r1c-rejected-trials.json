@@ -1,0 +1,924 @@
+{
+  "method": "10 identical quick poses, real GLB BVH; not a production/visual approval",
+  "trials": [
+    {
+      "trial": "a",
+      "candidateSha256": "52ea256e316b0f15c064a11f5504e3e336cfb77211c8c41cd95fc96b064db73e",
+      "parameters": {
+        "book_offset": 0.006,
+        "collar_drop": 0.006,
+        "cuff_radius": 0.002,
+        "cuff_extension": 0,
+        "back_ease": 0.005,
+        "shoulder_blend": 0.08
+      },
+      "poses": 10,
+      "retained": false,
+      "reason": "Rejected: Book offset introduces Pen/Book intersections, hand/Book and shoulder/tail tests worsen",
+      "pairs": [
+        {
+          "pair": "hands__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 170,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 212,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "hands__pen",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 286,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 235,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "cuffs__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 375,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 376,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 1,
+            "maxTrianglePairs": 275,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "wrists_forearms__sleeves",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 32,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 32,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "sleeves__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "chin__collar",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 20,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "lapels__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__body",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__coat",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 741,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 747,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          }
+        },
+        {
+          "pair": "ear_ribbons__mane",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "book__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__proximal_torso_L",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 30,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 33,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__proximal_torso_R",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        }
+      ]
+    },
+    {
+      "trial": "b",
+      "candidateSha256": "bdfebc8908193823f9ae98033d18cb559f46dd1fef8d63163a82671e1e415401",
+      "parameters": {
+        "book_offset": 0.0,
+        "collar_drop": 0.006,
+        "cuff_radius": 0.0,
+        "cuff_extension": 0,
+        "back_ease": 0,
+        "shoulder_blend": 0
+      },
+      "poses": 10,
+      "retained": false,
+      "reason": "Collar-only positional delta retained; final derivative transports authored normals locally instead of globally resmoothing",
+      "pairs": [
+        {
+          "pair": "hands__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 170,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 170,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "hands__pen",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 286,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 286,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "cuffs__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 375,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 375,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "wrists_forearms__sleeves",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 32,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 32,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "sleeves__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "chin__collar",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 20,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "lapels__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__body",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__coat",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 741,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 741,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          }
+        },
+        {
+          "pair": "ear_ribbons__mane",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "book__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__proximal_torso_L",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 30,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 30,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__proximal_torso_R",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        }
+      ]
+    },
+    {
+      "trial": "c",
+      "candidateSha256": "23eed273ad24a6f089c1a3bf54a33ac16697255103c9a900da4d57848abe619e",
+      "parameters": {
+        "book_offset": 0,
+        "collar_drop": 0.006,
+        "cuff_radius": 0,
+        "cuff_extension": 0,
+        "back_ease": 0,
+        "shoulder_blend": 0,
+        "elbow_ease": 0.005
+      },
+      "poses": 10,
+      "retained": false,
+      "reason": "Rejected: elbow front-ease increases forearm/sleeve max from 32 to 62",
+      "pairs": [
+        {
+          "pair": "hands__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 170,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 7,
+            "maxTrianglePairs": 170,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "hands__pen",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 286,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 286,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "cuffs__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 375,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 9,
+            "maxTrianglePairs": 375,
+            "worstClip": "Point",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__book",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "wrists_forearms__sleeves",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 32,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 62,
+            "worstClip": "Write",
+            "worstSeconds": 1.6
+          }
+        },
+        {
+          "pair": "sleeves__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "chin__collar",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 3,
+            "maxTrianglePairs": 20,
+            "worstClip": "Write",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "lapels__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__body",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 436,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "tail__coat",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 741,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 10,
+            "maxTrianglePairs": 741,
+            "worstClip": "Walk",
+            "worstSeconds": 0.272727273
+          }
+        },
+        {
+          "pair": "ear_ribbons__mane",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "book__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "pen__chin",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__proximal_torso_L",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 30,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 30,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__proximal_torso_R",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 4,
+            "maxTrianglePairs": 35,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_L__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        },
+        {
+          "pair": "shoulder_R__cranium",
+          "before": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          },
+          "after": {
+            "poses": 10,
+            "posesWithCrossing": 0,
+            "maxTrianglePairs": 0,
+            "worstClip": "REST",
+            "worstSeconds": 0
+          }
+        }
+      ]
+    }
+  ]
+}
