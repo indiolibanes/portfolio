@@ -502,22 +502,6 @@ html:not([data-xm-js]) .xm-social { opacity: 1; transform: none; }
   .xm-ch.is-lit::after { animation: none; opacity: 0.3; }
 }
 
-/* Shared orbital menu: unchanged 56px button / 120px orbit / 500ms glass opening.
-   In the Autoral header it occupies a dedicated slot to the LEFT of α. */
-.xm-header--authorial {
-  position: relative;
-  top: auto;
-  flex: 0 0 112px;
-  width: 112px;
-  height: var(--xm-size);
-  padding: 0;
-  z-index: 80;
-  align-self: center;
-}
-.xm-header--authorial .xm-menu { margin: 0 auto; }
-.xm-header--authorial .xm-drawer { left: 0; right: auto; }
-.xm-header--authorial .xm-drawer::before { transform-origin: 0 0; }
-
 /* In Immersivo the drawer contains only the three existing reading-mode
    emblems, centered, followed by the original social/contact row. */
 .xm-mode-nav {
@@ -546,17 +530,7 @@ html:not([data-xm-js]) .xm-social { opacity: 1; transform: none; }
 .xm-mode-art { display: block; width: 100%; height: auto; }
 .xm-mode-nav + .xm-social { margin-top: 0; }
 
-/* No JS, preserve the original PortfolioHeader's text navigation rather than
-   showing duplicate fallback drawers. Immersivo retains its own CSS fallback. */
-html:not([data-xm-js='true']) .site-header .xm-header--authorial { display: none; }
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .site-header .xm-header--authorial { display: none; }
-
 @media (max-width: 560px) {
-  .xm-header--authorial {
-    flex-basis: 76px;
-    width: 76px;
-    padding: 0;
-  }
   .xm-mode-nav { grid-template-columns: repeat(3, 56px); gap: 12px; }
   .xm-mode-choice { width: 56px; height: 56px; }
 }
