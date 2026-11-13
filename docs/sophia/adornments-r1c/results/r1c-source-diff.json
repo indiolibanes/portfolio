@@ -1,0 +1,447 @@
+{
+  "status": "BOUNDED_GARMENT_DIFF_VERIFIED_NOT_VISUAL_APPROVAL",
+  "source6HSha256": "3b0e7db84809d6e4fe6eaa2bc6299874c202c529adcbd369cf83c6a29d3c3a2a",
+  "pilotR1BSha256": "fd278e201f1854dd1a2dae6f24064a0c2f9013262007cece70ff478c28ff1fce",
+  "candidateSha256": "ce3386a08ce6624fb09cb34a7d9a9028f65f2d7d83033c552c4119363eb62666",
+  "candidateBytes": 21181520,
+  "originalBinPrefixUnchanged": true,
+  "entireBinUnchanged": false,
+  "newBinBytes": 381024,
+  "originalAccessorAndBufferViewPrefixUnchanged": true,
+  "nodesAndSocketsExact": true,
+  "skinsInverseBindMatricesWeightsJointsExact": true,
+  "joints": 101,
+  "originalClipsAndSamplesExact": true,
+  "clips": [
+    {
+      "name": "Idle",
+      "channels": 95,
+      "samplers": 95,
+      "duration": 4.0
+    },
+    {
+      "name": "Write",
+      "channels": 94,
+      "samplers": 94,
+      "duration": 3.200000047683716
+    },
+    {
+      "name": "Point",
+      "channels": 94,
+      "samplers": 94,
+      "duration": 2.4000000953674316
+    },
+    {
+      "name": "Wave",
+      "channels": 93,
+      "samplers": 93,
+      "duration": 2.4000000953674316
+    },
+    {
+      "name": "Walk",
+      "channels": 102,
+      "samplers": 102,
+      "duration": 1.0
+    }
+  ],
+  "morphsExact": [
+    "Blink",
+    "Smile",
+    "BrowRaise",
+    "MouthOpen"
+  ],
+  "newBody": false,
+  "newBones": 0,
+  "newMorphs": 0,
+  "newMaterialsOrTextures": 0,
+  "newTopology": false,
+  "meshes": [
+    {
+      "mesh": 0,
+      "primitiveCount": 276,
+      "topologyUnchanged": true,
+      "uvColorsMaterialsMorphTargetsUnchanged": true
+    },
+    {
+      "mesh": 1,
+      "primitiveCount": 5,
+      "topologyUnchanged": true,
+      "uvColorsMaterialsMorphTargetsUnchanged": true
+    },
+    {
+      "mesh": 2,
+      "primitiveCount": 2,
+      "topologyUnchanged": true,
+      "uvColorsMaterialsMorphTargetsUnchanged": true
+    },
+    {
+      "mesh": 3,
+      "primitiveCount": 3,
+      "topologyUnchanged": true,
+      "uvColorsMaterialsMorphTargetsUnchanged": true
+    }
+  ],
+  "changedAttributes": [
+    {
+      "mesh": 0,
+      "sourcePrimitive": 4,
+      "attribute": "POSITION",
+      "verticesChanged": 12,
+      "maxEuclideanDelta": 2.2590160369873047e-05,
+      "beforeAccessor": 914,
+      "afterAccessor": 3503
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 4,
+      "attribute": "NORMAL",
+      "verticesChanged": 32,
+      "maxEuclideanDelta": 0.0007269784103631229,
+      "beforeAccessor": 915,
+      "afterAccessor": 3504,
+      "maxAngleDegrees": 0.041652795938242226
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 12,
+      "attribute": "POSITION",
+      "verticesChanged": 54,
+      "maxEuclideanDelta": 8.755922317504883e-05,
+      "beforeAccessor": 893,
+      "afterAccessor": 3505
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 12,
+      "attribute": "NORMAL",
+      "verticesChanged": 70,
+      "maxEuclideanDelta": 0.019336732013367684,
+      "beforeAccessor": 894,
+      "afterAccessor": 3506,
+      "maxAngleDegrees": 1.107930372175634
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 121,
+      "attribute": "POSITION",
+      "verticesChanged": 130,
+      "maxEuclideanDelta": 0.0059999823570251465,
+      "beforeAccessor": 2371,
+      "afterAccessor": 3507
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 121,
+      "attribute": "NORMAL",
+      "verticesChanged": 168,
+      "maxEuclideanDelta": 0.03626158300635972,
+      "beforeAccessor": 2372,
+      "afterAccessor": 3508,
+      "maxAngleDegrees": 2.077749504509875
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 122,
+      "attribute": "POSITION",
+      "verticesChanged": 312,
+      "maxEuclideanDelta": 0.0059999823570251465,
+      "beforeAccessor": 1778,
+      "afterAccessor": 3509
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 122,
+      "attribute": "NORMAL",
+      "verticesChanged": 157,
+      "maxEuclideanDelta": 0.22187541192105836,
+      "beforeAccessor": 1779,
+      "afterAccessor": 3510,
+      "maxAngleDegrees": 12.738746077129582
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 123,
+      "attribute": "POSITION",
+      "verticesChanged": 24,
+      "maxEuclideanDelta": 0.0059999823570251465,
+      "beforeAccessor": 1787,
+      "afterAccessor": 3511
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 123,
+      "attribute": "NORMAL",
+      "verticesChanged": 0,
+      "maxEuclideanDelta": 0.0,
+      "beforeAccessor": 1788,
+      "afterAccessor": 3512,
+      "maxAngleDegrees": 0.0
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 124,
+      "attribute": "POSITION",
+      "verticesChanged": 24,
+      "maxEuclideanDelta": 0.0059999823570251465,
+      "beforeAccessor": 1796,
+      "afterAccessor": 3513
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 124,
+      "attribute": "NORMAL",
+      "verticesChanged": 0,
+      "maxEuclideanDelta": 0.0,
+      "beforeAccessor": 1797,
+      "afterAccessor": 3514,
+      "maxAngleDegrees": 0.0
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 125,
+      "attribute": "POSITION",
+      "verticesChanged": 9,
+      "maxEuclideanDelta": 0.005971968173980713,
+      "beforeAccessor": 1805,
+      "afterAccessor": 3515
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 125,
+      "attribute": "NORMAL",
+      "verticesChanged": 0,
+      "maxEuclideanDelta": 0.0,
+      "beforeAccessor": 1806,
+      "afterAccessor": 3516,
+      "maxAngleDegrees": 0.0
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 126,
+      "attribute": "POSITION",
+      "verticesChanged": 9,
+      "maxEuclideanDelta": 0.005971968173980713,
+      "beforeAccessor": 1814,
+      "afterAccessor": 3517
+    },
+    {
+      "mesh": 0,
+      "sourcePrimitive": 126,
+      "attribute": "NORMAL",
+      "verticesChanged": 0,
+      "maxEuclideanDelta": 0.0,
+      "beforeAccessor": 1815,
+      "afterAccessor": 3518,
+      "maxAngleDegrees": 0.0
+    }
+  ],
+  "changedPieceProvenance": [
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 4,
+      "pilotAndCandidatePrimitive": 4,
+      "triangles": 13466,
+      "materialIndex": 10,
+      "materialName": "Sophia_coat",
+      "materialJsonSha256": "eacbc2fd83f1ec25b34e2f1442f60069690ac52c7e8d0082e46c4ca326d92e4f",
+      "texcoord0Accessor": 916,
+      "texcoord0ArraySha256": "c0017e28cb2a503f4f04e538d9ce0f6f1e28a574acad3cd555864e91b50413f8",
+      "vertexColorAccessor": 917,
+      "weightsArraySha256": "d4d3df535f53952c1123efb05a5ff7876c1a637e119ba8673bc2227e3ac24682",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 12,
+      "pilotAndCandidatePrimitive": 9,
+      "triangles": 7080,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 895,
+      "weightsArraySha256": "036dbec30708616b7be3694c8a10f7faa05c7f2e570418d544bacbbddfdc6f4b",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 121,
+      "pilotAndCandidatePrimitive": 118,
+      "triangles": 772,
+      "materialIndex": 13,
+      "materialName": "Sophia_navycloth",
+      "materialJsonSha256": "a937b7186751d118008c37f60673adf24a10e421a47acc97917c0b4651725658",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 2375,
+      "weightsArraySha256": "ce158b888abe49ced16073da6448e9591a5191b12d1003622ffa678a05ec92e0",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 122,
+      "pilotAndCandidatePrimitive": 119,
+      "triangles": 1536,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 1782,
+      "weightsArraySha256": "5c07bde758a42e5a6a8f674b4eaeddd52c452040c2c95e6c6288e6a190b109b9",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 123,
+      "pilotAndCandidatePrimitive": 120,
+      "triangles": 22,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 1791,
+      "weightsArraySha256": "af3229f9aba840cccc6eb15b21afd6ddddf486a548c9abcffbb332ef579fa4a2",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 124,
+      "pilotAndCandidatePrimitive": 121,
+      "triangles": 22,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 1800,
+      "weightsArraySha256": "af3229f9aba840cccc6eb15b21afd6ddddf486a548c9abcffbb332ef579fa4a2",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 125,
+      "pilotAndCandidatePrimitive": 122,
+      "triangles": 8,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 1809,
+      "weightsArraySha256": "fb89fb4dc6127567a0ed07a96ea6d7187d6e27d816b51ec7823737411987d49b",
+      "uvMaterialSkinningUnchanged": true
+    },
+    {
+      "node": 93,
+      "nodeName": "Sophia",
+      "mesh": 0,
+      "skin": 0,
+      "source6HPrimitive": 126,
+      "pilotAndCandidatePrimitive": 123,
+      "triangles": 8,
+      "materialIndex": 24,
+      "materialName": "Sophia_gold_garment",
+      "materialJsonSha256": "3d9cbcbd803c6e48cf9ac206d90992faa77db0abf1c0b483846d0bf9170be14e",
+      "texcoord0Accessor": null,
+      "texcoord0ArraySha256": null,
+      "vertexColorAccessor": 1818,
+      "weightsArraySha256": "fb89fb4dc6127567a0ed07a96ea6d7187d6e27d816b51ec7823737411987d49b",
+      "uvMaterialSkinningUnchanged": true
+    }
+  ],
+  "skinning": [
+    {
+      "sourcePrimitive": 4,
+      "indexedVertices": 8224,
+      "singleInfluenceFraction": 0.18506809338521402,
+      "maxWeightSumError": 1.1920928955078125e-07,
+      "positiveInfluences": [
+        "chest",
+        "forearm_L",
+        "forearm_R",
+        "hips",
+        "neck",
+        "spine",
+        "thigh_L",
+        "thigh_R",
+        "upper_arm_L",
+        "upper_arm_R"
+      ]
+    },
+    {
+      "sourcePrimitive": 5,
+      "indexedVertices": 8224,
+      "singleInfluenceFraction": 0.18360894941634243,
+      "maxWeightSumError": 1.1920928955078125e-07,
+      "positiveInfluences": [
+        "chest",
+        "forearm_L",
+        "forearm_R",
+        "hips",
+        "neck",
+        "spine",
+        "thigh_L",
+        "thigh_R",
+        "upper_arm_L",
+        "upper_arm_R"
+      ]
+    },
+    {
+      "sourcePrimitive": 121,
+      "indexedVertices": 388,
+      "singleInfluenceFraction": 1.0,
+      "maxWeightSumError": 0.0,
+      "positiveInfluences": [
+        "chest"
+      ]
+    },
+    {
+      "sourcePrimitive": 127,
+      "indexedVertices": 400,
+      "singleInfluenceFraction": 1.0,
+      "maxWeightSumError": 0.0,
+      "positiveInfluences": [
+        "chest"
+      ]
+    },
+    {
+      "sourcePrimitive": 130,
+      "indexedVertices": 400,
+      "singleInfluenceFraction": 1.0,
+      "maxWeightSumError": 0.0,
+      "positiveInfluences": [
+        "chest"
+      ]
+    }
+  ],
+  "identity": "IDENTITY_BLOCKED; legacy three raised stars retained in experimental 6H only",
+  "limits": [
+    "Geometry/CPU proof only; actual contact, WebGL and artistic gates separate",
+    "Original BIN retained and new accessors appended, not an unchanged complete BIN",
+    "Source rest matrices differ from inverse-bind on 12 arm joints; review uses active clips, not REST"
+  ]
+}
