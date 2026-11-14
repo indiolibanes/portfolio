@@ -51,10 +51,16 @@ import '../styles/sophia-room2d-temp.css';
 
           <div class="sophia-arcade-cabinet">
             <div class="sophia-arcade-top">
-              <div class="sophia-portrait-stage" data-sophia-stage="portrait" data-sophia-mood="idle">
+              <div
+                class="sophia-portrait-stage"
+                data-sophia-stage="portrait"
+                data-sophia-actor="portrait"
+                data-sophia-cam="bust"
+                data-sophia-mood="idle"
+                data-sophia-yaw="0.2"
+                data-sophia-reacts
+              >
                 <SophiaPortrait />
-                <canvas class="sophia-stage__canvas" data-sophia-canvas aria-hidden="true"></canvas>
-                <span class="sophia-stage__loading" aria-hidden="true">Sophia está chegando…</span>
               </div>
               <span class="sophia-arcade-top__label" aria-hidden="true">SOPHIA / LEGACY</span>
             </div>

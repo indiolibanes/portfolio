@@ -26,3 +26,6 @@
 
 /assets/models/hsin/*
   Cache-Control: public, max-age=86400
+
+/assets/models/sophia/*
+  Cache-Control: public, max-age=86400

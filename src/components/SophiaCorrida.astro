@@ -15,7 +15,15 @@ const runner = runnerMarkup();
 <div class="corrida" data-decorative-motion aria-hidden="true">
   <div class="corrida__scene"><Fragment set:html={town} /></div>
   <div class="corrida__track">
-    <div class="corrida__runner"><Fragment set:html={runner} /></div>
+    <div
+      class="corrida__runner"
+      data-sophia-actor="runner"
+      data-sophia-clip="Correr_R6"
+      data-sophia-cam="full"
+      data-sophia-yaw="1.0"
+    ><Fragment set:html={runner} /></div>
   </div>
   <div class="corrida__veil"></div>
 </div>
+
+<script is:inline type="module" src="/experimental/sophia-actor.js"></script>

@@ -90,12 +90,16 @@
   letter-spacing:.04em; opacity:.8;
 }
 html[data-sophia404='loading'] [data-sophia-stage]:not([data-sophia-failed='true']) > .sophia-stage__loading {display:block}
-html[data-sophia404='loading'] .sophia-portrait-stage:not([data-sophia-failed='true']) > .sophia-portrait {
+html[data-sophia404='loading'] .sophia-portrait-stage:not([data-sophia-failed='true'],[data-sophia-actor]) > .sophia-portrait {
   visibility:hidden; /* no flash of the old Baby before the GLB becomes visible */
 }
 [data-sophia-ready='true'] > .sophia-stage__canvas {opacity:1}
 [data-sophia-ready='true'] > .sophia-stage__loading {display:none!important}
 .sophia-portrait-stage[data-sophia-ready='true'] > .sophia-portrait {visibility:hidden}
+/* Retrato 3D (sophia-actor.js): o canvas cobre o palco; a ilustração 2D é a reserva. */
+.sophia-portrait-stage > .sophia-actor__canvas {position:absolute; inset:0; z-index:2; width:100%; height:100%; display:block}
+.sophia-portrait-stage[data-sophia3d='on'] > .sophia-portrait {visibility:hidden}
+.sophia-portrait-stage[data-sophia3d='off'] > .sophia-actor__canvas {display:none}
 .sophia-lounge[data-sophia-stage] {
   position:relative; isolation:isolate; box-sizing:border-box;
   overflow:hidden; aspect-ratio:1200/510; min-height:200px;

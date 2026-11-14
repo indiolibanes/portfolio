@@ -27,12 +27,37 @@ export function parseGLB(buf) {
 }
 
 // Lê um accessor como Float32Array (inteiros normalizados viram 0..1 / -1..1).
+// Accessor esparso (glTF §3.6.2.4): só os índices alterados e seus valores. Usado nos morph targets (Blender exporta assim).
+export function readSparse(json, bin, index) {
+  const a = json.accessors[index];
+  const sp = a.sparse;
+  if (!sp) return null;
+  const n = TYPES[a.type];
+  const dv = new DataView(bin.buffer);
+  const iv = json.bufferViews[sp.indices.bufferView];
+  const vv = json.bufferViews[sp.values.bufferView];
+  const ib = bin.byteOffset + (iv.byteOffset || 0) + (sp.indices.byteOffset || 0);
+  const vb = bin.byteOffset + (vv.byteOffset || 0) + (sp.values.byteOffset || 0);
+  const ic = sp.indices.componentType;
+  const indices = new Uint32Array(sp.count);
+  const values = new Float32Array(sp.count * n);
+  for (let k = 0; k < sp.count; k += 1) {
+    indices[k] = ic === 5125 ? dv.getUint32(ib + k * 4, true) : ic === 5123 ? dv.getUint16(ib + k * 2, true) : dv.getUint8(ib + k);
+    for (let c = 0; c < n; c += 1) values[k * n + c] = dv.getFloat32(vb + (k * n + c) * 4, true);
+  }
+  return { indices, values, n };
+}
+
 export function readAccessor(json, bin, index) {
   const a = json.accessors[index];
   const n = TYPES[a.type];
   const C = CTYPES[a.componentType];
   const out = new Float32Array(a.count * n);
-  if (a.bufferView === undefined) return out;
+  if (a.bufferView === undefined) {
+    const sp = readSparse(json, bin, index);
+    if (sp) for (let k = 0; k < sp.indices.length; k += 1) for (let c = 0; c < n; c += 1) out[sp.indices[k] * n + c] = sp.values[k * n + c];
+    return out;
+  }
   const bv = json.bufferViews[a.bufferView];
   const base = bin.byteOffset + (bv.byteOffset || 0) + (a.byteOffset || 0);
   const size = C.BYTES_PER_ELEMENT;
@@ -246,6 +271,23 @@ export class Skeleton {
     if (nodes[this.meshNode] && nodes[this.meshNode].weights) this.restM.set(nodes[this.meshNode].weights.slice(0, nTargets));
     this.morphWeights = new Float32Array(this.restM);
     this.pM = new Float32Array(nTargets);
+    // pesos de morph por nó de malha (modelos com várias malhas com alvos, ex.: corpo, rubor e lágrimas). O caminho
+    // acima (meshNode) continua igual para o alpha; este serve às malhas novas.
+    this.nodeMorph = {};
+    this.nodeMorphRest = {};
+    this.pNM = {};
+    nodes.forEach((nd, i) => {
+      if (nd.mesh === undefined) return;
+      const md = (json.meshes || [])[nd.mesh];
+      const nt = md ? Math.max(0, ...md.primitives.map((p) => (p.targets || []).length)) : 0;
+      if (!nt) return;
+      const rest = new Float32Array(nt);
+      if (md.weights) rest.set(md.weights.slice(0, nt));
+      if (nd.weights) rest.set(nd.weights.slice(0, nt));
+      this.nodeMorphRest[i] = rest;
+      this.nodeMorph[i] = new Float32Array(rest);
+      this.pNM[i] = new Float32Array(rest);
+    });
     this.targetNames = (meshDef && meshDef.extras && meshDef.extras.targetNames) || [];
 
     // animações
@@ -272,7 +314,7 @@ export class Skeleton {
   }
 
   // grava no pose (T, R, S) a amostra do clipe em `time` (segundos, com repetição ou fixo).
-  sample(clip, time, T, R, S, loop = true, M = null) {
+  sample(clip, time, T, R, S, loop = true, M = null, NM = false) {
     const d = clip.duration || 1;
     const t = loop ? ((time % d) + d) % d : Math.min(Math.max(time, 0), d);
     for (const ch of clip.channels) {
@@ -287,9 +329,13 @@ export class Skeleton {
       const v = ch.values;
       if (ch.path === 'weights') {
         // canal de morph: vetor com todos os alvos por quadro-chave; só o nó da malha com pele é usado
+        const c = v.length / times.length;
         if (M && ch.node === this.meshNode) {
-          const c = v.length / times.length;
           for (let k = 0; k < Math.min(c, M.length); k += 1) M[k] = v[i * c + k] + (v[j * c + k] - v[i * c + k]) * f;
+        }
+        const nm = this.pNM[ch.node];
+        if (nm && NM) {
+          for (let k = 0; k < Math.min(c, nm.length); k += 1) nm[k] = v[i * c + k] + (v[j * c + k] - v[i * c + k]) * f;
         }
         continue;
       }
@@ -312,13 +358,16 @@ export class Skeleton {
     this.S.fill(0);
     this.R.fill(0);
     this.morphWeights.fill(0);
+    for (const k in this.nodeMorph) this.nodeMorph[k].fill(0);
     live.forEach((l, li) => {
       this.pT.set(this.restT);
       this.pR.set(this.restR);
       this.pS.set(this.restS);
       this.pM.set(this.restM);
-      if (l.clip) this.sample(l.clip, l.time, this.pT, this.pR, this.pS, l.loop !== false, this.pM);
+      for (const k in this.pNM) this.pNM[k].set(this.nodeMorphRest[k]);
+      if (l.clip) this.sample(l.clip, l.time, this.pT, this.pR, this.pS, l.loop !== false, this.pM, true);
       const w = l.weight / total;
+      for (const k in this.pNM) { const dst = this.nodeMorph[k]; const src = this.pNM[k]; for (let q = 0; q < dst.length; q += 1) dst[q] += src[q] * w; }
       for (let k = 0; k < this.pM.length; k += 1) this.morphWeights[k] += this.pM[k] * w;
       for (let i = 0; i < n * 3; i += 1) { this.T[i] += this.pT[i] * w; this.S[i] += this.pS[i] * w; }
       for (let i = 0; i < n; i += 1) {
@@ -328,7 +377,7 @@ export class Skeleton {
         for (let k = 0; k < 4; k += 1) this.R[o + k] += this.pR[o + k] * w * s;
       }
     });
-    if (!live.length) { this.T.set(this.restT); this.R.set(this.restR); this.S.set(this.restS); this.morphWeights.set(this.restM); return; }
+    if (!live.length) { this.T.set(this.restT); this.R.set(this.restR); this.S.set(this.restS); this.morphWeights.set(this.restM); for (const k in this.nodeMorph) this.nodeMorph[k].set(this.nodeMorphRest[k]); return; }
     for (let i = 0; i < n; i += 1) {
       const o = i * 4;
       const l = Math.hypot(this.R[o], this.R[o + 1], this.R[o + 2], this.R[o + 3]) || 1;

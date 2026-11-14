@@ -21,6 +21,10 @@ html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-px {
   visibility: hidden;
 }
 
+.sophia-mascot-3d { position: relative; display: block; flex: 0 0 66px; width: 66px; }
+.sophia-mascot-3d > .sophia-actor__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sophia-mascot-3d[data-sophia3d='on'] > .sophia-mascot { visibility: hidden; }
+
 .sophia-mascot {
   flex: 0 0 66px; /* 2 px de tela por pixel do desenho */
   width: 66px;
