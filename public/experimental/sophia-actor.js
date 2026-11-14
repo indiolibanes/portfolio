@@ -1,7 +1,7 @@
 // sophia-actor.js — a Sophia 3D como "ator" das páginas (substitui as ilustrações 2D quando o 3D está disponível).
 //
-// Um único contexto WebGL2 (fora da tela) e um único GLB (sophia-lab.glb: Sophia v1.4.2 + jaleco + ornamentos) servem
-// todos os atores da página. Cada ator tem o próprio esqueleto (pose) e um <canvas> 2D onde recebe o quadro; a arte 2D
+// Um contexto WebGL2 fora da tela por modelo serve todos os atores daquele modelo; os dados do GLB são compartilhados.
+// Cada ator tem o próprio esqueleto (pose) e um <canvas> 2D onde recebe o quadro; a arte 2D
 // original continua no DOM como reserva (sem WebGL2, Save-Data, pouca memória, prefers-reduced-motion, modos
 // retrô/sério/monocromático, falha de carga). Só começa a baixar quando o ator entra na tela.
 //
@@ -93,6 +93,7 @@ export const actorsAllowed = () => !reduceQuery.matches && !constrained() && !qu
 const stagePromises = new Map(); // chave do modelo → Promise<palco>
 const sourcePromises = new Map(); // chave do modelo → Promise<ArrayBuffer>
 let disposed = false;
+let suspended = false; // pagehide persistido: uma carga pendente não pode reativar a página no bfcache
 
 // Valida o cabeçalho do GLB antes de gastar um contexto WebGL: corpo que não é GLB (página de erro, HTML do 404) ou
 // arquivo truncado falham aqui, sem criar contexto algum.
@@ -252,7 +253,11 @@ export class Actor {
     s.updateSkin();
   }
 
-  dispose() { this.canvas.remove(); this.layers = []; this.fade = null; }
+  dispose() {
+    this.director?.stop?.(); this.director = null;
+    this.onTick = this.onEnd = null;
+    this.canvas.remove(); this.layers = []; this.fade = null;
+  }
 
   draw() {
     this.size();
@@ -286,7 +291,6 @@ function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; last = 0; }
 function failActor(a, err) {
   const el = a.el;
   actors.delete(el);
-  a.director?.stop?.();
   a.dispose();
   el.dataset.sophia3d = 'off';
   el.dataset.sophiaReady = 'false';
@@ -295,7 +299,7 @@ function failActor(a, err) {
 }
 function loop(now) {
   raf = 0;
-  if (disposed || document.hidden || !actorsAllowed()) { last = 0; return; }
+  if (disposed || suspended || document.hidden || !actorsAllowed()) { last = 0; return; }
   const live = [...actors.values()].filter(canDraw);
   if (!live.length) { last = 0; return; }
   if (!last || now - last >= FRAME_MS - 1) {
@@ -307,7 +311,19 @@ function loop(now) {
   raf = requestAnimationFrame(loop);
 }
 function kick() {
-  if (!disposed && !raf && !document.hidden && actorsAllowed() && [...actors.values()].some(canDraw)) { last = 0; raf = requestAnimationFrame(loop); }
+  if (!disposed && !suspended && !raf && !document.hidden && actorsAllowed() && [...actors.values()].some(canDraw)) { last = 0; raf = requestAnimationFrame(loop); }
+}
+// Atores apenas fora da viewport mantêm seu palco para reentrada rápida. Quando não há consumidor montado,
+// libera contexto E bytes. Espera as cargas pendentes para não invalidar o palco que outro ator está recebendo.
+function releaseUnusedStages() {
+  if (pending.size) return;
+  const used = new Set([...actors.values()].map(a => a.cfgKey));
+  for (const key of new Set([...stagePromises.keys(), ...sourcePromises.keys()])) {
+    if (used.has(key)) continue;
+    const promise = stagePromises.get(key);
+    stagePromises.delete(key); sourcePromises.delete(key);
+    void promise?.then(stage => stage.dispose()).catch(() => {});
+  }
 }
 // Sem argumento: derruba todos os palcos (saída da página). Com `key`: só o palco daquele modelo (restauração de contexto).
 function resetStage(key) {
@@ -324,7 +340,7 @@ function resetStage(key) {
 }
 
 async function wake(el) {
-  if (disposed || actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
+  if (disposed || suspended || document.hidden || !el.isConnected || actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
   pending.add(el);
   try {
     let key = requestedKey(el);
@@ -335,7 +351,7 @@ async function wake(el) {
       console.warn('[Sophia 3D] modelo', key, 'indisponível', err);
       key = useFallback(el, key, err); stage = await getStage(key);
     }
-    if (disposed || !el.isConnected || !visible.has(el) || !actorsAllowed() || document.hidden) return;
+    if (disposed || suspended || !el.isConnected || !visible.has(el) || !actorsAllowed() || document.hidden) return;
     // contexto perdido durante o carregamento: mantém a arte 2D; a restauração acorda o elemento de novo (não é falha definitiva)
     if (stage.renderer.lost) return;
     const a = new Actor(el, stage);
@@ -357,6 +373,8 @@ async function wake(el) {
     console.warn('[Sophia 3D] indisponível; mantendo a ilustração.', err);
   } finally {
     pending.delete(el);
+    if (!el.isConnected) { io.unobserve(el); visible.delete(el); }
+    releaseUnusedStages();
   }
 }
 
@@ -384,7 +402,7 @@ export function actorOf(el) { return actors.get(el) || null; }
 
 document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); else stop(); });
 navigator.connection?.addEventListener?.('change', sync);
-window.addEventListener('pageshow', e => { if (e.persisted) sync(); });
+window.addEventListener('pageshow', e => { if (e.persisted) { suspended = false; sync(); } });
 reduceQuery.addEventListener?.('change', sync);
 const preferences = new MutationObserver(sync);
 preferences.observe(document.documentElement, {
@@ -392,6 +410,7 @@ preferences.observe(document.documentElement, {
 });
 const motion = new MutationObserver(() => {
   for (const [el, a] of actors) if (!el.isConnected) { io.unobserve(el); visible.delete(el); a.dispose(); actors.delete(el); }
+  releaseUnusedStages();
   if ([...actors.values()].some(canDraw)) kick(); else stop();
 });
 motion.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-motion-playing'] });
@@ -401,7 +420,7 @@ document.addEventListener('sophia:tetris', (ev) => {
   for (const [el, a] of actors) if (el.dataset.sophiaReacts !== undefined) a.react(mood);
   kick();
 });
-window.addEventListener('pagehide', e => { stop(); if (e.persisted) return; disposed = true; io.disconnect(); motion.disconnect(); preferences.disconnect(); resetStage(); sourcePromises.clear(); });
+window.addEventListener('pagehide', e => { suspended = true; stop(); if (e.persisted) return; disposed = true; io.disconnect(); motion.disconnect(); preferences.disconnect(); resetStage(); sourcePromises.clear(); });
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => mountActors(), { once: true });
 else mountActors();
