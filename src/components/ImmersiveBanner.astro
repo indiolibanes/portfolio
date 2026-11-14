@@ -1,0 +1,147 @@
+---
+// Banner do Modo Imersivo. Faixa escura e autocontida: não depende do tema claro/sério da página.
+// O clipe é decorativo (5 s, WebM com canal alfa, ~430 KB) e só carrega quando visível.
+// O texto carrega todo o sentido; sem o vídeo, o pôster estático ocupa o mesmo lugar.
+---
+<aside class="immersive-banner" aria-labelledby="immersive-banner-title" data-immersive-banner>
+  <div class="immersive-banner__copy">
+    <p class="immersive-banner__eyebrow">Modo imersivo · experimento</p>
+    <h2 id="immersive-banner-title" class="immersive-banner__title">
+      Uma raposa, um foguete e uma <span class="immersive-banner__count">contagem regressiva</span>.
+    </h2>
+    <p class="immersive-banner__lede">
+      Tecnologia criativa com o processo à vista: roteiro, animação 3D e engenharia por trás de dez segundos de lançamento.
+    </p>
+    <p class="immersive-banner__actions">
+      <a class="immersive-banner__cta" href="/modo-imersivo/">Entrar no modo imersivo</a>
+      <a class="immersive-banner__link" href="/curiosidades/#creative-process-title">Ver como foi feito</a>
+    </p>
+    <p class="immersive-banner__note" data-immersive-note>Experiência 3D de cerca de 46&nbsp;MB. Melhor no desktop.</p>
+  </div>
+
+  <div class="immersive-banner__stage" aria-hidden="true">
+    <video
+      class="immersive-banner__video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      tabindex="-1"
+      disablepictureinpicture
+      width="960"
+      height="540"
+      poster="/assets/immersive-banner/sophia-rocket-still.webp"
+      data-src="/assets/immersive-banner/sophia-rocket.webm"
+    ></video>
+  </div>
+</aside>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('[data-immersive-banner]');
+    const video = root && root.querySelector('video');
+    if (!video) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = navigator.connection || {};
+    const saveData = connection.saveData === true;
+    if (saveData) {
+      const note = root.querySelector('[data-immersive-note]');
+      if (note) note.textContent = 'Economia de dados ativa: a experiência 3D baixa cerca de 46 MB.';
+    }
+    const serious = () => document.documentElement.dataset.seriousMode === 'true';
+    let onScreen = false;
+    const sync = () => {
+      const allowed = onScreen && !document.hidden && !reduce.matches && !saveData && !serious();
+      if (!allowed) { video.pause(); return; }
+      if (!video.getAttribute('src')) video.setAttribute('src', video.dataset.src);
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {}); // sem autoplay ou sem alfa: o pôster continua no lugar
+    };
+    if (!('IntersectionObserver' in window)) return;
+    new IntersectionObserver((entries) => {
+      onScreen = entries.some((e) => e.isIntersecting);
+      sync();
+    }, { rootMargin: '120px 0px' }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+    reduce.addEventListener?.('change', sync);
+    new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-serious-mode'] });
+  })();
+</script>
+
+<style>
+  .immersive-banner {
+    --ib-ink: #fffaf0;
+    --ib-soft: #cfd3ee;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin: clamp(32px, 6vw, 72px) auto;
+    width: min(1120px, calc(100% - 32px));
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid #ffffff1f;
+    color: var(--ib-ink);
+    background:
+      radial-gradient(ellipse 60% 70% at 76% 58%, #2c3396 0%, #141a52 38%, transparent 72%),
+      radial-gradient(1.2px 1.2px at 12% 22%, #fff9 50%, transparent 52%),
+      radial-gradient(1px 1px at 31% 78%, #fff7 50%, transparent 52%),
+      radial-gradient(1.4px 1.4px at 47% 14%, #fffb 50%, transparent 52%),
+      radial-gradient(1px 1px at 62% 86%, #fff6 50%, transparent 52%),
+      radial-gradient(1.2px 1.2px at 88% 18%, #fff9 50%, transparent 52%),
+      radial-gradient(1px 1px at 94% 72%, #fff7 50%, transparent 52%),
+      #04061a;
+  }
+  .immersive-banner__copy { padding: clamp(24px, 4vw, 48px); padding-bottom: 8px; position: relative; z-index: 1; }
+  .immersive-banner__eyebrow {
+    margin: 0 0 12px; font-family: var(--font-ui, system-ui, sans-serif); font-size: .74rem;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--ib-soft);
+  }
+  .immersive-banner__title {
+    margin: 0; font-family: var(--font-display, Georgia, serif); font-weight: 600;
+    font-size: clamp(1.6rem, 4.4vw, 2.7rem); line-height: 1.12; color: var(--ib-ink); text-wrap: balance;
+  }
+  /* mesmo degradê do cronômetro do modo imersivo (creme → dourado → vermelho) */
+  .immersive-banner__count {
+    color: #f0b45a;
+    background-image: linear-gradient(180deg, #fffaf0 0%, #fff1b8 28%, #f0b45a 62%, #d6453d 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .immersive-banner__lede { margin: 14px 0 0; max-width: 46ch; color: var(--ib-soft); line-height: 1.6; font-size: 1.02rem; }
+  .immersive-banner__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin: 22px 0 0; }
+  .immersive-banner__cta {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 999px;
+    background: #fff1b8; color: #1a1304; font-weight: 700; text-decoration: none;
+    transition: transform .18s ease, background-color .18s ease;
+  }
+  .immersive-banner__cta:hover { background: #ffe58a; transform: translateY(-1px); }
+  .immersive-banner__link { color: var(--ib-ink); text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; }
+  .immersive-banner__cta:focus-visible, .immersive-banner__link:focus-visible { outline: 3px solid #fff1b8; outline-offset: 3px; }
+  .immersive-banner__note { margin: 14px 0 0; font-size: .82rem; color: #aab0d6; }
+  .immersive-banner__stage { position: relative; z-index: 0; aspect-ratio: 4 / 3; width: 100%; }
+  /* celular: recorte mais fechado, mantendo a Sophia à esquerda e a cauda de ondas saindo pela direita */
+  .immersive-banner__video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 20% 50%; background: transparent; }
+
+  @media (max-width: 859px) {
+    .immersive-banner { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+    .immersive-banner__stage::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse 70% 70% at 34% 62%, #2c3396 0%, #141a52 42%, transparent 75%); }
+  }
+  @media (min-width: 860px) {
+    .immersive-banner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: 0; }
+    .immersive-banner__copy { padding-bottom: clamp(24px, 4vw, 48px); }
+    .immersive-banner__stage { margin-left: -4%; aspect-ratio: 16 / 9; }
+    .immersive-banner__video { object-fit: contain; }
+  }
+  /* Modo sério e movimento reduzido: sem brilho de fundo nem animação, só o pôster */
+  :global(html[data-serious-mode='true']) .immersive-banner {
+    background: #04061a; border-radius: 6px;
+  }
+  :global(html[data-serious-mode='true']) .immersive-banner__count {
+    background: none; -webkit-text-fill-color: currentColor; color: var(--ib-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .immersive-banner__cta { transition: none; }
+    .immersive-banner__cta:hover { transform: none; }
+  }
+</style>
