@@ -71,3 +71,26 @@
     background-position: 0 0;
   }
 }
+
+.lab .lab-v121-preview-link {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  margin-top: .15rem;
+  padding: .5rem .65rem;
+  border: 1px solid rgba(224, 174, 66, .5);
+  border-radius: 12px;
+  background: rgba(255, 249, 229, .86);
+  color: #665039;
+  font-size: .76rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+}
+.lab .lab-v121-preview-link:hover { background: #f9e4b0; }
+@media (max-width: 760px) {
+  .lab .lab-companion { flex-wrap: wrap; }
+  .lab .lab-v121-preview-link { width: 100%; }
+}
