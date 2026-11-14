@@ -1,0 +1,28 @@
+{
+  "anime": {
+    "label": "Sophia Anime",
+    "filename": "Sophia_Anime_Facial_R1.glb",
+    "sha256": "e03f0cbc097707f27f5b74227c4e6c2a20b0e427bc2bea6ee2c8a7e1e39c3a4f",
+    "bytes": 25040668,
+    "morphs": 21,
+    "bones": 65,
+    "triangles": 41930,
+    "primitives": 3,
+    "faceTarget": [0.0215, 0.838, 0.10],
+    "forward": [0, 0, 1],
+    "right": [1, 0, 0]
+  },
+  "kitsune": {
+    "label": "Sophia Kitsune",
+    "filename": "Sophia_Kitsune_Eyes_R1.glb",
+    "sha256": "f332aaa42f5c07f9109fec9a7dbecf2d4715bbc07d9f8f4beb5b8fef4d896e5b",
+    "bytes": 15961484,
+    "morphs": 12,
+    "bones": 51,
+    "triangles": 32402,
+    "primitives": 2,
+    "faceTarget": [-0.190, 0.502, 0.432],
+    "forward": [-0.5, 0, 0.8660254],
+    "right": [0.8660254, 0, 0.5]
+  }
+}

@@ -1,0 +1,972 @@
+{
+  "scope": "CPU/API + JPEG decode using sharp. No WebGL, GPU memory or mobile FPS certification.",
+  "source": "Sophia Living Face R1",
+  "models": {
+    "anime": {
+      "sha256": "e03f0cbc097707f27f5b74227c4e6c2a20b0e427bc2bea6ee2c8a7e1e39c3a4f",
+      "bytes": 25040668,
+      "bones": 65,
+      "triangles": 41930,
+      "morphs": [
+        "Blink_L",
+        "Eye_Wide_L",
+        "Eye_Squint_L",
+        "Brow_Raise_L",
+        "Brow_Frown_L",
+        "Smile_L",
+        "Cheek_Raise_L",
+        "Blink_R",
+        "Eye_Wide_R",
+        "Eye_Squint_R",
+        "Brow_Raise_R",
+        "Brow_Frown_R",
+        "Smile_R",
+        "Cheek_Raise_R",
+        "Mouth_Open",
+        "Mouth_Sad",
+        "Mouth_Pucker",
+        "Look_Left",
+        "Look_Right",
+        "Look_Up",
+        "Look_Down"
+      ],
+      "animations": [
+        {
+          "name": "Sophia_Anime_Facial_Demo_R1",
+          "paths": [
+            "weights"
+          ],
+          "start": 0.041666666666666664,
+          "end": 9.041666666666666,
+          "duration": 9
+        }
+      ],
+      "cycles": [
+        {
+          "cycle": 1,
+          "parseCpuMs": 270.84008600000016,
+          "primitiveCount": 3,
+          "morphsExercised": 21,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.01612557157168365,
+              "evaluatedSampleDeltaAt037": 0.005966460965816501
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.0007828628137656112
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.0016502681389566189
+            },
+            {
+              "name": "Brow_Raise_L",
+              "movedVertices": 397,
+              "maximumTargetDelta": 0.0013831853866577148,
+              "evaluatedSampleDeltaAt037": 0.0005117785381352249
+            },
+            {
+              "name": "Brow_Frown_L",
+              "movedVertices": 292,
+              "maximumTargetDelta": 0.0003681030881908931,
+              "evaluatedSampleDeltaAt037": 0.00013619813288007877
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1737,
+              "maximumTargetDelta": 0.0027157645641234917,
+              "evaluatedSampleDeltaAt037": 0.001004832789039588
+            },
+            {
+              "name": "Cheek_Raise_L",
+              "movedVertices": 5229,
+              "maximumTargetDelta": 0.00144952064195998,
+              "evaluatedSampleDeltaAt037": 0.0005363226138999975
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.016194573528500296,
+              "evaluatedSampleDeltaAt037": 0.005991991534539897
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.000782862829550096
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 2519,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.001650268172273619
+            },
+            {
+              "name": "Brow_Raise_R",
+              "movedVertices": 443,
+              "maximumTargetDelta": 0.001672506332397461,
+              "evaluatedSampleDeltaAt037": 0.0006188272765692603
+            },
+            {
+              "name": "Brow_Frown_R",
+              "movedVertices": 396,
+              "maximumTargetDelta": 0.0005121382500117857,
+              "evaluatedSampleDeltaAt037": 0.00018949113375201754
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1748,
+              "maximumTargetDelta": 0.0027118909548436115,
+              "evaluatedSampleDeltaAt037": 0.0010033995946856563
+            },
+            {
+              "name": "Cheek_Raise_R",
+              "movedVertices": 4780,
+              "maximumTargetDelta": 0.0014629292191161425,
+              "evaluatedSampleDeltaAt037": 0.0005412837548408638
+            },
+            {
+              "name": "Mouth_Open",
+              "movedVertices": 1788,
+              "maximumTargetDelta": 0.002386751160457206,
+              "evaluatedSampleDeltaAt037": 0.0008830978593741139
+            },
+            {
+              "name": "Mouth_Sad",
+              "movedVertices": 2585,
+              "maximumTargetDelta": 0.0019997358322143555,
+              "evaluatedSampleDeltaAt037": 0.0007399021895666598
+            },
+            {
+              "name": "Mouth_Pucker",
+              "movedVertices": 1791,
+              "maximumTargetDelta": 0.002069659187681933,
+              "evaluatedSampleDeltaAt037": 0.0007657739366846652
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.001998934894800186,
+              "evaluatedSampleDeltaAt037": 0.00073960595186538
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.0019989386200904846,
+              "evaluatedSampleDeltaAt037": 0.0007396073302228777
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 4839,
+              "maximumTargetDelta": 0.0013991594314575195,
+              "evaluatedSampleDeltaAt037": 0.0005176889342781746
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 4998,
+              "maximumTargetDelta": 0.0013992786407470703,
+              "evaluatedSampleDeltaAt037": 0.0005177330417103257
+            }
+          ],
+          "presetsExercised": 12,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.44999996253428415
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.7857142800375879
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999771515812
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 3,
+            "materials": 3,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        },
+        {
+          "cycle": 2,
+          "parseCpuMs": 286.66771700000004,
+          "primitiveCount": 3,
+          "morphsExercised": 21,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.01612557157168365,
+              "evaluatedSampleDeltaAt037": 0.005966460965816501
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.0007828628137656112
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.0016502681389566189
+            },
+            {
+              "name": "Brow_Raise_L",
+              "movedVertices": 397,
+              "maximumTargetDelta": 0.0013831853866577148,
+              "evaluatedSampleDeltaAt037": 0.0005117785381352249
+            },
+            {
+              "name": "Brow_Frown_L",
+              "movedVertices": 292,
+              "maximumTargetDelta": 0.0003681030881908931,
+              "evaluatedSampleDeltaAt037": 0.00013619813288007877
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1737,
+              "maximumTargetDelta": 0.0027157645641234917,
+              "evaluatedSampleDeltaAt037": 0.001004832789039588
+            },
+            {
+              "name": "Cheek_Raise_L",
+              "movedVertices": 5229,
+              "maximumTargetDelta": 0.00144952064195998,
+              "evaluatedSampleDeltaAt037": 0.0005363226138999975
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.016194573528500296,
+              "evaluatedSampleDeltaAt037": 0.005991991534539897
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.000782862829550096
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 2519,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.001650268172273619
+            },
+            {
+              "name": "Brow_Raise_R",
+              "movedVertices": 443,
+              "maximumTargetDelta": 0.001672506332397461,
+              "evaluatedSampleDeltaAt037": 0.0006188272765692603
+            },
+            {
+              "name": "Brow_Frown_R",
+              "movedVertices": 396,
+              "maximumTargetDelta": 0.0005121382500117857,
+              "evaluatedSampleDeltaAt037": 0.00018949113375201754
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1748,
+              "maximumTargetDelta": 0.0027118909548436115,
+              "evaluatedSampleDeltaAt037": 0.0010033995946856563
+            },
+            {
+              "name": "Cheek_Raise_R",
+              "movedVertices": 4780,
+              "maximumTargetDelta": 0.0014629292191161425,
+              "evaluatedSampleDeltaAt037": 0.0005412837548408638
+            },
+            {
+              "name": "Mouth_Open",
+              "movedVertices": 1788,
+              "maximumTargetDelta": 0.002386751160457206,
+              "evaluatedSampleDeltaAt037": 0.0008830978593741139
+            },
+            {
+              "name": "Mouth_Sad",
+              "movedVertices": 2585,
+              "maximumTargetDelta": 0.0019997358322143555,
+              "evaluatedSampleDeltaAt037": 0.0007399021895666598
+            },
+            {
+              "name": "Mouth_Pucker",
+              "movedVertices": 1791,
+              "maximumTargetDelta": 0.002069659187681933,
+              "evaluatedSampleDeltaAt037": 0.0007657739366846652
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.001998934894800186,
+              "evaluatedSampleDeltaAt037": 0.00073960595186538
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.0019989386200904846,
+              "evaluatedSampleDeltaAt037": 0.0007396073302228777
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 4839,
+              "maximumTargetDelta": 0.0013991594314575195,
+              "evaluatedSampleDeltaAt037": 0.0005176889342781746
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 4998,
+              "maximumTargetDelta": 0.0013992786407470703,
+              "evaluatedSampleDeltaAt037": 0.0005177330417103257
+            }
+          ],
+          "presetsExercised": 12,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.44999996253428415
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.7857142800375879
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999771515812
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 3,
+            "materials": 3,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        },
+        {
+          "cycle": 3,
+          "parseCpuMs": 198.43740000000025,
+          "primitiveCount": 3,
+          "morphsExercised": 21,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.01612557157168365,
+              "evaluatedSampleDeltaAt037": 0.005966460965816501
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.0007828628137656112
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 2474,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.0016502681389566189
+            },
+            {
+              "name": "Brow_Raise_L",
+              "movedVertices": 397,
+              "maximumTargetDelta": 0.0013831853866577148,
+              "evaluatedSampleDeltaAt037": 0.0005117785381352249
+            },
+            {
+              "name": "Brow_Frown_L",
+              "movedVertices": 292,
+              "maximumTargetDelta": 0.0003681030881908931,
+              "evaluatedSampleDeltaAt037": 0.00013619813288007877
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1737,
+              "maximumTargetDelta": 0.0027157645641234917,
+              "evaluatedSampleDeltaAt037": 0.001004832789039588
+            },
+            {
+              "name": "Cheek_Raise_L",
+              "movedVertices": 5229,
+              "maximumTargetDelta": 0.00144952064195998,
+              "evaluatedSampleDeltaAt037": 0.0005363226138999975
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.016194573528500296,
+              "evaluatedSampleDeltaAt037": 0.005991991534539897
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 2523,
+              "maximumTargetDelta": 0.0021158456802368164,
+              "evaluatedSampleDeltaAt037": 0.000782862829550096
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 2519,
+              "maximumTargetDelta": 0.004460184653977147,
+              "evaluatedSampleDeltaAt037": 0.001650268172273619
+            },
+            {
+              "name": "Brow_Raise_R",
+              "movedVertices": 443,
+              "maximumTargetDelta": 0.001672506332397461,
+              "evaluatedSampleDeltaAt037": 0.0006188272765692603
+            },
+            {
+              "name": "Brow_Frown_R",
+              "movedVertices": 396,
+              "maximumTargetDelta": 0.0005121382500117857,
+              "evaluatedSampleDeltaAt037": 0.00018949113375201754
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1748,
+              "maximumTargetDelta": 0.0027118909548436115,
+              "evaluatedSampleDeltaAt037": 0.0010033995946856563
+            },
+            {
+              "name": "Cheek_Raise_R",
+              "movedVertices": 4780,
+              "maximumTargetDelta": 0.0014629292191161425,
+              "evaluatedSampleDeltaAt037": 0.0005412837548408638
+            },
+            {
+              "name": "Mouth_Open",
+              "movedVertices": 1788,
+              "maximumTargetDelta": 0.002386751160457206,
+              "evaluatedSampleDeltaAt037": 0.0008830978593741139
+            },
+            {
+              "name": "Mouth_Sad",
+              "movedVertices": 2585,
+              "maximumTargetDelta": 0.0019997358322143555,
+              "evaluatedSampleDeltaAt037": 0.0007399021895666598
+            },
+            {
+              "name": "Mouth_Pucker",
+              "movedVertices": 1791,
+              "maximumTargetDelta": 0.002069659187681933,
+              "evaluatedSampleDeltaAt037": 0.0007657739366846652
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.001998934894800186,
+              "evaluatedSampleDeltaAt037": 0.00073960595186538
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 4878,
+              "maximumTargetDelta": 0.0019989386200904846,
+              "evaluatedSampleDeltaAt037": 0.0007396073302228777
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 4839,
+              "maximumTargetDelta": 0.0013991594314575195,
+              "evaluatedSampleDeltaAt037": 0.0005176889342781746
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 4998,
+              "maximumTargetDelta": 0.0013992786407470703,
+              "evaluatedSampleDeltaAt037": 0.0005177330417103257
+            }
+          ],
+          "presetsExercised": 12,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.44999996253428415
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.7857142800375879
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999771515812
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 3,
+            "materials": 3,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        }
+      ]
+    },
+    "kitsune": {
+      "sha256": "f332aaa42f5c07f9109fec9a7dbecf2d4715bbc07d9f8f4beb5b8fef4d896e5b",
+      "bytes": 15961484,
+      "bones": 51,
+      "triangles": 32402,
+      "morphs": [
+        "Blink_L",
+        "Eye_Wide_L",
+        "Eye_Squint_L",
+        "Blink_R",
+        "Eye_Wide_R",
+        "Eye_Squint_R",
+        "Smile_L",
+        "Smile_R",
+        "Look_Left",
+        "Look_Right",
+        "Look_Up",
+        "Look_Down"
+      ],
+      "animations": [
+        {
+          "name": "Sophia_Kitsune_Facial_Demo_R1",
+          "paths": [
+            "weights"
+          ],
+          "start": 0.041666666666666664,
+          "end": 9.041666666666666,
+          "duration": 9
+        }
+      ],
+      "cycles": [
+        {
+          "cycle": 1,
+          "parseCpuMs": 171.1676150000003,
+          "primitiveCount": 2,
+          "morphsExercised": 12,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.01863056765809845,
+              "evaluatedSampleDeltaAt037": 0.006893310888623078
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029235323135375
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.00514259901137656,
+              "evaluatedSampleDeltaAt037": 0.0019027620458657104
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 1245,
+              "maximumTargetDelta": 0.018697406608046245,
+              "evaluatedSampleDeltaAt037": 0.006918040867482352
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029234955558293
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.005142598681737873,
+              "evaluatedSampleDeltaAt037": 0.0019027618456587045
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1708,
+              "maximumTargetDelta": 0.001597672700881958,
+              "evaluatedSampleDeltaAt037": 0.0005911390208469055
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1608,
+              "maximumTargetDelta": 0.0015810132026672363,
+              "evaluatedSampleDeltaAt037": 0.0005849749885402176
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0020000089531802536,
+              "evaluatedSampleDeltaAt037": 0.0007400031671856307
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0019999940520000568,
+              "evaluatedSampleDeltaAt037": 0.0007399976537512602
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.0014000236988067627,
+              "evaluatedSampleDeltaAt037": 0.0005180088025465504
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.001399993896484375,
+              "evaluatedSampleDeltaAt037": 0.0005179977756864588
+            }
+          ],
+          "presetsExercised": 6,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.7999999665079555
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.3504166863361847
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999672175305
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 2,
+            "materials": 2,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        },
+        {
+          "cycle": 2,
+          "parseCpuMs": 122.29560599999968,
+          "primitiveCount": 2,
+          "morphsExercised": 12,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.01863056765809845,
+              "evaluatedSampleDeltaAt037": 0.006893310888623078
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029235323135375
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.00514259901137656,
+              "evaluatedSampleDeltaAt037": 0.0019027620458657104
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 1245,
+              "maximumTargetDelta": 0.018697406608046245,
+              "evaluatedSampleDeltaAt037": 0.006918040867482352
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029234955558293
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.005142598681737873,
+              "evaluatedSampleDeltaAt037": 0.0019027618456587045
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1708,
+              "maximumTargetDelta": 0.001597672700881958,
+              "evaluatedSampleDeltaAt037": 0.0005911390208469055
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1608,
+              "maximumTargetDelta": 0.0015810132026672363,
+              "evaluatedSampleDeltaAt037": 0.0005849749885402176
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0020000089531802536,
+              "evaluatedSampleDeltaAt037": 0.0007400031671856307
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0019999940520000568,
+              "evaluatedSampleDeltaAt037": 0.0007399976537512602
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.0014000236988067627,
+              "evaluatedSampleDeltaAt037": 0.0005180088025465504
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.001399993896484375,
+              "evaluatedSampleDeltaAt037": 0.0005179977756864588
+            }
+          ],
+          "presetsExercised": 6,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.7999999665079555
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.3504166863361847
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999672175305
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 2,
+            "materials": 2,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        },
+        {
+          "cycle": 3,
+          "parseCpuMs": 94.31157900000017,
+          "primitiveCount": 2,
+          "morphsExercised": 12,
+          "morphEffects": [
+            {
+              "name": "Blink_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.01863056765809845,
+              "evaluatedSampleDeltaAt037": 0.006893310888623078
+            },
+            {
+              "name": "Eye_Wide_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029235323135375
+            },
+            {
+              "name": "Eye_Squint_L",
+              "movedVertices": 1242,
+              "maximumTargetDelta": 0.00514259901137656,
+              "evaluatedSampleDeltaAt037": 0.0019027620458657104
+            },
+            {
+              "name": "Blink_R",
+              "movedVertices": 1245,
+              "maximumTargetDelta": 0.018697406608046245,
+              "evaluatedSampleDeltaAt037": 0.006918040867482352
+            },
+            {
+              "name": "Eye_Wide_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.002440333366394043,
+              "evaluatedSampleDeltaAt037": 0.0009029234955558293
+            },
+            {
+              "name": "Eye_Squint_R",
+              "movedVertices": 1241,
+              "maximumTargetDelta": 0.005142598681737873,
+              "evaluatedSampleDeltaAt037": 0.0019027618456587045
+            },
+            {
+              "name": "Smile_L",
+              "movedVertices": 1708,
+              "maximumTargetDelta": 0.001597672700881958,
+              "evaluatedSampleDeltaAt037": 0.0005911390208469055
+            },
+            {
+              "name": "Smile_R",
+              "movedVertices": 1608,
+              "maximumTargetDelta": 0.0015810132026672363,
+              "evaluatedSampleDeltaAt037": 0.0005849749885402176
+            },
+            {
+              "name": "Look_Left",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0020000089531802536,
+              "evaluatedSampleDeltaAt037": 0.0007400031671856307
+            },
+            {
+              "name": "Look_Right",
+              "movedVertices": 2076,
+              "maximumTargetDelta": 0.0019999940520000568,
+              "evaluatedSampleDeltaAt037": 0.0007399976537512602
+            },
+            {
+              "name": "Look_Up",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.0014000236988067627,
+              "evaluatedSampleDeltaAt037": 0.0005180088025465504
+            },
+            {
+              "name": "Look_Down",
+              "movedVertices": 2072,
+              "maximumTargetDelta": 0.001399993896484375,
+              "evaluatedSampleDeltaAt037": 0.0005179977756864588
+            }
+          ],
+          "presetsExercised": 6,
+          "demoSamples": [
+            {
+              "time": 0,
+              "maximumWeight": 0
+            },
+            {
+              "time": 0.67,
+              "maximumWeight": 0.9508546301239121
+            },
+            {
+              "time": 1.5,
+              "maximumWeight": 0.7999999665079555
+            },
+            {
+              "time": 2.2,
+              "maximumWeight": 0.3504166863361847
+            },
+            {
+              "time": 3,
+              "maximumWeight": 0.7999999672175305
+            },
+            {
+              "time": 6.8,
+              "maximumWeight": 0.976666941644871
+            },
+            {
+              "time": 9,
+              "maximumWeight": 0
+            }
+          ],
+          "neutralReturn": "PASS",
+          "immutableRuntimeData": "PASS",
+          "disposal": {
+            "geometries": 2,
+            "materials": 2,
+            "textures": 1,
+            "imagesClosed": 1
+          }
+        }
+      ]
+    }
+  },
+  "zip": {
+    "anime": {
+      "masterHashMatches": true,
+      "bytes": 25040668
+    },
+    "kitsune": {
+      "masterHashMatches": true,
+      "bytes": 15961484
+    }
+  },
+  "R0Comparison": "NOT TESTED",
+  "bitmapLifecycle": {
+    "created": 6,
+    "closed": 6
+  }
+}
