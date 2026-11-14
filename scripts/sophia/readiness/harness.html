@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>sophia actor harness</title>
+<style>body{margin:0;height:4000px;background:#223}.a{position:absolute;left:20px;width:160px;height:200px;background:#c33}
+.a canvas{position:absolute;inset:0;width:100%;height:100%}.a[data-sophia3d=on] .art{display:none}.art{position:absolute;inset:0;background:#3c3}</style>
+<div class="a" id="runner" style="top:20px" data-sophia-actor="runner" data-sophia-clip="Correr_R6" data-sophia-cam="full" data-sophia-yaw="1"><div class="art"></div></div>
+<div class="a" id="lab" style="top:260px" data-sophia-actor="lab" data-sophia-model-key="lab-r2" data-sophia-clip="Lab_Idle_Breath_R1" data-sophia-fallback-clip="Sophia_ExpressionFlow_R6" data-sophia-cam="full"><div class="art"></div></div>
+<div class="a" id="far" style="top:2600px" data-sophia-actor="far" data-sophia-clip="Sophia_Expr_Seria_R6" data-sophia-cam="bust"><div class="art"></div></div>
+<script type="module">
+window.__t0=performance.now();{const q=new URLSearchParams(location.search);if(q.get('labclip'))document.getElementById('lab').dataset.sophiaClip=q.get('labclip');if(q.get('only'))for(const e of [...document.querySelectorAll('.a')])if(!q.get('only').split(',').includes(e.id))e.remove();}window.__ev=[];
+new MutationObserver(ms=>{for(const m of ms){const el=m.target;if(m.attributeName==='data-sophia3d'){const c=el.querySelector('canvas');let alpha=-1;if(c&&c.width){try{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;alpha=0;for(let i=3;i<d.length;i+=4*37)alpha+=d[i]}catch(e){alpha=-2}}window.__ev.push({id:el.id,attr:el.dataset.sophia3d,t:Math.round(performance.now()-window.__t0),artVisible:getComputedStyle(el.querySelector('.art')).display!=='none',alphaSum:alpha,model:el.dataset.sophiaModel||null})}}}).observe(document.body,{subtree:true,attributes:true,attributeFilter:['data-sophia3d']});
+if(new URLSearchParams(location.search).get('legacy')==='1')document.documentElement.dataset.legacyMode='true';window.__m=await import('/experimental/sophia-actor.js');if(new URLSearchParams(location.search).get('publish')==='1'&&window.__m.MODELS&&window.__m.MODELS['lab-r2'])window.__m.MODELS['lab-r2'].published=true;if(new URLSearchParams(location.search).get('patch')==='draw')window.__m.Actor.prototype.draw=function(){throw new Error('primeiro desenho falha')};window.__loaded=true;
+</script>

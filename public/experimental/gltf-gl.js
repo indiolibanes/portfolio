@@ -327,10 +327,14 @@ export class Renderer {
   makeVAO() { const v = this.gl.createVertexArray(); this.vaos.add(v); return v; }
   dispose() {
     this.canvas.removeEventListener('webglcontextlost', this.onLost);
-    for (const b of this.buffers) this.gl.deleteBuffer(b);
-    for (const t of this.textures) this.gl.deleteTexture(t);
-    for (const v of this.vaos) this.gl.deleteVertexArray(v);
-    this.gl.deleteProgram(this.prog); this.gl.deleteProgram(this.shadowProg);
+    // Com o contexto perdido (ou já restaurado como contexto novo) os objetos antigos não pertencem mais a ele: deletar
+    // gerava "INVALID_OPERATION: object does not belong to this context". O navegador já liberou tudo na perda.
+    if (!this.lost && !this.gl.isContextLost?.()) {
+      for (const b of this.buffers) this.gl.deleteBuffer(b);
+      for (const t of this.textures) this.gl.deleteTexture(t);
+      for (const v of this.vaos) this.gl.deleteVertexArray(v);
+      this.gl.deleteProgram(this.prog); this.gl.deleteProgram(this.shadowProg);
+    }
     this.buffers.clear(); this.textures.clear(); this.vaos.clear(); this.lost = true;
   }
 

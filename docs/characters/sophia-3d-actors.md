@@ -52,3 +52,7 @@ Humor do Tetris (`sophia:tetris`) → clipe de expressão: idle=Seria, playing=E
 ## Revisão R1.5
 
 Veja [relatório e gates](sophia-r15/README.md), [runtime e compatibilidade](sophia-r15/runtime-performance.md) e [reprodução](sophia-r15/reproduce.md). Node 344/344, check e build executados; navegador bloqueado no ambiente. O novo jaleco continua reprovado em poses extremas e privado. O asset público deste documento não foi substituído.
+
+
+## Pré-R2 (ciclo de vida e contrato)
+Relatório, matriz de contextos e contrato do caderno: `docs/characters/sophia-pre-r2/`. Falhas de carga/decodificação não criam contexto WebGL; um ator com erro é desligado sozinho; perda de contexto é isolada por modelo; `MODELS['lab-r2'].published` controla se o GLB é pedido.

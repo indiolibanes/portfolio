@@ -12,6 +12,7 @@
 // O ator pronto recebe data-sophia-3d="on" (CSS esconde a arte 2D) e dispara o evento "sophia:actor-ready".
 import { Renderer, fetchGLB, hex } from './gltf-gl.js';
 import { Skeleton } from './gltf-skel.js';
+import { BOOK_ONE_SHOT } from './sophia-clip-contract.js';
 
 export const MODEL_URL = '/assets/models/sophia/sophia-lab.glb';
 
@@ -42,11 +43,25 @@ export const MODELS = {
   'lab-r2': {
     id: 'sophia-lab-v1.1', url: '/assets/models/sophia/sophia-lab-v1.1.glb', idle: 'Lab_Idle_Breath_R1',
     center: { x: -0.06, z: 0.1 }, fallback: 'default',
-    // clipes de uma só execução (o laço fica por conta do diretor); o repouso respira em laço
-    oneShot: new Set(['Lab_Observe_R1', 'Lab_Think_R1', 'Lab_Point_R1', 'Lab_Greet_R1', 'Lab_Return_R1']),
+    // `published: false` = o GLB ainda não foi autorizado/publicado: o runtime NÃO faz requisição (antes cada visita gerava
+    // um 404 e um contexto WebGL à toa) e usa `fallback` direto. Ao publicar o GLB, troque para `true` neste mesmo lugar.
+    published: false,
+    // Cena do caderno e da caneta: desligada até os clipes P1 existirem E o proprietário aprovar. Contrato: sophia-clip-contract.js
+    bookScene: false,
+    // clipes de uma só execução (o laço fica por conta do diretor); o repouso respira em laço.
+    // Os clipes do caderno (contrato em sophia-clip-contract.js) são opcionais: só valem se existirem no GLB.
+    oneShot: new Set(['Lab_Observe_R1', 'Lab_Think_R1', 'Lab_Point_R1', 'Lab_Greet_R1', 'Lab_Return_R1', ...BOOK_ONE_SHOT]),
   },
 };
-const modelKey = (el) => (MODELS[el.dataset.sophiaModelKey] ? el.dataset.sophiaModelKey : 'default');
+const requestedKey = (el) => (MODELS[el.dataset.sophiaModelKey] ? el.dataset.sophiaModelKey : 'default');
+// aplica o modelo de reserva de uma chave (modelo + clipe de reserva do elemento) ou repropaga o erro se não houver
+function useFallback(el, key, err) {
+  const fb = MODELS[key].fallback;
+  if (!fb) throw err;
+  el.dataset.sophiaModelKey = fb;
+  if (el.dataset.sophiaFallbackClip) el.dataset.sophiaClip = el.dataset.sophiaFallbackClip;
+  return fb;
+}
 const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
 const ENV = {
   sky: hex('#c8d4ff', 0.6),
@@ -75,23 +90,45 @@ export const actorsAllowed = () => !reduceQuery.matches && !constrained() && !qu
 const stagePromises = new Map(); // chave do modelo → Promise<palco>
 const sourcePromises = new Map(); // chave do modelo → Promise<ArrayBuffer>
 let disposed = false;
+
+// Valida o cabeçalho do GLB antes de gastar um contexto WebGL: corpo que não é GLB (página de erro, HTML do 404) ou
+// arquivo truncado falham aqui, sem criar contexto algum.
+function checkGLB(buffer) {
+  const head = new DataView(buffer);
+  if (buffer.byteLength < 20 || head.getUint32(0, true) !== 0x46546c67) throw new Error('Arquivo não é um GLB');
+  if (head.getUint32(8, true) > buffer.byteLength) throw new Error('GLB truncado');
+  return buffer;
+}
+function glbBytes(key) {
+  if (!sourcePromises.has(key)) {
+    sourcePromises.set(key, fetchGLB(MODELS[key].url).then(checkGLB).catch((error) => { sourcePromises.delete(key); throw error; }));
+  }
+  return sourcePromises.get(key);
+}
+// Libera de fato o contexto (descartar só os buffers deixava o contexto vivo até o coletor de lixo agir).
+function releaseGL(renderer, canvas) {
+  try { renderer.dispose(); } catch { /* contexto já inválido */ }
+  try { canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } catch { /* idem */ }
+}
+
 function getStage(key = 'default') {
   const cfg = MODELS[key];
   if (!stagePromises.has(key)) {
     const promise = (async () => {
+      // 1) bytes primeiro; 2) só então o contexto WebGL. Modelo ausente/inválido não consome contexto.
+      const buffer = await glbBytes(key);
       const canvas = document.createElement('canvas');
       const renderer = new Renderer(canvas);
       try {
-        if (!sourcePromises.has(key)) sourcePromises.set(key, fetchGLB(cfg.url).catch(error => { sourcePromises.delete(key); throw error; }));
-        const buffer = await sourcePromises.get(key);
         const model = await renderer.loadModel(buffer);
         const { json, bin } = model.skeleton;
-        const lost = e => { e.preventDefault(); renderer.lost = true; stop(); for (const a of actors.values()) { if (a.cfgKey !== key) continue; a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; } };
-        const restored = async () => { await resetStage(); if (!disposed) for (const el of visible) void wake(el); };
+        // Perda de contexto é isolada por modelo: só os atores deste palco voltam à arte 2D; os demais seguem animando.
+        const lost = e => { e.preventDefault(); renderer.lost = true; for (const a of actors.values()) { if (a.cfgKey !== key) continue; a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; } if (![...actors.values()].some(canDraw)) stop(); };
+        const restored = async () => { await resetStage(key); if (!disposed) for (const el of visible) void wake(el); };
         canvas.addEventListener('webglcontextlost', lost);
         canvas.addEventListener('webglcontextrestored', restored);
-        return { key, cfg, renderer, model, json, bin, dispose() { canvas.removeEventListener('webglcontextlost', lost); canvas.removeEventListener('webglcontextrestored', restored); renderer.dispose(); canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } };
-      } catch (error) { renderer.dispose(); throw error; }
+        return { key, cfg, renderer, model, json, bin, dispose() { canvas.removeEventListener('webglcontextlost', lost); canvas.removeEventListener('webglcontextrestored', restored); releaseGL(renderer, canvas); } };
+      } catch (error) { releaseGL(renderer, canvas); throw error; }
     })().catch((err) => { if (stagePromises.get(key) === promise) stagePromises.delete(key); throw err; });
     stagePromises.set(key, promise);
   }
@@ -131,6 +168,9 @@ export class Actor {
   }
 
   clipByName(name) { return this.sk.clips[name] || null; }
+
+  // adereços visíveis (nós Prop_* do GLB, ex.: ['book', 'pen']); o desenho lê isto a cada quadro
+  setProps(list) { this.props = new Set(list || []); }
 
   // troca de clipe com mistura curta (0,25 s) para não "pular"
   setClip(name, instant = false) {
@@ -221,6 +261,16 @@ const FRAME_MS = 1000 / 30;
 const canDraw = a => a.visible && a.el.isConnected && !a.stage.renderer.lost
   && a.el.closest('[data-decorative-motion]')?.dataset.motionPlaying !== 'false';
 function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; last = 0; }
+function failActor(a, err) {
+  const el = a.el;
+  actors.delete(el);
+  a.director?.stop?.();
+  a.dispose();
+  el.dataset.sophia3d = 'off';
+  el.dataset.sophiaReady = 'false';
+  el.dataset.sophiaFailed = 'true';
+  console.warn('[Sophia 3D] ator desligado após erro; mantendo a ilustração.', err);
+}
 function loop(now) {
   raf = 0;
   if (disposed || document.hidden || !actorsAllowed()) { last = 0; return; }
@@ -229,39 +279,49 @@ function loop(now) {
   if (!last || now - last >= FRAME_MS - 1) {
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
     last = now;
-    for (const a of live) { a.step(dt); a.draw(); }
+    // um ator que lança erro (passo, desenho, diretor) é desligado sozinho; os outros continuam e a cadeia de rAF não morre
+    for (const a of live) { try { a.step(dt); a.draw(); } catch (err) { failActor(a, err); } }
   }
   raf = requestAnimationFrame(loop);
 }
 function kick() {
   if (!disposed && !raf && !document.hidden && actorsAllowed() && [...actors.values()].some(canDraw)) { last = 0; raf = requestAnimationFrame(loop); }
 }
-function resetStage() {
-  stop();
-  const previous = [...stagePromises.values()]; stagePromises.clear();
-  for (const a of actors.values()) { a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; a.dispose(); }
-  actors.clear();
-  return Promise.all(previous.map(p => p.then(stage => stage.dispose()).catch(() => {})));
+// Sem argumento: derruba todos os palcos (saída da página). Com `key`: só o palco daquele modelo (restauração de contexto).
+function resetStage(key) {
+  const scoped = key !== undefined;
+  if (!scoped) stop();
+  const entries = scoped ? [[key, stagePromises.get(key)]].filter(([, p]) => p) : [...stagePromises];
+  for (const [k] of entries) stagePromises.delete(k);
+  for (const [el, a] of [...actors]) {
+    if (scoped && a.cfgKey !== key) continue;
+    el.dataset.sophia3d = 'off'; el.dataset.sophiaReady = 'false';
+    a.dispose(); actors.delete(el);
+  }
+  return Promise.all(entries.map(([, p]) => p.then(stage => stage.dispose()).catch(() => {})));
 }
 
 async function wake(el) {
   if (disposed || actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
   pending.add(el);
   try {
-    let key = modelKey(el);
+    let key = requestedKey(el);
     let stage;
+    // modelo ainda não publicado: reserva direta, sem requisição nem contexto
+    if (MODELS[key].published === false) key = useFallback(el, key, new Error('Modelo ' + key + ' não publicado'));
     try { stage = await getStage(key); } catch (err) {
-      const fb = MODELS[key].fallback;
-      if (!fb) throw err;
-      console.warn('[Sophia 3D] modelo', key, 'indisponível; usando', fb, err);
-      el.dataset.sophiaModelKey = fb; if (el.dataset.sophiaFallbackClip) el.dataset.sophiaClip = el.dataset.sophiaFallbackClip;
-      key = fb; stage = await getStage(key);
+      console.warn('[Sophia 3D] modelo', key, 'indisponível', err);
+      key = useFallback(el, key, err); stage = await getStage(key);
     }
     if (disposed || !el.isConnected || !visible.has(el) || !actorsAllowed() || document.hidden) return;
+    // contexto perdido durante o carregamento: mantém a arte 2D; a restauração acorda o elemento de novo (não é falha definitiva)
+    if (stage.renderer.lost) return;
     const a = new Actor(el, stage);
     actors.set(el, a);
-    a.visible = visible.has(el);
-    a.step(0); a.draw();
+    try {
+      a.visible = visible.has(el);
+      a.step(0); a.draw(); // primeiro quadro 3D válido ANTES de esconder a arte 2D
+    } catch (err) { actors.delete(el); a.dispose(); throw err; }
     el.dataset.sophia3d = 'on';
     el.dataset.sophiaReady = 'true';
     el.dataset.sophiaModel = stage.cfg.id;

@@ -26,3 +26,4 @@ qa-results/
 # Local Python conversion/QA caches
 __pycache__/
 *.pyc
+scripts/sophia/readiness/results-after*.json
