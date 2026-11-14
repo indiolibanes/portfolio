@@ -12,7 +12,7 @@
 // O ator pronto recebe data-sophia-3d="on" (CSS esconde a arte 2D) e dispara o evento "sophia:actor-ready".
 import { Renderer, fetchGLB, hex } from './gltf-gl.js';
 import { Skeleton } from './gltf-skel.js';
-import { BOOK_ONE_SHOT } from './sophia-clip-contract.js';
+import { BOOK_ONE_SHOT, CYCLE_ONE_SHOT } from './sophia-clip-contract.js';
 
 export const MODEL_URL = '/assets/models/sophia/sophia-lab.glb';
 
@@ -41,16 +41,19 @@ const CAMERAS = {
 export const MODELS = {
   default: { id: 'sophia-v1.4.2-lab', url: MODEL_URL, idle: MOODS.idle.clip, center: CENTER, oneShot: new Set(), fallback: null },
   'lab-r2': {
-    id: 'sophia-lab-v1.1', url: '/assets/models/sophia/sophia-lab-v1.1.glb', idle: 'Lab_Idle_Breath_R1',
+    id: 'sophia-lab-v1.2', url: '/assets/models/sophia/sophia-lab-v1.2.glb', idle: 'Lab_Idle_Breath_R1',
     center: { x: -0.06, z: 0.1 }, fallback: 'default',
     // `published: false` = o GLB ainda não foi autorizado/publicado: o runtime NÃO faz requisição (antes cada visita gerava
     // um 404 e um contexto WebGL à toa) e usa `fallback` direto. Ao publicar o GLB, troque para `true` neste mesmo lugar.
     published: false,
-    // Cena do caderno e da caneta: desligada até os clipes P1 existirem E o proprietário aprovar. Contrato: sophia-clip-contract.js
+    // Cena do caderno e da caneta (clipes P1): desligada até o proprietário aprovar. Contrato: sophia-clip-contract.js
     bookScene: false,
+    // Ciclo do laboratório (clipes R2, fiel aos 12 s do 2D: escreve, anda, pensa, vira, anda de volta). Só vale se o GLB tiver
+    // todos os clipes de CYCLE_CONTRACT; sem eles o diretor segue com os gestos R1. `false` desliga.
+    cycle: true,
     // clipes de uma só execução (o laço fica por conta do diretor); o repouso respira em laço.
     // Os clipes do caderno (contrato em sophia-clip-contract.js) são opcionais: só valem se existirem no GLB.
-    oneShot: new Set(['Lab_Observe_R1', 'Lab_Think_R1', 'Lab_Point_R1', 'Lab_Greet_R1', 'Lab_Return_R1', ...BOOK_ONE_SHOT]),
+    oneShot: new Set(['Lab_Observe_R1', 'Lab_Think_R1', 'Lab_Point_R1', 'Lab_Greet_R1', 'Lab_Return_R1', ...BOOK_ONE_SHOT, ...CYCLE_ONE_SHOT]),
   },
 };
 const requestedKey = (el) => (MODELS[el.dataset.sophiaModelKey] ? el.dataset.sophiaModelKey : 'default');
@@ -158,6 +161,9 @@ export class Actor {
     this.speed = parseFloat(d.sophiaSpeed || '1');
     this.props = new Set((d.sophiaProps || '').split(',').map((s) => s.trim()).filter(Boolean));
     this.variant = d.sophiaVariant === undefined ? null : parseInt(d.sophiaVariant, 10);
+    this.root = { x: 0, z: 0 }; // deslocamento do personagem no mundo (unidades do modelo); o diretor move com o clipe de andar
+    this.yawTarget = null; // se definido, `yaw` segue este alvo com suavização (giros naturais em vez de saltos)
+    this.yawRate = 9;
     this.layers = []; // [{ clip, time, weight }]
     this.fade = null;
     this.time = parseFloat(d.sophiaPhase || '0');
@@ -168,6 +174,17 @@ export class Actor {
   }
 
   clipByName(name) { return this.sk.clips[name] || null; }
+
+  // Largura visível (unidades do modelo) à distância do personagem; converte o deslocamento do mundo em fração do quadro.
+  viewWidth() { const c = this.cam; return 2 * c.dist * Math.tan((c.fov * Math.PI) / 360) * (this.w / Math.max(1, this.h)); }
+
+  // Expõe o deslocamento ao CSS (a sombra no chão acompanha quem anda): --sophia-root-pct em % da largura do elemento.
+  syncRootVars() {
+    // fração da largura do QUADRO de desenho (o canvas pode ser mais largo que o elemento) → % da largura do elemento
+    const ratio = this.el.clientWidth > 0 && this.canvas.clientWidth > 0 ? this.canvas.clientWidth / this.el.clientWidth : 1;
+    const pct = this.root.x === 0 ? '0%' : (100 * ratio * this.root.x / this.viewWidth()).toFixed(2) + '%';
+    if (pct !== this.rootPct) { this.rootPct = pct; this.el.style?.setProperty('--sophia-root-pct', pct); }
+  }
 
   // adereços visíveis (nós Prop_* do GLB, ex.: ['book', 'pen']); o desenho lê isto a cada quadro
   setProps(list) { this.props = new Set(list || []); }
@@ -205,7 +222,10 @@ export class Actor {
   }
 
   size() {
-    const r = this.el.getBoundingClientRect();
+    // O quadro de desenho pode ser maior que o elemento (ciclo do laboratório alarga o canvas por CSS): mede o próprio canvas,
+    // senão o desenho sai esticado. Sem layout (testes) cai para o elemento.
+    let r = this.canvas.getBoundingClientRect?.();
+    if (!r || r.width < 2 || r.height < 2) r = this.el.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const w = Math.max(2, Math.min(1024, Math.round(r.width * dpr)));
     const h = Math.max(2, Math.min(1024, Math.round(r.height * dpr)));
@@ -226,6 +246,7 @@ export class Actor {
       this.layers.forEach((l, i) => { l.weight = i === n - 1 ? k : l.baseWeight * (1 - k); });
       if (k >= 1) { this.layers = [this.layers[n - 1]]; this.layers[0].weight = 1; this.fade = null; }
     }
+    if (this.yawTarget !== null) this.yaw += (this.yawTarget - this.yaw) * (1 - Math.exp(-dt * this.speed * this.yawRate));
     s.evaluate(this.layers);
     s.updateWorld();
     s.updateSkin();
@@ -241,10 +262,11 @@ export class Actor {
     const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
     const C = this.cfg.center;
     const pose = {
-      x: -(cy * C.x + sy * C.z), y: 0, z: -(-sy * C.x + cy * C.z), yaw: this.yaw, scale: 1,
+      x: -(cy * C.x + sy * C.z) + this.root.x, y: 0, z: -(-sy * C.x + cy * C.z) + this.root.z, yaw: this.yaw, scale: 1,
     };
+    this.syncRootVars();
     const cam = { fov: (c.fov * Math.PI) / 180, x: 0, y: c.y, dist: c.dist, tx: 0, ty: 0 };
-    for (const d of model.draws) if (d.extras?.hidden) d.hidden = !this.props.has((this.sk.names[d.node] || '').replace(/^Prop_/, '').toLowerCase());
+    for (const d of model.draws) if (d.extras?.hidden) d.hidden = !this.props.has(d.extras.prop || (this.sk.names[d.node] || '').replace(/^Prop_/, '').toLowerCase());
     renderer.render({ draws: model.draws, skeleton: this.sk, variant: this.variant }, pose, cam, ENV, null);
     this.ctx.clearRect(0, 0, this.w, this.h);
     this.ctx.drawImage(renderer.canvas, 0, 0);

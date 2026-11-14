@@ -298,7 +298,7 @@ export class Skeleton {
         };
       });
       const duration = Math.max(...channels.map((c) => c.times[c.times.length - 1]));
-      clips[a.name] = Object.freeze({ name: a.name, duration, channels: Object.freeze(channels) });
+      clips[a.name] = Object.freeze({ name: a.name, duration, channels: Object.freeze(channels), extras: Object.freeze({ ...(a.extras || {}) }) });
     });
       bank = { bin, clips: Object.freeze(clips) };
       animationBanks.set(json, bank);

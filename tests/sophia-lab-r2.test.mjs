@@ -1,6 +1,6 @@
 // Sophia Lab R2 — registro de modelo por variante, clipes de uma execução, diretor de gestos e fallback.
 // API-level (sem shaders, sem aprovação visual). O GLB do lab é privado: os testes que o usam só rodam com
-// SOPHIA_LAB_R2_MODEL=/caminho/Sophia_Lab_v1.1_Animated.glb.
+// SOPHIA_LAB_R2_MODEL=/caminho/Sophia_Lab_v1.2_Animated.glb.
 import test from 'node:test'; import assert from 'node:assert/strict'; import fs from 'node:fs'; import { execSync } from 'node:child_process';
 import { browserFixture, ActorElement, flush } from './sophia-r15-fixture.mjs';
 
@@ -48,13 +48,13 @@ test('diretor: gestos a cada 5–8 s simulados, sem repetir em sequência, sempr
 test('fallback: GLB do lab-r2 indisponível → modelo padrão com o clipe anterior, sem quebrar', async () => {
   const el = new ActorElement('lab', 'Lab_Idle_Breath_R1'); el.dataset.sophiaModelKey = 'lab-r2'; el.dataset.sophiaFallbackClip = 'Sophia_ExpressionFlow_R6';
   const f = browserFixture([el]); const urls = [];
-  globalThis.fetch = async (u) => { urls.push(String(u)); return /sophia-lab-v1\.1/.test(u) ? new Response('nope', { status: 404 }) : new Response(DEFAULT_GLB); };
+  globalThis.fetch = async (u) => { urls.push(String(u)); return /sophia-lab-v1\.2/.test(u) ? new Response('nope', { status: 404 }) : new Response(DEFAULT_GLB); };
   const mod = await import('../public/experimental/sophia-actor.js?t=fallback');
   mod.MODELS['lab-r2'].published = true; // simula "publicado, mas o arquivo falta/falha" (não publicado nem tenta baixar: ver sophia-pre-r2-runtime)
   f.ios[0].trigger(true); await flush();
   const a = mod.actorOf(el); assert.ok(a, 'ator criado com o modelo padrão');
   assert.equal(a.cfgKey, 'default'); assert.equal(a.clipName, 'Sophia_ExpressionFlow_R6'); assert.equal(el.dataset.sophia3d, 'on'); assert.equal(el.dataset.sophiaModel, 'sophia-v1.4.2-lab');
-  assert.ok(urls.some((u) => /sophia-lab-v1\.1/.test(u)) && urls.some((u) => /sophia-lab\.glb/.test(u)));
+  assert.ok(urls.some((u) => /sophia-lab-v1\.2/.test(u)) && urls.some((u) => /sophia-lab\.glb/.test(u)));
 });
 
 test('GLB e rede ausentes: ator falha limpo e a ilustração 2D permanece', async () => {
@@ -65,18 +65,20 @@ test('GLB e rede ausentes: ator falha limpo e a ilustração 2D permanece', asyn
   assert.equal(mod.actorOf(el), null); assert.equal(el.dataset.sophia3d, 'off'); assert.equal(el.dataset.sophiaFailed, 'true'); assert.equal(el.children.length, 0);
 });
 
-test('GLB real do Lab R2: 65 juntas, 6 clipes, clipes de uma execução não dão laço e o diretor volta ao repouso', { skip: !LAB && 'defina SOPHIA_LAB_R2_MODEL' }, async () => {
+test('GLB real do Lab R2 (v1.2): 73 juntas (65 Mixamo + cauda/orelhas), 6 clipes R1 + 5 R2, clipes de uma execução não dão laço e o diretor volta ao repouso', { skip: !LAB && 'defina SOPHIA_LAB_R2_MODEL' }, async () => {
   const bytes = fs.readFileSync(LAB);
   const el = new ActorElement('lab', 'Lab_Idle_Breath_R1'); el.dataset.sophiaModelKey = 'lab-r2';
   const f = browserFixture([el]); globalThis.fetch = async () => new Response(bytes);
   const mod = await import('../public/experimental/sophia-actor.js?t=real');
   await import('../public/experimental/sophia-lab-director.js?t=real');
+  mod.MODELS['lab-r2'].published = true; // o GLB é privado: o teste simula a publicação
   f.ios[0].trigger(true); await flush();
-  const a = mod.actorOf(el); assert.ok(a); assert.equal(a.cfgKey, 'lab-r2'); assert.equal(el.dataset.sophiaModel, 'sophia-lab-v1.1');
-  assert.equal(a.sk.joints.length, 65); for (const c of CLIPS) assert.ok(a.sk.clips[c], c);
+  const a = mod.actorOf(el); assert.ok(a); assert.equal(a.cfgKey, 'lab-r2'); assert.equal(el.dataset.sophiaModel, 'sophia-lab-v1.2');
+  assert.equal(a.sk.joints.length, 73); for (const c of CLIPS) assert.ok(a.sk.clips[c], c);
   document.dispatchEvent(new CustomEvent('sophia:actor-ready', { detail: { actor: a } })); // o fixture não propaga bubbling até o document
   assert.ok(a.director, 'diretor anexado no actor-ready');
   a.director.stop(); // o diretor trocaria de gesto no meio da medição
+  assert.equal(a.director.mode, 'cycle', 'com o GLB v1.2 o diretor entra no ciclo R2');
   a.setClip('Lab_Greet_R1'); assert.equal(a.layers.at(-1).loop, false);
   const dur = a.sk.clips.Lab_Greet_R1.duration; let ended = 0; a.onEnd = () => { ended++; a.setClip('Lab_Idle_Breath_R1'); };
   for (let i = 0; i < Math.ceil((dur + 1) * 30); i++) a.step(1 / 30);

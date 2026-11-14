@@ -41,3 +41,38 @@ export function bookPhases(capability, rng = Math.random, { hold = [1.5, 2.5], w
   phases.push({ id: 'unequip', clip: BOOK_CLIPS.unequip.name, secs: null, props: BOOK_CLIPS.unequip.props });
   return phases;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Ciclo do laboratório (clipes R2, v1.2): reproduz os 12 s da ilustração 2D com um corpo 3D que se move de verdade.
+//   0–8 %  escreve   8–40 %  anda (esq.)   40–52 %  pensa   52–54 %  vira   54–86 %  anda (dir.)   86–98 %  pensa   98–100 %  vira
+// Tempos em segundos (ciclo de 12 s). O clipe de andar é "no lugar": quem move a raiz é o diretor, à velocidade declarada em
+// extras.rootMotion.speedModelUnitsPerSecond (pés plantados sem deslizar). Os clipes são obrigatórios em conjunto.
+export const CYCLE_CONTRACT_VERSION = 1;
+export const CYCLE_CLIPS = Object.freeze({
+  hold: 'Lab_HoldBook_P1', // repouso segurando o caderno (laço)
+  walk: 'Lab_Walk_Book_R2', // laço de 3,84 s (4 ciclos de 0,96 s; 2 passos por ciclo)
+  write: 'Lab_Write_Notes_R2', // laço de 1,92 s (golpes a cada 0,24 s)
+  think: 'Lab_Think_Chin_R2', // 1,44 s: poses 1-2-3-4-3-2-1 do 2D (caneta ao queixo)
+  notice: 'Lab_Notice_R2', // 0,92 s: pulinho ao perceber o visitante (o 2D usa 720 ms)
+  turn: 'Lab_Turn_R2', // 0,24 s (o 2D inverte com scaleX(-1) em 240 ms)
+});
+export const CYCLE_ONE_SHOT = Object.freeze([CYCLE_CLIPS.think, CYCLE_CLIPS.notice, CYCLE_CLIPS.turn]);
+export const CYCLE_PROPS = Object.freeze(['book', 'pen']);
+
+// Linha do tempo do ciclo. `at` em segundos desde o início; `dir` = sentido do passo (-1 esquerda, +1 direita, 0 parado);
+// `yaw` = direção do olhar do corpo (rad): 0 = de frente para a câmera, ±1,45 = de perfil quase puro.
+export const CYCLE_TIMELINE = Object.freeze([
+  { id: 'write-a', clip: CYCLE_CLIPS.write, secs: 0.96, dir: 0, yaw: -0.5 },
+  { id: 'walk-left', clip: CYCLE_CLIPS.walk, secs: 3.84, dir: -1, yaw: -1.45 },
+  { id: 'think-left', clip: CYCLE_CLIPS.think, secs: 1.44, dir: 0, yaw: -0.5 },
+  { id: 'turn-right', clip: CYCLE_CLIPS.turn, secs: 0.24, dir: 0, yaw: 0.5 },
+  { id: 'walk-right', clip: CYCLE_CLIPS.walk, secs: 3.84, dir: 1, yaw: 1.45 },
+  { id: 'think-right', clip: CYCLE_CLIPS.think, secs: 1.44, dir: 0, yaw: 0.5 },
+  { id: 'turn-left', clip: CYCLE_CLIPS.turn, secs: 0.24, dir: 0, yaw: -0.5 },
+]);
+export const CYCLE_SECONDS = CYCLE_TIMELINE.reduce((s, p) => s + p.secs, 0); // 12
+
+export function cycleCapability(hasClip) {
+  const missing = Object.values(CYCLE_CLIPS).filter((n) => !hasClip(n));
+  return { available: missing.length === 0, missing };
+}

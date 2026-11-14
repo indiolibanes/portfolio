@@ -165,6 +165,19 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) #sobre .hero
   100% { translate: 0 0; rotate: -0.5deg; }
 }
 
+/* Com a Sophia 3D ligada (data-sophia3d='on') quem anda, vira e pula é o próprio modelo (diretor + clipes R2): o contêiner
+   fica parado e só a sombra no chão acompanha o deslocamento (--sophia-root-pct, escrito pelo ator). O 2D acima segue
+   valendo como reserva quando o 3D não carrega. */
+.sophia-animation--lab[data-sophia3d='on'],
+.lab-companion:has(.lab-sophia-guide:is(:hover, :focus-visible)) .sophia-animation--lab[data-sophia3d='on'] { animation: none; }
+/* O percurso (±~0,17 de altura de personagem) e a cauda precisam de mais largura que o quadrado do 2D: o quadro de desenho
+   é alargado e centrado, sem mexer no layout (o contêiner tem overflow visível) e sem capturar o ponteiro. */
+.sophia-animation--lab[data-sophia-cycle='on'] > .sophia-actor__canvas { inset: 0 auto 0 -45%; width: 190%; pointer-events: none; }
+.sophia-animation--lab[data-sophia3d='on']::after {
+  left: calc(22% + var(--sophia-root-pct, 0%));
+  right: calc(22% - var(--sophia-root-pct, 0%));
+}
+
 /* Sophia percebe você: ao apontar ou focar o guia, dá um pulinho.
    `translate` do contêiner é independente do transform da caminhada. */
 .lab-companion:has(.lab-sophia-guide:is(:hover, :focus-visible)) .sophia-animation--lab {
