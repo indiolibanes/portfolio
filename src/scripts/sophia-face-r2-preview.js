@@ -286,8 +286,13 @@ export function mountSophiaFaceR2Preview() {
       slots[key] = { kind, file, entries };
       $('file-' + key).textContent = nameOf(file) + ' · ' + Math.round(file.size / 1048576) + ' MB · somente memória local';
       statusSlot(key, kind === 'zip' ? entries.length + ' GLB(s) no ZIP' : 'Arquivo selecionado');
+      rememberQA();
       selectedVersion = key; $('version').value = key;
-      rememberQA(); restoreQA(); await changeModel();
+      if (kind === 'glb') {
+        const implied = /kitsune|raposa/i.test(file.name) ? 'kitsune' : /anime|waifu/i.test(file.name) ? 'anime' : null;
+        if (implied) { selectedCharacter = implied; $('character').value = implied; }
+      }
+      restoreQA(); await changeModel();
     } catch (e) { statusSlot(key, 'Falha'); $('file-' + key).textContent = 'Erro: ' + e.message; }
   }
 
