@@ -1,0 +1,22 @@
+{
+  "scope": "Node24 host CPU only; no WebGL, texture decode, VRAM, mobile or full actor initialization",
+  "before": {
+    "fourSkeletonConstructorMs": {
+      "min": 34.09815000000003,
+      "median": 55.925719999999956,
+      "max": 138.72526
+    },
+    "uniqueAnimationTypedArrayBytes": 4189824,
+    "iterations": 7
+  },
+  "after": {
+    "fourSkeletonConstructorMs": {
+      "min": 7.783536000000026,
+      "median": 10.070201999999995,
+      "max": 20.10069699999997
+    },
+    "uniqueAnimationTypedArrayBytes": 1047456,
+    "iterations": 7
+  },
+  "storageReductionFraction": 0.75
+}

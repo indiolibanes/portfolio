@@ -7,6 +7,7 @@
 // uma luz quente de lanterna, um ponto de luz, ambiente hemisférico e um "céu" analítico para os reflexos.
 
 import { parseGLB, readAccessor, readSparse, Skeleton, composeInto, mulInto } from './gltf-skel.js';
+import { makeMorphChannel, updateMorphChannel } from './gltf-morph.js';
 export { quat } from './gltf-skel.js';
 
 // '#rrggbb' (sRGB) → linear
@@ -230,9 +231,11 @@ function compile(gl, type, src) {
 }
 function program(gl, vs, fs) {
   const p = gl.createProgram();
-  gl.attachShader(p, compile(gl, gl.VERTEX_SHADER, vs));
-  gl.attachShader(p, compile(gl, gl.FRAGMENT_SHADER, fs));
+  const vertex = compile(gl, gl.VERTEX_SHADER, vs), fragment = compile(gl, gl.FRAGMENT_SHADER, fs);
+  gl.attachShader(p, vertex);
+  gl.attachShader(p, fragment);
   gl.linkProgram(p);
+  gl.deleteShader(vertex); gl.deleteShader(fragment);
   if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
   return p;
 }
@@ -281,6 +284,8 @@ export class Renderer {
     const gl = canvas.getContext('webgl2', { antialias: true, alpha: true, premultipliedAlpha: true, powerPreference: 'high-performance' });
     if (!gl) throw new Error('WebGL2 indisponível');
     this.gl = gl;
+    this.buffers = new Set(); this.textures = new Set(); this.vaos = new Set();
+    this.metrics = { frames: 0, drawCalls: 0, morphUploadBytes: 0, morphUploads: 0, morphCpuMs: 0 };
     this.canvas = canvas;
     this.prog = program(gl, VS, FS);
     this.U = uniforms(gl, this.prog, ['uMorph', 'uVP', 'uModel', 'uNM', 'uSkinned', 'uJoints', 'uBase', 'uBaseTex', 'uHasBase', 'uEmis', 'uEmisTex',
@@ -288,9 +293,9 @@ export class Renderer {
       'uPP', 'uPC', 'uRim', 'uRimK', 'uExposure', 'uBlend']);
     this.shadowProg = program(gl, SHADOW_VS, SHADOW_FS);
     this.SU = uniforms(gl, this.shadowProg, ['uVP', 'uAt', 'uR', 'uA']);
-    this.shadowVAO = gl.createVertexArray();
+    this.shadowVAO = this.makeVAO();
     gl.bindVertexArray(this.shadowVAO);
-    const q = gl.createBuffer();
+    const q = this.makeBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, q);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(this.shadowProg, 'aP');
@@ -298,7 +303,7 @@ export class Renderer {
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     gl.bindVertexArray(null);
 
-    this.white = gl.createTexture();
+    this.white = this.makeTexture();
     gl.bindTexture(gl.TEXTURE_2D, this.white);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([255, 255, 255, 255]));
     this.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
@@ -313,7 +318,20 @@ export class Renderer {
     // valor genérico (0) dos atributos de morph desligados: estado do contexto, definido uma vez
     for (let k = 6; k < 14; k += 1) gl.vertexAttrib3f(k, 0, 0, 0);
     this.lost = false;
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.lost = true; });
+    this.onLost = e => { e.preventDefault(); this.lost = true; };
+    canvas.addEventListener('webglcontextlost', this.onLost);
+  }
+
+  makeBuffer() { const b = this.gl.createBuffer(); this.buffers.add(b); return b; }
+  makeTexture() { const t = this.gl.createTexture(); this.textures.add(t); return t; }
+  makeVAO() { const v = this.gl.createVertexArray(); this.vaos.add(v); return v; }
+  dispose() {
+    this.canvas.removeEventListener('webglcontextlost', this.onLost);
+    for (const b of this.buffers) this.gl.deleteBuffer(b);
+    for (const t of this.textures) this.gl.deleteTexture(t);
+    for (const v of this.vaos) this.gl.deleteVertexArray(v);
+    this.gl.deleteProgram(this.prog); this.gl.deleteProgram(this.shadowProg);
+    this.buffers.clear(); this.textures.clear(); this.vaos.clear(); this.lost = true;
   }
 
   setSize(cssW, cssH, dpr) {
@@ -347,7 +365,8 @@ export class Renderer {
       const bv = json.bufferViews[im.bufferView];
       const blob = new Blob([bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength)], { type: im.mimeType || 'image/png' });
       const bmp = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
-      const tex = gl.createTexture();
+      if (this.lost) { bmp.close?.(); throw new Error('Renderer disposed during texture load'); }
+      const tex = this.makeTexture();
       gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
       gl.texImage2D(gl.TEXTURE_2D, 0, srgb.has(ti) ? gl.SRGB8_ALPHA8 : gl.RGBA8, bmp.width, bmp.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, bmp);
@@ -367,7 +386,7 @@ export class Renderer {
       const key = viewIndex + ':' + target;
       if (bufCache.has(key)) return bufCache.get(key);
       const bv = json.bufferViews[viewIndex];
-      const b = gl.createBuffer();
+      const b = this.makeBuffer();
       gl.bindBuffer(target, b);
       gl.bufferData(target, bin.subarray(bv.byteOffset || 0, (bv.byteOffset || 0) + bv.byteLength), gl.STATIC_DRAW);
       bufCache.set(key, b);
@@ -399,7 +418,7 @@ export class Renderer {
     json.nodes.forEach((node, ni) => {
       if (node.mesh === undefined) return;
       json.meshes[node.mesh].primitives.forEach((prim) => {
-        const vao = gl.createVertexArray();
+        const vao = this.makeVAO();
         gl.bindVertexArray(vao);
         const attr = (name, loc, integer = false) => {
           const ai = prim.attributes[name];
@@ -417,26 +436,14 @@ export class Renderer {
         // morph na CPU: alvos esparsos (Blender) ou mais de MAX_MORPHS alvos. Posições base ficam num buffer dinâmico.
         let cpu = null;
         const targetsRaw = prim.targets || [];
-        if (targetsRaw.length && (targetsRaw.length > MAX_MORPHS || targetsRaw.some((t) => json.accessors[t.POSITION]?.sparse))) {
-          const base = readAccessor(json, bin, prim.attributes.POSITION);
-          const list = [];
-          targetsRaw.forEach((t, k) => {
-            const sp = t.POSITION !== undefined ? readSparse(json, bin, t.POSITION) : null;
-            if (sp && sp.indices.length) list.push({ k, indices: sp.indices, values: sp.values });
-          });
-          const buf = gl.createBuffer();
-          gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-          gl.bufferData(gl.ARRAY_BUFFER, base, gl.DYNAMIC_DRAW);
-          cpu = { base, cur: new Float32Array(base), list, buf, last: new Float32Array(targetsRaw.length), lo: 0, hi: 0, dirty: false };
-        }
-        if (cpu) {
-          gl.bindBuffer(gl.ARRAY_BUFFER, cpu.buf);
-          gl.enableVertexAttribArray(0);
-          gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-        } else {
-          attr('POSITION', 0);
-        }
-        attr('NORMAL', 1);
+        if (targetsRaw.length && (targetsRaw.length > MAX_MORPHS || targetsRaw.some(t => Object.values(t).some(ai => json.accessors[ai]?.sparse)))) {
+          cpu = { position: makeMorphChannel(json, bin, prim, 'POSITION'), normal: makeMorphChannel(json, bin, prim, 'NORMAL') };
+          for (const [key, loc] of [['position', 0], ['normal', 1]]) {
+            const c = cpu[key];
+            if (c) { c.buf = this.makeBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, c.buf); gl.bufferData(gl.ARRAY_BUFFER, c.base, gl.DYNAMIC_DRAW); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0); }
+            else attr(key === 'position' ? 'POSITION' : 'NORMAL', loc);
+          }
+        } else { attr('POSITION', 0); attr('NORMAL', 1); }
         const hasUV = attr('TEXCOORD_0', 2);
         const hasCol = attr('COLOR_0', 3);
         const skinned = node.skin !== undefined && attr('JOINTS_0', 4, true) && attr('WEIGHTS_0', 5);
@@ -475,7 +482,7 @@ export class Renderer {
               P[o] = rx + (P[o] - rx) * shrink; P[o + 1] = ry + (P[o + 1] - ry) * shrink; P[o + 2] = rz + (P[o + 2] - rz) * shrink;
             }
           }
-          const pb = gl.createBuffer();
+          const pb = this.makeBuffer();
           gl.bindBuffer(gl.ARRAY_BUFFER, pb);
           gl.bufferData(gl.ARRAY_BUFFER, P, gl.STATIC_DRAW);
           gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
@@ -483,7 +490,7 @@ export class Renderer {
         const keep = opts.thin?.[mat.name];
         if (keep !== undefined && keep < 1) {
           const kept = thinTufts(readAccessor(json, bin, prim.indices), json.accessors[prim.attributes.POSITION].count, keep);
-          const eb = gl.createBuffer();
+          const eb = this.makeBuffer();
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, eb);
           gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, kept, gl.STATIC_DRAW);
           count = kept.length;
@@ -506,7 +513,7 @@ export class Renderer {
 
     // transparentes (alphaMode BLEND) por último, para misturar sobre o que já foi desenhado
     draws.sort((a, b) => (a.mat.blend ? 1 : 0) - (b.mat.blend ? 1 : 0));
-    this.jointTex = this.jointTex || gl.createTexture();
+    this.jointTex = this.jointTex || this.makeTexture();
     if (skeleton.joints) {
       gl.bindTexture(gl.TEXTURE_2D, this.jointTex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 4, skeleton.joints.length, 0, gl.RGBA, gl.FLOAT, null);
@@ -526,47 +533,22 @@ export class Renderer {
 
   // aplica os pesos de morph por CPU nas primitivas com alvos esparsos (só reenvia o que mudou)
   morphCpu(model) {
-    const gl = this.gl;
-    const sk = model.skeleton;
+    const gl = this.gl, sk = model.skeleton, start = performance.now();
     for (const d of model.draws) {
-      const c = d.cpu;
-      if (!c) continue;
-      const w = sk.nodeMorph?.[d.node];
-      if (!w) continue;
-      let changed = false;
-      for (let k = 0; k < c.last.length; k += 1) if (Math.abs((w[k] || 0) - c.last[k]) > 1e-3) { changed = true; break; }
-      if (!changed) continue;
-      // vértices tocados por qualquer alvo ativo agora ou no quadro anterior voltam à base e recebem a soma dos ativos
-      const touch = (t) => {
-        for (let q = 0; q < t.indices.length; q += 1) {
-          const v = t.indices[q] * 3;
-          c.cur[v] = c.base[v]; c.cur[v + 1] = c.base[v + 1]; c.cur[v + 2] = c.base[v + 2];
-        }
-      };
-      let lo = Infinity, hi = -1;
-      for (const t of c.list) {
-        if (Math.abs((w[t.k] || 0)) > 1e-4 || Math.abs(c.last[t.k]) > 1e-4) {
-          touch(t);
-          lo = Math.min(lo, t.indices[0]); hi = Math.max(hi, t.indices[t.indices.length - 1]);
-        }
-      }
-      for (const t of c.list) {
-        const wk = w[t.k] || 0;
-        if (Math.abs(wk) <= 1e-4) continue;
-        for (let q = 0; q < t.indices.length; q += 1) {
-          const v = t.indices[q] * 3; const o = q * 3;
-          c.cur[v] += t.values[o] * wk; c.cur[v + 1] += t.values[o + 1] * wk; c.cur[v + 2] += t.values[o + 2] * wk;
-        }
-      }
-      for (let k = 0; k < c.last.length; k += 1) c.last[k] = w[k] || 0;
-      if (hi >= 0) {
-        // índices esparsos são ordenados; min/max reais para o sub-envio
-        let a = Infinity, b = -1;
-        for (const t of c.list) { a = Math.min(a, t.indices[0]); b = Math.max(b, t.indices[t.indices.length - 1]); }
+      if (!d.cpu || d.hidden) continue;
+      const weights = (d.node === sk.meshNode && model.morphOverride) || sk.nodeMorph?.[d.node] || (d.node === sk.meshNode ? sk.morphWeights : null);
+      if (!weights) continue;
+      for (const c of [d.cpu.position, d.cpu.normal]) {
+        if (!c) continue;
+        const dirty = updateMorphChannel(c, weights);
+        if (!dirty) continue;
         gl.bindBuffer(gl.ARRAY_BUFFER, c.buf);
-        gl.bufferSubData(gl.ARRAY_BUFFER, a * 12, c.cur.subarray(a * 3, (b + 1) * 3));
+        const view = c.cur.subarray(dirty.lo * 3, (dirty.hi + 1) * 3);
+        gl.bufferSubData(gl.ARRAY_BUFFER, dirty.lo * 12, view);
+        this.metrics.morphUploads += 1; this.metrics.morphUploadBytes += view.byteLength;
       }
     }
+    this.metrics.morphCpuMs += performance.now() - start;
   }
 
   // ---------------------------------------------------------------- quadro
@@ -576,9 +558,11 @@ export class Renderer {
     if (this.lost) return;
     const gl = this.gl;
     const U = this.U;
+    this.metrics.frames += 1; this.metrics.drawCalls = 0;
     const w = this.canvas.width;
     const h = this.canvas.height;
     gl.viewport(0, 0, w, h);
+    gl.depthMask(true);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -652,7 +636,7 @@ export class Renderer {
     const mw = model.morphOverride || sk.morphWeights || ZERO4;
     const mv = this.MW;
     const masked = this.MWm;
-    for (let k = 0; k < MAX_MORPHS; k += 1) mv[k] = k < mw.length ? mw[k] : 0;
+    mv.fill(NaN);
     let lastDouble = null;
     let lastMask = -1;
     let lastBlend = null;
@@ -689,15 +673,15 @@ export class Renderer {
       gl.bindTexture(gl.TEXTURE_2D, m.emisTex || this.white);
       gl.uniform1i(U.uHasEmis, m.emisTex ? 1 : 0);
       gl.bindVertexArray(d.vao);
-      if (d.morphMask !== lastMask) {
-        for (let k = 0; k < 4; k += 1) masked[k] = d.morphMask & (1 << k) ? mv[k] : 0;
-        gl.uniform4fv(U.uMorph, d.morphMask ? masked : ZERO4);
-        lastMask = d.morphMask;
-      }
+      const dw = (d.node === sk.meshNode && model.morphOverride) || sk.nodeMorph?.[d.node] || mw;
+      let morphChanged = d.morphMask !== lastMask;
+      for (let k = 0; k < 4; k += 1) { masked[k] = d.morphMask & (1 << k) ? (dw[k] || 0) : 0; if (masked[k] !== mv[k]) morphChanged = true; }
+      if (morphChanged) { gl.uniform4fv(U.uMorph, masked); mv.set(masked); lastMask = d.morphMask; }
       if (!d.skinned) { gl.vertexAttribI4ui(4, 0, 0, 0, 0); gl.vertexAttrib4f(5, 1, 0, 0, 0); }
       if (!d.hasUV) gl.vertexAttrib2f(2, 0, 0);
       if (!d.hasCol) gl.vertexAttrib4f(3, 1, 1, 1, 1);
       gl.drawElements(gl.TRIANGLES, d.count, d.itype, d.ioff);
+      this.metrics.drawCalls += 1;
     }
     gl.bindVertexArray(null);
     gl.disable(gl.BLEND);

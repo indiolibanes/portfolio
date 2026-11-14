@@ -1,0 +1,28 @@
+{
+  "method": "Diagnostic weld rounded5decimal positions; same algorithm before/after, pairwise maximum L1>0.1 for weight conflict",
+  "before": {
+    "vertices": 12979,
+    "triangles": 12909,
+    "uniqueRoundedPositions": 9572,
+    "components": 342,
+    "boundaryEdges": 5607,
+    "nonManifoldEdges": 0,
+    "degenerateTriangles": 0,
+    "weightConflicts": 693
+  },
+  "after": {
+    "vertices": 12979,
+    "triangles": 12909,
+    "uniqueRoundedPositions": 6853,
+    "components": 45,
+    "boundaryEdges": 693,
+    "nonManifoldEdges": 0,
+    "degenerateTriangles": 0,
+    "weightConflicts": 0
+  },
+  "limits": [
+    "No blind deletion/filling or buffer-index welding; UV duplicates retained",
+    "Selected integrated source subset is not directly comparable to full multiview coat topology",
+    "Preliminary672 conflict groups vs reproduced693 due max-pairwise method; not forced to match"
+  ]
+}

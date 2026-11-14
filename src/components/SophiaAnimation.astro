@@ -7,12 +7,12 @@ const { variant, linked = true } = Astro.props;
 // A variante do laboratório ganha a Sophia 3D (jaleco, brincos e broche) quando o navegador permite;
 // o quadro 2D continua como reserva. A variante "music" segue 2D (sem ativo 3D de fones).
 const actor = variant === 'lab'
-  ? { 'data-sophia-actor': 'lab', 'data-sophia-clip': 'ExpressionFlow_R6', 'data-sophia-cam': 'full', 'data-sophia-yaw': '0.45' }
+  ? { 'data-sophia-actor': 'lab', 'data-sophia-clip': 'Sophia_ExpressionFlow_R6', 'data-sophia-cam': 'full', 'data-sophia-yaw': '0.45' }
   : {};
 const Tag = linked ? 'a' : 'div';
 const description = variant === 'music'
   ? 'Sophia, raposa lunar com fones, acompanha o ritmo da música.'
-  : 'Sophia de jaleco branco, anotando suas descobertas no caderno.';
+  : 'Sophia de jaleco branco, observando o laboratório.';
 ---
 
 <Tag data-decorative-motion {...actor} class={`sophia-animation sophia-animation--${variant}`} href={linked ? "/sophia/" : undefined} aria-label={linked ? `${description} Conhecer Sophia.` : undefined} aria-hidden={linked ? undefined : "true"}>

@@ -4,6 +4,7 @@ import { mkdir } from 'node:fs/promises';
 await mkdir('qa-results/sophia-404-2d', {recursive:true});
 const browser=await chromium.launch({
   headless:true,
+  executablePath:process.env.QA_CHROMIUM_EXECUTABLE_PATH||undefined,
   args:['--enable-webgl','--use-gl=angle','--use-angle=swiftshader'],
 });
 let failed=false;
@@ -12,7 +13,7 @@ try {
     const page=await browser.newPage({viewport:{width,height:900}});
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
-    await page.goto('http://127.0.0.1:4321/404.html',{waitUntil:'domcontentloaded'});
+    await page.goto((process.env.QA_BASE_URL||'http://127.0.0.1:4321')+'/404.html',{waitUntil:'domcontentloaded'});
     const info=await page.evaluate(()=>({
       tetris:!!document.querySelector('[data-tetris-canvas]'),
       stage3d:[...document.querySelectorAll('[data-sophia-stage]')].map(el=>el.dataset.sophiaStage),
@@ -61,7 +62,7 @@ try {
     await page.close();
   }
   const page=await browser.newPage({viewport:{width:390,height:840},reducedMotion:'reduce'});
-  await page.goto('http://127.0.0.1:4321/404.html',{waitUntil:'domcontentloaded'});
+  await page.goto((process.env.QA_BASE_URL||'http://127.0.0.1:4321')+'/404.html',{waitUntil:'domcontentloaded'});
   await page.locator('[data-sophia-room2d]').scrollIntoViewIfNeeded();
   const reduced=await page.locator('[data-sophia-room2d]').evaluate(root=>({
     phase:root.dataset.phase,

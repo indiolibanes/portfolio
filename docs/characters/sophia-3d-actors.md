@@ -8,7 +8,7 @@ Substitui as ilustrações 2D da Sophia pela versão 3D (assets Sophia v1.4.2 + 
 | Onde | Antes | Agora | Clipe |
 |---|---|---|---|
 | Home — faixa de curiosidades (`SophiaCorrida`) | SVG da corredora | ator 3D `runner` (jaleco) | `Correr_R6`, yaw 1.0 |
-| Home — laboratório (`SophiaAnimation variant="lab"`) | sprite WebP | ator 3D `lab` | `ExpressionFlow_R6` |
+| Home — laboratório (`SophiaAnimation variant="lab"`) | sprite WebP | ator 3D `lab` | `Sophia_ExpressionFlow_R6` |
 | 404 — retrato sobre o tabuleiro | Three.js + `sophia-alpha.glb` (~36 MiB) | ator 3D `portrait` (busto) | humor do Tetris |
 | 404 — mascote do Tetris | pixel art 4 humores | ator 3D `mascot` (rosto) | humor do Tetris → `MOODS` |
 
@@ -44,7 +44,11 @@ Humor do Tetris (`sophia:tetris`) → clipe de expressão: idle=Seria, playing=E
 - O jaleco rasga na barra com a perna erguida (chute) e estica com o braço levantado (soco): as animações da home
   (corrida, expressões) não estão nesses extremos.
 - Brincos/amuleto são rígidos nas juntas (não balançam).
-- Validação: contrato estático 100/100; testes node idênticos ao baseline (67 falhas pré-existentes por falta de
+- Registro histórico do PR306 (não é resultado R1.5): contrato estático 100/100; testes node idênticos ao baseline (67 falhas pré-existentes por falta de
   `three`/`node_modules` neste ambiente); renderização verificada em Chrome com WebGL (SwiftShader) numa página de teste
   que replica a marcação e usa o CSS real. **`astro build` e os testes baseados em Three não rodaram aqui**, e os
   scripts de QA da 404 (`qa-sophia-404*.mjs`) não foram executados. Nada está aprovado sem a inspeção visual do proprietário.
+
+## Revisão R1.5
+
+Veja [relatório e gates](sophia-r15/README.md), [runtime e compatibilidade](sophia-r15/runtime-performance.md) e [reprodução](sophia-r15/reproduce.md). Node 344/344, check e build executados; navegador bloqueado no ambiente. O novo jaleco continua reprovado em poses extremas e privado. O asset público deste documento não foi substituído.

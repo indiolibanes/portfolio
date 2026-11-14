@@ -1,0 +1,58 @@
+{
+  "kind": "STATIC_ESTIMATES_NOT_GPU_MEASUREMENTS",
+  "geometryReferencedBufferViewBytes": 7204944,
+  "morphReferencedBufferViewBytes": 3931571,
+  "images": [
+    {
+      "width": 128,
+      "height": 128,
+      "encodedBytes": 3034,
+      "rgba8BaseEstimateBytes": 65536
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 715170,
+      "rgba8BaseEstimateBytes": 16777216
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 606094,
+      "rgba8BaseEstimateBytes": 16777216
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 714971,
+      "rgba8BaseEstimateBytes": 16777216
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 712617,
+      "rgba8BaseEstimateBytes": 16777216
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 651703,
+      "rgba8BaseEstimateBytes": 16777216
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "encodedBytes": 888404,
+      "rgba8BaseEstimateBytes": 16777216
+    }
+  ],
+  "rgba8AllImagesBaseEstimateBytes": 100728832,
+  "allPrimitivesPotentialDraws": 13,
+  "defaultHiddenPropPrimitives": 2,
+  "defaultUnhiddenPotentialDrawsPerActor": 11,
+  "limits": [
+    "BufferView sums are stored payloads, not full CPU/GPU heap; shared views deduplicated within each category only",
+    "RGBA8 estimate assumes all images decoded once, excludes mipmaps, compression, driver copies and framebuffers",
+    "Potential primitive count excludes shadow pass, culling, material variants and implementation costs; actual draw calls/FPS require WebGL"
+  ]
+}

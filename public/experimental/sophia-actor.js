@@ -11,7 +11,7 @@
 //              data-sophia-props ("book,pen"), data-sophia-mood (ver MOODS), data-sophia-variant (0 espiral, 1 coração)
 // O ator pronto recebe data-sophia-3d="on" (CSS esconde a arte 2D) e dispara o evento "sophia:actor-ready".
 import { Renderer, fetchGLB, hex } from './gltf-gl.js';
-import { Skeleton, parseGLB } from './gltf-skel.js';
+import { Skeleton } from './gltf-skel.js';
 
 export const MODEL_URL = '/assets/models/sophia/sophia-lab.glb';
 
@@ -59,22 +59,31 @@ export const actorsAllowed = () => !reduceQuery.matches && !constrained() && !qu
 
 // ------------------------------------------------------------------ palco compartilhado
 let stagePromise = null;
+let sourcePromise = null;
+let disposed = false;
 function getStage() {
   if (!stagePromise) {
     stagePromise = (async () => {
       const canvas = document.createElement('canvas');
       const renderer = new Renderer(canvas);
-      const buffer = await fetchGLB(MODEL_URL);
-      const model = await renderer.loadModel(buffer);
-      const { json, bin } = parseGLB(buffer);
-      return { renderer, model, json, bin };
+      try {
+        sourcePromise ||= fetchGLB(MODEL_URL).catch(error => { sourcePromise = null; throw error; });
+        const buffer = await sourcePromise;
+        const model = await renderer.loadModel(buffer);
+        const { json, bin } = model.skeleton;
+        const lost = e => { e.preventDefault(); renderer.lost = true; stop(); for (const a of actors.values()) { a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; } };
+        const restored = async () => { await resetStage(); if (!disposed) for (const el of visible) void wake(el); };
+        canvas.addEventListener('webglcontextlost', lost);
+        canvas.addEventListener('webglcontextrestored', restored);
+        return { renderer, model, json, bin, dispose() { canvas.removeEventListener('webglcontextlost', lost); canvas.removeEventListener('webglcontextrestored', restored); renderer.dispose(); canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } };
+      } catch (error) { renderer.dispose(); throw error; }
     })().catch((err) => { stagePromise = null; throw err; });
   }
   return stagePromise;
 }
 
 // ------------------------------------------------------------------ ator
-class Actor {
+export class Actor {
   constructor(el, stage) {
     this.el = el;
     this.stage = stage;
@@ -85,6 +94,7 @@ class Actor {
     this.canvas.dataset.sophiaActorCanvas = '';
     el.appendChild(this.canvas);
     this.ctx = this.canvas.getContext('2d');
+    if (!this.ctx) { this.canvas.remove(); throw new Error('Canvas 2D indisponível'); }
     const d = el.dataset;
     this.cam = CAMERAS[d.sophiaCam] || CAMERAS.full;
     this.yaw = parseFloat(d.sophiaYaw || '0');
@@ -104,15 +114,24 @@ class Actor {
 
   // troca de clipe com mistura curta (0,25 s) para não "pular"
   setClip(name, instant = false) {
-    const clip = this.clipByName(name);
-    if (!clip || this.clipName === name) return;
+    let clip = this.clipByName(name);
+    if (!clip) {
+      this.el.dataset.sophiaClipError = name;
+      this.el.dispatchEvent(new CustomEvent('sophia:actor-error', { bubbles: true, detail: { code: 'MISSING_CLIP', requested: name, fallback: MOODS.idle.clip } }));
+      console.warn('[Sophia 3D] Clipe inexistente:', name, '; fallback:', MOODS.idle.clip);
+      clip = this.clipByName(MOODS.idle.clip);
+      if (!clip) throw new Error('GLB sem clipe de reserva: ' + MOODS.idle.clip);
+      name = clip.name;
+    } else delete this.el.dataset.sophiaClipError;
+    if (this.clipName === name) return;
     this.clipName = name;
     if (instant || !this.layers.length) {
       this.layers = [{ clip, time: this.time, weight: 1 }];
       this.fade = null;
     } else {
-      const old = this.layers.map((l) => ({ ...l }));
-      this.layers = [...old.map((l) => ({ ...l, weight: 1 })), { clip, time: 0, weight: 0 }];
+      const old = this.layers.filter(l => l.weight > 1e-4).map(l => ({ ...l }));
+      const total = old.reduce((sum, l) => sum + l.weight, 0) || 1;
+      this.layers = [...old.map(l => ({ ...l, baseWeight: l.weight / total })), { clip, time: 0, weight: 0 }];
       this.fade = { t: 0, dur: 0.25 };
     }
   }
@@ -125,7 +144,7 @@ class Actor {
 
   size() {
     const r = this.el.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const w = Math.max(2, Math.min(1024, Math.round(r.width * dpr)));
     const h = Math.max(2, Math.min(1024, Math.round(r.height * dpr)));
     if (w !== this.w || h !== this.h) { this.w = w; this.h = h; this.canvas.width = w; this.canvas.height = h; }
@@ -139,13 +158,15 @@ class Actor {
       this.fade.t += dt;
       const k = Math.min(1, this.fade.t / this.fade.dur);
       const n = this.layers.length;
-      this.layers.forEach((l, i) => { l.weight = i === n - 1 ? k : 1 - k; });
+      this.layers.forEach((l, i) => { l.weight = i === n - 1 ? k : l.baseWeight * (1 - k); });
       if (k >= 1) { this.layers = [this.layers[n - 1]]; this.layers[0].weight = 1; this.fade = null; }
     }
     s.evaluate(this.layers);
     s.updateWorld();
     s.updateSkin();
   }
+
+  dispose() { this.canvas.remove(); this.layers = []; this.fade = null; }
 
   draw() {
     this.size();
@@ -170,31 +191,39 @@ const pending = new Set();
 let raf = 0;
 let last = 0;
 
+const FRAME_MS = 1000 / 30;
+const canDraw = a => a.visible && a.el.isConnected && !a.stage.renderer.lost
+  && a.el.closest('[data-decorative-motion]')?.dataset.motionPlaying !== 'false';
+function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; last = 0; }
 function loop(now) {
   raf = 0;
-  const dt = Math.min(0.05, (now - last) / 1000 || 0);
-  last = now;
-  let any = false;
-  for (const a of actors.values()) {
-    if (!a.visible) continue;
-    // DecorativeMotion limita os laços simultâneos: fora da cota, o quadro congela
-    if (a.el.closest('[data-decorative-motion]')?.dataset.motionPlaying === 'false') continue;
-    a.step(dt);
-    a.draw();
-    any = true;
+  if (disposed || document.hidden || !actorsAllowed()) { last = 0; return; }
+  const live = [...actors.values()].filter(canDraw);
+  if (!live.length) { last = 0; return; }
+  if (!last || now - last >= FRAME_MS - 1) {
+    const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+    last = now;
+    for (const a of live) { a.step(dt); a.draw(); }
   }
-  if (any && !document.hidden) raf = requestAnimationFrame(loop);
+  raf = requestAnimationFrame(loop);
 }
 function kick() {
-  if (!raf && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(loop); }
+  if (!disposed && !raf && !document.hidden && actorsAllowed() && [...actors.values()].some(canDraw)) { last = 0; raf = requestAnimationFrame(loop); }
+}
+function resetStage() {
+  stop();
+  const previous = stagePromise; stagePromise = null;
+  for (const a of actors.values()) { a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; a.dispose(); }
+  actors.clear();
+  return previous?.then(stage => stage.dispose()).catch(() => {});
 }
 
 async function wake(el) {
-  if (actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
+  if (disposed || actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
   pending.add(el);
   try {
     const stage = await getStage();
-    if (!el.isConnected) return;
+    if (disposed || !el.isConnected || !visible.has(el) || !actorsAllowed() || document.hidden) return;
     const a = new Actor(el, stage);
     actors.set(el, a);
     a.visible = visible.has(el);
@@ -205,6 +234,8 @@ async function wake(el) {
     el.dispatchEvent(new CustomEvent('sophia:actor-ready', { bubbles: true, detail: { actor: a } }));
     kick();
   } catch (err) {
+    el.querySelectorAll('[data-sophia-actor-canvas]').forEach(canvas => canvas.remove());
+    el.dataset.sophia3d = 'off';
     el.dataset.sophiaFailed = 'true';
     el.dataset.sophiaReady = 'false';
     console.warn('[Sophia 3D] indisponível; mantendo a ilustração.', err);
@@ -221,13 +252,13 @@ const io = new IntersectionObserver((entries) => {
     if (a) a.visible = visible.has(e.target);
   }
   kick();
-}, { rootMargin: '120px 0px', threshold: 0.01 });
+}, { rootMargin: '0px', threshold: 0.01 });
 
 function sync() {
   const on = actorsAllowed();
   // modo retrô/sério/movimento reduzido: o 3D se cala e a arte 2D volta (e vice-versa)
-  for (const el of actors.keys()) { el.dataset.sophia3d = on ? 'on' : 'off'; el.dataset.sophiaReady = on ? 'true' : 'false'; }
-  if (on) { for (const el of visible) void wake(el); kick(); }
+  for (const [el, a] of actors) { const ready = on && !a.stage.renderer.lost; el.dataset.sophia3d = ready ? 'on' : 'off'; el.dataset.sophiaReady = ready ? 'true' : 'false'; }
+  if (on) { for (const el of visible) void wake(el); kick(); } else stop();
 }
 
 export function mountActors(root = document) {
@@ -235,17 +266,26 @@ export function mountActors(root = document) {
 }
 export function actorOf(el) { return actors.get(el) || null; }
 
-document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); else stop(); });
+navigator.connection?.addEventListener?.('change', sync);
+window.addEventListener('pageshow', e => { if (e.persisted) sync(); });
 reduceQuery.addEventListener?.('change', sync);
-new MutationObserver(sync).observe(document.documentElement, {
+const preferences = new MutationObserver(sync);
+preferences.observe(document.documentElement, {
   attributes: true, attributeFilter: ['data-serious-mode', 'data-legacy-mode', 'data-mono-mode', 'data-eink-mode'],
 });
+const motion = new MutationObserver(() => {
+  for (const [el, a] of actors) if (!el.isConnected) { io.unobserve(el); visible.delete(el); a.dispose(); actors.delete(el); }
+  if ([...actors.values()].some(canDraw)) kick(); else stop();
+});
+motion.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-motion-playing'] });
 // humor vindo do Tetris da 404 (sophia:tetris { mood })
 document.addEventListener('sophia:tetris', (ev) => {
   const mood = ev.detail?.mood || 'idle';
   for (const [el, a] of actors) if (el.dataset.sophiaReacts !== undefined) a.react(mood);
+  kick();
 });
-window.addEventListener('pagehide', () => { io.disconnect(); actors.clear(); }, { once: true });
+window.addEventListener('pagehide', e => { stop(); if (e.persisted) return; disposed = true; io.disconnect(); motion.disconnect(); preferences.disconnect(); resetStage(); sourcePromise = null; });
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => mountActors(), { once: true });
 else mountActors();
