@@ -1,0 +1,64 @@
+{
+  "Neutral": {},
+  "Gentle Smile": {
+    "Smile_L": 0.45,
+    "Smile_R": 0.4
+  },
+  "Happy": {
+    "Smile_L": 0.85,
+    "Smile_R": 0.8,
+    "Eye_Squint_L": 0.35,
+    "Eye_Squint_R": 0.35,
+    "Cheek_Raise_L": 0.55,
+    "Cheek_Raise_R": 0.55
+  },
+  "Curious": {
+    "Brow_Raise_L": 0.8,
+    "Brow_Raise_R": 0.25,
+    "Eye_Wide_L": 0.25,
+    "Look_Left": 0.45
+  },
+  "Thoughtful": {
+    "Eye_Squint_L": 0.18,
+    "Eye_Squint_R": 0.18,
+    "Look_Down": 0.5
+  },
+  "Sad": {
+    "Mouth_Sad": 0.65,
+    "Brow_Frown_L": 0.3,
+    "Brow_Frown_R": 0.3,
+    "Look_Down": 0.4
+  },
+  "Surprised": {
+    "Eye_Wide_L": 0.65,
+    "Eye_Wide_R": 0.65,
+    "Brow_Raise_L": 0.6,
+    "Brow_Raise_R": 0.6,
+    "Mouth_Open": 0.4
+  },
+  "Worried": {
+    "Brow_Frown_L": 0.65,
+    "Brow_Frown_R": 0.65,
+    "Mouth_Sad": 0.35
+  },
+  "Playful": {
+    "Smile_L": 0.7,
+    "Smile_R": 0.25,
+    "Brow_Raise_R": 0.45,
+    "Eye_Squint_L": 0.25
+  },
+  "Affectionate": {
+    "Smile_L": 0.5,
+    "Smile_R": 0.5,
+    "Eye_Squint_L": 0.2,
+    "Eye_Squint_R": 0.2
+  },
+  "Blink": {
+    "Blink_L": 1,
+    "Blink_R": 1
+  },
+  "Wink": {
+    "Blink_R": 1,
+    "Smile_L": 0.45
+  }
+}

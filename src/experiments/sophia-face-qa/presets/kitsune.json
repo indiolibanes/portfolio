@@ -1,0 +1,25 @@
+{
+  "Neutral": {},
+  "Happy": {
+    "Smile_L": 0.8,
+    "Smile_R": 0.8,
+    "Eye_Squint_L": 0.2,
+    "Eye_Squint_R": 0.2
+  },
+  "Curious": {
+    "Eye_Wide_L": 0.25,
+    "Look_Left": 0.35
+  },
+  "Thoughtful": {
+    "Eye_Squint_L": 0.2,
+    "Eye_Squint_R": 0.2,
+    "Look_Down": 0.4
+  },
+  "Blink": {
+    "Blink_L": 1,
+    "Blink_R": 1
+  },
+  "Wink": {
+    "Blink_R": 1
+  }
+}

@@ -1,0 +1,616 @@
+{
+  "schema": "sophia-face-qa-gate/1.1",
+  "decision": "R1.1 FIX REQUIRED",
+  "R2": "DEFERRED",
+  "assetChanges": false,
+  "publicRoute": false,
+  "evidenceScopes": [
+    "CPU/API using real R1 GLBs and decoded JPEGs",
+    "R1-supplied PNGs inspected in local comparison UI",
+    "Form export verified in cloud browser; WebGL context creation blocked"
+  ],
+  "runtime": {
+    "unitTests": {
+      "status": "PASS",
+      "count": 13
+    },
+    "repositoryCheck": {
+      "status": "PASS"
+    },
+    "productionBuild": {
+      "status": "PASS"
+    },
+    "webgl": {
+      "status": "NOT TESTED",
+      "reason": "Context creation failed in cloud browser: GL_VENDOR/GL_RENDERER Disabled; BindToCurrentSequence failed."
+    },
+    "fps": {
+      "status": "NOT TESTED",
+      "value": null
+    },
+    "gpuMemory": {
+      "status": "NOT TESTED",
+      "value": null
+    },
+    "samsungInternet": {
+      "status": "NOT TESTED"
+    },
+    "exportJson": {
+      "status": "PASS",
+      "schema": "sophia-face-qa/1.1"
+    }
+  },
+  "models": {
+    "anime": {
+      "sha256": "e03f0cbc097707f27f5b74227c4e6c2a20b0e427bc2bea6ee2c8a7e1e39c3a4f",
+      "bones": 65,
+      "morphCount": 21,
+      "sourceUnmodified": "PASS",
+      "criteria": {
+        "identity": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "mesh": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "materials": {
+          "status": "PARTIAL",
+          "scope": "Material properties preserved in API; contrast/readability is not visually approved."
+        },
+        "uv": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "weights": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "bones": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "neutralReturn": {
+          "status": "PARTIAL",
+          "scope": "API PASS in three cycles; WebGL appearance NOT TESTED."
+        },
+        "presetReadability": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "singleModel": {
+          "status": "PASS",
+          "scope": "Serialized lifecycle tested with races; decoded GPU stability NOT TESTED."
+        },
+        "resourceStability": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "offscreenPause": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "mobile": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "neutralFace": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "skin": {
+          "status": "PARTIAL",
+          "notes": "Revisão dos PNGs R1 com câmera/luz equivalentes: contraste local melhorou, mas a separação tonal continua discreta. Sem aprovação WebGL.",
+          "context": {
+            "model": null,
+            "sha256": null,
+            "morphs": {},
+            "demoPlaying": false,
+            "demoTime": null,
+            "view": "front",
+            "framing": "face",
+            "zoom": 100,
+            "light": "frontal",
+            "camera": null,
+            "referenceImages": {
+              "before": {
+                "name": "Anime_baseline_Front.png",
+                "sha256": "5b4f3bee53d5e4637ab16105b2d3f72b259c7678254cc61609d12cff9039cb80"
+              },
+              "after": {
+                "name": "Anime_after_Neutral.png",
+                "sha256": "7727ad6f7f51aa74951ed71fe9f8ff0c40318ad7b6c6341d0bf7a11c692aa92b"
+              }
+            },
+            "capturedAt": "2026-11-14T11:18:50.617Z"
+          }
+        },
+        "blink": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "wink": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "smile": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "microexpressions": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "eyes": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "oblique": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "hair": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        }
+      },
+      "morphs": [
+        {
+          "name": "Blink_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Wide_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Squint_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Brow_Raise_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Brow_Frown_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Smile_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Cheek_Raise_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Blink_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Wide_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Squint_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Brow_Raise_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Brow_Frown_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Smile_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Cheek_Raise_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Mouth_Open",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Mouth_Sad",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Mouth_Pucker",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Left",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Right",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Up",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Down",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        }
+      ],
+      "presets": [
+        {
+          "name": "Neutral",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Gentle Smile",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Happy",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Curious",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Thoughtful",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Sad",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Surprised",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Worried",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Playful",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Affectionate",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Blink",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Wink",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        }
+      ]
+    },
+    "kitsune": {
+      "sha256": "f332aaa42f5c07f9109fec9a7dbecf2d4715bbc07d9f8f4beb5b8fef4d896e5b",
+      "bones": 51,
+      "morphCount": 12,
+      "sourceUnmodified": "PASS",
+      "criteria": {
+        "identity": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "mesh": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "materials": {
+          "status": "PARTIAL",
+          "scope": "Material properties preserved in API; contrast/readability is not visually approved."
+        },
+        "uv": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "weights": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "bones": {
+          "status": "PASS",
+          "scope": "CPU/API preservation within R1 laboratory; not R0 comparison or artistic approval."
+        },
+        "neutralReturn": {
+          "status": "PARTIAL",
+          "scope": "API PASS in three cycles; WebGL appearance NOT TESTED."
+        },
+        "presetReadability": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "singleModel": {
+          "status": "PASS",
+          "scope": "Serialized lifecycle tested with races; decoded GPU stability NOT TESTED."
+        },
+        "resourceStability": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "offscreenPause": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "mobile": {
+          "status": "NOT TESTED",
+          "scope": "Interactive WebGL or actual Samsung device unavailable; no substituted CPU/GPU claims."
+        },
+        "neutralFace": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "alignment": {
+          "status": "PARTIAL",
+          "notes": "Nos PNGs frontais R1 o alinhamento aparente melhora; não é validação de globos independentes nem de olhar em WebGL.",
+          "context": {
+            "model": null,
+            "sha256": null,
+            "morphs": {},
+            "demoPlaying": false,
+            "demoTime": null,
+            "view": "front",
+            "framing": "face",
+            "zoom": 100,
+            "light": "frontal",
+            "camera": null,
+            "referenceImages": {
+              "before": {
+                "name": "Kitsune_baseline_Front.png",
+                "sha256": "5456cce84ab94322dc48748b8579f64fe0beef694b6c8ce9930b57149fe96191"
+              },
+              "after": {
+                "name": "Kitsune_after_Neutral.png",
+                "sha256": "c221f40cf57fb1ff901b24306f73a44659b38f9ff7e2fe02ab7d3e59651b7dff"
+              }
+            },
+            "capturedAt": "2026-11-14T11:22:10.373Z"
+          }
+        },
+        "blink": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "wink": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "gaze": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "oblique": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        },
+        "forehead": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "tailLeft": {
+          "status": "FAIL",
+          "notes": "Kitsune_after_Tail_Left.png do R1: padrão celestial não é legível nessa superfície. Catalogado; confirmar interativamente antes de repintura.",
+          "context": {
+            "model": null,
+            "sha256": null,
+            "morphs": {},
+            "demoPlaying": false,
+            "demoTime": null,
+            "view": "front",
+            "framing": "face",
+            "zoom": 100,
+            "light": "frontal",
+            "camera": null,
+            "referenceImages": {
+              "before": {
+                "name": "Kitsune_baseline_Front.png",
+                "sha256": "5456cce84ab94322dc48748b8579f64fe0beef694b6c8ce9930b57149fe96191"
+              },
+              "after": {
+                "name": "Kitsune_after_Neutral.png",
+                "sha256": "c221f40cf57fb1ff901b24306f73a44659b38f9ff7e2fe02ab7d3e59651b7dff"
+              }
+            },
+            "capturedAt": "2026-11-14T11:22:10.384Z"
+          }
+        },
+        "tailRight": {
+          "status": "NOT TESTED",
+          "notes": ""
+        },
+        "fur": {
+          "status": "PARTIAL",
+          "scope": "R1 supplied PNGs show an existing surface-based facial system; interactive lighting/orbit and isolated controls remain unapproved."
+        }
+      },
+      "morphs": [
+        {
+          "name": "Blink_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Wide_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Squint_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Blink_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Wide_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Eye_Squint_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Smile_L",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Smile_R",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Left",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Right",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Up",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        },
+        {
+          "name": "Look_Down",
+          "apiStatus": "PASS",
+          "visualStatus": "NOT TESTED",
+          "notes": "Applied independently in all real primitives, three CPU/API cycles; no isolated WebGL visual approval."
+        }
+      ],
+      "presets": [
+        {
+          "name": "Neutral",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Happy",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Curious",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Thoughtful",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Blink",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        },
+        {
+          "name": "Wink",
+          "apiStatus": "PASS",
+          "visualStatus": "PARTIAL",
+          "notes": "Exact R1 JSON exercised in API; R1 raster sheet only, no interactive WebGL approval."
+        }
+      ]
+    }
+  }
+}

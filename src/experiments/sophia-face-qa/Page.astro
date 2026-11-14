@@ -1,0 +1,67 @@
+---
+import './style.css';
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Sophia · Living Face R1.1 · QA local</title>
+  </head>
+  <body>
+    <main id="face-qa">
+      <header class="masthead">
+        <div><p class="eyebrow">HOROLOGIUM / EXPERIMENTOS</p><h1>Sophia <span>Living Face</span></h1><p>R1.1 · Conferência facial das malhas existentes</p></div>
+        <span class="badge">Arquivos locais · sem envio</span>
+      </header>
+      <section class="source-card" aria-label="Escolha do modelo">
+        <div class="segmented" role="group" aria-label="Versão da Sophia">
+          <button type="button" data-variant="anime" aria-pressed="true">Anime</button>
+          <button type="button" data-variant="kitsune" aria-pressed="false">Kitsune</button>
+        </div>
+        <label class="file-label" for="master-file"><strong id="expected-file">Sophia_Anime_Facial_R1.glb ou ZIP R1</strong><input id="master-file" type="file" accept=".glb,.zip,model/gltf-binary,application/zip" /></label>
+        <button type="button" id="unload">Descarregar</button>
+        <p class="source-hint">Abra o ZIP R1 diretamente no celular ou selecione um GLB extraído. Apenas uma Sophia é decodificada por vez; o arquivo permanece neste navegador.</p>
+      </section>
+      <p id="load-status" role="status" aria-live="polite">Escolha o master para iniciar a inspeção.</p>
+      <p id="error" role="alert" hidden></p>
+      <div class="workspace">
+        <section class="visual-column" aria-label="Inspeção tridimensional">
+          <div class="viewport-shell">
+            <div id="viewport" aria-label="Visualização 3D da Sophia" aria-busy="false"><p id="empty-stage">Seu próximo olhar sobre a Sophia.<br /><span>Carregue um master R1 para inspecionar o rosto.</span></p></div>
+            <div class="viewport-caption"><span id="model-info">Nenhum modelo carregado</span><span id="motion-status">Neutro</span></div>
+          </div>
+          <div class="view-tools card">
+            <div class="button-row" role="group" aria-label="Vistas da câmera">
+              <button type="button" data-view="front">Frontal</button><button type="button" data-view="three-quarter">¾</button><button type="button" data-view="three-quarter-left">¾ oposto</button><button type="button" data-view="left">Perfil esquerdo</button><button type="button" data-view="right">Perfil direito</button><button type="button" data-view="rear">Traseira</button>
+            </div>
+            <div class="button-row"><button type="button" id="face-view">Close-up</button><button type="button" id="full-view">Corpo e cauda</button><button type="button" id="neutral">Expressão neutra</button><button type="button" id="capture">Salvar captura</button></div>
+            <label class="zoom-label" for="zoom">Zoom facial <input id="zoom" type="range" min="40" max="220" step="1" value="100" /><output id="zoom-value" for="zoom">100%</output></label>
+            <fieldset class="light-options"><legend>Iluminação</legend><label><input type="radio" name="light" value="frontal" checked /> Frontal suave</label><label><input type="radio" name="light" value="oblique" /> Oblíqua</label></fieldset>
+          </div>
+          <details class="card" open><summary>Carregamento e WebGL</summary><dl id="metrics" class="metrics"><div><dt>Estado</dt><dd>Aguardando arquivo</dd></div></dl><button type="button" id="repeat-load">Repetir carga e descarte ×3</button><p class="small">FPS é uma estimativa desta sessão. Contadores de geometrias/texturas não medem VRAM nem provam ausência de vazamentos. Tempo de primeiro frame significa envio ao renderer, não conclusão na GPU.</p></details>
+          <details class="card"><summary>Comparação com os renders R1</summary><p class="small">Abra imagens locais do pacote. A comparação só é válida com câmera, luz, pose e escala equivalentes.</p><div class="comparison"><label>Antes<input id="before-image" type="file" accept="image/png,image/jpeg,image/webp" /><img id="before-preview" alt="Referência anterior selecionada localmente" hidden /></label><label>Depois<input id="after-image" type="file" accept="image/png,image/jpeg,image/webp" /><img id="after-preview" alt="Referência revisada selecionada localmente" hidden /></label></div></details>
+        </section>
+        <aside class="controls-column" aria-label="Controles faciais">
+          <section class="card"><h2>Expressões</h2><div id="presets" class="preset-grid"></div><p class="small" id="preset-info">Os presets serão habilitados após a leitura dos morphs reais.</p></section>
+          <section class="card"><h2>Demonstração facial</h2><label for="clip">Clipe existente</label><select id="clip" disabled><option>Carregue o modelo</option></select><div class="button-row"><button type="button" id="play" disabled>Reproduzir</button><button type="button" id="stop" disabled>Interromper</button></div><p class="small">Interromper preserva a expressão atual. Sliders e presets interrompem a reprodução antes de aplicar alterações. Não há animações corporais nestes arquivos.</p></section>
+          <section class="card"><div class="section-heading"><h2>Morph targets reais</h2><span id="morph-count" class="count">0</span></div><div id="morphs"><p class="small">Nenhum controle é criado antes da leitura do GLB.</p></div></section>
+        </aside>
+      </div>
+      <section class="assessment card" aria-label="Avaliação manual">
+        <div class="section-heading"><div><p class="eyebrow">GATE DE VALIDAÇÃO</p><h2>Avaliação manual</h2></div><button type="button" id="export">Exportar avaliação JSON</button></div>
+        <p>Cada avaliação começa em NOT TESTED. Testes estruturais não aprovam a aparência, e nenhuma avaliação é enviada automaticamente.</p>
+        <label for="reviewer">Avaliador (opcional)</label><input id="reviewer" type="text" maxlength="120" autocomplete="off" />
+        <label for="decision">Decisão deste gate</label><select id="decision"><option>NOT TESTED</option><option>APPROVED FOR BASIC FACIAL QA</option><option>R1.1 FIX REQUIRED</option><option>R2 DEFERRED</option></select>
+        <details open><summary>Critérios da versão selecionada</summary><div id="criteria-review"></div></details>
+        <details><summary>Leitura visual por morph</summary><div id="morph-review"></div></details>
+        <details><summary>Leitura visual por preset</summary><div id="preset-review"></div></details>
+        <p class="small">Olhos sem globos independentes. Mouth_Open deforma uma superfície fechada. Novas estruturas oculares, cavidade oral e atuação avançada ficam reservadas à eventual R2.</p>
+      </section>
+      <footer>R1.1 · Inspeção experimental local. Aprovação visual final do proprietário.</footer>
+    </main>
+    <script>import './client.mjs';</script>
+  </body>
+</html>
