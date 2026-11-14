@@ -26,13 +26,27 @@ export const MOODS = {
   wow: { clip: 'Sophia_Expr_Encantada_R6' },
 };
 
-const CENTER = { x: -0.177, z: 0.13 }; // centro do corpo no espaço da malha
+const CENTER = { x: -0.177, z: 0.13 }; // centro do corpo no espaço da malha (modelo padrão)
 const CAMERAS = {
   // alvo (y) e distância para fov 30°; a altura do modelo é ~1,0 (orelhas incluídas)
   full: { y: 0.5, dist: 2.15, fov: 30 },
   bust: { y: 0.6, dist: 1.5, fov: 30 },
   head: { y: 0.76, dist: 1.05, fov: 30 },
 };
+
+// Registro de modelos. O modelo padrão (MODEL_URL) segue servindo corredora, 404 e demais atores; cada chave extra tem GLB,
+// biblioteca de clipes, centro e clipe de repouso próprios. Um elemento escolhe o modelo com data-sophia-model-key.
+// "fallback" é usado se o GLB da chave não puder ser carregado (arquivo ausente, rede, decodificação).
+export const MODELS = {
+  default: { id: 'sophia-v1.4.2-lab', url: MODEL_URL, idle: MOODS.idle.clip, center: CENTER, oneShot: new Set(), fallback: null },
+  'lab-r2': {
+    id: 'sophia-lab-v1.1', url: '/assets/models/sophia/sophia-lab-v1.1.glb', idle: 'Lab_Idle_Breath_R1',
+    center: { x: -0.06, z: 0.1 }, fallback: 'default',
+    // clipes de uma só execução (o laço fica por conta do diretor); o repouso respira em laço
+    oneShot: new Set(['Lab_Observe_R1', 'Lab_Think_R1', 'Lab_Point_R1', 'Lab_Greet_R1', 'Lab_Return_R1']),
+  },
+};
+const modelKey = (el) => (MODELS[el.dataset.sophiaModelKey] ? el.dataset.sophiaModelKey : 'default');
 const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
 const ENV = {
   sky: hex('#c8d4ff', 0.6),
@@ -58,28 +72,30 @@ const quiet = () => {
 export const actorsAllowed = () => !reduceQuery.matches && !constrained() && !quiet();
 
 // ------------------------------------------------------------------ palco compartilhado
-let stagePromise = null;
-let sourcePromise = null;
+const stagePromises = new Map(); // chave do modelo → Promise<palco>
+const sourcePromises = new Map(); // chave do modelo → Promise<ArrayBuffer>
 let disposed = false;
-function getStage() {
-  if (!stagePromise) {
-    stagePromise = (async () => {
+function getStage(key = 'default') {
+  const cfg = MODELS[key];
+  if (!stagePromises.has(key)) {
+    const promise = (async () => {
       const canvas = document.createElement('canvas');
       const renderer = new Renderer(canvas);
       try {
-        sourcePromise ||= fetchGLB(MODEL_URL).catch(error => { sourcePromise = null; throw error; });
-        const buffer = await sourcePromise;
+        if (!sourcePromises.has(key)) sourcePromises.set(key, fetchGLB(cfg.url).catch(error => { sourcePromises.delete(key); throw error; }));
+        const buffer = await sourcePromises.get(key);
         const model = await renderer.loadModel(buffer);
         const { json, bin } = model.skeleton;
-        const lost = e => { e.preventDefault(); renderer.lost = true; stop(); for (const a of actors.values()) { a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; } };
+        const lost = e => { e.preventDefault(); renderer.lost = true; stop(); for (const a of actors.values()) { if (a.cfgKey !== key) continue; a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; } };
         const restored = async () => { await resetStage(); if (!disposed) for (const el of visible) void wake(el); };
         canvas.addEventListener('webglcontextlost', lost);
         canvas.addEventListener('webglcontextrestored', restored);
-        return { renderer, model, json, bin, dispose() { canvas.removeEventListener('webglcontextlost', lost); canvas.removeEventListener('webglcontextrestored', restored); renderer.dispose(); canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } };
+        return { key, cfg, renderer, model, json, bin, dispose() { canvas.removeEventListener('webglcontextlost', lost); canvas.removeEventListener('webglcontextrestored', restored); renderer.dispose(); canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext(); } };
       } catch (error) { renderer.dispose(); throw error; }
-    })().catch((err) => { stagePromise = null; throw err; });
+    })().catch((err) => { if (stagePromises.get(key) === promise) stagePromises.delete(key); throw err; });
+    stagePromises.set(key, promise);
   }
-  return stagePromise;
+  return stagePromises.get(key);
 }
 
 // ------------------------------------------------------------------ ator
@@ -87,6 +103,10 @@ export class Actor {
   constructor(el, stage) {
     this.el = el;
     this.stage = stage;
+    this.cfg = stage.cfg || MODELS.default;
+    this.cfgKey = stage.key || 'default';
+    this.onTick = null; // diretor: (dt) → void, chamado a cada passo simulado
+    this.onEnd = null; // diretor: (nomeDoClipe) → void, quando um clipe de uma execução termina
     this.sk = new Skeleton(stage.json, stage.bin);
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'sophia-actor__canvas';
@@ -106,7 +126,7 @@ export class Actor {
     this.time = parseFloat(d.sophiaPhase || '0');
     this.visible = false;
     this.w = 0; this.h = 0;
-    this.setClip(d.sophiaClip || MOODS[d.sophiaMood || 'idle']?.clip || MOODS.idle.clip, true);
+    this.setClip(d.sophiaClip || MOODS[d.sophiaMood || 'idle']?.clip || this.cfg.idle, true);
     if (d.sophiaMood && MOODS[d.sophiaMood]?.variant !== undefined) this.variant = MOODS[d.sophiaMood].variant;
   }
 
@@ -117,21 +137,23 @@ export class Actor {
     let clip = this.clipByName(name);
     if (!clip) {
       this.el.dataset.sophiaClipError = name;
-      this.el.dispatchEvent(new CustomEvent('sophia:actor-error', { bubbles: true, detail: { code: 'MISSING_CLIP', requested: name, fallback: MOODS.idle.clip } }));
-      console.warn('[Sophia 3D] Clipe inexistente:', name, '; fallback:', MOODS.idle.clip);
-      clip = this.clipByName(MOODS.idle.clip);
-      if (!clip) throw new Error('GLB sem clipe de reserva: ' + MOODS.idle.clip);
+      this.el.dispatchEvent(new CustomEvent('sophia:actor-error', { bubbles: true, detail: { code: 'MISSING_CLIP', requested: name, fallback: this.cfg.idle } }));
+      console.warn('[Sophia 3D] Clipe inexistente:', name, '; fallback:', this.cfg.idle);
+      clip = this.clipByName(this.cfg.idle);
+      if (!clip) throw new Error('GLB sem clipe de reserva: ' + this.cfg.idle);
       name = clip.name;
     } else delete this.el.dataset.sophiaClipError;
-    if (this.clipName === name) return;
+    const loop = !this.cfg.oneShot.has(name);
+    if (this.clipName === name && loop) return;
     this.clipName = name;
+    this.ended = false;
     if (instant || !this.layers.length) {
-      this.layers = [{ clip, time: this.time, weight: 1 }];
+      this.layers = [{ clip, time: loop ? this.time : 0, weight: 1, loop }];
       this.fade = null;
     } else {
       const old = this.layers.filter(l => l.weight > 1e-4).map(l => ({ ...l }));
       const total = old.reduce((sum, l) => sum + l.weight, 0) || 1;
-      this.layers = [...old.map(l => ({ ...l, baseWeight: l.weight / total })), { clip, time: 0, weight: 0 }];
+      this.layers = [...old.map(l => ({ ...l, baseWeight: l.weight / total })), { clip, time: 0, weight: 0, loop }];
       this.fade = { t: 0, dur: 0.25 };
     }
   }
@@ -154,6 +176,9 @@ export class Actor {
     const s = this.sk;
     for (const l of this.layers) l.time += dt * this.speed;
     this.time += dt * this.speed;
+    const top = this.layers[this.layers.length - 1];
+    if (top && top.loop === false && !this.ended && top.time >= top.clip.duration) { this.ended = true; this.onEnd?.(top.clip.name); }
+    else this.onTick?.(dt * this.speed);
     if (this.fade) {
       this.fade.t += dt;
       const k = Math.min(1, this.fade.t / this.fade.dur);
@@ -174,8 +199,9 @@ export class Actor {
     renderer.setSize(this.w, this.h, 1);
     const c = this.cam;
     const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
+    const C = this.cfg.center;
     const pose = {
-      x: -(cy * CENTER.x + sy * CENTER.z), y: 0, z: -(-sy * CENTER.x + cy * CENTER.z), yaw: this.yaw, scale: 1,
+      x: -(cy * C.x + sy * C.z), y: 0, z: -(-sy * C.x + cy * C.z), yaw: this.yaw, scale: 1,
     };
     const cam = { fov: (c.fov * Math.PI) / 180, x: 0, y: c.y, dist: c.dist, tx: 0, ty: 0 };
     for (const d of model.draws) if (d.extras?.hidden) d.hidden = !this.props.has((this.sk.names[d.node] || '').replace(/^Prop_/, '').toLowerCase());
@@ -212,17 +238,25 @@ function kick() {
 }
 function resetStage() {
   stop();
-  const previous = stagePromise; stagePromise = null;
+  const previous = [...stagePromises.values()]; stagePromises.clear();
   for (const a of actors.values()) { a.el.dataset.sophia3d = 'off'; a.el.dataset.sophiaReady = 'false'; a.dispose(); }
   actors.clear();
-  return previous?.then(stage => stage.dispose()).catch(() => {});
+  return Promise.all(previous.map(p => p.then(stage => stage.dispose()).catch(() => {})));
 }
 
 async function wake(el) {
   if (disposed || actors.has(el) || pending.has(el) || el.dataset.sophiaFailed || !actorsAllowed()) return;
   pending.add(el);
   try {
-    const stage = await getStage();
+    let key = modelKey(el);
+    let stage;
+    try { stage = await getStage(key); } catch (err) {
+      const fb = MODELS[key].fallback;
+      if (!fb) throw err;
+      console.warn('[Sophia 3D] modelo', key, 'indisponível; usando', fb, err);
+      el.dataset.sophiaModelKey = fb; if (el.dataset.sophiaFallbackClip) el.dataset.sophiaClip = el.dataset.sophiaFallbackClip;
+      key = fb; stage = await getStage(key);
+    }
     if (disposed || !el.isConnected || !visible.has(el) || !actorsAllowed() || document.hidden) return;
     const a = new Actor(el, stage);
     actors.set(el, a);
@@ -230,7 +264,7 @@ async function wake(el) {
     a.step(0); a.draw();
     el.dataset.sophia3d = 'on';
     el.dataset.sophiaReady = 'true';
-    el.dataset.sophiaModel = 'sophia-v1.4.2-lab';
+    el.dataset.sophiaModel = stage.cfg.id;
     el.dispatchEvent(new CustomEvent('sophia:actor-ready', { bubbles: true, detail: { actor: a } }));
     kick();
   } catch (err) {
@@ -285,7 +319,7 @@ document.addEventListener('sophia:tetris', (ev) => {
   for (const [el, a] of actors) if (el.dataset.sophiaReacts !== undefined) a.react(mood);
   kick();
 });
-window.addEventListener('pagehide', e => { stop(); if (e.persisted) return; disposed = true; io.disconnect(); motion.disconnect(); preferences.disconnect(); resetStage(); sourcePromise = null; });
+window.addEventListener('pagehide', e => { stop(); if (e.persisted) return; disposed = true; io.disconnect(); motion.disconnect(); preferences.disconnect(); resetStage(); sourcePromises.clear(); });
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => mountActors(), { once: true });
 else mountActors();

@@ -7,7 +7,16 @@ const { variant, linked = true } = Astro.props;
 // A variante do laboratório ganha a Sophia 3D (jaleco, brincos e broche) quando o navegador permite;
 // o quadro 2D continua como reserva. A variante "music" segue 2D (sem ativo 3D de fones).
 const actor = variant === 'lab'
-  ? { 'data-sophia-actor': 'lab', 'data-sophia-clip': 'Sophia_ExpressionFlow_R6', 'data-sophia-cam': 'full', 'data-sophia-yaw': '0.45' }
+  ? {
+      'data-sophia-actor': 'lab',
+      // Modelo próprio do laboratório (65 ossos Mixamo, clipes Lab_*_R1). Se o GLB não estiver disponível, o ator
+      // cai para o modelo padrão com o clipe anterior; a ilustração 2D continua como reserva final.
+      'data-sophia-model-key': 'lab-r2',
+      'data-sophia-clip': 'Lab_Idle_Breath_R1',
+      'data-sophia-fallback-clip': 'Sophia_ExpressionFlow_R6',
+      'data-sophia-cam': 'full',
+      'data-sophia-yaw': '0.45',
+    }
   : {};
 const Tag = linked ? 'a' : 'div';
 const description = variant === 'music'
@@ -20,3 +29,4 @@ const description = variant === 'music'
 </Tag>
 
 {variant === 'lab' && <script is:inline type="module" src="/experimental/sophia-actor.js"></script>}
+{variant === 'lab' && <script is:inline type="module" src="/experimental/sophia-lab-director.js"></script>}
