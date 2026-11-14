@@ -1,0 +1,109 @@
+---
+const title = 'Sophia · Living Face R2 — Prévia experimental';
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#faf8fd" />
+  <meta name="description" content="Prévia de QA da Sophia R2: carregamento privado pelo navegador, comparação com R1, piscadas e materiais." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>{title}</title>
+</head>
+<body>
+ <main class="shell" data-sophia-r2>
+   <header class="heading">
+     <div>
+       <div class="eyebrow">HOROLOGIARIUS / EXPERIMENTOS / FACIAL QA</div>
+       <h1>Sophia <span>Living Face R2</span></h1>
+       <p>Reconstrução ocular · expressão facial · materiais · constelações</p>
+     </div>
+     <a href="/sophia/" class="back">Voltar à Sophia</a>
+   </header>
+   <section class="intro" aria-label="Estado da prévia">
+     <div>
+       <strong>Laboratório de comparação — R2 ainda sem GLB final verificado</strong>
+       <p>A página funciona online, mas nenhum modelo privado foi publicado. Escolha os GLBs ou ZIPs no seu celular para inspecioná-los localmente. A R2 só aparecerá depois que você selecionar o arquivo correspondente.</p>
+     </div>
+     <span class="neutralTag">Sem merge · sem substituição de produção</span>
+   </section>
+   <div class="sources">
+     <section class="source" aria-labelledby="r1Title">
+       <div class="sourceHead"><h2 id="r1Title">R1 · Referência</h2><span id="state-r1" class="state">Não carregada</span></div>
+       <p>Selecione o <code>Sophia_Living_Face_R1.zip</code> ou um GLB da R1.</p>
+       <label class="fileButton">Escolher R1<input data-file="r1" type="file" accept=".glb,.zip,model/gltf-binary,application/zip" /></label>
+       <div class="fileInfo" id="file-r1">Nenhum arquivo selecionado</div>
+     </section>
+     <section class="source" aria-labelledby="r2Title">
+       <div class="sourceHead"><h2 id="r2Title">R2 · Candidato</h2><span id="state-r2" class="state">Pendente</span></div>
+       <p>Selecione o GLB corrigido pela R2 ou um ZIP contendo os GLBs Anime/Kitsune.</p>
+       <label class="fileButton">Escolher R2<input data-file="r2" type="file" accept=".glb,.zip,model/gltf-binary,application/zip" /></label>
+       <div class="fileInfo" id="file-r2">Nenhum arquivo de R2 disponível</div>
+     </section>
+   </div>
+   <div class="workspace">
+     <section class="viewpanel" aria-label="Visualizador tridimensional da Sophia">
+       <div class="tools">
+         <label>Personagem <select id="character"><option value="anime">Anime / Waifu</option><option value="kitsune">Kitsune / Raposa</option></select></label>
+         <label>Versão <select id="version"><option value="r1">R1 — antes</option><option value="r2">R2 — depois</option></select></label>
+         <button id="swap">Alternar R1 / R2</button>
+       </div>
+       <div id="stage" class="stage"><div class="empty" id="empty">Escolha um GLB ou ZIP acima para iniciar a comparação.</div></div>
+       <p id="status" class="status" aria-live="polite">Aguardando modelo. Nada é enviado para o servidor.</p>
+       <div class="tools camera">
+         <button data-angle="front">Frente</button>
+         <button data-angle="three">¾</button>
+         <button data-angle="left">Perfil E</button>
+         <button data-angle="right">Perfil D</button>
+         <button data-angle="back">Costas</button>
+         <button id="zoom-face">Rosto</button>
+         <button id="zoom-full">Corpo / Cauda</button>
+       </div>
+       <div class="tools">
+         <label>Luz <select id="light"><option value="neutral">Neutra</option><option value="oblique">Oblíqua</option></select></label>
+         <button id="demo">Demo facial</button><button id="stop">Parar</button><button id="reset">Neutro</button><button id="capture">Capturar PNG</button>
+       </div>
+       <p class="hint">Um único modelo WebGL é carregado por vez para reduzir o uso de memória no Android. Trocar de versão preserva o ângulo e a intensidade de piscada, mas não garante correspondência de topologia.</p>
+     </section>
+     <aside class="panel">
+       <h2>Fechamento ocular <span>prioridade P0</span></h2>
+       <p class="hint">Teste cada etapa de 0 a 100%. A malha real precisa fechar os olhos sem fissuras, vincos escuros ou interseções.</p>
+       <div class="blinkPanel">
+         <label>Olho esquerdo <output id="left-value">0%</output><input id="blink-left" type="range" min="0" max="100" value="0" step="5"/></label>
+         <label>Olho direito <output id="right-value">0%</output><input id="blink-right" type="range" min="0" max="100" value="0" step="5"/></label>
+         <div id="blink-steps" class="steps">
+           <button data-step="0">0%</button><button data-step="25">25%</button><button data-step="50">50%</button><button data-step="75">75%</button><button data-step="100">100%</button>
+         </div>
+       </div>
+       <hr/>
+       <h2>Morphs disponíveis <span id="count">0</span></h2>
+       <div id="morphs" class="morphs"><p class="hint">Os controles são lidos do GLB selecionado. Nenhum morph será inventado.</p></div>
+       <hr/>
+       <h2>Inspeção manual</h2>
+       <div id="gates" class="gates">
+        <label>Fechamento de pálpebras <select data-criterion="palpebras"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Olhos / íris / alinhamento <select data-criterion="olhos"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Rosto / materiais <select data-criterion="materiais"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Expressões preservadas <select data-criterion="expressoes"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Estrela da testa <select data-criterion="estrela"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Cauda / constelações <select data-criterion="cauda"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Desempenho móvel <select data-criterion="mobile"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+       </div>
+       <label class="notes">Anotações<textarea id="notes" rows="4" placeholder="Ex.: piscada bilateral 100% cria fissura; face ainda esbranquiçada…"></textarea></label>
+       <button id="report" class="report">Exportar avaliação JSON</button>
+       <p class="hint">O relatório e as capturas ficam no seu dispositivo; nada é enviado automaticamente ao GitHub ou à conversa.</p>
+     </aside>
+   </div>
+   <footer>Prévia experimental para comparação de GLBs · sem modelos de produção alterados · não implica aprovação da R2.</footer>
+ </main>
+</body>
+</html>
+<style is:global>
+:root{color-scheme:light}*{box-sizing:border-box}html{background:#faf8fd}body{margin:0;font:14px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;color:#292834;background:#faf8fd}button,input,select,textarea{font:inherit}button,select,textarea{border:1px solid #d9d5e5;background:#f7f5fa;color:#303046;border-radius:11px;padding:9px 11px}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}button:hover:not(:disabled){background:#e9e3f5}input[type=range]{accent-color:#8772b2}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #8772b2;outline-offset:3px}.shell{max-width:1420px;margin:auto;padding:clamp(12px,3vw,32px)}.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}.eyebrow{color:#76708b;letter-spacing:.19em;font-weight:700;font-size:.67rem}.heading h1{font-size:clamp(1.7rem,4vw,2.65rem);line-height:1.1;margin:.35rem 0}.heading h1 span{font-weight:400;color:#8f79a6}.heading p{margin:0;color:#77748a}.back{color:#64597e;border:1px solid #ded8e7;padding:8px 12px;border-radius:12px;white-space:nowrap;text-decoration:none}.intro{padding:16px 18px;margin-bottom:14px;background:#f0edf5;border:1px solid #ded8e8;border-radius:16px;display:flex;justify-content:space-between;gap:20px;align-items:center}.intro p{margin:3px 0 0;color:#656477;max-width:840px}.neutralTag{background:#e7e1ed;border-radius:99px;padding:6px 12px;color:#615871;font-size:.8rem;white-space:nowrap}.sources{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.source,.viewpanel,.panel{background:#fff;border:1px solid #e5e1ee;border-radius:18px;padding:15px;box-shadow:0 4px 26px #1d1a3910}.sourceHead{display:flex;align-items:center;justify-content:space-between;gap:10px}.source h2,.panel h2{font-size:1.06rem;margin:0 0 6px}.source p{font-size:.87rem;color:#777387;margin:0 0 10px}.fileButton{display:inline-flex;position:relative;background:#6d608c;color:white;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:600}.fileButton input{position:absolute;inset:0;opacity:0;cursor:pointer;max-width:100%}.fileInfo{font-size:.8rem;color:#655e77;overflow-wrap:anywhere;margin-top:8px}.state{font-size:.75rem;color:#777084}.workspace{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:14px;align-items:start}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.tools label{display:flex;gap:7px;align-items:center;font-size:.86rem}.stage{width:100%;height:min(62svh,650px);min-height:340px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 42%,#fafaff,#e3e5f1);border-radius:15px;touch-action:none}.stage canvas{display:block;width:100%;height:100%}.empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:270px;color:#76768c;text-align:center;pointer-events:none}.status{color:#706b82;font-size:.8rem;min-height:20px}.hint{color:#767387;font-size:.81rem;margin:9px 0}.panel h2 span{font-size:.78rem;font-weight:400;color:#857b9c}.blinkPanel label{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:.88rem;margin-top:10px}.blinkPanel input{grid-column:1/-1;width:100%}.blinkPanel output{font-variant-numeric:tabular-nums}.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}.steps button{flex:1;min-width:45px;font-size:.8rem;padding:8px 5px}.steps button[aria-pressed=true]{background:#dbd1f0;border-color:#ad96d4;font-weight:700}hr{border:0;border-top:1px solid #eee9f5;margin:20px 0}.morphLine{display:grid;gap:3px;margin:12px 0}.morphLine label{display:flex;justify-content:space-between;font-size:.85rem}.morphLine input{width:100%}.gates{display:grid;gap:8px}.gates label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.84rem}.gates select{min-width:115px;font-size:.78rem}.notes{display:grid;gap:5px;margin-top:16px;font-weight:600;font-size:.82rem}.notes textarea{resize:vertical;width:100%;font-weight:400}.report{margin-top:11px;background:#e8e2f1;font-weight:600}footer{margin-top:22px;color:#868196;font-size:.78rem}@media(max-width:900px){.workspace{grid-template-columns:1fr}.stage{height:54svh;min-height:290px}}@media(max-width:650px){.heading h1{font-size:1.72rem}.heading p{font-size:.85rem}.sources{grid-template-columns:1fr}.intro{display:block}.neutralTag{display:inline-flex;margin-top:10px}.tools button{font-size:.83rem;padding:8px 9px}.heading .back{font-size:.75rem;padding:6px 9px}.shell{padding:12px}.stage{height:48svh}.source,.viewpanel,.panel{padding:12px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+<script>
+  import { mountSophiaFaceR2Preview } from '../../../scripts/sophia-face-r2-preview.js';
+  mountSophiaFaceR2Preview();
+</script>
