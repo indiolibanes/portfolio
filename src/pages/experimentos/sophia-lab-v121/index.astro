@@ -1,0 +1,62 @@
+---
+const title = 'Sophia Laboratório v1.2.1 · Prévia 3D privada';
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="robots" content="noindex,nofollow,noarchive"/>
+<meta name="theme-color" content="#f9f7f0"/>
+<title>{title}</title>
+<meta name="description" content="Laboratório de inspeção da verdadeira Sophia mascote 3D v1.2.1."/>
+</head>
+<body>
+<main class="shell" data-sophia-lab-v121>
+ <header class="heading"><div><div class="eyebrow">HOROLOGIARIUS / LABORATÓRIO / QA PRIVADO</div><h1>Sophia <span>Laboratório v1.2.1</span></h1><p>A raposinha de jaleco · GLB real · animações básicas</p></div><a class="back" href="/#lab">Voltar ao Laboratório</a></header>
+ <div class="notice"><strong>Esta é a candidata 3D, não a antiga Sophia 2D.</strong><p>O arquivo permanece privado e não está hospedado nesta página. Baixe <code>Sophia_Lab_v1.2.1.glb</code> da conversa e selecione-o abaixo. A leitura acontece inteiramente no seu navegador, sem terminal e sem enviar o modelo ao site.</p></div>
+ <section class="upload" aria-label="Abrir Sophia 3D">
+  <label class="pick">Selecionar GLB v1.2.1<input id="file" type="file" accept=".glb,model/gltf-binary"/></label>
+  <span id="fileName">Nenhum arquivo selecionado.</span>
+ </section>
+ <div class="columns">
+  <section class="stageCard" aria-label="Visualizador 3D">
+    <div id="stage"><p class="empty">Selecione a Sophia v1.2.1 para visualizar e animar o modelo.</p></div>
+    <p id="status" role="status" aria-live="polite">Aguardando GLB.</p>
+    <div class="row">
+      <button id="front" disabled>Frente</button><button id="three" disabled>¾</button><button id="back" disabled>Costas</button><button id="face" disabled>Aproximar rosto</button><button id="resetCamera" disabled>Corpo inteiro</button>
+    </div>
+    <div class="row">
+      <button id="pause" disabled>Pausar</button><button id="neutral" disabled>Neutro</button><button id="capture" disabled>Salvar imagem</button>
+    </div>
+    <p class="muted">Toque e arraste para girar; faça pinça para aproximar. Uma única Sophia é renderizada por vez.</p>
+  </section>
+  <aside class="controls">
+    <h2>Animações da v1.2.1</h2><p class="muted">Somente os clipes realmente encontrados no GLB.</p>
+    <label class="selectLabel" for="clip">Movimento<select id="clip" disabled><option>Selecione o GLB</option></select></label>
+    <label class="check"><input type="checkbox" id="props" checked disabled/> Mostrar caderno e caneta</label>
+    <h2>Expressões reais</h2><div id="morphs"><p class="muted">Os cinco morph targets aparecerão após o carregamento.</p></div>
+    <h2>Verificações</h2>
+    <div class="qa">
+      <label>Piscada e olhos <select data-qa="olhos"><option>Não testado</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+      <label>Escrita e contato <select data-qa="escrita"><option>Não testado</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+      <label>Giro e caminhada <select data-qa="movimento"><option>Não testado</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+      <label>Cauda, orelhas e jaleco <select data-qa="roupa"><option>Não testado</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+      <label>Desempenho Android <select data-qa="mobile"><option>Não testado</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+    </div>
+    <label class="selectLabel" for="notes">Observações<textarea id="notes" rows="3" placeholder="O que precisa melhorar?"></textarea></label>
+    <button id="export">Exportar relatório JSON</button>
+    <p class="muted">Não substitui a mascote da home. Nenhum modelo privado é enviado ao servidor.</p>
+  </aside>
+ </div>
+ <footer>QA v1.2.1 · Modelo privado não publicado · Sem merge automático</footer>
+</main>
+</body>
+</html>
+<style is:global>
+*{box-sizing:border-box}html{color-scheme:light;background:#f9f7f0}body{margin:0;color:#302f32;background:#f9f7f0;font:15px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif}button,select,textarea,input{font:inherit}button,select,textarea{color:#33323a;background:#faf9fd;border:1px solid #d6d2df;border-radius:12px;padding:9px 11px}button{cursor:pointer}button:hover:not(:disabled){background:#eae4f4}button:disabled{opacity:.5;cursor:not-allowed}input[type=range]{accent-color:#8c6ea5}.shell{max-width:1320px;margin:auto;padding:clamp(12px,3vw,28px)}.heading{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}.eyebrow{font-size:.68rem;letter-spacing:.16em;font-weight:700;color:#80668b}h1{font-size:clamp(1.75rem,4vw,2.4rem);margin:5px 0;line-height:1.14}h1 span{color:#866b9d;font-weight:450}.heading p{margin:0;color:#77727e}.back{white-space:nowrap;font-size:.82rem;color:#645276;text-decoration:none;border:1px solid #d6d1e1;border-radius:12px;padding:8px 12px}.notice{border:1px solid #e6dfed;background:#f1ebf6;border-radius:16px;padding:14px 18px;margin-bottom:14px}.notice p{margin:4px 0 0;font-size:.87rem;color:#625c6c;max-width:900px}.upload{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:white;border:1px solid #e6e0e9;border-radius:14px;padding:13px;margin-bottom:14px}.pick{position:relative;overflow:hidden;background:#75618a;color:white;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:600}.pick input{position:absolute;inset:0;opacity:0;cursor:pointer}.upload span{font-size:.86rem;color:#666272;overflow-wrap:anywhere}.columns{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:14px;align-items:start}.stageCard,.controls{background:white;border:1px solid #e5dfea;border-radius:18px;padding:14px;box-shadow:0 5px 28px #29244310}#stage{position:relative;width:100%;height:min(68svh,660px);min-height:360px;border-radius:16px;overflow:hidden;touch-action:none;background:radial-gradient(circle at 50% 45%,#fff,#e7e7ee)}#stage canvas{display:block;width:100%;height:100%}.empty{position:absolute;top:50%;left:50%;width:70%;transform:translate(-50%,-50%);text-align:center;color:#74727f;pointer-events:none}#status{min-height:20px;font-size:.82rem;color:#615c6e}.row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.row button{font-size:.81rem}.muted{color:#76727d;font-size:.81rem}.controls h2{font-size:1rem;margin:6px 0 9px}.controls h2:not(:first-child){margin-top:22px}.selectLabel{display:grid;gap:6px;font-weight:600;font-size:.84rem}.selectLabel select,.selectLabel textarea{width:100%;font-weight:400}.check{display:flex;gap:10px;align-items:center;margin:15px 0;font-size:.85rem}.check input{width:18px;height:18px;accent-color:#75618a}.morphRow{display:grid;gap:4px;margin:11px 0}.morphRow label{display:flex;justify-content:space-between;gap:10px;font-size:.84rem}.morphRow input{width:100%}.qa{display:grid;gap:8px;margin-bottom:17px}.qa label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.84rem}.qa select{font-size:.78rem;min-width:110px}#export{margin-top:12px;background:#eae4f4;font-weight:600}footer{font-size:.76rem;color:#888092;padding:20px 0}@media(max-width:850px){.columns{grid-template-columns:1fr}#stage{height:55svh;min-height:320px}}@media(max-width:530px){.heading h1{font-size:1.75rem}.back{font-size:.75rem;padding:6px 8px}.heading p{font-size:.78rem}.upload{display:grid}.pick{text-align:center}#stage{height:48svh;min-height:285px}.stageCard,.controls{padding:11px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script>
+import { mountSophiaLabV121 } from '../../../scripts/sophia-lab-v121-qa.js';
+mountSophiaLabV121();
+</script>
