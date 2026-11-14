@@ -1,0 +1,289 @@
+---
+const pageTitle = 'Sophia · Laboratório Facial R1.1';
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#f9f7fc" />
+  <title>{pageTitle}</title>
+  <meta name="description" content="Laboratório experimental de validação de expressões faciais da Sophia Anime e Kitsune." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <main class="lab">
+    <header class="top">
+      <div>
+        <p class="eyebrow">HOROLOGIARIUS / EXPERIMENTAL / SOPHIA</p>
+        <h1>Sophia <span>Living Face</span></h1>
+        <p>Laboratório de expressões · R1.1 · Anime & Kitsune</p>
+      </div>
+      <a class="back" href="/sophia/">Voltar à Sophia</a>
+    </header>
+    <section class="intake" aria-labelledby="intakeTitle">
+      <div><h2 id="intakeTitle">Abrir os modelos revisados</h2><p>Selecione <strong>Sophia_R11_QA_Kit.zip</strong> ou <strong>Sophia_Living_Face_R1.zip</strong>. Não é necessário extrair nem usar terminal. O ZIP é processado no seu dispositivo; seus arquivos não são enviados ao servidor.</p></div>
+      <label class="pick" for="archive">Escolher ZIP no celular <input id="archive" type="file" accept=".zip,application/zip" /></label>
+      <p class="fileState" id="fileState" role="status" aria-live="polite">Nenhum ZIP selecionado. Modelos não são carregados automaticamente.</p>
+    </section>
+    <div class="layout">
+      <section class="panel stagePanel" aria-label="Visualizador tridimensional">
+        <div class="toolbar">
+          <label>Personagem <select id="character" disabled><option value="anime">Sophia Anime</option><option value="kitsune">Sophia Kitsune</option></select></label>
+          <button id="load" disabled>Carregar</button>
+          <button id="release" disabled>Liberar memória</button>
+        </div>
+        <div class="viewport" id="viewport" role="img" aria-label="Personagem 3D. Arraste para girar; pinça para aproximar."><p class="placeholder">Escolha o ZIP acima para visualizar a Sophia em 3D.</p></div>
+        <p class="status" id="status" aria-live="polite">Aguardando arquivo · nenhum modelo publicado nesta página.</p>
+        <div class="toolbar cameras">
+          <button data-cam="front" disabled>Frente</button><button data-cam="left" disabled>Perfil E</button><button data-cam="right" disabled>Perfil D</button><button data-cam="back" disabled>Costas</button><button data-cam="three" disabled>¾</button><button id="face" disabled>Rosto</button><button id="full" disabled>Corpo</button>
+        </div>
+        <div class="toolbar actions">
+          <button id="play" disabled>Reproduzir demo facial</button><button id="stop" disabled>Parar</button><button id="neutral" disabled>Neutro</button>
+        </div>
+        <p class="muted">Somente os morphs e o clipe facial presentes no GLB serão exibidos. Nenhuma animação corporal foi acrescentada. Vista e orientação devem ser conferidas manualmente.</p>
+      </section>
+      <section class="panel controlsPanel">
+        <h2>Morph targets <span id="morphCount">—</span></h2>
+        <div class="toolbar" id="presets"></div>
+        <div id="sliders"><p class="muted">Carregue um modelo para habilitar os controles.</p></div>
+        <hr />
+        <h2>Conferência manual</h2>
+        <p class="muted">Assinale as observações enquanto testa o modelo no Samsung Internet.</p>
+        <div class="qa" id="qa">
+          <label>Identidade facial <select data-qa="identidade"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Piscadas / vincos <select data-qa="piscadas"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Olhar / alinhamento <select data-qa="olhar"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Sorriso e boca <select data-qa="boca"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Estrela da testa <select data-qa="estrela"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Constelações da cauda <select data-qa="cauda"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+          <label>Mobile / WebGL <select data-qa="mobile"><option>PENDING</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        </div>
+        <label class="notesLabel" for="notes">Observações</label>
+        <textarea id="notes" rows="4" placeholder="Ex.: o Blink_L em 100% dobra a pálpebra; a cauda esquerda está sem constelações…"></textarea>
+        <button id="exportQA">Salvar relatório JSON</button>
+        <p class="muted">O relatório é salvo localmente; não envia dados ao portfólio.</p>
+      </section>
+    </div>
+    <footer>R1.1 · Prévia experimental, não aprovada para produção · Sem integração ao modo imersivo</footer>
+  </main>
+</body>
+</html>
+<style>
+  :global(html){background:#f9f7fc;color-scheme:light;scroll-behavior:smooth}
+  :global(body){margin:0;font:15px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;color:#242936;background:#f9f7fc}
+  :global(*),:global(*::before),:global(*::after){box-sizing:border-box}
+  :global(button),:global(select),:global(input),:global(textarea){font:inherit}
+  :global(button){cursor:pointer}
+  :global(button:disabled){cursor:not-allowed;opacity:.48}
+  :global(:focus-visible){outline:2px solid #7068b0;outline-offset:3px}
+  .lab{max-width:1480px;margin:auto;padding:20px clamp(12px,3vw,32px) 36px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:24px;margin:0 0 20px}
+  .eyebrow{font-size:.66rem;letter-spacing:.19em;font-weight:700;color:#77709f}
+  h1{font-size:clamp(1.65rem,4vw,2.5rem);line-height:1.1;margin:.35rem 0}
+  h1 span{font-weight:450;color:#8d79a7}h2{font-size:1rem;margin:0 0 8px}
+  .top p{margin:5px 0;color:#747482}.back{color:#565493;white-space:nowrap;text-decoration:none;border:1px solid #d7d5e7;border-radius:999px;padding:9px 14px}
+  .intake,.panel{background:#fff;border:1px solid #e6e3ed;border-radius:20px;padding:17px;box-shadow:0 5px 26px #252a4810}
+  .intake{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 20px;margin-bottom:14px}
+  .intake p{margin:5px 0;color:#696a7b;max-width:840px;font-size:.88rem}
+  .pick{display:inline-flex;align-items:center;justify-content:center;padding:13px 17px;background:#645987;color:#fff;border-radius:14px;cursor:pointer;font-weight:600;text-align:center}
+  .pick input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  .pick:focus-within{outline:2px solid #7068b0;outline-offset:3px}
+  .intake .fileState{grid-column:1/-1;overflow-wrap:anywhere;color:#69618b}
+  .layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:14px;align-items:start}
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .toolbar label{display:flex;align-items:center;gap:7px;font-size:.83rem;color:#55586a}
+  select,button,textarea{border:1px solid #d7d5e5;border-radius:11px;background:#f6f5fa;color:#33334a;padding:8px 11px}
+  button:hover:not(:disabled){background:#e9e5f5}
+  button:active:not(:disabled){background:#dbd4ed}
+  .viewport{height:min(67vh,670px);min-height:350px;position:relative;overflow:hidden;border-radius:16px;background:radial-gradient(circle at 50% 44%,#fff,#e6e7f1);touch-action:none}
+  .viewport canvas{display:block;width:100%;height:100%}
+  .placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#79788c;text-align:center;max-width:240px;pointer-events:none}
+  .status{font-size:.78rem;color:#68697b;margin:8px 0 12px;min-height:18px}
+  .cameras button{font-size:.78rem;padding:7px 10px}
+  .actions button:first-child{background:#e9e5f9}
+  .muted{font-size:.79rem;color:#747484;margin:8px 0}
+  #morphCount{font-size:.76rem;font-weight:500;color:#77709f}
+  #presets button{font-size:.78rem}
+  .sliderRow{margin:12px 0}.sliderRow label{display:flex;justify-content:space-between;font-size:.85rem;gap:10px}
+  .sliderRow input{width:100%;accent-color:#7d6eab}.sliderRow output{font-variant-numeric:tabular-nums;color:#77709f}
+  hr{border:0;border-top:1px solid #ece9f1;margin:16px 0}
+  .qa{display:grid;gap:8px}.qa label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.83rem}
+  .qa select{font-size:.78rem;min-width:104px}
+  .notesLabel{display:block;margin:17px 0 6px;font-weight:600;font-size:.83rem}
+  textarea{width:100%;resize:vertical}
+  #exportQA{margin-top:10px;background:#e9e5f9;font-weight:600}
+  footer{padding:20px 0;color:#818091;font-size:.78rem}
+  @media(max-width:850px){.layout{grid-template-columns:1fr}.viewport{height:50svh;min-height:300px}.top{align-items:flex-start}.intake{grid-template-columns:1fr}.pick{width:100%}.lab{padding:12px 12px 30px}.top p{font-size:.78rem}.back{font-size:.78rem;padding:7px 10px}.intake,.panel{padding:12px}}
+  @media(prefers-reduced-motion:reduce){:global(html){scroll-behavior:auto}}
+</style>
+<script>
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // The ZIP is read locally. No uploaded bytes or selected-file contents leave this browser.
+  const $=id=>document.getElementById(id);
+  const u16=(b,o)=>b[o]|(b[o+1]<<8);
+  const u32=(b,o)=>(b[o]|(b[o+1]<<8)|(b[o+2]<<16)|(b[o+3]<<24))>>>0;
+  let archive=null,entries=[],current='anime',renderer,scene,camera,orbit,model,mixer,demoAction,meshes=[],available=[],presets={},rangeEls=new Map();
+  let radius=1,center=new THREE.Vector3(),head=new THREE.Vector3(),faceFocus=false,cam='three',last=performance.now(),frames=0,elapsed=0;
+  const names={anime:'Sophia_Anime_Facial_R1.glb',kitsune:'Sophia_Kitsune_Eyes_R1.glb'};
+  const presetFiles={anime:'Anime_Expressions_R1.json',kitsune:'Kitsune_Expressions_R1.json'};
+  const enabledIds=['character','load','release','play','stop','neutral','face','full'];
+  const status=message=>{$('status').textContent=message;};
+  function parseZip(file){
+    return (async()=>{
+      const offset=Math.max(0,file.size-65557);
+      const tail=new Uint8Array(await file.slice(offset).arrayBuffer());
+      let p=-1;
+      for(let i=tail.length-22;i>=0;i--)if(u32(tail,i)===0x06054b50){p=i;break;}
+      if(p<0)throw new Error('O arquivo não parece um ZIP válido.');
+      const count=u16(tail,p+10),directoryOffset=u32(tail,p+16),directorySize=u32(tail,p+12);
+      if(count===65535||directoryOffset===0xffffffff)throw new Error('ZIP64 não é suportado neste visualizador.');
+      const dir=new Uint8Array(await file.slice(directoryOffset,directoryOffset+directorySize).arrayBuffer());
+      const decoder=new TextDecoder();
+      const list=[];let at=0;
+      for(let i=0;i<count;i++){
+        if(u32(dir,at)!==0x02014b50)throw new Error('Diretório ZIP inconsistente.');
+        const method=u16(dir,at+10),size=u32(dir,at+20),length=u16(dir,at+28),extra=u16(dir,at+30),comment=u16(dir,at+32),start=u32(dir,at+42);
+        const name=decoder.decode(dir.subarray(at+46,at+46+length));
+        list.push({name,method,size,start});
+        at+=46+length+extra+comment;
+      }
+      return list;
+    })();
+  }
+  async function readEntry(entry){
+    const head=new Uint8Array(await archive.slice(entry.start,entry.start+30).arrayBuffer());
+    if(u32(head,0)!==0x04034b50)throw new Error('Entrada ZIP inválida: '+entry.name);
+    const begin=entry.start+30+u16(head,26)+u16(head,28);
+    const bytes=archive.slice(begin,begin+entry.size);
+    if(entry.method===0)return bytes.arrayBuffer();
+    if(entry.method===8){
+      if(typeof DecompressionStream==='undefined')throw new Error('Seu navegador não suporta descompactação ZIP. Use Sophia_R11_QA_Kit.zip.');
+      try{return await new Response(bytes.stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();}
+      catch{throw new Error('Não foi possível descompactar este ZIP no navegador. Use Sophia_R11_QA_Kit.zip.');}
+    }
+    throw new Error('Método de compressão ZIP não suportado: '+entry.method);
+  }
+  function find(suffix){return entries.find(e=>e.name.endsWith('/'+suffix)||e.name===suffix);}
+  async function chooseZip(){
+    const f=$('archive').files?.[0];if(!f)return;
+    $('fileState').textContent='Lendo o índice do ZIP…';archive=null;entries=[];disposeModel();
+    try{
+      const indexed=await parseZip(f);
+      const missing=Object.values(names).filter(n=>!indexed.some(x=>x.name.endsWith('/'+n)));
+      if(missing.length)throw new Error('Faltam modelos no ZIP: '+missing.join(', '));
+      archive=f;entries=indexed;$('character').disabled=false;$('load').disabled=false;
+      $('fileState').textContent=f.name+' · arquivo reconhecido. Nenhum dado enviado ao servidor.';
+      await loadModel();
+    }catch(e){$('fileState').textContent='Erro: '+e.message;status('Não foi possível preparar o ZIP.');}
+  }
+  function initScene(){
+    if(renderer)return;
+    try{
+      const viewport=$('viewport');
+      renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'default'});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(viewport.clientWidth,viewport.clientHeight);
+      renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.AgXToneMapping;renderer.toneMappingExposure=1;
+      viewport.querySelector('.placeholder')?.remove();viewport.append(renderer.domElement);
+      scene=new THREE.Scene();scene.background=new THREE.Color('#ecedf5');
+      camera=new THREE.PerspectiveCamera(34,viewport.clientWidth/viewport.clientHeight,.005,400);
+      orbit=new OrbitControls(camera,renderer.domElement);orbit.enableDamping=true;
+      scene.add(new THREE.HemisphereLight(0xffffff,0xd1d4e5,2.3));
+      const a=new THREE.DirectionalLight(0xffffff,2.2);a.position.set(3,5,5);scene.add(a);
+      const b=new THREE.DirectionalLight(0xe7ebff,1.3);b.position.set(-4,2,-2);scene.add(b);
+      const resize=new ResizeObserver(()=>{if(!renderer)return;const w=viewport.clientWidth,h=viewport.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);});
+      resize.observe(viewport);renderer.setAnimationLoop(draw);
+    }catch(e){status('WebGL indisponível neste aparelho: '+e.message);throw e;}
+  }
+  function disposeModel(){
+    if(demoAction){demoAction.stop();demoAction=null;}
+    if(mixer){mixer.stopAllAction();if(model)mixer.uncacheRoot(model);mixer=null;}
+    if(model){scene?.remove(model);model.traverse(o=>{
+      if(!o.isMesh)return;
+      o.geometry?.dispose();
+      for(const mat of Array.isArray(o.material)?o.material:[o.material]){if(!mat)continue;for(const value of Object.values(mat))if(value?.isTexture)value.dispose();mat.dispose();}
+    });model=null;}
+    meshes=[];available=[];presets={};rangeEls.clear();$('sliders').replaceChildren();$('presets').replaceChildren();$('morphCount').textContent='—';
+    for(const id of enabledIds.filter(x=>x!=='character'&&x!=='load'))$(id).disabled=true;
+    document.querySelectorAll('[data-cam]').forEach(b=>b.disabled=true);
+  }
+  function weights(values={}){
+    for(const m of meshes){for(const [key,index] of Object.entries(m.morphTargetDictionary||{})){m.morphTargetInfluences[index]=Math.max(0,Math.min(1,Number(values[key]||0)));}}
+    for(const [name,input] of rangeEls){input.value=String(Number(values[name]||0));input.parentElement.querySelector('output').textContent=Math.round(100*input.value)+'%';}
+  }
+  function stopDemo(){demoAction?.stop();demoAction=null;}
+  function reset(){stopDemo();weights({});}
+  function look(direction='three',focus='full'){
+    if(!model)return;
+    cam=direction;faceFocus=focus==='face';
+    const target=faceFocus?head:center;const d=radius*(faceFocus?1.05:2.75);
+    const v={front:[0,0,1],left:[-1,0,0],right:[1,0,0],back:[0,0,-1],three:[.48,.18,1]}[direction]||[.48,.18,1];
+    camera.position.set(target.x+v[0]*d,target.y+v[1]*d,target.z+v[2]*d);
+    camera.near=Math.max(radius/1000,.001);camera.far=radius*100;camera.updateProjectionMatrix();orbit.target.copy(target);orbit.update();
+  }
+  function buildSliders(){
+    const root=$('sliders');root.replaceChildren();rangeEls.clear();
+    for(const name of available){
+      const div=document.createElement('div');div.className='sliderRow';
+      const label=document.createElement('label');const text=document.createElement('span');text.textContent=name;
+      const output=document.createElement('output');output.textContent='0%';label.append(text,output);
+      const input=document.createElement('input');input.type='range';input.min='0';input.max='1';input.step='.01';input.value='0';input.setAttribute('aria-label',name);
+      input.addEventListener('input',()=>{stopDemo();for(const mesh of meshes){const ix=mesh.morphTargetDictionary?.[name];if(ix!==undefined)mesh.morphTargetInfluences[ix]=Number(input.value);}output.textContent=Math.round(100*Number(input.value))+'%';});
+      div.append(label,input);root.append(div);rangeEls.set(name,input);
+    }
+    $('morphCount').textContent='('+available.length+')';
+    const host=$('presets');
+    for(const [name,value] of Object.entries(presets)){
+      const b=document.createElement('button');b.textContent=name;b.addEventListener('click',()=>{stopDemo();weights(value);});host.append(b);
+    }
+  }
+  async function loadModel(){
+    if(!archive)return;
+    disposeModel();current=$('character').value;status('Carregando '+current+'… Modelos grandes podem consumir memória no celular.');
+    try{
+      initScene();
+      const m=find(names[current]),p=find(presetFiles[current]);
+      if(!m)throw new Error('GLB não encontrado no ZIP.');
+      const modelBuffer=await readEntry(m);const blob=new Blob([modelBuffer],{type:'model/gltf-binary'});
+      const url=URL.createObjectURL(blob);let gltf;
+      try{gltf=await new GLTFLoader().loadAsync(url);}finally{URL.revokeObjectURL(url);}
+      model=gltf.scene;scene.add(model);meshes=[];model.traverse(x=>{if(x.isMesh&&x.morphTargetDictionary)meshes.push(x);});
+      available=[...new Set(meshes.flatMap(x=>Object.keys(x.morphTargetDictionary)))];
+      if(p){try{presets=JSON.parse(new TextDecoder().decode(await readEntry(p)));}catch{presets={};}}
+      const box=new THREE.Box3().setFromObject(model);box.getCenter(center);const size=box.getSize(new THREE.Vector3());
+      radius=Math.max(size.length()*.5,.1);head=center.clone().add(new THREE.Vector3(0,size.y*.27,0));look('three');
+      mixer=new THREE.AnimationMixer(model);mixer.addEventListener('finished',()=>{demoAction=null;});
+      model.userData.demo=gltf.animations.find(x=>/Facial_Demo_R1/i.test(x.name))||gltf.animations[0]||null;
+      buildSliders();reset();
+      for(const id of enabledIds.filter(x=>x!=='character'&&x!=='load'))$(id).disabled=false;
+      if(!model.userData.demo)$('play').disabled=true;
+      document.querySelectorAll('[data-cam]').forEach(b=>b.disabled=false);
+      status((current==='anime'?'Anime':'Kitsune')+' pronta · '+available.length+' morphs · '+gltf.animations.length+' clipe(s).');
+    }catch(e){status('Falha ao carregar modelo: '+e.message);disposeModel();}
+  }
+  function draw(){
+    const now=performance.now(),dt=Math.min((now-last)/1000,.06);last=now;
+    if(document.hidden)return;
+    mixer?.update(dt);orbit?.update();renderer?.render(scene,camera);
+    if(model){frames++;elapsed+=dt;if(elapsed>2){$('status').title='FPS estimado: '+Math.round(frames/elapsed);frames=0;elapsed=0;}}
+  }
+  $('archive').addEventListener('change',chooseZip);
+  $('character').addEventListener('change',loadModel);
+  $('load').addEventListener('click',loadModel);
+  $('release').addEventListener('click',()=>{disposeModel();status('Modelo liberado da memória.');});
+  $('neutral').addEventListener('click',reset);
+  $('play').addEventListener('click',()=>{if(!model?.userData.demo||!mixer)return;reset();demoAction=mixer.clipAction(model.userData.demo);demoAction.reset().setLoop(THREE.LoopOnce,1).play();status('Demonstração facial em reprodução.');});
+  $('stop').addEventListener('click',()=>{reset();status('Demonstração interrompida.');});
+  for(const b of document.querySelectorAll('[data-cam]'))b.addEventListener('click',()=>look(b.dataset.cam));
+  $('face').addEventListener('click',()=>look('front','face'));
+  $('full').addEventListener('click',()=>look('three','full'));
+  $('exportQA').addEventListener('click',()=>{
+    const result={model:current,archive:archive?.name||null,createdAt:new Date().toISOString(),results:Object.fromEntries([...document.querySelectorAll('[data-qa]')].map(x=>[x.dataset.qa,x.value])),notes:$('notes').value,morphValues:Object.fromEntries([...rangeEls].map(([name,el])=>[name,Number(el.value)]))};
+    const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));
+    const link=document.createElement('a');link.href=url;link.download='Sophia_R11_QA_'+current+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  });
+</script>
