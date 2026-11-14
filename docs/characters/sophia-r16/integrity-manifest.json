@@ -1,0 +1,319 @@
+{
+ "r15": {
+  "sha256": "7d5d9dad7d68f69759bed1b9b76d04f04eb13cbac0353c6a7e2dd08d9c3ef501",
+  "bytes": 18296432
+ },
+ "r16": {
+  "sha256": "9509a118686fbe4279ae2027a4a36ca009f903c41d2a5f408f456d7f1af0fb25",
+  "bytes": 18296684
+ },
+ "checks": [
+  {
+   "check": "bones == 90 and identical IBM",
+   "result": "PASS",
+   "detail": "bones=90"
+  },
+  {
+   "check": "node names/hierarchy TRS identical",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "27 animations, curves/timings identical",
+   "result": "PASS",
+   "detail": "n=27"
+  },
+  {
+   "check": "materials identical",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "textures/images identical",
+   "result": "PASS",
+   "detail": "7 images"
+  },
+  {
+   "check": "only Sophia_LabCoat mesh primitive differs",
+   "result": "PASS",
+   "detail": "['3:Sophia_LabCoat:0']"
+  },
+  {
+   "check": "LabCoat: only JOINTS_0/WEIGHTS_0 changed (POSITION/NORMAL/UV/indices/targets identical)",
+   "result": "PASS",
+   "detail": "['JOINTS_0', 'WEIGHTS_0']"
+  },
+  {
+   "check": "morph targets identical (all meshes, per-primitive counts+data)",
+   "result": "PASS",
+   "detail": "{'0:Sophia_Blush:0': 1, '1:Sophia_Tears:0': 1, '2:tripo_mesh_315c0594.002:0': 48, '2:tripo_mesh_315c0594.002:1': 48, '2:tripo_mesh_315c0594.002:2': 48}"
+  }
+ ],
+ "morph_targets_per_prim": {
+  "0:Sophia_Blush:0": 1,
+  "1:Sophia_Tears:0": 1,
+  "2:tripo_mesh_315c0594.002:0": 48,
+  "2:tripo_mesh_315c0594.002:1": 48,
+  "2:tripo_mesh_315c0594.002:2": 48
+ },
+ "protected_hashes_r15": {
+  "0:Sophia_Blush:0": {
+   "POSITION": "cb48185db669c93a",
+   "NORMAL": "0b021ba5491cee03",
+   "TEXCOORD_0": "77da902976aaf904",
+   "JOINTS_0": "6db7e7bd0f066b1b",
+   "WEIGHTS_0": "b63ac63ab941bcd3",
+   "indices": "0bf097cf9fe51742",
+   "material": "Sophia_Blush_Rose",
+   "n_targets": 1,
+   "targets": "4dd6a13222d2449c"
+  },
+  "1:Sophia_Tears:0": {
+   "POSITION": "150c92318e4f42c2",
+   "NORMAL": "f7f30a6383a32477",
+   "JOINTS_0": "4292a228a3180353",
+   "WEIGHTS_0": "bcb0e160a35df8ea",
+   "indices": "af5d86619672b077",
+   "material": "Sophia_Tears_GlassBlue",
+   "n_targets": 1,
+   "targets": "43ad1c2f7acc95e4"
+  },
+  "2:tripo_mesh_315c0594.002:0": {
+   "POSITION": "98aa9a34253cc56d",
+   "NORMAL": "ee780d9aa0a198a9",
+   "TEXCOORD_0": "9b2cac025ffeabfc",
+   "JOINTS_0": "54072e72617d2848",
+   "WEIGHTS_0": "224790fa3ca887d9",
+   "indices": "d0410696e846179e",
+   "material": "tripo_mat_315c0594",
+   "n_targets": 48,
+   "targets": "7c6c546a2841c3ec"
+  },
+  "2:tripo_mesh_315c0594.002:1": {
+   "POSITION": "0383a9e272f2e25f",
+   "NORMAL": "103b81275b25e9db",
+   "TEXCOORD_0": "9f9d9e95daf4c551",
+   "JOINTS_0": "f110a74fbe978991",
+   "WEIGHTS_0": "8ad8344110ffb86e",
+   "indices": "54d07017cc3cbb9f",
+   "material": "Sophia_TailConstellations_Glow",
+   "n_targets": 48,
+   "targets": "1e8ed2fb6caf1514"
+  },
+  "2:tripo_mesh_315c0594.002:2": {
+   "POSITION": "8e1fdbbd61a608f2",
+   "NORMAL": "80ee47197b2d6e49",
+   "TEXCOORD_0": "5ec414e44faa7c9d",
+   "JOINTS_0": "8e8b9c0a959f94bc",
+   "WEIGHTS_0": "7ff404d3dafc5d14",
+   "indices": "3a28ad1513200d76",
+   "material": "Sophia_ForeheadStar_Glow",
+   "n_targets": 48,
+   "targets": "bf276902fb0fdf63"
+  },
+  "3:Sophia_LabCoat:0": {
+   "POSITION": "098829df5366ed0f",
+   "NORMAL": "d6f925ae80533b82",
+   "TEXCOORD_0": "2514c00608387e7e",
+   "JOINTS_0": "cf1ed457f938c3da",
+   "WEIGHTS_0": "4943e908c8cedab8",
+   "indices": "972748f0cc564ac8",
+   "material": "Sophia_LabCoat",
+   "n_targets": 0,
+   "targets": null
+  },
+  "4:Orn_Earring_L:0": {
+   "POSITION": "5deaa62590e1ca58",
+   "NORMAL": "bb138c01f6af9cb7",
+   "TEXCOORD_0": "52688c5119dd1b55",
+   "indices": "45b64f8398404edb",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "5:Orn_Earring_R:0": {
+   "POSITION": "d2cb336b5547cc07",
+   "NORMAL": "ab099e14f55505d4",
+   "TEXCOORD_0": "95272e84cf13f69d",
+   "indices": "8616b052dc239ec8",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "6:Orn_BowBrooch:0": {
+   "POSITION": "0c02df808acc2845",
+   "NORMAL": "eb888422bc689474",
+   "TEXCOORD_0": "32e5085a4b9ab802",
+   "indices": "3a5d57989e51a8ea",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "7:Orn_Sash:0": {
+   "POSITION": "ccbf591151ad6ac0",
+   "NORMAL": "14a8e39c1781e71b",
+   "TEXCOORD_0": "c244cee8debcc530",
+   "indices": "754cb7248b7cf7f4",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "8:Orn_MoonCharm:0": {
+   "POSITION": "d09c0e97b4c8d190",
+   "NORMAL": "94a1d756c04ae031",
+   "TEXCOORD_0": "059a53df6a5e8dee",
+   "indices": "3eb6ba3b048ea51b",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "9:Prop_Book:0": {
+   "POSITION": "d439d0d554fbedb9",
+   "NORMAL": "7b1317e854808967",
+   "TEXCOORD_0": "fca61c724f534949",
+   "indices": "4e8af44be5ea5240",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "10:Prop_Pen:0": {
+   "POSITION": "631f31aed53eea8f",
+   "NORMAL": "df421a894411357e",
+   "TEXCOORD_0": "4116a51befcef311",
+   "indices": "fab45d4710ce5a68",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  }
+ },
+ "protected_hashes_r16": {
+  "0:Sophia_Blush:0": {
+   "POSITION": "cb48185db669c93a",
+   "NORMAL": "0b021ba5491cee03",
+   "TEXCOORD_0": "77da902976aaf904",
+   "JOINTS_0": "6db7e7bd0f066b1b",
+   "WEIGHTS_0": "b63ac63ab941bcd3",
+   "indices": "0bf097cf9fe51742",
+   "material": "Sophia_Blush_Rose",
+   "n_targets": 1,
+   "targets": "4dd6a13222d2449c"
+  },
+  "1:Sophia_Tears:0": {
+   "POSITION": "150c92318e4f42c2",
+   "NORMAL": "f7f30a6383a32477",
+   "JOINTS_0": "4292a228a3180353",
+   "WEIGHTS_0": "bcb0e160a35df8ea",
+   "indices": "af5d86619672b077",
+   "material": "Sophia_Tears_GlassBlue",
+   "n_targets": 1,
+   "targets": "43ad1c2f7acc95e4"
+  },
+  "2:tripo_mesh_315c0594.002:0": {
+   "POSITION": "98aa9a34253cc56d",
+   "NORMAL": "ee780d9aa0a198a9",
+   "TEXCOORD_0": "9b2cac025ffeabfc",
+   "JOINTS_0": "54072e72617d2848",
+   "WEIGHTS_0": "224790fa3ca887d9",
+   "indices": "d0410696e846179e",
+   "material": "tripo_mat_315c0594",
+   "n_targets": 48,
+   "targets": "7c6c546a2841c3ec"
+  },
+  "2:tripo_mesh_315c0594.002:1": {
+   "POSITION": "0383a9e272f2e25f",
+   "NORMAL": "103b81275b25e9db",
+   "TEXCOORD_0": "9f9d9e95daf4c551",
+   "JOINTS_0": "f110a74fbe978991",
+   "WEIGHTS_0": "8ad8344110ffb86e",
+   "indices": "54d07017cc3cbb9f",
+   "material": "Sophia_TailConstellations_Glow",
+   "n_targets": 48,
+   "targets": "1e8ed2fb6caf1514"
+  },
+  "2:tripo_mesh_315c0594.002:2": {
+   "POSITION": "8e1fdbbd61a608f2",
+   "NORMAL": "80ee47197b2d6e49",
+   "TEXCOORD_0": "5ec414e44faa7c9d",
+   "JOINTS_0": "8e8b9c0a959f94bc",
+   "WEIGHTS_0": "7ff404d3dafc5d14",
+   "indices": "3a28ad1513200d76",
+   "material": "Sophia_ForeheadStar_Glow",
+   "n_targets": 48,
+   "targets": "bf276902fb0fdf63"
+  },
+  "3:Sophia_LabCoat:0": {
+   "POSITION": "098829df5366ed0f",
+   "NORMAL": "d6f925ae80533b82",
+   "TEXCOORD_0": "2514c00608387e7e",
+   "JOINTS_0": "f56c17ca421ce213",
+   "WEIGHTS_0": "9bc78f60a2ea0476",
+   "indices": "972748f0cc564ac8",
+   "material": "Sophia_LabCoat",
+   "n_targets": 0,
+   "targets": null
+  },
+  "4:Orn_Earring_L:0": {
+   "POSITION": "5deaa62590e1ca58",
+   "NORMAL": "bb138c01f6af9cb7",
+   "TEXCOORD_0": "52688c5119dd1b55",
+   "indices": "45b64f8398404edb",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "5:Orn_Earring_R:0": {
+   "POSITION": "d2cb336b5547cc07",
+   "NORMAL": "ab099e14f55505d4",
+   "TEXCOORD_0": "95272e84cf13f69d",
+   "indices": "8616b052dc239ec8",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "6:Orn_BowBrooch:0": {
+   "POSITION": "0c02df808acc2845",
+   "NORMAL": "eb888422bc689474",
+   "TEXCOORD_0": "32e5085a4b9ab802",
+   "indices": "3a5d57989e51a8ea",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "7:Orn_Sash:0": {
+   "POSITION": "ccbf591151ad6ac0",
+   "NORMAL": "14a8e39c1781e71b",
+   "TEXCOORD_0": "c244cee8debcc530",
+   "indices": "754cb7248b7cf7f4",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "8:Orn_MoonCharm:0": {
+   "POSITION": "d09c0e97b4c8d190",
+   "NORMAL": "94a1d756c04ae031",
+   "TEXCOORD_0": "059a53df6a5e8dee",
+   "indices": "3eb6ba3b048ea51b",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "9:Prop_Book:0": {
+   "POSITION": "d439d0d554fbedb9",
+   "NORMAL": "7b1317e854808967",
+   "TEXCOORD_0": "fca61c724f534949",
+   "indices": "4e8af44be5ea5240",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  },
+  "10:Prop_Pen:0": {
+   "POSITION": "631f31aed53eea8f",
+   "NORMAL": "df421a894411357e",
+   "TEXCOORD_0": "4116a51befcef311",
+   "indices": "fab45d4710ce5a68",
+   "material": "Sophia_Ornaments",
+   "n_targets": 0,
+   "targets": null
+  }
+ }
+}
