@@ -11,7 +11,9 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 // src/pages/404.astro.
 const saveData = navigator.connection?.saveData === true
   || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4);
-const stages = [...document.querySelectorAll('[data-sophia-stage]')];
+// O retrato (data-sophia-actor) agora é a Sophia 3D v1.4.2 do motor leve em /experimental/sophia-actor.js;
+// aqui ficam só os palcos que ainda usam Three.js.
+const stages = [...document.querySelectorAll('[data-sophia-stage]:not([data-sophia-actor])')];
 // Mark intended 3D stages before asynchronous imports; the old SVG is a
 // fallback, never a transient "first frame" that gets swapped after seconds.
 if (!reduce.matches && !saveData && document.documentElement.dataset.sophia404 === 'loading') {

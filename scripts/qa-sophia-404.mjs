@@ -46,13 +46,12 @@ try {
         return r?.dataset.sophiaReady === 'true' || r?.dataset.sophiaFailed === 'true';
       }, null, { timeout: 25000 });
       const legacy = await portrait.evaluate(el => ({
-        ready: el.dataset.sophiaReady, model: el.dataset.sophiaModel,
-        tail: el.dataset.sophiaTail, props: el.dataset.sophiaProps,
+        ready: el.dataset.sophiaReady, model: el.dataset.sophiaModel, on: el.dataset.sophia3d,
+        canvases: el.querySelectorAll('canvas[data-sophia-actor-canvas]').length,
       }));
-      if (legacy.ready !== 'true' || legacy.model !== '6H-legacy-bust'
-        || legacy.tail !== 'hidden' || legacy.props !== 'Book,Pen') {
-        failed = true; console.error('FAIL legacy cameo', width, legacy);
-      } else console.log('PASS legacy cameo', width, legacy);
+      if (legacy.ready !== 'true' || legacy.model !== 'sophia-v1.4.2-lab' || legacy.on !== 'on' || legacy.canvases !== 1) {
+        failed = true; console.error('FAIL portrait 3D (Sophia v1.4.2 lab)', width, legacy);
+      } else console.log('PASS portrait 3D (Sophia v1.4.2 lab)', width, legacy);
 
       const lounge = page.locator('[data-sophia-stage="lounge"]');
       await lounge.scrollIntoViewIfNeeded();
@@ -84,7 +83,7 @@ try {
   await page.goto(base + '/404.html', { waitUntil: 'domcontentloaded' });
   const reduced = await page.evaluate(() => {
     const r=document.querySelector('[data-sophia-stage="portrait"]');
-    return { canvas: getComputedStyle(r.querySelector('canvas')).display,
+    return { canvas: r.querySelector('canvas') ? getComputedStyle(r.querySelector('canvas')).display : 'none',
       svg: getComputedStyle(r.querySelector('.sophia-portrait')).visibility };
   });
   if (reduced.canvas !== 'none' || reduced.svg !== 'visible') {

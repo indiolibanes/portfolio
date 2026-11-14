@@ -6,7 +6,7 @@
 // metal/rugosidade (GGX), brilho de pelo (sheen), verniz (clearcoat) e emissão forte, além de uma luz fria de lua,
 // uma luz quente de lanterna, um ponto de luz, ambiente hemisférico e um "céu" analítico para os reflexos.
 
-import { parseGLB, readAccessor, Skeleton, composeInto, mulInto } from './gltf-skel.js';
+import { parseGLB, readAccessor, readSparse, Skeleton, composeInto, mulInto } from './gltf-skel.js';
 export { quat } from './gltf-skel.js';
 
 // '#rrggbb' (sRGB) → linear
@@ -114,6 +114,7 @@ uniform vec3 uPP; uniform vec3 uPC;
 uniform vec3 uRim;
 uniform float uRimK;
 uniform float uExposure;
+uniform int uBlend;
 out vec4 outColor;
 
 const float PI = 3.14159265;
@@ -196,7 +197,7 @@ void main() {
   col *= uExposure;
   col = (col * (2.51 * col + 0.03)) / (col * (2.43 * col + 0.59) + 0.14); // ACES
   col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / 2.2));
-  outColor = vec4(col, 1.0);
+  outColor = uBlend == 1 ? vec4(col * base.a, base.a) : vec4(col, 1.0);
 }`;
 
 const SHADOW_VS = `#version 300 es
@@ -284,7 +285,7 @@ export class Renderer {
     this.prog = program(gl, VS, FS);
     this.U = uniforms(gl, this.prog, ['uMorph', 'uVP', 'uModel', 'uNM', 'uSkinned', 'uJoints', 'uBase', 'uBaseTex', 'uHasBase', 'uEmis', 'uEmisTex',
       'uHasEmis', 'uEmisK', 'uMetal', 'uRough', 'uSheen', 'uCoat', 'uCoatR', 'uCam', 'uSky', 'uGround', 'uD0', 'uC0', 'uD1', 'uC1',
-      'uPP', 'uPC', 'uRim', 'uRimK', 'uExposure']);
+      'uPP', 'uPC', 'uRim', 'uRimK', 'uExposure', 'uBlend']);
     this.shadowProg = program(gl, SHADOW_VS, SHADOW_FS);
     this.SU = uniforms(gl, this.shadowProg, ['uVP', 'uAt', 'uR', 'uA']);
     this.shadowVAO = gl.createVertexArray();
@@ -390,6 +391,7 @@ export class Renderer {
         coat: ext.KHR_materials_clearcoat?.clearcoatFactor ?? 0,
         coatR: ext.KHR_materials_clearcoat?.clearcoatRoughnessFactor ?? 0,
         double: !!m.doubleSided,
+        blend: m.alphaMode === 'BLEND',
       };
     };
 
@@ -412,14 +414,35 @@ export class Renderer {
           else gl.vertexAttribPointer(loc, n, a.componentType, !!a.normalized, bv.byteStride || 0, a.byteOffset || 0);
           return true;
         };
-        attr('POSITION', 0);
+        // morph na CPU: alvos esparsos (Blender) ou mais de MAX_MORPHS alvos. Posições base ficam num buffer dinâmico.
+        let cpu = null;
+        const targetsRaw = prim.targets || [];
+        if (targetsRaw.length && (targetsRaw.length > MAX_MORPHS || targetsRaw.some((t) => json.accessors[t.POSITION]?.sparse))) {
+          const base = readAccessor(json, bin, prim.attributes.POSITION);
+          const list = [];
+          targetsRaw.forEach((t, k) => {
+            const sp = t.POSITION !== undefined ? readSparse(json, bin, t.POSITION) : null;
+            if (sp && sp.indices.length) list.push({ k, indices: sp.indices, values: sp.values });
+          });
+          const buf = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+          gl.bufferData(gl.ARRAY_BUFFER, base, gl.DYNAMIC_DRAW);
+          cpu = { base, cur: new Float32Array(base), list, buf, last: new Float32Array(targetsRaw.length), lo: 0, hi: 0, dirty: false };
+        }
+        if (cpu) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, cpu.buf);
+          gl.enableVertexAttribArray(0);
+          gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        } else {
+          attr('POSITION', 0);
+        }
         attr('NORMAL', 1);
         const hasUV = attr('TEXCOORD_0', 2);
         const hasCol = attr('COLOR_0', 3);
         const skinned = node.skin !== undefined && attr('JOINTS_0', 4, true) && attr('WEIGHTS_0', 5);
         // morph targets: liga só os alvos com dados; máscara de quais pesos importam para esta primitiva
         let morphMask = 0;
-        (prim.targets || []).slice(0, MAX_MORPHS).forEach((t, k) => {
+        (cpu ? [] : prim.targets || []).slice(0, MAX_MORPHS).forEach((t, k) => {
           const on = (name, loc) => {
             const ai = t[name];
             if (ai === undefined || json.accessors[ai].bufferView === undefined) return false;
@@ -470,10 +493,19 @@ export class Renderer {
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferFor(ia.bufferView, gl.ELEMENT_ARRAY_BUFFER));
         }
         gl.bindVertexArray(null);
-        draws.push({ node: ni, vao, skinned: !!skinned, hasUV, hasCol, count, itype, ioff, mat, morphMask });
+        // variantes de material (KHR_materials_variants): índice da variante → material alternativo desta primitiva
+        let variants = null;
+        const vmap = prim.extensions?.KHR_materials_variants?.mappings;
+        if (vmap) {
+          variants = new Map();
+          vmap.forEach((mp) => mp.variants.forEach((vi) => variants.set(vi, materialOf(mp.material))));
+        }
+        draws.push({ node: ni, vao, skinned: !!skinned, hasUV, hasCol, count, itype, ioff, mat, morphMask, cpu, variants, hidden: !!node.extras?.hidden, extras: node.extras || null });
       });
     });
 
+    // transparentes (alphaMode BLEND) por último, para misturar sobre o que já foi desenhado
+    draws.sort((a, b) => (a.mat.blend ? 1 : 0) - (b.mat.blend ? 1 : 0));
     this.jointTex = this.jointTex || gl.createTexture();
     if (skeleton.joints) {
       gl.bindTexture(gl.TEXTURE_2D, this.jointTex);
@@ -483,7 +515,58 @@ export class Renderer {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
-    return { skeleton, draws };
+    const model = { skeleton, draws, variant: null };
+    // adereços e peças ocultas por nome do nó (extras.hidden no GLB): model.setHidden('Prop_Book', false)
+    model.setHidden = (nodeName, hidden) => {
+      draws.forEach((d) => { if (skeleton.names[d.node] === nodeName) d.hidden = !!hidden; });
+    };
+    model.setVariant = (v) => { model.variant = v; };
+    return model;
+  }
+
+  // aplica os pesos de morph por CPU nas primitivas com alvos esparsos (só reenvia o que mudou)
+  morphCpu(model) {
+    const gl = this.gl;
+    const sk = model.skeleton;
+    for (const d of model.draws) {
+      const c = d.cpu;
+      if (!c) continue;
+      const w = sk.nodeMorph?.[d.node];
+      if (!w) continue;
+      let changed = false;
+      for (let k = 0; k < c.last.length; k += 1) if (Math.abs((w[k] || 0) - c.last[k]) > 1e-3) { changed = true; break; }
+      if (!changed) continue;
+      // vértices tocados por qualquer alvo ativo agora ou no quadro anterior voltam à base e recebem a soma dos ativos
+      const touch = (t) => {
+        for (let q = 0; q < t.indices.length; q += 1) {
+          const v = t.indices[q] * 3;
+          c.cur[v] = c.base[v]; c.cur[v + 1] = c.base[v + 1]; c.cur[v + 2] = c.base[v + 2];
+        }
+      };
+      let lo = Infinity, hi = -1;
+      for (const t of c.list) {
+        if (Math.abs((w[t.k] || 0)) > 1e-4 || Math.abs(c.last[t.k]) > 1e-4) {
+          touch(t);
+          lo = Math.min(lo, t.indices[0]); hi = Math.max(hi, t.indices[t.indices.length - 1]);
+        }
+      }
+      for (const t of c.list) {
+        const wk = w[t.k] || 0;
+        if (Math.abs(wk) <= 1e-4) continue;
+        for (let q = 0; q < t.indices.length; q += 1) {
+          const v = t.indices[q] * 3; const o = q * 3;
+          c.cur[v] += t.values[o] * wk; c.cur[v + 1] += t.values[o + 1] * wk; c.cur[v + 2] += t.values[o + 2] * wk;
+        }
+      }
+      for (let k = 0; k < c.last.length; k += 1) c.last[k] = w[k] || 0;
+      if (hi >= 0) {
+        // índices esparsos são ordenados; min/max reais para o sub-envio
+        let a = Infinity, b = -1;
+        for (const t of c.list) { a = Math.min(a, t.indices[0]); b = Math.max(b, t.indices[t.indices.length - 1]); }
+        gl.bindBuffer(gl.ARRAY_BUFFER, c.buf);
+        gl.bufferSubData(gl.ARRAY_BUFFER, a * 12, c.cur.subarray(a * 3, (b + 1) * 3));
+      }
+    }
   }
 
   // ---------------------------------------------------------------- quadro
@@ -557,6 +640,7 @@ export class Renderer {
     gl.uniform1i(U.uJoints, 2);
 
     const sk = model.skeleton;
+    this.morphCpu(model);
     if (sk.joints) {
       gl.activeTexture(gl.TEXTURE2);
       gl.bindTexture(gl.TEXTURE_2D, this.jointTex);
@@ -571,9 +655,16 @@ export class Renderer {
     for (let k = 0; k < MAX_MORPHS; k += 1) mv[k] = k < mw.length ? mw[k] : 0;
     let lastDouble = null;
     let lastMask = -1;
+    let lastBlend = null;
     for (const d of model.draws) {
       if (d.hidden) continue;
-      const m = d.mat;
+      const m = (d.variants && model.variant !== null && model.variant !== undefined && d.variants.get(model.variant)) || d.mat;
+      if (m.blend !== lastBlend) {
+        if (m.blend) { gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); }
+        else { gl.disable(gl.BLEND); gl.depthMask(true); }
+        gl.uniform1i(U.uBlend, m.blend ? 1 : 0);
+        lastBlend = m.blend;
+      }
       // matriz do modelo: personagem · mundo do nó
       mulInto(this.M, 0, C, 0, sk.world, d.node * 16);
       gl.uniformMatrix4fv(U.uModel, false, this.M);
@@ -609,6 +700,8 @@ export class Renderer {
       gl.drawElements(gl.TRIANGLES, d.count, d.itype, d.ioff);
     }
     gl.bindVertexArray(null);
+    gl.disable(gl.BLEND);
+    gl.depthMask(true);
   }
 }
 

@@ -6,6 +6,15 @@ import { HEAD_H, HEAD_W, mascot, type Mood } from '../sophia-art';
 const moods: Mood[] = ['calm', 'play', 'cheer', 'sleep'];
 ---
 
+<span
+  class="sophia-mascot-3d"
+  data-sophia-actor="mascot"
+  data-sophia-cam="head"
+  data-sophia-mood="idle"
+  data-sophia-reacts
+  data-sophia-yaw="0.25"
+  aria-hidden="true"
+>
 <svg
   class="sophia-px sophia-mascot"
   data-tetris-mascot
@@ -19,3 +28,5 @@ const moods: Mood[] = ['calm', 'play', 'cheer', 'sleep'];
     <g class={`px-frame px-frame--${mood}`}><PixelPaths px={mascot(mood)} /></g>
   ))}
 </svg>
+</span>
+<script is:inline type="module" src="/experimental/sophia-actor.js"></script>
