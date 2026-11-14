@@ -7,6 +7,7 @@ const has7B = existsSync('public/experimental/sophia-7b-e1-latest.glb');
 await mkdir('qa-results/sophia-404', { recursive: true });
 const browser = await chromium.launch({
   headless: true,
+  executablePath: process.env.QA_CHROMIUM_EXECUTABLE_PATH || undefined,
   args: ['--enable-webgl', '--use-gl=angle', '--use-angle=swiftshader'],
 });
 let failed = false;

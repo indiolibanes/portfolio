@@ -1,0 +1,10 @@
+// Independent Three.js CPU loader equivalence of the lossless packed candidate.
+import fs from'node:fs';import assert from'node:assert/strict';import * as T from'three';import{GLTFLoader}from'three/addons/loaders/GLTFLoader.js';
+const files=['local-private/sophia-r15/sophia-lab-r15-unpacked.glb','local-private/sophia-r15/sophia-lab-r15.glb'];
+const models=[];for(const file of files){let b=fs.readFileSync(file);const l=new GLTFLoader();l.register(()=>({name:'CPU_PLACEHOLDER_NOT_IMAGE_DECODE',loadTexture:()=>Promise.resolve(new T.Texture())}));models.push(await l.parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),''))}
+const mixers=models.map(g=>new T.AnimationMixer(g.scene)),maps=models.map(g=>{const m=new Map();g.scene.traverse(o=>{const a=g.parser.associations.get(o);if(o.isMesh&&a?.meshes!==undefined)m.set(a.meshes+':'+(a.primitives??0),o)});return m});let max=0,samples=0;
+for(const[name,t]of[['Nadar_R6',.5],['Nadar_R6',1.5],['Socos_R6',.25],['Chutar_R6',.5],['Correr_R6',.2],['Danca_R6',1.5],['Mortal_Tras_R6',.7],['Sophia_Pirouette_R4',1.6458334],['Sophia_ExpressionFlow_R6',3.2]]){
+ for(let k=0;k<2;k++){mixers[k].stopAllAction();mixers[k].clipAction(models[k].animations.find(a=>a.name===name)).reset().play();mixers[k].setTime(t);models[k].scene.updateMatrixWorld(true);models[k].scene.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update()})}
+ for(const[key,a]of maps[0]){const b=maps[1].get(key);assert.ok(b);for(let v=0;v<a.geometry.attributes.position.count;v+=Math.max(1,Math.floor(a.geometry.attributes.position.count/31))){let x=a.getVertexPosition(v,new T.Vector3()).applyMatrix4(a.matrixWorld),y=b.getVertexPosition(v,new T.Vector3()).applyMatrix4(b.matrixWorld);max=Math.max(max,x.distanceTo(y));samples++}}
+}
+assert.ok(max<1e-7);const r={status:'PASS_CPU_EQUIVALENCE_NOT_WEBGL',sampledActualVertices:samples,poses:9,maxWorldPositionDifferenceM:max,textures:'Empty placeholders; no raster or decode pass'};fs.writeFileSync('docs/characters/sophia-r15/packed-loader-equivalence.json',JSON.stringify(r,null,2)+'\n');console.log(r);

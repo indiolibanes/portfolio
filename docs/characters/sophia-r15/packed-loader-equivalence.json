@@ -1,0 +1,7 @@
+{
+  "status": "PASS_CPU_EQUIVALENCE_NOT_WEBGL",
+  "sampledActualVertices": 3789,
+  "poses": 9,
+  "maxWorldPositionDifferenceM": 0,
+  "textures": "Empty placeholders; no raster or decode pass"
+}

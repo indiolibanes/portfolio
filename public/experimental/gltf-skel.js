@@ -4,6 +4,7 @@
 
 const TYPES = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT2: 4, MAT3: 9, MAT4: 16 };
 const CTYPES = { 5120: Int8Array, 5121: Uint8Array, 5122: Int16Array, 5123: Uint16Array, 5125: Uint32Array, 5126: Float32Array };
+const animationBanks = new WeakMap(); // immutable clip samples shared; pose/morph arrays remain actor-owned
 const NORM = { 5120: 127, 5121: 255, 5122: 32767, 5123: 65535 };
 
 // ---------------------------------------------------------------- GLB
@@ -32,48 +33,39 @@ export function readSparse(json, bin, index) {
   const a = json.accessors[index];
   const sp = a.sparse;
   if (!sp) return null;
-  const n = TYPES[a.type];
-  const dv = new DataView(bin.buffer);
-  const iv = json.bufferViews[sp.indices.bufferView];
-  const vv = json.bufferViews[sp.values.bufferView];
-  const ib = bin.byteOffset + (iv.byteOffset || 0) + (sp.indices.byteOffset || 0);
-  const vb = bin.byteOffset + (vv.byteOffset || 0) + (sp.values.byteOffset || 0);
-  const ic = sp.indices.componentType;
-  const indices = new Uint32Array(sp.count);
-  const values = new Float32Array(sp.count * n);
+  const n = TYPES[a.type], dv = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
+  const iv = json.bufferViews[sp.indices.bufferView], vv = json.bufferViews[sp.values.bufferView];
+  const ib = (iv.byteOffset || 0) + (sp.indices.byteOffset || 0);
+  const vb = (vv.byteOffset || 0) + (sp.values.byteOffset || 0);
+  const indices = new Uint32Array(sp.count), values = new Float32Array(sp.count * n);
+  const size = CTYPES[a.componentType].BYTES_PER_ELEMENT;
+  const get = componentReader(dv, a.componentType), norm = a.normalized ? NORM[a.componentType] : 0;
+  const gi = componentReader(dv, sp.indices.componentType), is = CTYPES[sp.indices.componentType].BYTES_PER_ELEMENT;
   for (let k = 0; k < sp.count; k += 1) {
-    indices[k] = ic === 5125 ? dv.getUint32(ib + k * 4, true) : ic === 5123 ? dv.getUint16(ib + k * 2, true) : dv.getUint8(ib + k);
-    for (let c = 0; c < n; c += 1) values[k * n + c] = dv.getFloat32(vb + (k * n + c) * 4, true);
+    const idx = gi(ib + k * is);
+    if (idx >= a.count || (k && idx <= indices[k - 1])) throw new Error('Sparse accessor indices invalid');
+    indices[k] = idx;
+    for (let c = 0; c < n; c += 1) { const v = get(vb + (k * n + c) * size); values[k * n + c] = norm ? Math.max(-1, v / norm) : v; }
   }
   return { indices, values, n };
 }
-
+function componentReader(dv, type) {
+  const get = { 5120: o => dv.getInt8(o), 5121: o => dv.getUint8(o), 5122: o => dv.getInt16(o, true), 5123: o => dv.getUint16(o, true), 5125: o => dv.getUint32(o, true), 5126: o => dv.getFloat32(o, true) }[type];
+  if (!get) throw new Error('Unsupported accessor component type: ' + type);
+  return get;
+}
 export function readAccessor(json, bin, index) {
-  const a = json.accessors[index];
-  const n = TYPES[a.type];
-  const C = CTYPES[a.componentType];
-  const out = new Float32Array(a.count * n);
-  if (a.bufferView === undefined) {
-    const sp = readSparse(json, bin, index);
-    if (sp) for (let k = 0; k < sp.indices.length; k += 1) for (let c = 0; c < n; c += 1) out[sp.indices[k] * n + c] = sp.values[k * n + c];
-    return out;
+  const a = json.accessors[index], n = TYPES[a.type], C = CTYPES[a.componentType];
+  const out = new Float32Array(a.count * n), dv = new DataView(bin.buffer, bin.byteOffset, bin.byteLength);
+  if (a.bufferView !== undefined) {
+    const bv = json.bufferViews[a.bufferView], size = C.BYTES_PER_ELEMENT;
+    const base = (bv.byteOffset || 0) + (a.byteOffset || 0), stride = bv.byteStride || n * size;
+    const get = componentReader(dv, a.componentType), norm = a.normalized ? NORM[a.componentType] : 0;
+    for (let i = 0; i < a.count; i += 1) for (let k = 0; k < n; k += 1) { const v = get(base + i * stride + k * size); out[i * n + k] = norm ? Math.max(-1, v / norm) : v; }
   }
-  const bv = json.bufferViews[a.bufferView];
-  const base = bin.byteOffset + (bv.byteOffset || 0) + (a.byteOffset || 0);
-  const size = C.BYTES_PER_ELEMENT;
-  const stride = bv.byteStride || n * size;
-  const dv = new DataView(bin.buffer);
-  const norm = a.normalized ? NORM[a.componentType] : 0;
-  const get = {
-    5120: (o) => dv.getInt8(o), 5121: (o) => dv.getUint8(o), 5122: (o) => dv.getInt16(o, true),
-    5123: (o) => dv.getUint16(o, true), 5125: (o) => dv.getUint32(o, true), 5126: (o) => dv.getFloat32(o, true),
-  }[a.componentType];
-  for (let i = 0; i < a.count; i += 1) {
-    for (let k = 0; k < n; k += 1) {
-      const v = get(base + i * stride + k * size);
-      out[i * n + k] = norm ? Math.max(-1, v / norm) : v;
-    }
-  }
+  // Sparse values override the base, including accessors WITH bufferView.
+  const sp = readSparse(json, bin, index);
+  if (sp) for (let k = 0; k < sp.indices.length; k += 1) for (let c = 0; c < n; c += 1) out[sp.indices[k] * n + c] = sp.values[k * n + c];
   return out;
 }
 
@@ -290,8 +282,10 @@ export class Skeleton {
     });
     this.targetNames = (meshDef && meshDef.extras && meshDef.extras.targetNames) || [];
 
-    // animações
-    this.clips = {};
+    // Decode immutable animation samples once for all actors using this JSON/BIN.
+    let bank = animationBanks.get(json);
+    if (!bank || bank.bin !== bin) {
+      const clips = {};
     (json.animations || []).forEach((a) => {
       const channels = a.channels.map((ch) => {
         const s = a.samplers[ch.sampler];
@@ -304,8 +298,12 @@ export class Skeleton {
         };
       });
       const duration = Math.max(...channels.map((c) => c.times[c.times.length - 1]));
-      this.clips[a.name] = { name: a.name, duration, channels };
+      clips[a.name] = Object.freeze({ name: a.name, duration, channels: Object.freeze(channels) });
     });
+      bank = { bin, clips: Object.freeze(clips) };
+      animationBanks.set(json, bank);
+    }
+    this.clips = bank.clips;
 
     this.pT = new Float32Array(n * 3);
     this.pR = new Float32Array(n * 4);

@@ -1,0 +1,13 @@
+{
+  "method": "Exact bufferView byte copy, remove unreachable accessors/views; no image re-encode or geometry precision change",
+  "unpackedSha256": "7ad77c5a63a6c520d5cfabc32ec7334e45fccf09765988dab5d09da9ee659bb6",
+  "packedSha256": "7d5d9dad7d68f69759bed1b9b76d04f04eb13cbac0353c6a7e2dd08d9c3ef501",
+  "unpackedBytes": 18920080,
+  "packedBytes": 18296432,
+  "savedBytes": 623648,
+  "retainedAccessorsDecodedEqual": 7611,
+  "removedAccessors": 4,
+  "removedViews": 4,
+  "copiedViews": 2923,
+  "allViewPayloadsCopiedExact": true
+}

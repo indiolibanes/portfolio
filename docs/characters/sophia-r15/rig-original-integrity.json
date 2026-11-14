@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "mainJoints": 90,
+  "jointOrderNamesRestTRSHierarchyExactOriginal": true,
+  "inheritedNonJointAttachments": [
+    {
+      "parentJoint": "mixamorig:LeftHand",
+      "node": 100,
+      "name": "Prop_Book"
+    },
+    {
+      "parentJoint": "mixamorig:Head",
+      "node": 95,
+      "name": "Orn_Earring_L"
+    },
+    {
+      "parentJoint": "mixamorig:Head",
+      "node": 96,
+      "name": "Orn_Earring_R"
+    },
+    {
+      "parentJoint": "mixamorig:RightHand",
+      "node": 101,
+      "name": "Prop_Pen"
+    },
+    {
+      "parentJoint": "mixamorig:Spine2",
+      "node": 97,
+      "name": "Orn_BowBrooch"
+    },
+    {
+      "parentJoint": "mixamorig:Spine1",
+      "node": 98,
+      "name": "Orn_Sash"
+    },
+    {
+      "parentJoint": "mixamorig:Hips",
+      "node": 99,
+      "name": "Orn_MoonCharm"
+    }
+  ],
+  "method": "Compare joint dictionaries excluding non-joint child props, parent indices and ordered joint edges with original; inverse binds checked in asset-integrity.json"
+}

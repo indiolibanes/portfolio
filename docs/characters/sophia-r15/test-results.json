@@ -1,0 +1,80 @@
+{
+  "base": "ff1453ed47b4a6bf47177699ae12556f08847b97",
+  "results": [
+    {
+      "command": "npm ci",
+      "status": "PASS",
+      "passes": null,
+      "privateLog": null,
+      "logSha256": null
+    },
+    {
+      "command": "baseline: node --test tests/*.test.mjs",
+      "status": "PASS",
+      "passes": 340,
+      "privateLog": "baseline-node-tests.log",
+      "logSha256": "4fc2b57dd208ea9d9a99a3b25490a1a2f009653cb3ee3e00b9bae1dbf1ebe12b"
+    },
+    {
+      "command": "node --test tests/*.test.mjs",
+      "status": "PASS",
+      "passes": 344,
+      "privateLog": "all-node-tests-final.log",
+      "logSha256": "dfba4e1cd8c4693d6c2931f7a702fb9733929a46126c9381d61ce1981b1d7b6a"
+    },
+    {
+      "command": "npm run check:sophia",
+      "status": "PASS",
+      "passes": 54,
+      "privateLog": "test-sophia.log",
+      "logSha256": "551b492d5c2cebb9d2ced8b1e45e648786df96e61d71f03f55e27c5423dfed5f"
+    },
+    {
+      "command": "npm run check",
+      "status": "PASS",
+      "passes": null,
+      "privateLog": "test-check-final.log",
+      "logSha256": "e65a2ae9cabdbf268bced2c7dda700379f1d42dde4b1375b1cf4fdb9c6bd61d6"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "passes": null,
+      "privateLog": "test-build-final.log",
+      "logSha256": "811ce7cc405675528a423d5f1e5047cfa4c925c881ee8d8f6978044e11a13299"
+    },
+    {
+      "command": "SOPHIA_R15_MODEL=private-final node --test tests/sophia-r15-runtime.test.mjs",
+      "status": "PASS_CPU_API_NOT_WEBGL",
+      "passes": 4,
+      "privateLog": "private-runtime-tests.log",
+      "logSha256": "b0abcb54dc70ed14e28e844ed695e4f642c9d1757aee102df9387689c02a8e2b"
+    },
+    {
+      "command": "qa-sophia-404.mjs Chromium",
+      "status": "BLOCKED",
+      "passes": null,
+      "privateLog": "qa-404.log",
+      "logSha256": "099c073ba85d6fd1b52118b98c869ed884e60701afbd86909a9b12db2a603447"
+    },
+    {
+      "command": "qa-sophia-404-2d.mjs Chromium",
+      "status": "BLOCKED",
+      "passes": null,
+      "privateLog": "qa-404-2d.log",
+      "logSha256": "c2788c562e0cfc05219707a163689a4a7b0920b0876515e5c2b5c0cf151b1bbb"
+    },
+    {
+      "command": "Samsung Internet physical device",
+      "status": "NOT RUN",
+      "passes": null,
+      "privateLog": null,
+      "logSha256": null
+    }
+  ],
+  "limits": [
+    "Real browser blocked AF_UNIX EPERM before WebGL context",
+    "Fixture tests do not compile shaders or decode GLB textures; no mobile FPS approval",
+    "Historical100static/67fail claim not reused"
+  ]
+}
