@@ -50,6 +50,7 @@ test('fallback: GLB do lab-r2 indisponível → modelo padrão com o clipe anter
   const f = browserFixture([el]); const urls = [];
   globalThis.fetch = async (u) => { urls.push(String(u)); return /sophia-lab-v1\.1/.test(u) ? new Response('nope', { status: 404 }) : new Response(DEFAULT_GLB); };
   const mod = await import('../public/experimental/sophia-actor.js?t=fallback');
+  mod.MODELS['lab-r2'].published = true; // simula "publicado, mas o arquivo falta/falha" (não publicado nem tenta baixar: ver sophia-pre-r2-runtime)
   f.ios[0].trigger(true); await flush();
   const a = mod.actorOf(el); assert.ok(a, 'ator criado com o modelo padrão');
   assert.equal(a.cfgKey, 'default'); assert.equal(a.clipName, 'Sophia_ExpressionFlow_R6'); assert.equal(el.dataset.sophia3d, 'on'); assert.equal(el.dataset.sophiaModel, 'sophia-v1.4.2-lab');
