@@ -74,6 +74,10 @@ html[data-serious-mode='true'] .work-index a span { color: #333; }
 .lab-heading .lab-note { max-width: 58ch; margin: 1.25rem 0 0; }
 .lab-companion { display: grid; justify-items: center; align-content: center; gap: .75rem; min-width: 0; }
 .lab-companion .sophia-animation { width: clamp(220px, 22vw, 280px); max-width: 100%; }
+/* Sophia Laboratório em WebP: mesma caixa quadrada e mesmas larguras da antiga Sophia 2D (sem mudar a composição). */
+.sophia-lab-webp { display: block; margin: 0; aspect-ratio: 1; }
+.sophia-lab-webp img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.lab-companion .sophia-lab-webp { width: clamp(220px, 22vw, 280px); max-width: 100%; }
 html:not([data-serious-mode='true']) .lab-companion .lab-sophia-guide,
 .lab-companion .lab-sophia-guide { width: 100%; max-width: 100%; margin: 0; padding: .8rem; grid-template-columns: 32px minmax(0, 1fr) auto; gap: .6rem; text-decoration: none; }
 .lab-companion .lab-sophia-guide__sigil { width: 32px; }
@@ -91,6 +95,7 @@ html:not([data-serious-mode='true']) .lab > .lab-project-card { margin-top: 0; }
 @media (max-width: 920px) {
   .lab-heading { grid-template-columns: minmax(0, 1fr) minmax(210px, .55fr); gap: 1.5rem; }
   .lab-companion .sophia-animation { width: 220px; }
+  .lab-companion .sophia-lab-webp { width: 220px; }
   .github-showcase .github-heading { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .github-heading h2 { max-width: 22ch; }
   .github-heading-copy > p:not(.eyebrow) { max-width: 70ch; }
@@ -100,6 +105,7 @@ html:not([data-serious-mode='true']) .lab > .lab-project-card { margin-top: 0; }
   .lab-heading { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
   .lab-companion { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: 1rem; }
   .lab-companion .sophia-animation { width: min(100%, 180px); }
+  .lab-companion .sophia-lab-webp { width: min(100%, 180px); }
   /* Must out-rank the html:not(...) base rule; otherwise the hidden sigil and
      arrow leave the copy in the 32 px first column (one word per line). */
   html .lab-companion .lab-sophia-guide,

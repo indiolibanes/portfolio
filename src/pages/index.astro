@@ -6,7 +6,7 @@ import CosmicStarfield from '../components/CosmicStarfield.astro';
 import HeroMicroInteractions from '../components/HeroMicroInteractions.astro';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import MotionImage from '../components/MotionImage.astro';
-import SophiaAnimation from '../components/SophiaAnimation.astro';
+import SophiaLabWebP from '../components/SophiaLabWebP.astro';
 import MethodPresenter from '../components/MethodPresenter.astro';
 import MarioNameTiles from '../components/MarioNameTiles.astro';
 import SophiaCorrida from '../components/SophiaCorrida.astro';
@@ -266,7 +266,12 @@ const METHOD_FLOWS = [
         </div>
 
         <div class="lab-companion">
-          <SophiaAnimation variant="lab" linked={false} />
+          <SophiaLabWebP
+            stillSrc="/assets/characters/sophia/lab/v1.2.1/sophia-lab-v121-write-384.png"
+            animatedSrc="/assets/characters/sophia/lab/v1.2.1/sophia-lab-v121-write-384.webp"
+            width={352}
+            height={384}
+          />
           <a class="lab-sophia-guide" href="/sophia/" aria-label="Sophia percorre o laboratório — conhecer Sophia">
             <SophiaSigil className="lab-sophia-guide__sigil" />
             <span>
