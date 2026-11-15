@@ -35,9 +35,11 @@ export function mountSophiaKitsuneR3cPreview() {
   const read16 = (u, p) => u[p] | (u[p + 1] << 8);
   const read32 = (u, p) => (u[p] | (u[p + 1] << 8) | (u[p + 2] << 16) | (u[p + 3] << 24)) >>> 0;
 
-  function selectedEntries(dir, character) {
+  function selectedEntries(dir, character, variant) {
     const glbs = dir.filter(e => /\.glb$/i.test(e.name) && !e.name.includes('__MACOSX'));
     if (!glbs.length) throw Error('Não há GLBs neste ZIP.');
+    const preferred = variant === 'r1' ? glbs.find(x => /R3b_QAFix1_Validated/i.test(x.name)) : glbs.find(x => /R3c_Opus_Refine01/i.test(x.name));
+    if (preferred) return preferred;
     const matching = glbs.filter(e => character === 'anime' ? /anime|waifu/i.test(e.name) : /kitsune|fox(?!y)|raposa/i.test(e.name));
     if (matching.length) {
       return matching.sort((a, b) => (b.name.toLowerCase().includes('facial') ? 1 : 0) - (a.name.toLowerCase().includes('facial') ? 1 : 0))[0];
@@ -74,10 +76,10 @@ export function mountSophiaKitsuneR3cPreview() {
     return entries;
   }
 
-  async function readAsset(slot, character) {
+  async function readAsset(slot, character, variant) {
     if (!slot) return null;
     if (slot.kind === 'glb') return { bytes: await slot.file.arrayBuffer(), name: slot.file.name };
-    const item = selectedEntries(slot.entries, character);
+    const item = selectedEntries(slot.entries, character, variant);
     if (item.decompressed > MAX_GLTF || item.compressed > MAX_GLTF || item.flags & 1) throw Error('GLB muito grande ou entrada ZIP criptografada.');
     const h = new Uint8Array(await slot.file.slice(item.start, item.start + 30).arrayBuffer());
     if (read32(h, 0) !== 0x04034b50) throw Error('Cabeçalho ZIP local inválido.');
@@ -278,7 +280,7 @@ export function mountSophiaKitsuneR3cPreview() {
     if (!slot) { message('Nenhum ' + selectedVersion.toUpperCase() + ' selecionado. Use o campo de arquivo dessa versão.'); return; }
     try {
       message('Lendo ' + selectedVersion.toUpperCase() + ' / ' + selectedCharacter + ' localmente…');
-      const asset = await readAsset(slot, selectedCharacter);
+      const asset = await readAsset(slot, selectedCharacter, selectedVersion);
       if (ticket !== loadSerial) return;
       if (asset.bytes.byteLength > MAX_GLTF) throw Error('GLB excede o limite de 100 MB para esta prévia.');
       validateGlb(asset.bytes);
