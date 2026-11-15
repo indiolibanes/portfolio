@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro dev",
-    "build": "node scripts/build-hygiene.mjs clean && node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist && node scripts/check-seo.mjs --dist && node scripts/build-hygiene.mjs verify && node scripts/verify-sophia-face-qa-build.mjs",
+    "build": "node scripts/build-hygiene.mjs clean && node scripts/generate-og.mjs && node scripts/generate-motion-stills.mjs && node scripts/generate-about-cutouts.mjs && astro build && node scripts/verify-og.mjs --dist && node scripts/check-seo.mjs --dist && node scripts/build-hygiene.mjs verify && node scripts/verify-sophia-face-qa-build.mjs && node scripts/check-sophia-preview-bootstrap.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "npm run check:seo && npm run check:ux && npm run check:api && npm run check:tetris && npm run check:music-state && npm run check:music-transition && npm run check:hsin && npm run check:sophia && npm run check:performance && npm run check:shorekeeper-r2 && npm run check:sophia-face-qa",
