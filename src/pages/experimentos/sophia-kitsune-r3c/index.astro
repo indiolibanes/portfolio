@@ -1,0 +1,116 @@
+---
+const title = 'Sophia Kitsune R3c · Opus Refine01 — QA';
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="theme-color" content="#faf8fd" />
+  <meta name="description" content="Laboratório privado da Sophia Kitsune R3c Opus: comparação R3b, constelações, piscadas e poses da cauda." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>{title}</title>
+</head>
+<body>
+ <main class="shell" data-sophia-r3c>
+   <header class="heading">
+     <div>
+       <div class="eyebrow">HOROLOGIARIUS / EXPERIMENTOS / FACIAL QA</div>
+       <h1>Sophia <span>Kitsune R3c</span></h1>
+       <p>R3b × Opus Refine01 · constelações · QA móvel</p>
+     </div>
+     <a href="/sophia/" class="back">Voltar à Sophia</a>
+   </header>
+   <section class="intro" aria-label="Estado da prévia">
+     <div>
+       <strong>Reconstrução de textura — Opus Refine01, aguardando sua aprovação</strong>
+       <p>Escolha os GLBs R3b e Opus Refine01 diretamente no Android. O site não hospeda nem recebe os modelos privados. Compare principalmente a continuidade e visibilidade das constelações nas duas laterais e na parte posterior da cauda.</p>
+     </div>
+     <span class="neutralTag">Sem merge · sem substituição de produção</span>
+   </section>
+   <div class="sources">
+     <section class="source" aria-labelledby="r1Title">
+       <div class="sourceHead"><h2 id="r1Title">R3b · Baseline</h2><span id="state-r1" class="state">Não carregada</span></div>
+       <p><code>Sophia_Kitsune_R3b_QAFix1_Validated.glb</code> — anatomia aprovada, antes da recuperação de constelações.</p>
+       <label class="fileButton">Escolher R3b<input data-file="r1" type="file" accept=".glb,.zip,model/gltf-binary,application/zip" /></label>
+       <div class="fileInfo" id="file-r1">Nenhum arquivo selecionado</div>
+     </section>
+     <section class="source" aria-labelledby="r2Title">
+       <div class="sourceHead"><h2 id="r2Title">R3c · Opus Refine01</h2><span id="state-r2" class="state">Pendente</span></div>
+       <p><code>Sophia_Kitsune_R3c_Opus_Refine01.glb</code> — novo albedo PNG 4K, sem alterações na geometria ou nos olhos.</p>
+       <label class="fileButton">Escolher Opus Refine01<input data-file="r2" type="file" accept=".glb,.zip,model/gltf-binary,application/zip" /></label>
+       <div class="fileInfo" id="file-r2">Ainda não selecionado</div>
+     </section>
+   </div>
+   <div class="workspace">
+     <section class="viewpanel" aria-label="Visualizador tridimensional da Sophia">
+       <div class="tools">
+         <label>Personagem <select id="character"><option value="kitsune">Sophia Kitsune</option></select></label>
+         <label>Versão <select id="version"><option value="r1">R3b — baseline</option><option value="r2">R3c — Opus Refine01</option></select></label>
+         <button id="swap">Alternar R3b / Opus</button>
+       </div>
+       <div id="stage" class="stage"><div class="empty" id="empty">Escolha um GLB ou ZIP acima para iniciar a comparação.</div></div>
+       <p id="status" class="status" aria-live="polite">Aguardando modelo. Nada é enviado para o servidor.</p>
+       <div class="tools camera">
+         <button data-angle="front">Frente</button>
+         <button data-angle="three">¾</button>
+         <button data-angle="left">Perfil E</button>
+         <button data-angle="right">Perfil D</button>
+         <button data-angle="back">Costas</button>
+         <button id="zoom-face">Rosto</button>
+         <button id="zoom-full">Corpo inteiro</button><button id="zoom-tail">Cauda (zoom)</button><button data-tail-angle="left">Cauda esquerda</button><button data-tail-angle="right">Cauda direita</button><button data-tail-angle="back">Cauda posterior</button>
+         <button data-preset="L">Opus lateral E</button><button data-preset="R">Opus lateral D</button><button data-preset="Back">Opus posterior</button><button data-preset="ThreeL">Opus ¾ E</button><button data-preset="ThreeR">Opus ¾ D</button>
+       </div>
+       <div class="tools">
+         <label>Luz <select id="light"><option value="neutral">Neutra</option><option value="oblique">Oblíqua</option></select></label>
+         <button id="stop">Parar</button><button id="reset">Neutro</button><button id="capture">Capturar PNG</button>
+       </div>
+       <p class="hint">Apenas um GLB por vez no WebGL. Selecione câmeras Opus para repetir as vistas de referência. A textura PNG 4K consome mais memória no Android. Os modelos não possuem clipes corporais.</p>
+       <div class="tools"><strong class="tinyTitle">Teste suave da cauda:</strong><button data-pose="0">Neutra</button><button data-pose="1">Pose A (+3°/+2°)</button><button data-pose="-1">Pose B (−3°/−2°)</button></div>
+     </section>
+     <aside class="panel">
+       <h2>Piscadas preservadas <span>controle de regressão</span></h2>
+       <p class="hint">Teste cada etapa de 0 a 100%. Compare fechamento, orientação aparente das íris e peso do delineado; não confundir sucesso geométrico com aprovação artística.</p>
+       <div class="blinkPanel">
+         <label>Olho esquerdo <output id="left-value">0%</output><input id="blink-left" type="range" min="0" max="100" value="0" step="5"/></label>
+         <label>Olho direito <output id="right-value">0%</output><input id="blink-right" type="range" min="0" max="100" value="0" step="5"/></label>
+         <div id="blink-steps" class="steps">
+           <button data-step="0">0%</button><button data-step="25">25%</button><button data-step="50">50%</button><button data-step="75">75%</button><button data-step="100">100%</button>
+         </div>
+       </div>
+       <hr/>
+       <h2>Morphs disponíveis <span id="count">0</span></h2>
+       <div id="morphs" class="morphs"><p class="hint">Os controles são lidos do GLB selecionado. Nenhum morph será inventado.</p></div>
+       <hr/>
+       <h2>Inspeção manual</h2>
+       <div id="gates" class="gates">
+        <label>Fechamento de pálpebras <select data-criterion="palpebras"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Olhos / íris / alinhamento <select data-criterion="olhos"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Rosto / materiais <select data-criterion="materiais"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Expressões preservadas <select data-criterion="expressoes"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Estrela da testa <select data-criterion="estrela"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Constelações da lateral esquerda <select data-criterion="cauda"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Constelações da lateral direita <select data-criterion="cauda_direita"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Continuidade entre mechas <select data-criterion="continuidade"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Constelação posterior <select data-criterion="cauda_posterior"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Fantasmas, halos e manchas <select data-criterion="fantasmas"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Preservação do marfim <select data-criterion="marfim"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+        <label>Desempenho móvel <select data-criterion="mobile"><option>NOT TESTED</option><option>PASS</option><option>PARTIAL</option><option>FAIL</option></select></label>
+       </div>
+       <label class="notes">Anotações<textarea id="notes" rows="4" placeholder="Ex.: piscada bilateral 100% cria fissura; face ainda esbranquiçada…"></textarea></label>
+       <button id="report" class="report">Exportar avaliação JSON</button>
+       <p class="hint">O relatório e as capturas ficam no seu dispositivo; nada é enviado automaticamente ao GitHub ou à conversa.</p>
+     </aside>
+   </div>
+   <footer>Prévia R3c · upload local, sem publicação de GLBs · a versão Opus ainda requer aprovação artística e teste móvel.</footer>
+ </main>
+</body>
+</html>
+<style is:global>
+:root{color-scheme:light}*{box-sizing:border-box}html{background:#faf8fd}body{margin:0;font:14px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;color:#292834;background:#faf8fd}button,input,select,textarea{font:inherit}button,select,textarea{border:1px solid #d9d5e5;background:#f7f5fa;color:#303046;border-radius:11px;padding:9px 11px}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}button:hover:not(:disabled){background:#e9e3f5}input[type=range]{accent-color:#8772b2}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #8772b2;outline-offset:3px}.shell{max-width:1420px;margin:auto;padding:clamp(12px,3vw,32px)}.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}.eyebrow{color:#76708b;letter-spacing:.19em;font-weight:700;font-size:.67rem}.heading h1{font-size:clamp(1.7rem,4vw,2.65rem);line-height:1.1;margin:.35rem 0}.heading h1 span{font-weight:400;color:#8f79a6}.heading p{margin:0;color:#77748a}.back{color:#64597e;border:1px solid #ded8e7;padding:8px 12px;border-radius:12px;white-space:nowrap;text-decoration:none}.intro{padding:16px 18px;margin-bottom:14px;background:#f0edf5;border:1px solid #ded8e8;border-radius:16px;display:flex;justify-content:space-between;gap:20px;align-items:center}.intro p{margin:3px 0 0;color:#656477;max-width:840px}.neutralTag{background:#e7e1ed;border-radius:99px;padding:6px 12px;color:#615871;font-size:.8rem;white-space:nowrap}.sources{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.source,.viewpanel,.panel{background:#fff;border:1px solid #e5e1ee;border-radius:18px;padding:15px;box-shadow:0 4px 26px #1d1a3910}.sourceHead{display:flex;align-items:center;justify-content:space-between;gap:10px}.source h2,.panel h2{font-size:1.06rem;margin:0 0 6px}.source p{font-size:.87rem;color:#777387;margin:0 0 10px}.fileButton{display:inline-flex;position:relative;background:#6d608c;color:white;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:600}.fileButton input{position:absolute;inset:0;opacity:0;cursor:pointer;max-width:100%}.fileInfo{font-size:.8rem;color:#655e77;overflow-wrap:anywhere;margin-top:8px}.state{font-size:.75rem;color:#777084}.workspace{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:14px;align-items:start}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.tools label{display:flex;gap:7px;align-items:center;font-size:.86rem}.stage{width:100%;height:min(62svh,650px);min-height:340px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 42%,#fafaff,#e3e5f1);border-radius:15px;touch-action:none}.stage canvas{display:block;width:100%;height:100%}.empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:270px;color:#76768c;text-align:center;pointer-events:none}.status{color:#706b82;font-size:.8rem;min-height:20px}.hint{color:#767387;font-size:.81rem;margin:9px 0}.panel h2 span{font-size:.78rem;font-weight:400;color:#857b9c}.blinkPanel label{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:.88rem;margin-top:10px}.blinkPanel input{grid-column:1/-1;width:100%}.blinkPanel output{font-variant-numeric:tabular-nums}.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}.steps button{flex:1;min-width:45px;font-size:.8rem;padding:8px 5px}.steps button[aria-pressed=true]{background:#dbd1f0;border-color:#ad96d4;font-weight:700}hr{border:0;border-top:1px solid #eee9f5;margin:20px 0}.morphLine{display:grid;gap:3px;margin:12px 0}.morphLine label{display:flex;justify-content:space-between;font-size:.85rem}.morphLine input{width:100%}.gates{display:grid;gap:8px}.gates label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.84rem}.gates select{min-width:115px;font-size:.78rem}.notes{display:grid;gap:5px;margin-top:16px;font-weight:600;font-size:.82rem}.notes textarea{resize:vertical;width:100%;font-weight:400}.report{margin-top:11px;background:#e8e2f1;font-weight:600}footer{margin-top:22px;color:#868196;font-size:.78rem}@media(max-width:900px){.workspace{grid-template-columns:1fr}.stage{height:54svh;min-height:290px}}@media(max-width:650px){.heading h1{font-size:1.72rem}.heading p{font-size:.85rem}.sources{grid-template-columns:1fr}.intro{display:block}.neutralTag{display:inline-flex;margin-top:10px}.tools button{font-size:.83rem;padding:8px 9px}.heading .back{font-size:.75rem;padding:6px 9px}.shell{padding:12px}.stage{height:48svh}.source,.viewpanel,.panel{padding:12px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+<script>
+  import { mountSophiaKitsuneR3cPreview } from '../../../scripts/sophia-kitsune-r3c-qa.js';
+  mountSophiaFaceR2Preview();
+</script>
