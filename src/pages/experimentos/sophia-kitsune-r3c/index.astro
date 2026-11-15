@@ -105,6 +105,18 @@ const title = 'Sophia Kitsune R3c · Opus Refine01 — QA';
    </div>
    <footer>Prévia R3c · upload local, sem publicação de GLBs · a versão Opus ainda requer aprovação artística e teste móvel.</footer>
  </main>
+<script is:inline>
+  // Display a real error instead of leaving the preview silently blank.
+  window.addEventListener('error', (event) => {
+    const out = document.getElementById('status');
+    if (out) out.textContent = 'Erro de execução no navegador: ' + (event.message || 'erro desconhecido');
+  });
+  window.addEventListener('unhandledrejection', (event) => {
+    const out = document.getElementById('status');
+    const reason = event.reason?.message || String(event.reason || 'erro desconhecido');
+    if (out) out.textContent = 'Falha ao carregar a prévia: ' + reason;
+  });
+</script>
 </body>
 </html>
 <style is:global>
