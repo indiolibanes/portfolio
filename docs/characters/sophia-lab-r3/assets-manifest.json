@@ -1,0 +1,354 @@
+[
+  {
+    "file": "sophia-lab-v121-turn-ltr-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 21,
+    "durationMs": 875,
+    "bytes": 294704,
+    "sha256": "a0007139d8c4d4804081a7a779a74314174713ee8e15722ddf803195e50128cb",
+    "fullRGBAUpperBoundBytes": 5053440
+  },
+  {
+    "file": "sophia-lab-v121-turn-ltr-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 21,
+    "durationMs": 875,
+    "bytes": 403990,
+    "sha256": "bbcf1a70c3ce70fff07440ecc76066f4e58b86cd7a7ad5dd5702bf990a4c57aa",
+    "fullRGBAUpperBoundBytes": 11354112
+  },
+  {
+    "continuity": "turn-ltr",
+    "side": "start",
+    "RGBA_MAE": [
+      0.021454782196969696,
+      0.014796401515151516,
+      0.013657078598484848,
+      0.001094933712121212
+    ],
+    "maxChannelError": [
+      42,
+      23,
+      20,
+      21
+    ]
+  },
+  {
+    "continuity": "turn-ltr",
+    "side": "end",
+    "RGBA_MAE": [
+      0.02036724668560606,
+      0.014256332859848484,
+      0.012983842329545454,
+      0.0009913589015151515
+    ],
+    "maxChannelError": [
+      185,
+      161,
+      150,
+      11
+    ]
+  },
+  {
+    "file": "sophia-lab-v121-turn-rtl-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 21,
+    "durationMs": 875,
+    "bytes": 296534,
+    "sha256": "ca8ad8fff98708d16870a67046c8c2367800db90a15691133fd9ee6094a7916a",
+    "fullRGBAUpperBoundBytes": 5053440
+  },
+  {
+    "file": "sophia-lab-v121-turn-rtl-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 21,
+    "durationMs": 875,
+    "bytes": 405662,
+    "sha256": "3e1992c8d6c43807b463043cdd37e07b9bf6e1eea475427b712841bdf0c9b444",
+    "fullRGBAUpperBoundBytes": 11354112
+  },
+  {
+    "continuity": "turn-rtl",
+    "side": "start",
+    "RGBA_MAE": [
+      0.022187204071969696,
+      0.016039299242424244,
+      0.015380859375,
+      0.001738577178030303
+    ],
+    "maxChannelError": [
+      205,
+      187,
+      181,
+      21
+    ]
+  },
+  {
+    "continuity": "turn-rtl",
+    "side": "end",
+    "RGBA_MAE": [
+      0.021462180397727272,
+      0.014929569128787878,
+      0.01299124053030303,
+      0.0008285984848484849
+    ],
+    "maxChannelError": [
+      88,
+      66,
+      51,
+      21
+    ]
+  },
+  {
+    "file": "sophia-lab-v121-walk-left-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 58,
+    "durationMs": 3840,
+    "bytes": 813876,
+    "sha256": "5507f41ee739badd6194c46471af522209295e34033d96b71168a2db5d678938",
+    "fullRGBAUpperBoundBytes": 13957120
+  },
+  {
+    "file": "sophia-lab-v121-walk-left-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 58,
+    "durationMs": 3840,
+    "bytes": 1108560,
+    "sha256": "8ddf5b55ed2dd4727fc18ca08f4a441ad386de5daaf7dd0c56229b7b367b90db",
+    "fullRGBAUpperBoundBytes": 31358976
+  },
+  {
+    "file": "sophia-lab-v121-walk-right-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 58,
+    "durationMs": 3840,
+    "bytes": 793238,
+    "sha256": "93c278180f5b2fd1107526d88842e7c8fe0ea81de623f4f7494f9fe4145f7999",
+    "fullRGBAUpperBoundBytes": 13957120
+  },
+  {
+    "file": "sophia-lab-v121-walk-right-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 58,
+    "durationMs": 3840,
+    "bytes": 1048138,
+    "sha256": "a1858507222f287e0c819439c1699f4624d2c9d2939aa29014d63926764233d5",
+    "fullRGBAUpperBoundBytes": 31358976
+  },
+  {
+    "file": "sophia-lab-v121-write-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 29,
+    "durationMs": 1920,
+    "bytes": 512932,
+    "sha256": "42a65127a250fd0ed9ef1dbf20ce16a2da092efe815898425bb00438bedba48e",
+    "fullRGBAUpperBoundBytes": 6978560
+  },
+  {
+    "file": "sophia-lab-v121-write-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 29,
+    "durationMs": 1920,
+    "bytes": 719078,
+    "sha256": "313ab4ed125535530cf56ad44166da29178f6a0d6b558875b417588a5ca846e7",
+    "fullRGBAUpperBoundBytes": 15679488
+  },
+  {
+    "file": "sophia-lab-v121-think-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 23,
+    "durationMs": 1840,
+    "bytes": 401738,
+    "sha256": "2f19e0bf5ea65834c3fb9f8cc1a9a98417f9496c5e9016de6e838a8fbec00021",
+    "fullRGBAUpperBoundBytes": 5534720
+  },
+  {
+    "file": "sophia-lab-v121-think-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 23,
+    "durationMs": 1840,
+    "bytes": 563738,
+    "sha256": "318c7ca208e5a10e39c0740b54407f963543ea7734d929160b3e95b03108d2f5",
+    "fullRGBAUpperBoundBytes": 12435456
+  },
+  {
+    "file": "sophia-lab-v121-notice-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 15,
+    "durationMs": 1120,
+    "bytes": 263820,
+    "sha256": "ef7eb3281840018ec89c8010f790c715490b7a86ba5dfb7ef72008bde450a2c6",
+    "fullRGBAUpperBoundBytes": 3609600
+  },
+  {
+    "file": "sophia-lab-v121-notice-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 15,
+    "durationMs": 1120,
+    "bytes": 371150,
+    "sha256": "bf5312c9e178954479e92a5b13766de9b18e863f0f9efe6c16185d54314f0abe",
+    "fullRGBAUpperBoundBytes": 8110080
+  },
+  {
+    "file": "sophia-lab-v121-front-to-left-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 13,
+    "durationMs": 500,
+    "bytes": 208452,
+    "sha256": "bd9c10b639e2b6993af64af0ddba463327ac84b7594da4854b2e152ff0a7542b",
+    "fullRGBAUpperBoundBytes": 3128320
+  },
+  {
+    "file": "sophia-lab-v121-front-to-left-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 13,
+    "durationMs": 500,
+    "bytes": 287134,
+    "sha256": "ea53ef2244524cb475818408f7b4a96923207163c0d3a3d26abe63519458002a",
+    "fullRGBAUpperBoundBytes": 7028736
+  },
+  {
+    "file": "sophia-lab-v121-left-to-front-256-r3.webp",
+    "width": 235,
+    "height": 256,
+    "frames": 13,
+    "durationMs": 500,
+    "bytes": 208620,
+    "sha256": "df4bd4e4df63cd448fd325a260664c0a38edd97c4c4d426caf6b7a46753da24b",
+    "fullRGBAUpperBoundBytes": 3128320
+  },
+  {
+    "file": "sophia-lab-v121-left-to-front-384-r3.webp",
+    "width": 352,
+    "height": 384,
+    "frames": 13,
+    "durationMs": 500,
+    "bytes": 287104,
+    "sha256": "f19f402de402845d04d27bdf83eabcb37bb95d49bdb4c68d7aa4745cb03e8357",
+    "fullRGBAUpperBoundBytes": 7028736
+  },
+  {
+    "file": "sophia-lab-v121-front-to-left-256-r3.png",
+    "bytes": 64390,
+    "sha256": "84beaca7512365542cc4e40a1330da346813a3caa6bca23d76aa32ba89197201",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-front-to-left-384-r3.png",
+    "bytes": 155484,
+    "sha256": "f6b13409af9d752f651e465a497a2f7d5fbe333f81d03fee8e585bf25005a88c",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-left-to-front-256-r3.png",
+    "bytes": 48883,
+    "sha256": "2ab45567f71cc95a11ec21af9ad33296c5f293885e7d0604d1e48d902115c21c",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-left-to-front-384-r3.png",
+    "bytes": 129533,
+    "sha256": "720aabedaa257b13dc5cb4b5c6044a52d1e50a3a27088e8f15a6ecd288c38887",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-notice-256-r3.png",
+    "bytes": 64080,
+    "sha256": "63c3afef54213a779e0ccde448c1bc4d66a2364cc35b5cbaf92a51ab3f38ca66",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-notice-384-r3.png",
+    "bytes": 155388,
+    "sha256": "9d4671eaeaef4f27bb5362b5465a82579ac07992530f3c78fd8055c770afaf42",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-think-256-r3.png",
+    "bytes": 64361,
+    "sha256": "af3f1f38cb88a37b08c819de59a2ffe0151a5b76b69f63f399d999b138b4f4a5",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-think-384-r3.png",
+    "bytes": 155427,
+    "sha256": "944b1939c0d2ebd563a3f67c719f01c83ee14c72c7269f64effc6787e10f0a96",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-turn-ltr-256-r3.png",
+    "bytes": 48600,
+    "sha256": "f82f7388be385aba3177b0b3117d5caae16a2973ef5791386a6525eb51fd4b1b",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-turn-ltr-384-r3.png",
+    "bytes": 129314,
+    "sha256": "9849e8f6a5677a712222bc1c186c4abad2cb65b9cee308c56250d4f6f9e32ad3",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-turn-rtl-256-r3.png",
+    "bytes": 47555,
+    "sha256": "57d58d4c966ca7c95a465ab52a5650e437168883023fe925c68a60f244b9956a",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-turn-rtl-384-r3.png",
+    "bytes": 125819,
+    "sha256": "779d7a34fee329314cee0adaa6dae13442f429830f5ba05130e1388b124e9aa3",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-walk-left-256-r3.png",
+    "bytes": 48883,
+    "sha256": "2ab45567f71cc95a11ec21af9ad33296c5f293885e7d0604d1e48d902115c21c",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-walk-left-384-r3.png",
+    "bytes": 129533,
+    "sha256": "720aabedaa257b13dc5cb4b5c6044a52d1e50a3a27088e8f15a6ecd288c38887",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-walk-right-256-r3.png",
+    "bytes": 47833,
+    "sha256": "3cc1e27c7a357642027c7304499294fccca49019a59b88fccd1d06f419d61235",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-walk-right-384-r3.png",
+    "bytes": 126043,
+    "sha256": "f6baff1cf58621944ff118d8f0a86a047e6e444f413e003045a62b77ab36b9c5",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-write-256-r3.png",
+    "bytes": 64405,
+    "sha256": "302d209e3a7af6175704f4dbe3b7c18a4cbb5d703bc9adc48b7898805bbef8d6",
+    "static": true
+  },
+  {
+    "file": "sophia-lab-v121-write-384-r3.png",
+    "bytes": 155749,
+    "sha256": "33783c38f4c7f3dd83ca0372f2e15888d92baa5445d1c0d1a9aa311285c2b4f9",
+    "static": true
+  }
+]
