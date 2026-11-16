@@ -1,0 +1,49 @@
+---
+interface Props {
+  stillSrc: string;
+  width: number;
+  height: number;
+  alt?: string;
+}
+const { stillSrc, width, height, alt = '' } = Astro.props;
+---
+
+<!-- The Lab is intentionally a 3D-rendered WebP sequence: NEVER load the private GLB here. -->
+<figure class="sophia-lab-webp" data-sophia-lab-webp data-still={stillSrc} aria-hidden={alt ? undefined : 'true'}>
+  <img src={stillSrc} width={width} height={height} loading="lazy" decoding="async" alt={alt} draggable="false" />
+</figure>
+
+<script>
+  import { mountLab } from '../scripts/sophia-lab-webp-r3.js';
+  const items = [...document.querySelectorAll<HTMLElement>('[data-sophia-lab-webp]')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const conn = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection;
+  const controllers = items.map(el => mountLab(el, { reduce, conn }));
+  const observer = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(entry => {
+      const index = items.indexOf(entry.target as HTMLElement);
+      if (index >= 0) controllers[index]?.visible(entry.isIntersecting);
+    }), { rootMargin: '200px 0px' }) : null;
+  items.forEach(el => observer?.observe(el));
+
+  const syncAll = () => controllers.forEach(c => c.sync());
+  const onHide = () => controllers.forEach(c => c.stop());
+  document.addEventListener('visibilitychange', syncAll);
+  reduce.addEventListener('change', syncAll);
+  conn?.addEventListener('change', syncAll);
+  addEventListener('pagehide', onHide);
+  addEventListener('pageshow', syncAll);
+
+  document.addEventListener('astro:before-swap', () => {
+    observer?.disconnect(); controllers.forEach(c => c.destroy());
+    removeEventListener('pagehide', onHide);
+    removeEventListener('pageshow', syncAll);
+    document.removeEventListener('visibilitychange', syncAll);
+    reduce.removeEventListener('change', syncAll);
+    conn?.removeEventListener('change', syncAll);
+  }, { once: true });
+</script>
+
+<style>
+  .sophia-lab-webp img { transform: translateX(8%); pointer-events: none; user-select: none; -webkit-user-drag: none; }
+</style>
