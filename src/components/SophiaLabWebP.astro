@@ -1,13 +1,9 @@
 ---
-// Sophia Laboratório v1.2.1 (escrevendo no caderno) em WebP animado pré-renderizado.
-// Substitui a Sophia 2D/3D da seção #lab sem motor 3D, sem modelo e sem rig: o PNG estático é o estado
-// inicial (funciona sem JavaScript) e o WebP só é baixado quando a personagem está perto da tela.
 interface Props {
   stillSrc: string;
   animatedSrc: string;
   width: number;
   height: number;
-  /** Vazio = decorativa (o texto ao lado já descreve a Sophia). */
   alt?: string;
 }
 const { stillSrc, animatedSrc, width, height, alt = '' } = Astro.props;
@@ -15,56 +11,33 @@ const { stillSrc, animatedSrc, width, height, alt = '' } = Astro.props;
 <figure class="sophia-lab-webp" data-sophia-lab-webp data-animated={animatedSrc} data-still={stillSrc} aria-hidden={alt ? undefined : 'true'}>
   <img src={stillSrc} width={width} height={height} loading="lazy" decoding="async" alt={alt} draggable="false" />
 </figure>
-
 <script>
-  // Astro agrupa este módulo uma única vez: um observer e um conjunto de ouvintes para todas as instâncias.
-  type Conn = EventTarget & { saveData?: boolean };
+  import { mountLab } from '../scripts/sophia-lab-webp-r3.js';
   const items = [...document.querySelectorAll<HTMLElement>('[data-sophia-lab-webp]')];
-  if (items.length) {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-    const conn = (navigator as Navigator & { connection?: Conn }).connection;
-    const state = new Map<HTMLElement, { visible: boolean; ready: boolean; failed: boolean; probing: boolean }>();
-    const imgOf = (el: HTMLElement) => el.querySelector('img') as HTMLImageElement;
-    const allowed = () => !document.hidden && !reduce.matches && conn?.saveData !== true;
-    const show = (el: HTMLElement, src: string) => {
-      const img = imgOf(el);
-      if (img.getAttribute('src') !== src) img.src = src;
-    };
-    function sync(el: HTMLElement) {
-      const s = state.get(el)!;
-      if (!(s.visible && allowed()) || s.failed) { show(el, el.dataset.still!); return; }
-      if (s.ready) { show(el, el.dataset.animated!); return; }
-      if (s.probing) return;
-      s.probing = true;
-      // Baixa e decodifica fora da tela; o PNG continua visível até o WebP estar pronto (sem salto de layout).
-      const probe = new Image();
-      probe.decoding = 'async';
-      probe.onload = () => { s.probing = false; s.ready = true; sync(el); };
-      probe.onerror = () => { s.probing = false; s.failed = true; sync(el); };
-      probe.src = el.dataset.animated!;
-    }
-    const syncAll = () => items.forEach(sync);
-    for (const el of items) {
-      state.set(el, { visible: false, ready: false, failed: false, probing: false });
-      imgOf(el).addEventListener('error', () => {
-        if (imgOf(el).getAttribute('src') !== el.dataset.still) { state.get(el)!.failed = true; sync(el); }
-      });
-    }
-    const observer = 'IntersectionObserver' in window
-      ? new IntersectionObserver((entries) => {
-          for (const e of entries) { state.get(e.target as HTMLElement)!.visible = e.isIntersecting; sync(e.target as HTMLElement); }
-        }, { rootMargin: '200px 0px' })
-      : null;
-    // Sem IntersectionObserver a Sophia fica no PNG: nada é baixado.
-    observer && items.forEach((el) => observer.observe(el));
-    document.addEventListener('visibilitychange', syncAll);
-    reduce.addEventListener('change', syncAll);
-    conn?.addEventListener?.('change', syncAll);
-    addEventListener('pagehide', () => items.forEach((el) => show(el, el.dataset.still!)));
-    addEventListener('pageshow', syncAll);
-  }
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const conn = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection;
+  const controllers = items.map(el => mountLab(el, { reduce, conn }));
+  const observer = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(entry => {
+      controllers[items.indexOf(entry.target as HTMLElement)]?.visible(entry.isIntersecting);
+    }), { rootMargin: '200px 0px' }) : null;
+  items.forEach(el => observer?.observe(el));
+  const syncAll = () => controllers.forEach(c => c.sync());
+  document.addEventListener('visibilitychange', syncAll);
+  reduce.addEventListener('change', syncAll);
+  conn?.addEventListener('change', syncAll);
+  const onHide = () => controllers.forEach(c => c.stop());
+  addEventListener('pagehide', onHide);
+  addEventListener('pageshow', syncAll);
+  document.addEventListener('astro:before-swap', () => {
+    observer?.disconnect(); controllers.forEach(c => c.destroy());
+    removeEventListener('pagehide', onHide);
+    removeEventListener('pageshow', syncAll);
+    document.removeEventListener('visibilitychange', syncAll);
+    reduce.removeEventListener('change', syncAll);
+    conn?.removeEventListener('change', syncAll);
+  }, { once: true });
 </script>
-
 <style>
-  .sophia-lab-webp img { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+  .sophia-lab-webp img { transform: translateX(8%); pointer-events: none; user-select: none; -webkit-user-drag: none; }
 </style>
