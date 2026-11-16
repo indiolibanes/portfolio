@@ -30,7 +30,7 @@ test('só os dois assets autorizados são públicos, íntegros e com as dimensõ
 });
 
 test('componente: PNG primeiro, WebP sob demanda, sem 3D, sem GLB, sem WebGL', async () => {
-  const c = await read('src/components/SophiaLabWebP.astro');
+  const c = await read('src/components/SophiaLabWebP.astro') + await read('src/scripts/sophia-lab-webp-r3.js');
   assert.match(c, /<img[^>]*src=\{stillSrc\}/s, 'o PNG é o src inicial (funciona sem JavaScript)');
   assert.match(c, /width=\{width\}/);
   assert.match(c, /height=\{height\}/);
@@ -47,7 +47,7 @@ test('componente: PNG primeiro, WebP sob demanda, sem 3D, sem GLB, sem WebGL', a
 });
 
 test('componente: sem observadores duplicados (um observer, um conjunto de ouvintes globais)', async () => {
-  const c = await read('src/components/SophiaLabWebP.astro');
+  const c = await read('src/components/SophiaLabWebP.astro') + await read('src/scripts/sophia-lab-webp-r3.js');
   assert.equal((c.match(/new IntersectionObserver/g) || []).length, 1);
   assert.equal((c.match(/addEventListener\('visibilitychange'/g) || []).length, 1);
   assert.equal((c.match(/addEventListener\('pagehide'/g) || []).length, 1);
@@ -58,8 +58,8 @@ test('home: só a instância do laboratório trocou; a antiga Sophia 3D do #lab 
   assert.match(home, /import SophiaLabWebP from '..\/components\/SophiaLabWebP\.astro'/);
   const companion = home.slice(home.indexOf('<div class="lab-companion">'), home.indexOf('<nav class="work-index"'));
   assert.match(companion, /<SophiaLabWebP/);
-  assert.match(companion, /\/assets\/characters\/sophia\/lab\/v1\.2\.1\/sophia-lab-v121-write-384\.webp/);
-  assert.match(companion, /\/assets\/characters\/sophia\/lab\/v1\.2\.1\/sophia-lab-v121-write-384\.png/);
+  assert.match(companion, /\/assets\/characters\/sophia\/lab\/r3\/sophia-lab-v121-write-384-r3\.webp/);
+  assert.match(companion, /\/assets\/characters\/sophia\/lab\/r3\/sophia-lab-v121-write-384-r3\.png/);
   assert.doesNotMatch(companion, /SophiaAnimation/);
   assert.match(companion, /class="lab-sophia-guide" href="\/sophia\/"/, 'o link para a página da Sophia permanece');
   assert.doesNotMatch(home, /<SophiaAnimation variant="lab"/);
