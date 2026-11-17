@@ -22,25 +22,40 @@ test('banner links to the experience and to the process, with no external reques
   assert.doesNotMatch(banner, /https?:\/\//);
 });
 
-test('video is decorative, lazy and respects reduced motion, Save-Data, visibility and tab focus', () => {
-  assert.match(banner, /<video[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b|<video[^>]*\bplaysinline\b/s);
-  assert.match(banner, /preload="none"/);
+test('Voo Prismático is a decorative, lazy WebP with a static fallback', () => {
+  assert.match(banner, /Sophia — <span[^>]+>Voo Prismático<\/span>/);
+  assert.match(banner, /<img\s+class="immersive-banner__art"/);
+  assert.match(banner, /loading="lazy"/);
   assert.match(banner, /aria-hidden="true"/);
   assert.match(banner, /tabindex="-1"/);
-  assert.doesNotMatch(banner, /<video[^>]*\bautoplay\b/); // playback is started by script only when allowed
+  assert.match(banner, /alt=""/);
+  assert.doesNotMatch(banner, /<video\b/);
+  assert.match(banner, /src="\/assets\/immersive-banner\/sophia-voo-prismatico-poster\.webp"/);
+  assert.match(banner, /data-animated-srcset=/);
   assert.match(banner, /IntersectionObserver/);
   assert.match(banner, /prefers-reduced-motion: reduce/);
   assert.match(banner, /saveData/);
   assert.match(banner, /visibilitychange/);
+  assert.match(banner, /data-serious-mode/);
+  assert.match(banner, /art\.removeAttribute\('srcset'\)/);
+  assert.match(banner, /object-fit: contain/);
+  assert.match(banner, /aspect-ratio: 2 \/ 1/);
 });
 
-test('banner assets exist, are small and are same-origin (CSP media-src self)', async () => {
-  const webm = await stat(new URL('../public/assets/immersive-banner/sophia-rocket.webm', import.meta.url));
-  const still = await stat(new URL('../public/assets/immersive-banner/sophia-rocket-still.webp', import.meta.url));
-  assert.ok(webm.size > 50_000 && webm.size < 700_000, 'clip must stay under 700 KB');
-  assert.ok(still.size < 60_000);
-  assert.match(banner, /\/assets\/immersive-banner\/sophia-rocket\.webm/);
-  assert.match(banner, /\/assets\/immersive-banner\/sophia-rocket-still\.webp/);
+test('responsive animations exist, are animated WebPs, and remain same-origin', async () => {
+  const dir = '../public/assets/immersive-banner/sophia-voo-prismatico-';
+  for (const [name, limit] of [['480', 1_400_000], ['768', 3_000_000], ['960', 4_800_000]]) {
+    const path = new URL(`${dir}${name}.webp`, import.meta.url);
+    const size = await stat(path);
+    const content = await readFile(path);
+    assert.ok(size.size > 50_000 && size.size < limit, `WebP ${name} is within budget`);
+    assert.equal(content.toString('ascii', 0, 4), 'RIFF');
+    assert.equal(content.toString('ascii', 8, 12), 'WEBP');
+    assert.ok(content.includes(Buffer.from('ANIM')), `WebP ${name} has an animation chunk`);
+    assert.match(banner, new RegExp(`/assets/immersive-banner/sophia-voo-prismatico-${name}\\.webp`));
+  }
+  const poster = await stat(new URL(`${dir}poster.webp`, import.meta.url));
+  assert.ok(poster.size < 60_000);
   assert.match(headers, /default-src 'self'[^\n]*media-src 'self'/);
 });
 
