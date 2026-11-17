@@ -1,69 +1,82 @@
 ---
-// Banner do Modo Imersivo. Faixa escura e autocontida: não depende do tema claro/sério da página.
-// O clipe é decorativo (5 s, WebM com canal alfa, ~430 KB) e só carrega quando visível.
-// O texto carrega todo o sentido; sem o vídeo, o pôster estático ocupa o mesmo lugar.
+// Convite ao Voo Prismático da Sophia: uma animação WebP com alfa, sem WebGL.
+// O WebP animado só é solicitado quando visível e permitido; nos demais estados usa o pôster.
 ---
 <aside class="immersive-banner" aria-labelledby="immersive-banner-title" data-immersive-banner>
   <div class="immersive-banner__copy">
-    <p class="immersive-banner__eyebrow">Modo imersivo · experimento</p>
+    <p class="immersive-banner__eyebrow">Sophia · experiência imersiva</p>
     <h2 id="immersive-banner-title" class="immersive-banner__title">
-      Uma raposa, um foguete e uma <span class="immersive-banner__count">contagem regressiva</span>.
+      Sophia — <span class="immersive-banner__count">Voo Prismático</span>
     </h2>
     <p class="immersive-banner__lede">
-      Tecnologia criativa com o processo à vista: roteiro, animação 3D e engenharia por trás de dez segundos de lançamento.
+      Uma raposa lunar, um foguete e um rastro de luz pelo cosmos. Entre na experiência 3D para acompanhar a contagem regressiva e a decolagem.
     </p>
     <p class="immersive-banner__actions">
-      <a class="immersive-banner__cta" href="/modo-imersivo/">Entrar no modo imersivo</a>
+      <a class="immersive-banner__cta" href="/modo-imersivo/">Explorar o voo em 3D</a>
       <a class="immersive-banner__link" href="/curiosidades/#creative-process-title">Ver como foi feito</a>
     </p>
     <p class="immersive-banner__note" data-immersive-note>Experiência 3D de cerca de 46&nbsp;MB. Melhor no desktop.</p>
   </div>
 
   <div class="immersive-banner__stage" aria-hidden="true">
-    <video
-      class="immersive-banner__video"
-      muted
-      loop
-      playsinline
-      preload="none"
+    <img
+      class="immersive-banner__art"
+      src="/assets/immersive-banner/sophia-voo-prismatico-poster.webp"
+      data-animated-src="/assets/immersive-banner/sophia-voo-prismatico-960.webp"
+      data-animated-srcset="/assets/immersive-banner/sophia-voo-prismatico-480.webp 480w, /assets/immersive-banner/sophia-voo-prismatico-768.webp 768w, /assets/immersive-banner/sophia-voo-prismatico-960.webp 960w"
+      sizes="(min-width: 860px) 520px, calc(100vw - 32px)"
+      loading="lazy"
+      decoding="async"
+      alt=""
       tabindex="-1"
-      disablepictureinpicture
       width="960"
-      height="540"
-      poster="/assets/immersive-banner/sophia-rocket-still.webp"
-      data-src="/assets/immersive-banner/sophia-rocket.webm"
-    ></video>
+      height="480"
+      draggable="false"
+    />
   </div>
 </aside>
 
 <script is:inline>
   (() => {
     const root = document.querySelector('[data-immersive-banner]');
-    const video = root && root.querySelector('video');
-    if (!video) return;
+    const art = root && root.querySelector('.immersive-banner__art');
+    if (!art) return;
+    const still = art.getAttribute('src');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const connection = navigator.connection || {};
-    const saveData = connection.saveData === true;
-    if (saveData) {
+    if (connection.saveData === true) {
       const note = root.querySelector('[data-immersive-note]');
       if (note) note.textContent = 'Economia de dados ativa: a experiência 3D baixa cerca de 46 MB.';
     }
     const serious = () => document.documentElement.dataset.seriousMode === 'true';
     let onScreen = false;
+    let animated = false;
+    let failed = false;
     const sync = () => {
-      const allowed = onScreen && !document.hidden && !reduce.matches && !saveData && !serious();
-      if (!allowed) { video.pause(); return; }
-      if (!video.getAttribute('src')) video.setAttribute('src', video.dataset.src);
-      const p = video.play();
-      if (p && p.catch) p.catch(() => {}); // sem autoplay ou sem alfa: o pôster continua no lugar
+      const allowed = onScreen && !document.hidden && !reduce.matches && !connection.saveData && !serious() && !failed;
+      if (allowed === animated) return;
+      animated = allowed;
+      if (allowed) {
+        art.setAttribute('srcset', art.dataset.animatedSrcset);
+        art.src = art.dataset.animatedSrc;
+      } else {
+        art.removeAttribute('srcset');
+        art.src = still;
+      }
     };
-    if (!('IntersectionObserver' in window)) return;
+    art.addEventListener('error', () => {
+      if (!animated) return;
+      failed = true;
+      sync(); // a imagem estática continua disponível se o WebP animado falhar
+    });
+    if (!('IntersectionObserver' in window)) return; // sem observador: somente pôster
     new IntersectionObserver((entries) => {
       onScreen = entries.some((e) => e.isIntersecting);
       sync();
     }, { rootMargin: '120px 0px' }).observe(root);
     document.addEventListener('visibilitychange', sync);
     reduce.addEventListener?.('change', sync);
+    connection.addEventListener?.('change', sync);
     new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-serious-mode'] });
   })();
 </script>
@@ -102,7 +115,7 @@
     margin: 0; font-family: var(--font-display, Georgia, serif); font-weight: 600;
     font-size: clamp(1.6rem, 4.4vw, 2.7rem); line-height: 1.12; color: var(--ib-ink); text-wrap: balance;
   }
-  /* mesmo degradê do cronômetro do modo imersivo (creme → dourado → vermelho) */
+  /* Limiar cromático entre luz estelar e rastro prismático. */
   .immersive-banner__count {
     color: #f0b45a;
     background-image: linear-gradient(180deg, #fffaf0 0%, #fff1b8 28%, #f0b45a 62%, #d6453d 100%);
@@ -119,9 +132,9 @@
   .immersive-banner__link { color: var(--ib-ink); text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; }
   .immersive-banner__cta:focus-visible, .immersive-banner__link:focus-visible { outline: 3px solid #fff1b8; outline-offset: 3px; }
   .immersive-banner__note { margin: 14px 0 0; font-size: .82rem; color: #aab0d6; }
-  .immersive-banner__stage { position: relative; z-index: 0; aspect-ratio: 4 / 3; width: 100%; }
-  /* celular: recorte mais fechado, mantendo a Sophia à esquerda e a cauda de ondas saindo pela direita */
-  .immersive-banner__video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 20% 50%; background: transparent; }
+  .immersive-banner__stage { position: relative; z-index: 0; aspect-ratio: 2 / 1; width: 100%; }
+  /* A proporção 2:1 preserva o foguete e todo o rastro, inclusive nos celulares. */
+  .immersive-banner__art { display: block; width: 100%; height: 100%; object-fit: contain; background: transparent; pointer-events: none; user-select: none; }
 
   @media (max-width: 859px) {
     .immersive-banner { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
@@ -130,8 +143,7 @@
   @media (min-width: 860px) {
     .immersive-banner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; gap: 0; }
     .immersive-banner__copy { padding-bottom: clamp(24px, 4vw, 48px); }
-    .immersive-banner__stage { margin-left: -4%; aspect-ratio: 16 / 9; }
-    .immersive-banner__video { object-fit: contain; }
+    .immersive-banner__stage { margin-left: -4%; }
   }
   /* Modo sério e movimento reduzido: sem brilho de fundo nem animação, só o pôster */
   :global(html[data-serious-mode='true']) .immersive-banner {
