@@ -96,10 +96,16 @@ test('o ciclo de 20 s do fluxograma, o modo sério, o legado e o movimento reduz
 
 test('o cenário cobre a viewBox 500×360 e a camada da Sophia ocupa o recorte do loop; nenhuma captura cliques', () => {
   assert.match(css, /\.method-presenter__stage\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*pointer-events:\s*none/s);
-  assert.match(css, /\.method-presenter__sophia\s*\{[^}]*position:\s*absolute[^}]*left:\s*6\.944%[^}]*top:\s*26\.570%[^}]*width:\s*66\.667%[^}]*height:\s*73\.43%[^}]*pointer-events:\s*none/s);
+  assert.match(css, /\.method-presenter__sophia\s*\{[^}]*position:\s*absolute[^}]*left:\s*24\.826%[^}]*top:\s*15\.7%[^}]*width:\s*70\.833%[^}]*height:\s*84\.058%[^}]*pointer-events:\s*none/s);
   assert.match(css, /\.method-presenter__sophia\[hidden\]\s*\{\s*display:\s*none/);
 });
 
 test('o sprite 2D antigo não é mais referenciado', () => {
   assert.doesNotMatch(comp + css, /images\/sophia\/method-presenter\.webp|method-presenter-still\.webp|sophia-method-present/);
+});
+
+test('a Sophia fica no plano da versão 2D: o recorte do loop não invade a metade esquerda da tela', async () => {
+  const left = Number(css.match(/\.method-presenter__sophia\s*\{[^}]*left:\s*([\d.]+)%/s)?.[1]);
+  assert.ok(left >= 15, `recorte começa em ${left}% (Sophia fica à direita, como no 2D)`);
+  assert.doesNotMatch(await read('docs/method-scene.md'), /caminha até/i);
 });
