@@ -57,3 +57,24 @@ test('unknown hierarchy has an explicit, usable original-flight fallback', () =>
   const director = createLaunchDirector({ scene: root, animations: [] }, new THREE.Scene(), new THREE.PerspectiveCamera(), controls, () => false);
   assert.equal(director.supported, false); director.apply(12); assert.equal(director.snapshot().phase, 'FLIGHT_LOOP'); director.dispose();
 });
+
+test('Saturn uses the active clock, releases the camera, and restores the original launch on replay', () => {
+  const { director, controls } = fixture();
+  director.apply(22);
+  const passage = director.snapshot();
+  assert.equal(passage.saturn.distanceKm, 82e6);
+  assert.ok(passage.riderSeatError < 1e-6);
+  director.apply(30);
+  const departing = director.snapshot();
+  assert.ok(departing.carrierWorld[0] < passage.carrierWorld[0]);
+  assert.ok(departing.ribbonsVisible && controls.enableRotate);
+  director.apply(40);
+  assert.ok(director.finished);
+  assert.equal(director.snapshot().rocketVisible, false);
+  director.reset();
+  assert.equal(director.finished, false);
+  assert.equal(director.snapshot().saturn, null);
+  director.apply(22);
+  assert.deepEqual(director.snapshot(), passage);
+  director.dispose();
+});
