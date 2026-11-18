@@ -1,111 +1,87 @@
-// Contrato estático da apresentadora da seção Método (R1): Sophia 3D pré-renderizada em WebP
-// transparente por cima de um fluxograma SVG acessível. Prova ligações e guardas, não a aparência.
+// The atlas and SVG use one clock. The original pose timings are checked against
+// the source WebP, so the falls retain their cadence and the phase cannot drift.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
+import { sampleMethodProjection } from '../src/scripts/method-projection.mjs';
 
-const read = p => readFile(new URL('../' + p, import.meta.url), 'utf8');
-const comp = await read('src/components/MethodPresenter.astro');
-const css = await read('src/styles/method-scene.css');
-const docs = await read('docs/method-scene.md');
-const LOOP = 'public/images/sophia/method-presenter-r1-loop.webp';
-const SCENE = 'public/images/sophia/method-presenter-r1-scene.webp';
-const STILL = 'public/images/sophia/method-presenter-r1-still.webp';
+const read = p => readFile(new URL('../' + p, import.meta.url));
+const comp = (await read('src/components/MethodPresenter.astro')).toString();
+const css = (await read('src/styles/method-scene.css')).toString();
 
-test('o traje não é mais chamado de terno/terninho em lugar nenhum da cena', () => {
-  assert.doesNotMatch(comp + css + docs, /terninho|terno\b/i);
-  assert.match(comp, /traje acadêmico/i);
-});
+function* chunks(buffer) {
+  assert.equal(buffer.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(buffer.toString('ascii', 8, 12), 'WEBP');
+  for (let i = 12; i + 8 <= buffer.length;) {
+    const id = buffer.toString('ascii', i, i + 4);
+    const length = buffer.readUInt32LE(i + 4);
+    yield [id, buffer.subarray(i + 8, i + 8 + length)];
+    i += 8 + length + (length & 1);
+  }
+}
 
-test('o fluxograma continua SVG/HTML acessível, com os mesmos nomes e a volta ao início', () => {
-  for (const label of ['Concepção', 'Execução', 'Avaliação', 'Documentação']) assert.ok(comp.includes(label), label);
-  for (const hint of ['dar forma à ideia', 'IA com restrições', 'checar o resultado', 'deixar um caminho', 'Revisar orienta o próximo passo.']) assert.ok(comp.includes(hint), hint);
-  assert.match(comp, /<svg[^>]+class="method-presenter__projection"[^>]+aria-hidden="true"/);
+test('native SVG flow is inside the projection-face clip and has the four accessible steps', () => {
+  const [, content] = comp.match(/<g clip-path="url\(#method-projection-face\)">([\s\S]+)<\/g>\s*<\/svg>/);
+  for (const label of ['Concepção', 'Execução', 'Avaliação', 'Documentação']) {
+    assert.ok(content.includes(label), label);
+  }
+  assert.match(content, /method-presenter__link--return/);
   assert.match(comp, /role="img"/);
   assert.match(comp, /aria-label="[^"]*concepção[^"]*documentação[^"]*"/i);
-  assert.match(comp, /method-presenter__link--return/);
+  assert.match(comp, /class="method-presenter__projection"[^>]+aria-hidden="true"/);
 });
 
-test('tela, pedestal e projetor saíram do SVG: agora são objetos 3D no WebP (sem duplicar)', () => {
-  assert.doesNotMatch(comp, /<rect x="14" y="26"[^>]*stroke="#375441"/);
-  assert.doesNotMatch(comp, /M155 226V306/);
-  assert.doesNotMatch(comp, /<rect x="26" y="290"/);
-  assert.match(comp, /method-presenter__beam/);
-});
-
-test('o palco 3D tem duas camadas <img> decorativas: cenário e Sophia; o WebP animado só entra com o movimento liberado', () => {
-  assert.match(comp, /<img[^>]+class="method-presenter__stage"/);
-  assert.match(comp, /<img[^>]+class="method-presenter__sophia"/);
-  assert.match(comp, /data-still="\/images\/sophia\/method-presenter-r1-still\.webp"/);
-  assert.match(comp, /data-scene="\/images\/sophia\/method-presenter-r1-scene\.webp"/);
-  assert.match(comp, /data-loop="\/images\/sophia\/method-presenter-r1-loop\.webp"/);
-  assert.equal((comp.match(/alt=""/g) || []).length >= 2, true);
-  assert.match(comp, /data-motion-playing/);
-  assert.doesNotMatch(comp, /\.glb|three|WebGL|getContext/i);
-});
-
-test('a camada da Sophia nasce sem src (não baixa o loop) e escondida até o movimento começar', () => {
-  const tag = comp.match(/<img[^>]+class="method-presenter__sophia"[^>]*>/s)?.[0] ?? '';
-  assert.ok(tag, 'camada da Sophia');
-  assert.doesNotMatch(tag, /\ssrc=/);
-  assert.match(tag, /\bhidden\b/);
-});
-
-test('o script sincroniza o WebP de 20 s com os 20 s do fluxograma ao entrar em movimento', () => {
-  assert.match(comp, /getAnimations/);
-  assert.match(comp, /currentTime\s*=\s*0/);
-  assert.match(comp, /decode\(\)/);
-  assert.match(comp, /astro:before-swap/);
-});
-
-const durations = buf => {
-  const out = [];
-  for (let i = 12; i + 8 <= buf.length; ) {
-    const id = buf.subarray(i, i + 4).toString('latin1');
-    const size = buf.readUInt32LE(i + 4);
-    if (id === 'ANMF') out.push(buf.readUIntLE(i + 8 + 12, 3));
-    i += 8 + size + (size & 1);
+test('the 135 poses keep their original timings and map to unique atlas cells', async () => {
+  const source = await read('public/images/sophia/method-presenter-r1-loop.webp');
+  const durations = [...chunks(source)].filter(([id]) => id === 'ANMF')
+    .map(([, frame]) => frame.readUIntLE(12, 3));
+  assert.equal(durations.length, 135);
+  let elapsed = 0;
+  const cells = new Set();
+  for (const [index, duration] of durations.entries()) {
+    const pose = sampleMethodProjection(elapsed);
+    assert.equal(pose.frame, index);
+    assert.equal(sampleMethodProjection(elapsed + duration - 1).frame, index);
+    cells.add([pose.sheet, pose.row, pose.column].join(':'));
+    elapsed += duration;
   }
-  return out;
-};
-
-test('assets: loop animado RGBA de 20 s exatos, cenário e poster, abaixo do orçamento', async () => {
-  const loop = await readFile(new URL('../' + LOOP, import.meta.url));
-  assert.equal(loop.subarray(0, 4).toString(), 'RIFF');
-  assert.equal(loop.subarray(8, 12).toString(), 'WEBP');
-  assert.ok(loop.includes(Buffer.from('ANIM')) && loop.includes(Buffer.from('ALPH')), 'animado com canal alfa');
-  const d = durations(loop);
-  assert.ok(d.length >= 80 && d.length <= 140, `quadros ${d.length}`);
-  assert.equal(d.reduce((a, b) => a + b, 0), 20000, 'soma das durações = ciclo de 20 s');
-  assert.ok(Math.min(...d) >= 20, 'nenhum quadro abaixo de 20 ms');
-  assert.ok(loop.length < 700 * 1024, `loop ${loop.length}`);
-  const scene = await readFile(new URL('../' + SCENE, import.meta.url));
-  assert.equal(scene.toString('latin1').split('ANMF').length - 1, 0, 'cenário estático');
-  assert.ok(scene.length < 40 * 1024, `cenário ${scene.length}`);
-  const still = (await stat(new URL('../' + STILL, import.meta.url))).size;
-  assert.ok(still < 60 * 1024, `poster ${still}`);
+  assert.equal(cells.size, durations.length);
+  assert.equal(elapsed, 20000);
+  assert.deepEqual(sampleMethodProjection(elapsed), sampleMethodProjection(0));
 });
 
-test('o ciclo de 20 s do fluxograma, o modo sério, o legado e o movimento reduzido continuam', () => {
-  assert.equal((css.match(/\b20s\b/g) || []).length >= 5, true);
-  assert.match(css, /html\[data-serious-mode='true'\] \.method-presenter\s*\{\s*filter:\s*grayscale\(1\)/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /max-width:\s*820px/);
+test('highlight and actor return to the first stage together after 20 seconds', () => {
+  for (const [t, expected] of [[0, 1], [4999, 1], [5000, 2], [10000, 3], [15000, 4], [19999, 4], [20000, 1]]) {
+    assert.equal(sampleMethodProjection(t).phase, expected);
+  }
+  assert.equal(sampleMethodProjection(2500).link, 1);
+  assert.equal(sampleMethodProjection(5000).link, 0);
+  assert.equal(sampleMethodProjection(17500).link, 4);
+});
+
+test('the packed pose sheets have alpha, fit seven cells on each axis and keep the mobile budget', async () => {
+  let bytes = 0;
+  for (const name of ['poses-0', 'poses-1', 'poses-2', 'poster']) {
+    const file = await read('public/images/sophia/method-projection-' + name + '.webp');
+    bytes += file.length;
+    const [, vp8x] = [...chunks(file)].find(([id]) => id === 'VP8X');
+    const cells = name === 'poster' ? 1 : 7;
+    assert.ok(vp8x[0] & 0x10, name + ' alpha');
+    assert.equal(vp8x.readUIntLE(4, 3) + 1, 230 * cells);
+    assert.equal(vp8x.readUIntLE(7, 3) + 1, 174 * cells);
+    assert.ok(!(vp8x[0] & 0x02));
+  }
+  assert.ok(bytes <= 760 * 1024, `total ${bytes} bytes`);
+});
+
+test('the idle scene uses a plain poster and the playback honors decorative motion', async () => {
+  const runtime = (await read('src/scripts/method-projection.mjs')).toString();
+  assert.match(comp, /data-decorative-motion/);
+  assert.match(comp, /method-projection-poster\.webp/);
+  assert.doesNotMatch(comp, /data-loop=|method-presenter-r1-loop\.webp/);
+  assert.match(runtime, /connection\?\.saveData/);
+  assert.match(runtime, /document\.hidden/);
+  assert.match(css, /prefers-reduced-motion:\s*no-preference/);
   assert.match(css, /aspect-ratio:\s*500\s*\/\s*360/);
-});
-
-test('o cenário cobre a viewBox 500×360 e a camada da Sophia ocupa o recorte do loop; nenhuma captura cliques', () => {
-  assert.match(css, /\.method-presenter__stage\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*pointer-events:\s*none/s);
-  assert.match(css, /\.method-presenter__sophia\s*\{[^}]*position:\s*absolute[^}]*left:\s*24\.826%[^}]*top:\s*15\.7%[^}]*width:\s*70\.833%[^}]*height:\s*84\.058%[^}]*pointer-events:\s*none/s);
-  assert.match(css, /\.method-presenter__sophia\[hidden\]\s*\{\s*display:\s*none/);
-});
-
-test('o sprite 2D antigo não é mais referenciado', () => {
-  assert.doesNotMatch(comp + css, /images\/sophia\/method-presenter\.webp|method-presenter-still\.webp|sophia-method-present/);
-});
-
-test('a Sophia fica no plano da versão 2D: o recorte do loop não invade a metade esquerda da tela', async () => {
-  const left = Number(css.match(/\.method-presenter__sophia\s*\{[^}]*left:\s*([\d.]+)%/s)?.[1]);
-  assert.ok(left >= 15, `recorte começa em ${left}% (Sophia fica à direita, como no 2D)`);
-  assert.doesNotMatch(await read('docs/method-scene.md'), /caminha até/i);
+  assert.doesNotMatch(comp + runtime, /\.(glb|blend)|WebGL/);
 });

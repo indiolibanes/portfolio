@@ -1,18 +1,11 @@
 # Sophia apresenta o método
 
-A seção 03 usa uma paleta de verde de eucalipto e uma apresentação no canto superior direito. Sophia aparece como apresentadora, em traje acadêmico: colete bordô com botões e corrente dourados, camisa marfim com laço, saia plissada azul-marinho e um ponteiro dourado preso à mão. Orelhas azul-marinho, olhos âmbar e a única cauda cósmica com constelações seguem a Sophia v1.4.1.
+A Sophia v1.4.1 apresenta o fluxograma com colete bordô, camisa marfim, saia plissada azul-marinho e ponteiro dourado. O SVG posiciona os textos, as caixas e as conexões dentro da face medida da tela. Moldura, pedestal e projetor continuam no WebP estático do cenário.
 
-O fluxograma segue concepção, execução, avaliação e documentação (que volta a orientar a concepção). Textos, caixas, setas e a face da tela continuam SVG acessível; a moldura da tela, o pedestal e o projetor (camada de cenário) e a Sophia com o ponteiro (camada animada) são pré-renderizados em WebP transparente por cima do SVG.
+A composição R4 preserva os 135 quadros e a cadência da atuação R3 publicada no PR #329. O corpo foi redimensionado uniformemente para 78% da altura visual da R3, com as patas próximas à base original. A versão 2D foi usada como referência de posição lateral. Sua altura aparente era semelhante à R3, por isso a redução é uma escolha de composição, sem mudar a escala do modelo 3D.
 
-## Animação (20 s, sincronizada com o fluxograma)
+- Concepção e Documentação são os dois alvos distantes. Sophia se estica na ponta das patas, oscila, perde o equilíbrio, cai e se levanta. A recuperação preserva os olhos semicerrados e a inclinação de cabeça da fonte e ganha uma curva de sorriso em alguns quadros.
+- O ponteiro foi recalibrado sobre as poses para chegar ao canto da caixa ativa sem encobrir o texto. Na queda, segue a atuação original. Após a recuperação, volta ao quadro ativo e o ciclo prepara a transição para Concepção.
+- Um relógio de 20 segundos seleciona o quadro, a caixa ativa e a seta. As folhas de poses transparentes somam cerca de 720 KiB e são decodificadas só quando a cena pode animar. Fora da tela, com a aba oculta, movimento reduzido ou economia de dados, aparece apenas o pôster.
 
-- O WebP da Sophia dura exatamente 20 s (135 quadros com duração variável: mais quadros na queda e nas trocas, menos nas pausas) e acompanha o destaque do momento: a cada 5 s ela aponta a etapa em destaque; na troca, o ponteiro (telescópico) já vai para a próxima.
-- A Sophia fica parada no mesmo plano da versão 2D (à direita da tela, ~65% da altura do quadro), sem sair do lugar. Nas etapas da esquerda (Concepção e Documentação) ela gira para a tela, sobe na ponta dos pés (calcanhares fora do chão), estica o braço e o ponteiro telescópico, oscila cada vez mais, perde o equilíbrio (~1,9 s e ~16,9 s), cai com os braços em moinho, fica zonza, senta, levanta passando do ponto, faz uma cara desengonçada (olhos semicerrados, cabeça torta, cauda e orelhas) e volta a apontar.
-- Respiração, balanço da cauda, piscadas e tremor das orelhas continuam.
-- Ao entrar em movimento, o script decodifica as duas camadas e reinicia as animações CSS do fluxograma junto com o loop. Fora da tela, com a página oculta ou com movimento reduzido, entra o poster estático (`method-presenter-r1-still.webp`) e o loop não é baixado. Em telas até 820px, a cena fica abaixo da introdução.
-
-## Assets e privacidade
-
-`method-presenter-r1-loop.webp` (Sophia, 286 × 244, ~585 KB), `method-presenter-r1-scene.webp` (cenário, ~3 KB) e `method-presenter-r1-still.webp` (poster, ~16 KB) em `public/images/sophia/`. O GLB da Sophia, os arquivos Blender e as texturas de origem são privados e não entram no repositório; os quadros foram renderizados fora do navegador.
-
-Componente: `src/components/MethodPresenter.astro`. Estilo: `src/styles/method-scene.css`. Teste: `tests/method-presenter-r1.test.mjs`.
+A composição usa o palco 576 × 414 e o SVG 500 × 360. A camada da atuação ocupa o recorte (154, 113) a (552, 414) no palco. As imagens de poses são três folhas 7 × 7, com células de 230 × 174. As durações e a seleção dos quadros ficam em `src/scripts/method-projection.mjs`. Os arquivos-fonte privados são mantidos fora do repositório.
