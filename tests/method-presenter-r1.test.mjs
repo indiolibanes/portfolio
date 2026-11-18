@@ -96,7 +96,7 @@ test('o ciclo de 20 s do fluxograma, o modo sério, o legado e o movimento reduz
 
 test('o cenário cobre a viewBox 500×360 e a camada da Sophia ocupa o recorte do loop; nenhuma captura cliques', () => {
   assert.match(css, /\.method-presenter__stage\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*pointer-events:\s*none/s);
-  assert.match(css, /\.method-presenter__sophia\s*\{[^}]*position:\s*absolute[^}]*left:\s*22\.917%[^}]*top:\s*19\.324%[^}]*width:\s*72\.917%[^}]*height:\s*80\.676%[^}]*pointer-events:\s*none/s);
+  assert.match(css, /\.method-presenter__sophia\s*\{[^}]*position:\s*absolute[^}]*left:\s*6\.944%[^}]*top:\s*26\.570%[^}]*width:\s*66\.667%[^}]*height:\s*73\.43%[^}]*pointer-events:\s*none/s);
   assert.match(css, /\.method-presenter__sophia\[hidden\]\s*\{\s*display:\s*none/);
 });
 

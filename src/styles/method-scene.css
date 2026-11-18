@@ -164,13 +164,13 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   user-select: none;
   -webkit-user-drag: none;
 }
-/* Sophia: recorte 420×334 (x 132, y 80) do quadro 576×414, em % do figure — a mesma geometria do cenário. */
+/* Sophia: recorte 384×304 (x 40, y 110) do quadro 576×414, em % do figure — a mesma geometria do cenário. */
 .method-presenter__sophia {
   position: absolute;
-  left: 22.917%;
-  top: 19.324%;
-  width: 72.917%;
-  height: 80.676%;
+  left: 6.944%;
+  top: 26.570%;
+  width: 66.667%;
+  height: 73.43%;
   object-fit: fill;
   pointer-events: none;
   user-select: none;
