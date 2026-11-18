@@ -209,13 +209,6 @@ html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
   color: #ffffff;
 }
 
-/* Legacy · 1998 keeps its single-row link bar: with this eighth item the bar
-   (960 px wide) wraps onto a second row. There the page is reached from the
-   home band instead. Revisit if the Legacy header is ever widened. */
-html[data-legacy-mode='true'] .site-header .nav-sections a[href='/curiosidades/'] {
-  display: none !important;
-}
-
 /* ---------- Creative process (texto corrido, abaixo da lista) ---------- */
 
 .creative-process {

@@ -46,7 +46,22 @@ const posterCache='lunar-terrace-r2';
   padding:10px 14px;border:1px solid rgba(187,211,239,.35);border-radius:10px;
   background:rgba(6,18,37,.85);color:#e4edff;font:13px/1.5 system-ui,sans-serif;
   text-align:center;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-  @media(max-width:600px){.s6-duet-status{bottom:120px;width:min(87vw,460px);font-size:12px}}
+  @media (max-width: 799px) and (min-height: 541px), (max-width: 599px) {
+    .s6-duet-status {
+      bottom: calc(var(--tower-reserved-height, 300px) + 48px);
+      width: min(calc(100% - 8rem), 460px);
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+  }
+  @media (max-height: 540px) and (min-width: 600px) {
+    .s6-duet-status {
+      left: 1rem;
+      bottom: 4rem;
+      width: min(calc(100% - 17.25rem), 460px);
+      transform: none;
+    }
+  }
 </style>
 <script>
   import {mountHsinStage} from '../../../scripts/hsin-stage';

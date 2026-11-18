@@ -1044,7 +1044,7 @@ const showOmega = Astro.url.pathname === '/';
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.7rem;
   }
 
@@ -1424,33 +1424,65 @@ const showOmega = Astro.url.pathname === '/';
     border-left-color: #e0a62e;
   }
 
-  .serious-control::after {
-    display: none;
+  @media (max-width: 1360px) {
+    .serious-stage {
+      --side: 48px;
+      --pitch: 62px;
+      margin-left: 8px;
+    }
   }
 
-  @media (max-width: 560px) {
+  @media (min-width: 1181px) {
+    :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-stage {
+      --side: 44px;
+      --pitch: 48px;
+      margin-left: .25rem;
+    }
+  }
+
+  @media (max-width: 820px) {
     .serious-control {
-      gap: 0.4rem;
+      gap: .35rem;
     }
 
     .serious-stage {
-      --side: 40px;
-      --pitch: 58px;
-      margin-left: 10px;
+      --side: 44px;
+      --pitch: 52px;
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .serious-tag {
+      justify-content: center;
+      min-width: 32px;
+      min-height: 44px;
+      padding: 0;
     }
 
-    /* Em telas estreitas a etiqueta desce para uma segunda linha, centralizada. */
-    .serious-control::after {
-      display: block;
-      content: '';
-      order: 2;
-      flex-basis: 100%;
-      height: 0;
+    .serious-tag__text {
+      display: none;
+    }
+
+    .serious-stage {
+      --pitch: 45px;
+    }
+
+    .serious-help-panel {
+      max-height: calc(100dvh - 6rem);
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .serious-stage {
+      --side: 36px;
+      --pitch: 37px;
     }
 
     .serious-tag {
-      order: 3;
-      min-height: 30px;
+      min-width: 28px;
     }
   }
 
@@ -1569,6 +1601,11 @@ const showOmega = Astro.url.pathname === '/';
     color: #f8fdff;
     border-radius: 50%;
     -webkit-tap-highlight-color: transparent;
+  }
+  :global(.site-header .nav-links a).serious-omega-entry {
+    min-width: var(--side);
+    min-height: var(--side);
+    padding: 0;
   }
   .serious-omega-entry:focus-visible { outline: 3px solid #76d9ff; outline-offset: 6px; }
   .serious-omega-star {
