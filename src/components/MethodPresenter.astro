@@ -1,7 +1,5 @@
 <figure
   class="method-presenter"
-  data-decorative-motion
-  data-method-phase="1"
   role="img"
   aria-label="Sophia, em traje acadêmico (colete, camisa e saia plissada), aponta com um ponteiro para um fluxograma em ciclo projetado numa tela: concepção, execução assistida, avaliação e documentação, e a documentação volta a orientar a concepção. Ao alcançar os quadros mais distantes, ela se estica, perde o equilíbrio, cai e se levanta sorrindo antes de retomar a apresentação."
 >
@@ -18,17 +16,49 @@
         <stop offset="0" stop-color="#f7f5e7" />
         <stop offset="1" stop-color="#e8f0dd" />
       </linearGradient>
-      <marker id="method-flow-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
-        <path d="M0 .5 6.5 3.5 0 6.5Z" fill="#426651" />
-      </marker>
-      <marker id="method-flow-arrow-on" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
-        <path d="M0 .5 6.5 3.5 0 6.5Z" fill="#1f5a45" />
-      </marker>
     </defs>
     <path class="method-presenter__beam" d="M110 302 24 40 286 216Z" fill="url(#method-projector-light)" />
     <!-- A moldura, o pedestal e o projetor são objetos 3D no WebP; aqui fica só a face da tela. -->
     <g clip-path="url(#method-projection-face)">
       <rect x="21" y="33" width="268" height="186" fill="url(#method-screen-paper)" />
+      <!-- Etapas: mesma ordem e nomes da lista abaixo da cena. -->
+      <g class="method-presenter__nodes">
+        <rect class="method-presenter__node method-presenter__node--conception" x="30" y="68" width="112" height="48" rx="8" />
+        <rect class="method-presenter__node method-presenter__node--execution" x="170" y="68" width="112" height="48" rx="8" />
+        <rect class="method-presenter__node method-presenter__node--evaluation" x="170" y="140" width="112" height="48" rx="8" />
+        <rect class="method-presenter__node method-presenter__node--record" x="30" y="140" width="112" height="48" rx="8" />
+      </g>
+    </g>
+  </svg>
+  <img
+    class="method-presenter__stage"
+    src="/images/sophia/method-presenter-r1-scene.webp"
+    width="576"
+    height="414"
+    alt=""
+    decoding="async"
+    loading="lazy"
+    draggable="false"
+  />
+  <picture class="method-presenter__sophia">
+    <source media="(prefers-reduced-motion: reduce), (prefers-reduced-data: reduce)" srcset="/images/sophia/method-native-poster.webp" />
+    <img
+      src="/images/sophia/method-native-loop.webp"
+      width="480"
+      height="345"
+      alt=""
+      decoding="async"
+      loading="lazy"
+      draggable="false"
+    />
+  </picture>
+  <svg class="method-presenter__labels" viewBox="0 0 500 360" aria-hidden="true" focusable="false">
+    <defs>
+      <marker id="method-flow-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M0 .5 6.5 3.5 0 6.5Z" fill="#426651" />
+      </marker>
+    </defs>
+    <g clip-path="url(#method-projection-face)">
       <text x="30" y="52" class="method-presenter__screen-title">DA IDEIA À ESTRUTURA</text>
       <text x="280" y="52" class="method-presenter__screen-title method-presenter__cycle-mark" text-anchor="end">CICLO</text>
 
@@ -41,13 +71,6 @@
       </g>
       <text x="156" y="132" class="method-presenter__loop-mark" text-anchor="middle">↻</text>
 
-      <!-- Etapas: mesma ordem e nomes da lista abaixo da cena. -->
-      <g class="method-presenter__nodes">
-        <rect class="method-presenter__node method-presenter__node--conception" x="30" y="68" width="112" height="48" rx="8" />
-        <rect class="method-presenter__node method-presenter__node--execution" x="170" y="68" width="112" height="48" rx="8" />
-        <rect class="method-presenter__node method-presenter__node--evaluation" x="170" y="140" width="112" height="48" rx="8" />
-        <rect class="method-presenter__node method-presenter__node--record" x="30" y="140" width="112" height="48" rx="8" />
-      </g>
       <g class="method-presenter__badges">
         <circle cx="43" cy="81" r="7.5" /><text x="43" y="84.4" text-anchor="middle">1</text>
         <circle cx="183" cy="81" r="7.5" /><text x="183" y="84.4" text-anchor="middle">2</text>
@@ -68,38 +91,5 @@
       </g>
       <text x="155" y="212" class="method-presenter__screen-note" text-anchor="middle">Revisar orienta o próximo passo.</text>
     </g>
-
   </svg>
-  <img
-    class="method-presenter__stage"
-    src="/images/sophia/method-presenter-r1-scene.webp"
-    width="576"
-    height="414"
-    alt=""
-    decoding="async"
-    loading="lazy"
-    draggable="false"
-  />
-  <div class="method-presenter__sophia" aria-hidden="true">
-    <img
-      src="/images/sophia/method-projection-poster.webp"
-      width="230"
-      height="174"
-      alt=""
-      decoding="async"
-      loading="lazy"
-      draggable="false"
-    />
-    <span class="method-presenter__poses"></span>
-  </div>
 </figure>
-
-<script>
-  import { mountMethodProjection } from '../scripts/method-projection.mjs';
-
-  const presenters = [...document.querySelectorAll<HTMLElement>('.method-presenter')];
-  const cleanups = presenters.map(mountMethodProjection);
-  document.addEventListener('astro:before-swap', () => {
-    cleanups.forEach(cleanup => cleanup());
-  }, { once: true });
-</script>

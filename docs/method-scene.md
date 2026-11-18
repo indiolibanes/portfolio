@@ -1,11 +1,11 @@
 # Sophia apresenta o método
 
-A Sophia v1.4.1 apresenta o fluxograma com colete bordô, camisa marfim, saia plissada azul-marinho e ponteiro dourado. O SVG posiciona os textos, as caixas e as conexões dentro da face medida da tela. Moldura, pedestal e projetor continuam no WebP estático do cenário.
+A Sophia v1.4.1 apresenta o fluxograma com colete bordô, camisa marfim, saia plissada azul-marinho e ponteiro dourado. A moldura, o pedestal e o projetor continuam no WebP estático do cenário. Os rótulos e as setas continuam em SVG, recortados na face da tela. A descrição do fluxo acompanha a figura para tecnologias assistivas.
 
-A composição R4 preserva os 135 quadros e a cadência da atuação R3 publicada no PR #329. O corpo foi redimensionado uniformemente para 78% da altura visual da R3, com as patas próximas à base original. A versão 2D foi usada como referência de posição lateral. Sua altura aparente era semelhante à R3, por isso a redução é uma escolha de composição, sem mudar a escala do modelo 3D.
+O WebP animado preserva as poses do PR #329 e o ritmo de 20 segundos. Sophia está 5,8% mais alta do que na primeira composição do PR #330, com a mesma âncora nas patas. O tamanho é um ajuste da projeção da personagem, e o ponteiro foi recalibrado para voltar à caixa ativa depois da queda. Concepção e Documentação continuam com a sequência de alcançar, oscilar, cair, sorrir e retomar.
 
-- Concepção e Documentação são os dois alvos distantes. Sophia se estica na ponta das patas, oscila, perde o equilíbrio, cai e se levanta. A recuperação preserva os olhos semicerrados e a inclinação de cabeça da fonte e ganha uma curva de sorriso em alguns quadros.
-- O ponteiro foi recalibrado sobre as poses para chegar ao canto da caixa ativa sem encobrir o texto. Na queda, segue a atuação original. Após a recuperação, volta ao quadro ativo e o ciclo prepara a transição para Concepção.
-- Um relógio de 20 segundos seleciona o quadro, a caixa ativa e a seta. As folhas de poses transparentes somam cerca de 720 KiB e são decodificadas só quando a cena pode animar. Fora da tela, com a aba oculta, movimento reduzido ou economia de dados, aparece apenas o pôster.
+A figura usa `<picture>` com WebP nativo de 480 × 345 px. A caixa colorida faz parte dos mesmos quadros que a personagem, de modo que o destaque e o gesto repetem juntos. Os rótulos e as setas em vetor ficam por cima do ponteiro. O carregamento é lazy e o navegador seleciona um pôster independente para movimento reduzido ou preferência de economia de dados quando disponível.
 
-A composição usa o palco 576 × 414 e o SVG 500 × 360. A camada da atuação ocupa o recorte (154, 113) a (552, 414) no palco. As imagens de poses são três folhas 7 × 7, com células de 230 × 174. As durações e a seleção dos quadros ficam em `src/scripts/method-projection.mjs`. Os arquivos-fonte privados são mantidos fora do repositório.
+A composição anterior usava três folhas WebP estáticas. O pôster só mudava depois que o gerenciador liberava a animação e todas as folhas terminavam de decodificar. A nova figura reproduz os quadros diretamente no navegador, inclusive com JavaScript desativado. A origem 3D fica fora do repositório.
+
+A validação do cabeçalho, transparência, quadros e duração roda em `tests/method-presenter-r1.test.mjs`.
