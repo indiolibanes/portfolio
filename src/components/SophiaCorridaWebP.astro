@@ -1,8 +1,9 @@
 ---
 /**
  * Faixa de curiosidades da home: Sophia corre, vestida de viajante, por uma
- * vila medieval alemã em enxaimel. Tudo é pré-renderizado em WebP (camadas de
- * cenário ladrilháveis + um ciclo de corrida de 0,8 s): nenhum 3D, GLB ou
+ * vila medieval alemã em enxaimel, atravessando a faixa da esquerda para a direita
+ * sem nunca voltar. Tudo é pré-renderizado em WebP (camadas de cenário + um ciclo
+ * de corrida de 0,8 s): nenhum 3D, GLB ou
  * canvas é carregado no navegador. Decorativo (aria-hidden); o movimento
  * obedece a DecorativeMotion, prefers-reduced-motion, Save-Data e à aba oculta.
  */
@@ -22,25 +23,35 @@ const layers = [
   <div class="corrida__stage">
     <img class="corrida__hills" src={`${base}town-hills.webp`} width="1400" height="420" alt="" decoding="async" loading="lazy" draggable="false" />
     {layers.map(layer => (
-      <div class={`corrida__layer corrida__layer--${layer.id}`}>
-        <div class="corrida__belt">
-          {[0, 1].map(() => (
-            <img src={layer.src} width="1400" height={layer.h ?? 420} alt="" decoding="async" loading="lazy" draggable="false" />
-          ))}
-        </div>
-      </div>
+      <img class={`corrida__layer corrida__layer--${layer.id}`} src={layer.src} width="1400" height={layer.h ?? 420} alt="" decoding="async" loading="lazy" draggable="false" />
     ))}
-    <img
-      class="corrida__runner"
-      src={`${base}sophia-run-still.webp`}
-      data-run={`${base}sophia-run.webp`}
-      width="180"
-      height="300"
-      alt=""
-      decoding="async"
-      loading="lazy"
-      draggable="false"
-    />
+    <div class="corrida__sunlight"></div>
+    <div class="corrida__run">
+      <span class="corrida__shadow"></span>
+      <img
+        class="corrida__runner"
+        src={`${base}sophia-run-still.webp`}
+        data-run={`${base}sophia-run.webp`}
+        width="284"
+        height="320"
+        alt=""
+        decoding="async"
+        loading="lazy"
+        draggable="false"
+      />
+    </div>
+    <svg class="corrida__verge" viewBox="0 0 360 85" width="360" height="85" focusable="false">
+      <path d="M0 70Q42 57 87 71T176 75Q227 67 275 73T360 64V85H0Z" fill="#393c32" />
+      <g fill="none" stroke="#68734a" stroke-width="2" stroke-linecap="round">
+        <path d="M27 76Q19 58 8 53M27 76Q30 54 44 48M27 76Q25 57 24 44M69 79Q64 60 53 60M69 79Q71 60 83 53" />
+        <path d="M307 79Q296 60 283 56M307 79Q305 57 307 43M307 79Q317 58 330 55M348 78Q336 65 329 65M348 78Q348 58 360 51" />
+      </g>
+      <g fill="#dfb480">
+        <circle cx="24" cy="44" r="2.5"/><circle cx="44" cy="48" r="2"/>
+        <circle cx="83" cy="53" r="2"/><circle cx="307" cy="43" r="2.5"/>
+        <circle cx="330" cy="55" r="2"/><circle cx="8" cy="53" r="2"/>
+      </g>
+    </svg>
   </div>
   <div class="corrida__veil"></div>
 </div>
