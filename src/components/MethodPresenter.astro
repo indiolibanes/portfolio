@@ -64,7 +64,7 @@
     class="method-presenter__stage"
     src="/images/sophia/method-presenter-r1-still.webp"
     data-still="/images/sophia/method-presenter-r1-still.webp"
-    data-loop="/images/sophia/method-presenter-r1.webp"
+    data-scene="/images/sophia/method-presenter-r1-scene.webp"
     width="576"
     height="414"
     alt=""
@@ -72,22 +72,55 @@
     loading="lazy"
     draggable="false"
   />
+  <img
+    class="method-presenter__sophia"
+    data-loop="/images/sophia/method-presenter-r1-loop.webp"
+    width="294"
+    height="234"
+    alt=""
+    decoding="async"
+    draggable="false"
+    hidden
+  />
 </figure>
 
 <script>
-  // O gerenciador de movimento decorativo só marca data-motion-playing; aqui o WebP animado entra
-  // somente enquanto a cena está visível e o movimento liberado, e volta ao poster ao parar.
+  // O gerenciador de movimento decorativo só marca data-motion-playing. Aqui o WebP de 20 s (Sophia) entra
+  // somente enquanto a cena está visível e o movimento liberado; ao parar, volta o poster estático.
+  // Ao entrar, o ciclo CSS do fluxograma é reiniciado junto com o loop para ficarem alinhados.
   const figures = [...document.querySelectorAll<HTMLElement>('.method-presenter')];
-  const sync = (figure: HTMLElement) => {
-    const img = figure.querySelector<HTMLImageElement>('.method-presenter__stage');
-    if (!img?.dataset.loop || !img.dataset.still) return;
-    const wanted = figure.dataset.motionPlaying === 'true' ? img.dataset.loop : img.dataset.still;
-    if (img.getAttribute('src') !== wanted) img.setAttribute('src', wanted);
+  const runs = new WeakMap<HTMLElement, number>();
+  const sync = async (figure: HTMLElement) => {
+    const stage = figure.querySelector<HTMLImageElement>('.method-presenter__stage');
+    const sophia = figure.querySelector<HTMLImageElement>('.method-presenter__sophia');
+    if (!stage?.dataset.still || !stage.dataset.scene || !sophia?.dataset.loop) return;
+    const run = (runs.get(figure) ?? 0) + 1;
+    runs.set(figure, run);
+    if (figure.dataset.motionPlaying !== 'true') {
+      sophia.hidden = true;
+      sophia.removeAttribute('src');
+      if (stage.getAttribute('src') !== stage.dataset.still) stage.setAttribute('src', stage.dataset.still);
+      return;
+    }
+    const scene = new Image();
+    scene.src = stage.dataset.scene;
+    sophia.src = sophia.dataset.loop;
+    try {
+      await Promise.all([scene.decode(), sophia.decode()]);
+    } catch {
+      /* segue mesmo sem decode(): o navegador exibe quando terminar de baixar */
+    }
+    if (runs.get(figure) !== run) return;
+    stage.setAttribute('src', stage.dataset.scene);
+    sophia.hidden = false;
+    if (typeof figure.getAnimations === 'function') {
+      figure.getAnimations({ subtree: true }).forEach(animation => { animation.currentTime = 0; });
+    }
   };
-  const observer = new MutationObserver(records => records.forEach(r => sync(r.target as HTMLElement)));
+  const observer = new MutationObserver(records => records.forEach(r => void sync(r.target as HTMLElement)));
   figures.forEach(figure => {
     observer.observe(figure, { attributes: true, attributeFilter: ['data-motion-playing'] });
-    sync(figure);
+    void sync(figure);
   });
   document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
 </script>
