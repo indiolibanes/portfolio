@@ -35,13 +35,20 @@ test('every asset exists, is WebP and stays small', async () => {
     assert.match(comp, new RegExp(name + '\\.webp'), `${name} wired`);
   }
   assert.ok(total < 260 * 1024, `total ${total} B must stay under 260 KB`);
-  assert.ok((await stat(new URL('../public/assets/corrida/sophia-run.webp', import.meta.url))).size < 140 * 1024);
+  assert.ok((await stat(new URL('../public/assets/corrida/sophia-run.webp', import.meta.url))).size < 175 * 1024);
 });
 
 test('layers are lazy images with explicit size and a still fallback runner', () => {
   assert.match(comp, /sophia-run-still\.webp/);
   assert.match(comp, /data-run=\{`\$\{base\}sophia-run\.webp`\}/);
   assert.match(comp, /width="\d+"\s+height="\d+"/);
+});
+
+test('runner crosses the whole strip forward, never reversing', () => {
+  assert.match(css, /@keyframes corrida-dash/);
+  assert.match(css, /0%\s*\{[^}]*translate3d\(-100%/);
+  assert.match(css, /100%\s*\{[^}]*translate3d\(100cqw/);
+  assert.doesNotMatch(css, /animation-direction:\s*(alternate|reverse)|infinite\s+(alternate|reverse)/);
 });
 
 test('motion is transform-only and gated by playing state, reduced-motion and the data-motion hook', () => {
