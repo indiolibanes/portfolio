@@ -154,14 +154,15 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
 .method-presenter__loop-mark { fill: #7d977f; font: 700 15px sans-serif; transform-box: fill-box; transform-origin: center; animation: method-loop-spin 20s linear infinite; }
 .method-presenter__link { stroke-dasharray: none; }
 .method-presenter__link--return { stroke-dasharray: 3 3; }
-.method-presenter__sophia {
+.method-presenter__stage {
   position: absolute;
-  left: 50%;
-  top: 23.3333%;
-  width: 50%;
-  aspect-ratio: 640 / 704;
-  background: url('/images/sophia/method-presenter.webp') 0 0 / 400% 100% no-repeat;
-  animation: sophia-method-present 4.8s steps(1, end) infinite;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .method-presenter__node {
   fill: #dde9dc;
@@ -202,13 +203,6 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
     20s
     steps(1, end)
     infinite;
-}
-
-@keyframes sophia-method-present {
-  0%, 42% { background-position: 0 0; }
-  43%, 48% { background-position: 33.333333% 0; }
-  49%, 72% { background-position: 66.666667% 0; }
-  73%, 100% { background-position: 100% 0; }
 }
 
 /* 5 seconds per phase: conception → execution → evaluation → record. */
@@ -322,13 +316,6 @@ html[data-legacy-mode='true'] .method-section { background: #abc5b2; color: #142
   .method-presenter { width: min(100%, 440px); margin-top: 0; justify-self: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .method-presenter__sophia {
-    animation: none;
-    background-image: url('/images/sophia/method-presenter-still.webp');
-    background-size: 100% 100%;
-    background-position: 0 0;
-  }
-
   .method-presenter__node,
   .method-presenter__link,
   .method-presenter__loop-mark {
