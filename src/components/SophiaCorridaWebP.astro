@@ -1,0 +1,77 @@
+---
+/**
+ * Faixa de curiosidades da home: Sophia corre, vestida de viajante, por uma
+ * vila medieval alemã em enxaimel. Tudo é pré-renderizado em WebP (camadas de
+ * cenário ladrilháveis + um ciclo de corrida de 0,8 s): nenhum 3D, GLB ou
+ * canvas é carregado no navegador. Decorativo (aria-hidden); o movimento
+ * obedece a DecorativeMotion, prefers-reduced-motion, Save-Data e à aba oculta.
+ */
+import '../styles/sophia-corrida-webp.css';
+
+const base = '/assets/corrida/';
+const layers = [
+  { id: 'far', src: `${base}town-far.webp` },
+  { id: 'mid', src: `${base}town-mid.webp` },
+  { id: 'street', src: `${base}town-street.webp`, h: 78 },
+  { id: 'near', src: `${base}town-near.webp` },
+];
+---
+
+<div class="corrida corrida--webp" data-corrida-webp data-decorative-motion aria-hidden="true">
+  <img class="corrida__sky" src={`${base}town-sky.webp`} width="1400" height="420" alt="" decoding="async" loading="lazy" draggable="false" />
+  <div class="corrida__stage">
+    <img class="corrida__hills" src={`${base}town-hills.webp`} width="1400" height="420" alt="" decoding="async" loading="lazy" draggable="false" />
+    {layers.map(layer => (
+      <div class={`corrida__layer corrida__layer--${layer.id}`}>
+        <div class="corrida__belt">
+          {[0, 1].map(() => (
+            <img src={layer.src} width="1400" height={layer.h ?? 420} alt="" decoding="async" loading="lazy" draggable="false" />
+          ))}
+        </div>
+      </div>
+    ))}
+    <img
+      class="corrida__runner"
+      src={`${base}sophia-run-still.webp`}
+      data-run={`${base}sophia-run.webp`}
+      width="180"
+      height="300"
+      alt=""
+      decoding="async"
+      loading="lazy"
+      draggable="false"
+    />
+  </div>
+  <div class="corrida__veil"></div>
+</div>
+
+<script>
+  import { mountCorrida } from '../scripts/sophia-corrida-webp.js';
+  const items = [...document.querySelectorAll<HTMLElement>('[data-corrida-webp]')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const conn = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection;
+  const controllers = items.map(el => mountCorrida(el, { reduce, conn }));
+  const observer = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(entry => {
+      const index = items.indexOf(entry.target as HTMLElement);
+      if (index >= 0) controllers[index]?.visible(entry.isIntersecting);
+    }), { rootMargin: '120px 0px' }) : null;
+  items.forEach(el => observer?.observe(el));
+
+  const syncAll = () => controllers.forEach(c => c.sync());
+  const onHide = () => controllers.forEach(c => c.stop());
+  document.addEventListener('visibilitychange', syncAll);
+  reduce.addEventListener('change', syncAll);
+  conn?.addEventListener('change', syncAll);
+  addEventListener('pagehide', onHide);
+  addEventListener('pageshow', syncAll);
+
+  document.addEventListener('astro:before-swap', () => {
+    observer?.disconnect(); controllers.forEach(c => c.destroy());
+    removeEventListener('pagehide', onHide);
+    removeEventListener('pageshow', syncAll);
+    document.removeEventListener('visibilitychange', syncAll);
+    reduce.removeEventListener('change', syncAll);
+    conn?.removeEventListener('change', syncAll);
+  }, { once: true });
+</script>
