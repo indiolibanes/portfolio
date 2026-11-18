@@ -164,68 +164,26 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   user-select: none;
   -webkit-user-drag: none;
 }
-/* Recorte da atuação no palco 576 × 414. A máscara exibe apenas uma célula por vez. */
-.method-presenter__sophia {
-  position: absolute;
-  left: 26.736111%;
-  top: 27.294686%;
-  width: 69.097222%;
-  height: 72.705314%;
-  overflow: hidden;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-.method-presenter__sophia img,
-.method-presenter__poses {
+.method-presenter__sophia,
+.method-presenter__labels {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
-.method-presenter__poses {
-  display: none;
-  background-size: 700% 700%;
-  background-repeat: no-repeat;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .method-presenter[data-method-playing='true'] .method-presenter__sophia img { visibility: hidden; }
-  .method-presenter[data-method-playing='true'] .method-presenter__poses { display: block; }
+.method-presenter__sophia img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .method-presenter__node {
   fill: #dde9dc;
   stroke: #8aa28d;
   stroke-width: 1.5;
-}
-.method-presenter[data-method-phase='1'] .method-presenter__node--conception {
-  fill: #8ed8bd;
-  stroke: #2d6d56;
-  stroke-width: 3;
-}
-.method-presenter[data-method-phase='2'] .method-presenter__node--execution {
-  fill: #f2c66d;
-  stroke: #7f5a18;
-  stroke-width: 3;
-}
-.method-presenter[data-method-phase='3'] .method-presenter__node--evaluation {
-  fill: #e69a83;
-  stroke: #81493f;
-  stroke-width: 3;
-}
-.method-presenter[data-method-phase='4'] .method-presenter__node--record {
-  fill: #aaa5df;
-  stroke: #514c87;
-  stroke-width: 3;
-}
-
-.method-presenter[data-method-link='1'] .method-presenter__link--1,
-.method-presenter[data-method-link='2'] .method-presenter__link--2,
-.method-presenter[data-method-link='3'] .method-presenter__link--3,
-.method-presenter[data-method-link='4'] .method-presenter__link--4 {
-  stroke: #1f5a45;
-  stroke-width: 3;
-  stroke-dasharray: 5 4;
-  marker-end: url(#method-flow-arrow-on);
 }
 
 /* Existing modes retain their typographic and monochrome identities. */
