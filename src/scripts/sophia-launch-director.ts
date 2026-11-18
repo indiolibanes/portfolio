@@ -2,6 +2,8 @@ import * as T from 'three';
 import type {GLTF} from 'three/addons/loaders/GLTFLoader.js';
 import type {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createVerticalLaunchPad} from './sophia-vertical-pad.ts';
+import {createSaturnScene} from './sophia-saturn-scene.ts';
+import {SATURN_FLYBY,sampleSaturnFlyby} from './sophia-saturn-flyby.mjs';
 import {createGripSolver} from './sophia-grip-ik.ts';
 import {R3,smooth,sampleImmersiveR3At,gripStepAt,thrusterFx} from './sophia-immersive-r3-timeline.mjs';
 
@@ -18,8 +20,9 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  const onControlStart=()=>{manualCamera=true;returnCamera=false;};controls.addEventListener('start',onControlStart);
  function disposeModel(){disposeAstronautAsset(root);}
  let partialPad:ReturnType<typeof createVerticalLaunchPad>|null=null,partialLight:T.PointLight|null=null;
+ let saturn:ReturnType<typeof createSaturnScene>|null=null;
  try {
- if(!rider||!hull||!rocket||!originalFlight||!originalWalk){const action=originalFlight?mixer.clipAction(originalFlight).play():null;const box=new T.Box3().setFromObject(root),c=box.getCenter(new T.Vector3());camera.position.copy(c).add(new T.Vector3(0,1,4));controls.target.copy(c);return {supported:false,stats:{fallback:true},get cameraReturning(){return false;},apply(t:number){lastTime=t;root.visible=sampleImmersiveR3At(t).rocketVisible;if(action){action.time=t%originalFlight!.duration;mixer.update(0);}controls.enableRotate=controls.enableZoom=true;},resize(){},reset(){restore();},resetCamera(){manualCamera=false;},snapshot(){return {supported:false,time:lastTime,phase:'FLIGHT_LOOP'};},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();}};}
+ if(!rider||!hull||!rocket||!originalFlight||!originalWalk){const action=originalFlight?mixer.clipAction(originalFlight).play():null;const box=new T.Box3().setFromObject(root),c=box.getCenter(new T.Vector3());camera.position.copy(c).add(new T.Vector3(0,1,4));controls.target.copy(c);return {supported:false,finished:false,stats:{fallback:true},get cameraReturning(){return false;},apply(t:number){lastTime=t;root.visible=sampleImmersiveR3At(t).rocketVisible;if(action){action.time=t%originalFlight!.duration;mixer.update(0);}controls.enableRotate=controls.enableZoom=true;},resize(){},reset(){restore();},resetCamera(){manualCamera=false;},snapshot(){return {supported:false,time:lastTime,phase:'FLIGHT_LOOP'};},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();}};}
  const nozzle=root.getObjectByName('Engine_Nozzle')??rocket;
  const sourceAxis=new T.Vector3(0,1,0).transformDirection(hull.matrixWorld),pivot=nozzle.getWorldPosition(new T.Vector3());
  const qPad=new T.Quaternion().setFromUnitVectors(sourceAxis,new T.Vector3(0,1,0)),qFlight=new T.Quaternion();
@@ -59,6 +62,30 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  const padEnvelope=pad.box.clone().expandByScalar(unit*.25);padEnvelope.min.x-=unit*.7;padEnvelope.max.x+=unit*.7;padEnvelope.max.y=Math.max(padEnvelope.max.y,unit*1.65);
  const autoPosition=new T.Vector3(),autoTarget=new T.Vector3(),returnFromP=new T.Vector3(),returnFromT=new T.Vector3(),frameCenter=new T.Vector3();
  let cameraDistance=unit*4;
+ saturn=createSaturnScene(scene);
+ const releaseSample=sampleImmersiveR3At(SATURN_FLYBY.release);
+ const flybyCamera=new T.Vector3(releaseSample.x+7,releaseSample.height+2.5,5.6).multiplyScalar(unit);
+ const flybyAim=new T.Vector3(),sightline=new T.Vector3(),screenRight=new T.Vector3();
+ let lastFlyby=sampleSaturnFlyby(0);
+ let finished=false;
+
+ function frameSaturn(s:ReturnType<typeof sampleImmersiveR3At>){
+  const flyby=lastFlyby;
+  if(flyby.departure>0){
+   // Release the chase camera into a stationary vantage point. The intact
+   // vehicle translates away while the view pans gently toward its heading.
+   autoPosition.lerp(flybyCamera,flyby.departure);
+   sightline.copy(carrier.position).sub(autoPosition);
+   const distance=sightline.length();
+   sightline.normalize();
+   screenRight.set(-sightline.z,0,sightline.x).normalize();
+   const halfWidth=distance*Math.tan(T.MathUtils.degToRad(camera.fov/2))*camera.aspect;
+   flybyAim.copy(carrier.position).addScaledVector(screenRight,halfWidth*.56);
+   flybyAim.y+=distance*.05;
+   autoTarget.lerp(flybyAim,flyby.departure);
+  }
+  saturn!.update(s.t,camera,autoPosition,autoTarget,unit,reducedMotion());
+ }
  function fitCamera(s:ReturnType<typeof sampleImmersiveR3At>){
   const follow=smooth((s.t-R3.launch)/2),wide=padEnvelope.getCenter(frameCenter);
   autoTarget.copy(wide).lerp(temp.copy(carrier.position).add(followOffset),follow);
@@ -89,9 +116,9 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
    const weight=s.grip*(1-releaseHand);anchors[i].getWorldPosition(gripWorld);gripErrors[i]=(i?right:left).solve(gripWorld,weight);
   }
  }
- function apply(t:number,cameraDt?:number){if(disposed)return;const s=sampleImmersiveR3At(t),dt=Math.max(0,Math.min(.1,cameraDt??t-lastTime));lastTime=t;lastSample=s;
+ function apply(t:number,cameraDt?:number){if(disposed)return;t=Math.min(t,SATURN_FLYBY.end);const s=sampleImmersiveR3At(t),dt=Math.max(0,Math.min(.1,cameraDt??t-lastTime));lastTime=t;lastSample=s;lastFlyby=sampleSaturnFlyby(t);finished=t>=SATURN_FLYBY.end;
    carrier.visible=s.rocketVisible;pad.group.visible=s.rocketVisible;
-  carrier.position.set(s.x*unit,s.height*unit,0);carrier.quaternion.copy(qPad).slerp(qFlight,s.pitch);mixer.stopAllAction();restore();root.visible=s.rocketVisible;
+  carrier.position.set((s.x-lastFlyby.travel)*unit,s.height*unit,0);carrier.quaternion.copy(qPad).slerp(qFlight,s.pitch);mixer.stopAllAction();restore();root.visible=s.rocketVisible;
   sample(walk,s.riderVisible?1-s.settle:0,Math.min(s.walkTime,R3.prepare-R3.enter));sample(flightActor,s.settle,Math.max(0,t-R3.flight));
   sample(idle,s.enginePower*(1-s.release),t-R3.ignition);sample(boost,s.release*(1-s.flightMix),t-R3.launch);sample(effects,s.flightMix,t-R3.flight);mixer.update(0);
   root.updateMatrixWorld(true);placeRider(s);
@@ -101,15 +128,17 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
   shocks.forEach((n,i)=>n.scale.multiplyScalar(i%2?2-fx.shock:fx.shock));
   ribbons.forEach(n=>{n.visible=s.trailPower>.001;n.scale.z*=Math.max(.00001,s.trailPower);});
   pad.update(t,s.release,s.enginePower,reducedMotion());light.position.copy(nozzle.getWorldPosition(temp));light.intensity=s.enginePower*2*fx.light;light.color.setRGB(1,.55+.2*s.enginePower,.3+.2*s.enginePower);
-  fitCamera(s);
+  fitCamera(s);frameSaturn(s);
+  if(lastFlyby.visible)pad.group.visible=false;
+  if(finished){carrier.visible=false;light.intensity=0;}
   if(manualCamera){temp.copy(carrier.position).sub(previous);camera.position.add(temp);controls.target.add(temp);}
   else if(returnCamera){returnProgress=Math.min(1,returnProgress+dt/.8);camera.position.copy(returnFromP).lerp(autoPosition,smooth(returnProgress));controls.target.copy(returnFromT).lerp(autoTarget,smooth(returnProgress));if(returnProgress===1)returnCamera=false;}
   else{camera.position.copy(autoPosition);controls.target.copy(autoTarget);}
-  controls.enableRotate=controls.enableZoom=controls.enablePan=true;controls.minDistance=unit*.6;controls.maxDistance=unit*40;controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.88;
-  camera.near=Math.max(.002,unit/300);camera.far=Math.max(100,unit*200);camera.lookAt(controls.target);camera.updateProjectionMatrix();previous.copy(carrier.position);
+  controls.enableRotate=controls.enableZoom=controls.enablePan=true;controls.minDistance=unit*.6;controls.maxDistance=Math.max(unit*40,autoPosition.distanceTo(autoTarget)*1.15);controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.88;
+  camera.near=Math.max(.002,unit/300);camera.far=lastFlyby.visible?Math.max(500,unit*15_000):Math.max(100,unit*200);camera.lookAt(controls.target);camera.updateProjectionMatrix();previous.copy(carrier.position);
  }
  function reset(){manualCamera=false;returnCamera=false;returnProgress=0;previous.set(0,0,0);lastTime=0;apply(0);}
- function snapshot(){root.updateMatrixWorld(true);const rest=rider.parent!.localToWorld(seatP.clone());return {supported:true,time:lastTime,phase:lastSample.phase,riderVisible:rider.visible,riderWorld:rider.getWorldPosition(new T.Vector3()).toArray(),seatedWorld:rest.toArray(),riderSeatError:rider.getWorldPosition(new T.Vector3()).distanceTo(rest),rocketWorld:rocket.getWorldPosition(new T.Vector3()).toArray(),rocketUpDotWorldY:new T.Vector3(0,1,0).transformDirection(hull.matrixWorld).y,carrierWorld:carrier.position.toArray(),baseWorld:pad.group.getWorldPosition(new T.Vector3()).toArray(),orbitTheta:lastSample.orbitTheta,gripErrors,gripTolerance:pad.stats.hullRadius*2*.03,gripStatus:left.available&&right.available?'PROCEDURAL_IK_CANDIDATE':'GRIP_ANIMATION_PENDING',rocketVisible:carrier.visible,ribbonsVisible:ribbons.some(n=>n.visible),cradleTriangles:pad.stats.triangles,cradleMeshes:pad.stats.meshes,groundOffset:0,unit,controlsEnabled:controls.enableRotate,cameraMode:manualCamera?'USER':returnCamera?'RETURNING':'AUTO',actorTracks:flightActor!.clip.tracks.length,walkTracks:walk!.clip.tracks.length};}
- reset();return {supported:true,stats:pad.stats,apply,reset,snapshot,get cameraReturning(){return returnCamera;},resize(){if(!manualCamera)apply(lastTime);},resetCamera(){returnFromP.copy(camera.position);returnFromT.copy(controls.target);returnProgress=0;manualCamera=false;returnCamera=true;},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);pad.dispose();disposeModel();light.removeFromParent();carrier.removeFromParent();}};
- } catch(error){mixer.stopAllAction();mixer.uncacheRoot(root);partialPad?.dispose();partialLight?.removeFromParent();controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();throw error;}
+ function snapshot(){root.updateMatrixWorld(true);const rest=rider.parent!.localToWorld(seatP.clone());return {supported:true,time:lastTime,phase:lastSample.phase,riderVisible:rider.visible,riderWorld:rider.getWorldPosition(new T.Vector3()).toArray(),seatedWorld:rest.toArray(),riderSeatError:rider.getWorldPosition(new T.Vector3()).distanceTo(rest),rocketWorld:rocket.getWorldPosition(new T.Vector3()).toArray(),rocketUpDotWorldY:new T.Vector3(0,1,0).transformDirection(hull.matrixWorld).y,carrierWorld:carrier.position.toArray(),baseWorld:pad.group.getWorldPosition(new T.Vector3()).toArray(),orbitTheta:lastSample.orbitTheta,gripErrors,gripTolerance:pad.stats.hullRadius*2*.03,gripStatus:left.available&&right.available?'PROCEDURAL_IK_CANDIDATE':'GRIP_ANIMATION_PENDING',rocketVisible:carrier.visible,saturn:lastFlyby.visible?{distanceKm:lastFlyby.distanceKm,hillKm:SATURN_FLYBY.hillKm,spin:lastFlyby.spin,finished}:null,ribbonsVisible:carrier.visible&&ribbons.some(n=>n.visible),cradleTriangles:pad.stats.triangles,cradleMeshes:pad.stats.meshes,groundOffset:0,unit,controlsEnabled:controls.enableRotate,cameraMode:manualCamera?'USER':returnCamera?'RETURNING':'AUTO',actorTracks:flightActor!.clip.tracks.length,walkTracks:walk!.clip.tracks.length};}
+ reset();return {supported:true,stats:pad.stats,apply,reset,snapshot,get finished(){return finished;},get cameraReturning(){return returnCamera;},resize(){if(!manualCamera)apply(lastTime);},resetCamera(){returnFromP.copy(camera.position);returnFromT.copy(controls.target);returnProgress=0;manualCamera=false;returnCamera=true;},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);saturn?.dispose();pad.dispose();disposeModel();light.removeFromParent();carrier.removeFromParent();}};
+ } catch(error){mixer.stopAllAction();mixer.uncacheRoot(root);saturn?.dispose();partialPad?.dispose();partialLight?.removeFromParent();controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();throw error;}
 }

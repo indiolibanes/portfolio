@@ -17,7 +17,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
   </head>
   <body>
     <main class="immersive" data-sophia-immersive data-astronaut-url={astronautAssetUrl}>
-      <div class="immersive__stage" data-stage role="img" tabindex="-1" inert aria-label="Sophia astronauta e foguete em três dimensões. Arraste para girar e use a roda ou pinça para aproximar."></div>
+      <div class="immersive__stage" data-stage role="img" tabindex="-1" inert aria-label="Sophia decola em um foguete, passa ao lado de Saturno e segue viagem. Arraste para girar e use a roda ou pinça para aproximar."></div>
       <section class="immersive__intro" data-intro aria-label="Início da jornada da Sophia">
         <div class="immersive__intro-frame" aria-hidden="true"><span>PROJECT SOPHIA</span><span>CELESTIAL FLIGHT · 01</span></div>
         <button class="immersive__start" type="button" data-intro-start aria-label="Iniciar a jornada: Sophia vai ao encontro do foguete">
@@ -100,7 +100,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
   @media(prefers-reduced-motion:reduce) { .immersive__launch-hud::before { animation:none; } }
   .immersive__intro.is-starting .immersive__start { opacity:0; transition:opacity 130ms; pointer-events:none; }
   .immersive__intro.is-starting .immersive__intro-frame, .immersive__intro.is-starting .immersive__intro-footer { opacity:0; }
-  .immersive__mute { position:fixed; z-index:72; top:max(22px,env(safe-area-inset-top)); left:max(20px,env(safe-area-inset-left)); border:1px solid #ffffff30; color:#e8e8f0; background:#080a12c0; padding:13px; min-height:44px; border-radius:24px; cursor:pointer; }
+  .immersive__mute { position:fixed; z-index:72; top:calc(max(19px,env(safe-area-inset-top)) + 42px); left:max(20px,env(safe-area-inset-left)); border:1px solid #ffffff30; color:#e8e8f0; background:#080a12c0; padding:13px; min-height:44px; border-radius:24px; cursor:pointer; }
   .immersive__mute:focus-visible {outline:2px solid #f8ed37;outline-offset:3px;}
   .immersive__audio-status {position:fixed;left:20px;bottom:66px;z-index:35;max-width:70vw;color:#aeb8ca;font-size:11px;pointer-events:none;}
   .immersive__playback {max-width:calc(100vw - 30px);flex-wrap:wrap;}
