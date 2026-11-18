@@ -151,7 +151,7 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
 .method-presenter__badges circle { fill: #375441; }
 .method-presenter__badges text { fill: #f2f5e7; font: 700 9px sans-serif; }
 .method-presenter__screen-note { fill: #426651; font: 11px sans-serif; }
-.method-presenter__loop-mark { fill: #7d977f; font: 700 15px sans-serif; transform-box: fill-box; transform-origin: center; animation: method-loop-spin 20s linear infinite; }
+.method-presenter__loop-mark { fill: #7d977f; font: 700 15px sans-serif; }
 .method-presenter__link { stroke-dasharray: none; }
 .method-presenter__link--return { stroke-dasharray: 3 3; }
 .method-presenter__stage {
@@ -164,154 +164,27 @@ html:not([data-legacy-mode='true']):not([data-serious-mode='true']) .method-sect
   user-select: none;
   -webkit-user-drag: none;
 }
-/* Sophia: recorte 408×348 (x 143, y 65) do quadro 576×414, em % do figure — a mesma geometria do cenário. */
-.method-presenter__sophia {
+.method-presenter__sophia,
+.method-presenter__labels {
   position: absolute;
-  left: 24.826%;
-  top: 15.7%;
-  width: 70.833%;
-  height: 84.058%;
-  object-fit: fill;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+}
+.method-presenter__sophia img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
   user-select: none;
   -webkit-user-drag: none;
 }
-.method-presenter__sophia[hidden] { display: none; }
 .method-presenter__node {
   fill: #dde9dc;
   stroke: #8aa28d;
   stroke-width: 1.5;
-
-  transform-box: fill-box;
-  transform-origin: center;
 }
-
-.method-presenter__node--conception {
-  animation:
-    method-node-conception
-    20s
-    steps(1, end)
-    infinite;
-}
-
-.method-presenter__node--execution {
-  animation:
-    method-node-execution
-    20s
-    steps(1, end)
-    infinite;
-}
-
-.method-presenter__node--evaluation {
-  animation:
-    method-node-evaluation
-    20s
-    steps(1, end)
-    infinite;
-}
-
-.method-presenter__node--record {
-  animation:
-    method-node-record
-    20s
-    steps(1, end)
-    infinite;
-}
-
-/* 5 seconds per phase: conception → execution → evaluation → record. */
-@keyframes method-node-conception {
-  0%, 24.999% {
-    fill: #8ed8bd;
-    stroke: #2d6d56;
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(45, 109, 86, .24));
-  }
-
-  25%, 100% {
-    fill: #dde9dc;
-    stroke: #8aa28d;
-    stroke-width: 1.5;
-    filter: none;
-  }
-}
-
-@keyframes method-node-execution {
-  0%, 24.999%, 50%, 100% {
-    fill: #dde9dc;
-    stroke: #8aa28d;
-    stroke-width: 1.5;
-    filter: none;
-  }
-
-  25%, 49.999% {
-    fill: #f2c66d;
-    stroke: #7f5a18;
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(127, 90, 24, .22));
-  }
-}
-
-@keyframes method-node-evaluation {
-  0%, 49.999%, 75%, 100% {
-    fill: #dde9dc;
-    stroke: #8aa28d;
-    stroke-width: 1.5;
-    filter: none;
-  }
-
-  50%, 74.999% {
-    fill: #e69a83;
-    stroke: #81493f;
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(129, 73, 63, .22));
-  }
-}
-
-@keyframes method-node-record {
-  0%, 74.999% {
-    fill: #dde9dc;
-    stroke: #8aa28d;
-    stroke-width: 1.5;
-    filter: none;
-  }
-
-  75%, 100% {
-    fill: #aaa5df;
-    stroke: #514c87;
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(81, 76, 135, .22));
-  }
-}
-
-
-.method-presenter__link--1 { animation: method-link-1 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
-.method-presenter__link--2 { animation: method-link-2 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
-.method-presenter__link--3 { animation: method-link-3 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
-.method-presenter__link--4 { animation: method-link-4 20s steps(1, end) infinite, method-link-flow .7s linear infinite; }
-/* Connectors: link k lights up and its dashes march during the second half of phase k;
-   the return link (4) closes the cycle just before the loop restarts. */
-@keyframes method-link-1 {
-  0%, 12.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-  12.5%, 24.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
-  25%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-}
-@keyframes method-link-2 {
-  0%, 37.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-  37.5%, 49.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
-  50%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-}
-@keyframes method-link-3 {
-  0%, 62.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-  62.5%, 74.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
-  75%, 100% { stroke: #426651; stroke-width: 2; stroke-dasharray: none; marker-end: url(#method-flow-arrow); }
-}
-@keyframes method-link-4 {
-  0%, 87.499% { stroke: #426651; stroke-width: 2; stroke-dasharray: 3 3; marker-end: url(#method-flow-arrow); }
-  87.5%, 99.999% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
-  100% { stroke: #1f5a45; stroke-width: 3; stroke-dasharray: 5 4; marker-end: url(#method-flow-arrow-on); }
-}
-@keyframes method-link-flow { to { stroke-dashoffset: -9; } }
-@keyframes method-loop-spin { 0%, 87.4% { transform: rotate(0); } 100% { transform: rotate(-360deg); } }
 
 /* Existing modes retain their typographic and monochrome identities. */
 html[data-serious-mode='true'] .method-section {
@@ -327,17 +200,4 @@ html[data-legacy-mode='true'] .method-section { background: #abc5b2; color: #142
 @media (max-width: 820px) {
   .method-heading { grid-template-columns: minmax(0, 1fr); }
   .method-presenter { width: min(100%, 440px); margin-top: 0; justify-self: center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .method-presenter__node,
-  .method-presenter__link,
-  .method-presenter__loop-mark {
-    animation: none;
-  }
-
-  .method-presenter__node--conception {
-    fill: #8ed8bd;
-    stroke: #2d6d56;
-    stroke-width: 3;
-  }
 }

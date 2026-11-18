@@ -40,7 +40,7 @@
 
   html:not([data-legacy-mode='true']) .documentation-pipeline {
     width: 100%;
-    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr) auto) minmax(0, 1fr);
     gap: .25rem;
   }
 
@@ -55,8 +55,9 @@
   }
 
   html:not([data-legacy-mode='true']) .documentation-step small {
-    font-size: .52rem;
-    letter-spacing: .03em;
+    font-size: .68rem;
+    letter-spacing: .01em;
+    overflow-wrap: anywhere;
   }
 
   html:not([data-legacy-mode='true']) .documentation-arrow {
@@ -98,7 +99,8 @@
 
   html:not([data-legacy-mode='true']) .hero-actions :is(.editorial-text-link, .cv-download-button) {
     justify-self: center;
-    white-space: nowrap;
+    text-align: center;
+    white-space: normal;
   }
 
   /* Contact: e-mail first and full width; WhatsApp and LinkedIn share a row. */
@@ -169,5 +171,29 @@
   .curiosities-return a {
     flex: 1 1 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 420px) {
+  html:not([data-legacy-mode='true']) .documentation-pipeline {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .35rem;
+  }
+
+  html:not([data-legacy-mode='true']) .documentation-step {
+    min-height: 0;
+    padding: .5rem .65rem;
+  }
+
+  html:not([data-legacy-mode='true']) .documentation-step strong {
+    font-size: .82rem;
+  }
+
+  html:not([data-legacy-mode='true']) .documentation-step small {
+    font-size: .73rem;
+  }
+
+  html:not([data-legacy-mode='true']) .documentation-arrow {
+    transform: rotate(90deg);
   }
 }

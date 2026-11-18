@@ -1,18 +1,11 @@
 # Sophia apresenta o método
 
-A seção 03 usa uma paleta de verde de eucalipto e uma apresentação no canto superior direito. Sophia aparece como apresentadora, em traje acadêmico: colete bordô com botões e corrente dourados, camisa marfim com laço, saia plissada azul-marinho e um ponteiro dourado preso à mão. Orelhas azul-marinho, olhos âmbar e a única cauda cósmica com constelações seguem a Sophia v1.4.1.
+A Sophia v1.4.1 apresenta o fluxograma com colete bordô, camisa marfim, saia plissada azul-marinho e ponteiro dourado. A moldura, o pedestal e o projetor continuam no WebP estático do cenário. Os rótulos e as setas continuam em SVG, recortados na face da tela. A descrição do fluxo acompanha a figura para tecnologias assistivas.
 
-O fluxograma segue concepção, execução, avaliação e documentação (que volta a orientar a concepção). Textos, caixas, setas e a face da tela continuam SVG acessível; a moldura da tela, o pedestal e o projetor (camada de cenário) e a Sophia com o ponteiro (camada animada) são pré-renderizados em WebP transparente por cima do SVG.
+O WebP animado preserva as poses do PR #329 e o ritmo de 20 segundos. Sophia está 5,8% mais alta do que na primeira composição do PR #330, com a mesma âncora nas patas. O tamanho é um ajuste da projeção da personagem, e o ponteiro foi recalibrado para voltar à caixa ativa depois da queda. Concepção e Documentação continuam com a sequência de alcançar, oscilar, cair, sorrir e retomar.
 
-## Animação (20 s, sincronizada com o fluxograma)
+A figura usa `<picture>` com WebP nativo de 480 × 345 px. A caixa colorida faz parte dos mesmos quadros que a personagem, de modo que o destaque e o gesto repetem juntos. Os rótulos e as setas em vetor ficam por cima do ponteiro. O carregamento é lazy e o navegador seleciona um pôster independente para movimento reduzido ou preferência de economia de dados quando disponível.
 
-- O WebP da Sophia dura exatamente 20 s (135 quadros com duração variável: mais quadros na queda e nas trocas, menos nas pausas) e acompanha o destaque do momento: a cada 5 s ela aponta a etapa em destaque; na troca, o ponteiro (telescópico) já vai para a próxima.
-- A Sophia fica parada no mesmo plano da versão 2D (à direita da tela, ~65% da altura do quadro), sem sair do lugar. Nas etapas da esquerda (Concepção e Documentação) ela gira para a tela, sobe na ponta dos pés (calcanhares fora do chão), estica o braço e o ponteiro telescópico, oscila cada vez mais, perde o equilíbrio (~1,9 s e ~16,9 s), cai com os braços em moinho, fica zonza, senta, levanta passando do ponto, faz uma cara desengonçada (olhos semicerrados, cabeça torta, cauda e orelhas) e volta a apontar.
-- Respiração, balanço da cauda, piscadas e tremor das orelhas continuam.
-- Ao entrar em movimento, o script decodifica as duas camadas e reinicia as animações CSS do fluxograma junto com o loop. Fora da tela, com a página oculta ou com movimento reduzido, entra o poster estático (`method-presenter-r1-still.webp`) e o loop não é baixado. Em telas até 820px, a cena fica abaixo da introdução.
+A composição anterior usava três folhas WebP estáticas. O pôster só mudava depois que o gerenciador liberava a animação e todas as folhas terminavam de decodificar. A nova figura reproduz os quadros diretamente no navegador, inclusive com JavaScript desativado. A origem 3D fica fora do repositório.
 
-## Assets e privacidade
-
-`method-presenter-r1-loop.webp` (Sophia, 286 × 244, ~585 KB), `method-presenter-r1-scene.webp` (cenário, ~3 KB) e `method-presenter-r1-still.webp` (poster, ~16 KB) em `public/images/sophia/`. O GLB da Sophia, os arquivos Blender e as texturas de origem são privados e não entram no repositório; os quadros foram renderizados fora do navegador.
-
-Componente: `src/components/MethodPresenter.astro`. Estilo: `src/styles/method-scene.css`. Teste: `tests/method-presenter-r1.test.mjs`.
+A validação do cabeçalho, transparência, quadros e duração roda em `tests/method-presenter-r1.test.mjs`.
