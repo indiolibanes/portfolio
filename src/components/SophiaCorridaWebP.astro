@@ -1,8 +1,9 @@
 ---
 /**
  * Faixa de curiosidades da home: Sophia corre, vestida de viajante, por uma
- * vila medieval alemã em enxaimel. Tudo é pré-renderizado em WebP (camadas de
- * cenário ladrilháveis + um ciclo de corrida de 0,8 s): nenhum 3D, GLB ou
+ * vila medieval alemã em enxaimel, atravessando a faixa da esquerda para a direita
+ * sem nunca voltar. Tudo é pré-renderizado em WebP (camadas de cenário + um ciclo
+ * de corrida de 0,8 s): nenhum 3D, GLB ou
  * canvas é carregado no navegador. Decorativo (aria-hidden); o movimento
  * obedece a DecorativeMotion, prefers-reduced-motion, Save-Data e à aba oculta.
  */
@@ -22,25 +23,22 @@ const layers = [
   <div class="corrida__stage">
     <img class="corrida__hills" src={`${base}town-hills.webp`} width="1400" height="420" alt="" decoding="async" loading="lazy" draggable="false" />
     {layers.map(layer => (
-      <div class={`corrida__layer corrida__layer--${layer.id}`}>
-        <div class="corrida__belt">
-          {[0, 1].map(() => (
-            <img src={layer.src} width="1400" height={layer.h ?? 420} alt="" decoding="async" loading="lazy" draggable="false" />
-          ))}
-        </div>
-      </div>
+      <img class={`corrida__layer corrida__layer--${layer.id}`} src={layer.src} width="1400" height={layer.h ?? 420} alt="" decoding="async" loading="lazy" draggable="false" />
     ))}
-    <img
-      class="corrida__runner"
-      src={`${base}sophia-run-still.webp`}
-      data-run={`${base}sophia-run.webp`}
-      width="180"
-      height="300"
-      alt=""
-      decoding="async"
-      loading="lazy"
-      draggable="false"
-    />
+    <div class="corrida__run">
+      <span class="corrida__shadow"></span>
+      <img
+        class="corrida__runner"
+        src={`${base}sophia-run-still.webp`}
+        data-run={`${base}sophia-run.webp`}
+        width="284"
+        height="320"
+        alt=""
+        decoding="async"
+        loading="lazy"
+        draggable="false"
+      />
+    </div>
   </div>
   <div class="corrida__veil"></div>
 </div>

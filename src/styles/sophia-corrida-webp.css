@@ -1,9 +1,9 @@
 /*
- * Faixa de curiosidades: Sophia corre numa vila medieval alemã. As camadas são
- * WebPs ladrilháveis que deslizam em esteira (só transform) com velocidades
- * diferentes; a corredora é um WebP animado que fica parado na tela.
- * Sem JS, sem movimento (prefers-reduced-motion), Save-Data ou fora da tela
- * vale a cena parada com o quadro de corrida.
+ * Faixa de curiosidades: Sophia atravessa uma vila medieval alemã correndo, do
+ * começo ao fim da faixa, sempre da esquerda para a direita. O cenário é fixo
+ * (WebPs em camadas); só a corredora se move (transform), com o ciclo de corrida
+ * em WebP animado. Sem JS, sem movimento (prefers-reduced-motion), Save-Data ou
+ * fora da tela vale a cena parada com um quadro da corrida.
  */
 
 .corrida { position: absolute; inset: 0; z-index: 0; container-type: size; pointer-events: none; overflow: hidden; background: #cfdcec; }
@@ -11,30 +11,28 @@
 
 .corrida__sky { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
 
-/* Palco: sempre colado no pé da faixa; a altura segue o recipiente (tile 10:3). */
+/* Palco colado no pé da faixa; a altura segue o recipiente (camadas em 10:3). */
 .corrida__stage { position: absolute; left: 0; right: 0; bottom: 0; height: min(100cqh, 26rem); }
-.corrida__hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; opacity: .85; }
-
-.corrida__layer { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; }
-.corrida__layer--far,
-.corrida__layer--mid,
-.corrida__layer--near { top: 0; }
-.corrida__layer--street { height: 18.6%; }
-.corrida__belt { display: flex; width: max-content; height: 100%; will-change: auto; }
-.corrida__belt img { flex: none; height: 100%; width: auto; aspect-ratio: 1400 / 420; object-fit: fill; }
-.corrida__layer--street .corrida__belt img { aspect-ratio: 1400 / 78; }
+.corrida__hills,
+.corrida__layer { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+.corrida__hills { opacity: .85; }
+.corrida__layer--street { height: 18.6%; object-fit: fill; }
 
 /* Pés da Sophia na rua (a rua ocupa ~18,6% do palco). */
-.corrida__runner {
+.corrida__run {
   position: absolute;
   z-index: 2;
-  bottom: 3%;
-  left: 66%;
+  bottom: 2%;
+  left: 0;
   height: 62%;
-  width: auto;
-  aspect-ratio: 180 / 300;
-  transform: translateX(-50%);
+  aspect-ratio: 284 / 320;
+  transform: translate3d(66cqw, 0, 0);
 }
+.corrida__shadow {
+  position: absolute; left: 14%; right: 6%; bottom: 3%; height: 7%;
+  background: radial-gradient(closest-side, rgba(52, 36, 24, .42), rgba(52, 36, 24, 0));
+}
+.corrida__runner { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 /* Véu translúcido à esquerda: título e texto continuam legíveis sobre a cena. */
 .corrida__veil {
@@ -47,26 +45,27 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .corrida.is-running .corrida__belt { animation: corrida-belt var(--belt, 20s) linear infinite; }
-  .corrida.is-running .corrida__layer--far .corrida__belt { --belt: 34s; }
-  .corrida.is-running .corrida__layer--mid .corrida__belt { --belt: 14s; }
-  .corrida.is-running .corrida__layer--street .corrida__belt,
-  .corrida.is-running .corrida__layer--near .corrida__belt { --belt: 7s; }
-  .corrida.is-running .corrida__runner { animation: corrida-bob .4s ease-in-out infinite; }
+  /* Do começo ao fim da faixa, sem retornar: sai pela direita e reentra pela esquerda, por trás do véu. */
+  .corrida.is-running .corrida__run { animation: corrida-dash 5s linear infinite; }
 }
 
-/* A esteira anda exatamente uma cópia (50% da trilha) e recomeça sem emenda visível. */
-@keyframes corrida-belt { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
-@keyframes corrida-bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-1.5%); } }
+@keyframes corrida-dash {
+  0%   { transform: translate3d(-100%, 0, 0); opacity: 0; }
+  14%  { opacity: 1; }
+  100% { transform: translate3d(100cqw, 0, 0); opacity: 1; }
+}
 
 @media (max-width: 640px) {
   .corrida__stage { height: min(78cqh, 17rem); }
-  .corrida__runner { left: 76%; height: 54%; }
+  .corrida__run { height: 54%; transform: translate3d(70cqw, 0, 0); }
   .corrida__veil {
     background: linear-gradient(180deg,
       color-mix(in srgb, var(--surface) 92%, transparent) 0%,
       color-mix(in srgb, var(--surface) 84%, transparent) 40%,
       color-mix(in srgb, var(--surface) 30%, transparent) 62%,
       color-mix(in srgb, var(--surface) 0%, transparent) 78%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .corrida.is-running .corrida__run { animation-duration: 3.4s; }
   }
 }
