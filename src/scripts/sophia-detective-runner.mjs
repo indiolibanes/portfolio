@@ -83,9 +83,11 @@ export function mountDetectiveRunner(root) {
   }
 
   function tick(now) {
-    if (last !== null) stepRun(run, Math.min((now - last) / 1000, .035), { jump, duck });
+    if (last !== null) {
+      stepRun(run, Math.min((now - last) / 1000, .035), { jump, duck });
+      jump = false;
+    }
     last = now;
-    jump = false;
     paint();
     if (run.over) {
       stop();
