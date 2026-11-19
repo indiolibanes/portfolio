@@ -649,6 +649,7 @@ import '../styles/sophia-room2d-temp.css';
 
       document.addEventListener('keydown', (event) => {
         if (event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) return;
+        if (event.target instanceof Element && event.target.closest('[data-detective-game]')) return;
         const onCanvas = event.target === canvas;
         if (event.key === 'Enter') {
           if (!onCanvas) return;

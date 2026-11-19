@@ -113,3 +113,25 @@ ${pops()}
 </g>
 </svg>`;
 }
+
+export function detectiveRunnerMarkup(): string {
+  const art = (defs() + sophia()).replace(/(id="|url\(#)(sdt-)/g, '$1runner-$2');
+  return `<svg viewBox="0 0 520 160" class="detective-runner__scene" aria-hidden="true" focusable="false">
+<rect width="520" height="160" rx="8" fill="#16172d"/>
+<path fill="#232744" d="M0 95h520v53H0z"/>
+<path fill="none" stroke="#35395b" stroke-width="18" d="M36 90V30h82v60m38 0V30h82v60m38 0V30h82v60m38 0V30h82v60"/>
+<path fill="none" stroke="#7279a5" stroke-width="2" d="M0 148h520"/>
+<path data-runner-track stroke="#aab0d7" stroke-width="2" stroke-dasharray="3 13" d="M0 154h520"/>
+<g data-runner-obstacle="folder" visibility="hidden">
+  <path fill="#dda958" stroke="#f9d393" stroke-width="2" d="M1-2v-23h9l4-4h13v27z"/>
+  <path fill="#f7e4b2" d="M6-20h15v7H6z"/>
+  <path stroke="#85552a" d="M8-17h9m-9 2h7"/>
+</g>
+<g data-runner-obstacle="lamp" visibility="hidden">
+  <path stroke="#8083aa" stroke-width="2" d="M18 0v84"/>
+  <path fill="#b47650" stroke="#ecaf72" stroke-width="2" d="m5 83 25 0 5 18H0z"/>
+  <path fill="#ffdc8c" d="M5 102h25l-4 7H9z"/>
+</g>
+<g data-runner-fox transform="translate(82 148)"><g class="detective-runner__fox-pose">${art}</g></g>
+</svg>`;
+}
