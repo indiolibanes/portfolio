@@ -1,8 +1,58 @@
 ---
-/** Sophia detetive (chapéu xadrez e lupa) rastreando pistas acima do título. Decorativa. */
-import { detectiveMarkup } from '../sophia-detective';
-
-const svg = detectiveMarkup();
+import { detectiveMarkup, detectiveRunnerMarkup } from '../sophia-detective';
 ---
 
-<div class="sophia-detective" data-art-anim aria-hidden="true"><Fragment set:html={svg} /></div>
+<div class="sophia-detective" data-detective-game>
+  <button class="sophia-detective__trigger" type="button" data-detective-open
+    aria-label="Abrir jogo secreto da Sophia detetive" aria-expanded="false" aria-controls="detective-runner">
+    <span data-art-anim aria-hidden="true"><Fragment set:html={detectiveMarkup()} /></span>
+  </button>
+  <section id="detective-runner" class="detective-runner" data-detective-panel hidden aria-label="Corrida da Detetive">
+    <div class="detective-runner__bar">
+      <strong>Corrida da Detetive</strong>
+      <span aria-label="Pontuação"><output data-detective-score aria-live="off">0</output> pts</span>
+      <button type="button" data-detective-close aria-label="Fechar jogo secreto">×</button>
+    </div>
+    <div data-detective-playfield tabindex="0" aria-label="Pista da Sophia"
+      aria-describedby="detective-controls">
+      <Fragment set:html={detectiveRunnerMarkup()} />
+    </div>
+    <p id="detective-controls">Pule as pastas e abaixe-se sob as luminárias. Use ↑ ou Espaço para pular e ↓ para abaixar.</p>
+    <div class="detective-runner__actions">
+      <button type="button" data-detective-jump>Pular</button>
+      <button type="button" data-detective-duck aria-pressed="false">Abaixar</button>
+      <button type="button" data-detective-restart hidden>Tentar de novo</button>
+    </div>
+    <p class="sr-only" data-detective-status role="status"></p>
+  </section>
+</div>
+
+<script>
+  import { mountDetectiveRunner } from '../scripts/sophia-detective-runner.mjs';
+  document.querySelectorAll<HTMLElement>('[data-detective-game]').forEach(mountDetectiveRunner);
+</script>
+
+<style>
+  .sophia-detective__trigger { display:block; width:100%; background:none; padding:0; border:0; border-radius:8px; cursor:pointer; }
+  .sophia-detective__trigger[hidden] { display:none; }
+  .sophia-detective__trigger span { display:block; }
+  .detective-runner { border:1px solid #676897; background:#1e2037; color:#f5ede1; border-radius:12px; padding:.65rem; line-height:1.4; }
+  .detective-runner__bar,.detective-runner__actions { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; }
+  .detective-runner__bar span { margin-inline-start:auto; font-variant-numeric:tabular-nums; }
+  .detective-runner button { min-height:44px; padding:.3rem .65rem; color:#ffedcc; background:#353554; border:1px solid #7978a4; border-radius:7px; cursor:pointer; touch-action:manipulation; }
+  .detective-runner button[aria-pressed="true"] { background:#625271; }
+  .detective-runner button[hidden] { display:none; }
+  .detective-runner p { margin:.4rem 0; font-size:.8rem; }
+  .sophia-detective button:focus-visible,[data-detective-playfield]:focus-visible { outline:3px solid #f5c975; outline-offset:3px; }
+  .detective-runner :global(.detective-runner__scene) { display:block; width:100%; height:auto; }
+  .detective-runner :global(.detective-runner__fox-pose) { transform:scale(.62); }
+  .detective-runner :global([data-runner-fox][data-duck] .detective-runner__fox-pose) { transform:scale(.68,.33); }
+  .detective-runner :global(.detective-runner__fox-pose *) { animation:none; }
+  .detective-runner :global(.detective-runner__fox-pose .sdt-legs-stand) { opacity:0; }
+  .detective-runner :global(.detective-runner__fox-pose .sdt-legs-walk) { opacity:1; }
+  @media (prefers-reduced-motion:no-preference) {
+    .detective-runner[data-running] :global(.sdt-leg-a),
+    .detective-runner[data-running] :global(.sdt-leg-b) { animation: sdt-step .20s ease-in-out infinite alternate; }
+    .detective-runner[data-running] :global(.sdt-leg-b) { animation-direction:alternate-reverse; }
+  }
+</style>
