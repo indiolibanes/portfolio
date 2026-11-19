@@ -3,11 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SophiaDetective from '../components/SophiaDetective.astro';
 import SophiaRoom2DTemp from '../components/SophiaRoom2DTemp.astro';
 import SophiaMascot from '../components/SophiaMascot.astro';
-import SophiaPortrait from '../components/SophiaPortrait.astro';
 import '../styles/sophia-tetris.css';
 import '../styles/sophia-pixel.css';
 import '../styles/sophia-illustration.css';
-import '../styles/sophia-404-3d.css';
+import '../styles/sophia-arcade.css';
 import '../styles/sophia-room2d-temp.css';
 ---
 
@@ -15,19 +14,6 @@ import '../styles/sophia-room2d-temp.css';
   title="404 — Sophia perdeu a página"
   description="A página solicitada não foi encontrada."
 >
-  <script is:inline>
-    (() => {
-      try {
-        const enabled = !!window.WebGL2RenderingContext
-          && !matchMedia('(prefers-reduced-motion: reduce)').matches
-          && !navigator.connection?.saveData
-          && !(navigator.deviceMemory <= 4)
-          && document.documentElement.dataset.legacyMode !== 'true'
-          && document.documentElement.dataset.seriousMode !== 'true';
-        if (enabled) document.documentElement.dataset.sophia404 = 'loading';
-      } catch {}
-    })();
-  </script>
   <main id="conteudo" class="sophia-404">
     <section class="sophia-404__panel" aria-labelledby="missing-title">
       <div class="sophia-404__layout">
@@ -51,12 +37,18 @@ import '../styles/sophia-room2d-temp.css';
 
           <div class="sophia-arcade-cabinet">
             <div class="sophia-arcade-top">
-              <div class="sophia-portrait-stage" data-sophia-stage="portrait" data-sophia-mood="idle">
-                <SophiaPortrait />
-                <canvas class="sophia-stage__canvas" data-sophia-canvas aria-hidden="true"></canvas>
-                <span class="sophia-stage__loading" aria-hidden="true">Sophia está chegando…</span>
-              </div>
-              <span class="sophia-arcade-top__label" aria-hidden="true">SOPHIA / LEGACY</span>
+              <picture class="sophia-arcade-reaction" aria-hidden="true">
+                <source media="(prefers-reduced-motion: reduce), (prefers-reduced-data: reduce)" srcset="/images/sophia/arcade-sophia-lab-still.webp" />
+                <img
+                  src="/images/sophia/arcade-sophia-lab.webp"
+                  width="192"
+                  height="192"
+                  alt=""
+                  decoding="async"
+                  loading="lazy"
+                  draggable="false"
+                />
+              </picture>
             </div>
             <div class="sophia-arcade-marquee" aria-hidden="true">
               <span>TETRIS</span><strong>404</strong>
@@ -865,7 +857,6 @@ import '../styles/sophia-room2d-temp.css';
     })();
   </script>
   <script>
-    import '../scripts/sophia-404-stage.js';
     import '../scripts/sophia-room2d-temp.js';
   </script>
 </BaseLayout>

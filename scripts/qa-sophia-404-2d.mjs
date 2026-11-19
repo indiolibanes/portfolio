@@ -15,11 +15,12 @@ try {
     await page.goto('http://127.0.0.1:4321/404.html',{waitUntil:'domcontentloaded'});
     const info=await page.evaluate(()=>({
       tetris:!!document.querySelector('[data-tetris-canvas]'),
+      labReaction:!!document.querySelector('.sophia-arcade-reaction img[src$="arcade-sophia-lab.webp"]'),
       stage3d:[...document.querySelectorAll('[data-sophia-stage]')].map(el=>el.dataset.sophiaStage),
       room2d:!!document.querySelector('[data-sophia-room2d]'),
       overflow:document.documentElement.scrollWidth>innerWidth+4,
     }));
-    if(!info.tetris||!info.room2d||info.overflow||info.stage3d.join(',')!=='portrait') {
+    if(!info.tetris||!info.labReaction||!info.room2d||info.overflow||info.stage3d.length!==0) {
       console.error('FAIL shell',width,info);failed=true;
     }
     await page.locator('[data-tetris-start]').click();

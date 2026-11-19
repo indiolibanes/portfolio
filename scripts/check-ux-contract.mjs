@@ -151,8 +151,9 @@ const room2dCss = read('src/styles/sophia-room2d-temp.css');
 const room2dScript = read('src/scripts/sophia-room2d-temp.js');
 const mascotSrc = read('src/components/SophiaMascot.astro');
 const illustrationCss = read('src/styles/sophia-illustration.css');
-check('404: portrait, mascot and temporary 2D room are wired in',
-  ['SophiaPortrait', 'SophiaMascot', 'SophiaRoom2DTemp'].every((n) => notFound.includes(`<${n} />`))
+check('404: Lab reaction, detective, mascot and 2D room are wired in',
+  ['SophiaDetective', 'SophiaMascot', 'SophiaRoom2DTemp'].every((n) => notFound.includes(`<${n} />`))
+  && notFound.includes('/images/sophia/arcade-sophia-lab.webp')
   && !notFound.includes('<SophiaLounge />')
   && !/SophiaObserver|SophiaGamer|tetris-fox/.test(notFound));
 check('404: faithful 2D room keeps original architecture but not the old fox',
