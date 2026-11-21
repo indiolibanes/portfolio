@@ -241,6 +241,36 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   color: var(--rhea-yellow);
 }
 
+/* A signal walks the route: each step takes the colour of the light passing through it.
+   Autoral only, opacity and background-position only, paused off screen. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route strong {
+    position: relative;
+    background: linear-gradient(100deg, currentColor 0 36%, #ffe08a 46%, #7be0b0 54%, currentColor 64% 100%) 100% 0 / 300% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rhea-card-flow 6.6s ease-in-out infinite;
+    animation-delay: calc(var(--rhea-step, 0) * 0.9s);
+  }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(2) { --rhea-step: 1; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(3) { --rhea-step: 2; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea.is-offscreen .rhea-card-route strong {
+    animation-play-state: paused;
+  }
+}
+@media (forced-colors: active) {
+  #lab .lab-project-card-rhea .rhea-card-route strong {
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    animation: none !important;
+  }
+}
+@keyframes rhea-card-flow {
+  0%, 30%, 100% { background-position: 100% 0; }
+  18% { background-position: 0 0; }
+}
+
 /* Editorial and Legacy are austere: the route stays, the coloured face goes. */
 html[data-serious-mode='true'] .rhea-card-stage,
 html[data-legacy-mode='true'] .rhea-card-stage {

@@ -1,79 +1,94 @@
 ---
 // RHEA: standalone project page. It deliberately does not use BaseLayout,
 // so the portfolio's modes, cursor, sprites and share card stay out of it.
-import { PUBLIC_PAGES, SITE } from '../../config';
-import DiscoveryLinks from '../../components/DiscoveryLinks.astro';
+import { SITE } from '../../config';
 import RheaFace from '../../components/rhea/RheaFace.astro';
 import '../../styles/rhea-lamps.css';
+import '../../styles/rhea-kinetic.css';
 
 const REPO = 'https://github.com/indiolibanes/RHEA';
 const DOCS = REPO + '/blob/main/docs/';
 
-const { title, description } = PUBLIC_PAGES.rhea;
+const title = 'RHEA: Google Drive for MCP assistants, within one folder';
+const description =
+  'RHEA is an open-source, self-hosted workspace that connects Google Drive to MCP-compatible assistants through one dedicated folder, with revocable grants and reviewed changes.';
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImageUrl = new URL('/rhea/og-rhea.jpg', SITE.url).toString();
 const ogImageAlt =
   'Rhea, a face formed by small glowing lamps inside a gold ring, above the words "Your Drive, within reach of your assistants. And no further." on deep green.';
 
 const tones = [
-  { id: 'forest', label: 'Forest' },
-  { id: 'earth', label: 'Earth' },
-  { id: 'ivory', label: 'Ivory' },
+  { id: 'forest', label: 'Forest', pt: 'Tom Floresta' },
+  { id: 'earth', label: 'Earth', pt: 'Tom Terra' },
+  { id: 'ivory', label: 'Ivory', pt: 'Tom Marfim' },
 ];
+
+// The page is English; every string below carries its Brazilian Portuguese
+// twin for the double-tap language switch (data-pt, see rhea-lang.mjs).
 
 const components = [
   {
     name: 'Web workspace',
+    pt: { name: 'Espaço de trabalho web', sr: 'de Espaço de trabalho web', text: 'Navegue, visualize, baixe e organize os arquivos da pasta do espaço de trabalho, e revise o que cada assistente pediu para alterar.' },
     text: 'Browse, preview, download and organize the files inside the workspace folder, and review what each assistant has asked to change.',
     href: REPO + '/tree/main/apps/web',
   },
   {
     name: 'Remote MCP gateway',
+    pt: { name: 'Gateway MCP remoto', sr: 'de Gateway MCP remoto', text: 'Um endpoint HTTPS dedicado onde assistentes externos se conectam com OAuth. Cada conexão pode ser revisada e revogada pelo espaço de trabalho.' },
     text: 'A dedicated HTTPS endpoint where external assistants connect with OAuth. Every connection can be reviewed and revoked from the workspace.',
     href: DOCS + 'mcp-gateway.md',
   },
   {
     name: 'Local MCP server',
+    pt: { name: 'Servidor MCP local', sr: 'de Servidor MCP local', text: 'Lê a documentação de projeto permitida por stdio, para assistentes que rodam junto do código.' },
     text: 'Reads allowlisted project documentation over stdio, for assistants that run next to the code.',
     href: REPO + '/tree/main/apps/mcp',
   },
   {
     name: 'Android prototype',
+    pt: { name: 'Protótipo Android', sr: 'de Protótipo Android', text: 'Um primeiro olhar sobre a entrada e a navegação de arquivos locais, construído e testado com arquivos de exemplo.' },
     text: 'An early look at local file intake and browsing, built and tested with sample files.',
     href: REPO + '/tree/main/apps/android',
   },
 ];
 
 const route = [
-  { step: 'Assistant', check: 'Allowlisted client with an exact callback URL' },
-  { step: 'MCP gateway', check: 'Its own OAuth grant; access tokens last five minutes at most' },
-  { step: 'Drive service', check: 'Only the drive.file scope; ancestry verified on the server' },
-  { step: 'RHEA folder', check: 'The one folder the app created in My Drive' },
+  { step: 'Assistant', check: 'Allowlisted client with an exact callback URL', pt: { step: 'Assistente', check: 'Cliente autorizado, com URL de retorno exata' } },
+  { step: 'MCP gateway', check: 'Its own OAuth grant; access tokens last five minutes at most', pt: { step: 'Gateway MCP', check: 'Concessão OAuth própria; tokens de acesso duram no máximo cinco minutos' } },
+  { step: 'Drive service', check: 'Only the drive.file scope; ancestry verified on the server', pt: { step: 'Serviço do Drive', check: 'Só o escopo drive.file; ascendência verificada no servidor' } },
+  { step: 'RHEA folder', check: 'The one folder the app created in My Drive', pt: { step: 'Pasta RHEA', check: 'A única pasta que o app criou no Meu Drive' } },
 ];
 
 const boundaries = [
   {
     term: 'One folder',
+    pt: { term: 'Uma só pasta', text: 'A RHEA pede ao Google apenas o escopo drive.file e confere, para cada arquivo e pasta que devolve, se ele realmente está dentro da pasta RHEA criada pelo app.' },
     text: 'RHEA asks Google only for the drive.file scope and checks, for every file and folder it returns, that it really lives under the app-created RHEA folder.',
   },
   {
     term: 'Separate permissions',
+    pt: { term: 'Permissões separadas', text: 'Ler é o padrão. Propor alterações e organizar arquivos são permissões separadas, e cada uma precisa ser aprovada explicitamente para cada assistente.' },
     text: 'Reading is the default. Proposing changes and organizing files are separate permissions, and each must be approved explicitly for each assistant.',
   },
   {
     term: 'Reviewed changes',
+    pt: { term: 'Alterações revisadas', text: 'Um assistente pode propor uma nova pasta, um renomear, um mover, uma lixeira reversível ou um destino de envio. Nada acontece até você confirmar no espaço de trabalho.' },
     text: 'An assistant may propose a new folder, a rename, a move, a reversible trash or an upload destination. Nothing happens until you confirm it in the workspace.',
   },
   {
     term: 'Revocable grants',
+    pt: { term: 'Concessões revogáveis', text: 'Cada assistente tem sua própria concessão, que você pode revogar a qualquer momento. Tokens do Google e cookies do espaço de trabalho nunca são entregues a um assistente.' },
     text: 'Each assistant has its own grant, which you can revoke at any time. Google tokens and workspace cookies are never handed to an assistant.',
   },
   {
     term: 'Untrusted content',
+    pt: { term: 'Conteúdo não confiável', text: 'O texto lido dos arquivos é tratado como entrada não confiável, e toda resposta de ferramenta tem tamanho limitado.' },
     text: 'Text read from files is treated as untrusted input, and every tool response is bounded in size.',
   },
   {
     term: 'Your own instance',
+    pt: { term: 'Sua própria instância', text: 'Você opera o site, a hospedagem, o aplicativo OAuth do Google e o endpoint MCP. Os guias usam Cloudflare Pages, Access, Workers e D1.' },
     text: 'You run the website, the hosting, the Google OAuth application and the MCP endpoint. The guides use Cloudflare Pages, Access, Workers and D1.',
   },
 ];
@@ -81,18 +96,21 @@ const boundaries = [
 const steps = [
   {
     title: 'Deploy the workspace',
+    pt: { title: 'Publique o espaço de trabalho', text: 'Publique o espaço de trabalho web no seu próprio projeto Pages, atrás do Cloudflare Access, e registre o seu cliente OAuth do Google.', link: 'Configuração do web e do Drive' },
     text: 'Publish the web workspace to your own Pages project behind Cloudflare Access, and register your own Google OAuth client.',
     href: DOCS + 'google-drive-oauth.md',
     link: 'Web and Drive setup',
   },
   {
     title: 'Deploy the gateway',
+    pt: { title: 'Publique o gateway', text: 'Rode o gateway MCP em um Worker HTTPS próprio, ligue o mesmo banco D1 aos dois serviços e aplique as migrações em ordem.', link: 'Configuração do gateway MCP' },
     text: 'Run the MCP gateway on its own HTTPS Worker, bind the same D1 database to both services and apply the migrations in order.',
     href: DOCS + 'mcp-gateway.md',
     link: 'MCP gateway setup',
   },
   {
     title: 'Connect, then authorize',
+    pt: { title: 'Conecte e depois autorize', text: 'Conecte sua conta Google no espaço de trabalho e depois registre e autorize cada assistente no seu endpoint /mcp.', link: 'Conexão de assistentes' },
     text: 'Connect your Google account in the workspace, then register and authorize each assistant against your /mcp endpoint.',
     href: DOCS + 'assistant-connections.md',
     link: 'Assistant onboarding',
@@ -110,13 +128,32 @@ const steps = [
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#0e2a21" />
     <script is:inline>
-      try {
-        const tone = localStorage.getItem('rhea.tone');
-        if (['forest', 'earth', 'ivory'].includes(tone)) document.documentElement.dataset.tone = tone;
-      } catch {}
+      {
+        const html = document.documentElement;
+        let tone = null;
+        let motion = null;
+        try {
+          tone = localStorage.getItem('rhea.tone');
+          motion = localStorage.getItem('rhea.motion');
+        } catch {}
+        if (['forest', 'earth', 'ivory'].includes(tone)) html.dataset.tone = tone;
+        // Motion follows the visitor's choice, else the system's reduced-motion setting.
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const on = motion ? motion === 'on' : !reduce;
+        html.dataset.motion = on ? 'on' : 'off';
+        let lang = null;
+        try {
+          lang = localStorage.getItem('rhea.lang');
+        } catch {}
+        if (lang === 'pt') html.lang = 'pt-BR';
+        // Hide the English for a moment when Portuguese will replace it, or when motion will play.
+        if (on || lang === 'pt') {
+          html.classList.add('kx-pending');
+          setTimeout(() => html.classList.remove('kx-pending'), 2500);
+        }
+      }
     </script>
     <link rel="canonical" href={canonicalUrl} />
-    <DiscoveryLinks />
     <link rel="icon" type="image/svg+xml" href="/rhea/rhea-icon.svg" />
     <link rel="preload" href="/rhea/fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
@@ -139,23 +176,25 @@ const steps = [
   </head>
 
   <body class="rhea-site">
-    <a class="rhea-skip" href="#rhea-main">Skip to content</a>
+    <a class="rhea-skip" href="#rhea-main" data-pt="Ir para o conteúdo">Skip to content</a>
 
     <header class="rhea-bar">
-      <a class="rhea-bar__brand" href="/rhea/" aria-label="RHEA, home">
+      <a class="rhea-bar__brand" href="/rhea/" aria-label="RHEA, home" data-pt-aria-label="RHEA, início">
         <RheaFace size={40} />
         <span class="rhea-bar__name" aria-hidden="true">RHEA</span>
       </a>
       <nav class="rhea-bar__nav" aria-label="RHEA">
-        <a href="#overview">Overview</a>
-        <a href="#boundaries">Boundaries</a>
-        <a href="#start">Get started</a>
+        <a href="#overview" data-pt="Visão geral">Overview</a>
+        <a href="#boundaries" data-pt="Limites">Boundaries</a>
+        <a href="#start" data-pt="Começar">Get started</a>
         <a href={REPO} rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </nav>
-      <div class="rhea-tones" role="group" aria-label="Color tone" hidden>
+      <button type="button" class="rhea-lang" lang="pt-BR" aria-label="Ler esta página em português" hidden>PT</button>
+      <button type="button" class="rhea-motion" aria-pressed="true" data-pt="Movimento" hidden>Motion</button>
+      <div class="rhea-tones" role="group" aria-label="Color tone" data-pt-aria-label="Tom de cor" hidden>
         {tones.map((tone) => (
           <button type="button" class={`rhea-tone rhea-tone--${tone.id}`} data-tone-choice={tone.id} aria-pressed="false" title={tone.label}>
-            <span class="rhea-sr">{tone.label} tone</span>
+            <span class="rhea-sr" data-pt={tone.pt}>{tone.label} tone</span>
           </button>
         ))}
       </div>
@@ -168,27 +207,28 @@ const steps = [
           <span class="rhea-glow rhea-glow--b"></span>
           <span class="rhea-stars"></span>
         </div>
-        <div class="rhea-hero__face">
+        <div class="rhea-hero__face" data-kx-reveal="zoom">
           <button class="rhea-hero__poke" type="button" aria-describedby="rhea-greet">
             <RheaFace size={210} label="Rhea, the RHEA assistant" />
           </button>
-          <p class="rhea-greet" id="rhea-greet" aria-live="polite">Hi, I'm Rhea.</p>
+          <p class="rhea-greet" id="rhea-greet" data-kx="auto" data-kx-loop="off" data-kx-wait="500">Hi, I'm Rhea.</p>
+          <p class="rhea-sr" id="rhea-greet-live" role="status"></p>
         </div>
-        <p class="rhea-label"><span class="rhea-diamond" aria-hidden="true"></span> In development · Open source · MIT</p>
-        <h1 id="rhea-hero-title">
+        <p class="rhea-label" data-kx="neon" data-kx-wait="250" data-pt="Em desenvolvimento · Código aberto · MIT"><span class="rhea-diamond kx-pulse" aria-hidden="true"></span> In development · Open source · MIT</p>
+        <h1 id="rhea-hero-title" data-kx="atoms" data-kx-loop="off" data-kx-wait="450" data-pt="Seu Drive, ao alcance dos seus assistentes.">
           Your Drive, within reach of your assistants.
-          <em>And no further.</em>
+          <em data-kx="neon" data-kx-wait="2100" data-pt="E nenhum passo além.">And no further.</em>
         </h1>
-        <p class="rhea-hero__lead">
+        <p class="rhea-hero__lead" data-kx-reveal="up" data-kx-delay="900" data-pt="A RHEA conecta o Google Drive a assistentes compatíveis com MCP por uma única pasta dedicada. Você hospeda a instância, aprova cada assistente e toda solicitação é conferida contra a única pasta que ele pode alcançar.">
           RHEA connects Google Drive to MCP-compatible assistants through one dedicated folder.
           You run the instance, you approve each assistant, and every request is checked against
           the only folder it is allowed to reach.
         </p>
-        <p class="rhea-hero__actions">
-          <a class="rhea-button rhea-button--primary" href={REPO} rel="noopener noreferrer">
+        <p class="rhea-hero__actions" data-kx-reveal="up" data-kx-delay="1300" data-kx-watch>
+          <a class="rhea-button rhea-button--primary kx-rim kx-magnet kx-nudge" data-kx-magnet data-pt="Ver o repositório" href={REPO} rel="noopener noreferrer">
             View the repository <span aria-hidden="true">↗</span>
           </a>
-          <a class="rhea-button" href={DOCS + 'google-drive-oauth.md'} rel="noopener noreferrer">
+          <a class="rhea-button kx-glow kx-magnet kx-nudge" data-kx-magnet data-pt="Ler o guia de configuração" href={DOCS + 'google-drive-oauth.md'} rel="noopener noreferrer">
             Read the setup guide <span aria-hidden="true">↗</span>
           </a>
         </p>
@@ -196,19 +236,19 @@ const steps = [
 
       <section id="overview" class="rhea-section rhea-section--ivory" aria-labelledby="overview-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">01 · Overview</p>
-          <h2 id="overview-title">Four parts, one boundary.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon" data-pt="01 · Visão geral">01 · Overview</p>
+          <h2 id="overview-title" data-kx="flip" data-pt="Quatro partes, um limite.">Four parts, one boundary.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500" data-pt="O repositório traz o código do espaço de trabalho e do gateway. Cada parte pode ser lida, executada e auditada separadamente.">
             The repository provides the workspace and the gateway source code. Each part can be read,
             run and audited on its own.
           </p>
         </div>
         <ul class="rhea-parts">
           {components.map((part) => (
-            <li>
-              <h3>{part.name}</h3>
-              <p>{part.text}</p>
-              <a href={part.href} rel="noopener noreferrer">Source <span aria-hidden="true">↗</span><span class="rhea-sr"> for {part.name}</span></a>
+            <li data-kx-reveal>
+              <h3 data-kx="auto" data-pt={part.pt.name}>{part.name}</h3>
+              <p data-pt={part.pt.text}>{part.text}</p>
+              <a href={part.href} rel="noopener noreferrer"><span data-pt="Código">Source</span> <span aria-hidden="true">↗</span><span class="rhea-sr" data-pt={part.pt.sr}> for {part.name}</span></a>
             </li>
           ))}
         </ul>
@@ -216,18 +256,18 @@ const steps = [
 
       <section class="rhea-section rhea-section--white" aria-labelledby="route-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">02 · How a request travels</p>
-          <h2 id="route-title">Every hop asks a question.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon" data-pt="02 · O caminho de uma solicitação">02 · How a request travels</p>
+          <h2 id="route-title" data-kx="run" data-pt="Cada salto faz uma pergunta.">Every hop asks a question.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500" data-pt="Um assistente nunca fala com o Google diretamente. A solicitação passa por verificações que não pode pular, e a resposta só pode vir de dentro da pasta RHEA.">
             An assistant never talks to Google directly. Its request passes through checks it cannot
             skip, and the answer can only come from inside the RHEA folder.
           </p>
         </div>
-        <ol class="rhea-route">
+        <ol class="rhea-route" data-kx-watch>
           {route.map((hop, index) => (
-            <li style={`--i:${index}`}>
-              <span class="rhea-route__node">{hop.step}</span>
-              <span class="rhea-route__check">{hop.check}</span>
+            <li style={`--i:${index}`} data-kx-reveal>
+              <span class="rhea-route__node" data-pt={hop.pt.step}>{hop.step}</span>
+              <span class="rhea-route__check" data-pt={hop.pt.check}>{hop.check}</span>
             </li>
           ))}
         </ol>
@@ -235,14 +275,14 @@ const steps = [
 
       <section id="boundaries" class="rhea-section rhea-section--forest" aria-labelledby="boundaries-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">03 · Boundaries</p>
-          <h2 id="boundaries-title">Access is narrow by design.</h2>
+          <p class="rhea-eyebrow" data-kx="neon" data-pt="03 · Limites">03 · Boundaries</p>
+          <h2 id="boundaries-title" data-kx="melt" data-pt="O acesso é estreito por projeto.">Access is narrow by design.</h2>
         </div>
         <dl class="rhea-boundaries">
           {boundaries.map((item) => (
-            <div>
-              <dt><span class="rhea-diamond" aria-hidden="true"></span>{item.term}</dt>
-              <dd>{item.text}</dd>
+            <div data-kx-reveal>
+              <dt data-kx="auto" data-pt={item.pt.term}><span class="rhea-diamond kx-pulse" aria-hidden="true"></span>{item.term}</dt>
+              <dd data-pt={item.pt.text}>{item.text}</dd>
             </div>
           ))}
         </dl>
@@ -250,30 +290,30 @@ const steps = [
 
       <section id="start" class="rhea-section rhea-section--ivory" aria-labelledby="start-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">04 · Get started</p>
-          <h2 id="start-title">Run your own instance.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon" data-pt="04 · Começar">04 · Get started</p>
+          <h2 id="start-title" data-kx="swap" data-pt="Rode sua própria instância.">Run your own instance.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500" data-pt="Clientes como Claude, ChatGPT e Gemini CLI podem se conectar por MCP remoto, conforme os planos e a elegibilidade de cada cliente.">
             Clients such as Claude, ChatGPT and Gemini CLI can connect over remote MCP, subject to each
             client's own plans and eligibility.
           </p>
         </div>
         <ol class="rhea-steps">
           {steps.map((step) => (
-            <li>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-              <a href={step.href} rel="noopener noreferrer">{step.link} <span aria-hidden="true">↗</span></a>
+            <li data-kx-reveal>
+              <h3 data-kx="auto" data-pt={step.pt.title}>{step.title}</h3>
+              <p data-pt={step.pt.text}>{step.text}</p>
+              <a href={step.href} rel="noopener noreferrer" data-pt={step.pt.link}>{step.link} <span aria-hidden="true">↗</span></a>
             </li>
           ))}
         </ol>
-        <div class="rhea-code">
-          <p class="rhea-code__label">Preview the interface locally · Node.js 24</p>
+        <div class="rhea-code" data-kx-reveal="tilt">
+          <p class="rhea-code__label" data-kx="neon" data-pt="Veja a interface localmente · Node.js 24">Preview the interface locally · Node.js 24</p>
           <pre><code>git clone https://github.com/indiolibanes/RHEA.git
 cd RHEA/apps/web
 npm ci
 npm test
 npm run dev</code></pre>
-          <p class="rhea-code__note">
+          <p class="rhea-code__note" data-pt="A API do Drive, as concessões de assistentes e os envios precisam de uma instalação com Cloudflare Access e do seu próprio aplicativo OAuth do Google.">
             The Drive API, assistant grants and uploads need a deployment with Cloudflare Access and
             your own Google OAuth application.
           </p>
@@ -284,18 +324,59 @@ npm run dev</code></pre>
     <footer class="rhea-footer">
       <RheaFace size={56} />
       <p>
-        RHEA is open source under the
-        <a href={REPO + '/blob/main/LICENSE'} rel="noopener noreferrer">MIT License</a>.
-        It is in development, so interfaces and setup may still change.
+        <span data-pt="A RHEA é de código aberto, sob a">RHEA is open source under the</span>
+        <a href={REPO + '/blob/main/LICENSE'} rel="noopener noreferrer" data-pt="Licença MIT">MIT License</a><span data-pt=". Está em desenvolvimento, então interfaces e instalação ainda podem mudar.">. It is in development, so interfaces and setup may still change.</span>
       </p>
       <p class="rhea-footer__by">
-        A project by <a href="/">Kauê Alencar</a> · <a href={REPO} rel="noopener noreferrer">indiolibanes/RHEA</a>
+        <span data-pt="Um projeto de">A project by</span> <a href="/">Kauê Alencar</a> · <a href={REPO} rel="noopener noreferrer">indiolibanes/RHEA</a>
       </p>
     </footer>
     <script>
       import { initRheaLamps } from '../../scripts/rhea-lamps.mjs';
+      import { initRheaKinetic } from '../../scripts/rhea-kinetic.mjs';
+      import { initRheaLang } from '../../scripts/rhea-lang.mjs';
 
       initRheaLamps();
+      const kinetic = initRheaKinetic();
+
+      // Rhea's lines, in both languages. The greeting follows the page language.
+      const lines = {
+        en: [
+          'Only the RHEA folder. Nothing else in your Drive.',
+          'I propose. You decide.',
+          'Revoke me whenever you like.',
+          'Your instance, your keys.',
+          "Hi, I'm Rhea.",
+        ],
+        pt: [
+          'Só a pasta RHEA. Nada mais no seu Drive.',
+          'Eu proponho. Você decide.',
+          'Revogue-me quando quiser.',
+          'Sua instância, suas chaves.',
+          'Oi, eu sou a Rhea.',
+        ],
+      };
+      const titles = {
+        en: document.title,
+        pt: 'RHEA: Google Drive para assistentes MCP, dentro de uma só pasta',
+      };
+      const greet = document.getElementById('rhea-greet');
+      const greetLive = document.getElementById('rhea-greet-live');
+      const faceLabel = document.querySelector('.rhea-hero__poke [data-rhea-lamps]');
+      let shown = lines.en.length - 1;
+      let current = 'en';
+
+      // Double tap (or double click) turns the page into Portuguese, clockwise;
+      // the next one turns it back, counter-clockwise.
+      initRheaLang({
+        button: document.querySelector('.rhea-lang'),
+        onChange: (lang, dir) => {
+          current = lang;
+          document.title = titles[lang];
+          faceLabel?.setAttribute('aria-label', lang === 'pt' ? 'Rhea, a assistente da RHEA' : 'Rhea, the RHEA assistant');
+          if (greet) kinetic.turn(greet, lines[lang][shown], dir);
+        },
+      });
 
       const hero = document.querySelector('.rhea-hero');
       if (hero && 'IntersectionObserver' in window) {
@@ -320,24 +401,33 @@ npm run dev</code></pre>
           root.dataset.tone = button.dataset.toneChoice;
           try { localStorage.setItem('rhea.tone', root.dataset.tone); } catch {}
           reflect();
+          // The tagline relights in the new tone.
+          const tagline = document.querySelector('.rhea-hero h1 em');
+          if (tagline && kinetic.motionOn()) kinetic.play(tagline, 'in', 'neon');
         });
         reflect();
       }
 
       // Rhea answers when poked, with the promises the project actually keeps.
-      const lines = [
-        'Only the RHEA folder. Nothing else in your Drive.',
-        'I propose. You decide.',
-        'Revoke me whenever you like.',
-        'Your instance, your keys.',
-        "Hi, I'm Rhea.",
-      ];
-      const greet = document.getElementById('rhea-greet');
+      const motionButton = document.querySelector('.rhea-motion');
+      if (motionButton) {
+        motionButton.hidden = false;
+        const sync = () => motionButton.setAttribute('aria-pressed', String(kinetic.motionOn()));
+        sync();
+        motionButton.addEventListener('click', () => {
+          kinetic.setMotion(!kinetic.motionOn());
+          sync();
+        });
+      }
+
       const poke = document.querySelector('.rhea-hero__poke');
       let line = 0;
       poke?.addEventListener('click', (event) => {
         if (event.detail === 0) poke.querySelector('[data-rhea-lamps]')?.dispatchEvent(new CustomEvent('rhea:poke'));
-        if (greet) greet.textContent = lines[line++ % lines.length];
+        shown = line++ % lines.en.length;
+        const text = lines[current][shown];
+        if (greet) kinetic.setText(greet, text);
+        if (greetLive) greetLive.textContent = text;
       });
     </script>
   </body>
@@ -451,6 +541,18 @@ npm run dev</code></pre>
     --on-primary: #faf7f0;
     --diamond: #c9a13e;
   }
+
+  /* Kinetic colours: neon on deep surfaces is gold (emerald in Ivory); on paper it is emerald. */
+  :root {
+    --kx-neon-deep: #ffe08a;
+    --kx-neon-deep-glow: rgba(233, 199, 91, 0.85);
+    --kx-neon-paper: #0c8f62;
+    --kx-neon-paper-glow: rgba(60, 214, 150, 0.6);
+    --kx-rim-a: #fffaf0;
+    --kx-rim-b: #6fe0b0;
+  }
+  :root[data-tone='earth'] { --kx-rim-b: #ffc46b; }
+  :root[data-tone='ivory'] { --kx-neon-deep: #0c8f62; --kx-neon-deep-glow: rgba(60, 214, 150, 0.55); --kx-rim-a: #ffe08a; }
 
   .rhea-site {
     --serif: 'RHEA Garamond', 'EB Garamond', Garamond, 'Times New Roman', serif;
@@ -694,6 +796,70 @@ npm run dev</code></pre>
 
   .rhea-hero.is-offscreen :is(.rhea-glow, .rhea-stars) { animation-play-state: paused; }
 
+  /* ---------- Kinetic layer ---------- */
+  .rhea-site { overflow-x: clip; touch-action: manipulation; }
+  .rhea-hero,
+  .rhea-section--forest,
+  .rhea-footer { --kx-neon: var(--kx-neon-deep); --kx-neon-glow: var(--kx-neon-deep-glow); --kx-bond: var(--kx-neon-deep); }
+  .rhea-section--ivory,
+  .rhea-section--white { --kx-neon: var(--kx-neon-paper); --kx-neon-glow: var(--kx-neon-paper-glow); --kx-bond: var(--kx-neon-paper); }
+
+  .rhea-button--primary { --kx-fill: var(--primary); }
+  .rhea-button--primary:hover { --kx-fill: var(--on-deep); }
+
+  .rhea-lang,
+  .rhea-motion {
+    display: inline-flex; align-items: center; gap: 0.55rem; min-height: 40px; padding: 0 0.9rem;
+    border: 1px solid var(--rule-deep); border-radius: 999px; background: none; color: var(--on-deep-muted);
+    font-family: var(--mono); font-size: var(--label); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .rhea-lang[hidden],
+  .rhea-motion[hidden] { display: none; }
+  .rhea-motion::before {
+    content: ''; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+    background: var(--on-deep-accent); opacity: 0.3; transition: opacity 160ms ease;
+  }
+  .rhea-motion[aria-pressed='true']::before { opacity: 1; box-shadow: 0 0 9px var(--on-deep-accent); }
+  .rhea-lang:hover,
+  .rhea-motion:hover { color: var(--on-deep-accent); border-color: var(--on-deep-accent); }
+
+  /* Flowchart: a signal travels the route; each node takes the colour of the light that passes. */
+  html[data-motion='on'] .rhea-route__node { position: relative; isolation: isolate; overflow: hidden; }
+  html[data-motion='on'] .rhea-route__node::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0;
+    background: linear-gradient(115deg, #ffe08a, #7be0b0, #d99a5c, #ffe08a) 0 0 / 300% 100%;
+    animation: rhea-flow-node 7.2s ease-in-out infinite, rhea-flow-hue 7.2s linear infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s);
+  }
+  html[data-motion='on'] .rhea-route li:last-child .rhea-route__node::before {
+    background: radial-gradient(circle at 50% 50%, rgba(233, 199, 91, 0.4), transparent 72%);
+    animation: rhea-flow-node 7.2s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s);
+  }
+  html[data-motion='on'] .rhea-route li:not(:last-child)::before {
+    content: ''; position: absolute; top: calc(1.55rem - 1px); left: calc(50% + 4.2rem); right: calc(-50% + 4.2rem);
+    height: 3px; border-radius: 2px; opacity: 0;
+    background: linear-gradient(90deg, transparent 0 30%, #ffe08a 50%, #7be0b0 62%, transparent 80% 100%) 100% 0 / 300% 100% no-repeat;
+    animation: rhea-flow-line 7.2s linear infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s + 0.35s);
+  }
+  html[data-motion='on'] .rhea-route__check { transition: color 240ms ease; }
+  @keyframes rhea-flow-node { 0% { opacity: 0; } 6% { opacity: 0.95; } 16% { opacity: 0.95; } 30%, 100% { opacity: 0; } }
+  @keyframes rhea-flow-hue { to { background-position: 100% 0; } }
+  @keyframes rhea-flow-line {
+    0% { opacity: 1; background-position: 100% 0; }
+    11% { opacity: 1; background-position: 0 0; }
+    11.5%, 100% { opacity: 0; background-position: 0 0; }
+  }
+  @keyframes rhea-flow-line-v {
+    0% { opacity: 1; background-position: 0 100%; }
+    11% { opacity: 1; background-position: 0 0; }
+    11.5%, 100% { opacity: 0; background-position: 0 0; }
+  }
+
+  html[data-motion='off'] :is(.rhea-glow, .rhea-stars) { animation: none; }
+
   @keyframes rhea-drift-a { to { transform: translate(6%, 10%) scale(1.08); } }
   @keyframes rhea-drift-b { to { transform: translate(-14%, -10%) scale(1.1); } }
   @keyframes rhea-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.65; } }
@@ -704,6 +870,11 @@ npm run dev</code></pre>
     .rhea-route { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; max-width: 26rem; }
     .rhea-route li:not(:last-child)::after {
       top: auto; bottom: -1.3rem; left: 50%; right: auto; width: 1px; height: 1rem; background: #c9a13e;
+    }
+    html[data-motion='on'] .rhea-route li:not(:last-child)::before {
+      top: auto; bottom: -1.3rem; left: 50%; right: auto; width: 3px; height: 1rem; margin-left: -1px;
+      background: linear-gradient(180deg, transparent 0 30%, #ffe08a 50%, #7be0b0 62%, transparent 80% 100%) 0 100% / 100% 300% no-repeat;
+      animation-name: rhea-flow-line-v;
     }
   }
   @media (max-width: 640px) {
