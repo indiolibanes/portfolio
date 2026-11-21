@@ -1,36 +1,7 @@
-// Pure-function contracts for the START wipe curve and the engine behaviour of the
-// immersive launch. This is NOT a rendering test: it proves bounds, continuity and
-// determinism, not that the result looks good.
+// Pure-function contracts for the immersive launch engine and thruster.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { R3, sampleImmersiveR3At as sample, startWipeFrames, startWipeScale, thrusterFx } from '../src/scripts/sophia-immersive-r3-timeline.mjs';
-
-test('START wipe: clockwise only, ends at +360° upright, readable mid-flight, no sudden zoom', () => {
-  const scale = startWipeScale(560, 150, 1280, 720);
-  const f = startWipeFrames(scale);
-  assert.equal(f[0].offset, 0);
-  assert.equal(f.at(-1).offset, 1);
-  assert.equal(f[0].angle, 0);
-  assert.ok(Math.abs(f.at(-1).angle - 360) < 1e-9, 'must end at exactly +360°');
-  for (let i = 1; i < f.length; i++) {
-    assert.ok(f[i].angle >= f[i - 1].angle, 'rotation must never reverse (clockwise gate)');
-    assert.ok(f[i].offset > f[i - 1].offset);
-  }
-  assert.ok(Math.min(...f.map(x => x.scale)) >= .9, 'wind-up dip stays small');
-  assert.ok(Math.abs(f.at(-1).scale - Math.max(2, scale) * 1.12) < 1e-9, 'final scale unchanged from the original wipe');
-  // After the wind-up the zoom is exponential: no step multiplies the size by more than 1.5×.
-  for (let i = 3; i < f.length; i++) assert.ok(f[i].scale / f[i - 1].scale <= 1.5, `zoom jump at sample ${i}`);
-  // Halfway through the flight the word is still a recognisable size (not already screen-filling).
-  const mid = f.find(x => x.offset >= .5);
-  assert.ok(mid.scale < Math.max(2, scale) * .4, 'mid-flight scale should leave the word readable');
-  // The word fades only once it is already far larger than the viewport word.
-  for (const x of f) if (x.offset <= .86) assert.equal(x.opacity, 1);
-  assert.equal(f.at(-1).opacity, 0);
-  for (const [w, h] of [[390, 640], [2560, 1080], [320, 900]]) {
-    const s = startWipeScale(240, 80, w, h);
-    assert.ok(startWipeFrames(s).at(-1).scale * 80 > Math.hypot(w, h), `wipe must cover ${w}x${h}`);
-  }
-});
+import { R3, sampleImmersiveR3At as sample, thrusterFx } from '../src/scripts/sophia-immersive-r3-timeline.mjs';
 
 test('engine power has no step at ignition or anywhere else', () => {
   let prev = sample(0).enginePower;

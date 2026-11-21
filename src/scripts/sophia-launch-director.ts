@@ -22,7 +22,7 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  let partialPad:ReturnType<typeof createVerticalLaunchPad>|null=null,partialLight:T.PointLight|null=null;
  let saturn:ReturnType<typeof createSaturnScene>|null=null;
  try {
- if(!rider||!hull||!rocket||!originalFlight||!originalWalk){const action=originalFlight?mixer.clipAction(originalFlight).play():null;const box=new T.Box3().setFromObject(root),c=box.getCenter(new T.Vector3());camera.position.copy(c).add(new T.Vector3(0,1,4));controls.target.copy(c);return {supported:false,finished:false,stats:{fallback:true},get cameraReturning(){return false;},apply(t:number){lastTime=t;root.visible=sampleImmersiveR3At(t).rocketVisible;if(action){action.time=t%originalFlight!.duration;mixer.update(0);}controls.enableRotate=controls.enableZoom=true;},resize(){},reset(){restore();},resetCamera(){manualCamera=false;},snapshot(){return {supported:false,time:lastTime,phase:'FLIGHT_LOOP'};},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();}};}
+ if(!rider||!hull||!rocket||!originalFlight||!originalWalk){const action=originalFlight?mixer.clipAction(originalFlight).play():null;const box=new T.Box3().setFromObject(root),c=box.getCenter(new T.Vector3());camera.position.copy(c).add(new T.Vector3(0,1,4));controls.target.copy(c);return {supported:false,finished:false,stats:{fallback:true},get cameraReturning(){return false;},apply(t:number){lastTime=t;root.visible=true;if(action){action.time=t%originalFlight!.duration;mixer.update(0);}controls.enableRotate=controls.enableZoom=true;},resize(){},reset(){restore();},resetCamera(){manualCamera=false;},snapshot(){return {supported:false,time:lastTime,phase:'FLIGHT_LOOP'};},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();}};}
  const nozzle=root.getObjectByName('Engine_Nozzle')??rocket;
  const sourceAxis=new T.Vector3(0,1,0).transformDirection(hull.matrixWorld),pivot=nozzle.getWorldPosition(new T.Vector3());
  const qPad=new T.Quaternion().setFromUnitVectors(sourceAxis,new T.Vector3(0,1,0)),qFlight=new T.Quaternion();
@@ -35,7 +35,16 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  const endTheta=Math.atan2(seatLocal.z,seatLocal.x),startTheta=endTheta-Math.PI;
  // Camera reference fixed by the original saddle side, not live user input.
  const cameraRadial=new T.Vector3(Math.cos(endTheta+.45),0,Math.sin(endTheta+.45));
+ const cameraDirection=cameraRadial.clone().setY(.18).normalize();
+ const cameraRight=new T.Vector3().crossVectors(new T.Vector3(0,1,0),cameraDirection).normalize();
+ const cameraUp=new T.Vector3().crossVectors(cameraDirection,cameraRight);
  const nodes=new Set<T.Object3D>();rider.traverse(n=>nodes.add(n));
+ const face=[...nodes].find((node):node is T.Mesh=>(node as T.Mesh).morphTargetDictionary?.Blink_Both!==undefined);
+ const faceWeights=face?.morphTargetInfluences;
+ const focusIndex=face?.morphTargetDictionary?.BrowRaise;
+ const concernIndex=face?.morphTargetDictionary?.BrowConcerned;
+ const blinkIndex=face?.morphTargetDictionary?.Blink_Both;
+ const smileIndex=face?.morphTargetDictionary?.Smile;
  const trackNode=(track:T.KeyframeTrack)=>T.PropertyBinding.findNode(root,T.PropertyBinding.parseTrackName(track.name).nodeName);
  const actorTrack=(track:T.KeyframeTrack)=>nodes.has(trackNode(track));
  function filtered(source:T.AnimationClip|undefined,name:string,predicate:(track:T.KeyframeTrack)=>boolean){if(!source)return null;const tracks=source.tracks.filter(predicate).map(t=>t.clone());if(!tracks.length)return null;const clip=new T.AnimationClip(name,source.duration,tracks),action=mixer.clipAction(clip);action.setLoop(T.LoopRepeat,Infinity).play();action.enabled=false;return {clip,action};}
@@ -59,9 +68,14 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
  const tangent=new T.Vector3(),followOffset=new T.Vector3(0,unit*.45,0),radial=new T.Vector3(),targetHip=new T.Vector3(),worldTarget=new T.Vector3(),temp=new T.Vector3(),offset=new T.Vector3(),previous=new T.Vector3(),sourceForward=new T.Vector3(0,0,1).applyQuaternion(sourceRiderWorldQ);sourceForward.y=0;sourceForward.normalize();
  const desiredQ=new T.Quaternion(),parentQ=new T.Quaternion(),yawQ=new T.Quaternion(),frameQ=new T.Quaternion(),gripWorld=new T.Vector3();
  let gripErrors:(number|null)[]=[null,null];let lastSample=sampleImmersiveR3At(0);
- const padEnvelope=pad.box.clone().expandByScalar(unit*.25);padEnvelope.min.x-=unit*.7;padEnvelope.max.x+=unit*.7;padEnvelope.max.y=Math.max(padEnvelope.max.y,unit*1.65);
- const autoPosition=new T.Vector3(),autoTarget=new T.Vector3(),returnFromP=new T.Vector3(),returnFromT=new T.Vector3(),frameCenter=new T.Vector3();
- let cameraDistance=unit*4;
+ const padEnvelope=pad.box.clone().expandByScalar(unit*.12);padEnvelope.max.y=Math.max(padEnvelope.max.y,unit*1.4);
+ const frameCenter=padEnvelope.getCenter(new T.Vector3());
+ const frameCorners=[];
+ for(const x of [padEnvelope.min.x,padEnvelope.max.x])
+  for(const y of [padEnvelope.min.y,padEnvelope.max.y])
+   for(const z of [padEnvelope.min.z,padEnvelope.max.z])
+    frameCorners.push(new T.Vector3(x,y,z).sub(frameCenter));
+ const autoPosition=new T.Vector3(),autoTarget=new T.Vector3(),returnFromP=new T.Vector3(),returnFromT=new T.Vector3();
  saturn=createSaturnScene(scene);
  const releaseSample=sampleImmersiveR3At(SATURN_FLYBY.release);
  const flybyCamera=new T.Vector3(releaseSample.x+7,releaseSample.height+2.5,5.6).multiplyScalar(unit);
@@ -87,11 +101,33 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
   saturn!.update(s.t,camera,autoPosition,autoTarget,unit,reducedMotion());
  }
  function fitCamera(s:ReturnType<typeof sampleImmersiveR3At>){
-  const follow=smooth((s.t-R3.launch)/2),wide=padEnvelope.getCenter(frameCenter);
-  autoTarget.copy(wide).lerp(temp.copy(carrier.position).add(followOffset),follow);
-  const minFov=2*Math.atan(Math.tan(T.MathUtils.degToRad(camera.fov/2))*Math.min(1,camera.aspect));
-  const radius=padEnvelope.getSize(temp).length()*.5;cameraDistance=T.MathUtils.lerp(radius/Math.sin(minFov/2)*1.12,unit*2.5/Math.sin(minFov/2),follow);
-  autoPosition.copy(autoTarget).addScaledVector(cameraRadial,cameraDistance);autoPosition.y+=cameraDistance*.18;
+  const follow=smooth((s.t-R3.launch)/2);
+  autoTarget.copy(frameCenter).lerp(temp.copy(carrier.position).add(followOffset),follow);
+  const verticalTan=Math.tan(T.MathUtils.degToRad(camera.fov/2));
+  const horizontalTan=verticalTan*camera.aspect;
+  // Fit the pad as seen from the starting angle so it reads clearly in portrait.
+  let padDistance=0;
+  for(const corner of frameCorners){
+   const width=Math.abs(corner.dot(cameraRight))/(horizontalTan*.82);
+   const height=Math.abs(corner.dot(cameraUp))/(verticalTan*.61);
+   padDistance=Math.max(padDistance,corner.dot(cameraDirection)+Math.max(width,height));
+  }
+  const flightDistance=unit*2.15/Math.sin(Math.atan(Math.min(verticalTan,horizontalTan)));
+  autoPosition.copy(autoTarget).addScaledVector(cameraDirection,T.MathUtils.lerp(padDistance,flightDistance,follow));
+ }
+ function animateExpression(t:number){
+  if(!faceWeights)return;
+  const focus=smooth((t-R3.enter)/.6)*(1-smooth((t-R3.prepare)/.35));
+  const brace=smooth((t-R3.grip)/.5)*(1-smooth((t-R3.orbitEnd)/.45));
+  const blink=Math.max(
+   smooth(1-Math.abs(t-(R3.prepare-.13))/.13),
+   smooth(1-Math.abs(t-(R3.settleEnd+.18))/.14)
+  );
+  const smile=smooth((t-R3.settleEnd)/1.1)*(1-.75*smooth((t-R3.flight)/1.6));
+  if(focusIndex!==undefined)faceWeights[focusIndex]=Math.max(faceWeights[focusIndex],.33*focus);
+  if(concernIndex!==undefined)faceWeights[concernIndex]=Math.max(faceWeights[concernIndex],.27*brace);
+  if(blinkIndex!==undefined)faceWeights[blinkIndex]=Math.max(faceWeights[blinkIndex],.9*blink);
+  if(smileIndex!==undefined)faceWeights[smileIndex]=Math.max(faceWeights[smileIndex],.36*smile);
  }
  function placeRider(s:ReturnType<typeof sampleImmersiveR3At>){
   if(hips)hipsLocal.copy(rider.worldToLocal(hips.getWorldPosition(temp)));
@@ -117,17 +153,18 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
   }
  }
  function apply(t:number,cameraDt?:number){if(disposed)return;t=Math.min(t,SATURN_FLYBY.end);const s=sampleImmersiveR3At(t),dt=Math.max(0,Math.min(.1,cameraDt??t-lastTime));lastTime=t;lastSample=s;lastFlyby=sampleSaturnFlyby(t);finished=t>=SATURN_FLYBY.end;
-   carrier.visible=s.rocketVisible;pad.group.visible=s.rocketVisible;
-  carrier.position.set((s.x-lastFlyby.travel)*unit,s.height*unit,0);carrier.quaternion.copy(qPad).slerp(qFlight,s.pitch);mixer.stopAllAction();restore();root.visible=s.rocketVisible;
+  carrier.visible=true;pad.group.visible=true;
+  carrier.position.set((s.x-lastFlyby.travel)*unit,s.height*unit,0);carrier.quaternion.copy(qPad).slerp(qFlight,s.pitch);mixer.stopAllAction();restore();root.visible=true;
   sample(walk,s.riderVisible?1-s.settle:0,Math.min(s.walkTime,R3.prepare-R3.enter));sample(flightActor,s.settle,Math.max(0,t-R3.flight));
   sample(idle,s.enginePower*(1-s.release),t-R3.ignition);sample(boost,s.release*(1-s.flightMix),t-R3.launch);sample(effects,s.flightMix,t-R3.flight);mixer.update(0);
-  root.updateMatrixWorld(true);placeRider(s);
+  animateExpression(t);root.updateMatrixWorld(true);placeRider(s);
   // Flicker is a pure function of active time (reproducible on seek/replay); steady under reduced motion.
   const fx=thrusterFx(s.t,s,reducedMotion());
   engineNodes.forEach(n=>{n.visible=s.enginePower>.001;});if(plume)plume.scale.multiplyScalar((s.t<R3.flight?.08+s.enginePower*.8:1)*fx.plume);
   shocks.forEach((n,i)=>n.scale.multiplyScalar(i%2?2-fx.shock:fx.shock));
   ribbons.forEach(n=>{n.visible=s.trailPower>.001;n.scale.z*=Math.max(.00001,s.trailPower);});
-  pad.update(t,s.release,s.enginePower,reducedMotion());light.position.copy(nozzle.getWorldPosition(temp));light.intensity=s.enginePower*2*fx.light;light.color.setRGB(1,.55+.2*s.enginePower,.3+.2*s.enginePower);
+  const steamFade=smooth((t-R3.launch)/1.2);
+  pad.update(t,s.release,s.enginePower,steamFade,reducedMotion());light.position.copy(nozzle.getWorldPosition(temp));light.intensity=s.enginePower*2*fx.light;light.color.setRGB(1,.55+.2*s.enginePower,.3+.2*s.enginePower);
   fitCamera(s);frameSaturn(s);
   if(lastFlyby.visible)pad.group.visible=false;
   if(finished){carrier.visible=false;light.intensity=0;}

@@ -17,18 +17,22 @@ const astronautAssetUrl = '/api/sophia/rocket';
   </head>
   <body>
     <main class="immersive" data-sophia-immersive data-astronaut-url={astronautAssetUrl}>
-      <div class="immersive__stage" data-stage role="img" tabindex="-1" inert aria-label="Sophia decola em um foguete, passa ao lado de Saturno e segue viagem. Arraste para girar e use a roda ou pinça para aproximar."></div>
-      <section class="immersive__intro" data-intro aria-label="Início da jornada da Sophia">
-        <div class="immersive__intro-frame" aria-hidden="true"><span>PROJECT SOPHIA</span><span>CELESTIAL FLIGHT · 01</span></div>
-        <button class="immersive__start" type="button" data-intro-start aria-label="Iniciar a jornada: Sophia vai ao encontro do foguete">
-          <span class="immersive__start-preface">PRESS ANY KEY TO</span>
-          <span class="immersive__start-main" aria-hidden="true">START<span class="immersive__start-cursor">_</span></span>
-          <span class="immersive__start-touch">OU TOQUE PARA COMEÇAR</span>
-        </button>
-        <div class="immersive__intro-footer" aria-hidden="true"><span>EST. 2026</span><span>AN INTERACTIVE JOURNEY</span></div>
+      <div class="immersive__stage" data-stage role="region" tabindex="0"
+        aria-label="Câmera 3D da plataforma da Sophia"
+        aria-describedby="immersive-camera-help"></div>
+      <section class="immersive__intro" data-intro aria-labelledby="immersive-question">
+        <div class="immersive__intro-card">
+          <h1 id="immersive-question" lang="en">ARE YOU READY TO START A NEW JOURNEY?</h1>
+          <div class="immersive__decision">
+            <button type="button" data-intro-start disabled lang="en">YES</button>
+            <button type="button" data-intro-no lang="en">NO</button>
+          </div>
+          <p class="immersive__choice-status" data-choice-status role="status"></p>
+        </div>
       </section>
+      <p class="immersive__camera-help" id="immersive-camera-help" data-camera-help>Arraste ou use as setas para girar em 360°</p>
       <div class="immersive__launch-hud" data-launch-hud hidden aria-live="polite" aria-atomic="true" role="status">
-        <span class="immersive__launch-label" data-countdown-label>PREPARANDO LANÇAMENTO</span>
+        <span class="immersive__launch-label" data-countdown-label>IGNIÇÃO</span>
         <strong class="immersive__countdown" data-countdown></strong>
       </div>
       <div class="immersive__flight-tools">
@@ -44,7 +48,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
         <button class="immersive__mute" type="button" data-mute aria-pressed="false">Silenciar sons</button>
       </div>
       <ExperimentalMenu />
-      <p class="immersive__status" data-status role="status" aria-live="polite">Carregando Sophia…</p>
+      <p class="immersive__status" data-status role="status">Carregando Sophia…</p>
       <button class="immersive__retry" type="button" data-retry hidden>Tentar novamente</button>
       <noscript><p class="immersive__nojs">Ative JavaScript para visualizar Sophia em 3D.</p></noscript>
     </main>
@@ -56,8 +60,24 @@ const astronautAssetUrl = '/api/sophia/rocket';
   :global(body) { margin: 0; min-height: 100svh; overflow: hidden; background: #000; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
   :global(*), :global(*::before), :global(*::after) { box-sizing: border-box; }
   .immersive { position: relative; isolation: isolate; width: 100%; min-height: 100vh; min-height: 100svh; background: #000; color: #e8e8e8; }
-  .immersive__stage { position: absolute; inset: 0; background: #000; touch-action: none; outline: none; }
-  .immersive__stage[inert] { pointer-events: none; }
+  .immersive__stage {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 52%, #252033 0%, #141323 42%, #080810 76%);
+    touch-action: none;
+    outline: none;
+  }
+  .immersive__stage:not([data-scene-ready]) {
+    background: radial-gradient(ellipse at 50% 42%, #262134, #09080f 69%);
+  }
+  .immersive__stage:not([data-scene-ready])::before {
+    content: "";
+    position: absolute;
+    inset: 12% 4% 25%;
+    background: url("/assets/immersive-banner/sophia-rocket-still.webp") center / contain no-repeat;
+    opacity: .62;
+  }
+  .immersive__stage:not([data-scene-ready]) :global(canvas) { visibility: hidden; }
   .immersive__stage:focus-visible { outline: 1px solid #8a9bc4; outline-offset: -5px; }
   .immersive__stage :global(canvas) { display: block; width: 100%; height: 100%; }
   .immersive__back, .immersive__retry { position: absolute; z-index: 65; padding: 10px 13px; border: 1px solid #ffffff30; border-radius: 999px; color: #e1e3e9; background: #101014a8; backdrop-filter: blur(8px); font-size: 12px; line-height: 1; text-decoration: none; transition: background 160ms ease; }
@@ -80,41 +100,123 @@ const astronautAssetUrl = '/api/sophia/rocket';
     min-height: 44px;
     pointer-events: auto;
   }
-  .immersive__retry { right: max(19px, env(safe-area-inset-right)); bottom: max(19px, env(safe-area-inset-bottom)); cursor: pointer; }
+  .immersive__retry { left: 50%; transform: translateX(-50%); top: max(168px, calc(env(safe-area-inset-top) + 155px)); cursor: pointer; }
   .immersive__back:hover, .immersive__retry:hover { background: #303038; }
   .immersive__back:focus-visible, .immersive__retry:focus-visible { outline: 2px solid #aabadd; outline-offset: 3px; }
   .immersive__retry[hidden] { display: none; }
-  .immersive__status, .immersive__nojs { position: absolute; z-index: 24; top: 74%; left: 50%; transform: translate(-50%, -50%); margin: 0; color: #bdc5d2; font-size: 13px; text-align: center; max-width: min(80vw, 520px); line-height: 1.6; pointer-events: none; }
-  .immersive__status[hidden] { display: none; }
-  @font-face { font-family: "Sophia Roguepunk"; src: url("../../assets/fonts/Roguepunk.ttf") format("truetype"); font-style: normal; font-weight: 400; font-display: swap; }
-  :global(html), :global(body) { background: #000 !important; background-image: none !important; overflow: hidden; color-scheme: dark; }
-  :global(.xm-header) { position: absolute; inset: 0 0 auto; z-index: 70; }
-  :global(.xm-drawer) { z-index: 75; }
-  .immersive__intro { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; overflow: hidden; background: #000; transition: opacity 780ms ease, visibility 780ms ease; }
-  .immersive__intro::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.33; background: repeating-linear-gradient(to bottom, transparent 0 5px, rgba(125,165,205,0.052) 6px); }
-  .immersive__intro::after { content: ""; position: absolute; top: 50%; left: 50%; width: min(88vw, 980px); height: 1px; background: linear-gradient(90deg, transparent, rgba(78,207,240,.22), transparent); transform: translate(-50%, 92px); pointer-events: none; }
-  .immersive__intro.is-started { opacity: 0; visibility: hidden; pointer-events: none; }
-  .immersive__intro-frame, .immersive__intro-footer { position: absolute; right: clamp(24px, 5vw, 74px); left: clamp(24px, 5vw, 74px); display: flex; justify-content: space-between; gap: 18px; color: #9da8b7; font: 600 10px/1.3 ui-monospace, Consolas, monospace; letter-spacing: .25em; }
-  .immersive__intro-frame { top: max(45px, env(safe-area-inset-top)); padding-top: 10px; border-top: 1px solid #8792a23c; }
-  .immersive__intro-footer { bottom: max(38px, env(safe-area-inset-bottom)); padding-bottom: 10px; border-bottom: 1px solid #8792a23c; }
-  .immersive__start { position: relative; display: grid; gap: 5px; justify-items: center; width: min(88vw, 820px); padding: 25px 10px; border: 0; background: transparent; color: #f0ecdf; cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; }
-  .immersive__start-preface { font: 500 clamp(13px, 2vw, 22px)/1.4 "Sophia Roguepunk", Impact, sans-serif; letter-spacing: .31em; text-shadow: 0 0 22px #5ce0ff38; }
-  .immersive__start-main { color: #f8ed37; font: 400 clamp(66px, 14vw, 158px)/.95 "Sophia Roguepunk", Impact, sans-serif; letter-spacing: -.025em; transform: skewX(-6deg); text-shadow: 3px 3px #111, -2px 0 #19d7e2; transition: text-shadow 180ms ease, transform 180ms ease; }
-  .immersive__start:hover .immersive__start-main { text-shadow: 4px 4px #f73e8f, -3px -2px #19d7e2, 0 0 42px #f8ed3755; transform: skewX(-8deg) scale(1.025); }
-  .immersive__start-cursor { color: #10d9eb; animation: sophia-cursor 1.12s steps(1, end) infinite; }
-  .immersive__start-touch { margin-top: 32px; color: #8a98a5; font: 600 10px/1.4 ui-monospace, Consolas, monospace; letter-spacing: .28em; }
-  .immersive__start:focus-visible { outline: 2px solid #f8ed37; outline-offset: 5px; }
-  @keyframes sophia-cursor { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-  @media (max-width: 650px) { .immersive__intro-frame, .immersive__intro-footer { font-size: 8px; letter-spacing: .13em; } .immersive__intro-frame { top: 115px; } .immersive__start-preface { letter-spacing: .17em; } .immersive__start-touch { letter-spacing: .1em; } .immersive__status { top: 79%; font-size: 11px; } }
-  @media (prefers-reduced-motion: reduce) { .immersive__back, .immersive__retry, .immersive__intro, .immersive__start-main { transition: none; } .immersive__start-cursor { animation: none; } }
-  .immersive__launch-hud { position: fixed; z-index: 90; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: grid; align-content: center; justify-items: center; gap: clamp(16px, 3vh, 40px); overflow: hidden; pointer-events: auto; color: #eaf8ff; background: radial-gradient(ellipse 70% 55% at 50% 48%, #17447e 0%, #071b3e 43%, #01050f 100%); text-align: center; isolation: isolate; }
-  .immersive__launch-hud::before { content: ""; position:absolute; inset:-25%; z-index:-1; background: radial-gradient(circle at 50% 50%, transparent 0 19%, rgba(82,187,255,.32) 20%, transparent 20.5% 27%, rgba(132,220,255,.18) 27.5%, transparent 28% 45%, rgba(150,212,255,.12) 45.5%, transparent 46%), conic-gradient(from 40deg at 50% 50%, transparent 0 18%, rgba(96,173,255,.12) 20%, transparent 23% 48%, rgba(150,216,255,.09) 50%, transparent 53% 80%, rgba(104,177,255,.08) 82%, transparent 86%); animation: sophia-count-corona 7s linear infinite; }
-  .immersive__launch-hud::after { content:"";position:absolute;inset:8%;border:1px solid rgba(167,223,255,.14);border-radius:50%;pointer-events:none;box-shadow:0 0 110px rgba(55,148,255,.18),inset 0 0 90px rgba(71,160,255,.08); }
-  @keyframes sophia-count-corona { to { transform:rotate(360deg); } }
-  .immersive__launch-hud[data-counting='true'] .immersive__countdown { text-shadow:0 0 24px rgba(255,255,255,.55),0 0 130px rgba(78,167,255,.75); }
-  .immersive__launch-hud[hidden], .immersive__playback[hidden] { display: none; }
-  .immersive__launch-label { color:#bddfff;font:700 clamp(12px,2vw,20px)/1.5 ui-monospace,monospace;letter-spacing:.32em;padding-inline:20px; }
-  .immersive__countdown { display:block;min-height:1em;color:#ffffff;font:400 min(82vw,76dvh)/.9 "Sophia Roguepunk",Impact,sans-serif;letter-spacing:-.045em;filter:drop-shadow(0 0 40px rgba(90,190,255,.55)); }
+  .immersive__status, .immersive__nojs {
+    position: absolute;
+    z-index: 50;
+    top: max(76px, calc(env(safe-area-inset-top) + 62px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(88vw, 420px);
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 12px;
+    color: #f2ebdd;
+    background: #171421e8;
+    font-size: .875rem;
+    text-align: center;
+    pointer-events: none;
+  }
+  .immersive__status[hidden], .immersive__intro[hidden],
+  .immersive__camera-help[hidden], .immersive__launch-hud[hidden], .immersive__playback[hidden] { display: none; }
+  .immersive__intro {
+    position: absolute;
+    z-index: 32;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    display: grid;
+    justify-items: center;
+    pointer-events: none;
+  }
+  .immersive__intro-card {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    width: min(100%, 550px);
+    padding: clamp(15px, 3vmin, 27px) clamp(15px, 4vmin, 36px);
+    border: 1px solid #d9b67e58;
+    border-radius: 20px;
+    background: linear-gradient(155deg, #24202cea, #100e16f5 75%);
+    box-shadow: 0 18px 70px #0009;
+    text-align: center;
+  }
+  .immersive__intro h1 {
+    max-width: 19ch;
+    margin: 0;
+    color: #fff1d1;
+    font: 500 clamp(1.3rem, 4vmin, 2.25rem)/1.02 Georgia, serif;
+    letter-spacing: .035em;
+    text-wrap: balance;
+  }
+  .immersive__decision { display: grid; grid-template-columns: repeat(2, minmax(98px, 1fr)); gap: 10px; }
+  .immersive__decision button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid #d9b67e80;
+    border-radius: 10px;
+    background: #28222d;
+    color: #fff1d7;
+    font: 700 .85rem/1 system-ui, sans-serif;
+    letter-spacing: .12em;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .immersive__decision [data-intro-start] { background: #f2cd8e; color: #231812; border-color: #f2cd8e; }
+  .immersive__decision button:hover:not(:disabled) { filter: brightness(1.15); }
+  .immersive__decision button:focus-visible { outline: 2px solid #fff4d7; outline-offset: 3px; }
+  .immersive__decision button:disabled { opacity: .55; cursor: wait; }
+  .immersive__choice-status { margin: 0; color: #e6d9c9; font-size: .875rem; }
+  .immersive__choice-status:empty { display: none; }
+  .immersive__camera-help {
+    position: fixed;
+    z-index: 13;
+    top: max(22px, env(safe-area-inset-top));
+    left: 50%;
+    width: max-content;
+    max-width: calc(100% - 40px);
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: #16121ddd;
+    color: #eee5d6;
+    font-size: .875rem;
+    pointer-events: none;
+  }
+  .immersive__launch-hud {
+    position: fixed;
+    z-index: 25;
+    top: max(75px, calc(env(safe-area-inset-top) + 66px));
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    min-width: 120px;
+    padding: 10px 16px;
+    border: 1px solid #eac98a6b;
+    border-radius: 16px;
+    color: #fff3d6;
+    background: #1a121bd9;
+    box-shadow: 0 15px 35px #0005;
+    pointer-events: none;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .immersive__launch-label { font: 700 .875rem/1.3 system-ui, sans-serif; letter-spacing: .065em; }
+  .immersive__countdown { font: 500 clamp(2rem, 8vmin, 4rem)/.95 Georgia, serif; }
+  @media (max-width: 850px) {
+    .immersive__camera-help { top: max(88px, calc(env(safe-area-inset-top) + 76px)); }
+    .immersive__status { top: max(118px, calc(env(safe-area-inset-top) + 106px)); }
+  }
+  @media (max-height: 480px) and (orientation: landscape) {
+    .immersive__intro { justify-items: end; }
+    .immersive__intro-card { width: min(36vw, 330px); }
+  }
   .immersive__flight-tools {
     position: absolute;
     z-index: 30;
@@ -129,10 +231,6 @@ const astronautAssetUrl = '/api/sophia/rocket';
   .immersive__playback button { pointer-events: auto; }
   .immersive__playback button { border: 1px solid #ffffff25; border-radius: 99px; padding: 10px 13px; background: #101014a8; color: #e1e3e9; cursor: pointer; font: 500 11px/1 system-ui, sans-serif; }
   .immersive__playback button:focus-visible { outline: 2px solid #ebb047; outline-offset: 3px; }
-  @media(max-width:650px) { .immersive__launch-label { max-width:95vw;font-size:12px;letter-spacing:.18em; } .immersive__countdown { font-size:min(84vw,67dvh); } }
-  @media(prefers-reduced-motion:reduce) { .immersive__launch-hud::before { animation:none; } }
-  .immersive__intro.is-starting .immersive__start { opacity:0; transition:opacity 130ms; pointer-events:none; }
-  .immersive__intro.is-starting .immersive__intro-frame, .immersive__intro.is-starting .immersive__intro-footer { opacity:0; }
   .immersive__mute { border:1px solid #ffffff30; color:#e8e8f0; background:#080a12c0; padding: 0 12px; font: 500 12px/1 system-ui, sans-serif; border-radius:24px; cursor:pointer; }
   .immersive__mute:focus-visible {outline:2px solid #f8ed37;outline-offset:3px;}
   .immersive__audio-status { margin: 0; max-width: 40ch; color: #aeb8ca; font-size: 12px; }

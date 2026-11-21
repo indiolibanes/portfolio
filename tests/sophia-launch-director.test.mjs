@@ -11,6 +11,10 @@ function fixture() {
   const rider = new THREE.Group(); rider.name = 'Sophia_Astronauta_Rider_Mount'; rider.position.y = .216; assembly.add(rider);
   const motion = new THREE.Bone(); motion.name = 'Root_Motion'; rider.add(motion);
   const hips = new THREE.Bone(); hips.name = 'Hips'; hips.position.y = .3; motion.add(hips);
+  const face = new THREE.Mesh();
+  face.morphTargetDictionary = { BrowRaise: 0, BrowConcerned: 1, Blink_Both: 2, Smile: 3 };
+  face.morphTargetInfluences = [0, 0, 0, 0];
+  rider.add(face);
   const geometry = new THREE.BoxGeometry(.08, .08, .14), positions = geometry.getAttribute('position');
   geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(new Uint16Array(positions.count * 4), 4));
   const weights = new Float32Array(positions.count * 4); for (let i = 0; i < positions.count; i++) weights[i * 4] = 1;
@@ -34,12 +38,15 @@ function fixture() {
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(38, 16 / 9, .005, 100);
   const original = JSON.stringify(gltf.animations.map(c => THREE.AnimationClip.toJSON(c)));
   const director = createLaunchDirector(gltf, scene, camera, controls, () => false);
-  return { director, controls, original, gltf, rider, motion };
+  return { director, controls, original, gltf, rider, motion, face };
 }
 test('R3 hides rider at reveal, preserves walking root, and settles on the real mount after liftoff', () => {
-  const { director, rider, motion, gltf, original } = fixture();
+  const { director, controls, rider, motion, gltf, original } = fixture();
   assert.equal(director.supported, true);
   director.apply(0); assert.equal(rider.visible, false); assert.equal(director.snapshot().ribbonsVisible, false);
+  assert.equal(director.snapshot().rocketVisible, true);
+  assert.equal(controls.enableRotate, true);
+  director.apply(7.1); assert.equal(director.snapshot().rocketVisible, true);
   director.apply(4); assert.equal(rider.visible, true); assert.ok(Math.abs(motion.position.x) < .001);
   const before = director.snapshot(); director.apply(9.4); assert.ok(director.snapshot().riderSeatError < 1e-8);
   director.apply(11.5); assert.ok(director.snapshot().riderSeatError < 1e-8); assert.deepEqual(director.snapshot().baseWorld, before.baseWorld);
@@ -51,6 +58,21 @@ test('world transforms are identical after seeking and replay', () => {
   const { director } = fixture(); director.apply(5.45); const expected = director.snapshot();
   director.apply(14); director.apply(0); director.apply(7); director.apply(5.45); assert.deepEqual(director.snapshot(), expected);
   director.reset(); director.apply(5.45); assert.deepEqual(director.snapshot(), expected); director.dispose();
+});
+test('Sophia anticipates the climb, blinks, braces and smiles using the authored facial targets', () => {
+  const { director, face } = fixture();
+  assert.deepEqual(face.morphTargetInfluences, [0, 0, 0, 0]);
+  director.apply(4);
+  assert.ok(face.morphTargetInfluences[0] > .3);
+  director.apply(4.67);
+  assert.ok(face.morphTargetInfluences[2] > .85);
+  director.apply(7.4);
+  assert.ok(face.morphTargetInfluences[1] > .25);
+  director.apply(10.7);
+  assert.ok(face.morphTargetInfluences[3] > .33);
+  director.reset();
+  assert.deepEqual(face.morphTargetInfluences, [0, 0, 0, 0]);
+  director.dispose();
 });
 test('unknown hierarchy has an explicit, usable original-flight fallback', () => {
   const root = new THREE.Group(), controls = { target: new THREE.Vector3(), addEventListener() {} };
