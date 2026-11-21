@@ -2,6 +2,7 @@
 // RHEA: standalone project page. It deliberately does not use BaseLayout,
 // so the portfolio's modes, cursor, sprites and share card stay out of it.
 import { SITE } from '../../config';
+import DiscoveryLinks from '../../components/DiscoveryLinks.astro';
 import RheaFace from '../../components/rhea/RheaFace.astro';
 import '../../styles/rhea-lamps.css';
 import '../../styles/rhea-kinetic.css';
@@ -154,6 +155,7 @@ const steps = [
       }
     </script>
     <link rel="canonical" href={canonicalUrl} />
+    <DiscoveryLinks />
     <link rel="icon" type="image/svg+xml" href="/rhea/rhea-icon.svg" />
     <link rel="preload" href="/rhea/fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
