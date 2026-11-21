@@ -1,59 +1,28 @@
 ---
-// RHEA face mark, inlined so it can blink, look around and react.
-// Behaviour: src/scripts/rhea-face.js. Styles: src/styles/rhea-face.css.
+// Rhea's face, formed by lamps. The static frame ships in the HTML;
+// src/scripts/rhea-lamps.mjs takes over on a canvas to blink, look around,
+// smile on hover and ripple when touched.
+import { staticSvg } from '../../scripts/rhea-lamps.mjs';
+
 interface Props {
   size?: number;
+  rows?: number;
   label?: string;
   class?: string;
 }
 
-const { size = 96, label, class: className } = Astro.props;
+const { size = 96, rows = size < 72 ? 7 : 11, label, class: className } = Astro.props;
 const uid = 'rhea-' + Math.random().toString(36).slice(2, 8);
 ---
 
-<svg
-  class:list={['rhea-face', className]}
-  data-rhea-face
-  viewBox="0 0 96 96"
-  width={size}
-  height={size}
+<span
+  class:list={['rhea-lamps', className]}
+  data-rhea-lamps
+  data-rows={rows}
+  style={`width:${size}px`}
   role={label ? 'img' : undefined}
   aria-label={label}
   aria-hidden={label ? undefined : 'true'}
-  focusable="false"
 >
-  <defs>
-    <clipPath id={`${uid}-sky`}><circle cx="48" cy="50" r="30"/></clipPath>
-    <clipPath id={`${uid}-head`}><circle cx="48" cy="50" r="19.5"/></clipPath>
-  </defs>
-  <g class="rhea-sky">
-    <circle cx="48" cy="50" r="30" fill="#1F4A3A"/>
-    <g clip-path={`url(#${uid}-sky)`}>
-      <path class="rhea-hair-back" d="M25 74C21 56 24 31 48 29C72 31 75 56 71 74Z" fill="#6A4329"/>
-      <path class="rhea-shoulders" d="M22 86C24 74 34 69 48 69C62 69 72 74 74 86Z" fill="#0E2A21"/>
-      <path d="M40 69.6Q48 76 56 69.6" fill="none" stroke="#C9A13E" stroke-width="1.4"/>
-    </g>
-  </g>
-  <path class="rhea-ring" d="M57.37 17.32A34 34 0 1 1 38.63 17.32" fill="none" stroke="#C9A13E" stroke-width="4" stroke-linecap="round"/>
-  <circle class="rhea-spark" cx="48" cy="16" r="2.6" fill="#E9C75B"/>
-  <g class="rhea-antenna">
-    <path d="M48 15V30" stroke="#F1E8D2" stroke-width="2.2" stroke-linecap="round"/>
-    <circle class="rhea-knot" cx="48" cy="10.5" r="3.6" fill="#F1E8D2"/>
-  </g>
-  <g class="rhea-head">
-    <circle cx="48" cy="50" r="19.5" fill="#F1E8D2"/>
-    <path class="rhea-hair" clip-path={`url(#${uid}-head)`} fill="#6A4329"
-      d="M26 54C27 42 33 35 42 34.5C45 34.4 47 36 48 38.4C49 36 51 34.4 54 34.5C63 35 69 42 70 54L76 54L76 24L20 24L20 54Z"/>
-    <path class="rhea-gem" d="M48 33.2L51.2 37L48 40.8L44.8 37Z" fill="#E9C75B"/>
-    <g class="rhea-cheeks" fill="#E0A36F">
-      <circle cx="37.2" cy="57.6" r="2.7"/>
-      <circle cx="58.8" cy="57.6" r="2.7"/>
-    </g>
-    <g class="rhea-gaze">
-      <g class="rhea-eye rhea-eye--l"><ellipse cx="41" cy="51.5" rx="2.5" ry="3.3" fill="#0E2A21"/><circle cx="41.8" cy="50.3" r=".85" fill="#FAF7F0"/></g>
-      <g class="rhea-eye rhea-eye--r"><ellipse cx="55" cy="51.5" rx="2.5" ry="3.3" fill="#0E2A21"/><circle cx="55.8" cy="50.3" r=".85" fill="#FAF7F0"/></g>
-    </g>
-    <path class="rhea-mouth" d="M44.6 59.2Q48 62.4 51.4 59.2" fill="none" stroke="#0E2A21" stroke-width="1.7" stroke-linecap="round"/>
-    <path class="rhea-mouth-open" d="M43.8 58.6Q48 59.6 52.2 58.6Q51.6 64.4 48 64.4Q44.4 64.4 43.8 58.6Z" fill="#0E2A21"/>
-  </g>
-</svg>
+  <svg viewBox="0 0 96 96" focusable="false" aria-hidden="true" set:html={staticSvg({ rows, idPrefix: uid })} />
+</span>

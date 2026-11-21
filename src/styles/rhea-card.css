@@ -26,11 +26,10 @@
   aspect-ratio: 1;
 }
 
-.rhea-card-mark {
+.rhea-card-mark.rhea-lamps {
   position: relative;
   z-index: 1;
-  width: clamp(128px, 14vw, 168px);
-  height: auto;
+  width: clamp(128px, 14vw, 168px) !important;
 }
 
 .rhea-card-orbit { display: none; }

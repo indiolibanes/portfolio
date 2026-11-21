@@ -13,7 +13,7 @@ import ImmersiveBanner from '../components/ImmersiveBanner.astro';
 import SophiaCorrida from '../components/SophiaCorridaWebP.astro';
 import { PROFILE, SOCIALS } from '../config';
 import '../styles/rhea-card.css';
-import '../styles/rhea-face.css';
+import '../styles/rhea-lamps.css';
 import RheaFace from '../components/rhea/RheaFace.astro';
 import { sectionNumber } from '../section-order';
 
@@ -801,8 +801,8 @@ const METHOD_FLOWS = [
       </article>
 
       <script>
-        import { initRheaFaces } from '../scripts/rhea-face.js';
-        initRheaFaces();
+        import { initRheaLamps } from '../scripts/rhea-lamps.mjs';
+        initRheaLamps();
         const rheaCard = document.getElementById('rhea');
         if (rheaCard && 'IntersectionObserver' in window) {
           new IntersectionObserver(([entry]) => rheaCard.classList.toggle('is-offscreen', !entry.isIntersecting))

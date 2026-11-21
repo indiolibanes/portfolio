@@ -3,7 +3,7 @@
 // so the portfolio's modes, cursor, sprites and share card stay out of it.
 import { SITE } from '../../config';
 import RheaFace from '../../components/rhea/RheaFace.astro';
-import '../../styles/rhea-face.css';
+import '../../styles/rhea-lamps.css';
 
 const REPO = 'https://github.com/indiolibanes/RHEA';
 const DOCS = REPO + '/blob/main/docs/';
@@ -14,7 +14,7 @@ const description =
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImageUrl = new URL('/rhea/og-rhea.jpg', SITE.url).toString();
 const ogImageAlt =
-  'Rhea, a friendly round face with brown hair and a small antenna, inside a gold ring above the words "Your Drive, within reach of your assistants. And no further." on deep green.';
+  'Rhea, a face formed by small glowing lamps inside a gold ring, above the words "Your Drive, within reach of your assistants. And no further." on deep green.';
 
 const tones = [
   { id: 'forest', label: 'Forest' },
@@ -170,7 +170,7 @@ const steps = [
         </div>
         <div class="rhea-hero__face">
           <button class="rhea-hero__poke" type="button" aria-describedby="rhea-greet">
-            <RheaFace size={156} label="Rhea, the RHEA assistant" />
+            <RheaFace size={210} label="Rhea, the RHEA assistant" />
           </button>
           <p class="rhea-greet" id="rhea-greet" aria-live="polite">Hi, I'm Rhea.</p>
         </div>
@@ -293,9 +293,9 @@ npm run dev</code></pre>
       </p>
     </footer>
     <script>
-      import { initRheaFaces } from '../../scripts/rhea-face.js';
+      import { initRheaLamps } from '../../scripts/rhea-lamps.mjs';
 
-      initRheaFaces();
+      initRheaLamps();
 
       const hero = document.querySelector('.rhea-hero');
       if (hero && 'IntersectionObserver' in window) {
@@ -336,7 +336,7 @@ npm run dev</code></pre>
       const poke = document.querySelector('.rhea-hero__poke');
       let line = 0;
       poke?.addEventListener('click', (event) => {
-        if (event.detail === 0) poke.querySelector('[data-rhea-face]')?.dispatchEvent(new PointerEvent('pointerdown'));
+        if (event.detail === 0) poke.querySelector('[data-rhea-lamps]')?.dispatchEvent(new CustomEvent('rhea:poke'));
         if (greet) greet.textContent = lines[line++ % lines.length];
       });
     </script>
@@ -573,13 +573,15 @@ npm run dev</code></pre>
     animation: rhea-twinkle 5s ease-in-out infinite;
   }
   :root[data-tone='ivory'] .rhea-stars { opacity: 0.35; }
+  :root[data-tone='earth'] .rhea-lamps { --rhea-lamp-disc: #1f130b; --rhea-lamp-off: #6a4329; --rhea-lamp-on: #ffc46b; }
+  :root[data-tone='ivory'] .rhea-lamps { --rhea-lamp-disc: #12302a; }
 
   .rhea-hero__face { display: grid; justify-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
   .rhea-hero__poke {
     display: block; padding: 0.4rem; border: 0; border-radius: 50%; background: none;
     color: inherit; cursor: pointer; touch-action: manipulation;
   }
-  .rhea-hero__poke .rhea-face { width: clamp(124px, 15vw, 156px); height: auto; }
+  .rhea-hero__poke .rhea-lamps { width: clamp(150px, 18vw, 210px) !important; }
   .rhea-greet { min-height: 1.7em; color: var(--on-deep-accent); letter-spacing: 0.1em; text-transform: none; }
 
   .rhea-label { color: var(--on-deep-muted); margin-bottom: 1.2rem; }
