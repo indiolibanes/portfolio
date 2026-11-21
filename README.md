@@ -30,7 +30,7 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 | `/` | portfólio principal, com sete seções canônicas |
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
-| `/rhea/` | RHEA project page, a standalone identity in English |
+| `/rhea/` | RHEA project page, a standalone identity in English; a double tap turns it into Brazilian Portuguese and back (`data-pt` attributes, `src/scripts/rhea-lang.mjs`) |
 | `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
 | `/experimentos/sk/` | laboratório Shorekeeper; entrega autenticada e importação local |
 | `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |

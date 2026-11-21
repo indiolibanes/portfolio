@@ -191,6 +191,24 @@ html[data-motion='on'] .kx-run[data-kx-fx='neon'][data-kx-phase='out'] .kx-ch::a
   100% { opacity: 0; }
 }
 
+/* ---- turn: every letter half way round, swap while upside down, the other half.
+   --dir is 1 for clockwise and -1 for counter-clockwise (language switch). ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='turn'] .kx-ch {
+  animation-duration: var(--kx-dur, 360ms);
+  animation-delay: calc(var(--i) * var(--kx-stagger, 10ms));
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+html[data-motion='on'] .kx-run[data-kx-fx='turn'][data-kx-phase='a'] .kx-ch { animation-name: kx-turn-a; animation-fill-mode: forwards; }
+html[data-motion='on'] .kx-run[data-kx-fx='turn'][data-kx-phase='b'] .kx-ch { animation-name: kx-turn-b; animation-fill-mode: backwards; }
+@keyframes kx-turn-a {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(calc(var(--dir, 1) * 180deg)); }
+}
+@keyframes kx-turn-b {
+  from { transform: rotate(calc(var(--dir, 1) * 180deg)); }
+  to { transform: rotate(calc(var(--dir, 1) * 360deg)); }
+}
+
 /* ---------- Blocks that appear and disappear ---------- */
 html[data-motion='on'] .kx-rv-hidden { opacity: 0; }
 html[data-motion='on'] .kx-rv-in {

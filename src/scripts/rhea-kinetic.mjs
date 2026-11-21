@@ -8,6 +8,7 @@
 //   data-kx-wait="ms"                              hold back the first arrival (hero choreography)
 //   data-kx-delay="ms"                             same, for a data-kx-reveal block
 //   data-kx-reveal[="up|left|right|zoom|tilt"]    block that appears and disappears
+//   data-pt="…"                                     host whose text turn() can replace (see rhea-lang.mjs)
 //   data-kx-magnet                                button that leans toward a mouse
 //   data-kx-watch                                 pause CSS animation while off-screen
 //
@@ -62,16 +63,47 @@ let started = false;
 
 /* ---------- Letters ---------- */
 
+const HOST = '[data-kx], [data-pt]';
+
+/** True when this text node belongs to host itself, not to a nested host or a decoration. */
+function ownsText(host, node) {
+  if (!node.nodeValue.trim()) return false;
+  const parent = node.parentElement;
+  if (parent.closest(HOST) !== host) return false;
+  const decoration = parent.closest('[aria-hidden="true"]');
+  return !(decoration && decoration !== host && host.contains(decoration));
+}
+
+function ownNodes(host) {
+  const found = [];
+  const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => (ownsText(host, node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+  });
+  while (walker.nextNode()) found.push(walker.currentNode);
+  return found;
+}
+
+/** The text a host owns, trimmed (what a translation replaces). */
+export function readOwnText(host) {
+  return ownNodes(host).map((node) => node.nodeValue.trim()).join(' ');
+}
+
+function writeOwnText(host, text) {
+  const [first, ...rest] = ownNodes(host);
+  if (!first) return;
+  const lead = first.nodeValue.match(/^\s*/)[0];
+  const trail = first.nodeValue.match(/\s*$/)[0];
+  first.nodeValue = lead + text + trail;
+  for (const node of rest) node.nodeValue = '';
+}
+
 function split(host) {
   if (host.__kx) return host.__kx;
   const info = { chars: [], words: [], pieces: [], timer: 0, resolve: null, phase: 'idle', entered: 0 };
 
   const nodes = [];
   const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) =>
-      node.nodeValue.trim() && node.parentElement.closest('[data-kx]') === host
-        ? NodeFilter.FILTER_ACCEPT
-        : NodeFilter.FILTER_REJECT,
+    acceptNode: (node) => ownsText(host, node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT,
   });
   while (walker.nextNode()) nodes.push(walker.currentNode);
 
@@ -197,6 +229,76 @@ export function setText(host, text, fx) {
   return play(host, 'in', fx);
 }
 
+let turning = 0;
+
+const inViewport = (node) => {
+  const rect = node.getBoundingClientRect();
+  return rect.width >= 8 && rect.bottom > 0 && rect.top < innerHeight;
+};
+
+function swapText(host, text) {
+  const info = host.__kx;
+  const wasHidden = info?.phase === 'hidden';
+  if (info) unsplit(host);
+  writeOwnText(host, text);
+  if (info && motionOn()) {
+    split(host);
+    if (wasHidden) hide(host);
+    else host.__kx.phase = 'idle';
+  }
+}
+
+function runTurn(host, phase, dir) {
+  const info = host.__kx;
+  const count = Math.max(info.chars.length, 1);
+  const gap = Math.min(12, 280 / count);
+  settle(host);
+  host.classList.remove('kx-hidden', 'kx-run');
+  host.dataset.kxFx = 'turn';
+  host.dataset.kxPhase = phase;
+  host.style.setProperty('--dir', String(dir));
+  host.style.setProperty('--kx-stagger', gap.toFixed(1) + 'ms');
+  host.style.setProperty('--kx-dur', '360ms');
+  void host.offsetWidth;
+  host.classList.add('kx-run');
+  return new Promise((resolve) => {
+    info.resolve = resolve;
+    info.timer = setTimeout(() => {
+      info.resolve = null;
+      resolve();
+    }, 360 + (count - 1) * gap + 40);
+  });
+}
+
+/**
+ * Replace a host's text by turning every letter half way round (dir 1 clockwise,
+ * -1 counter-clockwise), swapping the words while the letters are upside down, and
+ * turning the other half. Off screen, with dir 0, or with motion off, the text just changes.
+ */
+export async function turn(host, text, dir = 1) {
+  if (dir === 0 || !motionOn() || !inViewport(host) || host.__kx?.phase === 'hidden') {
+    swapText(host, text);
+    return;
+  }
+  turning++;
+  try {
+    const keeps = host.hasAttribute('data-kx');
+    split(host);
+    host.__kx.phase = 'turning';
+    await runTurn(host, 'a', dir);
+    unsplit(host);
+    writeOwnText(host, text);
+    split(host);
+    host.__kx.phase = 'turning';
+    await runTurn(host, 'b', dir);
+    host.classList.remove('kx-run');
+    if (keeps) host.__kx.phase = 'idle';
+    else unsplit(host);
+  } finally {
+    turning--;
+  }
+}
+
 function hide(host) {
   settle(host);
   const info = host.__kx;
@@ -219,7 +321,7 @@ const isSelected = (node) => {
 function loop() {
   clearTimeout(loopTimer);
   loopTimer = setTimeout(async () => {
-    if (motionOn() && !document.hidden && !busy) {
+    if (motionOn() && !document.hidden && !busy && !turning) {
       const candidates = [...roots].filter(
         (host) =>
           host.__kx?.phase === 'idle' &&
@@ -344,13 +446,24 @@ function stop() {
   started = false;
 }
 
-export function setMotion(on) {
+export function setMotion(on, { persist = true } = {}) {
   root.dataset.motion = on ? 'on' : 'off';
-  try {
-    localStorage.setItem('rhea.motion', on ? 'on' : 'off');
-  } catch {}
+  if (persist) {
+    try {
+      localStorage.setItem('rhea.motion', on ? 'on' : 'off');
+    } catch {}
+  }
   if (on) start();
   else stop();
+}
+
+/** Follow html[data-motion] when something else (a mode switch, a settings script) changed it. */
+export function syncMotion() {
+  if (motionOn()) {
+    if (!started) start();
+  } else if (started) {
+    stop();
+  }
 }
 
 function initMagnet() {
@@ -380,7 +493,7 @@ function initWatch() {
 
 /** Wire up the page. Safe to call once; returns the small public API. */
 export function initRheaKinetic() {
-  const api = { play, setText, setMotion, motionOn };
+  const api = { play, setText, turn, setMotion, syncMotion, motionOn };
   if (!('IntersectionObserver' in window)) {
     root.classList.remove('kx-pending');
     return api;
