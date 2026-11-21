@@ -1,5 +1,5 @@
 ---
-import { PROFILE, SOCIALS } from '../config';
+import { PROFILE, RSS, SOCIALS } from '../config';
 const today = new Date();
 ---
 
@@ -15,6 +15,7 @@ const today = new Date();
     </div>
 
     <div class="social-links" aria-label="Contato, perfis e navegação">
+      <a href={RSS.path} aria-label="Assinar o portfólio por RSS">RSS</a>
       {PROFILE.email && (
         <a
           href={`mailto:${PROFILE.email}`}

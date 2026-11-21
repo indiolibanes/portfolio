@@ -12,7 +12,11 @@ const site = siteConfig.match(/^\s*url:\s*'([^']+)'/m)?.[1];
 assert.ok(site, 'Missing SITE.url');
 assert.equal(new URL(site).protocol, 'https:');
 assert.equal(new URL(site).pathname, '/', 'SITE.url must be a host URL');
+assert.equal(read('astro.config.mjs').match(/^\s*site:\s*'([^']+)'/m)?.[1], site,
+  'Astro site and portfolio canonical origin must agree');
 const base = new URL('/', site).toString();
+const sitemapUrl = new URL('/sitemap.xml', base).href;
+const rssUrl = new URL('/rss.xml', base).href;
 
 const sitemap = read('public/sitemap.xml');
 const sitemapPaths = ['/', '/curiosidades/', '/sophia/', '/rhea/'];
@@ -28,7 +32,7 @@ assert.doesNotMatch(sitemap, /<(?:lastmod|changefreq|priority)>/i,
 const robots = read('public/robots.txt');
 assert.ok(robots.includes('User-agent: *') && robots.includes('Allow: /'),
   'Public pages must remain crawlable');
-assert.ok(robots.includes('Sitemap: ' + new URL('/sitemap.xml', base).toString()),
+assert.ok(robots.includes('Sitemap: ' + sitemapUrl),
   'Robots sitemap and canonical origin must agree');
 
 const headers = read('public/_headers');
@@ -61,24 +65,36 @@ function meta(html, key) {
   }
   return null;
 }
-function canonical(html) {
+function linkHref(html, rel, type) {
   for (const tag of html.match(/<link\b[^>]*>/gi) ?? []) {
     const a = attributes(tag);
-    if (a.rel === 'canonical') return a.href ?? null;
+    if (a.rel === rel && (!type || a.type === type)) return a.href ?? null;
   }
   return null;
 }
-function pathOf(url) {
-  const parsed = new URL(url);
-  assert.equal(parsed.origin, new URL(base).origin, 'Wrong canonical origin: ' + url);
-  assert.equal(parsed.search, '', 'Canonical should omit query parameters');
-  assert.equal(parsed.hash, '', 'Canonical should omit fragment');
-  return parsed.pathname.replace(/\/$/, '') || '/';
-}
-
 if (process.argv.includes('--dist')) {
   const distSitemap = read('dist/sitemap.xml');
   assert.equal(distSitemap, sitemap, 'Built sitemap differs from source');
+  assert.equal(read('dist/robots.txt'), robots, 'Built robots.txt differs from source');
+
+  const feed = read('dist/rss.xml');
+  assert.match(feed, /<rss\b[^>]*\bversion="2\.0"/, 'Missing RSS 2.0 feed');
+  assert.ok(feed.includes('<link>' + base + '</link>'), 'Wrong feed home URL');
+  const selfLink = attributes(feed.match(/<atom:link\b[^>]*>/)?.[0] ?? '');
+  assert.equal(selfLink.href, rssUrl, 'Wrong feed self URL');
+  assert.equal(selfLink.rel, 'self');
+  assert.equal(selfLink.type, 'application/rss+xml');
+
+  const feedUrls = [...feed.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, item]) => {
+    const link = item.match(/<link>([^<]+)<\/link>/)?.[1];
+    const guid = item.match(/<guid\b[^>]*>([^<]+)<\/guid>/)?.[1];
+    assert.ok(link && guid === link, 'Feed item must use its canonical URL as a stable ID');
+    assert.match(item, /<title>[^<]+<\/title>/);
+    assert.match(item, /<description>[^<]+<\/description>/);
+    return link;
+  });
+  assert.deepEqual(feedUrls.sort(), expectedUrls.filter(url => url !== base).sort(),
+    'Feed must contain each public editorial or project page once');
 
   const titles = new Set();
   for (const pathname of sitemapPaths) {
@@ -91,8 +107,11 @@ if (process.argv.includes('--dist')) {
     assert.ok(meta(html, 'description')?.length >= 40, 'Weak/missing description: ' + pathname);
     assert.match(meta(html, 'robots') ?? '', /\bindex,\s*follow\b/i);
     assert.doesNotMatch(meta(html, 'robots') ?? '', /\bnoindex\b/i);
-    assert.equal(pathOf(canonical(html)), pathname.replace(/\/$/, '') || '/', 'Bad canonical: ' + pathname);
-    assert.equal(pathOf(meta(html, 'og:url')), pathname.replace(/\/$/, '') || '/', 'Bad OG URL: ' + pathname);
+    const expectedUrl = new URL(pathname, base).href;
+    assert.equal(linkHref(html, 'canonical'), expectedUrl, 'Bad canonical: ' + pathname);
+    assert.equal(meta(html, 'og:url'), expectedUrl, 'Bad OG URL: ' + pathname);
+    assert.equal(linkHref(html, 'sitemap', 'application/xml'), sitemapUrl, 'Bad sitemap link: ' + pathname);
+    assert.equal(linkHref(html, 'alternate', 'application/rss+xml'), rssUrl, 'Bad RSS discovery: ' + pathname);
     assert.equal(meta(html, 'og:title'), meta(html, 'twitter:title'), 'Social title mismatch');
     assert.equal(meta(html, 'og:description'), meta(html, 'twitter:description'), 'Social description mismatch');
     assert.ok(meta(html, 'og:image')?.startsWith(base), 'Off-domain OG image: ' + pathname);
@@ -119,10 +138,10 @@ if (process.argv.includes('--dist')) {
     const html = read(file);
     assert.match(meta(html, 'robots') ?? '', /\bnoindex\b/i, file + ' is indexable');
     if (file === 'dist/404.html') {
-      assert.equal(canonical(html), null, '404 must not present a canonical URL');
+      assert.equal(linkHref(html, 'canonical'), null, '404 must not present a canonical URL');
     }
   }
 
-  console.log('SEO dist: PASS (four public routes, canonical, share metadata, JSON-LD, 404 and experimental noindex)');
+  console.log('SEO dist: PASS (four public routes, canonical, share metadata, JSON-LD, RSS and noindex)');
 }
 console.log('SEO source: PASS (sitemap, robots, headers, Shorekeeper policy)');

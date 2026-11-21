@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { PUBLIC_PAGES } from '../config';
 import SophiaSigil from '../components/SophiaSigil.astro';
 
+const page = PUBLIC_PAGES.sophia;
 const fragments = [
   'Observada no Laboratório, entre traduções e esquemas.',
   'Avistada no Cofre, onde o silêncio é mais denso.',
@@ -10,10 +12,7 @@ const fragments = [
 ];
 ---
 
-<BaseLayout
-  title="Sophia — Portfólio de Kauê Alencar"
-  description="Sophia, uma pequena raposa associada à curiosidade, à sabedoria e aos espaços ainda incompletos deste portfólio."
->
+<BaseLayout title={page.title} description={page.description}>
   <main id="conteudo" class="sophia-page">
     <section class="sophia-hero" aria-labelledby="sophia-title">
       <div class="sophia-hero__copy">

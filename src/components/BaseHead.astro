@@ -1,5 +1,6 @@
 ---
 import { PROFILE, SITE, SOCIALS } from '../config';
+import DiscoveryLinks from './DiscoveryLinks.astro';
 
 interface Props {
   title?: string;
@@ -94,7 +95,7 @@ const structuredData = {
 {hasLandingScenes && <script is:inline src="/scripts/scenes.js" defer></script>}
 
 {!isNotFound && <link rel="canonical" href={canonicalUrl} />}
-<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+{!isNotFound && !isUnlistedStage && <DiscoveryLinks />}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 {!pathname.startsWith('/experimentos') && (
   <>

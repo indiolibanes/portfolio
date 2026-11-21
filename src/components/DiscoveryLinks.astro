@@ -1,0 +1,9 @@
+---
+import { RSS, SITE } from '../config';
+
+const sitemapUrl = new URL('/sitemap.xml', SITE.url);
+const rssUrl = new URL(RSS.path, SITE.url);
+---
+
+<link rel="sitemap" type="application/xml" href={sitemapUrl.href} />
+<link rel="alternate" type="application/rss+xml" title={RSS.title} href={rssUrl.href} />

@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { PUBLIC_PAGES } from '../config';
 import SophiaSigil from '../components/SophiaSigil.astro';
 import { CURIOSITIES, CURIOSITIES_UPDATED, CREATIVE_PROCESS } from '../curiosities';
 
+const page = PUBLIC_PAGES.curiosidades;
 const updatedLabel = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
   month: 'long',
@@ -11,10 +13,7 @@ const updatedLabel = new Intl.DateTimeFormat('pt-BR', {
 }).format(new Date(`${CURIOSITIES_UPDATED}T00:00:00Z`));
 ---
 
-<BaseLayout
-  title="Curiosidades — Portfólio de Kauê Alencar"
-  description="Pequenas curiosidades que não cabem em um currículo, mas ajudam a entender o tom deste portfólio: música, jogos, línguas, escrita e método."
->
+<BaseLayout title={page.title} description={page.description}>
   <main id="conteudo" class="curiosities-page">
     <header class="curiosities-hero">
       <p class="eyebrow">Fora do currículo</p>

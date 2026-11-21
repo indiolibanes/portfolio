@@ -7,6 +7,29 @@ export const SITE = {
   ogImageAlt: 'Sophia, raposa cósmica de óculos redondos e pata erguida junto ao rosto, em cartão azul-noite estrelado de Kauê Alencar: Escrita, sistemas e mundos possíveis; documentação, interfaces e experiências interativas.',
 };
 
+export const RSS = {
+  path: '/rss.xml',
+  title: 'Portfólio de Kauê Alencar — RSS',
+};
+
+export const PUBLIC_PAGES = {
+  curiosidades: {
+    path: '/curiosidades/',
+    title: 'Curiosidades — Portfólio de Kauê Alencar',
+    description: 'Pequenas curiosidades que não cabem em um currículo, mas ajudam a entender o tom deste portfólio: música, jogos, línguas, escrita e método.',
+  },
+  sophia: {
+    path: '/sophia/',
+    title: 'Sophia — Portfólio de Kauê Alencar',
+    description: 'Sophia, uma pequena raposa associada à curiosidade, à sabedoria e aos espaços ainda incompletos deste portfólio.',
+  },
+  rhea: {
+    path: '/rhea/',
+    title: 'RHEA: Google Drive for MCP assistants, within one folder',
+    description: 'RHEA is an open-source, self-hosted workspace that connects Google Drive to MCP-compatible assistants through one dedicated folder, with revocable grants and reviewed changes.',
+  },
+};
+
 export const PROFILE = {
   name: 'Kauê Alencar',
   shortName: 'Kauê',

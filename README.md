@@ -300,11 +300,12 @@ Detalhes e números estão em `docs/code-audit-2026-11-02.md`.
 
 A origem canônica deste portfólio é `https://indiolibanes.dev` (definida em `astro.config.mjs` e `src/config.ts`). Evite publicar uma segunda origem indexável sem redirecionamento permanente para a URL canônica.
 
-- **Indexáveis:** `/`, `/curiosidades/` e `/sophia/`. São as únicas URLs listadas em `public/sitemap.xml`.
+- **Indexáveis:** `/`, `/curiosidades/`, `/sophia/` e `/rhea/`. Essas URLs constam no sitemap e usam o domínio canônico.
 - **Fora do índice:** `/404`, `/modo-experimental/` e `/experimentos/**` (incluindo Hsin, Shorekeeper e o preview de dupla). A exclusão do índice não substitui autenticação.
 - **Metadados:** `src/components/BaseHead.astro` define título, descrição, canonical, Open Graph e Twitter Cards. A página inicial publica um grafo JSON-LD `Person` + `WebSite`; o cartão de compartilhamento continua a ser gerado por `scripts/generate-og.mjs`.
 - **Cabeçalhos:** `public/_headers` aplica `X-Robots-Tag: noindex` às rotas experimentais. Não aplicar `X-Robots-Tag: index` globalmente: isso conflita com páginas que solicitam `noindex`.
 - **Sitemap:** manter apenas as URLs públicas canônicas. Não preencher `lastmod` com a data do build nem datas estimadas; só publicar datas verificáveis de alteração do conteúdo.
+- **RSS:** [indiolibanes.dev/rss.xml](https://indiolibanes.dev/rss.xml). O feed lista as páginas editoriais e de projetos publicadas. Para incluir uma nova entrada, atualize os metadados em `src/config.ts` e a seleção em `src/pages/rss.xml.ts`.
 - **Verificação:** `npm run check:seo` inspeciona os arquivos-fonte; `npm run build` também verifica HTML, canonicals, dados estruturados e diretivas dos arquivos compilados. O CI de PR executa ambos.
 
 A presença do site no Google depende também de entrega HTTP, configuração Cloudflare e Google Search Console. O teste local não confirma indexação em serviços externos.
