@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-labelledby="t"><title id="t">RHEA</title>
+<rect width="96" height="96" rx="22" fill="#0E2A21"/>
+  <rect x="1" y="1" width="94" height="94" rx="21" fill="none" stroke="#C9A13E" stroke-opacity=".35" stroke-width="2"/>
+  <g transform="translate(9.599999999999994 10.599999999999994) scale(0.8)">
+    <defs>
+      <clipPath id="rhea-disc"><circle cx="48" cy="48" r="29"/></clipPath>
+    </defs>
+    <circle cx="48" cy="48" r="29" fill="#1F4A3A"/>
+    <rect x="0" y="60" width="96" height="40" fill="#6A4329" clip-path="url(#rhea-disc)"/>
+    <path d="M57.37 15.32A34 34 0 1 1 38.63 15.32" fill="none" stroke="#C9A13E" stroke-width="4" stroke-linecap="round"/>
+    <path d="M48 13V33" stroke="#F1E8D2" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="48" cy="9" r="3.6" fill="#F1E8D2"/>
+    <path d="M48 35L61 49L48 63L35 49Z" fill="#E9C75B"/>
+    <path d="M48 35L61 49L48 49Z" fill="#F4DA86"/>
+  </g>
+</svg>

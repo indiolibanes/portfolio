@@ -33,6 +33,7 @@ const hasId = (source, tag, id) =>
 
 for (const [section, title] of [
   ['traducao', 'translation-title'],
+  ['rhea', 'rhea-title'],
   ['reflexao', 'essay-title'],
   ['arquitetura', 'architecture-title'],
   ['curadoria', 'knowledge-title'],
@@ -50,8 +51,10 @@ for (const [id, title] of [
   check(id + ': no new-tab notice left behind', !home.includes('id="' + title + '-new-tab"'));
 }
 check('home: no link to Horologiarius in lab cards', !/href="https:\/\/horologiarius\.com/.test(home));
-check('lab cards: 5 standardized statuses',
-  (home.match(/data-status="(?:progress|published)"/g) || []).length === 5);
+check('lab cards: 6 standardized statuses',
+  (home.match(/data-status="(?:progress|published)"/g) || []).length === 6);
+check('rhea: card links to its own page and repository',
+  /<article\s+id="rhea"[\s\S]*?href="\/rhea\/"[\s\S]*?href="https:\/\/github\.com\/indiolibanes\/RHEA"[\s\S]*?<\/article>/.test(home));
 check('music: static section anchor', hasId(music, 'section', 'musica'));
 check('music: no-JS fallback', music.includes('<noscript>') && music.includes('SOCIALS.lastfm'));
 check('music: last track is a living album-cover hero (SaintHero pattern), no Moonlight note or piano', music.includes('data-cover-hero') && music.includes('cover-backdrop') && music.includes('cover-ambient') && music.includes('cover-notes') && !music.includes('listening-note') && !music.includes('music-piano'));

@@ -1,0 +1,139 @@
+/*
+ * RHEA lab card. RHEA keeps its own identity (deep green, earth brown,
+ * ivory and gold), so colour applies only in the Autoral mode. Editorial
+ * and Legacy keep their shared card treatment; layout rules apply in all modes.
+ */
+
+
+#rhea .lab-project-links { display: inline-flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
+
+.lab-project-system-rhea {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.8rem;
+}
+
+.rhea-card-mark {
+  width: clamp(112px, 13vw, 160px);
+  height: auto;
+}
+
+.rhea-card-route {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  text-align: center;
+}
+
+.rhea-card-route li {
+  position: relative;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.rhea-card-route li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -0.95rem;
+  width: 1px;
+  height: 0.8rem;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.rhea-card-route strong { font-size: 0.98rem; letter-spacing: 0.02em; }
+.rhea-card-route small { font-size: 0.74rem; letter-spacing: 0.06em; opacity: 0.75; }
+
+/* Autoral mode: RHEA palette. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea {
+  --rhea-forest: #0e2a21;
+  --rhea-forest-2: #163b2e;
+  --rhea-moss: #1f4a3a;
+  --rhea-earth: #6a4329;
+  --rhea-ivory: #f1e8d2;
+  --rhea-white: #faf7f0;
+  --rhea-gold: #c9a13e;
+  --rhea-yellow: #e9c75b;
+
+  border-color: rgba(201, 161, 62, 0.28);
+  background:
+    radial-gradient(ellipse 60% 70% at 78% 30%, rgba(31, 74, 58, 0.95), transparent 70%),
+    linear-gradient(150deg, var(--rhea-forest-2) 0%, var(--rhea-forest) 62%);
+  color: var(--rhea-ivory);
+  box-shadow: 0 18px 40px rgba(14, 42, 33, 0.28);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::before {
+  opacity: 0.1;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 10px;
+  background: var(--rhea-earth);
+  pointer-events: none;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea h3 {
+  color: var(--rhea-white);
+  letter-spacing: 0.06em;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-index,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-kicker {
+  color: rgba(241, 232, 210, 0.66);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-status {
+  border-color: rgba(233, 199, 91, 0.4);
+  background: rgba(233, 199, 91, 0.12);
+  color: var(--rhea-yellow);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book p,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book cite {
+  color: var(--rhea-white);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book span {
+  color: var(--rhea-yellow);
+  font-style: italic;
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-description,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-footer {
+  color: rgba(241, 232, 210, 0.86);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-repo:hover {
+  color: var(--rhea-yellow);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+  border-left-color: rgba(201, 161, 62, 0.2);
+  background: transparent;
+  color: var(--rhea-ivory);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:last-child strong {
+  color: var(--rhea-yellow);
+}
+
+/* Editorial and Legacy are austere: the route stays, the coloured mark goes. */
+html[data-serious-mode='true'] .rhea-card-mark,
+html[data-legacy-mode='true'] .rhea-card-mark {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+    border-top-color: rgba(201, 161, 62, 0.2);
+  }
+}

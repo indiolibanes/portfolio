@@ -12,6 +12,7 @@ import MarioNameTiles from '../components/MarioNameTiles.astro';
 import ImmersiveBanner from '../components/ImmersiveBanner.astro';
 import SophiaCorrida from '../components/SophiaCorridaWebP.astro';
 import { PROFILE, SOCIALS } from '../config';
+import '../styles/rhea-card.css';
 import { sectionNumber } from '../section-order';
 
 const background = [
@@ -286,9 +287,10 @@ const METHOD_FLOWS = [
       <nav class="work-index" aria-label="Índice dos trabalhos" data-reveal>
         <a href="#curadoria"><span>01</span> Tecnologia NIR ↘</a>
         <a href="#traducao"><span>02</span> Tradução ↘</a>
-        <a href="#reflexao"><span>03</span> Reflexão ↘</a>
-        <a href="#arquitetura"><span>04</span> Arquitetura ↘</a>
-        <a href="#documentacao"><span>05</span> Documentação ↘</a>
+        <a href="#rhea"><span>03</span> RHEA ↘</a>
+        <a href="#reflexao"><span>04</span> Reflexão ↘</a>
+        <a href="#arquitetura"><span>05</span> Arquitetura ↘</a>
+        <a href="#documentacao"><span>06</span> Documentação ↘</a>
       </nav>
 
       <article
@@ -561,6 +563,91 @@ const METHOD_FLOWS = [
       </article>
 
       <article
+        id="rhea"
+        class="lab-project-card lab-project-card-rhea"
+        data-reveal
+        aria-labelledby="rhea-title"
+      >
+        <div class="lab-project-copy">
+          <div class="lab-project-meta">
+            <span class="lab-project-index">
+              03
+            </span>
+
+            <span class="lab-project-status" data-status="progress">
+              Em desenvolvimento
+            </span>
+          </div>
+
+          <p
+            class="lab-project-kicker lab-project-tags"
+            aria-label="Temas do projeto"
+          >
+            <span>código aberto</span>
+            <span>Google Drive</span>
+            <span>MCP</span>
+            <span>OAuth</span>
+          </p>
+
+          <h3 id="rhea-title">
+            RHEA
+          </h3>
+
+          <div class="lab-project-book">
+            <p>
+              <cite>Seu Drive ao alcance dos assistentes.</cite>
+            </p>
+
+            <span>
+              E nenhum passo além.
+            </span>
+          </div>
+
+          <p class="lab-project-description">
+            Um espaço de trabalho auto-hospedado que conecta o Google Drive a assistentes
+            compatíveis com MCP por uma única pasta dedicada. Cada assistente recebe uma
+            autorização própria e revogável; alterações propostas só acontecem depois de revisadas.
+          </p>
+
+          <div class="lab-project-footer">
+            <span>
+              Licença MIT · auto-hospedado
+            </span>
+            <span class="lab-project-links">
+              <a class="lab-project-repo" href="/rhea/">
+                Conhecer a RHEA →
+              </a>
+              <a
+                class="lab-project-repo"
+                href="https://github.com/indiolibanes/RHEA"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Repositório ↗<span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </span>
+          </div>
+        </div>
+
+        <div class="lab-project-system lab-project-system-rhea">
+          <img
+            class="rhea-card-mark"
+            src="/rhea/rhea-mark.svg"
+            alt=""
+            width="160"
+            height="160"
+            loading="lazy"
+            decoding="async"
+          />
+          <ol class="rhea-card-route" aria-label="Percurso de uma solicitação na RHEA">
+            <li><strong>Assistente</strong><small>cliente autorizado</small></li>
+            <li><strong>Gateway MCP</strong><small>OAuth revogável</small></li>
+            <li><strong>Pasta RHEA</strong><small>escopo drive.file</small></li>
+          </ol>
+        </div>
+      </article>
+
+      <article
         id="reflexao"
         class="lab-project-card lab-project-card-essay"
         data-scene="spacetime"
@@ -570,7 +657,7 @@ const METHOD_FLOWS = [
         <div class="lab-project-copy">
           <div class="lab-project-meta">
             <span class="lab-project-index">
-              03
+              04
             </span>
 
             <span class="lab-project-status" data-status="published">
@@ -638,7 +725,7 @@ const METHOD_FLOWS = [
         <div class="lab-project-copy">
           <div class="lab-project-meta">
             <span class="lab-project-index">
-              04
+              05
             </span>
 
             <span class="lab-project-status" data-status="published">
@@ -730,7 +817,7 @@ const METHOD_FLOWS = [
         <div class="lab-project-copy">
           <div class="lab-project-meta">
             <span class="lab-project-index">
-              05
+              06
             </span>
 
             <span class="lab-project-status" data-status="published">
