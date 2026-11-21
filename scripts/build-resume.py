@@ -101,7 +101,7 @@ story = [
     Paragraph('Kauê Alencar', S['name']),
     Paragraph('Technical Writing · Arquitetura da Informação · Documentação de Processos', S['tag']),
     Paragraph('Três Lagoas, MS · ' + ' · '.join([
-        link('kaue@tuta.com', 'mailto:kaue@tuta.com'),
+        link('contact@indiolibanes.dev', 'mailto:contact@indiolibanes.dev'),
         link('(47) 98910-5443', 'https://wa.me/5547989105443'),
         link('LinkedIn', 'https://www.linkedin.com/in/alencarkaue/'),
         link('Portfólio', SITE),
