@@ -1,0 +1,28 @@
+---
+// Rhea's face, formed by lamps. The static frame ships in the HTML;
+// src/scripts/rhea-lamps.mjs takes over on a canvas to blink, look around,
+// smile on hover and ripple when touched.
+import { staticSvg } from '../../scripts/rhea-lamps.mjs';
+
+interface Props {
+  size?: number;
+  rows?: number;
+  label?: string;
+  class?: string;
+}
+
+const { size = 96, rows = size < 72 ? 7 : 11, label, class: className } = Astro.props;
+const uid = 'rhea-' + Math.random().toString(36).slice(2, 8);
+---
+
+<span
+  class:list={['rhea-lamps', className]}
+  data-rhea-lamps
+  data-rows={rows}
+  style={`width:${size}px`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <svg viewBox="0 0 96 96" focusable="false" aria-hidden="true" set:html={staticSvg({ rows, idPrefix: uid })} />
+</span>

@@ -1,23 +1,38 @@
 /*
  * RHEA lab card. RHEA keeps its own identity (deep green, earth brown,
- * ivory and gold), so colour applies only in the Autoral mode. Editorial
- * and Legacy keep their shared card treatment; layout rules apply in all modes.
+ * ivory and gold), so colour and the animated sky apply only in the Autoral
+ * mode. Editorial and Legacy keep their shared card treatment.
+ *
+ * Motion budget: transform and opacity only, no filters, paused while the
+ * card is off screen (.is-offscreen) and removed for reduced motion.
  */
 
-
 #rhea .lab-project-links { display: inline-flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
+
+.rhea-card-sky { display: none; }
 
 .lab-project-system-rhea {
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 1.8rem;
+  gap: 1.6rem;
 }
 
-.rhea-card-mark {
-  width: clamp(112px, 13vw, 160px);
-  height: auto;
+.rhea-card-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(180px, 20vw, 240px);
+  aspect-ratio: 1;
 }
+
+.rhea-card-mark.rhea-lamps {
+  position: relative;
+  z-index: 1;
+  width: clamp(128px, 14vw, 168px) !important;
+}
+
+.rhea-card-orbit { display: none; }
 
 .rhea-card-route {
   list-style: none;
@@ -29,11 +44,7 @@
   text-align: center;
 }
 
-.rhea-card-route li {
-  position: relative;
-  display: grid;
-  gap: 0.1rem;
-}
+.rhea-card-route li { position: relative; display: grid; gap: 0.15rem; }
 
 .rhea-card-route li:not(:last-child)::after {
   content: '';
@@ -47,9 +58,10 @@
 }
 
 .rhea-card-route strong { font-size: 0.98rem; letter-spacing: 0.02em; }
-.rhea-card-route small { font-size: 0.74rem; letter-spacing: 0.06em; opacity: 0.75; }
+.rhea-card-route small { font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.78; }
 
-/* Autoral mode: RHEA palette. */
+/* ---------- Autoral mode: RHEA palette and sky ---------- */
+
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea {
   --rhea-forest: #0e2a21;
   --rhea-forest-2: #163b2e;
@@ -60,35 +72,138 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   --rhea-gold: #c9a13e;
   --rhea-yellow: #e9c75b;
 
+  isolation: isolate;
   border-color: rgba(201, 161, 62, 0.28);
-  background:
-    radial-gradient(ellipse 60% 70% at 78% 30%, rgba(31, 74, 58, 0.95), transparent 70%),
-    linear-gradient(150deg, var(--rhea-forest-2) 0%, var(--rhea-forest) 62%);
+  background: linear-gradient(150deg, var(--rhea-forest-2) 0%, var(--rhea-forest) 64%);
   color: var(--rhea-ivory);
   box-shadow: 0 18px 40px rgba(14, 42, 33, 0.28);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::before {
-  opacity: 0.1;
-}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::before { opacity: 0.08; }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::after {
   content: '';
   position: absolute;
   inset: auto 0 0;
+  z-index: 3;
   height: 10px;
   background: var(--rhea-earth);
   pointer-events: none;
 }
 
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-card-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rhea-sky-glow {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.rhea-sky-glow--moss {
+  width: 80%;
+  aspect-ratio: 1;
+  right: -14%;
+  top: -30%;
+  background: radial-gradient(circle, rgba(46, 104, 80, 0.75), rgba(31, 74, 58, 0.25) 45%, transparent 70%);
+  animation: rhea-sky-drift-a 23s ease-in-out infinite alternate;
+}
+
+.rhea-sky-glow--gold {
+  width: 62%;
+  aspect-ratio: 1;
+  left: -18%;
+  bottom: -42%;
+  background: radial-gradient(circle, rgba(233, 199, 91, 0.16), rgba(106, 67, 41, 0.14) 46%, transparent 70%);
+  animation: rhea-sky-drift-b 29s ease-in-out infinite alternate;
+}
+
+.rhea-sky-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background:
+    radial-gradient(1.4px 1.4px at 12% 22%, #faf7f0 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 34% 9%, #e9c75b 50%, transparent 52%),
+    radial-gradient(1.6px 1.6px at 58% 16%, #faf7f0 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 71% 74%, #faf7f0 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 88% 38%, #e9c75b 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 46% 88%, #faf7f0 50%, transparent 52%);
+  animation: rhea-sky-twinkle 4.8s ease-in-out infinite;
+}
+
+.rhea-sky-stars--late {
+  transform: translate(7%, 11%);
+  animation-duration: 6.4s;
+  animation-delay: -2.1s;
+}
+
+/* The moon's orbit: two eased axes, half a period apart, trace an ellipse. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-card-orbit {
+  position: absolute;
+  inset: 22% -10%;
+  display: block;
+  border: 1px solid rgba(201, 161, 62, 0.3);
+  border-radius: 50%;
+  transform: rotate(-16deg);
+}
+
+.rhea-card-moon-x {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  animation: rhea-orbit-x 7s ease-in-out infinite alternate;
+}
+
+.rhea-card-moon-y {
+  position: absolute;
+  inset: 0;
+  animation: rhea-orbit-y 7s ease-in-out infinite alternate;
+  animation-delay: -3.5s;
+}
+
+.rhea-card-moon {
+  position: absolute;
+  left: -4px;
+  top: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e9c75b;
+  box-shadow: 0 0 10px rgba(233, 199, 91, 0.7);
+}
+
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-copy,
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+  z-index: 2;
+}
+
+#lab .lab-project-card-rhea.is-offscreen :is(.rhea-sky-glow, .rhea-sky-stars, .rhea-card-moon-x, .rhea-card-moon-y) {
+  animation-play-state: paused;
+}
+
+@keyframes rhea-sky-drift-a { to { transform: translate(-12%, 14%) scale(1.08); } }
+@keyframes rhea-sky-drift-b { to { transform: translate(16%, -12%) scale(1.12); } }
+@keyframes rhea-sky-twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.7; } }
+@keyframes rhea-orbit-x { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes rhea-orbit-y { from { transform: translateY(-50%); } to { transform: translateY(50%); } }
+
+/* ---------- Autoral typography and colour ---------- */
+
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea h3 {
   color: var(--rhea-white);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-index,
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-kicker {
-  color: rgba(241, 232, 210, 0.66);
+  color: rgba(241, 232, 210, 0.7);
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-status {
@@ -97,19 +212,19 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   color: var(--rhea-yellow);
 }
 
+/* Same hierarchy as the other cards: the cited line carries the accent, the follow-up is quieter. */
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book p,
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book cite {
-  color: var(--rhea-white);
+  color: var(--rhea-yellow);
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book span {
-  color: var(--rhea-yellow);
-  font-style: italic;
+  color: var(--rhea-ivory);
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-description,
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-footer {
-  color: rgba(241, 232, 210, 0.86);
+  color: rgba(241, 232, 210, 0.88);
 }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-repo:hover {
@@ -126,14 +241,20 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   color: var(--rhea-yellow);
 }
 
-/* Editorial and Legacy are austere: the route stays, the coloured mark goes. */
-html[data-serious-mode='true'] .rhea-card-mark,
-html[data-legacy-mode='true'] .rhea-card-mark {
+/* Editorial and Legacy are austere: the route stays, the coloured face goes. */
+html[data-serious-mode='true'] .rhea-card-stage,
+html[data-legacy-mode='true'] .rhea-card-stage {
   display: none;
 }
 
 @media (max-width: 860px) {
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
     border-top-color: rgba(201, 161, 62, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lab .lab-project-card-rhea :is(.rhea-sky-glow, .rhea-sky-stars, .rhea-card-moon-x, .rhea-card-moon-y) {
+    animation: none;
   }
 }

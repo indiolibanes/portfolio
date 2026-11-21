@@ -13,6 +13,8 @@ import ImmersiveBanner from '../components/ImmersiveBanner.astro';
 import SophiaCorrida from '../components/SophiaCorridaWebP.astro';
 import { PROFILE, SOCIALS } from '../config';
 import '../styles/rhea-card.css';
+import '../styles/rhea-lamps.css';
+import RheaFace from '../components/rhea/RheaFace.astro';
 import { sectionNumber } from '../section-order';
 
 const background = [
@@ -566,8 +568,15 @@ const METHOD_FLOWS = [
         id="rhea"
         class="lab-project-card lab-project-card-rhea"
         data-reveal
+        data-rhea-host
         aria-labelledby="rhea-title"
       >
+        <div class="rhea-card-sky" aria-hidden="true">
+          <span class="rhea-sky-glow rhea-sky-glow--moss"></span>
+          <span class="rhea-sky-glow rhea-sky-glow--gold"></span>
+          <span class="rhea-sky-stars"></span>
+          <span class="rhea-sky-stars rhea-sky-stars--late"></span>
+        </div>
         <div class="lab-project-copy">
           <div class="lab-project-meta">
             <span class="lab-project-index">
@@ -599,7 +608,7 @@ const METHOD_FLOWS = [
             </p>
 
             <span>
-              E nenhum passo além.
+              e nenhum passo além.
             </span>
           </div>
 
@@ -630,15 +639,10 @@ const METHOD_FLOWS = [
         </div>
 
         <div class="lab-project-system lab-project-system-rhea">
-          <img
-            class="rhea-card-mark"
-            src="/rhea/rhea-mark.svg"
-            alt=""
-            width="160"
-            height="160"
-            loading="lazy"
-            decoding="async"
-          />
+          <div class="rhea-card-stage" aria-hidden="true">
+            <span class="rhea-card-orbit"><span class="rhea-card-moon-x"><span class="rhea-card-moon-y"><i class="rhea-card-moon"></i></span></span></span>
+            <RheaFace size={168} class="rhea-card-mark" />
+          </div>
           <ol class="rhea-card-route" aria-label="Percurso de uma solicitação na RHEA">
             <li><strong>Assistente</strong><small>cliente autorizado</small></li>
             <li><strong>Gateway MCP</strong><small>OAuth revogável</small></li>
@@ -795,6 +799,16 @@ const METHOD_FLOWS = [
           </div>
         </div>
       </article>
+
+      <script>
+        import { initRheaLamps } from '../scripts/rhea-lamps.mjs';
+        initRheaLamps();
+        const rheaCard = document.getElementById('rhea');
+        if (rheaCard && 'IntersectionObserver' in window) {
+          new IntersectionObserver(([entry]) => rheaCard.classList.toggle('is-offscreen', !entry.isIntersecting))
+            .observe(rheaCard);
+        }
+      </script>
 
       <script>
         const piCard = document.getElementById('curadoria');
