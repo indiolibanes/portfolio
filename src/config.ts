@@ -36,7 +36,7 @@ export const PROFILE = {
   tagline: 'Escrita · Documentação · Experimentos interativos',
   linkedin: 'https://www.linkedin.com/in/alencarkaue/',
   whatsapp: 'https://wa.me/5547989105443',
-  email: 'kaue@tuta.com',
+  email: 'contact@indiolibanes.dev',
   resumePdf: '/curriculo-kaue-alencar.pdf'
 };
 
