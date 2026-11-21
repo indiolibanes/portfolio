@@ -15,10 +15,12 @@ assert.equal(new URL(site).pathname, '/', 'SITE.url must be a host URL');
 const base = new URL('/', site).toString();
 
 const sitemap = read('public/sitemap.xml');
-const sitemapPaths = ['/', '/curiosidades/', '/sophia/'];
+const sitemapPaths = ['/', '/curiosidades/', '/sophia/', '/rhea/'];
+// RHEA is a standalone, English-language project page.
+const pageLang = pathname => pathname === '/rhea/' ? 'en' : 'pt-BR';
 const expectedUrls = sitemapPaths.map(path => new URL(path, base).toString());
 const urls = [...sitemap.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/g)].map(m => m[1].trim());
-assert.deepEqual(urls, expectedUrls, 'Sitemap must list exactly the three public indexable pages');
+assert.deepEqual(urls, expectedUrls, 'Sitemap must list exactly the four public indexable pages');
 assert.equal(new Set(urls).size, urls.length, 'Duplicate URLs in sitemap');
 assert.doesNotMatch(sitemap, /<(?:lastmod|changefreq|priority)>/i,
   'Do not publish guessed dates or ignored frequency/priority metadata');
@@ -94,7 +96,7 @@ if (process.argv.includes('--dist')) {
     assert.equal(meta(html, 'og:title'), meta(html, 'twitter:title'), 'Social title mismatch');
     assert.equal(meta(html, 'og:description'), meta(html, 'twitter:description'), 'Social description mismatch');
     assert.ok(meta(html, 'og:image')?.startsWith(base), 'Off-domain OG image: ' + pathname);
-    assert.match(html, /<html\b[^>]*\blang="pt-BR"/i);
+    assert.match(html, new RegExp('<html\\b[^>]*\\blang="' + pageLang(pathname) + '"', 'i'), 'Wrong page language: ' + pathname);
     if (pathname !== '/') {
       assert.doesNotMatch(html, /type="application\/ld\+json"/i, 'Only the home page declares identity schema');
     }
@@ -121,6 +123,6 @@ if (process.argv.includes('--dist')) {
     }
   }
 
-  console.log('SEO dist: PASS (three public routes, canonical, share metadata, JSON-LD, 404 and experimental noindex)');
+  console.log('SEO dist: PASS (four public routes, canonical, share metadata, JSON-LD, 404 and experimental noindex)');
 }
 console.log('SEO source: PASS (sitemap, robots, headers, Shorekeeper policy)');
