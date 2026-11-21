@@ -16,4 +16,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://kaue.pages.dev/sitemap.xml
+Sitemap: https://indiolibanes.dev/sitemap.xml

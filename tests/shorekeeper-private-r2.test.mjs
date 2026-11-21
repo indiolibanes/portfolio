@@ -26,7 +26,7 @@ function bucket(){
  },head:async key=>key===model.key||key===lib.key?{size:24}:null};
 }
 const env={SHOREKEEPER_ASSETS_R2:bucket(),SK_ACCESS_TEAM_DOMAIN:domain,SK_ACCESS_AUD:aud};
-const req=(path,t)=>new Request('https://kaue.pages.dev'+path,{headers:t?{'Cf-Access-Jwt-Assertion':t}:{}});
+const req=(path,t)=>new Request('https://indiolibanes.dev'+path,{headers:t?{'Cf-Access-Jwt-Assertion':t}:{}});
 test('R2 manifest rejects traversal, unknown hashes, duplicates and overlimit',()=>{
  assert.equal(validateManifest(manifest),manifest);
  assert.throws(()=>validateManifest({...manifest,model:{...model,key:'../secret.glb'}}));

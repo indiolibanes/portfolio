@@ -9,7 +9,7 @@ const calls = [];
 const png = new Uint8Array([137, 80, 78, 71]);
 
 async function run(name, fn) { await fn(); passed += 1; console.log(`PASS ${name}`); }
-const call = (u) => onRequestGet({ request: new Request('https://kaue.pages.dev/api/music/cover' + (u === undefined ? '' : `?u=${encodeURIComponent(u)}`)) });
+const call = (u) => onRequestGet({ request: new Request('https://indiolibanes.dev/api/music/cover' + (u === undefined ? '' : `?u=${encodeURIComponent(u)}`)) });
 
 globalThis.fetch = async (url) => {
   calls.push(String(url));

@@ -31,7 +31,7 @@ function stubFetch(impl) {
   };
 }
 
-async function call(url = 'https://kaue.pages.dev/api/music/recent', environment = env) {
+async function call(url = 'https://indiolibanes.dev/api/music/recent', environment = env) {
   const waits = [];
   const response = await onRequestGet({
     request: new Request(url),
@@ -142,9 +142,9 @@ test('cache key ignores the query string', async () => {
   cacheLookups.length = 0;
   cachePuts.length = 0;
   stubFetch(() => lastfmOk({ name: 'x', artist: { '#text': 'y' } }));
-  await call('https://kaue.pages.dev/api/music/recent?bust=123456');
-  assert.deepEqual(cacheLookups, ['https://kaue.pages.dev/api/music/recent']);
-  assert.deepEqual(cachePuts, ['https://kaue.pages.dev/api/music/recent']);
+  await call('https://indiolibanes.dev/api/music/recent?bust=123456');
+  assert.deepEqual(cacheLookups, ['https://indiolibanes.dev/api/music/recent']);
+  assert.deepEqual(cachePuts, ['https://indiolibanes.dev/api/music/recent']);
 });
 
 test('empty history -> ok with null track', async () => {

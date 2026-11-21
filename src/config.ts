@@ -2,8 +2,8 @@ export const SITE = {
   title: 'Kauê Alencar | Escrita técnica e documentação',
   description:
     'Portfólio de Kauê Alencar: escrita técnica, documentação, arquitetura da informação, UX e projetos interativos em tecnologia e 3D.',
-  url: 'https://kaue.pages.dev',
-  ogImage: '/og-portfolio.jpg?v=20261031-og2',
+  url: 'https://indiolibanes.dev',
+  ogImage: '/og-portfolio.jpg?v=20261121-domain',
   ogImageAlt: 'Sophia, raposa cósmica de óculos redondos e pata erguida junto ao rosto, em cartão azul-noite estrelado de Kauê Alencar: Escrita, sistemas e mundos possíveis; documentação, interfaces e experiências interativas.',
 };
 

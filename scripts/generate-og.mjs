@@ -24,7 +24,7 @@ const overlay = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200
   <text x="60" y="362" font-family="DejaVu Sans, sans-serif" font-size="39" fill="#d9e9f7">e mundos possíveis.</text>
   <text x="60" y="437" font-family="DejaVu Sans, sans-serif" font-size="23" fill="#b4c8e0">Documentação · interfaces</text>
   <text x="60" y="472" font-family="DejaVu Sans, sans-serif" font-size="23" fill="#b4c8e0">· experiências interativas</text>
-  <text x="60" y="574" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#e8c78d">kaue.pages.dev</text>
+  <text x="60" y="574" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#e8c78d">indiolibanes.dev</text>
 </svg>`);
 
 // Build continues to emit a broadly supported, static 1200×630 JPEG.

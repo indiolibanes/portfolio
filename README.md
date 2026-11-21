@@ -4,7 +4,7 @@
 
 **Escrita · documentação · arquitetura da informação · experimentação digital**
 
-[kaue.pages.dev](https://kaue.pages.dev) &nbsp;·&nbsp; Astro 7 &nbsp;·&nbsp; Three.js &nbsp;·&nbsp; Cloudflare Pages &nbsp;·&nbsp; pt-BR
+[indiolibanes.dev](https://indiolibanes.dev) &nbsp;·&nbsp; Astro 7 &nbsp;·&nbsp; Three.js &nbsp;·&nbsp; Cloudflare Pages &nbsp;·&nbsp; pt-BR
 
 </div>
 
@@ -297,7 +297,7 @@ Detalhes e números estão em `docs/code-audit-2026-11-02.md`.
 
 ## SEO e indexação
 
-A origem canônica deste portfólio é `https://kaue.pages.dev` (definida em `astro.config.mjs` e `src/config.ts`). Evite publicar uma segunda origem indexável sem redirecionamento permanente para a URL canônica.
+A origem canônica deste portfólio é `https://indiolibanes.dev` (definida em `astro.config.mjs` e `src/config.ts`). Evite publicar uma segunda origem indexável sem redirecionamento permanente para a URL canônica.
 
 - **Indexáveis:** `/`, `/curiosidades/` e `/sophia/`. São as únicas URLs listadas em `public/sitemap.xml`.
 - **Fora do índice:** `/404`, `/modo-experimental/` e `/experimentos/**` (incluindo Hsin, Shorekeeper e o preview de dupla). A exclusão do índice não substitui autenticação.

@@ -102,7 +102,7 @@ check('curiosidades: creative process steps animate nothing (no motion to gate)'
   !/animation|transition/.test(read('src/styles/curiosidades.css').split('Creative process')[1]?.split('Return links')[0] ?? ''));
 check('curiosidades: header link', header.includes("{ href: '/curiosidades/', id: '', label: 'Curiosidades' }"));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
-check('curiosidades: listed in sitemap', sitemap.includes('https://kaue.pages.dev/curiosidades/'));
+check('curiosidades: listed in sitemap', sitemap.includes('https://indiolibanes.dev/curiosidades/'));
 check('modes: preserve three-state control',
   modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
 check('modes: three fixed emblems (alpha, beta, gamma), one pressed at a time',

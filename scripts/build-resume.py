@@ -23,7 +23,7 @@ PURPLE, GOLD, INK, MUTED = '#5a4778', '#b89245', '#242126', '#6c6670'
 NAME, PALE, GRID = '#372947', '#f3eff7', '#ddd7e3'
 CREAM, CREAM_LINE = '#f7f1e4', '#d9c596'
 
-SITE = 'https://kaue.pages.dev'
+SITE = 'https://indiolibanes.dev'
 
 
 def style(name, **kw):
