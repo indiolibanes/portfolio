@@ -32,7 +32,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
       </section>
       <p class="immersive__camera-help" id="immersive-camera-help" data-camera-help>Arraste ou use as setas para girar em 360°</p>
       <div class="immersive__launch-hud" data-launch-hud hidden aria-live="polite" aria-atomic="true" role="status">
-        <span class="immersive__launch-label" data-countdown-label>IGNIÇÃO</span>
+        <span class="immersive__launch-label" data-countdown-label lang="en">COUNTDOWN</span>
         <strong class="immersive__countdown" data-countdown></strong>
       </div>
       <div class="immersive__flight-tools">
@@ -63,7 +63,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
   .immersive__stage {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 52%, #252033 0%, #141323 42%, #080810 76%);
+    background: radial-gradient(ellipse at 50% 67%, #231b1f 0%, #101017 42%, #06070a 81%);
     touch-action: none;
     outline: none;
   }
@@ -208,7 +208,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
     font-variant-numeric: tabular-nums;
   }
   .immersive__launch-label { font: 700 .875rem/1.3 system-ui, sans-serif; letter-spacing: .065em; }
-  .immersive__countdown { font: 500 clamp(2rem, 8vmin, 4rem)/.95 Georgia, serif; }
+  .immersive__countdown { font: 500 clamp(2.75rem, 9vmin, 5rem)/.95 Georgia, serif; }
   @media (max-width: 850px) {
     .immersive__camera-help { top: max(88px, calc(env(safe-area-inset-top) + 76px)); }
     .immersive__status { top: max(118px, calc(env(safe-area-inset-top) + 106px)); }

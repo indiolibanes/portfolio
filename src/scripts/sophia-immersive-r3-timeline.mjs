@@ -45,3 +45,15 @@ export function gripStepAt(progress,side) {
  const reach=side==='R'?smooth(f*2):smooth(f*2-1);
  return {angle:(step+reach)*Math.PI/4,holding:side==='R'?f>=.5:f<=.5};
 }
+
+
+// Keep the platform as the point of reference while the nozzle first leaves it.
+export function sampleJourneyLiftoff(t, reduced = false) {
+ const sinceLift = t - R3.launch;
+ return {
+  follow: smooth((sinceLift - .52) / (R3.flight - R3.launch - .52)),
+  exhaust: 1 - smooth((t - R3.pitchStart) / (R3.flight - R3.pitchStart)),
+  vaporFade: smooth((sinceLift - .40) / 2.45),
+  thrustTime: reduced ? 0 : t,
+ };
+}

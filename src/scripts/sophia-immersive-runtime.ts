@@ -16,7 +16,7 @@ if(page){
   hud=$('[data-launch-hud]'),count=$('[data-countdown]'),label=$('[data-countdown-label]'),
   playback=$('[data-playback]'),pauseButton=$<HTMLButtonElement>('[data-pause]'),
   replay=$('[data-replay]'),resetCamera=$('[data-camera-reset]'),mute=$<HTMLButtonElement>('[data-mute]');
- const motion=matchMedia('(prefers-reduced-motion: reduce)'),life=new AbortController();
+ const motion=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(pointer:coarse)').matches,life=new AbortController();
  const audio=createLaunchAudio(message=>{$('[data-audio-status]').textContent=message;});
  const clock=new ActiveSceneClock();
  let renderer:T.WebGLRenderer|undefined,controls:OrbitControls|undefined,director:ReturnType<typeof createLaunchDirector>|null=null,loop:ReturnType<typeof createRenderLoop>|undefined,observer:ResizeObserver|undefined;
@@ -33,7 +33,7 @@ if(page){
   const next=digit===null?'':String(digit);
   if(next!==lastHud){
    count.textContent=next;
-   label.textContent=digit===0?'DECOLAGEM':'IGNIÇÃO';
+   label.textContent=digit===0?'LIFTOFF':'COUNTDOWN';
    if(digit!==null&&!motion.matches)count.animate([{opacity:.65},{opacity:1}],{duration:160});
    lastHud=next;
   }
@@ -106,11 +106,11 @@ if(page){
  document.addEventListener('astro:before-swap',destroy,{once:true,signal:life.signal});
  try{
   const scene=new T.Scene();const camera=new T.PerspectiveCamera(38,1,.005,1000);
-  renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;stage.append(renderer.domElement);
-  scene.add(new T.HemisphereLight(0xeee7ff,0x2d2020,1.15));
-  const key=new T.DirectionalLight(0xffdfb2,2.65);
+  renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;renderer.localClippingEnabled=true;stage.append(renderer.domElement);
+  scene.add(new T.HemisphereLight(0xc4d4e8,0x282025,.83));
+  const key=new T.DirectionalLight(0xffdfb2,2.4);
   key.position.set(-3,5,6);
-  const rim=new T.DirectionalLight(0xa0b6ff,2);
+  const rim=new T.DirectionalLight(0xa0b6db,1.70);
   rim.position.set(4,3,-4);
   scene.add(key,rim);
   controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=!motion.matches;controls.dampingFactor=.07;controls.enableRotate=controls.enableZoom=controls.enablePan=true;controls.rotateSpeed=.65;controls.zoomSpeed=.75;
@@ -152,7 +152,7 @@ if(page){
     const gltf=await loader.parseAsync(bytes,'');
     if(disposed||current!==loadIndex){disposeAstronautAsset(gltf.scene);return;}
     director?.dispose();
-    director=createLaunchDirector(gltf,scene,camera,controls!,()=>motion.matches);
+    director=createLaunchDirector(gltf,scene,camera,controls!,()=>motion.matches,{journey:true,coarse:mobile});
     stage.dataset.sceneReady='';
     resize();
     updateReadiness();
@@ -200,7 +200,6 @@ if(page){
   document.addEventListener('visibilitychange',()=>{if(document.hidden)clock.pause('hidden',performance.now());else clock.resume('hidden',performance.now());lastFrame=0;pauseAudio();loop?.reconcile();},{signal:life.signal});
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();contextLost=true;updateReadiness();clock.pause('context',performance.now());pauseAudio();loop?.reconcile();setStatus('Cena pausada enquanto o navegador recupera o contexto 3D.');},{signal:life.signal});
   renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=false;updateReadiness();clock.resume('context',performance.now());lastFrame=0;pauseAudio();setStatus('');resize();loop?.reconcile();},{signal:life.signal});
-  const mobile=matchMedia('(pointer:coarse)').matches;
   loop=createRenderLoop({
    request:requestAnimationFrame,
    cancel:cancelAnimationFrame,

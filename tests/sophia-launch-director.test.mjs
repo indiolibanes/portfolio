@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
+import { R3 } from '../src/scripts/sophia-immersive-r3-timeline.mjs';
 import { createLaunchDirector } from '../src/scripts/sophia-launch-director.ts';
 
-function fixture() {
+function fixture(journey = false) {
   const root = new THREE.Group(), assembly = new THREE.Group(); assembly.name = 'Sophia_Flight_Left_Assembly'; assembly.rotation.y = -Math.PI / 2; root.add(assembly);
   const rocket = new THREE.Group(); rocket.name = 'Rocket_Flight_Mount'; rocket.scale.setScalar(.16); rocket.rotation.x = Math.PI / 2; rocket.position.set(-.177, .23, -.3); assembly.add(rocket);
-  const hull = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4.1, 24, 8), new THREE.MeshBasicMaterial()); hull.name = 'Fuselage'; hull.position.y = 2.73; rocket.add(hull);
+  const hull = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4.1, 24, 8), (journey ? new THREE.MeshStandardMaterial() : new THREE.MeshBasicMaterial())); hull.name = 'Fuselage'; hull.position.y = 2.73; rocket.add(hull);
   const plume = new THREE.Group(); plume.name = 'Plume_Root'; rocket.add(plume);
   const rider = new THREE.Group(); rider.name = 'Sophia_Astronauta_Rider_Mount'; rider.position.y = .216; assembly.add(rider);
   const motion = new THREE.Bone(); motion.name = 'Root_Motion'; rider.add(motion);
@@ -39,8 +40,8 @@ function fixture() {
   const gltf = { scene: root, animations: [flight, walk] };
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(38, 16 / 9, .005, 100);
   const original = JSON.stringify(gltf.animations.map(c => THREE.AnimationClip.toJSON(c)));
-  const director = createLaunchDirector(gltf, scene, camera, controls, () => false);
-  return { director, controls, camera, original, gltf, rider, motion, face };
+  const director = createLaunchDirector(gltf, scene, camera, controls, () => false, { journey, coarse: journey });
+  return { director, controls, camera, original, gltf, rider, motion, face, scene };
 }
 test('R3 hides rider at reveal, preserves walking root, and settles on the real mount after liftoff', () => {
   const { director, controls, rider, motion, gltf, original } = fixture();
@@ -119,5 +120,59 @@ test('Saturn uses the active clock, releases the camera, and restores the origin
   assert.equal(director.snapshot().saturn, null);
   director.apply(22);
   assert.deepEqual(director.snapshot(), passage);
+  director.dispose();
+});
+
+test('Journey has a dark, glazed vehicle at standby and continuous vertical clearance with no exterior rider', () => {
+  const { director, controls, camera, rider, scene } = fixture(true);
+  const canopy = scene.getObjectByName('Journey_Panoramic_Canopy');
+  assert.ok(canopy?.material.transparent);
+  assert.equal(scene.getObjectByName('VentAndSmoke_Emitter').count, 14);
+  camera.aspect = 390 / 844;
+  director.resize();
+  const base = director.snapshot().baseWorld;
+  const tarmac = scene.getObjectByName('Journey_Wet_Deck').children[0];
+  const jet = scene.getObjectByName('Journey_Exhaust');
+  assert.equal(jet.visible, false);
+  assert.equal(tarmac.material.uniforms.energy.value, 0);
+  for (const t of [4, R3.launch, R3.launch + .42, R3.launch + 1.55, R3.flight]) {
+    director.apply(t);
+    scene.updateMatrixWorld(true);
+    assert.equal(rider.visible, false);
+    assert.deepEqual(director.snapshot().baseWorld, base);
+    if (jet.visible) {
+      const tail = jet.localToWorld(new THREE.Vector3(0, -1, 0));
+      assert.ok(tail.y >= base[1]);
+      assert.ok(tarmac.material.uniforms.tail.value.distanceTo(tail) < 1e-6);
+    }
+  }
+  assert.equal(jet.visible, false);
+  assert.equal(controls.enableRotate, true);
+  director.apply(R3.launch + 1.55);
+  assert.ok(jet.visible && director.snapshot().exhaustLength > .15);
+  assert.ok(controls.maxPolarAngle < Math.PI / 2);
+  assert.equal(controls.enablePan, false);
+  assert.ok(controls.minDistance > director.snapshot().unit);
+  director.dispose();
+  assert.equal(scene.getObjectByName('Journey_Exhaust'), undefined);
+  assert.equal(scene.getObjectByName('Journey_Wet_Deck'), undefined);
+});
+
+test('Journey keeps the chosen orbit through the lift, with the tower held in the opening shot', () => {
+  const { director, controls, camera } = fixture(true);
+  const t = R3.launch;
+  const target = controls.target.clone();
+  director.apply(t + .5);
+  assert.ok(controls.target.distanceTo(target) < 1e-10);
+  const startAngle = Math.PI * 11 / 8;
+  camera.position.copy(new THREE.Vector3(Math.cos(startAngle), .25, Math.sin(startAngle)).add(controls.target));
+  controls.dispatchEvent({ type: 'start' });
+  const offset = camera.position.clone().sub(controls.target);
+  director.apply(t + 2.5);
+  assert.ok(controls.target.distanceTo(target) > .05);
+  assert.ok(camera.position.clone().sub(controls.target).distanceTo(offset) < 1e-9);
+  director.reset(true);
+  assert.ok(controls.target.distanceTo(target) < 1e-9);
+  assert.ok(camera.position.clone().sub(controls.target).distanceTo(offset) < 1e-9);
   director.dispose();
 });

@@ -1,7 +1,8 @@
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {createJourneyVapor,createWetLaunchDeck} from './sophia-journey-ignition.ts';
 /** World fixed; dimensions are measured after the actual vehicle is made vertical. */
-export function createVerticalLaunchPad(hull:T.Object3D,nozzle:T.Object3D) {
+export function createVerticalLaunchPad(hull:T.Object3D,nozzle:T.Object3D,vaporCount=24) {
  hull.updateWorldMatrix(true,true);
  const axis=new T.Vector3(0,1,0).transformDirection(hull.matrixWorld);
  if(axis.dot(new T.Vector3(0,1,0))<.98)throw Error('Launch pad requires world +Y fuselage');
@@ -9,7 +10,7 @@ export function createVerticalLaunchPad(hull:T.Object3D,nozzle:T.Object3D) {
  const h=size.y,r=Math.max(size.x,size.z)*.5,origin=nozzle.getWorldPosition(new T.Vector3());
  const group=new T.Group();group.name='LaunchPad_R3';group.position.set(center.x,origin.y-h*.10,center.z);
  const metal=new T.MeshStandardMaterial({color:0x252936,metalness:.7,roughness:.5}),trim=new T.MeshStandardMaterial({color:0xc5ad70,metalness:.7,roughness:.4}),dark=new T.MeshStandardMaterial({color:0x0c111b,roughness:.9});
- const amber=new T.MeshBasicMaterial({color:0xffb557});const batches=new Map<T.Material,T.BufferGeometry[]>();
+ const amber=new T.MeshBasicMaterial({color:0xffbc70});const batches=new Map<T.Material,T.BufferGeometry[]>();
  function bake(g:T.BufferGeometry,m:T.Material,p:T.Vector3,q=new T.Quaternion()) {const geo=g.index?g.toNonIndexed():g.clone();g.dispose();geo.applyMatrix4(new T.Matrix4().compose(p,q,new T.Vector3(1,1,1)));if(!batches.has(m))batches.set(m,[]);batches.get(m)!.push(geo);}
  function block(name:string,w:number,hh:number,d:number,x:number,y:number,z:number,m=metal) {const geo=new T.BoxGeometry(w,hh,d);bake(geo,m,new T.Vector3(x,y,z));}
  const padRadius=h*.95,foundation=new T.Mesh(new T.CylinderGeometry(padRadius,padRadius*1.06,h*.09,8),dark);foundation.name='Pad_Foundation';foundation.position.y=-h*.045;group.add(foundation);
@@ -26,18 +27,27 @@ export function createVerticalLaunchPad(hull:T.Object3D,nozzle:T.Object3D) {
  const clamps:T.Group[]=[];
  for(const sign of [-1,1]){const pivot=new T.Group();pivot.name=sign<0?'HoldDown_A_Pivot':'HoldDown_B_Pivot';pivot.position.set(sign*r*1.8,h*.09,0);const jaw=new T.Mesh(new T.BoxGeometry(r*.95,h*.04,h*.07),trim);jaw.position.x=-sign*r*.46;pivot.add(jaw);group.add(pivot);clamps.push(pivot);block('HoldDown_Foot',h*.1,h*.09,h*.14,sign*r*1.8,h*.045,0);}
  for(const sign of [-1,1]){const beacon=new T.Mesh(new T.SphereGeometry(h*.018,8,6),amber);beacon.name='SafetyBeacon_'+sign;beacon.position.set(sign*h*.7,h*.03,h*.45);group.add(beacon);}
+ for(let i=0;i<8;i++){
+  const angle=i*Math.PI/4+Math.PI/8;
+  block('Perimeter_Marker',h*.012,h*.008,h*.012,Math.sin(angle)*padRadius*.90,h*.006,Math.cos(angle)*padRadius*.90,amber);
+ }
  for(const [m,gs] of batches){group.add(new T.Mesh(mergeGeometries(gs),m));gs.forEach(g=>g.dispose());}
- // Frame the structure before adding the uninitialized smoke instances.
+ // Fit the tower and deck, not the surrounding tarmac or particle bounds.
  group.updateMatrixWorld(true);
  const padBox=new T.Box3().setFromObject(group);
- const steamMaterial=new T.MeshBasicMaterial({color:0x9eabbf,transparent:true,opacity:.12,depthWrite:false});
- const steam=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),steamMaterial,8);steam.name='VentAndSmoke_Emitter';steam.frustumCulled=false;group.add(steam);const dummy=new T.Object3D();
- function update(t:number,release:number,power:number,steamFade:number,reduced:boolean){clamps.forEach((c,i)=>{c.rotation.z=(i? -1:1)*release*1.25;});arm.rotation.y=-release*1.35;steam.visible=!reduced&&power>0&&steamFade<1;
-  if(!steam.visible)return;
-  // Vapour follows the engine: thin and slow at pilot, billowing at ignition, blown outward by the release.
-  // Each puff grows in and out (envelope) so none pops in at the vent or vanishes abruptly.
-  const gain=Math.min(1,power*1.4)*(1-release*.35),drift=.5*power+.9*release;steamMaterial.opacity=(.05+.17*gain)*(1-steamFade);
-  for(let i=0;i<8;i++){const u=(t*.32+drift+i/8)%1,fade=Math.max(.001,Math.sin(Math.PI*u)**.6);dummy.position.set((i%2?1:-1)*(r*1.8+u*h*(.55+.25*release)),h*(.04+u*.12),h*(.15+u*.4));dummy.scale.setScalar(h*(.04+u*.14)*(.4+.6*gain)*fade);dummy.updateMatrix();steam.setMatrixAt(i,dummy.matrix);}steam.instanceMatrix.needsUpdate=true;}
- const stats={triangles:0,meshes:0,stationary:true,hullHeight:h,hullRadius:r};group.traverse(n=>{const m=n as T.Mesh;if(m.geometry){stats.triangles+=(m.geometry.index?.count??m.geometry.attributes.position.count)/3*((m as T.InstancedMesh).isInstancedMesh?8:1);stats.meshes++;}});
- return {group,groundY:group.position.y,box:padBox,stats,update,dispose(){const mats=new Set<T.Material>(),geos=new Set<T.BufferGeometry>();group.traverse(n=>{const m=n as T.Mesh;if(m.geometry)geos.add(m.geometry);if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>mats.add(x));});geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());steam.dispose();group.removeFromParent();}};
+ const deck=createWetLaunchDeck(h,padRadius);
+ const {vapor,update:updateVapor}=createJourneyVapor(h,r,vaporCount);
+ group.add(deck.group,vapor);
+ function update(t:number,release:number,power:number,steamFade:number,reduced:boolean){
+  clamps.forEach((clamp,i)=>{clamp.rotation.z=(i?-1:1)*release*1.25;});
+  arm.rotation.y=-release*1.35;
+  updateVapor(t,release,power,steamFade,reduced);
+ }
+ const stats={triangles:0,meshes:0,stationary:true,hullHeight:h,hullRadius:r};
+ group.traverse(n=>{const m=n as T.Mesh;if(m.geometry){stats.triangles+=(m.geometry.index?.count??m.geometry.attributes.position.count)/3*(m===vapor?vapor.count:1);stats.meshes++;}});
+ return {group,groundY:group.position.y,box:padBox,stats,update,updateDeck:deck.update,dispose(){
+  const mats=new Set<T.Material>(),geos=new Set<T.BufferGeometry>();
+  group.traverse(n=>{const m=n as T.Mesh;if(m.geometry)geos.add(m.geometry);if(m.material)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>mats.add(x));});
+  geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());vapor.dispose();group.removeFromParent();
+ }};
 }
