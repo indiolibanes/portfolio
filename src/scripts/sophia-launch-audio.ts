@@ -1,5 +1,5 @@
 import {R3} from './sophia-immersive-r3-timeline.mjs';
-/** Locally hosted CC0 samples, unlocked only by the Start gesture. Never gates GLB loading. */
+/** Locally hosted CC0 samples, unlocked by the confirmed launch gesture. Never gates GLB loading. */
 export function createLaunchAudio(report:(message:string)=>void) {
  let ctx:AudioContext|null=null,master:GainNode,engineBus:GainNode,voiceBus:GainNode,ventBus:GainNode,vent:AudioBufferSourceNode|null=null,engine:AudioBufferSourceNode|null=null,noise:AudioBuffer|null=null;
  let disposed=false,muted=false,failed=false,started=false,wasPaused=false,whooshDone=false,releaseFired=false;
@@ -19,7 +19,7 @@ export function createLaunchAudio(report:(message:string)=>void) {
   void ctx.resume().catch(()=>notice('Toque em Ativar sons para ouvir o lançamento.'));
   if(!whooshDone&&noise){whooshDone=true;const gain=ctx.createGain(),filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.setValueAtTime(350,ctx.currentTime);filter.frequency.exponentialRampToValueAtTime(4000,ctx.currentTime+.8);gain.gain.setValueAtTime(.001,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.12,ctx.currentTime+.65);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.95);gain.connect(filter).connect(master);const source=play(noise,gain,ctx.currentTime);if(source)source.onended=()=>{source.disconnect();gain.disconnect();filter.disconnect();sources.delete(source);};}
  }
- function reset(){sources.forEach(s=>{try{s.stop();}catch{}s.disconnect();});sources.clear();engine=null;vent=null;releaseFired=false;fired.clear();started=false;if(ctx)engineBus.gain.setValueAtTime(0,ctx.currentTime);}
+ function reset(){sources.forEach(s=>{try{s.stop();}catch{}s.disconnect();});sources.clear();engine=null;vent=null;whooshDone=false;releaseFired=false;fired.clear();started=false;if(ctx)engineBus.gain.setValueAtTime(0,ctx.currentTime);}
  function update(t:number,enginePower:number){if(!ctx||disposed||!started||wasPaused)return;
   if(!engine&&buffers.has('engine')){engine=play(buffers.get('engine')!,engineBus,ctx.currentTime);if(engine){engine.loop=true;engine.loopStart=.12;engine.loopEnd=5.8;}}
   if(!vent&&noise){vent=play(noise,ventBus,ctx.currentTime);if(vent)vent.loop=true;}
@@ -35,5 +35,5 @@ export function createLaunchAudio(report:(message:string)=>void) {
   engineBus.gain.setTargetAtTime(enginePower*(duck?.12:.28),ctx.currentTime,.035);
  }
  function pause(value:boolean){wasPaused=value;if(!ctx)return;if(value)void ctx.suspend().catch(()=>{});else void ctx.resume().catch(()=>{});}
- return {unlock,update,pause,reset,start(){started=true;},setMuted(value:boolean){muted=value;if(ctx)master.gain.setTargetAtTime(muted?0:.55,ctx.currentTime,.03);if(!muted)unlock();},get muted(){return muted;},get state(){return {unlocked:!!ctx,context:ctx?.state??'unavailable',muted,failed,loaded:buffers.size};},dispose(){if(disposed)return;disposed=true;abort.abort();reset();buffers.clear();void ctx?.close().catch(()=>{});}};
+ return {unlock,update,pause,reset,start(){started=true;},setMuted(value:boolean){muted=value;if(ctx)master.gain.setTargetAtTime(muted?0:.55,ctx.currentTime,.03);},get muted(){return muted;},get state(){return {unlocked:!!ctx,context:ctx?.state??'unavailable',muted,failed,loaded:buffers.size};},dispose(){if(disposed)return;disposed=true;abort.abort();reset();buffers.clear();void ctx?.close().catch(()=>{});}};
 }

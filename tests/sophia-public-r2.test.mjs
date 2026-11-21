@@ -134,7 +134,6 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
 test('public immersive page reports remote 404 and 503 instead of a generic unavailable status', async () => {
   const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
   const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
-  assert.match(file, /credentials:\s*'omit'/);
   assert.match(file, /response.status\s*===\s*404/);
   assert.match(file, /response.status\s*===\s*503/);
   assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
@@ -319,18 +318,19 @@ test('root scan follows R2 pagination and only uses a complete deterministic mat
 });
 
 
-test('immersive intro restores the original orbital menu and cyberpunk-style start screen', async () => {
+test('immersive launch uses an explicit YES gate and retains the original orbital menu', async () => {
   const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
-  const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
-  assert.match(file, /import ExperimentalMenu from '\.\.\/components\/ExperimentalMenu\.astro'/);
-  assert.match(file, /<ExperimentalMenu \/>/);
-  assert.match(file, /PRESS ANY KEY TO/);
-  assert.match(file, /immersive__start-main.*START/);
-  assert.match(file, /Roguepunk\.ttf/);
-  assert.match(file, /start\.addEventListener\('click',\s*requestStart[,)]/);
-  assert.match(file, /window\.addEventListener\('keydown'/);
-  assert.match(file, /e\.target\.closest\('a,button,input,select,textarea/);
-  assert.match(file, /phase\s*!==\s*'intro'/);
+  const runtime = await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
+  assert.match(page, /<ExperimentalMenu \/>/);
+  assert.match(page, /ARE YOU READY TO START A NEW JOURNEY\?/);
+  assert.match(page, /<button[^>]*data-intro-start disabled[^>]*>YES<\/button>/);
+  assert.match(page, /<button[^>]*data-intro-no[^>]*>NO<\/button>/);
+  assert.match(runtime, /start\.addEventListener\('click',begin/);
+  assert.match(runtime, /decline\.addEventListener\('click',\(\)=>\{\s*if\(!authorized\)choiceStatus\.textContent=/);
+  assert.match(runtime, /function begin\(\)\{\s*if\(disposed\|\|authorized\|\|contextLost\|\|!director\?\.supported\)return;\s*authorized=true/);
+  assert.doesNotMatch(runtime, /window\.addEventListener\('keydown'/);
+  assert.match(runtime, /replay\.addEventListener\('click',\(\)=>showStandby\(true\)/);
+  assert.match(runtime, /seek\(t:number\)\{\s*if\(!authorized\|\|!director\)return false/);
 });
 
 test('immersive page delegates choreography to the tested launch director', async () => {
@@ -386,5 +386,7 @@ test('immersive loader uses one GET (no HEAD round trip), reports status codes a
   assert.match(src, /response\.status\s*===\s*404/);
   assert.match(src, /response\.status\s*===\s*503/);
   assert.match(src, /getReader\(\)/);
-  assert.match(src, /credentials:\s*'omit'/);
+  assert.match(src, /url\.origin\s*!==\s*location\.origin/);
+  assert.match(src, /credentials:\s*'same-origin'/);
+  assert.match(src, /redirect:\s*'error'/);
 });

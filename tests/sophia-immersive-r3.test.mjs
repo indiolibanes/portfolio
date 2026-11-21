@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFile,stat} from 'node:fs/promises';
-import {R3,sampleImmersiveR3At as sample,gripStepAt,startWipeScale} from '../src/scripts/sophia-immersive-r3-timeline.mjs';
+import {R3,sampleImmersiveR3At as sample,gripStepAt} from '../src/scripts/sophia-immersive-r3-timeline.mjs';
 import {ActiveSceneClock} from '../src/scripts/sophia-launch-timeline.mjs';
 
 test('R3 ignition precedes countdown; five real intervals and zero releases the vehicle',()=>{
@@ -18,8 +18,7 @@ test('lift and left-flight position/velocity are continuous and seek order indep
  for(const boundary of [R3.launch,R3.pitchStart,R3.flight]){const e=1e-5,a=sample(boundary-e),b=sample(boundary),c=sample(boundary+e);for(const k of ['height','x']){assert.ok(Math.abs(a[k]-b[k])<1e-3);assert.ok(Math.abs((b[k]-a[k])/e-(c[k]-b[k])/e)<1e-3);}}
  assert.ok(sample(15).x<sample(12).x);const expected=sample(8.4);sample(20);sample(0);assert.deepEqual(sample(8.4),expected);
 });
-test('wipe covers portrait/ultrawide and active clock resumes without hidden catch-up',()=>{
- for(const [w,h] of [[390,640],[2560,1080],[320,900]])assert.ok(startWipeScale(240,80,w,h)*80>Math.hypot(w,h));
+test('active clock resumes without hidden catch-up',()=>{
  const c=new ActiveSceneClock();c.start(0);c.pause('hidden',3000);assert.equal(c.read(20000),3);c.resume('hidden',20000);assert.equal(c.read(21000),4);
 });
 test('root route replaces legacy test page, keeps menu and scopes GLB CSP',async()=>{
