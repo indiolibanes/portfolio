@@ -121,7 +121,11 @@ if(page){
   observer=new ResizeObserver(resize);observer.observe(stage);
   const loader=new GLTFLoader();
   async function loadAstronaut(){if(loading||disposed)return;loading=true;const current=++loadIndex;retry.hidden=true;setStatus('Carregando Sophia astronauta e foguete…');
-   try{const url=page!.dataset.astronautUrl||'/api/sophia/rocket',response=await fetch(url,{credentials:'omit',redirect:'error',signal:download.signal});
+   try{
+    const url=new URL(page!.dataset.astronautUrl||'/api/sophia/rocket',location.origin);
+    if(url.origin!==location.origin)throw Error('Endereço do modelo fora da origem do site.');
+    // Protected previews use the same Cloudflare Access session as this page.
+    const response=await fetch(url,{credentials:'same-origin',redirect:'error',signal:download.signal});
     if(!response.ok)throw Error(response.status===404?'Modelo da Sophia não encontrado (404).':response.status===503?'Armazenamento da Sophia indisponível (503).':'Modelo público indisponível (HTTP '+response.status+').');
     if(!response.headers.get('content-type')?.includes('model/gltf-binary')){void response.body?.cancel();throw Error('O servidor não retornou um GLB.');}
     // One request (no HEAD round trip); the body is streamed so the status shows real progress.

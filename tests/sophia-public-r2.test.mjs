@@ -134,7 +134,6 @@ test('scoped discovery ignores unrelated models and never lists the entire bucke
 test('public immersive page reports remote 404 and 503 instead of a generic unavailable status', async () => {
   const page = await readFile(new URL('../src/pages/modo-imersivo.astro', import.meta.url), 'utf8');
   const file = page + await readFile(new URL('../src/scripts/sophia-immersive-runtime.ts', import.meta.url), 'utf8');
-  assert.match(file, /credentials:\s*'omit'/);
   assert.match(file, /response.status\s*===\s*404/);
   assert.match(file, /response.status\s*===\s*503/);
   assert.doesNotMatch(file, /temporariamente indisponível|sophia-7b-e1-latest\.glb|fileInput/);
@@ -387,5 +386,7 @@ test('immersive loader uses one GET (no HEAD round trip), reports status codes a
   assert.match(src, /response\.status\s*===\s*404/);
   assert.match(src, /response\.status\s*===\s*503/);
   assert.match(src, /getReader\(\)/);
-  assert.match(src, /credentials:\s*'omit'/);
+  assert.match(src, /url\.origin\s*!==\s*location\.origin/);
+  assert.match(src, /credentials:\s*'same-origin'/);
+  assert.match(src, /redirect:\s*'error'/);
 });
