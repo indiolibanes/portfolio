@@ -4,6 +4,7 @@
 import { SITE } from '../../config';
 import RheaFace from '../../components/rhea/RheaFace.astro';
 import '../../styles/rhea-lamps.css';
+import '../../styles/rhea-kinetic.css';
 
 const REPO = 'https://github.com/indiolibanes/RHEA';
 const DOCS = REPO + '/blob/main/docs/';
@@ -111,10 +112,24 @@ const steps = [
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#0e2a21" />
     <script is:inline>
-      try {
-        const tone = localStorage.getItem('rhea.tone');
-        if (['forest', 'earth', 'ivory'].includes(tone)) document.documentElement.dataset.tone = tone;
-      } catch {}
+      {
+        const html = document.documentElement;
+        let tone = null;
+        let motion = null;
+        try {
+          tone = localStorage.getItem('rhea.tone');
+          motion = localStorage.getItem('rhea.motion');
+        } catch {}
+        if (['forest', 'earth', 'ivory'].includes(tone)) html.dataset.tone = tone;
+        // Motion follows the visitor's choice, else the system's reduced-motion setting.
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const on = motion ? motion === 'on' : !reduce;
+        html.dataset.motion = on ? 'on' : 'off';
+        if (on) {
+          html.classList.add('kx-pending');
+          setTimeout(() => html.classList.remove('kx-pending'), 2500);
+        }
+      }
     </script>
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/rhea/rhea-icon.svg" />
@@ -152,6 +167,7 @@ const steps = [
         <a href="#start">Get started</a>
         <a href={REPO} rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </nav>
+      <button type="button" class="rhea-motion" aria-pressed="true" hidden>Motion</button>
       <div class="rhea-tones" role="group" aria-label="Color tone" hidden>
         {tones.map((tone) => (
           <button type="button" class={`rhea-tone rhea-tone--${tone.id}`} data-tone-choice={tone.id} aria-pressed="false" title={tone.label}>
@@ -168,27 +184,28 @@ const steps = [
           <span class="rhea-glow rhea-glow--b"></span>
           <span class="rhea-stars"></span>
         </div>
-        <div class="rhea-hero__face">
+        <div class="rhea-hero__face" data-kx-reveal="zoom">
           <button class="rhea-hero__poke" type="button" aria-describedby="rhea-greet">
             <RheaFace size={210} label="Rhea, the RHEA assistant" />
           </button>
-          <p class="rhea-greet" id="rhea-greet" aria-live="polite">Hi, I'm Rhea.</p>
+          <p class="rhea-greet" id="rhea-greet" data-kx="auto" data-kx-loop="off" data-kx-wait="500">Hi, I'm Rhea.</p>
+          <p class="rhea-sr" id="rhea-greet-live" role="status"></p>
         </div>
-        <p class="rhea-label"><span class="rhea-diamond" aria-hidden="true"></span> In development · Open source · MIT</p>
-        <h1 id="rhea-hero-title">
+        <p class="rhea-label" data-kx="neon" data-kx-wait="250"><span class="rhea-diamond kx-pulse" aria-hidden="true"></span> In development · Open source · MIT</p>
+        <h1 id="rhea-hero-title" data-kx="atoms" data-kx-loop="off" data-kx-wait="450">
           Your Drive, within reach of your assistants.
-          <em>And no further.</em>
+          <em data-kx="neon" data-kx-wait="2100">And no further.</em>
         </h1>
-        <p class="rhea-hero__lead">
+        <p class="rhea-hero__lead" data-kx-reveal="up" data-kx-delay="900">
           RHEA connects Google Drive to MCP-compatible assistants through one dedicated folder.
           You run the instance, you approve each assistant, and every request is checked against
           the only folder it is allowed to reach.
         </p>
-        <p class="rhea-hero__actions">
-          <a class="rhea-button rhea-button--primary" href={REPO} rel="noopener noreferrer">
+        <p class="rhea-hero__actions" data-kx-reveal="up" data-kx-delay="1300" data-kx-watch>
+          <a class="rhea-button rhea-button--primary kx-rim kx-magnet kx-nudge" data-kx-magnet href={REPO} rel="noopener noreferrer">
             View the repository <span aria-hidden="true">↗</span>
           </a>
-          <a class="rhea-button" href={DOCS + 'google-drive-oauth.md'} rel="noopener noreferrer">
+          <a class="rhea-button kx-glow kx-magnet kx-nudge" data-kx-magnet href={DOCS + 'google-drive-oauth.md'} rel="noopener noreferrer">
             Read the setup guide <span aria-hidden="true">↗</span>
           </a>
         </p>
@@ -196,17 +213,17 @@ const steps = [
 
       <section id="overview" class="rhea-section rhea-section--ivory" aria-labelledby="overview-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">01 · Overview</p>
-          <h2 id="overview-title">Four parts, one boundary.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon">01 · Overview</p>
+          <h2 id="overview-title" data-kx="flip">Four parts, one boundary.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500">
             The repository provides the workspace and the gateway source code. Each part can be read,
             run and audited on its own.
           </p>
         </div>
         <ul class="rhea-parts">
           {components.map((part) => (
-            <li>
-              <h3>{part.name}</h3>
+            <li data-kx-reveal>
+              <h3 data-kx="auto">{part.name}</h3>
               <p>{part.text}</p>
               <a href={part.href} rel="noopener noreferrer">Source <span aria-hidden="true">↗</span><span class="rhea-sr"> for {part.name}</span></a>
             </li>
@@ -216,16 +233,16 @@ const steps = [
 
       <section class="rhea-section rhea-section--white" aria-labelledby="route-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">02 · How a request travels</p>
-          <h2 id="route-title">Every hop asks a question.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon">02 · How a request travels</p>
+          <h2 id="route-title" data-kx="run">Every hop asks a question.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500">
             An assistant never talks to Google directly. Its request passes through checks it cannot
             skip, and the answer can only come from inside the RHEA folder.
           </p>
         </div>
-        <ol class="rhea-route">
+        <ol class="rhea-route" data-kx-watch>
           {route.map((hop, index) => (
-            <li style={`--i:${index}`}>
+            <li style={`--i:${index}`} data-kx-reveal>
               <span class="rhea-route__node">{hop.step}</span>
               <span class="rhea-route__check">{hop.check}</span>
             </li>
@@ -235,13 +252,13 @@ const steps = [
 
       <section id="boundaries" class="rhea-section rhea-section--forest" aria-labelledby="boundaries-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">03 · Boundaries</p>
-          <h2 id="boundaries-title">Access is narrow by design.</h2>
+          <p class="rhea-eyebrow" data-kx="neon">03 · Boundaries</p>
+          <h2 id="boundaries-title" data-kx="melt">Access is narrow by design.</h2>
         </div>
         <dl class="rhea-boundaries">
           {boundaries.map((item) => (
-            <div>
-              <dt><span class="rhea-diamond" aria-hidden="true"></span>{item.term}</dt>
+            <div data-kx-reveal>
+              <dt data-kx="auto"><span class="rhea-diamond kx-pulse" aria-hidden="true"></span>{item.term}</dt>
               <dd>{item.text}</dd>
             </div>
           ))}
@@ -250,24 +267,24 @@ const steps = [
 
       <section id="start" class="rhea-section rhea-section--ivory" aria-labelledby="start-title">
         <div class="rhea-section__head">
-          <p class="rhea-eyebrow">04 · Get started</p>
-          <h2 id="start-title">Run your own instance.</h2>
-          <p>
+          <p class="rhea-eyebrow" data-kx="neon">04 · Get started</p>
+          <h2 id="start-title" data-kx="swap">Run your own instance.</h2>
+          <p data-kx-reveal="up" data-kx-delay="500">
             Clients such as Claude, ChatGPT and Gemini CLI can connect over remote MCP, subject to each
             client's own plans and eligibility.
           </p>
         </div>
         <ol class="rhea-steps">
           {steps.map((step) => (
-            <li>
-              <h3>{step.title}</h3>
+            <li data-kx-reveal>
+              <h3 data-kx="auto">{step.title}</h3>
               <p>{step.text}</p>
               <a href={step.href} rel="noopener noreferrer">{step.link} <span aria-hidden="true">↗</span></a>
             </li>
           ))}
         </ol>
-        <div class="rhea-code">
-          <p class="rhea-code__label">Preview the interface locally · Node.js 24</p>
+        <div class="rhea-code" data-kx-reveal="tilt">
+          <p class="rhea-code__label" data-kx="neon">Preview the interface locally · Node.js 24</p>
           <pre><code>git clone https://github.com/indiolibanes/RHEA.git
 cd RHEA/apps/web
 npm ci
@@ -294,8 +311,10 @@ npm run dev</code></pre>
     </footer>
     <script>
       import { initRheaLamps } from '../../scripts/rhea-lamps.mjs';
+      import { initRheaKinetic } from '../../scripts/rhea-kinetic.mjs';
 
       initRheaLamps();
+      const kinetic = initRheaKinetic();
 
       const hero = document.querySelector('.rhea-hero');
       if (hero && 'IntersectionObserver' in window) {
@@ -320,6 +339,9 @@ npm run dev</code></pre>
           root.dataset.tone = button.dataset.toneChoice;
           try { localStorage.setItem('rhea.tone', root.dataset.tone); } catch {}
           reflect();
+          // The tagline relights in the new tone.
+          const tagline = document.querySelector('.rhea-hero h1 em');
+          if (tagline && kinetic.motionOn()) kinetic.play(tagline, 'in', 'neon');
         });
         reflect();
       }
@@ -332,12 +354,26 @@ npm run dev</code></pre>
         'Your instance, your keys.',
         "Hi, I'm Rhea.",
       ];
+      const motionButton = document.querySelector('.rhea-motion');
+      if (motionButton) {
+        motionButton.hidden = false;
+        const sync = () => motionButton.setAttribute('aria-pressed', String(kinetic.motionOn()));
+        sync();
+        motionButton.addEventListener('click', () => {
+          kinetic.setMotion(!kinetic.motionOn());
+          sync();
+        });
+      }
+
       const greet = document.getElementById('rhea-greet');
+      const greetLive = document.getElementById('rhea-greet-live');
       const poke = document.querySelector('.rhea-hero__poke');
       let line = 0;
       poke?.addEventListener('click', (event) => {
         if (event.detail === 0) poke.querySelector('[data-rhea-lamps]')?.dispatchEvent(new CustomEvent('rhea:poke'));
-        if (greet) greet.textContent = lines[line++ % lines.length];
+        const text = lines[line++ % lines.length];
+        if (greet) kinetic.setText(greet, text);
+        if (greetLive) greetLive.textContent = text;
       });
     </script>
   </body>
@@ -451,6 +487,18 @@ npm run dev</code></pre>
     --on-primary: #faf7f0;
     --diamond: #c9a13e;
   }
+
+  /* Kinetic colours: neon on deep surfaces is gold (emerald in Ivory); on paper it is emerald. */
+  :root {
+    --kx-neon-deep: #ffe08a;
+    --kx-neon-deep-glow: rgba(233, 199, 91, 0.85);
+    --kx-neon-paper: #0c8f62;
+    --kx-neon-paper-glow: rgba(60, 214, 150, 0.6);
+    --kx-rim-a: #fffaf0;
+    --kx-rim-b: #6fe0b0;
+  }
+  :root[data-tone='earth'] { --kx-rim-b: #ffc46b; }
+  :root[data-tone='ivory'] { --kx-neon-deep: #0c8f62; --kx-neon-deep-glow: rgba(60, 214, 150, 0.55); --kx-rim-a: #ffe08a; }
 
   .rhea-site {
     --serif: 'RHEA Garamond', 'EB Garamond', Garamond, 'Times New Roman', serif;
@@ -694,6 +742,67 @@ npm run dev</code></pre>
 
   .rhea-hero.is-offscreen :is(.rhea-glow, .rhea-stars) { animation-play-state: paused; }
 
+  /* ---------- Kinetic layer ---------- */
+  .rhea-site { overflow-x: clip; }
+  .rhea-hero,
+  .rhea-section--forest,
+  .rhea-footer { --kx-neon: var(--kx-neon-deep); --kx-neon-glow: var(--kx-neon-deep-glow); --kx-bond: var(--kx-neon-deep); }
+  .rhea-section--ivory,
+  .rhea-section--white { --kx-neon: var(--kx-neon-paper); --kx-neon-glow: var(--kx-neon-paper-glow); --kx-bond: var(--kx-neon-paper); }
+
+  .rhea-button--primary { --kx-fill: var(--primary); }
+  .rhea-button--primary:hover { --kx-fill: var(--on-deep); }
+
+  .rhea-motion {
+    display: inline-flex; align-items: center; gap: 0.55rem; min-height: 40px; padding: 0 0.9rem;
+    border: 1px solid var(--rule-deep); border-radius: 999px; background: none; color: var(--on-deep-muted);
+    font-family: var(--mono); font-size: var(--label); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .rhea-motion[hidden] { display: none; }
+  .rhea-motion::before {
+    content: ''; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+    background: var(--on-deep-accent); opacity: 0.3; transition: opacity 160ms ease;
+  }
+  .rhea-motion[aria-pressed='true']::before { opacity: 1; box-shadow: 0 0 9px var(--on-deep-accent); }
+  .rhea-motion:hover { color: var(--on-deep-accent); border-color: var(--on-deep-accent); }
+
+  /* Flowchart: a signal travels the route; each node takes the colour of the light that passes. */
+  html[data-motion='on'] .rhea-route__node { position: relative; isolation: isolate; overflow: hidden; }
+  html[data-motion='on'] .rhea-route__node::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0;
+    background: linear-gradient(115deg, #ffe08a, #7be0b0, #d99a5c, #ffe08a) 0 0 / 300% 100%;
+    animation: rhea-flow-node 7.2s ease-in-out infinite, rhea-flow-hue 7.2s linear infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s);
+  }
+  html[data-motion='on'] .rhea-route li:last-child .rhea-route__node::before {
+    background: radial-gradient(circle at 50% 50%, rgba(233, 199, 91, 0.4), transparent 72%);
+    animation: rhea-flow-node 7.2s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s);
+  }
+  html[data-motion='on'] .rhea-route li:not(:last-child)::before {
+    content: ''; position: absolute; top: calc(1.55rem - 1px); left: calc(50% + 4.2rem); right: calc(-50% + 4.2rem);
+    height: 3px; border-radius: 2px; opacity: 0;
+    background: linear-gradient(90deg, transparent 0 30%, #ffe08a 50%, #7be0b0 62%, transparent 80% 100%) 100% 0 / 300% 100% no-repeat;
+    animation: rhea-flow-line 7.2s linear infinite;
+    animation-delay: calc(var(--i, 0) * 0.9s + 0.35s);
+  }
+  html[data-motion='on'] .rhea-route__check { transition: color 240ms ease; }
+  @keyframes rhea-flow-node { 0% { opacity: 0; } 6% { opacity: 0.95; } 16% { opacity: 0.95; } 30%, 100% { opacity: 0; } }
+  @keyframes rhea-flow-hue { to { background-position: 100% 0; } }
+  @keyframes rhea-flow-line {
+    0% { opacity: 1; background-position: 100% 0; }
+    11% { opacity: 1; background-position: 0 0; }
+    11.5%, 100% { opacity: 0; background-position: 0 0; }
+  }
+  @keyframes rhea-flow-line-v {
+    0% { opacity: 1; background-position: 0 100%; }
+    11% { opacity: 1; background-position: 0 0; }
+    11.5%, 100% { opacity: 0; background-position: 0 0; }
+  }
+
+  html[data-motion='off'] :is(.rhea-glow, .rhea-stars) { animation: none; }
+
   @keyframes rhea-drift-a { to { transform: translate(6%, 10%) scale(1.08); } }
   @keyframes rhea-drift-b { to { transform: translate(-14%, -10%) scale(1.1); } }
   @keyframes rhea-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.65; } }
@@ -704,6 +813,11 @@ npm run dev</code></pre>
     .rhea-route { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; max-width: 26rem; }
     .rhea-route li:not(:last-child)::after {
       top: auto; bottom: -1.3rem; left: 50%; right: auto; width: 1px; height: 1rem; background: #c9a13e;
+    }
+    html[data-motion='on'] .rhea-route li:not(:last-child)::before {
+      top: auto; bottom: -1.3rem; left: 50%; right: auto; width: 3px; height: 1rem; margin-left: -1px;
+      background: linear-gradient(180deg, transparent 0 30%, #ffe08a 50%, #7be0b0 62%, transparent 80% 100%) 0 100% / 100% 300% no-repeat;
+      animation-name: rhea-flow-line-v;
     }
   }
   @media (max-width: 640px) {
