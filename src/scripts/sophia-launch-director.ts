@@ -174,7 +174,15 @@ export function createLaunchDirector(gltf:GLTF,scene:T.Scene,camera:T.Perspectiv
   controls.enableRotate=controls.enableZoom=controls.enablePan=true;controls.minDistance=unit*.6;controls.maxDistance=Math.max(unit*40,autoPosition.distanceTo(autoTarget)*1.15);controls.minPolarAngle=.1;controls.maxPolarAngle=Math.PI*.88;
   camera.near=Math.max(.002,unit/300);camera.far=lastFlyby.visible?Math.max(500,unit*15_000):Math.max(100,unit*200);camera.lookAt(controls.target);camera.updateProjectionMatrix();previous.copy(carrier.position);
  }
- function reset(){manualCamera=false;returnCamera=false;returnProgress=0;previous.set(0,0,0);lastTime=0;apply(0);}
+ function reset(keepManualCamera=false){
+  manualCamera=keepManualCamera&&manualCamera;
+  returnCamera=false;
+  returnProgress=0;
+  // While orbiting manually, keep the last carrier position as the rebase origin.
+  if(!manualCamera)previous.set(0,0,0);
+  lastTime=0;
+  apply(0);
+ }
  function snapshot(){root.updateMatrixWorld(true);const rest=rider.parent!.localToWorld(seatP.clone());return {supported:true,time:lastTime,phase:lastSample.phase,riderVisible:rider.visible,riderWorld:rider.getWorldPosition(new T.Vector3()).toArray(),seatedWorld:rest.toArray(),riderSeatError:rider.getWorldPosition(new T.Vector3()).distanceTo(rest),rocketWorld:rocket.getWorldPosition(new T.Vector3()).toArray(),rocketUpDotWorldY:new T.Vector3(0,1,0).transformDirection(hull.matrixWorld).y,carrierWorld:carrier.position.toArray(),baseWorld:pad.group.getWorldPosition(new T.Vector3()).toArray(),orbitTheta:lastSample.orbitTheta,gripErrors,gripTolerance:pad.stats.hullRadius*2*.03,gripStatus:left.available&&right.available?'PROCEDURAL_IK_CANDIDATE':'GRIP_ANIMATION_PENDING',rocketVisible:carrier.visible,saturn:lastFlyby.visible?{distanceKm:lastFlyby.distanceKm,hillKm:SATURN_FLYBY.hillKm,spin:lastFlyby.spin,finished}:null,ribbonsVisible:carrier.visible&&ribbons.some(n=>n.visible),cradleTriangles:pad.stats.triangles,cradleMeshes:pad.stats.meshes,groundOffset:0,unit,controlsEnabled:controls.enableRotate,cameraMode:manualCamera?'USER':returnCamera?'RETURNING':'AUTO',actorTracks:flightActor!.clip.tracks.length,walkTracks:walk!.clip.tracks.length};}
  reset();return {supported:true,stats:pad.stats,apply,reset,snapshot,get finished(){return finished;},get cameraReturning(){return returnCamera;},resize(){if(!manualCamera)apply(lastTime);},resetCamera(){returnFromP.copy(camera.position);returnFromT.copy(controls.target);returnProgress=0;manualCamera=false;returnCamera=true;},dispose(){if(disposed)return;disposed=true;mixer.stopAllAction();mixer.uncacheRoot(root);controls.removeEventListener?.('start',onControlStart);saturn?.dispose();pad.dispose();disposeModel();light.removeFromParent();carrier.removeFromParent();}};
  } catch(error){mixer.stopAllAction();mixer.uncacheRoot(root);saturn?.dispose();partialPad?.dispose();partialLight?.removeFromParent();controls.removeEventListener?.('start',onControlStart);disposeModel();carrier.removeFromParent();throw error;}

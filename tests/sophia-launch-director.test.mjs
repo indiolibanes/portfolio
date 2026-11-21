@@ -33,12 +33,14 @@ function fixture() {
     new THREE.VectorKeyframeTrack('Hips.position', [0, 1], [0, .3, 0, 0, .31, 0]),
     new THREE.VectorKeyframeTrack('Root_Motion.position', [0, 1], [100, 0, 0, 200, 0, 0]),
   ]);
-  const controls = { target: new THREE.Vector3(), addEventListener() {}, enableRotate: false, enableZoom: false };
+  const controls = Object.assign(new THREE.EventDispatcher(), {
+    target: new THREE.Vector3(), enableRotate: false, enableZoom: false,
+  });
   const gltf = { scene: root, animations: [flight, walk] };
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(38, 16 / 9, .005, 100);
   const original = JSON.stringify(gltf.animations.map(c => THREE.AnimationClip.toJSON(c)));
   const director = createLaunchDirector(gltf, scene, camera, controls, () => false);
-  return { director, controls, original, gltf, rider, motion, face };
+  return { director, controls, camera, original, gltf, rider, motion, face };
 }
 test('R3 hides rider at reveal, preserves walking root, and settles on the real mount after liftoff', () => {
   const { director, controls, rider, motion, gltf, original } = fixture();
@@ -58,6 +60,25 @@ test('world transforms are identical after seeking and replay', () => {
   const { director } = fixture(); director.apply(5.45); const expected = director.snapshot();
   director.apply(14); director.apply(0); director.apply(7); director.apply(5.45); assert.deepEqual(director.snapshot(), expected);
   director.reset(); director.apply(5.45); assert.deepEqual(director.snapshot(), expected); director.dispose();
+});
+test('replay rebases a manual orbit to the pad and Auto remains explicit', () => {
+  const { director, controls, camera } = fixture();
+  director.apply(12);
+  controls.dispatchEvent({ type: 'start' });
+  camera.position.add(new THREE.Vector3(.4, .7, .2));
+  const offset = camera.position.clone().sub(controls.target);
+  const target = controls.target.clone();
+  const carrier = new THREE.Vector3(...director.snapshot().carrierWorld);
+  director.reset(true);
+  const pad = new THREE.Vector3(...director.snapshot().carrierWorld);
+  assert.equal(director.snapshot().cameraMode, 'USER');
+  assert.equal(director.snapshot().time, 0);
+  assert.ok(camera.position.clone().sub(controls.target).distanceTo(offset) < 1e-8);
+  assert.ok(controls.target.distanceTo(target.add(pad).sub(carrier)) < 1e-8);
+  director.resetCamera();
+  for (let i=0; i<10; i++) director.apply(0, .1);
+  assert.equal(director.snapshot().cameraMode, 'AUTO');
+  director.dispose();
 });
 test('Sophia anticipates the climb, blinks, braces and smiles using the authored facial targets', () => {
   const { director, face } = fixture();

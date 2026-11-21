@@ -20,11 +20,11 @@ if(page){
  const audio=createLaunchAudio(message=>{$('[data-audio-status]').textContent=message;});
  const clock=new ActiveSceneClock();
  let renderer:T.WebGLRenderer|undefined,controls:OrbitControls|undefined,director:ReturnType<typeof createLaunchDirector>|null=null,loop:ReturnType<typeof createRenderLoop>|undefined,observer:ResizeObserver|undefined;
- let disposed=false,authorized=false,contextLost=false,userPaused=false,loading=false,loadIndex=0,lastHud='',lastFrame=0;
+ let disposed=false,authorized=false,contextLost=false,pageCached=false,userPaused=false,loading=false,loadIndex=0,lastHud='',lastFrame=0;
  const download=new AbortController();
  function setStatus(message:string){status.hidden=!message;status.textContent=message;}
  function updateReadiness(){start.disabled=!director?.supported||contextLost;}
- function pauseAudio(){audio.pause(document.hidden||contextLost||userPaused||!authorized);}
+ function pauseAudio(){audio.pause(document.hidden||contextLost||pageCached||clock.pauses.size>0||!authorized);}
  function updateHud(t:number){
   const sample=sampleImmersiveR3At(t);
   page!.dataset.launchPhase=sample.phase;
@@ -56,7 +56,7 @@ if(page){
   pauseAudio();
   clock.resume('user',performance.now());
   clock.resume('qa',performance.now());
-  director?.reset();
+  director?.reset(true);
   updateReadiness();
   if(moveFocus&&!start.disabled)start.focus({preventScroll:true});
   loop?.wake();
@@ -88,7 +88,22 @@ if(page){
   mute.setAttribute('aria-pressed',String(audio.muted));
  },{signal:life.signal});
  function destroy(){if(disposed)return;disposed=true;loadIndex++;download.abort();life.abort();loop?.dispose();observer?.disconnect();audio.dispose();director?.dispose();controls?.dispose();renderer?.dispose();renderer?.domElement.remove();}
- window.addEventListener('pagehide',destroy,{once:true,signal:life.signal});document.addEventListener('astro:before-swap',destroy,{once:true,signal:life.signal});
+ window.addEventListener('pagehide',event=>{
+  if(!event.persisted){destroy();return;}
+  pageCached=true;
+  clock.pause('page-cache',performance.now());
+  pauseAudio();
+  loop?.reconcile();
+ },{signal:life.signal});
+ window.addEventListener('pageshow',event=>{
+  if(!event.persisted||!pageCached)return;
+  pageCached=false;
+  clock.resume('page-cache',performance.now());
+  lastFrame=0;
+  pauseAudio();
+  loop?.wake();
+ },{signal:life.signal});
+ document.addEventListener('astro:before-swap',destroy,{once:true,signal:life.signal});
  try{
   const scene=new T.Scene();const camera=new T.PerspectiveCamera(38,1,.005,1000);
   renderer=new T.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;stage.append(renderer.domElement);
@@ -189,7 +204,7 @@ if(page){
   loop=createRenderLoop({
    request:requestAnimationFrame,
    cancel:cancelAnimationFrame,
-   eligible:()=>!disposed&&!document.hidden&&!contextLost,
+   eligible:()=>!disposed&&!document.hidden&&!contextLost&&!pageCached,
    tick:(now:number)=>{
     if(lastFrame&&now-lastFrame<1000/(mobile?30:60)-1)return true;
     const cameraDt=lastFrame?(now-lastFrame)/1000:0;
