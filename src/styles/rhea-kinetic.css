@@ -1,0 +1,288 @@
+/* RHEA kinetic: letters that run, flip, melt, swap fonts, bond or ignite; blocks that
+   appear and disappear; buttons with a travelling rim.
+
+   Everything animated is gated on html[data-motion='on'] (set before paint from the
+   visitor's choice or prefers-reduced-motion). Animated properties are transform and
+   opacity, plus the discrete font swap and background-position. Values come from
+   rhea-kinetic.mjs through custom properties on each letter. */
+
+:root {
+  --kx-neon: #ffe08a;
+  --kx-neon-glow: rgba(233, 199, 91, 0.85);
+  --kx-neon-soft: rgba(233, 199, 91, 0.45);
+  --kx-bond: #e9c75b;
+  --kx-rim-a: #fffaf0;
+  --kx-rim-b: #6fe0b0;
+  --kx-ease: cubic-bezier(0.34, 0.1, 0.25, 1);
+}
+
+html.kx-pending [data-kx],
+html.kx-pending [data-kx-reveal] { visibility: hidden; }
+
+.kx-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.kx-word { display: inline-block; white-space: nowrap; }
+.kx-ch { position: relative; display: inline-block; }
+.kx-lock .kx-ch { width: var(--w); text-align: center; }
+
+/* Layers that only exist while an effect needs them. */
+.kx-ch::before,
+.kx-ch::after { position: absolute; pointer-events: none; opacity: 0; }
+.kx-ch::after {
+  content: attr(data-c); left: 0; top: 0; color: var(--kx-neon);
+  text-shadow: 0 0 0.22em var(--kx-neon), 0 0 0.7em var(--kx-neon-glow);
+}
+.kx-ch:not(:last-child)::before {
+  /* A short bond across the gap to the next letter, like atoms in a molecule. */
+  content: ''; left: 80%; top: 58%; width: 40%; height: 2px; border-radius: 2px;
+  background: var(--kx-bond); box-shadow: 0 0 6px var(--kx-neon-glow);
+  transform-origin: left center; transform: scaleX(0);
+}
+
+.kx-hidden .kx-ch { opacity: 0; }
+
+/* A title that is natively neon keeps a faint steady glow once it has settled. */
+html[data-motion='on'] [data-kx='neon'] { --kx-neon-end: 0.34; }
+html[data-motion='on'] [data-kx='neon']:not(.kx-run):not(.kx-hidden) .kx-ch::after { opacity: var(--kx-neon-end); }
+
+html[data-motion='on'] .kx-run .kx-ch {
+  animation-duration: var(--kx-dur, 900ms);
+  animation-delay: calc(var(--i) * var(--kx-stagger, 30ms) + var(--j, 0) * 120ms);
+  animation-timing-function: var(--kx-ease);
+  animation-fill-mode: backwards;
+}
+html[data-motion='on'] .kx-run[data-kx-phase='out'] .kx-ch { animation-fill-mode: forwards; }
+
+/* ---- flip: upside down and mirrored, then the right way round ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='flip'][data-kx-phase='in'] .kx-ch { animation-name: kx-flip-in; }
+html[data-motion='on'] .kx-run[data-kx-fx='flip'][data-kx-phase='out'] .kx-ch { animation-name: kx-flip-out; }
+@keyframes kx-flip-in {
+  0% { opacity: 0; transform: perspective(520px) translateY(-0.15em) rotateX(180deg) scaleX(-1); }
+  10% { opacity: 1; }
+  55% { transform: perspective(520px) translateY(0) rotateX(-28deg) scaleX(1); }
+  78% { transform: perspective(520px) translateY(0) rotateX(9deg) scaleX(1); }
+  100% { opacity: 1; transform: perspective(520px) translateY(0) rotateX(0deg) scaleX(1); }
+}
+@keyframes kx-flip-out {
+  0% { opacity: 1; transform: perspective(520px) translateY(0) rotateX(0deg) scaleX(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: perspective(520px) translateY(0.15em) rotateX(-180deg) scaleX(-1); }
+}
+
+/* ---- run: sprint in, overshoot the spot, come back ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='run'][data-kx-phase='in'] .kx-ch { animation-name: kx-run-in; }
+html[data-motion='on'] .kx-run[data-kx-fx='run'][data-kx-phase='out'] .kx-ch { animation-name: kx-run-out; animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5); }
+@keyframes kx-run-in {
+  0% { opacity: 0; transform: translateX(calc(var(--s) * var(--rx) * -1em)) skewX(calc(var(--s) * -20deg)); }
+  10% { opacity: 1; }
+  58% { transform: translateX(calc(var(--s) * 0.95em)) skewX(calc(var(--s) * -12deg)); }
+  78% { transform: translateX(calc(var(--s) * -0.14em)) skewX(calc(var(--s) * 5deg)); }
+  100% { opacity: 1; transform: translateX(0) skewX(0deg); }
+}
+@keyframes kx-run-out {
+  0% { opacity: 1; transform: translateX(0) skewX(0deg); }
+  15% { transform: translateX(calc(var(--s) * -0.2em)) skewX(calc(var(--s) * 8deg)); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(var(--s) * var(--rx) * 1em)) skewX(calc(var(--s) * -22deg)); }
+}
+
+/* ---- melt: rise out of a puddle; drip away ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='melt'][data-kx-phase='in'] .kx-ch { animation-name: kx-melt-in; transform-origin: 50% 100%; }
+html[data-motion='on'] .kx-run[data-kx-fx='melt'][data-kx-phase='out'] .kx-ch { animation-name: kx-melt-out; transform-origin: 50% 0; }
+@keyframes kx-melt-in {
+  0% { opacity: 0; transform: translateY(0.7em) scale(1.35, 0.08); }
+  30% { opacity: 1; transform: translateY(0.2em) scale(1.12, 0.55); }
+  55% { transform: translateY(-0.04em) scale(0.94, 1.18); }
+  78% { transform: translateY(0) scale(1.02, 0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1, 1); }
+}
+@keyframes kx-melt-out {
+  0% { opacity: 1; transform: translateY(0) scale(1, 1); }
+  35% { opacity: 1; transform: translateY(0.1em) scale(1.06, 1.25); }
+  100% { opacity: 0; transform: translateY(calc(0.7em + var(--r) * 0.9em)) scale(0.8, 2.7); }
+}
+
+/* ---- swap: the letters try on other typefaces, then settle ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='swap'][data-kx-phase='in'] .kx-ch { animation-name: kx-swap-in; animation-timing-function: linear; }
+html[data-motion='on'] .kx-run[data-kx-fx='swap'][data-kx-phase='out'] .kx-ch { animation-name: kx-swap-out; animation-timing-function: linear; }
+@keyframes kx-swap-in {
+  0% { opacity: 0; font-family: var(--mono, ui-monospace, monospace); }
+  8% { opacity: 1; }
+  22% { font-family: var(--sans, system-ui, sans-serif); font-weight: 700; }
+  40% { font-family: var(--serif, Georgia, serif); font-style: italic; font-weight: 400; }
+  58% { font-family: var(--mono, ui-monospace, monospace); font-style: normal; }
+  76% { font-family: var(--sans, system-ui, sans-serif); font-weight: 400; }
+  90% { font-family: var(--serif, Georgia, serif); font-style: italic; }
+  100% { opacity: 1; }
+}
+@keyframes kx-swap-out {
+  0% { opacity: 1; }
+  30% { font-family: var(--mono, ui-monospace, monospace); }
+  60% { font-family: var(--sans, system-ui, sans-serif); font-weight: 700; }
+  80% { opacity: 1; font-family: var(--serif, Georgia, serif); font-style: italic; }
+  100% { opacity: 0; font-family: var(--mono, ui-monospace, monospace); }
+}
+
+/* ---- atoms: scattered letters drift into molecules, bond, then settle ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='atoms'][data-kx-phase='in'] .kx-ch { animation-name: kx-atoms-in; animation-timing-function: cubic-bezier(0.3, 0.1, 0.2, 1); }
+html[data-motion='on'] .kx-run[data-kx-fx='atoms'][data-kx-phase='out'] .kx-ch { animation-name: kx-atoms-out; }
+html[data-motion='on'] .kx-run[data-kx-fx='atoms'][data-kx-phase='in'] .kx-ch::before {
+  animation: kx-bond var(--kx-dur, 1500ms) ease-in-out backwards;
+  animation-delay: calc(var(--i) * var(--kx-stagger, 20ms) + var(--j, 0) * 120ms);
+}
+@keyframes kx-atoms-in {
+  0% { opacity: 0; transform: translate(calc((var(--wx) + var(--cx)) * 1em), calc((var(--wy) + var(--cy)) * 1em)) rotate(calc(var(--rot) * 1deg)) scale(0.5); }
+  14% { opacity: 1; }
+  52% { opacity: 1; transform: translate(calc(var(--wx) * 1em), calc(var(--wy) * 1em)) rotate(0deg) scale(1.08); }
+  64% { transform: translate(calc(var(--wx) * 1em), calc(var(--wy) * 1em)) rotate(0deg) scale(1); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+@keyframes kx-atoms-out {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  22% { opacity: 1; transform: translate(calc(var(--wx) * 0.12em), calc(var(--wy) * 0.12em)) rotate(0deg) scale(1.05); }
+  100% { opacity: 0; transform: translate(calc((var(--wx) + var(--cx)) * 1em), calc((var(--wy) + var(--cy)) * 1em)) rotate(calc(var(--rot) * 1deg)) scale(0.4); }
+}
+@keyframes kx-bond {
+  0%, 40% { opacity: 0; transform: scaleX(0); }
+  54% { opacity: 1; transform: scaleX(1); }
+  82% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+
+/* ---- neon: an unlit tube catches, flickers and steadies ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='neon'][data-kx-phase='in'] .kx-ch { animation-name: kx-neon-in; animation-timing-function: linear; }
+html[data-motion='on'] .kx-run[data-kx-fx='neon'][data-kx-phase='out'] .kx-ch { animation-name: kx-neon-out; animation-timing-function: linear; }
+html[data-motion='on'] .kx-run[data-kx-fx='neon'][data-kx-phase='in'] .kx-ch::after { animation: kx-neon-glow var(--kx-dur, 1500ms) linear backwards; animation-delay: calc(var(--i) * var(--kx-stagger, 55ms) + var(--j, 0) * 120ms); }
+html[data-motion='on'] .kx-run[data-kx-fx='neon'][data-kx-phase='out'] .kx-ch::after { animation: kx-neon-glow-out var(--kx-dur, 800ms) linear forwards; animation-delay: calc(var(--i) * var(--kx-stagger, 30ms) + var(--j, 0) * 120ms); }
+@keyframes kx-neon-in {
+  0% { opacity: 0.12; }
+  14% { opacity: 0.12; }
+  16% { opacity: 1; }
+  22% { opacity: 0.3; }
+  30% { opacity: 1; }
+  38% { opacity: 0.2; }
+  52% { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes kx-neon-glow {
+  0% { opacity: 0; }
+  14% { opacity: 0; }
+  16% { opacity: 0.95; }
+  22% { opacity: 0.1; }
+  30% { opacity: 1; }
+  38% { opacity: 0.15; }
+  52% { opacity: 1; }
+  72% { opacity: 0.9; }
+  100% { opacity: var(--kx-neon-end, 0); }
+}
+@keyframes kx-neon-out {
+  0% { opacity: 1; }
+  40% { opacity: 0.3; }
+  55% { opacity: 1; }
+  70% { opacity: 0.12; }
+  100% { opacity: 0; }
+}
+@keyframes kx-neon-glow-out {
+  0% { opacity: var(--kx-neon-end, 0); }
+  40% { opacity: 0.2; }
+  55% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* ---- turn: every letter half way round, swap while upside down, the other half.
+   --dir is 1 for clockwise and -1 for counter-clockwise (language switch). ---- */
+html[data-motion='on'] .kx-run[data-kx-fx='turn'] .kx-ch {
+  animation-duration: var(--kx-dur, 360ms);
+  animation-delay: calc(var(--i) * var(--kx-stagger, 10ms));
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+html[data-motion='on'] .kx-run[data-kx-fx='turn'][data-kx-phase='a'] .kx-ch { animation-name: kx-turn-a; animation-fill-mode: forwards; }
+html[data-motion='on'] .kx-run[data-kx-fx='turn'][data-kx-phase='b'] .kx-ch { animation-name: kx-turn-b; animation-fill-mode: backwards; }
+@keyframes kx-turn-a {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(calc(var(--dir, 1) * 180deg)); }
+}
+@keyframes kx-turn-b {
+  from { transform: rotate(calc(var(--dir, 1) * 180deg)); }
+  to { transform: rotate(calc(var(--dir, 1) * 360deg)); }
+}
+
+/* ---------- Blocks that appear and disappear ---------- */
+html[data-motion='on'] .kx-rv-hidden { opacity: 0; }
+html[data-motion='on'] .kx-rv-in {
+  animation: var(--rv-anim, kx-rv-up) 780ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--rv-delay, 0ms);
+}
+html[data-motion='on'] [data-rv='up'] { --rv-anim: kx-rv-up; }
+html[data-motion='on'] [data-rv='left'] { --rv-anim: kx-rv-left; }
+html[data-motion='on'] [data-rv='right'] { --rv-anim: kx-rv-right; }
+html[data-motion='on'] [data-rv='zoom'] { --rv-anim: kx-rv-zoom; }
+html[data-motion='on'] [data-rv='tilt'] { --rv-anim: kx-rv-tilt; transform-origin: 50% 0; }
+@keyframes kx-rv-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes kx-rv-left { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: none; } }
+@keyframes kx-rv-right { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: none; } }
+@keyframes kx-rv-zoom { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes kx-rv-tilt {
+  from { opacity: 0; transform: perspective(800px) rotateX(16deg) translateY(24px); }
+  to { opacity: 1; transform: perspective(800px) rotateX(0) translateY(0); }
+}
+
+/* ---------- Buttons ---------- */
+
+/* Travelling rim: a conic light turns behind the fill; the fill leaves a 2px edge. */
+html[data-motion='on'] .kx-rim { position: relative; overflow: hidden; isolation: isolate; }
+html[data-motion='on'] .kx-rim::before {
+  content: ''; position: absolute; inset: -80%; z-index: -2;
+  background: conic-gradient(from 0deg, transparent 0 52%, var(--kx-rim-b) 70%, var(--kx-rim-a) 86%, transparent 100%);
+  animation: kx-spin 3.8s linear infinite;
+}
+html[data-motion='on'] .kx-rim::after {
+  content: ''; position: absolute; inset: 2px; z-index: -1; border-radius: 2px;
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.5) 50%, transparent 58%) no-repeat -150% 0 / 250% 100%,
+    var(--kx-fill, currentColor);
+  animation: kx-sheen 5.4s ease-in-out infinite;
+}
+@keyframes kx-spin { to { transform: rotate(1turn); } }
+@keyframes kx-sheen {
+  0%, 55% { background-position: -150% 0, 0 0; }
+  85%, 100% { background-position: 150% 0, 0 0; }
+}
+
+/* Soft neon edge that breathes, and steadies on hover or focus. */
+html[data-motion='on'] .kx-glow { position: relative; }
+html[data-motion='on'] .kx-glow::after {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 1px var(--kx-neon), 0 0 18px var(--kx-neon-glow);
+  opacity: 0; animation: kx-breathe 4.2s ease-in-out infinite;
+}
+html[data-motion='on'] .kx-glow:is(:hover, :focus-visible)::after { animation: none; opacity: 0.9; transition: opacity 200ms ease; }
+@keyframes kx-breathe { 0%, 100% { opacity: 0; } 50% { opacity: 0.55; } }
+
+html[data-motion='on'] .kx-magnet {
+  transform: translate3d(var(--kx-tx, 0px), var(--kx-ty, 0px), 0);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+html[data-motion='on'] .kx-nudge > [aria-hidden='true'] { display: inline-block; transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+html[data-motion='on'] .kx-nudge:is(:hover, :focus-visible) > [aria-hidden='true'] { transform: translate(3px, -3px); }
+
+/* A small pulse for the gold diamonds that punctuate labels. */
+html[data-motion='on'] .kx-pulse { animation: kx-diamond 3.4s ease-in-out infinite; }
+@keyframes kx-diamond {
+  0%, 100% { transform: rotate(45deg) scale(1); }
+  50% { transform: rotate(225deg) scale(1.35); }
+}
+
+[data-kx-watch].is-offscreen,
+[data-kx-watch].is-offscreen *,
+[data-kx-watch].is-offscreen *::before,
+[data-kx-watch].is-offscreen *::after { animation-play-state: paused !important; }
+
+@media print {
+  .kx-hidden .kx-ch { opacity: 1 !important; }
+  .kx-rv-hidden { opacity: 1 !important; }
+  html.kx-pending [data-kx],
+  html.kx-pending [data-kx-reveal] { visibility: visible; }
+}
