@@ -6,8 +6,10 @@ Candidata técnica; aprovação artística pendente. PR draft [#154](https://git
 
 O bot Cloudflare confirmou **Deploy successful** para o commit de implementação `332d960eb5682e77b51ef448ff598fa5eae4f66f`:
 
-- [Pass B, prévia imutável da bancada](https://1e556845.kaue.pages.dev/experimentos/hsin-lab/).
-- [Pass A, prévia imutável de referência](https://60c82121.kaue.pages.dev/experimentos/hsin-lab/).
+- Pass B, prévia imutável da bancada no Cloudflare Pages, deploy `1e556845`.
+- Pass A, prévia imutável de referência no Cloudflare Pages, deploy `60c82121`.
+
+A [experiência pública atual da Hsin](https://indiolibanes.dev/experimentos/) fica no domínio do portfólio.
 
 A página B foi aberta no navegador do Work: versão B visível, `CSP blob: OK`, grupo novo recolhido e controles desabilitados até escolher o arquivo local. Isso comprova a entrega da página, não a atuação da personagem.
 

@@ -6,7 +6,7 @@ Base inicial: `main` (commit `75b602db4d`)
 
 ## Fonte e limite da auditoria
 
-Fonte: PDF **Auditoria GUI/UX/UI — kaue.pages.dev** (11 páginas), cuja análise examinou principalmente HTML da home e de `/sophia`, sem observação direta de CSS, renderização, foco, motion ou viewports.
+Fonte: PDF **Auditoria GUI/UX/UI** sobre a versão do [portfólio](https://indiolibanes.dev/) publicada na época (11 páginas), cuja análise examinou principalmente HTML da home e de `/sophia`, sem observação direta de CSS, renderização, foco, motion ou viewports.
 
 Esta preparação **revalidou o HTML-fonte e componentes no GitHub**, não a experiência renderizada. Os resultados estáticos não substituem testes no navegador, screenshots ou resultados do Cloudflare.
 
