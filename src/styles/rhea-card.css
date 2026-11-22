@@ -1,6 +1,6 @@
 /*
  * RHEA lab card. RHEA keeps its own identity (deep green, earth brown,
- * ivory and gold), so colour and the animated sky apply only in the Autoral
+ * ivory and gold), so colour and the animated sky apply only in the Criativo
  * mode. Editorial and Documentação keep their shared card treatment.
  *
  * Motion budget: transform and opacity only, no filters, paused while the
@@ -60,7 +60,7 @@
 .rhea-card-route strong { font-size: 0.98rem; letter-spacing: 0.02em; }
 .rhea-card-route small { font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.78; }
 
-/* ---------- Autoral mode: RHEA palette and sky ---------- */
+/* ---------- creative mode: RHEA palette and sky ---------- */
 
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea {
   --rhea-forest: #0e2a21;
@@ -194,7 +194,7 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab 
 @keyframes rhea-orbit-x { from { transform: translateX(0); } to { transform: translateX(100%); } }
 @keyframes rhea-orbit-y { from { transform: translateY(-50%); } to { transform: translateY(50%); } }
 
-/* ---------- Autoral typography and colour ---------- */
+/* ---------- Criativo typography and colour ---------- */
 
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea h3 {
   color: var(--rhea-white);
@@ -242,7 +242,7 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab 
 }
 
 /* A signal walks the route: each step takes the colour of the light passing through it.
-   Autoral only, opacity and background-position only, paused off screen. */
+   Criativo only, opacity and background-position only, paused off screen. */
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .rhea-card-route strong {
     position: relative;

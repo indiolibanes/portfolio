@@ -70,7 +70,7 @@ check('music: title and subtitle live inside the listening widget; eyebrow stays
 check('music: widget sits on top as the single layer; title and subtitle come after the player', music.indexOf('music-card-head') > music.indexOf('data-recent-card') && read('src/styles/music-player.css').includes('camada única'));
 check('modes: the line between the emblems is a vibrating-string model (standing harmonics + closed loop), reduced motion = static frame', read('src/components/SeriousModeToggle.astro').includes('STRING_MODES') && read('src/components/SeriousModeToggle.astro').includes('serious-link__loop') && !read('src/components/SeriousModeToggle.astro').includes('updatePlaybackRate'));
 check('music: the cover is the dominant element (wide left column, title moved to the copy column, no separate band)', read('src/styles/music-player.css').includes('minmax(0, 1.4fr) minmax(0, 1fr)') && read('src/styles/music-player.css').includes('grid-template-areas: "cover head" "cover copy"'));
-check('music: section cursor is a musical note that changes figure and colour every 4 s, Autoral + fine pointer only', music.includes('music-note-cursor.js') && read('public/scripts/music-note-cursor.js').includes('4000') && read('public/scripts/music-note-cursor.js').includes('colcheia') && read('public/scripts/music-note-cursor.js').includes('arpejo') && read('src/styles/music-player.css').includes('cursor: none !important'));
+check('music: section cursor is a musical note that changes figure and colour every 4 s, creative mode + fine pointer only', music.includes('music-note-cursor.js') && read('public/scripts/music-note-cursor.js').includes('4000') && read('public/scripts/music-note-cursor.js').includes('colcheia') && read('public/scripts/music-note-cursor.js').includes('arpejo') && read('src/styles/music-player.css').includes('cursor: none !important'));
 check('music: error/fallback containers', music.includes('data-music-loading') && music.includes('data-music-profile'));
 check('music: playback state available', music.includes('track.nowPlaying'));
 check('music: polling and visibility pause', music.includes('setInterval(') && music.includes('visibilitychange') && music.includes('document.hidden'));
@@ -107,12 +107,13 @@ check('curiosidades: creative process steps animate nothing (no motion to gate)'
 check('curiosidades: header link', header.includes("{ href: '/curiosidades/', id: '', label: 'Curiosidades' }"));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://indiolibanes.dev/curiosidades/'));
-check('modes: Documentation home and experimental route are reloadable; old bookmarks redirect',
-  read('src/pages/modo-experimental.astro').includes("import Home from './index.astro'") &&
+check('modes: Documentation home and creative route are reloadable; old bookmarks redirect',
+  read('src/pages/modo-criativo.astro').includes("import Home from './index.astro'") &&
   read('public/_redirects').includes('/modo-documentacao/ / 301') &&
+  read('public/_redirects').includes('/modo-experimental/ /modo-criativo/ 301') &&
   read('src/components/BaseHead.astro').includes("stored === 'legacy'") &&
-  modes.includes("mode === 'authorial' ? '/modo-experimental/' : '/'") &&
-  read('src/components/ImmersiveModeEmblems.astro').includes('"href":"/modo-experimental/"') &&
+  modes.includes("id === 'authorial' ? creativePath : '/'") &&
+  read('src/components/ImmersiveModeEmblems.astro').includes('"href":PUBLIC_PAGES.creative.path') &&
   !modes.includes('data-legacy-mode'));
 check('modes: preserve three-state control',
   modes.includes("['authorial', 'editorial', 'documentation']") && modes.includes('Mudar para ') && modes.includes('aria-current'));

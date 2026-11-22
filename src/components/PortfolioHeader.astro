@@ -1,10 +1,10 @@
 ---
-import { PROFILE } from '../config';
+import { PROFILE, PUBLIC_PAGES, isCreativePath } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
 
 const onCuriosities = Astro.url.pathname.replace(/\/$/, '') === '/curiosidades';
-const isExperimentalLanding = /^\/modo-experimental\/?$/.test(Astro.url.pathname);
-const landingHref = isExperimentalLanding ? '/modo-experimental/' : '/';
+const isCreativeLanding = isCreativePath(Astro.url.pathname);
+const landingHref = isCreativeLanding ? PUBLIC_PAGES.creative.path : '/';
 
 // Tabela periódica do menu: cada destino é escrito com símbolos de elementos (Sobre = S·O·B·Re).
 // As letras que não existem na tabela ficam soltas, ao lado dos azulejos, como no logotipo de Breaking Bad.
@@ -62,19 +62,21 @@ const NAV = [
 
 <header class="site-header">
   <nav class="nav-shell" aria-label="Navegação principal">
-    <div class="nav-standards" aria-hidden="true" data-nav-standards>
-      <div class="nav-standards__row" data-standards-row="a">
-        {[0, 1].map(() => STANDARDS_A.map((t) => <span>{t}</span>))}
+    {!isCreativeLanding && (
+      <div class="nav-standards" aria-hidden="true" data-nav-standards>
+        <div class="nav-standards__row" data-standards-row="a">
+          {[0, 1].map(() => STANDARDS_A.map((t) => <span>{t}</span>))}
+        </div>
+        <div class="nav-standards__row" data-standards-row="b">
+          {[0, 1].map(() => STANDARDS_B.map((t) => <span>{t}</span>))}
+        </div>
       </div>
-      <div class="nav-standards__row" data-standards-row="b">
-        {[0, 1].map(() => STANDARDS_B.map((t) => <span>{t}</span>))}
-      </div>
-    </div>
+    )}
     <a class="brand" href={`${landingHref}#top`} aria-label={`${PROFILE.name}, início`}>
       <span class="brand-mark" aria-hidden="true" data-brand-mark><img class="brand-still" src="/brand/avatar-poster.jpg" alt="" width="320" height="320" decoding="async" /><video class="brand-video" muted loop playsinline preload="none" poster="/brand/avatar-poster.jpg" aria-hidden="true" disablepictureinpicture><source src="/brand/avatar.webm" type="video/webm" /><source src="/brand/avatar.mp4" type="video/mp4" /></video></span>
       <span class="brand-copy">
         <strong>{PROFILE.name}</strong>
-        <small>{isExperimentalLanding ? 'Narrativas · Interfaces · Experiências' : PROFILE.tagline}</small>
+        <small>{isCreativeLanding ? 'Narrativas · Interfaces · Experiências' : PROFILE.tagline}</small>
       </span>
     </a>
 
@@ -156,9 +158,9 @@ const NAV = [
   })();
 </script>
 
-<script is:inline>
+<script is:inline define:vars={{ isLanding: Astro.url.pathname === '/' || isCreativeLanding }}>
   (() => {
-    if (!/^\/(?:modo-experimental\/?)?$/.test(window.location.pathname)) return;
+    if (!isLanding) return;
 
     const links = [...document.querySelectorAll('[data-nav-section]')];
     const sections = links
@@ -465,7 +467,7 @@ const NAV = [
     }
   }
 
-  /* ===== Autoral: a gaveta é uma tabela periódica, em qualquer largura ===== */
+  /* ===== Criativo: a gaveta é uma tabela periódica, em qualquer largura ===== */
   .site-header .nav-elements { display: none; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-documentation-mode='true']) .site-header .nav-shell { position: relative; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-documentation-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
@@ -553,7 +555,7 @@ const NAV = [
   html[data-documentation-mode='true'] .site-header .nav-sections a { display: inline-block !important; }
 
 
-  /* The Autoral keeps its ORIGINAL hamburger trigger, mode emblems and
+  /* Creative mode keeps its ORIGINAL hamburger trigger, mode emblems and
      periodic-table destinations. Only the Immersivo drawer's original 500ms
      glass opening is borrowed; the orbiting trigger is not rendered here. */
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-documentation-mode='true']) .site-header .nav-shell {
@@ -609,7 +611,7 @@ const NAV = [
     opacity: 1;
     transform: none;
   }
-  /* The glass layer is specific to the Autoral disclosure. */
+  /* The glass layer is specific to the creative-mode disclosure. */
   html:not([data-nav-js='true']) .site-header .nav-sections .xm-glass,
   html:is([data-serious-mode='true'], [data-documentation-mode='true']) .site-header .nav-sections .xm-glass {
     display: contents;

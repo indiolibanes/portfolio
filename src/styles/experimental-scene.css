@@ -1,4 +1,4 @@
-/* modo-experimental: cenário (lua + portal chinês), canvas da Sophia e controles inferiores.
+/* Protótipo lunar: cenário, canvas da Sophia e controles inferiores.
    Camadas: backdrop (0) < canvas Sophia (1) < controles (2) < menu (z do experimental.css). */
 
 .xm-backdrop {

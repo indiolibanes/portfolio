@@ -1,5 +1,5 @@
 /*
- * Hierarquia tipográfica — Autoral e Documentação (2026-10-20).
+ * Hierarquia tipográfica — Criativo e Documentação (2026-10-20).
  *
  * Papéis, do mais forte ao mais discreto:
  *   1. Nome (h1)            Roguepunk, o único display "cyber" da home.
@@ -8,7 +8,7 @@
  *   4. Lead e subtítulos    Bookman (subtítulo do projeto).
  *   5. Corpo e rótulos      Inter e a mono de apoio, com entrelinha de leitura.
  *
- * Autoral usa a família; Documentação, que é o modo 1998, mantém as fontes do
+ * Criativo usa a família; Documentação, que é o modo 1998, mantém as fontes do
  * sistema e só recebe a escala e a ordem dos papéis.
  * Carregado por último em BaseLayout.
  */
@@ -21,7 +21,7 @@
   font-display: swap;
 }
 
-/* ---------- Autoral ---------- */
+/* ---------- Criativo ---------- */
 
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .block-name {
   font-family: "Portfolio Roguepunk", Impact, "Arial Black", sans-serif;

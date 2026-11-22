@@ -4,7 +4,7 @@
  * (direita, painel escuro). Linha 2, largura total: mapa mental desenhado à
  * mão (centro "número kappa", quatro blocos, setas, marca-texto) com holofote
  * que passa de bloco em bloco. Folhas caindo ao fundo, visíveis.
- * Escopo: modo Autoral. Documentação vê tudo como texto (type-hierarchy.css).
+ * Escopo: modo Criativo. Documentação vê tudo como texto (type-hierarchy.css).
  */
 
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria {

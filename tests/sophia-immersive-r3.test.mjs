@@ -23,7 +23,7 @@ test('active clock resumes without hidden catch-up',()=>{
 });
 test('root route replaces legacy test page, keeps menu and scopes GLB CSP',async()=>{
  const page=await readFile('src/pages/modo-imersivo.astro','utf8'),headers=await readFile('public/_headers','utf8');assert.match(page,/<ExperimentalMenu \/>/);
- assert.ok((await stat('src/pages/modo-experimental.astro')).isFile());await assert.rejects(stat('src/pages/experimentos/modo-imersivo.astro'),{code:'ENOENT'});
+ assert.ok((await stat('src/pages/modo-criativo.astro')).isFile());await assert.rejects(stat('src/pages/experimentos/modo-imersivo.astro'),{code:'ENOENT'});
  assert.match(headers,/\/modo-imersivo\*[\s\S]*?img-src 'self' data: blob:/);
  assert.match(await readFile('public/_redirects','utf8'),/\/experimentos\/modo-imersivo \/modo-imersivo 301/);
 });

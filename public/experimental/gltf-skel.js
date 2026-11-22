@@ -1,4 +1,4 @@
-// gltf-skel.js — leitor de GLB, esqueleto e animação para o modo-experimental.
+// gltf-skel.js — leitor de GLB, esqueleto e animação para a Sophia 3D.
 // Sem dependências e sem WebGL (roda também no Node, para conferir poses e velocidades).
 // O desenho fica em gltf-gl.js. Matrizes em coluna-maior, como no WebGL; quaternions [x, y, z, w].
 

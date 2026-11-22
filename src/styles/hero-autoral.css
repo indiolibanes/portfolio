@@ -1,11 +1,11 @@
 /*
- * Hero do modo Autoral (padrão) — sobriedade, 2026-10-20.
+ * Hero do modo Criativo — sobriedade, 2026-10-20.
  *
  * Direção: página de papel, tipografia como identidade, pouca moldura.
  * Inspiração: leitura visual de craft.do (texto dominante, respiro, poucos
  * recipientes, botões retangulares, nenhuma sombra decorativa).
  *
- * Escopo: apenas #sobre no modo Autoral. Editorial (data-serious-mode) e
+ * Escopo: apenas #sobre no modo Criativo. Editorial (data-serious-mode) e
  * Documentação (data-documentation-mode) não são tocados. A marcação não muda; as peças
  * decorativas do hero ficam ocultas só neste modo (ver nota no fim).
  *
@@ -109,7 +109,27 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobr
   color: var(--ink-soft);
 }
 
-#sobre .role .role-item { display: inline-block; white-space: nowrap; }
+#sobre .role:has(.creative-roles) {
+  max-width: 100%;
+}
+
+.creative-roles {
+  display: inline-grid;
+  max-width: 100%;
+  grid-template-columns: minmax(0, max-content) minmax(0, max-content);
+  gap: 0.2rem 1.1rem;
+  text-align: start;
+}
+
+.creative-roles .role-item:nth-child(even) {
+  position: relative;
+}
+
+.creative-roles .role-item:nth-child(even)::before {
+  content: '▪︎' / '';
+  position: absolute;
+  inset-inline-start: -0.72rem;
+}
 
 /* ---------- Enunciado: texto dominante, sem painel ---------- */
 

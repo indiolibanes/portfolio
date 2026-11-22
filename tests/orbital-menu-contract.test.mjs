@@ -13,7 +13,7 @@ const css = read('src/styles/experimental.css');
 const js = read('public/scripts/experimental-menu.js');
 const authorialHop = read('public/scripts/authorial-glass-drawer.js');
 
-test('Autoral restores original trigger + periodic navigation, borrowing only glass drawer', () => {
+test('Creative mode restores original trigger + periodic navigation, borrowing only glass drawer', () => {
   assert.match(header, /class="nav-menu-toggle"/);
   assert.match(header, /data-nav-menu-toggle/);
   assert.match(header, /class="nav-sections" id="nav-sections" data-nav-sections/);
@@ -30,7 +30,7 @@ test('Autoral restores original trigger + periodic navigation, borrowing only gl
   assert.doesNotMatch(js, /keepDrawerInView/);
 });
 
-test('Autoral adopts original five-hop choreography while retaining its own reveal and reduced-motion logic', () => {
+test('Creative mode adopts original five-hop choreography while retaining its own reveal and reduced-motion logic', () => {
   assert.match(header, /const reveal = \(\) =>/);
   assert.match(header, /data-nav-sections/);
   assert.match(header, /event\.key === 'Escape'/);
@@ -49,9 +49,13 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
   assert.match(menu, /<ImmersiveModeEmblems \/>/);
   assert.doesNotMatch(menu, /variant="authorial"|NAV\.map|MODE_CHOICES/);
   assert.match(animatedIcons, /data-xm-mode-nav/);
-  for (const [id, href] of [['authorial','/modo-experimental/'],['editorial','/?mode=editorial'],['documentation','/']]) {
+  for (const [id, href] of [['authorial','/modo-criativo/'],['editorial','/?mode=editorial'],['documentation','/']]) {
     assert.ok(animatedIcons.includes('"id":"' + id + '"'), 'Original emblem missing: ' + id);
-    assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
+    if (id === 'authorial') {
+      assert.match(animatedIcons, /"id":"authorial","name":"Criativo","href":PUBLIC_PAGES\.creative\.path/);
+    } else {
+      assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
+    }
   }
   assert.doesNotMatch(animatedIcons, /"id":"immersive"/);
   assert.match(animatedIcons, /serious-art/);
@@ -85,17 +89,17 @@ test('Immersivo orbital menu proportions and Omega portal remain unchanged', () 
   assert.match(mode, /const modes = \['authorial', 'editorial', 'documentation'\];/);
 });
 
-test('Documentation is the canonical home; Experimental is a separate route; old links migrate', () => {
-  const experimental = read('src/pages/modo-experimental.astro');
+test('Documentation is the canonical home; Creative is a separate route; old links migrate', () => {
+  const creative = read('src/pages/modo-criativo.astro');
   const head = read('src/components/BaseHead.astro');
   const css = read('src/styles/neumorphic.css');
   const redirects = read('public/_redirects');
-  assert.match(experimental, /import Home from '\.\/index\.astro'/);
-  assert.match(head, /isExperimentalLanding/);
+  assert.match(creative, /import Home from '\.\/index\.astro'/);
+  assert.match(head, /isCreativeLanding/);
   assert.match(head, /'legacy', '1998', 'neumorfismo'/);
   assert.match(head, /stored === 'legacy'/);
-  assert.match(head, /isExperimental \? 'authorial' : 'documentation'/);
-  assert.match(mode, /url\.pathname = mode === 'authorial' \? '\/modo-experimental\/' : '\/'/);
+  assert.match(head, /isCreativeLanding \? 'authorial' : 'documentation'/);
+  assert.match(mode, /const target = id === 'authorial' \? creativePath : '\/'/);
   assert.match(mode, /url\.searchParams\.set\('mode', mode === 'documentation' \? 'documentacao' : mode\)/);
   assert.match(redirects, /\/modo-documentacao\/ \/ 301/);
   assert.match(css, /data-documentation-mode/);

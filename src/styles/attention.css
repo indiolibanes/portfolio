@@ -1,5 +1,5 @@
 /* Botões em destaque: “Currículo PDF” (Sobre) e o alternador de modo de leitura.
-   Autoral = cor e brilho; Editorial = apenas movimento discreto em tinta; Documentação não anima. */
+   Criativo = cor e brilho; Editorial = apenas movimento discreto em tinta; Documentação não anima. */
 
 @property --attn-angle {
   syntax: '<angle>';
@@ -72,7 +72,7 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
 }
 
 /* ---------- Curiosidades e Contato: botões vivos (2026-10-22) ----------
-   Autoral: preenchimento vibrante por botão, borda cônica girando, brilho que varre e
+   Criativo: preenchimento vibrante por botão, borda cônica girando, brilho que varre e
    halo pulsando. Editorial: só um anel de tinta discreto e a seta que acena.
    Documentação: nada se move. Movimento reduzido: tudo parado, cores mantidas. */
 

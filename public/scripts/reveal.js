@@ -6,7 +6,7 @@
 // o que já está na tela ao carregar; o resto espera o primeiro gesto de rolagem real.
 // data-reveal="iris" abre a imagem a partir do centro. Melhoria progressiva: sem JS, sem
 // IntersectionObserver ou com movimento reduzido, nada é escondido. O CSS (reveal.css) só aplica
-// o estado escondido no modo Autoral.
+// o estado escondido no modo Criativo.
 (() => {
   const root = document.documentElement;
   let enabled = false;

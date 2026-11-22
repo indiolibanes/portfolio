@@ -22,7 +22,7 @@ test('HUD leaves the 3D controls available and reads from the launch clock', asy
 });
 test('Omega is a distinct navigational portal and keeps the other three reading modes', async () => {
   const component = await readFile('src/components/SeriousModeToggle.astro', 'utf8');
-  assert.match(component, /const showOmega = Astro\.url\.pathname === '\/' \|\| isExperimentalLanding;/);
+  assert.match(component, /const showOmega = Astro\.url\.pathname === '\/' \|\| isCreativeLanding;/);
   assert.match(component, /const modes = \['authorial', 'editorial', 'documentation'\];/);
   assert.match(component, /data-omega-portal/);
   assert.match(component, /href="\/modo-imersivo\/"/);

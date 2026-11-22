@@ -7,7 +7,7 @@
  *   3. parallax: the painting leans a few pixels toward the cursor
  *      (--music-px / --music-py, set in MusicShelf.astro);
  *   4. ripple: a ring of light where the reader clicks.
- * Authorial mode only. Quiet modes, reduced motion and touch get the still image.
+ * Creative mode only. Quiet modes, reduced motion and touch get the still image.
  *
  * 2026-10-17: retuned for the new artwork (v3) and extended with a sky layer
  * (moon breathing, twinkling stars, rising sky lanterns) and a glow layer

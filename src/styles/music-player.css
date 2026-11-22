@@ -9,7 +9,7 @@
  * espelhadas no reflexo abaixo. Com música tocando as barras dançam; ouvido
  * recentemente elas descansam.
  *
- * Só no modo Autoral. Editorial e Documentação mantêm o cartão plano e estático
+ * Só no modo Criativo. Editorial e Documentação mantêm o cartão plano e estático
  * (as camadas decorativas ficam ocultas); movimento reduzido congela tudo.
  */
 
@@ -534,7 +534,7 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) .musi
 }
 
 
-/* ---------- Cursor de notas (seção Música, só Autoral, ponteiro fino) ----------
+/* ---------- Cursor de notas (seção Música, só Criativo, ponteiro fino) ----------
    O cursor nativo some dentro da seção; a nota (public/scripts/music-note-cursor.js) segue o
    ponteiro e troca de figura e cor a cada 4 s. Sobre links e botões ela cresce um pouco. */
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) .music-shelf.music-cursor-on,
