@@ -49,14 +49,14 @@ function spell(word: string): Seg[] {
 const STANDARDS_A = ['ISO 9001', 'NBR 6023', 'ISO 690', 'ISA-88', 'ISO 8601', 'NBR 10520', 'IEC 61131-3', 'ISO 15489', 'NBR 14724', 'ISO/IEC 27001', 'NBR 6022', 'ISA-95', 'ISO 26324', 'NBR 6024', 'ISO 14001', 'IEEE 830', 'NBR 6027', 'ISO 31000', 'ISO 302', 'NBR 6028'];
 const STANDARDS_B = ['ISA-5.1', 'ISO 19650', 'NBR 15287', 'IEC 62443', 'ISO 2108', 'NBR 5410', 'ISO/IEC 25010', 'ISA-101', 'TAPPI T 236', 'ISO 15836', 'NR-10', 'ISO/IEC/IEEE 82079-1', 'NBR ISO 9001', 'ISA-18.2', 'ISO 12207', 'NR-12', 'ABNT NBR 6034', 'ISO 3166', 'IEC 60617', 'ISO 80000'];
 const NAV = [
-  { href: `${landingHref}#sobre', id: 'sobre', label: 'Sobre' },
-  { href: `${landingHref}#lab', id: 'lab', label: 'Laboratório' },
-  { href: `${landingHref}#percurso', id: 'percurso', label: 'Percurso' },
-  { href: `${landingHref}#metodo', id: 'metodo', label: 'Método' },
-  { href: `${landingHref}#bastidores', id: 'bastidores', label: 'Bastidores' },
-  { href: `${landingHref}#musica', id: 'musica', label: 'Música' },
+  { href: `${landingHref}#sobre`, id: 'sobre', label: 'Sobre' },
+  { href: `${landingHref}#lab`, id: 'lab', label: 'Laboratório' },
+  { href: `${landingHref}#percurso`, id: 'percurso', label: 'Percurso' },
+  { href: `${landingHref}#metodo`, id: 'metodo', label: 'Método' },
+  { href: `${landingHref}#bastidores`, id: 'bastidores', label: 'Bastidores' },
+  { href: `${landingHref}#musica`, id: 'musica', label: 'Música' },
   { href: '/curiosidades/', id: '', label: 'Curiosidades' },
-  { href: `${landingHref}#contato', id: 'contato', label: 'Contato', cta: true },
+  { href: `${landingHref}#contato`, id: 'contato', label: 'Contato', cta: true },
 ].map((item) => ({ ...item, segs: spell(item.label) }));
 ---
 
