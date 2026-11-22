@@ -13,6 +13,11 @@ export const RSS = {
 };
 
 export const PUBLIC_PAGES = {
+  creative: {
+    path: '/modo-criativo/',
+    title: 'Modo Criativo | Kauê Alencar',
+    description: 'Portfólio criativo de Kauê Alencar com narrativas interativas, UX writing, roteiros e experimentos visuais, incluindo a experiência imersiva com Sophia.',
+  },
   curiosidades: {
     path: '/curiosidades/',
     title: 'Curiosidades — Portfólio de Kauê Alencar',
@@ -29,6 +34,11 @@ export const PUBLIC_PAGES = {
     description: 'RHEA is an open-source, self-hosted workspace that connects Google Drive to MCP-compatible assistants through one dedicated folder, with revocable grants and reviewed changes.',
   },
 };
+
+export function isCreativePath(pathname: string) {
+  const { path } = PUBLIC_PAGES.creative;
+  return pathname === path || pathname + '/' === path;
+}
 
 export const PROFILE = {
   name: 'Kauê Alencar',

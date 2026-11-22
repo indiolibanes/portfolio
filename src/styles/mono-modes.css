@@ -1,8 +1,6 @@
 /*
- * Editorial → "Volume" (2026-11-22): the quiet mode is now a minimalist 3D stage.
- * Dark graphite, off-white ink, one cyan signal. The flat reset stays (no gradients,
- * glows or decoration) so that depth is the only effect: sections are planes in a
- * perspective scene, see volume-3d.css. The internal key stays `data-serious-mode`.
+ * Editorial — monochrome and minimal (2026-10-12; Documentação split out 2026-11-22,
+ * now the neumorphic mode in neumorphic.css).
  *
  * Tokens first (--e-*), then the reset that reads them. Exempt from the reset:
  * the 404 Sophia panel and aria-hidden decoration.

@@ -8,7 +8,7 @@
  * forehead, and eyes that glance sideways now and then — she is looking for
  * something. Colour comes from `currentColor`; the star takes --sigil-star
  * when a context sets it. Motion is CSS only and stops under
- * prefers-reduced-motion and in the Editorial / Legacy modes.
+ * prefers-reduced-motion and in the Editorial / Documentação modes.
  */
 interface Props {
   className?: string;
@@ -108,5 +108,5 @@ const {
     .sophia-sigil__pupil, .sophia-sigil__ear--r, .sophia-sigil__star { animation: none; }
   }
   html[data-serious-mode='true'] .sophia-sigil *,
-  html[data-legacy-mode='true'] .sophia-sigil * { animation: none; }
+  html[data-documentation-mode='true'] .sophia-sigil * { animation: none; }
 </style>

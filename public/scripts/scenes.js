@@ -2,7 +2,7 @@
 //
 // Cada elemento com data-scene="…" recebe um <canvas aria-hidden> atrás do conteúdo. As cenas só rodam
 // enquanto estão na tela e com a aba visível; com prefers-reduced-motion mostram um único quadro estático;
-// nos modos Editorial e Legacy ficam desligadas (o CSS também as esconde).
+// nos modos Editorial e Documentação ficam desligadas (o CSS também as esconde).
 //
 //   supernova  Tradução      estrela que colapsa, explode e deixa um remanescente
 //   spacetime  Reflexão      grade do espaço-tempo curvada por duas massas + relógio que anda para trás
@@ -1813,7 +1813,7 @@
   const items = [];
   let frame = 0;
   let last = 0;
-  const modeOn = () => root.dataset.seriousMode !== 'true' && root.dataset.legacyMode !== 'true';
+  const modeOn = () => root.dataset.seriousMode !== 'true' && root.dataset.documentationMode !== 'true';
 
   const resize = (c) => {
     const r = c.host.getBoundingClientRect();
@@ -1898,7 +1898,7 @@
       wake();
     }
     document.addEventListener('visibilitychange', wake);
-    new MutationObserver(wake).observe(root, { attributes: true, attributeFilter: ['data-serious-mode', 'data-legacy-mode'] });
+    new MutationObserver(wake).observe(root, { attributes: true, attributeFilter: ['data-serious-mode', 'data-documentation-mode'] });
     window.PortfolioScenes = {
       renderAt(host, t) { const c = host._scene; if (!c) return false; c.frozen = true; resize(c); if (c.scene.persistent) { c.st = {}; c.scene.init(c); } c.reduced = true; paint(c, t, 0.016); c.reduced = reduce; return true; },
     };

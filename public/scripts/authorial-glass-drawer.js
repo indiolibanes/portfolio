@@ -1,5 +1,5 @@
 // The original Pixar-style five-hop drawer tiles choreography from
-// experimental-menu.js, applied to the original Autoral periodic table.
+// experimental-menu.js, applied to the creative mode’s periodic table.
 // The ORIGINAL header button and its plasma/WAAPI behavior are untouched.
 (() => {
   const drawer = document.querySelector('.site-header [data-nav-sections]');
