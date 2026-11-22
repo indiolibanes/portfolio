@@ -49,7 +49,7 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
   assert.match(menu, /<ImmersiveModeEmblems \/>/);
   assert.doesNotMatch(menu, /variant="authorial"|NAV\.map|MODE_CHOICES/);
   assert.match(animatedIcons, /data-xm-mode-nav/);
-  for (const [id, href] of [['authorial','/modo-criativo/'],['editorial','/?mode=editorial'],['documentation','/']]) {
+  for (const [id, href] of [['documentation','/'],['editorial','/?mode=editorial'],['authorial','/modo-criativo/']]) {
     assert.ok(animatedIcons.includes('"id":"' + id + '"'), 'Original emblem missing: ' + id);
     if (id === 'authorial') {
       assert.match(animatedIcons, /"id":"authorial","name":"Criativo","href":PUBLIC_PAGES\.creative\.path/);
@@ -57,6 +57,7 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
       assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
     }
   }
+  assert.match(animatedIcons, /"id":"documentation","name":"Documentação","href":"\/"/);
   assert.doesNotMatch(animatedIcons, /"id":"immersive"/);
   assert.match(animatedIcons, /serious-art/);
   assert.match(animatedIcons, /const loopsOf = \{/);
@@ -86,7 +87,11 @@ test('Immersivo orbital menu proportions and Omega portal remain unchanged', () 
   assert.match(js, /drawer\.inert = !open/);
   assert.match(mode, /href="\/modo-imersivo\/" data-omega-portal/);
   assert.doesNotMatch(mode, /class="serious-omega-caption"/);
-  assert.match(mode, /const modes = \['authorial', 'editorial', 'documentation'\];/);
+  assert.match(mode, /const modes = \['documentation', 'editorial', 'authorial'\];/);
+  assert.match(mode, /data-mode-node="documentation" data-state=\{isCreativeLanding \? 'idle' : 'active'\}/);
+  assert.match(mode, /data-mode-node="authorial" data-state=\{isCreativeLanding \? 'active' : 'idle'\}/);
+  assert.match(mode, /<strong>α · Documentação<\/strong>/);
+  assert.match(mode, /<strong>γ · Criativo<\/strong>/);
 });
 
 test('Documentation is the canonical home; Creative is a separate route; old links migrate', () => {
