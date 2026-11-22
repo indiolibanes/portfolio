@@ -14,12 +14,13 @@ const {
 
 const pathname = Astro.url.pathname;
 const isNotFound = pathname.replace(/\/$/, '') === '/404';
-const canonicalUrl = new URL(pathname, SITE.url).toString();
+const isDocumentationLanding = /^\/modo-documentacao\/?$/.test(pathname);
+const canonicalUrl = new URL(isDocumentationLanding ? '/' : pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 // Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
-const hasLandingScenes = Astro.url.pathname === '/';
+const hasLandingScenes = pathname === '/' || isDocumentationLanding;
 // Stable, public identity data for the portfolio's main page only.
 const personId = new URL('/#person', SITE.url).toString();
 const websiteId = new URL('/#website', SITE.url).toString();
@@ -61,14 +62,17 @@ const structuredData = {
       const params = new URLSearchParams(window.location.search);
       const requestedMode = params.get('mode');
       const seriousParam = params.get('serious');
-      const supportedModes = ['authorial', 'editorial', 'legacy'];
+      const supportedModes = ['authorial', 'editorial', 'documentation'];
 
       let mode = null;
 
-      if (requestedMode === '1998' || requestedMode === 'neumorfismo' || requestedMode === 'neumorphism') {
-        mode = 'legacy';
-      } else if (supportedModes.includes(requestedMode)) {
-        mode = requestedMode;
+      const canonicalRequested = ['legacy', '1998', 'neumorfismo', 'neumorphism', 'documentacao'].includes(requestedMode)
+        ? 'documentation'
+        : requestedMode;
+      if (supportedModes.includes(canonicalRequested)) {
+        mode = canonicalRequested;
+      } else if (window.location.pathname === '/modo-documentacao/' || window.location.pathname === '/modo-documentacao') {
+        mode = 'documentation';
       } else if (seriousParam === '1' || seriousParam === 'true') {
         mode = 'editorial';
       } else if (seriousParam === '0' || seriousParam === 'false') {
@@ -76,8 +80,8 @@ const structuredData = {
       } else {
         const storedMode = localStorage.getItem('portfolio-mode-v2');
 
-        if (supportedModes.includes(storedMode)) {
-          mode = storedMode;
+        if (supportedModes.includes(storedMode) || storedMode === 'legacy') {
+          mode = storedMode === 'legacy' ? 'documentation' : storedMode;
         }
       }
 
@@ -86,8 +90,8 @@ const structuredData = {
       document.documentElement.dataset.portfolioMode = mode;
       document.documentElement.dataset.seriousMode =
         mode === 'editorial' ? 'true' : 'false';
-      document.documentElement.dataset.legacyMode =
-        mode === 'legacy' ? 'true' : 'false';
+      document.documentElement.dataset.documentationMode =
+        mode === 'documentation' ? 'true' : 'false';
     } catch {}
   })();
 </script>

@@ -1,7 +1,7 @@
 /*
  * RHEA lab card. RHEA keeps its own identity (deep green, earth brown,
  * ivory and gold), so colour and the animated sky apply only in the Autoral
- * mode. Editorial and Legacy keep their shared card treatment.
+ * mode. Editorial and Documentação keep their shared card treatment.
  *
  * Motion budget: transform and opacity only, no filters, paused while the
  * card is off screen (.is-offscreen) and removed for reduced motion.
@@ -62,7 +62,7 @@
 
 /* ---------- Autoral mode: RHEA palette and sky ---------- */
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea {
   --rhea-forest: #0e2a21;
   --rhea-forest-2: #163b2e;
   --rhea-moss: #1f4a3a;
@@ -79,9 +79,9 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   box-shadow: 0 18px 40px rgba(14, 42, 33, 0.28);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::before { opacity: 0.08; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea::before { opacity: 0.08; }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea::after {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea::after {
   content: '';
   position: absolute;
   inset: auto 0 0;
@@ -91,7 +91,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   pointer-events: none;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-card-sky {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .rhea-card-sky {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -145,7 +145,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-c
 }
 
 /* The moon's orbit: two eased axes, half a period apart, trace an ellipse. */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-card-orbit {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .rhea-card-orbit {
   position: absolute;
   inset: 22% -10%;
   display: block;
@@ -179,8 +179,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .rhea-c
   box-shadow: 0 0 10px rgba(233, 199, 91, 0.7);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-copy,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-copy,
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-system-rhea {
   z-index: 2;
 }
 
@@ -196,55 +196,55 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
 
 /* ---------- Autoral typography and colour ---------- */
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea h3 {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea h3 {
   color: var(--rhea-white);
   letter-spacing: 0.08em;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-index,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-kicker {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-index,
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-kicker {
   color: rgba(241, 232, 210, 0.7);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-status {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-status {
   border-color: rgba(233, 199, 91, 0.4);
   background: rgba(233, 199, 91, 0.12);
   color: var(--rhea-yellow);
 }
 
 /* Same hierarchy as the other cards: the cited line carries the accent, the follow-up is quieter. */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book p,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book cite {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-book p,
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-book cite {
   color: var(--rhea-yellow);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-book span {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-book span {
   color: var(--rhea-ivory);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-description,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-footer {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-description,
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-footer {
   color: rgba(241, 232, 210, 0.88);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .lab-project-repo:hover {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .lab-project-repo:hover {
   color: var(--rhea-yellow);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-system-rhea {
   border-left-color: rgba(201, 161, 62, 0.2);
   background: transparent;
   color: var(--rhea-ivory);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:last-child strong {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:last-child strong {
   color: var(--rhea-yellow);
 }
 
 /* A signal walks the route: each step takes the colour of the light passing through it.
    Autoral only, opacity and background-position only, paused off screen. */
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route strong {
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .rhea-card-route strong {
     position: relative;
     background: linear-gradient(100deg, currentColor 0 36%, #ffe08a 46%, #7be0b0 54%, currentColor 64% 100%) 100% 0 / 300% 100% no-repeat;
     -webkit-background-clip: text;
@@ -253,9 +253,9 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
     animation: rhea-card-flow 6.6s ease-in-out infinite;
     animation-delay: calc(var(--rhea-step, 0) * 0.9s);
   }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(2) { --rhea-step: 1; }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(3) { --rhea-step: 2; }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-card-rhea.is-offscreen .rhea-card-route strong {
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(2) { --rhea-step: 1; }
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea .rhea-card-route li:nth-child(3) { --rhea-step: 2; }
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-card-rhea.is-offscreen .rhea-card-route strong {
     animation-play-state: paused;
   }
 }
@@ -277,7 +277,7 @@ html[data-serious-mode='true'] .rhea-card-stage {
 }
 
 @media (max-width: 860px) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-project-system-rhea {
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab .lab-project-system-rhea {
     border-top-color: rgba(201, 161, 62, 0.2);
   }
 }

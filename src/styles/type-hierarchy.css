@@ -1,5 +1,5 @@
 /*
- * Hierarquia tipográfica — Autoral e Legacy (2026-10-20).
+ * Hierarquia tipográfica — Autoral e Documentação (2026-10-20).
  *
  * Papéis, do mais forte ao mais discreto:
  *   1. Nome (h1)            Roguepunk, o único display "cyber" da home.
@@ -8,7 +8,7 @@
  *   4. Lead e subtítulos    Bookman (subtítulo do projeto).
  *   5. Corpo e rótulos      Inter e a mono de apoio, com entrelinha de leitura.
  *
- * Autoral usa a família; Legacy, que é o modo 1998, mantém as fontes do
+ * Autoral usa a família; Documentação, que é o modo 1998, mantém as fontes do
  * sistema e só recebe a escala e a ordem dos papéis.
  * Carregado por último em BaseLayout.
  */
@@ -23,7 +23,7 @@
 
 /* ---------- Autoral ---------- */
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .block-name {
   font-family: "Portfolio Roguepunk", Impact, "Arial Black", sans-serif;
   font-weight: 400;
   font-size: clamp(2.6rem, 5.4vw, 4.8rem);
@@ -31,11 +31,11 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .bloc
   letter-spacing: 0.01em;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero-statement h2 {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .hero-statement h2 {
   font-family: var(--font-chapter, Georgia, serif);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria h3 {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria h3 {
   font-family: "Portfolio Roguepunk", Impact, "Arial Black", sans-serif;
   font-weight: 400;
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
@@ -44,21 +44,21 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curado
   color: #6e2a1e;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-lead {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .lab-project-lead {
   font-family: var(--font-subtitle, Georgia, serif);
   font-size: clamp(0.98rem, 1.5vw, 1.08rem);
   line-height: 1.4;
   color: #6e2a1e;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .lab-project-book cite {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .lab-project-book cite {
   font-family: var(--font-subtitle, Georgia, serif);
   font-size: 0.98rem;
   line-height: 1.35;
 }
 
-/* Legacy: o processo vira uma frase, pois o painel visual fica oculto neste modo. */
-.cellulose-legacy-text { display: none; }
+/* Documentação: o processo vira uma frase, pois o painel visual fica oculto neste modo. */
+.cellulose-documentation-text { display: none; }
 
 
 /* ---------- Distribuição das fontes anexadas (v2) ----------
@@ -67,31 +67,31 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curado
  * Georgia/Times vira Bookman. Roguepunk: nome, título do PI, centro do mapa.
  * Heart Breaking Bad segue só na assinatura; Pixelify só em rótulos. */
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) {
   --font-display: "Portfolio Bookman", Georgia, serif;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) :is(#sobre, #lab #curadoria) {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) :is(#sobre, #lab #curadoria) {
   --font-ui: "Portfolio Typewriter", ui-monospace, "Courier New", monospace;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.role, .hero-current, .hero-statement > p, .note-small, .note-label, .hello),
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.lab-project-description, .lab-project-features, .lab-project-footer, .lab-project-brand small, .cellulose-flow, .cellulose-flow-note, .knowledge-stage) {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre :is(.role, .hero-current, .hero-statement > p, .note-small, .note-label, .hello),
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria :is(.lab-project-description, .lab-project-features, .lab-project-footer, .lab-project-brand small, .cellulose-flow, .cellulose-flow-note, .knowledge-stage) {
   font-family: "Portfolio Typewriter", ui-monospace, "Courier New", monospace;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.note-big, .editorial-primary, .cv-download-button),
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.lab-project-brand strong, .mm-title) {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre :is(.note-big, .editorial-primary, .cv-download-button),
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria :is(.lab-project-brand strong, .mm-title) {
   font-family: "Portfolio Bookman", Georgia, serif;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(.eyebrow, .lab-project-tags span),
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(.eyebrow, .lab-project-tags span, .lab-project-meta, .cellulose-flow-title) {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre :is(.eyebrow, .lab-project-tags span),
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria :is(.eyebrow, .lab-project-tags span, .lab-project-meta, .cellulose-flow-title) {
   font-family: var(--font-retro, "Pixelify Sans"), "Portfolio Typewriter", ui-monospace, monospace;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre :is(button, a), html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria :is(button, a) { font-family: inherit; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre :is(button, a), html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria :is(button, a) { font-family: inherit; }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .editorial-text-link { font-family: "Portfolio Typewriter", ui-monospace, "Courier New", monospace; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .sophiasigil, html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria .sophiasigil, html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab #curadoria sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .editorial-text-link { font-family: "Portfolio Typewriter", ui-monospace, "Courier New", monospace; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .sophiasigil, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .sophiasigil, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria sophiasigil { font-family: "Portfolio Bookman", Georgia, serif; }

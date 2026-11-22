@@ -49,7 +49,7 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
   assert.match(menu, /<ImmersiveModeEmblems \/>/);
   assert.doesNotMatch(menu, /variant="authorial"|NAV\.map|MODE_CHOICES/);
   assert.match(animatedIcons, /data-xm-mode-nav/);
-  for (const [id, href] of [['authorial','/'],['editorial','/?mode=editorial'],['legacy','/?mode=legacy']]) {
+  for (const [id, href] of [['authorial','/'],['editorial','/?mode=editorial'],['documentation','/modo-documentacao/']]) {
     assert.ok(animatedIcons.includes('"id":"' + id + '"'), 'Original emblem missing: ' + id);
     assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
   }
@@ -82,5 +82,20 @@ test('Immersivo orbital menu proportions and Omega portal remain unchanged', () 
   assert.match(js, /drawer\.inert = !open/);
   assert.match(mode, /href="\/modo-imersivo\/" data-omega-portal/);
   assert.doesNotMatch(mode, /class="serious-omega-caption"/);
-  assert.match(mode, /const modes = \['authorial', 'editorial', 'legacy'\];/);
+  assert.match(mode, /const modes = \['authorial', 'editorial', 'documentation'\];/);
+});
+
+test('Documentation has a real homepage route, a canonical URL and safe old-link migration', () => {
+  const docs = read('src/pages/modo-documentacao.astro');
+  const head = read('src/components/BaseHead.astro');
+  const css = read('src/styles/neumorphic.css');
+  assert.match(docs, /import Home from '\.\/index\.astro'/);
+  assert.match(head, /isDocumentationLanding/);
+  assert.match(head, /'legacy', '1998', 'neumorfismo'/);
+  assert.match(head, /storedMode === 'legacy'/);
+  assert.match(mode, /url\.pathname = mode === 'documentation' \? '\/modo-documentacao\/' : '\/'/);
+  assert.match(mode, /url\.searchParams\.set\('mode', mode === 'documentation' \? 'documentacao' : mode\)/);
+  assert.match(css, /data-documentation-mode/);
+  assert.doesNotMatch(css, /data-legacy-mode/);
+  assert.doesNotMatch(mode, /data-legacy-mode|data-mode-node="legacy"|\?mode=legacy/);
 });

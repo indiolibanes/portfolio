@@ -58,14 +58,14 @@ check('rhea: card links to its own page and repository',
 check('music: static section anchor', hasId(music, 'section', 'musica'));
 check('music: no-JS fallback', music.includes('<noscript>') && music.includes('SOCIALS.lastfm'));
 check('music: last track is a living album-cover hero (SaintHero pattern), no Moonlight note or piano', music.includes('data-cover-hero') && music.includes('cover-backdrop') && !music.includes('cover-ambient') && music.includes('cover-notes') && !music.includes('listening-note') && !music.includes('music-piano'));
-check('music: cover hero motion stays out of reduced-motion, Editorial and Legacy', read('src/styles/music-player.css').includes('prefers-reduced-motion') && read('src/styles/music-player.css').includes("html:not([data-serious-mode='true']):not([data-legacy-mode='true'])"));
+check('music: cover hero motion stays out of reduced-motion, Editorial and Documentação', read('src/styles/music-player.css').includes('prefers-reduced-motion') && read('src/styles/music-player.css').includes("html:not([data-serious-mode='true']):not([data-documentation-mode='true'])"));
 check('reveal: Curiosidades and Música take random section entrances', read('public/scripts/reveal.js').includes('epicenter') && read('src/components/MusicShelf.astro').includes('data-reveal="section"') && read('src/pages/index.astro').includes('curiosities-teaser" aria-labelledby="curiosities-teaser-title" data-reveal="section"'));
 check('attention: Curiosidades and Contato buttons are animated and respect reduced motion', read('src/styles/attention.css').includes('attn-halo') && read('src/styles/attention.css').includes('#contato .closing-actions .button'));
 check('music: cover is a vertical half panel with a style-detecting canvas (rain, contour, scales, embers, dust)', music.includes('data-cover-fx') && music.includes('/scripts/cover-fx.js') && ['rain', 'contour', 'scales', 'embers', 'dust'].every((name) => read('public/scripts/cover-fx.js').includes(`${name}(ctx`)) && read('src/styles/music-player.css').includes('aspect-ratio: 3 / 4'));
 check('music: cover card spans the whole section, has no bar graph and derives a Material-You-style tonal scheme', !music.includes('cover-eq') && music.includes('applyTonalScheme') && music.includes('cover-wave') && read('src/styles/music-scene.css').includes('max-width: none') && read('src/styles/music-player.css').includes('--md-primary-container'));
 check('music: liquid glass sheet has a solid fallback for reduced transparency and no animated blobs', read('src/styles/music-player.css').includes('prefers-reduced-transparency') && read('src/styles/music-player.css').includes('@supports not ((backdrop-filter') && !read('src/styles/music-player.css').includes('cover-morph'));
 check('music: cover proxy is allow-listed to the Last.fm CDN', read('functions/api/music/cover.js').includes('lastfm.freetls.fastly.net') && read('functions/api/music/cover.js').includes('Forbidden'));
-check('music: cover animation is quiet in Editorial/Legacy and with reduced motion', read('public/scripts/cover-fx.js').includes('prefers-reduced-motion') && music.includes('fxQuiet'));
+check('music: cover animation is quiet in Editorial/Documentação and with reduced motion', read('public/scripts/cover-fx.js').includes('prefers-reduced-motion') && music.includes('fxQuiet'));
 check('music: title and subtitle live inside the listening widget; eyebrow stays in the heading', music.includes('music-card-head') && music.indexOf('music-card-head') > music.indexOf('music-listening-panel') && music.indexOf('music-source-label') < music.indexOf('music-listening-panel'));
 check('music: widget sits on top as the single layer; title and subtitle come after the player', music.indexOf('music-card-head') > music.indexOf('data-recent-card') && read('src/styles/music-player.css').includes('camada única'));
 check('modes: the line between the emblems is a vibrating-string model (standing harmonics + closed loop), reduced motion = static frame', read('src/components/SeriousModeToggle.astro').includes('STRING_MODES') && read('src/components/SeriousModeToggle.astro').includes('serious-link__loop') && !read('src/components/SeriousModeToggle.astro').includes('updatePlaybackRate'));
@@ -107,10 +107,16 @@ check('curiosidades: creative process steps animate nothing (no motion to gate)'
 check('curiosidades: header link', header.includes("{ href: '/curiosidades/', id: '', label: 'Curiosidades' }"));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://indiolibanes.dev/curiosidades/'));
+check('modes: public Documentation URL is a reloadable route; old bookmarks are upgraded',
+  read('src/pages/modo-documentacao.astro').includes("import Home from './index.astro'") &&
+  read('src/components/BaseHead.astro').includes("storedMode === 'legacy'") &&
+  modes.includes("url.pathname = mode === 'documentation' ? '/modo-documentacao/' : '/'") &&
+  read('src/components/ImmersiveModeEmblems.astro').includes('"href":"/modo-documentacao/"') &&
+  !modes.includes('data-legacy-mode'));
 check('modes: preserve three-state control',
-  modes.includes("['authorial', 'editorial', 'legacy']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
+  modes.includes("['authorial', 'editorial', 'documentation']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
 check('modes: three fixed emblems (alpha, beta, gamma), one pressed at a time',
-  ['authorial', 'editorial', 'legacy'].every((id) => modes.includes(`data-mode-node="${id}"`)) &&
+  ['authorial', 'editorial', 'documentation'].every((id) => modes.includes(`data-mode-node="${id}"`)) &&
   modes.includes("aria-pressed") && modes.includes("node.dataset.state = on ? 'active' : 'idle'") && !modes.includes('data-slot'));
 check('modes: the current mode is named by a tag beside the emblems, which also opens the translucent legend',
   modes.includes('data-mode-tag') && modes.includes('data-mode-tag-text') && modes.includes('backdrop-filter') && modes.includes("button.setAttribute('aria-current', 'true')") && !modes.includes('tabIndex = -1'));
@@ -124,8 +130,8 @@ check('modes: language change glitches, and the dot colour follows the language'
   modes.includes('const paintGlitch') && modes.includes('const glitchTag') && modes.includes('tag.dataset.lang = lang') && modes.includes("[data-lang='en'] .serious-tag__dot"));
 check('modes: gamma jets are diagonal (rotated) and chaotic; beta spins fast with a counter-rotating pair; alpha is asymmetric',
   modes.includes('rotate(32 32 32)') && modes.includes('serious-beams2__spin') && modes.includes('duration: 190') && modes.includes('serious-ray') && modes.includes('serious-flare2'));
-check('brand: looping avatar video replaces the K, keeps a still poster, honours reduced motion and Legacy',
-  header.includes('data-brand-mark') && header.includes('brand-video') && header.includes('/brand/avatar-poster.jpg') && header.includes('/brand/avatar.webm') && header.includes('prefers-reduced-motion') && header.includes("data-legacy-mode='true'] .brand-mark .brand-video"));
+check('brand: looping avatar video replaces the K, keeps a still poster, honours reduced motion and Documentação',
+  header.includes('data-brand-mark') && header.includes('brand-video') && header.includes('/brand/avatar-poster.jpg') && header.includes('/brand/avatar.webm') && header.includes('prefers-reduced-motion') && header.includes("data-documentation-mode='true'] .brand-mark .brand-video"));
 const gavetas = read('src/styles/gavetas.css');
 check('drawers: header, menu drawer, legend and footer are translucent glass with a drifting tint',
   gavetas.includes('--drawer-tint') && gavetas.includes('backdrop-filter') && footer.includes("'--drawer-tint'") && read('src/layouts/BaseLayout.astro').includes('gavetas.css'));
@@ -175,7 +181,7 @@ check('404: decorative art is hidden from assistive tech, the 2D room has one la
   && /alt=""/.test(room2dSrc));
 check('404: illustration animation is off for reduced motion and paused off screen',
   /@media \(prefers-reduced-motion: no-preference\)/.test(illustrationCss) && illustrationCss.includes("[data-paused='true']") && notFound.includes('[data-art-anim]'));
-check('404: illustrations stay visible in Legacy', illustrationCss.includes("html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art"));
+check('404: illustrations stay visible in Documentação', illustrationCss.includes("html[data-documentation-mode='true'] main .sophia-404__panel svg.sophia-art"));
 check('404: pixel palette stays monochrome', !/#[0-9a-f]{6}/i.test(read('src/sophia-pixel.ts').replace(/'#(?:f3f3f0|ffffff|b4b4ae|77776f|0d0d0d)'/gi, '')));
 const tetrisCss = read('src/styles/sophia-tetris.css');
 check('404: Sophia is faithful to the original (no glasses in the portrait; 3D glasses stay in the lounge)',
