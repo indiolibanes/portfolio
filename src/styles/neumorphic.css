@@ -252,7 +252,7 @@ html[data-legacy-mode='true'] body .closing :is(h2, p) span { color: inherit !im
 html[data-legacy-mode='true'] body .closing .eyebrow { color: #ffd08a !important; }
 /* The curiosities window wears the running-through-the-village scene, still, behind the copy card. */
 html[data-legacy-mode='true'] body .curiosities-teaser {
-  background: url('/assets/neumorphic-corrida-scene.webp') 66% bottom / cover no-repeat, #aac4e4 !important;
+  background: url('/assets/neumorphic-corrida-scene.webp') 80% bottom / cover no-repeat, #aac4e4 !important;
   min-height: clamp(17rem, 30vw, 22rem) !important;
   display: flex;
   align-items: center;
@@ -342,7 +342,7 @@ html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .imm
   background: linear-gradient(180deg, #a85f2d, var(--neu-accent)) !important;
   color: #ffffff !important;
   border: 0 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 1px 2px rgba(134, 71, 29, .3), 0 10px 20px -6px rgba(134, 71, 29, .5) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 1px 2px rgba(59, 77, 232, .3), 0 10px 20px -6px rgba(59, 77, 232, .55) !important;
   min-height: var(--target-min);
   border-radius: var(--neu-r-ctl) !important;
   font-weight: 600;
@@ -357,29 +357,39 @@ html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .imm
 /* 7b. Colour on the controls: soft pastel gradients with ink text (>= 12:1), same four hues
    as the rest of the page. Primary actions keep the saturated copper with white text. */
 html[data-legacy-mode='true'] {
-  --grad-warm: linear-gradient(135deg, #ffe0a8 0%, #ffc2d6 100%);
-  --grad-cool: linear-gradient(135deg, #c4e9ff 0%, #d7ccff 100%);
-  --grad-fresh: linear-gradient(135deg, #c2f2d4 0%, #c4e9ff 100%);
-  --grad-violet: linear-gradient(135deg, #e3d6ff 0%, #ffd0e6 100%);
-  --grad-primary: linear-gradient(135deg, #a85f2d 0%, #9c3f63 100%);
+  /* Saturated pairs for small things (buttons, chips): ink text, >= 5.2:1. */
+  --grad-warm: linear-gradient(135deg, #ffb347 0%, #ff7a59 100%);
+  --grad-cool: linear-gradient(135deg, #3fd0d4 0%, #4f8cff 100%);
+  --grad-fresh: linear-gradient(135deg, #b4e36b 0%, #3fd29b 100%);
+  --grad-violet: linear-gradient(135deg, #c77dff 0%, #ff6bb5 100%);
+  --grad-lemon: linear-gradient(135deg, #ffe45e 0%, #ffb02e 100%);
+  /* Soft pairs for big surfaces (cards, notes, boxes): ink text, >= 11:1. */
+  --soft-warm: linear-gradient(145deg, #ffe2b8 0%, #ffc9b8 100%);
+  --soft-cool: linear-gradient(145deg, #c6f1f2 0%, #c6dcff 100%);
+  --soft-fresh: linear-gradient(145deg, #dcf5b6 0%, #b9f0d8 100%);
+  --soft-violet: linear-gradient(145deg, #ecd5ff 0%, #ffd1e8 100%);
+  --soft-lemon: linear-gradient(145deg, #fff2a8 0%, #ffdca0 100%);
+  /* Primary actions: deep indigo to violet, white text (>= 5:1). */
+  --grad-primary: linear-gradient(135deg, #3b4de8 0%, #8a3ffc 100%);
 }
-html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link) { background: var(--grad-warm) !important; }
+html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button) { background: var(--grad-lemon) !important; }
+html[data-legacy-mode='true'] body :is(.lab-project-repo, .curiosities-teaser__link) { background: var(--grad-warm) !important; }
 html[data-legacy-mode='true'] body :is(.work-index a, .apple-music-link, .method-stage-link) { background: var(--grad-cool) !important; }
-html[data-legacy-mode='true'] body .social-links a { background: var(--grad-fresh) !important; }
+html[data-legacy-mode='true'] body .social-links a { background: var(--grad-violet) !important; }
 html[data-legacy-mode='true'] body .closing-actions .closing-whatsapp-button { background: var(--grad-fresh) !important; }
 html[data-legacy-mode='true'] body .closing-actions .closing-linkedin-button { background: var(--grad-cool) !important; }
 html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link, .work-index a, .apple-music-link, .method-stage-link, .social-links a, .closing-actions a):is(:hover, :focus-visible) { filter: saturate(1.2) brightness(1.03); }
 html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) { background: var(--grad-primary) !important; }
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) { background: #8d3a5a !important; }
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) { background: #4a35d0 !important; }
 
 /* On the dark closing tile the buttons cast a dark shadow instead of a white highlight. */
 html[data-legacy-mode='true'] body .closing .closing-actions a { border: 0 !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 20px -8px rgba(0, 0, 0, .75) !important; }
 
 /* Text boxes: notes and callouts take a tinted gradient instead of a gray well. */
-html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { background: var(--grad-warm) !important; box-shadow: var(--neu-raise-s) !important; }
-html[data-legacy-mode='true'] body .method-disclosure { background: var(--grad-cool) !important; box-shadow: var(--neu-raise-s) !important; }
-html[data-legacy-mode='true'] body .hero-question { background: linear-gradient(135deg, rgba(255, 224, 168, .62), rgba(255, 194, 214, .5)) !important; }
-html[data-legacy-mode='true'] body .hero-note { background: linear-gradient(160deg, #fff6e4, #ffffff 70%) !important; }
+html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { background: var(--soft-lemon) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-legacy-mode='true'] body .method-disclosure { background: var(--soft-cool) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-legacy-mode='true'] body .hero-question { background: linear-gradient(135deg, rgba(255, 226, 184, .75), rgba(255, 201, 184, .6)) !important; }
+html[data-legacy-mode='true'] body .hero-note { background: linear-gradient(160deg, #fff2a8 0%, #ffffff 72%) !important; }
 html[data-legacy-mode='true'] body .lab-project-status { background: var(--grad-fresh) !important; box-shadow: var(--neu-raise-s) !important; color: var(--neu-ink) !important; }
 html[data-legacy-mode='true'] body .lab-project-tags span { background: color-mix(in srgb, var(--tint, var(--tint-amber)) 30%, #fff) !important; box-shadow: none !important; color: var(--neu-ink) !important; }
 
@@ -477,17 +487,68 @@ html[data-legacy-mode='true'] .curiosities-teaser { width: auto !important; max-
 html[data-legacy-mode='true'] body .social-links a { padding: .5rem .7rem !important; width: auto !important; min-width: var(--target-min); justify-content: center; }
 html[data-legacy-mode='true'] body :is(.lab-project-repo, .apple-music-link, .github-cta, .closing-actions a, .curiosities-teaser__link) { padding: .55rem 1rem; display: inline-flex; align-items: center; gap: .4rem; }
 
-/* Mind map becomes a calm stack of sunken text blocks. */
-html[data-legacy-mode='true'] .pi-map { display: grid; gap: .75rem; background: none !important; }
+/* Mind map: the four questions become a 2 x 2 board of tinted, raised cards. */
+html[data-legacy-mode='true'] .pi-map { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; background: none !important; margin-top: .5rem; }
 html[data-legacy-mode='true'] .pi-map .mm-block {
   position: static !important;
   transform: none !important;
   width: auto !important;
-  background: var(--neu-panel) !important;
-  box-shadow: var(--neu-inset-s) !important;
-  border-radius: var(--neu-r-ctl) !important;
-  padding: .8rem 1rem;
+  min-width: 0;
+  background: var(--soft-cool) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  border-radius: var(--neu-r-card) !important;
+  padding: 1.1rem 1.25rem 1.2rem;
 }
+html[data-legacy-mode='true'] .pi-map .mm-a { background: var(--soft-cool) !important; }
+html[data-legacy-mode='true'] .pi-map .mm-b { background: var(--soft-fresh) !important; }
+html[data-legacy-mode='true'] .pi-map .mm-c { background: var(--soft-violet) !important; }
+html[data-legacy-mode='true'] .pi-map .mm-d { background: var(--soft-warm) !important; }
+html[data-legacy-mode='true']:root body .pi-map .mm-title { margin: 0 0 .45rem; font-family: var(--font-display) !important; font-size: 1.25rem !important; font-weight: 600 !important; line-height: 1.2; }
+html[data-legacy-mode='true'] .pi-map .mm-block p { margin: 0; font-size: .94rem; line-height: 1.55; }
+html[data-legacy-mode='true'] .pi-map .mm-center { display: none !important; }
+html[data-legacy-mode='true']:root body .pi-map .mm-title span { font-family: inherit !important; font-weight: inherit !important; font-size: inherit !important; }
+html[data-legacy-mode='true'] .pi-map .mm-a { grid-area: 1 / 1; }
+html[data-legacy-mode='true'] .pi-map .mm-b { grid-area: 1 / 2; }
+html[data-legacy-mode='true'] .pi-map .mm-c { grid-area: 2 / 1; }
+html[data-legacy-mode='true'] .pi-map .mm-d { grid-area: 2 / 2; }
+@media (max-width: 720px) {
+  html[data-legacy-mode='true'] .pi-map { grid-template-columns: 1fr; }
+  html[data-legacy-mode='true'] .pi-map :is(.mm-a, .mm-b, .mm-c, .mm-d) { grid-area: auto; }
+}
+
+/* Method: each of the four steps sits on its own tinted card. */
+html[data-legacy-mode='true'] body .method-steps { gap: 1rem; }
+html[data-legacy-mode='true'] body .method-steps > li {
+  background: var(--soft-warm) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  border-radius: var(--neu-r-card) !important;
+  padding: 1.2rem 1.3rem 1.35rem !important;
+  border: 0 !important;
+}
+html[data-legacy-mode='true'] body .method-steps > li:nth-child(2) { background: var(--soft-cool) !important; }
+html[data-legacy-mode='true'] body .method-steps > li:nth-child(3) { background: var(--soft-fresh) !important; }
+html[data-legacy-mode='true'] body .method-steps > li:nth-child(4) { background: var(--soft-violet) !important; }
+
+/* Documentation: the flow always fits its box, from desktop to phone. */
+html[data-legacy-mode='true'] body .lab-project-system-documentation { overflow: hidden; }
+html[data-legacy-mode='true'] body .documentation-pipeline {
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  gap: .25rem;
+}
+html[data-legacy-mode='true'] body .documentation-step { min-height: 0 !important; min-width: 0; padding: .5rem .15rem; overflow-wrap: normal; word-break: normal; }
+html[data-legacy-mode='true'] body .documentation-step strong { font-size: clamp(.66rem, .9vw, .8rem); letter-spacing: 0; }
+html[data-legacy-mode='true'] body .documentation-step small { font-size: .62rem; }
+html[data-legacy-mode='true'] body .documentation-arrow { font-size: .8rem; }
+@media (max-width: 420px) {
+  html[data-legacy-mode='true'] body .documentation-pipeline { gap: .1rem; }
+  html[data-legacy-mode='true'] body .documentation-step strong { font-size: .6rem; }
+  html[data-legacy-mode='true'] body .documentation-step small { font-size: .56rem; }
+  html[data-legacy-mode='true'] body .documentation-arrow { font-size: .65rem; }
+}
+html[data-legacy-mode='true'] body .documentation-note { width: 100%; max-width: 100%; box-sizing: border-box; text-align: center; font-size: clamp(.62rem, .85vw, .72rem); letter-spacing: .02em; padding: .6rem .6rem; }
 
 /* Background / Percurso: a quiet timeline. */
 html[data-legacy-mode='true'] .background-entry {
@@ -508,8 +569,16 @@ html[data-legacy-mode='true'] .music-listening-panel {
 html[data-legacy-mode='true'] .music-listening-panel::before { content: none !important; }
 html[data-legacy-mode='true'] .cover-backdrop, html[data-legacy-mode='true'] .cover-dust, html[data-legacy-mode='true'] .cover-beam,
 html[data-legacy-mode='true'] .cover-notes, html[data-legacy-mode='true'] .cover-fx, html[data-legacy-mode='true'] .cover-wave { display: none !important; }
-html[data-legacy-mode='true'] .recent-artwork-shell { display: block !important; }
-html[data-legacy-mode='true'] .cover-frame { border-radius: var(--neu-r-card) !important; box-shadow: var(--elev-float) !important; overflow: hidden; -webkit-mask-image: none !important; mask-image: none !important; }
+/* Last.fm cover: small, on the right, perfectly still. */
+html[data-legacy-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; min-height: 0 !important; align-items: center; gap: clamp(1rem, 3vw, 2rem); padding: clamp(1rem, 2.5vw, 1.6rem) !important; }
+html[data-legacy-mode='true'] body .recent-track-card .recent-track-copy { order: 1; background: none !important; box-shadow: none !important; padding: 0 !important; }
+html[data-legacy-mode='true'] body .recent-track-card .recent-artwork-shell { display: block !important; order: 2; width: clamp(5.5rem, 11vw, 8rem) !important; max-width: none !important; aspect-ratio: 1; margin: 0 !important; justify-self: end; background: none !important; border: 0 !important; box-shadow: none !important; transform: none !important; }
+html[data-legacy-mode='true'] body .recent-track-card .cover-frame { width: 100%; height: 100%; border-radius: var(--neu-r-ctl) !important; box-shadow: var(--neu-raise-s) !important; overflow: hidden; -webkit-mask-image: none !important; mask-image: none !important; transform: none !important; }
+html[data-legacy-mode='true'] body .recent-track-card .recent-artwork { width: 100%; height: 100%; object-fit: cover; transform: none !important; }
+html[data-legacy-mode='true'] body .recent-track-card :is(.cover-frame, .recent-artwork-shell, .recent-artwork, .recent-artwork-fallback) { transition: none !important; animation: none !important; }
+html[data-legacy-mode='true'] body .recent-track-card [hidden] { display: none !important; }
+html[data-legacy-mode='true'] body .recent-track-card .recent-artwork-fallback { transform: none !important; font-size: 2.4rem; display: grid; place-items: center; width: 100%; height: 100%; background: var(--soft-violet) !important; }
+@media (max-width: 720px) { html[data-legacy-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; } }
 html[data-legacy-mode='true'] .music-listening-panel :is(.music-kicker, .recent-artist, .recent-album, .music-track-age) { color: var(--neu-ink-soft) !important; }
 html[data-legacy-mode='true'] .music-listening-panel h3 { font-size: clamp(1.6rem, 3.2vw, 2.6rem) !important; }
 html[data-legacy-mode='true'] .music-kicker-dot { background: var(--neu-accent) !important; border-radius: 50%; }
@@ -710,7 +779,7 @@ html[data-legacy-mode='true'] .sophia-404__actions a { color: var(--mode-on-dark
     padding-bottom: 12rem !important;
   }
   html[data-legacy-mode='true'] body .curiosities-teaser {
-    background: url('/assets/neumorphic-corrida-scene.webp') 66% bottom / auto 11rem no-repeat, #aac4e4 !important;
+    background: url('/assets/neumorphic-corrida-scene.webp') 80% bottom / auto 11rem no-repeat, #aac4e4 !important;
     padding-bottom: 10.5rem !important;
     align-items: flex-start;
   }
