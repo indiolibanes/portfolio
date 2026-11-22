@@ -9,10 +9,13 @@ const banner = await read('src/components/ImmersiveBanner.astro');
 const home = await read('src/pages/index.astro');
 const headers = await read('public/_headers');
 
-test('banner is mounted on the home between Método and Bastidores, without touching section numbering', async () => {
+test('banner is a featured work: mounted inside the Laboratório before the first card, indexed, without touching section numbering', async () => {
   assert.match(home, /import ImmersiveBanner from '..\/components\/ImmersiveBanner\.astro'/);
   const at = home.indexOf('<ImmersiveBanner');
-  assert.ok(at > home.indexOf('id="metodo"') && at < home.indexOf('id="bastidores"'));
+  assert.ok(at > home.indexOf('id="lab"') && at < home.indexOf('id="curadoria"'));
+  assert.equal(home.split('<ImmersiveBanner').length - 1, 1, 'mounted once');
+  assert.match(home, /<nav class="work-index"[\s\S]*?href="#voo-prismatico"[\s\S]*?<\/nav>/);
+  assert.match(banner, /<aside id="voo-prismatico"/);
   assert.doesNotMatch(await read('src/section-order.ts'), /imersivo/i);
 });
 
