@@ -733,7 +733,3 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-headin
   color: #000;
   text-shadow: none;
 }
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-panorama {
-  border-radius: 0;
-  box-shadow: none;
-}

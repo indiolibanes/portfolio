@@ -337,13 +337,6 @@ html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-liste
   backdrop-filter: none;
 }
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-card-head :is(h2, p) { color: var(--ink, #111); text-shadow: none; }
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel {
-  background: #fff;
-  border: 2px inset #fff;
-  border-radius: 0;
-  box-shadow: none;
-}
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head { padding: .6rem .4rem; }
 html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-card-head :is(h2, p) { color: #000 !important; text-shadow: none; }
 
 

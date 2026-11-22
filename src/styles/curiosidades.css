@@ -204,10 +204,6 @@
   color: var(--ink);
 }
 
-html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
-  background: #000080;
-  color: #ffffff;
-}
 
 /* ---------- Creative process (texto corrido, abaixo da lista) ---------- */
 

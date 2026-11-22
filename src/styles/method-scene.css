@@ -195,7 +195,6 @@ html[data-serious-mode='true'] .method-section {
 html[data-serious-mode='true'] .method-section :is(.eyebrow, .method-index, .method-disclosure, .method-steps p) { color: var(--ink-soft); }
 html[data-serious-mode='true'] .method-section .method-steps li { background: var(--surface); color: var(--ink); border-color: var(--line); box-shadow: none; }
 html[data-serious-mode='true'] .method-presenter { filter: grayscale(1); }
-html[data-legacy-mode='true'] .method-section { background: #abc5b2; color: #142b1e; }
 
 @media (max-width: 820px) {
   .method-heading { grid-template-columns: minmax(0, 1fr); }
