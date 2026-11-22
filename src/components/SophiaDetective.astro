@@ -36,10 +36,10 @@ import { detectiveMarkup, detectiveRunnerMarkup } from '../sophia-detective';
   .sophia-detective__trigger { display:block; width:100%; background:none; padding:0; border:0; border-radius:8px; cursor:pointer; }
   .sophia-detective__trigger[hidden] { display:none; }
   .sophia-detective__trigger span { display:block; }
-  .detective-runner { border:1px solid #676897; background:#1e2037; color:#f5ede1; border-radius:12px; padding:.65rem; line-height:1.4; }
+  .detective-runner { border:1px solid #676897; background:#1e2037; color:#f5ede1; border-radius:var(--radius-sm); padding:.65rem; line-height:1.4; }
   .detective-runner__bar,.detective-runner__actions { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; }
   .detective-runner__bar span { margin-inline-start:auto; font-variant-numeric:tabular-nums; }
-  .detective-runner button { min-height:44px; padding:.3rem .65rem; color:#ffedcc; background:#353554; border:1px solid #7978a4; border-radius:7px; cursor:pointer; touch-action:manipulation; }
+  .detective-runner button { min-height:var(--target-min); padding:.3rem .65rem; color:#ffedcc; background:#353554; border:1px solid #7978a4; border-radius:7px; cursor:pointer; touch-action:manipulation; }
   .detective-runner button[aria-pressed="true"] { background:#625271; }
   .detective-runner button[hidden] { display:none; }
   .detective-runner p { margin:.4rem 0; font-size:.8rem; }

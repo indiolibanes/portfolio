@@ -1345,7 +1345,7 @@ const showOmega = Astro.url.pathname === '/';
     min-height: 36px;
     padding: 0 0.95rem 0 0.75rem;
     border: 1px solid rgba(205, 188, 165, 0.92);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background: rgba(255, 250, 240, 0.7);
     color: var(--ink);
     font-family: var(--font-ui);
@@ -1400,7 +1400,7 @@ const showOmega = Astro.url.pathname === '/';
     width: min(20rem, calc(100vw - 16px));
     padding: 0.9rem 1rem;
     border: 1px solid rgba(205, 188, 165, 0.7);
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: rgba(255, 250, 240, 0.62);
     -webkit-backdrop-filter: blur(14px) saturate(1.3);
     backdrop-filter: blur(14px) saturate(1.3);
@@ -1456,7 +1456,7 @@ const showOmega = Astro.url.pathname === '/';
     .serious-tag {
       justify-content: center;
       min-width: 32px;
-      min-height: 44px;
+      min-height: var(--target-min);
       padding: 0;
     }
 
@@ -1674,7 +1674,7 @@ const showOmega = Astro.url.pathname === '/';
     --omega-ms: 1450ms;
     position: fixed;
     inset: 0;
-    z-index: 2147483000;
+    z-index: var(--z-top);
     visibility: hidden;
     pointer-events: none;
     overflow: hidden;

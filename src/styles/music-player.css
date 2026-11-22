@@ -182,7 +182,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-meta-row { margin-top: .8rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-provenance { color: rgba(255, 244, 222, .6); font-size: .78rem; }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .apple-music-link {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; color: #1a1228; font-weight: 700; text-decoration: none;
+  display: inline-flex; align-items: center; min-height: var(--target-min); padding: 0 1rem; border-radius: var(--radius-full); color: #1a1228; font-weight: 700; text-decoration: none;
   background: linear-gradient(135deg, #ffe2a4, #f0cf86 55%, #f0a0b8); box-shadow: 0 0 18px -4px rgba(255, 226, 164, .7);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .apple-music-link:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
@@ -200,7 +200,6 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 @keyframes cover-open { from { clip-path: inset(0 0 100% 0); opacity: 0; } 30% { opacity: 1; } to { clip-path: inset(0); opacity: 1; } }
 @keyframes cover-settle { from { transform: scale(1.35); filter: brightness(.2) blur(6px); } to { transform: scale(1); filter: none; } }
 @keyframes cover-ken { from { transform: scale(1) translate3d(0, 0, 0); } to { transform: scale(1.1) translate3d(-1.5%, -2%, 0); } }
-@keyframes cover-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cover-kicker { from { opacity: 0; letter-spacing: .7em; } to { opacity: 1; letter-spacing: .22em; } }
 @keyframes cover-name { from { opacity: 0; transform: translateY(18px); filter: blur(8px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; filter: none; clip-path: inset(0); } }
 @keyframes cover-lift { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -272,7 +271,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   background: var(--md-primary); color: var(--md-on-primary); box-shadow: 0 0 22px -6px var(--md-primary);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-provenance {
-  padding: .3rem .7rem; border-radius: 999px; background: color-mix(in srgb, var(--md-primary-container) 70%, transparent); color: var(--md-primary);
+  padding: .3rem .7rem; border-radius: var(--radius-full); background: color-mix(in srgb, var(--md-primary-container) 70%, transparent); color: var(--md-primary);
 }
 
 /* Linha de progresso ondulada (indeterminada): a onda anda um comprimento por ciclo. */
@@ -519,7 +518,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 60;
+  z-index: var(--z-overlay);
   width: 32px;
   height: 40px;
   pointer-events: none;

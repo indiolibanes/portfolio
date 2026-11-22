@@ -52,7 +52,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero
   aspect-ratio: 16 / 9;
   margin: 0 0 2rem;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   box-shadow: none;
   background: #000;
 }
@@ -179,7 +179,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .hero
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .editorial-primary {
   min-height: 46px;
   padding: 0.7rem 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   border: 1px solid var(--ink);
   background: var(--ink);
   color: var(--surface);
@@ -190,7 +190,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-d
   min-height: 46px;
   padding: 0.7rem 1.1rem;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--ink);
   box-shadow: none;

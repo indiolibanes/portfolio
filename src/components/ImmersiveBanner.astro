@@ -124,12 +124,12 @@
   .immersive-banner__lede { margin: 14px 0 0; max-width: 46ch; color: var(--ib-soft); line-height: 1.6; font-size: 1.02rem; }
   .immersive-banner__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin: 22px 0 0; }
   .immersive-banner__cta {
-    display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 999px;
+    display: inline-flex; align-items: center; min-height: var(--target-min); padding: 0 22px; border-radius: var(--radius-full);
     background: #fff1b8; color: #1a1304; font-weight: 700; text-decoration: none;
     transition: transform .18s ease, background-color .18s ease;
   }
   .immersive-banner__cta:hover { background: #ffe58a; transform: translateY(-1px); }
-  .immersive-banner__link { color: var(--ib-ink); text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; }
+  .immersive-banner__link { color: var(--ib-ink); text-underline-offset: 4px; min-height: var(--target-min); display: inline-flex; align-items: center; }
   .immersive-banner__cta:focus-visible, .immersive-banner__link:focus-visible { outline: 3px solid #fff1b8; outline-offset: 3px; }
   .immersive-banner__note { margin: 14px 0 0; font-size: .82rem; color: #aab0d6; }
   .immersive-banner__stage { position: relative; z-index: 0; aspect-ratio: 2 / 1; width: 100%; }
@@ -147,7 +147,7 @@
   }
   /* Modo sério e movimento reduzido: sem brilho de fundo nem animação, só o pôster */
   :global(html[data-serious-mode='true']) .immersive-banner {
-    background: #04061a; border-radius: 6px;
+    background: #04061a; border-radius: var(--radius-xs);
   }
   :global(html[data-serious-mode='true']) .immersive-banner__count {
     background: none; -webkit-text-fill-color: currentColor; color: var(--ib-ink);

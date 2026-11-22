@@ -118,7 +118,7 @@
 }
 
 .tetris-start {
-  min-height: 44px;
+  min-height: var(--target-min);
   margin-top: 0.4rem;
   padding: 0.6rem 1.4rem;
   border: 2px solid #f3f3f0;

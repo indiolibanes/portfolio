@@ -111,7 +111,7 @@
 .music-shelf .music-heading--gallery .recent-artwork-shell {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 
 .music-shelf .music-heading--gallery .recent-track-copy h3 {
@@ -135,46 +135,11 @@
   background: rgba(18, 12, 28, .94);
   color: #ffedfa;
   box-shadow: 0 14px 32px rgba(0, 0, 0, .3);
-}
-
-
-
-
-
-.music-quote-assistive,
-.music-panorama-caption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.music-quote-typed {
-  white-space: pre-wrap;
-}
-
-.music-quote-typing::after {
-  content: "▍";
-  display: inline-block;
-  margin-left: 2px;
-  color: #925c48;
-  animation: music-typing-caret .8s steps(1) infinite;
-}
-
-@keyframes music-typing-caret {
+}@keyframes music-typing-caret {
   50% { opacity: 0; }
 }
 
 /* Notas musicais orbitam nas bordas do papel, sem captar cliques. */
-
-
-
-@keyframes music-sonata-orbit {
-  from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
-}
 
 /* A imagem tem painel exclusivo: nenhuma UI cobre os quatro rostos. */
 .music-shelf .music-heading--gallery .music-panorama {
@@ -204,35 +169,7 @@
   border-radius: inherit;
   box-shadow: inset 0 0 45px rgba(0, 0, 0, .2);
   pointer-events: none;
-}
-
-.music-panorama-fallback {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  gap: 0;
-}
-
-.music-panorama-fallback img {
-  display: block;
-  width: 34%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  opacity: .68;
-  mask-image: linear-gradient(to bottom, #000 42%, transparent 100%);
-}
-
-.music-panorama-fallback .music-panorama-fallback-hsin {
-  width: 32%;
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 0 18px rgba(247, 203, 146, .4));
-}
-
-.music-shelf .music-playlist-region:not(:empty) {
+}.music-shelf .music-playlist-region:not(:empty) {
   margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
@@ -266,7 +203,7 @@
     font-size: clamp(2.05rem, 9vw, 3.4rem);
   }
   .music-shelf .music-heading--gallery .music-panorama {
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
   }
   .music-shelf .music-heading--gallery .music-listening-panel {
     max-width: 430px;
@@ -280,7 +217,6 @@
     animation: none;
   }
 }
-
 
 /* A imagem é uma superfície interativa, sem seletor ou legenda sobre a arte. */
 .music-shelf .music-heading--gallery .music-panorama-glint {
@@ -457,7 +393,7 @@
     1px solid
     #c3a95f;
 
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 
   background:
     var(--sun-soft);
@@ -517,7 +453,6 @@
   }
 }
 
-
 /* Hsin portal transition: lightweight viewport overlay, driven only on explicit navigation. */
 html.music-experimental-transition-lock,
 html.music-experimental-transition-lock body {
@@ -533,7 +468,7 @@ html.music-experimental-transition-lock body {
   --origin-y: 50vh;
   position: fixed;
   inset: 0;
-  z-index: 2147483000;
+  z-index: var(--z-top);
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
@@ -674,7 +609,7 @@ html.music-experimental-transition-lock body {
   z-index: 5;
   width: var(--mote-size, 3px);
   height: var(--mote-size, 3px);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   opacity: 0;
   background: var(--mote-color, #f8f7ff);
   box-shadow: 0 0 9px var(--mote-color, #f8f7ff);

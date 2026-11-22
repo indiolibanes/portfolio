@@ -1,18 +1,18 @@
 /* Editorial refresh: shared rhythm, original artwork and section palettes. */
-.skip-link { position: fixed; top: -100px; left: 1rem; z-index: 10000; padding: .8rem 1.2rem; background: #fffaf0; color: #30271f; border: 2px solid currentColor; }
+.skip-link { position: fixed; top: -100px; left: 1rem; z-index: var(--z-skip-link); padding: .8rem 1.2rem; background: #fffaf0; color: #30271f; border: 2px solid currentColor; }
 .skip-link:focus { top: 1rem; }
-:where(a, button):focus-visible { outline: 3px solid #ac652d; outline-offset: 5px; }
+:where(a, button):focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring-on-light); outline-offset: 5px; }
 :where(section[id], .lab-project-card[id]) { scroll-margin-top: 120px; }
 .editorial-masthead { display: flex; justify-content: space-between; gap: 1rem; padding: .3rem 0 1.15rem; margin-bottom: 1.6rem; border-bottom: 1px solid var(--line); font-size: .68rem; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
 .work-index { display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.8rem 0 2.2rem; }
-.work-index a { display: inline-flex; align-items: center; gap: .65rem; min-height: 44px; padding: .65rem 1rem; border: 1px solid var(--line); border-radius: 100px; color: var(--ink); background: var(--surface); text-decoration: none; font-size: .82rem; transition: background .18s, transform .18s; }
+.work-index a { display: inline-flex; align-items: center; gap: .65rem; min-height: var(--target-min); padding: .65rem 1rem; border: 1px solid var(--line); border-radius: 100px; color: var(--ink); background: var(--surface); text-decoration: none; font-size: .82rem; transition: background .18s, transform .18s; }
 .work-index a span { color: var(--ink-soft); font-size: .68rem; }
 .work-index a:hover { background: var(--surface-soft); transform: translateY(-2px); }
-.editorial-text-link { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem .2rem; color: var(--ink); font-size: .85rem; font-weight: 650; text-underline-offset: 5px; }
+.editorial-text-link { display: inline-flex; align-items: center; min-height: var(--target-min); padding: .5rem .2rem; color: var(--ink); font-size: .85rem; font-weight: 650; text-underline-offset: 5px; }
 /* Keep the functional, monochrome mode independent of the art direction. */
 html:not([data-serious-mode='true']) .nav-shell { border-radius: 22px; box-shadow: 0 8px 28px #473c3309; }
 html:not([data-serious-mode='true']) .portfolio-main { padding-top: 1.4rem; }
-html:not([data-serious-mode='true']) .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: clamp(1.25rem, 3vw, 2.8rem); gap: 1.5rem 3rem; border-radius: 28px; box-shadow: 0 12px 36px #473c3308; }
+html:not([data-serious-mode='true']) .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: clamp(1.25rem, 3vw, 2.8rem); gap: 1.5rem 3rem; border-radius: var(--radius-lg); box-shadow: 0 12px 36px #473c3308; }
 html:not([data-serious-mode='true']) .hero-intro { min-height: 0; }
 html:not([data-serious-mode='true']) .identity-cluster { justify-content: center; }
 html:not([data-serious-mode='true']) .hero-cover-art { border-radius: 16px; margin-bottom: 1.7rem; }
@@ -121,10 +121,7 @@ html:not([data-serious-mode='true']) .lab > .lab-project-card { margin-top: 0; }
 article.lab-project-card { cursor: default; }
 .lab-project-description { max-width: 60ch; }
 .work-index a[aria-current='true'] { text-decoration: underline; text-underline-offset: 4px; font-weight: 800; }
-.nav-links a, .social-links a { min-height: 44px; min-width: 44px; }
-.music-profile-fallback { margin: .8rem 0 0; font-size: .8rem; }
-.music-profile-fallback a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.music-listening-panel .music-grid { min-height: 180px; }
+.nav-links a, .social-links a { min-height: var(--target-min); min-width: var(--target-min); }.music-listening-panel .music-grid { min-height: 180px; }
 @media (prefers-reduced-motion: reduce) {
   .sophia-animation, .sophia-animation__frame { animation: none !important; transform: none !important; background-position: 0 0 !important; }
   a.lab-project-card:hover, a.lab-project-card:hover .lab-project-cover-frame { transform: none !important; }

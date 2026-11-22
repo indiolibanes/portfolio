@@ -79,7 +79,7 @@ const bodies = [
   .triforce-system__emil-crop { width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 50%; filter: drop-shadow(0 0 5px #fff4d733); }
   .triforce-system__emil-crop img { display: block; width: 209%; max-width: none; height: auto; }
   .triforce-system__body svg { display: block; width: 100%; overflow: visible; filter: drop-shadow(0 3px 4px #1b141b55); }
-  .triforce-system__pause { display: block; margin: .3rem auto 0; padding: .5rem .85rem; min-height: 44px; color: #f2dfb5; background: #2b1d1455; border: 1px solid #c5a77570; border-radius: 100px; font: inherit; font-size: .72rem; cursor: pointer; }
+  .triforce-system__pause { display: block; margin: .3rem auto 0; padding: .5rem .85rem; min-height: var(--target-min); color: #f2dfb5; background: #2b1d1455; border: 1px solid #c5a77570; border-radius: 100px; font: inherit; font-size: .72rem; cursor: pointer; }
   .triforce-system__pause[hidden] { display: none; }
   .triforce-system[data-orbits-paused='true'] .triforce-system__scene *, .triforce-system[data-orbits-paused='true'] .triforce-system__scene *::before { animation-play-state: paused !important; }
   .triforce-system__scene:not([data-motion-playing='true']) .triforce-system__core::before { animation-play-state: paused; }

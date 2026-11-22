@@ -156,41 +156,6 @@ html[data-legacy-mode='true'] .nav-links a:visited {
   color:
     #551a8b;
 }
-
-html[data-legacy-mode='true'] .serious-toggle {
-  min-height: 34px;
-
-  padding:
-    0.28rem 0.55rem;
-
-  border:
-    2px outset
-    #efefef !important;
-
-  border-radius:
-    0 !important;
-
-  background:
-    #c0c0c0 !important;
-
-  color:
-    #000000 !important;
-
-  box-shadow:
-    none !important;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif !important;
-
-  font-size:
-    0.78rem !important;
-
-  transform:
-    none !important;
-}
-
 html[data-legacy-mode='true'] .portfolio-main {
   width:
     min(
@@ -278,11 +243,6 @@ html[data-legacy-mode='true'] .name-brick-plate {
 
   transform: none;
 }
-
-html[data-legacy-mode='true'] .gold-block {
-  display: none;
-}
-
 html[data-legacy-mode='true'] .block-name {
   color:
     #000000;
@@ -584,8 +544,6 @@ html[data-legacy-mode='true'] .portfolio-footer {
   }
 }
 
-
-
 /* Compatibility with sections/components introduced after the original 1998 mode. */
 html[data-legacy-mode='true'] .lab-heading {
   grid-template-columns: 1fr !important;
@@ -740,7 +698,6 @@ html[data-legacy-mode='true'] :is(a, button) {
   cursor: pointer !important;
 }
 
-
 /* Legacy uses native browser interaction rather than contemporary motion polish. */
 html[data-legacy-mode='true'] *,
 html[data-legacy-mode='true'] *::before,
@@ -748,7 +705,6 @@ html[data-legacy-mode='true'] *::after {
   animation: none !important;
   transition: none !important;
 }
-
 
 html[data-legacy-mode='true'] .nav-links a[aria-current='true'] {
   background: #000080;
@@ -767,7 +723,6 @@ html[data-legacy-mode='true'] .music-loading {
   background: #ffffff;
   color: #000000;
 }
-
 
 /* --------------------------------------------------
    2026 content sync — keep new sections readable in Legacy / 1998
@@ -921,34 +876,7 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery :is(
 ) {
   color: #000000 !important;
   text-shadow: none !important;
-}
-
-html[data-legacy-mode='true'] .music-profile-fallback a {
-  color: #0000ee !important;
-  text-decoration: underline;
-}
-
-html[data-legacy-mode='true'] .music-quote-assistive {
-  position: static !important;
-  width: auto !important;
-  height: auto !important;
-  overflow: visible !important;
-  clip: auto !important;
-  clip-path: none !important;
-  white-space: normal !important;
-}
-
-html[data-legacy-mode='true'] .music-quote-typed {
-  display: none !important;
-}
-
-html[data-legacy-mode='true'] .listening-note-quote,
-html[data-legacy-mode='true'] .listening-note-footer,
-html[data-legacy-mode='true'] .listening-note-top {
-  color: #000000 !important;
-}
-
-/* Contact: native-looking controls instead of the modern material buttons. */
+}/* Contact: native-looking controls instead of the modern material buttons. */
 html[data-legacy-mode='true'] .closing-actions {
   gap: 8px;
 }

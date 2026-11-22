@@ -99,18 +99,7 @@ html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(
   .phrolova-underlay, .shorekeeper-underlay, .baton-fall-petal
 ) {
   display: none !important;
-}
-
-/* Post-it: flat paper in the quiet modes (no tilt, tape or curl). */
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight {
-  transform: none !important;
-}
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight::before,
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .listening-note--moonlight::after {
-  content: none !important;
-}
-
-/* Grids that reserved a column for the hidden decoration. */
+}/* Grids that reserved a column for the hidden decoration. */
 html:is([data-serious-mode='true'], [data-legacy-mode='true']) :is(.music-heading, .github-showcase .github-heading, .closing) {
   grid-template-columns: minmax(0, 1fr) !important;
 }

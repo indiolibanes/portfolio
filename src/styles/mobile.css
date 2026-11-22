@@ -32,12 +32,6 @@
     justify-self: auto;
     font-size: .8rem;
   }
-
-  html:not([data-legacy-mode='true']) .knowledge-note {
-    margin-top: .8rem;
-    padding: .7rem .9rem;
-  }
-
   html:not([data-legacy-mode='true']) .documentation-pipeline {
     width: 100%;
     grid-template-columns: repeat(3, minmax(0, 1fr) auto) minmax(0, 1fr);
@@ -47,7 +41,7 @@
   html:not([data-legacy-mode='true']) .documentation-step {
     min-height: 58px;
     padding: .5rem .2rem;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
   }
 
   html:not([data-legacy-mode='true']) .documentation-step strong {
