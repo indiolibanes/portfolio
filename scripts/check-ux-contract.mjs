@@ -107,11 +107,12 @@ check('curiosidades: creative process steps animate nothing (no motion to gate)'
 check('curiosidades: header link', header.includes("{ href: '/curiosidades/', id: '', label: 'Curiosidades' }"));
 check('curiosidades: home teaser link', home.includes('class="curiosities-teaser__link" href="/curiosidades/"'));
 check('curiosidades: listed in sitemap', sitemap.includes('https://indiolibanes.dev/curiosidades/'));
-check('modes: public Documentation URL is a reloadable route; old bookmarks are upgraded',
-  read('src/pages/modo-documentacao.astro').includes("import Home from './index.astro'") &&
-  read('src/components/BaseHead.astro').includes("storedMode === 'legacy'") &&
-  modes.includes("url.pathname = mode === 'documentation' ? '/modo-documentacao/' : '/'") &&
-  read('src/components/ImmersiveModeEmblems.astro').includes('"href":"/modo-documentacao/"') &&
+check('modes: Documentation home and experimental route are reloadable; old bookmarks redirect',
+  read('src/pages/modo-experimental.astro').includes("import Home from './index.astro'") &&
+  read('public/_redirects').includes('/modo-documentacao/ / 301') &&
+  read('src/components/BaseHead.astro').includes("stored === 'legacy'") &&
+  modes.includes("mode === 'authorial' ? '/modo-experimental/' : '/'") &&
+  read('src/components/ImmersiveModeEmblems.astro').includes('"href":"/modo-experimental/"') &&
   !modes.includes('data-legacy-mode'));
 check('modes: preserve three-state control',
   modes.includes("['authorial', 'editorial', 'documentation']") && modes.includes('Mudar para ') && modes.includes('aria-current'));

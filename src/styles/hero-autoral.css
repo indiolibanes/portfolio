@@ -109,6 +109,8 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobr
   color: var(--ink-soft);
 }
 
+#sobre .role .role-item { display: inline-block; white-space: nowrap; }
+
 /* ---------- Enunciado: texto dominante, sem painel ---------- */
 
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .hero-statement {

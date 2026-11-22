@@ -11,11 +11,13 @@ import MethodPresenter from '../components/MethodPresenter.astro';
 import MarioNameTiles from '../components/MarioNameTiles.astro';
 import ImmersiveBanner from '../components/ImmersiveBanner.astro';
 import SophiaCorrida from '../components/SophiaCorridaWebP.astro';
-import { PROFILE, SOCIALS } from '../config';
+import { PROFILE, SOCIALS, SITE, PUBLIC_PAGES } from '../config';
 import '../styles/rhea-card.css';
 import '../styles/rhea-lamps.css';
 import RheaFace from '../components/rhea/RheaFace.astro';
 import { sectionNumber } from '../section-order';
+
+const isExperimentalLanding = /^\/modo-experimental\/?$/.test(Astro.url.pathname);
 
 const background = [
   {
@@ -66,9 +68,12 @@ const METHOD_FLOWS = [
 ];
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={isExperimentalLanding ? PUBLIC_PAGES.experimental.title : SITE.title}
+  description={isExperimentalLanding ? PUBLIC_PAGES.experimental.description : SITE.description}
+>
   <main class="portfolio-main" id="conteudo">
-      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal</span><span>Escrita · estrutura · curiosidade</span></div>
+      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal</span><span>{isExperimentalLanding ? "Narrativa · interfaces · experiências" : "Escrita · estrutura · curiosidade"}</span></div>
 
     <section
       class="hero"
@@ -177,7 +182,19 @@ const METHOD_FLOWS = [
           </div>
 
           <p class="role">
-            <i lang="en">Technical Writing</i> · Documentação · Informação
+            {isExperimentalLanding ? (
+              <span lang="en" aria-label="Creative Technologist, Narrative Designer, UX Writer, Scriptwriter">
+                <span class="role-item">Creative Technologist</span>
+                <span aria-hidden="true"> ▪︎ </span>
+                <span class="role-item">Narrative Designer</span>
+                <span aria-hidden="true"> ▪︎ </span>
+                <span class="role-item">UX Writer</span>
+                <span aria-hidden="true"> ▪︎ </span>
+                <span class="role-item">Scriptwriter</span>
+              </span>
+            ) : (
+              <><i lang="en">Technical Writing</i> · Documentação · Informação</>
+            )}
           </p>
 
         </div>
@@ -189,21 +206,35 @@ const METHOD_FLOWS = [
         </p>
 
         <div class="hero-question">
-          <p>Como fazer um conhecimento espalhado poder ser encontrado e reaproveitado?</p>
+          <p>{isExperimentalLanding ? 'Como transformar uma ideia em uma experiência que se possa explorar?' : 'Como fazer um conhecimento espalhado poder ser encontrado e reaproveitado?'}</p>
         </div>
 
         <h2>
-          Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.
+          {isExperimentalLanding
+            ? 'Entre linguagem, interfaces e mundos possíveis, transformo ideias em narrativas que podem ser exploradas.'
+            : 'Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.'}
         </h2>
 
-        <p>
-          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reaproveitada:
-          pesquisar, escrever, estruturar, documentar e revisar. A escrita é o ponto de partida; a documentação permite que o
-          conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
-          sempre atualizado.
-        </p>
+        {isExperimentalLanding ? (
+          <p>
+            Exploro narrativas interativas, escrita para interfaces, roteiros e protótipos visuais. A tecnologia dá movimento às
+            ideias; a linguagem organiza o percurso e atribui significado à experiência. Pesquisa, experimentação e revisão
+            sustentam esse processo, do primeiro esboço à versão que se pode navegar.
+          </p>
+        ) : (
+          <p>
+            Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reaproveitada:
+            pesquisar, escrever, estruturar, documentar e revisar. A escrita é o ponto de partida; a documentação permite que o
+            conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
+            sempre atualizado.
+          </p>
+        )}
         <p class="hero-current">
-          <strong>Agora:</strong> traduzindo <cite lang="en">The Big Picture</cite> e documentando fluxos de publicação.
+          {isExperimentalLanding ? (
+            <><strong>Agora:</strong> desenvolvendo experiências interativas com Sophia e RHEA, sem deixar de lado a escrita e a tradução.</>
+          ) : (
+            <><strong>Agora:</strong> traduzindo <cite lang="en">The Big Picture</cite> e documentando fluxos de publicação.</>
+          )}
         </p>
 
         <div class="hero-actions">
@@ -217,6 +248,9 @@ const METHOD_FLOWS = [
             download="Kaue-Alencar-Curriculo.pdf"
           >
             Currículo PDF <span aria-hidden="true">↓</span>
+          </a>
+          <a class="editorial-text-link portfolio-view-link" href={isExperimentalLanding ? '/' : '/modo-experimental/'}>
+            {isExperimentalLanding ? 'Ver versão documental' : 'Explorar versão experimental'} <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>
@@ -240,11 +274,13 @@ const METHOD_FLOWS = [
         </p>
 
         <p class="note-big">
-          linguagem + estrutura + contexto
+          {isExperimentalLanding ? 'linguagem + imaginação + interação' : 'linguagem + estrutura + contexto'}
         </p>
 
         <p class="note-small">
-          A tecnologia é uma aliada quando facilita a preservação, organização e publicação.
+          {isExperimentalLanding
+            ? 'A tecnologia é uma aliada quando permite experimentar novas formas de contar e explorar histórias.'
+            : 'A tecnologia é uma aliada quando facilita a preservação, organização e publicação.'}
         </p>
       </aside>
     </section>
