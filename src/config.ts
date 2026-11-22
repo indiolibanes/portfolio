@@ -13,6 +13,11 @@ export const RSS = {
 };
 
 export const PUBLIC_PAGES = {
+  experimental: {
+    path: '/modo-experimental/',
+    title: 'Modo Experimental — Creative Technologist, Narrative Designer, UX Writer & Scriptwriter | Kauê Alencar',
+    description: 'O lado autoral do portfólio de Kauê Alencar: narrativas, UX writing, roteiros, interfaces e experiências interativas com Sophia, tecnologia criativa e exploração visual.',
+  },
   curiosidades: {
     path: '/curiosidades/',
     title: 'Curiosidades — Portfólio de Kauê Alencar',

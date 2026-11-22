@@ -14,13 +14,13 @@ const {
 
 const pathname = Astro.url.pathname;
 const isNotFound = pathname.replace(/\/$/, '') === '/404';
-const isDocumentationLanding = /^\/modo-documentacao\/?$/.test(pathname);
-const canonicalUrl = new URL(isDocumentationLanding ? '/' : pathname, SITE.url).toString();
+const isExperimentalLanding = /^\/modo-experimental\/?$/.test(pathname);
+const canonicalUrl = new URL(isExperimentalLanding ? '/modo-experimental/' : pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 // Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
-const hasLandingScenes = pathname === '/' || isDocumentationLanding;
+const hasLandingScenes = pathname === '/' || isExperimentalLanding;
 // Stable, public identity data for the portfolio's main page only.
 const personId = new URL('/#person', SITE.url).toString();
 const websiteId = new URL('/#website', SITE.url).toString();
@@ -60,39 +60,56 @@ const structuredData = {
   (() => {
     try {
       const params = new URLSearchParams(window.location.search);
-      const requestedMode = params.get('mode');
+      const requested = params.get('mode');
       const seriousParam = params.get('serious');
       const supportedModes = ['authorial', 'editorial', 'documentation'];
-
+      const canonicalRequested = ['legacy', '1998', 'neumorfismo', 'neumorphism', 'documentacao'].includes(requested)
+        ? 'documentation' : requested;
+      const pathname = window.location.pathname;
+      const isExperimental = /^\/modo-experimental\/?$/.test(pathname);
+      const isHome = pathname === '/';
       let mode = null;
 
-      const canonicalRequested = ['legacy', '1998', 'neumorfismo', 'neumorphism', 'documentacao'].includes(requestedMode)
-        ? 'documentation'
-        : requestedMode;
-      if (supportedModes.includes(canonicalRequested)) {
+      if (isHome || isExperimental) {
+        // A URL pública prevalece sobre preferências antigas; o modo editorial é uma opção de leitura.
+        const requestedLanding = canonicalRequested === 'authorial' || canonicalRequested === 'documentation'
+          ? canonicalRequested
+          : seriousParam === '0' || seriousParam === 'false' ? 'authorial' : null;
+        const target = requestedLanding === 'authorial' ? '/modo-experimental/' : '/';
+        if (requestedLanding && target !== (isExperimental ? '/modo-experimental/' : '/')) {
+          const destination = new URL(window.location.href);
+          destination.pathname = target;
+          destination.searchParams.delete('mode');
+          destination.searchParams.delete('serious');
+          window.location.replace(destination.pathname + destination.search + destination.hash);
+          return;
+        }
+        mode = canonicalRequested === 'editorial' || seriousParam === '1' || seriousParam === 'true'
+          ? 'editorial' : isExperimental ? 'authorial' : 'documentation';
+      } else if (supportedModes.includes(canonicalRequested)) {
         mode = canonicalRequested;
-      } else if (window.location.pathname === '/modo-documentacao/' || window.location.pathname === '/modo-documentacao') {
-        mode = 'documentation';
       } else if (seriousParam === '1' || seriousParam === 'true') {
         mode = 'editorial';
       } else if (seriousParam === '0' || seriousParam === 'false') {
         mode = 'authorial';
       } else {
-        const storedMode = localStorage.getItem('portfolio-mode-v2');
-
-        if (supportedModes.includes(storedMode) || storedMode === 'legacy') {
-          mode = storedMode === 'legacy' ? 'documentation' : storedMode;
+        const stored = localStorage.getItem('portfolio-mode-v2');
+        if (supportedModes.includes(stored) || stored === 'legacy') {
+          mode = stored === 'legacy' ? 'documentation' : stored;
         }
       }
-
-      if (!mode) mode = 'authorial';
+      if (!mode) mode = 'documentation';
 
       document.documentElement.dataset.portfolioMode = mode;
-      document.documentElement.dataset.seriousMode =
-        mode === 'editorial' ? 'true' : 'false';
-      document.documentElement.dataset.documentationMode =
-        mode === 'documentation' ? 'true' : 'false';
-    } catch {}
+      document.documentElement.dataset.seriousMode = mode === 'editorial' ? 'true' : 'false';
+      document.documentElement.dataset.documentationMode = mode === 'documentation' ? 'true' : 'false';
+    } catch {
+      // Na ausência de storage, a página inicial permanece documental.
+      const isExperimental = /^\/modo-experimental\/?$/.test(window.location.pathname);
+      document.documentElement.dataset.portfolioMode = isExperimental ? 'authorial' : 'documentation';
+      document.documentElement.dataset.seriousMode = 'false';
+      document.documentElement.dataset.documentationMode = isExperimental ? 'false' : 'true';
+    }
   })();
 </script>
 <script is:inline src="/scripts/reveal.js"></script>
@@ -109,7 +126,7 @@ const structuredData = {
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" /></noscript>
   </>
 )}
-{hasLandingScenes && (
+{pathname === '/' && (
   <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
 )}
 

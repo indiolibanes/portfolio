@@ -15,7 +15,7 @@
  * é o único indicador (rótulos e contornos); prefers-contrast / forced-colors / reduced-motion /
  * reduced-transparency tratados no fim do arquivo.
  *
- * Modo público "Documentação": /modo-documentacao/ (ou ?mode=documentacao nas outras rotas).
+ * Modo público "Documentação": / (ou ?mode=documentacao nas rotas secundárias).
  * Atalhos e preferências anteriores são migrados pelo controlador de modo.
  * Esta folha usa exclusivamente o atributo data-documentation-mode.
  */

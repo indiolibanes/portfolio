@@ -1,6 +1,7 @@
 ---
 import { PROFILE, RSS, SOCIALS } from '../config';
 const today = new Date();
+const isExperimentalLanding = /^\/modo-experimental\/?$/.test(Astro.url.pathname);
 ---
 
 <footer class="portfolio-footer">
@@ -8,7 +9,7 @@ const today = new Date();
     <canvas class="footer-math" aria-hidden="true" data-footer-math></canvas>
     <div>
       <p class="footer-mark">{PROFILE.name}</p>
-      <p class="footer-copy">Documentação, organização da informação, escrita e publicação digital.</p>
+      <p class="footer-copy">{isExperimentalLanding ? 'Narrativas, interfaces e experiências interativas.' : 'Documentação, organização da informação, escrita e publicação digital.'}</p>
       <p class="footer-legal">
         © {today.getFullYear()} {PROFILE.name}. Todos os direitos reservados.
       </p>

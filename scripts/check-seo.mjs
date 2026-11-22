@@ -19,12 +19,12 @@ const sitemapUrl = new URL('/sitemap.xml', base).href;
 const rssUrl = new URL('/rss.xml', base).href;
 
 const sitemap = read('public/sitemap.xml');
-const sitemapPaths = ['/', '/curiosidades/', '/sophia/', '/rhea/'];
+const sitemapPaths = ['/', '/modo-experimental/', '/curiosidades/', '/sophia/', '/rhea/'];
 // RHEA is a standalone, English-language project page.
 const pageLang = pathname => pathname === '/rhea/' ? 'en' : 'pt-BR';
 const expectedUrls = sitemapPaths.map(path => new URL(path, base).toString());
 const urls = [...sitemap.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/g)].map(m => m[1].trim());
-assert.deepEqual(urls, expectedUrls, 'Sitemap must list exactly the four public indexable pages');
+assert.deepEqual(urls, expectedUrls, 'Sitemap must list exactly the five public indexable pages');
 assert.equal(new Set(urls).size, urls.length, 'Duplicate URLs in sitemap');
 assert.doesNotMatch(sitemap, /<(?:lastmod|changefreq|priority)>/i,
   'Do not publish guessed dates or ignored frequency/priority metadata');
@@ -93,7 +93,7 @@ if (process.argv.includes('--dist')) {
     assert.match(item, /<description>[^<]+<\/description>/);
     return link;
   });
-  assert.deepEqual(feedUrls.sort(), expectedUrls.filter(url => url !== base).sort(),
+  assert.deepEqual(feedUrls.sort(), expectedUrls.filter(url => url !== base && url !== new URL('/modo-experimental/', base).href).sort(),
     'Feed must contain each public editorial or project page once');
 
   const titles = new Set();
@@ -142,6 +142,6 @@ if (process.argv.includes('--dist')) {
     }
   }
 
-  console.log('SEO dist: PASS (four public routes, canonical, share metadata, JSON-LD, RSS and noindex)');
+  console.log('SEO dist: PASS (five public routes, canonical, share metadata, JSON-LD, RSS and noindex)');
 }
 console.log('SEO source: PASS (sitemap, robots, headers, Shorekeeper policy)');
