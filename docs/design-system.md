@@ -39,6 +39,15 @@ These define the authorial mode. They stay as authored, and the token layer must
 | `--focus-ring-on-dark` | `#ffd15a` | 11.9:1 on `--prism-stage` |
 | `--z-overlay/skip-link/top` | 60 / 10000 / 2147483000 | |
 
+## Materials (glass)
+
+There is one translucent material, used by the Música widget (`music-player.css`, "Vidro líquido"). Recipe, so other surfaces can reuse it instead of inventing a new one:
+
+- a sheet over *something colourful* (here the blurred cover); glass over a flat colour shows nothing;
+- `backdrop-filter: blur(20px) saturate(1.8)`, a dark veil of about 44% so light text stays above 4.5:1 even on white covers, a soft specular highlight in one corner, and a 1 px light rim (inset highlights);
+- static: the only motion is the existing diagonal beam;
+- `prefers-reduced-transparency` and browsers without `backdrop-filter` get a solid panel with the same contrast.
+
 ## Modes
 
 Editorial and Legacy collapse colour tokens in `mono-modes.css` and flatten radius, shadow and motion with `!important` selectors. Because the alias tier uses `var()`, it follows the mode with no extra code. Do not redeclare colours in `design-tokens.css`.

@@ -20,7 +20,6 @@
 .recent-track-card .cover-beam,
 .recent-track-card .cover-notes,
 .recent-track-card .cover-fx,
-.recent-track-card .cover-ambient,
 .recent-track-card .cover-wave { display: none; }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card {
@@ -51,7 +50,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img {
   width: 100%; height: 100%; object-fit: cover;
-  filter: blur(34px) saturate(1.5) brightness(.42);
+  filter: blur(28px) saturate(1.7) brightness(.55);
   transform: scale(1.3);
   animation: cover-breathe 16s ease-in-out infinite alternate;
 }
@@ -155,7 +154,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
   100% { opacity: 0; transform: translate3d(14px, -330px, 0); }
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-beam {
-  display: block; position: absolute; top: -20%; bottom: -20%; left: -40%; width: 30%; z-index: 0; pointer-events: none;
+  display: block; position: absolute; top: -20%; bottom: -20%; left: -40%; width: 30%; z-index: 1; pointer-events: none;
   background: linear-gradient(100deg, transparent, rgba(255, 236, 190, .16), transparent);
   transform: skewX(-18deg) translateX(0); mix-blend-mode: screen;
   animation: cover-beam 9s ease-in-out 1.2s infinite;
@@ -241,27 +240,10 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   transition: background .8s ease;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop::after {
-  background: linear-gradient(90deg, transparent 20%, var(--md-surface) 78%), radial-gradient(120% 90% at 20% 50%, transparent, rgba(8, 8, 20, .45));
+  background: radial-gradient(120% 90% at 20% 50%, transparent, rgba(8, 8, 20, .5));
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img { opacity: .55; }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img { opacity: .92; }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient {
-  display: block; position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i {
-  position: absolute; display: block; opacity: .34; mix-blend-mode: screen; filter: blur(6px);
-  animation: cover-morph var(--mt, 16s) ease-in-out infinite alternate, cover-drift var(--dt, 26s) linear infinite;
-}
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(1) { width: 46%; aspect-ratio: 1; right: -8%; top: -30%; background: var(--md-primary-container); --mt: 17s; --dt: 38s; opacity: .7; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(2) { width: 30%; aspect-ratio: 1; right: 14%; bottom: -28%; background: var(--md-secondary); --mt: 13s; --dt: 31s; opacity: .22; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(3) { width: 18%; aspect-ratio: 1; right: 3%; bottom: 12%; background: var(--md-tertiary); --mt: 11s; --dt: 24s; opacity: .26; }
-@keyframes cover-morph {
-  0%   { border-radius: 58% 42% 55% 45% / 48% 58% 42% 52%; }
-  33%  { border-radius: 38% 62% 44% 56% / 60% 40% 60% 40%; }
-  66%  { border-radius: 64% 36% 62% 38% / 42% 56% 44% 58%; }
-  100% { border-radius: 46% 54% 38% 62% / 56% 44% 62% 38%; }
-}
-@keyframes cover-drift { from { rotate: 0deg; } to { rotate: 360deg; } }
 
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 { font-size: clamp(1.8rem, 4.2vw, 3.4rem); }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-kicker { color: var(--md-primary); }
@@ -286,10 +268,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 
 @media (max-width: 680px) {
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave { margin-inline: auto; }
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i:nth-child(1) { width: 90%; right: -30%; top: auto; bottom: -20%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-ambient i,
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-wave svg { animation: none !important; }
 }
 
@@ -304,9 +284,9 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-trac
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel {
   border: 1px solid rgba(240, 207, 134, .34);
-  background: linear-gradient(150deg, rgba(18, 16, 40, .9), rgba(8, 8, 20, .96));
+  background: linear-gradient(150deg, #12102a, #080814);
   box-shadow: inset 0 1px 0 rgba(255, 244, 222, .16), 0 22px 44px -14px rgba(0, 0, 0, .7);
-  backdrop-filter: blur(10px);
+  isolation: isolate;
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel:has(.recent-track-card[data-now-playing='true']) {
   border-color: rgba(240, 207, 134, .55);
@@ -448,6 +428,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-artwork-shell.cover-figure {
   grid-area: cover;
+  background: none; /* o degradê bege herdado aparecia como faixa pálida onde a máscara esmaece a capa */
+  box-shadow: none; /* a sombra do cartão antigo desenhava uma linha na borda da capa */
   align-self: stretch;
   justify-self: stretch;
   width: 100%;
@@ -461,8 +443,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   min-height: clamp(380px, 44vw, 600px);
   aspect-ratio: auto;
   border-radius: 0;
-  -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
-          mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent 100%);
+          mask-image: linear-gradient(90deg, #000 70%, transparent 100%);
 }
 html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-copy {
   grid-area: copy;
@@ -506,6 +488,56 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head { padding: 1.1rem 1.1rem 0; }
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy { padding: 1rem 1.1rem 1.4rem; }
   html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .recent-track-copy h3 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+}
+
+
+/* ---------- Vidro líquido (2026-11-21) ----------
+   Uma lâmina de vidro cobre a coluna de texto (título + faixa) e deixa ver a capa desfocada
+   por baixo: desfoque forte com saturação, brilho especular no canto, borda de luz e um véu
+   escuro que mantém o texto acima de 4,5:1 mesmo sobre capas claras. O que antes era uma
+   camada opaca com blobs borrados a 60 fps agora é uma lâmina estática; o único movimento
+   é o feixe diagonal já existente. Sem transparência (preferência do sistema ou navegador
+   sem backdrop-filter) a lâmina vira um painel sólido, com o mesmo contraste. */
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel::before {
+  content: ""; grid-column: 2; grid-row: 1 / -1; z-index: 1; pointer-events: none;
+  margin: clamp(10px, 1.6vw, 20px); border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, .26);
+  background:
+    radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, .22), transparent 48%),
+    linear-gradient(135deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04) 55%, rgba(255, 255, 255, .1)),
+    rgba(10, 10, 26, .44);
+  box-shadow:
+    inset 1.5px 1.5px 0 rgba(255, 255, 255, .42),
+    inset -1px -1px 0 rgba(255, 255, 255, .12),
+    inset 0 0 26px rgba(255, 255, 255, .06),
+    0 16px 36px -18px rgba(0, 0, 0, .65);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+          backdrop-filter: blur(20px) saturate(1.8);
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel { --lg-m: clamp(10px, 1.6vw, 20px); --lg-pad: clamp(1rem, 2vw, 1.6rem); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel :is(.music-card-head, .recent-track-copy) {
+  position: relative; z-index: 2;
+  padding-inline: calc(var(--lg-m) + var(--lg-pad));
+}
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-card-head { padding-top: calc(var(--lg-m) + var(--lg-pad)); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-copy { padding-block: var(--lg-pad) calc(var(--lg-m) + var(--lg-pad)); }
+html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-card-head h2 { text-shadow: 0 1px 14px rgba(0, 0, 0, .45); }
+@media (max-width: 680px) {
+  /* Uma coluna: a lâmina fica sob o bloco da faixa, abaixo da capa. */
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel::before { grid-column: 1; grid-row: 3; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .music-card-head { padding-inline: 1.1rem; padding-top: 1.1rem; }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel .recent-track-copy { padding-block: calc(var(--lg-m) + var(--lg-pad)); }
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop img { animation: none; }
+  /* O título fica fora da lâmina nesta largura: um véu no topo garante o contraste sobre capas claras. */
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .recent-track-card .cover-backdrop::after { background: linear-gradient(180deg, rgba(8, 8, 20, .6), transparent 34%), radial-gradient(120% 90% at 20% 50%, transparent, rgba(8, 8, 20, .5)); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel::before {
+    -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(14, 12, 30, .94);
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-listening-panel::before { background: rgba(14, 12, 30, .94); }
 }
 
 

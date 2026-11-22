@@ -2,9 +2,9 @@
 // Convite ao Voo Prismático da Sophia: uma animação WebP com alfa, sem WebGL.
 // O WebP animado só é solicitado quando visível e permitido; nos demais estados usa o pôster.
 ---
-<aside class="immersive-banner" aria-labelledby="immersive-banner-title" data-immersive-banner>
+<aside id="voo-prismatico" class="immersive-banner" aria-labelledby="immersive-banner-title" data-immersive-banner>
   <div class="immersive-banner__copy">
-    <p class="immersive-banner__eyebrow">Sophia · experiência imersiva</p>
+    <p class="immersive-banner__eyebrow">Em destaque · Sophia · experiência imersiva</p>
     <h2 id="immersive-banner-title" class="immersive-banner__title">
       Sophia — <span class="immersive-banner__count">Voo Prismático</span>
     </h2>
@@ -106,6 +106,8 @@
       radial-gradient(1px 1px at 94% 72%, #fff7 50%, transparent 52%),
       #04061a;
   }
+  /* Dentro do Laboratório o cartão é um dos trabalhos em destaque: a grade da seção dá o espaço. */
+  :global(.lab) > .immersive-banner { margin: 0; width: 100%; scroll-margin-top: 96px; }
   .immersive-banner__copy { padding: clamp(24px, 4vw, 48px); padding-bottom: 8px; position: relative; z-index: 1; }
   .immersive-banner__eyebrow {
     margin: 0 0 12px; font-family: var(--font-ui, system-ui, sans-serif); font-size: .74rem;
