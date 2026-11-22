@@ -1,0 +1,461 @@
+/*
+ * Modo neumórfico (atributo interno: data-legacy-mode) — 2026-11-22.
+ *
+ * Minimalismo sofisticado: uma única superfície de pedra quente, luz vinda do canto
+ * superior esquerdo, relevo só onde há interação ou onde o conteúdo precisa de moldura.
+ *   - Em alto-relevo (extrudado): cartões de trabalho, controles, o widget de música.
+ *   - Em baixo-relevo (afundado): poços de leitura, etiquetas, estado pressionado/ativo.
+ *   - Tudo o mais é plano: seções, texto e fios não ganham sombra.
+ * Um único acento (cobre) para ação primária, links e foco; o resto é tinta e pedra.
+ *
+ * Acessibilidade (a fraqueza conhecida do neumorfismo é o contraste das bordas):
+ *   - texto ≥ 4,5:1 (tinta 11,7:1, tinta suave 5,7:1, acento 5,6:1 sobre a pedra);
+ *   - controles nunca dependem só da sombra: têm rótulo, e o foco é um anel sólido de
+ *     3 px (token --focus-ring-on-light, 3,5:1 sobre a pedra);
+ *   - prefers-contrast: more troca relevo por contorno sólido; forced-colors mantém bordas;
+ *   - prefers-reduced-motion: sem transição de sombra.
+ *
+ * Carregado por último. O modo é o antigo "Legacy": o atributo, a chave de armazenamento
+ * e os parâmetros de URL (?mode=legacy, ?mode=1998) continuam valendo para quem já os usa;
+ * ?mode=neumorfismo é um apelido novo. Só afeta data-legacy-mode.
+ */
+
+/* 1. Tokens ------------------------------------------------------------- */
+
+html[data-legacy-mode='true'] {
+  color-scheme: light;
+
+  --neu-base: #e7e4de;
+  --neu-well: #dedad3;
+  --neu-hi: #fbfaf7;
+  --neu-lo: #c2beb5;
+  --neu-ink: #2a2723;
+  --neu-ink-soft: #5b564e;
+  --neu-accent: #86471d;
+  --neu-accent-fill: #9a5526;
+  --neu-rule: #cfcac1;
+
+  --neu-raise-s: 4px 4px 9px var(--neu-lo), -4px -4px 9px var(--neu-hi);
+  --neu-raise-m: 8px 8px 18px var(--neu-lo), -8px -8px 18px var(--neu-hi);
+  --neu-inset-s: inset 3px 3px 6px var(--neu-lo), inset -3px -3px 6px var(--neu-hi);
+  --neu-inset-m: inset 5px 5px 11px var(--neu-lo), inset -5px -5px 11px var(--neu-hi);
+  --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Portfolio Bookman', Georgia, 'Times New Roman', serif;
+  --font-chapter: var(--font-display);
+  --font-subtitle: var(--font-display);
+  --font-signature: var(--font-display);
+  --font-typewriter: var(--font-ui);
+  --font-retro: var(--font-ui);
+  --neu-r-card: var(--radius-md);
+  --neu-r-ctl: 14px;
+
+  --bg: var(--neu-base);
+  --surface: var(--neu-base);
+  --surface-soft: var(--neu-well);
+  --surface-strong: #d6d2ca;
+  --ink: var(--neu-ink);
+  --ink-soft: var(--neu-ink-soft);
+  --line: var(--neu-rule);
+  --shadow-soft: var(--neu-raise-m);
+  --shadow-card: var(--neu-raise-s);
+
+  --mode-heading: var(--neu-ink);
+  --mode-ink: var(--neu-ink);
+  --mode-ink-soft: var(--neu-ink-soft);
+  --mode-label: var(--neu-ink-soft);
+  --mode-link: var(--neu-accent);
+  --mode-on-dark: #f4f1ea;
+  --mode-on-dark-soft: #cfcac1;
+  --mode-on-dark-link: #f4f1ea;
+
+  background: var(--neu-base);
+  scroll-behavior: auto;
+}
+
+html[data-legacy-mode='true'] body {
+  background: var(--neu-base);
+  color: var(--neu-ink);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  cursor: auto !important;
+}
+
+/* 2. Neutralise the authorial skin -------------------------------------- */
+/* Colour, gradients, shadows, motion and decoration go; layout stays. Every control and
+   card below is re-skinned explicitly, so the relief appears only where it means something. */
+
+html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *)),
+html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::before,
+html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::after {
+  text-shadow: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mix-blend-mode: normal !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *, [aria-hidden='true'], [aria-hidden='true'] *, img, picture, svg, svg *, canvas, video)) {
+  color: var(--neu-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  background-color: transparent !important;
+  transition: none;
+}
+
+/* Decoration that carries no information (same list as the flat modes, plus the scenes). */
+html[data-legacy-mode='true'] :is(
+  .ambient, .cosmic-starfield, .random-easter-layer, .atom-cursor,
+  .sophia-animation, .pixel-mushroom, .closing-emil-triforce, .triforce-system,
+  .github-gif-strip, .triforce-stage, .tape, .gold-block, .mario-name-tiles,
+  .phrolova-underlay, .shorekeeper-underlay, .baton-fall-petal,
+  .hero-ornaments, .hero-cover-art .prism-spectrum, .lab-companion,
+  .footer-math, .pi-leaf-field, .rhea-card-sky, .rhea-card-orbit, .rhea-card-moon,
+  .curiosities-teaser .corrida, .closing-marks, .mm-splash, .lab-sophia-guide, .lab-sophia-presence,
+  .github-board-stage, .music-sophia-mini, .music-panorama, .music-panorama-action,
+  .music-panorama-effects, .music-panorama-glint, .listening-note-score, .method-presenter,
+  .nav-plasma, .pi-map :is(.mm-arrow, .mm-splash, .mm-icon, .mm-brush), .hero-note .tape, .lab-project-system, .pi-leaf-field, .knowledge-stage, .method-presenter__beam, .prism-ray, .prism-spectrum
+) {
+  display: none !important;
+}
+
+/* Hero: the cover art sits in a sunken frame; the name block stays. */
+html[data-legacy-mode='true'] .hero-cover-art {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--neu-r-card);
+  box-shadow: var(--neu-inset-m) !important;
+  background: var(--neu-well) !important;
+  padding: 10px;
+  aspect-ratio: auto !important;
+  height: auto !important;
+}
+html[data-legacy-mode='true'] .hero-cover-art img { position: static !important; border-radius: calc(var(--neu-r-card) - 6px); width: 100%; height: auto !important; display: block; }
+html[data-legacy-mode='true'] .hero-question { margin-bottom: 1.25rem; }
+html[data-legacy-mode='true'] .name-brick-plate {
+  display: block !important;
+  container-type: normal !important;
+  width: 100% !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+html[data-legacy-mode='true'] .block-name {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  font-size: clamp(2.6rem, 5vw, 4.4rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.03em !important;
+  white-space: normal;
+}
+
+/* The process diagrams are replaced by their text alternative, as before. */
+html[data-legacy-mode='true'] #lab #curadoria .cellulose-legacy-text { display: block; margin: 0 0 .8rem; font-size: .92rem; line-height: 1.6; }
+
+/* 3. Type ---------------------------------------------------------------- */
+
+html[data-legacy-mode='true'] body :where(p, li, a, span, small, strong, em, i, b, button, label, dd, dt, figcaption, blockquote, time, summary, td, th) {
+  font-family: var(--font-ui) !important;
+}
+html[data-legacy-mode='true'] body :where(h1, h2, h3, h4) {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.012em !important;
+  line-height: 1.16 !important;
+  text-transform: none !important;
+  text-wrap: balance;
+}
+html[data-legacy-mode='true'] body :where(h1 b, h2 b, h3 b, h1 i, h2 i, h3 i) {
+  font-family: inherit !important;
+  font-weight: inherit !important;
+}
+html[data-legacy-mode='true'] body :is(.eyebrow, .role, .hello, .github-overline, .project-label, .background-meta, .lab-project-meta, .method-index, .note-label) {
+  color: var(--neu-ink-soft) !important;
+  font-size: .74rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+}
+html[data-legacy-mode='true'] body :is(small, time, figcaption, .brand-copy small, .footer-legal, .footer-copy) {
+  color: var(--neu-ink-soft) !important;
+}
+html[data-legacy-mode='true'] body :is(p, li, dd) { max-width: 68ch; }
+html[data-legacy-mode='true'] body :where(code, pre, kbd) { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace !important; }
+
+html[data-legacy-mode='true'] body a { text-decoration: none; }
+html[data-legacy-mode='true'] body :is(main, footer) :is(p, li, dd, small) a:not(.button, .nav-cta, [class*='cta'], [class*='button']) {
+  color: var(--neu-accent) !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+html[data-legacy-mode='true'] ::selection { background: var(--neu-accent); color: #fff; }
+
+/* 4. Page: flat sections on one stone surface ---------------------------- */
+
+html[data-legacy-mode='true'] :is(.hero, .hero-intro, .hero-statement, .background, .music-shelf, .closing, .github-showcase, .lab, .method-section, .portfolio-footer, .curiosities-teaser, .projects) {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html[data-legacy-mode='true'] .section,
+html[data-legacy-mode='true'] .hero {
+  padding-block: clamp(2.5rem, 6vw, 5rem);
+}
+html[data-legacy-mode='true'] :is(.section, .hero) + :is(.section, .hero)::before { content: none; }
+html[data-legacy-mode='true'] :is(.music-shelf, .closing, .curiosities-teaser, .background, .method-section, .github-showcase, .lab, .hero) {
+  min-height: 0 !important;
+  padding-block: clamp(2rem, 5vw, 3.75rem) !important;
+  margin-block: 0 !important;
+}
+
+html[data-legacy-mode='true']:root body :is(h1, h2, h3, h4) { font-weight: 400 !important; }
+html[data-legacy-mode='true']:root body main :is(h2) { font-size: clamp(1.9rem, 3.2vw, 2.7rem) !important; max-width: 24ch; }
+html[data-legacy-mode='true']:root body main .hero-statement h2 { font-size: clamp(2rem, 3.6vw, 3.1rem) !important; max-width: none; }
+html[data-legacy-mode='true']:root body main :is(h3) { font-size: clamp(1.35rem, 2.2vw, 1.8rem) !important; }
+html[data-legacy-mode='true']:root body .immersive-banner h2 { font-size: clamp(1.8rem, 3vw, 2.4rem) !important; max-width: none; }
+
+/* 5. Raised surfaces: cards that frame a piece of work ------------------- */
+
+html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .curiosities-teaser__copy, .method-stage, .method-presenter__stage, .recent-track-card, .playlist-card, .lab-sophia-guide, .immersive-banner, .architecture-map, .cellulose-flow, .knowledge-stage, .documentation-pipeline) {
+  background: linear-gradient(145deg, #ece9e3, var(--neu-base)) !important;
+  border-radius: var(--neu-r-card) !important;
+  box-shadow: var(--neu-raise-m) !important;
+  border: 0 !important;
+}
+html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) {
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  margin-block: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+/* 6. Wells: tags, statuses, indexes, quotes (sunken) ---------------------- */
+
+html[data-legacy-mode='true'] body :is(.lab-project-status, .lab-project-tags span, .github-tags span, .music-source-label span, .lab-project-index, .method-presenter__badges span, .hero-current, .background-number, .anchor-alias) {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-s) !important;
+  border-radius: 10px !important;
+  padding: .28rem .65rem;
+  font-size: .72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .06em;
+  color: var(--neu-ink-soft) !important;
+}
+html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note, .method-disclosure, .hero-question, blockquote) {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-s) !important;
+  border-radius: var(--neu-r-ctl) !important;
+  padding: .9rem 1.1rem;
+}
+
+/* 7. Controls: raised at rest, sunken when pressed ------------------------ */
+
+html[data-legacy-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__cta, .immersive-banner__link, .lab-project-repo, .apple-music-link, .documentation-step, .method-stage-link, .nav-sections a) {
+  background: linear-gradient(145deg, #ece9e3, var(--neu-base)) !important;
+  border-radius: var(--neu-r-ctl) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  border: 0 !important;
+  color: var(--neu-ink) !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  min-height: var(--target-min);
+  transition: box-shadow var(--duration-base) ease !important;
+}
+html[data-legacy-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__cta, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link, .nav-sections a):is(:hover) {
+  box-shadow: 6px 6px 13px var(--neu-lo), -6px -6px 13px var(--neu-hi) !important;
+}
+html[data-legacy-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__cta, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link, .nav-sections a):is(:active, [aria-pressed='true'], [aria-current], [aria-expanded='true']) {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-s) !important;
+}
+/* Primary actions carry the one accent. */
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) {
+  background: linear-gradient(145deg, #a85f2d, var(--neu-accent)) !important;
+  color: #ffffff !important;
+  box-shadow: 5px 5px 12px rgba(134, 71, 29, .32), -4px -4px 10px var(--neu-hi) !important;
+}
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) * { color: #ffffff !important; }
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) {
+  background: var(--neu-accent) !important;
+  box-shadow: inset 3px 3px 7px rgba(0, 0, 0, .28), inset -2px -2px 5px rgba(255, 255, 255, .16) !important;
+}
+
+/* 8. Focus: a solid ring, never only a shadow ------------------------------ */
+
+html[data-legacy-mode='true'] body :where(a, button, summary, [tabindex]):focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-on-light) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+}
+
+/* 9. Header and footer ----------------------------------------------------- */
+
+html[data-legacy-mode='true'] .site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-overlay);
+  padding: .9rem clamp(.75rem, 3vw, 2rem);
+  background: var(--neu-base) !important;
+  border: 0 !important;
+}
+html[data-legacy-mode='true'] .nav-shell {
+  width: min(var(--page), 100%);
+  margin-inline: auto;
+  padding: .55rem .9rem;
+  background: linear-gradient(145deg, #ece9e3, var(--neu-base)) !important;
+  border-radius: var(--neu-r-card) !important;
+  box-shadow: var(--neu-raise-s) !important;
+}
+html[data-legacy-mode='true'] .nav-standards { display: none !important; }
+html[data-legacy-mode='true'] .brand { background: none !important; box-shadow: none !important; min-height: 0; }
+html[data-legacy-mode='true'] .brand-mark {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-s) !important;
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+html[data-legacy-mode='true'] .brand-copy strong { font-weight: 600; }
+html[data-legacy-mode='true'] .nav-sections .xm-glass { background: none !important; box-shadow: none !important; }
+html[data-legacy-mode='true'] .nav-sections a { padding: .4rem .85rem; font-size: .88rem; }
+html[data-legacy-mode='true'] .nav-links a::before, html[data-legacy-mode='true'] .nav-links a::after { display: none !important; }
+@media (min-width: 1181px) {
+  html[data-legacy-mode='true'] .nav-sections .xm-glass { display: flex; flex-wrap: wrap; gap: .5rem; }
+}
+/* Below 1181px the links open as a raised panel under the bar. */
+html[data-legacy-mode='true'][data-nav-js='true'] .site-header .nav-sections {
+  background: var(--neu-base) !important;
+  border-radius: var(--neu-r-card) !important;
+  box-shadow: var(--neu-raise-m) !important;
+}
+html[data-legacy-mode='true'] .nav-menu-toggle[aria-expanded='true'] { background: var(--neu-well) !important; box-shadow: var(--neu-inset-s) !important; }
+html[data-legacy-mode='true'] .nav-elements { display: none !important; }
+html[data-legacy-mode='true'] .nav-menu-toggle { border-radius: 50% !important; }
+html[data-legacy-mode='true'] .portfolio-footer { margin-top: clamp(2rem, 5vw, 4rem); padding-block: clamp(2rem, 4vw, 3rem); }
+html[data-legacy-mode='true'] .footer-mark { font-family: var(--font-display) !important; font-size: 1.4rem; }
+
+/* 10. Page-specific skins -------------------------------------------------- */
+
+/* Lab cards: copy on the left, a sunken frame for the cover on the right. */
+html[data-legacy-mode='true'] :is(.lab-project-cover-frame, .lab-project-cover-frame-essay, .lab-project-book) {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-m) !important;
+  border-radius: var(--neu-r-card) !important;
+  overflow: hidden;
+}
+html[data-legacy-mode='true'] .lab-project-card .lab-project-title,
+html[data-legacy-mode='true'] .lab-project-card h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem) !important; }
+html[data-legacy-mode='true'] :is(.lab-project-system, .lab-project-system-process, .lab-project-system-architecture, .lab-project-system-documentation, .lab-project-system-rhea) {
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-m) !important;
+  border-radius: var(--neu-r-card) !important;
+  padding: 1rem;
+}
+
+html[data-legacy-mode='true'] .lab-project-tags { margin-bottom: 1rem; }
+
+/* Mind map becomes a calm stack of sunken text blocks. */
+html[data-legacy-mode='true'] .pi-map { display: grid; gap: .75rem; background: none !important; }
+html[data-legacy-mode='true'] .pi-map .mm-block {
+  position: static !important;
+  transform: none !important;
+  width: auto !important;
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-s) !important;
+  border-radius: var(--neu-r-ctl) !important;
+  padding: .8rem 1rem;
+}
+
+/* Background / Percurso: a quiet timeline. */
+html[data-legacy-mode='true'] .background-entry {
+  border-bottom: 1px solid var(--neu-rule) !important;
+  padding-block: 1.1rem;
+}
+html[data-legacy-mode='true'] .background-mark { background: var(--neu-well) !important; box-shadow: var(--neu-inset-s) !important; border-radius: var(--radius-sm) !important; }
+
+/* Música: the cover is the content, so it stays; the glass becomes stone. */
+html[data-legacy-mode='true'] .music-listening-panel {
+  background: linear-gradient(145deg, #ece9e3, var(--neu-base)) !important;
+  border-radius: var(--neu-r-card) !important;
+  box-shadow: var(--neu-raise-m) !important;
+  border: 0 !important;
+  overflow: hidden;
+}
+html[data-legacy-mode='true'] .music-listening-panel::before { content: none !important; }
+html[data-legacy-mode='true'] .cover-backdrop, html[data-legacy-mode='true'] .cover-dust, html[data-legacy-mode='true'] .cover-beam,
+html[data-legacy-mode='true'] .cover-notes, html[data-legacy-mode='true'] .cover-fx, html[data-legacy-mode='true'] .cover-wave { display: none !important; }
+html[data-legacy-mode='true'] .recent-artwork-shell { display: block !important; }
+html[data-legacy-mode='true'] .cover-frame { border-radius: var(--neu-r-card) !important; box-shadow: var(--neu-inset-m) !important; overflow: hidden; -webkit-mask-image: none !important; mask-image: none !important; }
+html[data-legacy-mode='true'] .music-listening-panel :is(.music-kicker, .recent-artist, .recent-album, .music-track-age) { color: var(--neu-ink-soft) !important; }
+html[data-legacy-mode='true'] .music-listening-panel h3 { font-size: clamp(1.6rem, 3.2vw, 2.6rem) !important; }
+html[data-legacy-mode='true'] .music-kicker-dot { background: var(--neu-accent) !important; border-radius: 50%; }
+
+/* The Sophia flight banner stays a dark window on purpose: it is the only picture-led block. */
+html[data-legacy-mode='true'] .immersive-banner { overflow: hidden; }
+html[data-legacy-mode='true'] .immersive-banner__art { display: block !important; }
+
+/* 10b. Mode switcher (SeriousModeToggle): same emblems, neumorphic chrome ------ */
+
+html[data-legacy-mode='true'] .serious-control .serious-node .serious-emblem.serious-emblem:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-on-light) !important;
+  outline-offset: 4px;
+}
+html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag .serious-tag__dot { background: var(--neu-accent) !important; }
+html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']) .serious-tag__dot {
+  background: transparent !important;
+  border: 2px solid var(--neu-accent) !important;
+}
+html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']):is(:hover, :focus-visible) .serious-tag__dot { border-color: var(--neu-accent) !important; }
+html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot { background: var(--neu-accent) !important; }
+html[data-legacy-mode='true'] body .serious-help-panel.serious-help-panel {
+  background: var(--neu-base) !important;
+  border: 0 !important;
+  border-radius: var(--neu-r-card) !important;
+  box-shadow: var(--neu-raise-m) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  color: var(--neu-ink) !important;
+}
+html[data-legacy-mode='true'] body .serious-help-panel.serious-help-panel * { color: var(--neu-ink) !important; }
+/* 10c. Skip link and the 404 scene (exempt from the reset, as in the editorial mode) */
+html[data-legacy-mode='true'] body .skip-link {
+  background-color: var(--neu-accent) !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  border-radius: var(--neu-r-ctl) !important;
+}
+html[data-legacy-mode='true'] .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) { color: var(--mode-on-dark) !important; }
+html[data-legacy-mode='true'] .sophia-404__aside { color: var(--mode-on-dark-soft) !important; }
+html[data-legacy-mode='true'] .sophia-404__actions a { color: var(--mode-on-dark-link) !important; }
+
+/* 11. Contrast, forced colours, motion, small screens ------------------------ */
+
+@media (prefers-contrast: more) {
+  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .method-stage, .recent-track-card, .music-listening-panel, .nav-shell, .immersive-banner, button, .button, .nav-cta, .work-index a, .nav-sections a, .social-links a, .closing-actions a, .lab-project-repo, .apple-music-link, .lab-project-status, .lab-project-tags span) {
+    border: 2px solid var(--neu-ink) !important;
+    box-shadow: none !important;
+  }
+  html[data-legacy-mode='true'] body { --neu-ink-soft: var(--neu-ink); }
+}
+@media (forced-colors: active) {
+  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, button, .button, .nav-cta, .nav-shell) { border: 1px solid CanvasText !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-legacy-mode='true'] body * { transition: none !important; }
+}
+@media (max-width: 720px) {
+  html[data-legacy-mode='true'] .site-header { position: relative; z-index: var(--z-overlay); padding-inline: .75rem; }
+  html[data-legacy-mode='true'] body {
+    --neu-raise-m: 6px 6px 14px var(--neu-lo), -6px -6px 14px var(--neu-hi);
+  }
+  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) { padding: 1.1rem; }
+}

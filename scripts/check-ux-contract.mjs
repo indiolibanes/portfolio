@@ -201,8 +201,8 @@ check('curiosidades: banner copy stays legible on a translucent veil; runner tra
   corridaCss.includes('.corrida__veil') && /corrida-run \{/.test(corridaCss) && /100cqw/.test(corridaCss));
 check('curiosidades: run cycle only animates without reduced motion (static mid-stride pose otherwise)',
   /@media \(prefers-reduced-motion: no-preference\)[^}]*\{[^]*?animation: corrida-run/.test(corridaCss) && corridaCss.includes('.srun-lean { transform-origin: 190px 450px; transform: rotate(6deg); }'));
-check('curiosidades: banner collapses to text in Legacy and keeps no white boxes over the scene in mono modes',
-  read('src/styles/legacy.css').includes(".curiosities-teaser .corrida { display: none") && read('src/styles/mono-modes.css').includes('.curiosities-teaser__copy'));
+check('curiosidades: banner collapses to text in the neumorphic mode and keeps no white boxes over the scene in the editorial mode',
+  read('src/styles/neumorphic.css').includes(".curiosities-teaser .corrida") && read('src/styles/mono-modes.css').includes('.curiosities-teaser__copy'));
 const typewriterSrc = read('src/scripts/typewriter.ts');
 const typographySrc = read('src/styles/typography.css');
 const curiosidadesPage = read('src/pages/curiosidades.astro');

@@ -65,7 +65,7 @@ const structuredData = {
 
       let mode = null;
 
-      if (requestedMode === '1998') {
+      if (requestedMode === '1998' || requestedMode === 'neumorfismo' || requestedMode === 'neumorphism') {
         mode = 'legacy';
       } else if (supportedModes.includes(requestedMode)) {
         mode = requestedMode;

@@ -14,11 +14,6 @@ html:not([data-legacy-mode='true']) :is(.site-header .nav-shell, .portfolio-foot
 }
 
 /* Legacy mantém o cabeçalho e o rodapé de janela opaca; só a legenda é vidro. */
-html[data-legacy-mode='true'] .serious-help-panel {
-  background: rgba(255, 255, 255, 0.8) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  backdrop-filter: blur(10px) !important;
-}
 
 /* Rodapé: o canvas de matemática vive por dentro da gaveta. */
 .portfolio-footer .footer-shell {

@@ -154,7 +154,7 @@ const showOmega = Astro.url.pathname === '/';
       </button>
     </span>
     <span class="serious-node" data-mode-node="legacy" data-state="idle">
-      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Legacy">
+      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Neumorfismo">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
           <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-g)"></circle></g></g><g class="serious-fx serious-jets" data-part="jets"><g class="serious-jets__tilt" transform="rotate(32 32 32)"><g class="serious-jets__pulse"><polygon points="32,32 10,-30 54,-30" fill="url(#serious-jet-glow-up)"></polygon><polygon points="32,32 10,94 54,94" fill="url(#serious-jet-glow-down)"></polygon><polygon points="32,32 22,-30 42,-30" fill="url(#serious-jet-up)"></polygon><polygon points="32,32 22,94 42,94" fill="url(#serious-jet-down)"></polygon><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="-30"></line><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="94"></line><line class="serious-jet__flow" x1="32" y1="26" x2="32" y2="-28"></line><line class="serious-jet__flow" x1="32" y1="38" x2="32" y2="92"></line></g><g class="serious-jets2__pulse"><polygon points="32,32 17,-22 47,-22" fill="url(#serious-jet-glow-up)" opacity="0.8"></polygon><polygon points="32,32 17,86 47,86" fill="url(#serious-jet-glow-down)" opacity="0.8"></polygon><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="-22"></line><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="86"></line></g><ellipse class="serious-accretion__ring" cx="32" cy="32" rx="34" ry="6.5" fill="none"></ellipse><circle class="serious-gamma__blob serious-gamma__blob--u1" cx="32" cy="32" r="5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u3" cx="32" cy="32" r="6" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u4" cx="32" cy="32" r="3.5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d1" cx="32" cy="32" r="5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d3" cx="32" cy="32" r="6" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d4" cx="32" cy="32" r="3.5" fill="url(#serious-blob)"></circle><path class="serious-gamma__flash" d="M32 -34 38.5 32 32 98 25.5 32Z" fill="url(#serious-flash)"></path></g></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
           <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
@@ -189,7 +189,7 @@ const showOmega = Astro.url.pathname === '/';
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
     <p data-help-row="authorial"><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
     <p data-help-row="editorial"><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
-    <p data-help-row="legacy"><strong>γ · Legacy · 1998</strong>: só texto, no estilo dos sites antigos.</p>
+    <p data-help-row="legacy"><strong>γ · Neumorfismo</strong>: relevo suave e minimalismo sofisticado.</p>
   </div>
 
   {showOmega && (
@@ -212,12 +212,12 @@ const showOmega = Astro.url.pathname === '/';
     const names = {
       authorial: 'Autoral',
       editorial: 'Editorial',
-      legacy: 'Legacy',
+      legacy: 'Neumorfismo',
     };
     const themeColors = {
       authorial: '#f6efdc',
       editorial: '#ffffff',
-      legacy: '#ffffff',
+      legacy: '#e7e4de',
     };
 
     // Cada modo tem a sua personalidade de movimento. Tudo usa a Web Animations
@@ -248,12 +248,12 @@ const showOmega = Astro.url.pathname === '/';
       },
       legacy: {
         travel: 360,
-        travelEase: 'steps(6, end)',
+        travelEase: 'cubic-bezier(0.3, 0, 0.2, 1)',
         igniteAt: 0.6,
         ignite: 240,
-        igniteEase: 'steps(4, end)',
+        igniteEase: 'cubic-bezier(0.3, 0, 0.2, 1)',
         out: 240,
-        outEase: 'steps(4, end)',
+        outEase: 'ease-out',
         flare: false,
         tag: true,
       },
@@ -328,7 +328,7 @@ const showOmega = Astro.url.pathname === '/';
     const LANGS = {
       authorial: [['pt', 'Autoral'], ['en', 'Authorial'], ['it', "D'autore"], ['es', 'De autor'], ['fr', "D'auteur"], ['la', 'Auctoris']],
       editorial: [['pt', 'Editorial'], ['en', 'Editorial'], ['it', 'Editoriale'], ['es', 'Editorial'], ['fr', 'Éditorial'], ['la', 'Editorialis']],
-      legacy: [['pt', 'Legacy'], ['en', 'Legacy'], ['it', 'Retaggio'], ['es', 'Legado'], ['fr', 'Héritage'], ['la', 'Hereditas']],
+      legacy: [['pt', 'Neumorfismo'], ['en', 'Neumorphism'], ['it', 'Neumorfismo'], ['es', 'Neumorfismo'], ['fr', 'Néomorphisme'], ['la', 'Neumorphismus']],
     };
     let tagTimers = [];
     let tagClicks = 0;
@@ -1561,11 +1561,6 @@ const showOmega = Astro.url.pathname === '/';
 
   :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel * {
     background: transparent !important;
-  }
-
-  /* Legacy: traço de pixel, sem suavização. */
-  :global(html[data-legacy-mode='true']) .serious-art {
-    shape-rendering: crispEdges;
   }
 
   /* Ω is a separate fourth Greek entry; α, β, γ remain persistent reading modes. */

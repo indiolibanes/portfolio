@@ -470,8 +470,7 @@ O build gerava `public/og-portfolio.jpg` não versionado e sem ignore. Foram adi
 | `src/styles/hero-autoral.css` | 10537 | ACTIVE | referência estática em código/build/teste |
 | `src/styles/hsin-soundtrack.css` | 8692 | ACTIVE | referência estática em código/build/teste |
 | `src/styles/hsin-stage.css` | 4233 | ACTIVE | referência estática em código/build/teste |
-| `src/styles/legacy-win98.css` | 11762 | ACTIVE | referência estática em código/build/teste |
-| `src/styles/legacy.css` | 23153 | ACTIVE | referência estática em código/build/teste |
+| `src/styles/neumorphic.css` | — | ACTIVE | substitui legacy.css/legacy-win98.css (2026-11-22) |
 | `src/styles/method-scene.css` | 10153 | ACTIVE | referência estática em código/build/teste |
 | `src/styles/mobile.css` | 4561 | ACTIVE | referência estática em código/build/teste |
 | `src/styles/mode-tokens.css` | 3345 | ACTIVE | referência estática em código/build/teste |

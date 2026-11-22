@@ -341,7 +341,7 @@ const NAV = [
 
 
 <style is:global>
-  /* Avatar em vídeo: loop mudo circular. Reduced-motion e Legacy mostram o quadro fixo. */
+  /* Avatar em vídeo: loop mudo circular. Reduced-motion e o modo neumórfico mostram o quadro fixo. */
   .brand-mark { overflow: hidden; border-radius: 50%; position: relative; padding: 0; }
   .brand-mark img, .brand-mark video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
   @media (prefers-reduced-motion: reduce) { .brand-mark .brand-video { display: none; } }
@@ -540,7 +540,7 @@ const NAV = [
     html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-label { font-size: .76rem; }
   }
 
-  /* Legacy · 1998 keeps its inline link bar: no hamburger existed then. */
+  /* Neumorphic mode keeps an inline link bar on wide screens; the hamburger only appears below 1181px. */
   html[data-legacy-mode='true'] .site-header .nav-menu-toggle { display: none !important; }
   html[data-legacy-mode='true'] .site-header .nav-sections {
     display: flex;
@@ -648,10 +648,8 @@ const NAV = [
       justify-content: center;
       gap: .4rem;
       min-height: var(--target-min);
-      padding: .35rem .65rem;
-      border: 1px outset #eee !important;
-      background: #c0c0c0 !important;
-      font: 700 .78rem Arial, sans-serif;
+      padding: .35rem .85rem;
+      font: 600 .82rem var(--font-ui);
       cursor: pointer;
     }
 
@@ -661,9 +659,7 @@ const NAV = [
       top: calc(100% + 4px);
       inset-inline: 0;
       display: none;
-      padding: .25rem;
-      border: 2px outset #eee !important;
-      background: #c0c0c0 !important;
+      padding: .6rem;
     }
 
     html[data-nav-js='true'][data-legacy-mode='true'] .site-header .nav-sections[data-open='true'] {

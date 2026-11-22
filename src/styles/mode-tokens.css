@@ -9,7 +9,7 @@
  * that sit on mode-dependent surfaces read them.
  *
  * Adding a section: list its text roles under "Consumers" below.
- * Surfaces stay in serious.css / legacy.css; authorial colours stay with
+ * Surfaces stay in serious.css; the neumorphic mode declares its own inks in neumorphic.css; authorial colours stay with
  * their sections.
  */
 
@@ -24,61 +24,46 @@ html[data-serious-mode='true'] {
   --mode-on-dark-link: #f5f5f3;
 }
 
-html[data-legacy-mode='true'] {
-  --mode-heading: #000000;
-  --mode-ink: #000000;
-  --mode-ink-soft: #000000;
-  --mode-label: #333333;
-  --mode-link: #0000ee;
-  --mode-on-dark: #ffffff;
-  --mode-on-dark-soft: #c0c0c0;
-  --mode-on-dark-link: #99ccff;
-}
-
 /* --------------------------------------------------
    Consumers: text roles that sit on surfaces the quiet modes repaint.
 -------------------------------------------------- */
 
 /* Headings */
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html[data-serious-mode='true']
 :is(.method-section :is(h2, h3), .background-entry-copy h3, .background-case-study strong, .closing h2, .curiosities-hero h1, .curiosity__title, .curiosities-teaser__title) {
   color: var(--mode-heading) !important;
   text-shadow: none !important;
 }
 
 /* Body copy */
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html[data-serious-mode='true']
 :is(.lab-note, .method-lead, .method-closing, .method-disclosure strong, .background-entry-copy p, .background-case-study p, .closing-copy > p:not(.eyebrow), .curiosity__text, .curiosity__tag) {
   color: var(--mode-ink) !important;
   text-shadow: none !important;
 }
 
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html[data-serious-mode='true']
 :is(.method-disclosure, .method-steps p, .curiosities-hero__lead, .curiosity__why, .curiosities-teaser__text) {
   color: var(--mode-ink-soft) !important;
 }
 
 /* Labels, dates, numbers */
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html[data-serious-mode='true']
 :is(.method-section .eyebrow, .method-index, .background-meta, .background-case-study__label, .background-number, .curiosities-hero .eyebrow, .curiosities-hero__meta, .curiosity__index, .curiosities-teaser .eyebrow) {
   color: var(--mode-label) !important;
 }
 
 /* Links inside those sections */
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html[data-serious-mode='true']
 :is(.background-case-study a, .curiosity__link, .curiosities-return a, .curiosities-teaser__link) {
   color: var(--mode-link) !important;
 }
 
 /* The 404 Sophia panel stays dark in every mode: its text uses on-dark inks. */
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) {
+html[data-serious-mode='true'] .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) {
   color: var(--mode-on-dark) !important;
 }
 
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .sophia-404__aside {
+html[data-serious-mode='true'] .sophia-404__aside {
   color: var(--mode-on-dark-soft) !important;
-}
-
-html[data-legacy-mode='true'] .sophia-404__actions a {
-  color: var(--mode-on-dark-link) !important;
 }
