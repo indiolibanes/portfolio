@@ -88,6 +88,21 @@ const structuredData = {
         mode === 'editorial' ? 'true' : 'false';
       document.documentElement.dataset.legacyMode =
         mode === 'legacy' ? 'true' : 'false';
+
+      // Content profile, independent of the visual mode: ?perfil=documental shows
+      // the professional cut (for LinkedIn); ?perfil=criativo or ?perfil=completo
+      // returns to the full page. Nothing is removed from the HTML, only hidden.
+      const requestedProfile = params.get('perfil');
+      let profile = null;
+      if (requestedProfile === 'documental') {
+        profile = 'documental';
+        localStorage.setItem('portfolio-profile', profile);
+      } else if (requestedProfile === 'criativo' || requestedProfile === 'completo') {
+        localStorage.removeItem('portfolio-profile');
+      } else if (localStorage.getItem('portfolio-profile') === 'documental') {
+        profile = 'documental';
+      }
+      if (profile) document.documentElement.dataset.profile = profile;
     } catch {}
   })();
 </script>
