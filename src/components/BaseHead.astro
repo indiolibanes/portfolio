@@ -96,6 +96,10 @@ const structuredData = {
     document.documentElement.dataset.portfolioMode = mode;
     document.documentElement.dataset.seriousMode = mode === 'editorial' ? 'true' : 'false';
     document.documentElement.dataset.documentationMode = mode === 'documentation' ? 'true' : 'false';
+    // Mark scripted navigation before the first style pass. Set later (in the
+    // header), the drawer's first computed state was "visible" and its closing
+    // transition played on load, so the creative drawer appeared open.
+    document.documentElement.dataset.navJs = 'true';
   })();
 </script>
 <script is:inline src="/scripts/reveal.js"></script>

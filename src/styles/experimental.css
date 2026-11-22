@@ -496,7 +496,8 @@ html:not([data-xm-js]) .xm-social { opacity: 1; transform: none; }
   .xm-social,
   .xm-label { transition: none; }
   .xm-drawer::before { transform: none; }
-  .xm-glass { clip-path: none; opacity: 0; }
+  /* Scoped to the orbital drawer: the header drawer reuses .xm-glass but opens via data-open. */
+  .xm-drawer .xm-glass { clip-path: none; opacity: 0; }
   .xm-drawer[data-state='open'] .xm-glass { opacity: 1; }
   .xm-el.is-lit::after,
   .xm-ch.is-lit::after { animation: none; opacity: 0.3; }
