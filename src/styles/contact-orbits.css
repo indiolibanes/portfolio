@@ -11,7 +11,7 @@ html[data-serious-mode='true'] #contato .closing-actions .button { color: #111; 
 /* Cosmic observatory backdrop for the authorial mode only.
    The Triforce orbits remain a separate, higher visual layer. The hue of
    this nearly-black sky distinguishes Contact from the AMOLED Translation. */
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #contato {
   background:
     radial-gradient(ellipse 46% 60% at 76% 50%, rgba(28, 44, 87, .22), transparent 92%),
     radial-gradient(ellipse 32% 40% at 9% 85%, rgba(78, 37, 80, .11), transparent 90%),
@@ -30,7 +30,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato {
 /* On small screens, text comes before the orbital illustration without
    losing the full-bleed sky. */
 @media (max-width: 680px) {
-  html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato {
+  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #contato {
     background:
       radial-gradient(ellipse 65% 42% at 60% 74%, rgba(30, 49, 91, .22), transparent 94%),
       linear-gradient(160deg, #090c14, #070a11 60%, #0c1120);

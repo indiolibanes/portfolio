@@ -2,7 +2,7 @@
  * Sophia's Tetris — the 404 game. Loaded only by src/pages/404.astro.
  * The panel stays dark in every mode (mono-modes.css exempts .sophia-404__panel),
  * so these colours do not depend on the mode tokens. The piece colours live in
- * the page script, which switches to greys in Editorial and Legacy.
+ * the page script, which switches to greys in Editorial and Documentação.
  */
 
 .sophia-404__layout {
@@ -22,8 +22,8 @@
     font-size: clamp(2.2rem, 4.4vw, 3.8rem);
   }
 
-  /* Editorial e Legacy usam fontes mais largas: sem isto, "WaybackMachine" encosta no tabuleiro. */
-  html:is([data-serious-mode='true'], [data-legacy-mode='true']) .sophia-404__layout .sophia-404__copy h1 {
+  /* Editorial e Documentação usam fontes mais largas: sem isto, "WaybackMachine" encosta no tabuleiro. */
+  html:is([data-serious-mode='true'], [data-documentation-mode='true']) .sophia-404__layout .sophia-404__copy h1 {
     font-size: clamp(2.1rem, 3.7vw, 3.3rem);
   }
 }
@@ -282,8 +282,8 @@
   line-height: 1.45;
 }
 
-/* Legacy draws a black dotted focus ring: invisible on this dark panel. */
-html[data-legacy-mode='true'] .sophia-404__panel :is(a, button, [tabindex]):focus-visible {
+/* Documentação draws a black dotted focus ring: invisible on this dark panel. */
+html[data-documentation-mode='true'] .sophia-404__panel :is(a, button, [tabindex]):focus-visible {
   outline-color: #ffffff;
 }
 

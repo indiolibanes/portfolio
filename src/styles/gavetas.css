@@ -7,13 +7,13 @@
   initial-value: rgba(255, 250, 240, 0.72);
 }
 
-html:not([data-legacy-mode='true']) :is(.site-header .nav-shell, .portfolio-footer .footer-shell, .site-header .nav-sections, .serious-help-panel) {
+html:not([data-documentation-mode='true']) :is(.site-header .nav-shell, .portfolio-footer .footer-shell, .site-header .nav-sections, .serious-help-panel) {
   background: var(--drawer-tint, rgba(255, 250, 240, 0.72)) !important;
   -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
   backdrop-filter: blur(16px) saturate(125%) !important;
 }
 
-/* Legacy mantém o cabeçalho e o rodapé de janela opaca; só a legenda é vidro. */
+/* Documentação mantém o cabeçalho e o rodapé de janela opaca; só a legenda é vidro. */
 
 /* Rodapé: o canvas de matemática vive por dentro da gaveta. */
 .portfolio-footer .footer-shell {
@@ -32,10 +32,10 @@ html:not([data-legacy-mode='true']) :is(.site-header .nav-shell, .portfolio-foot
   pointer-events: none;
 }
 
-html:is([data-serious-mode='true'], [data-legacy-mode='true']) .footer-math {
+html:is([data-serious-mode='true'], [data-documentation-mode='true']) .footer-math {
   color: #000;
 }
 
-html[data-legacy-mode='true'] .footer-math {
+html[data-documentation-mode='true'] .footer-math {
   display: none;
 }

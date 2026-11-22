@@ -103,7 +103,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonPetals}<
         document.documentElement.dataset
           .seriousMode !== 'true' &&
         document.documentElement.dataset
-          .legacyMode !== 'true';
+          .documentationMode !== 'true';
 
       ornaments.dataset.ornamentsVisible =
         String(enabled);
@@ -150,7 +150,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonPetals}<
         attributes: true,
         attributeFilter: [
           'data-serious-mode',
-          'data-legacy-mode',
+          'data-documentation-mode',
         ],
       },
     );
@@ -1015,7 +1015,7 @@ const crimsonBatonSvg = crimsonBatonSvgSource.replace('</svg>', `${batonPetals}<
 
   html[data-serious-mode='true']
   #sobre .hero-ornaments,
-  html[data-legacy-mode='true']
+  html[data-documentation-mode='true']
   #sobre .hero-ornaments {
     display: none;
   }

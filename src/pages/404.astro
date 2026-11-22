@@ -324,7 +324,7 @@ import '../styles/sophia-room2d-temp.css';
       };
       const quiet = () => {
         const d = document.documentElement.dataset;
-        return d.seriousMode === 'true' || d.legacyMode === 'true';
+        return d.seriousMode === 'true' || d.documentationMode === 'true';
       };
       const colorOf = (type) => (quiet() ? MONO : COLORS)[type];
 
@@ -850,7 +850,7 @@ import '../styles/sophia-room2d-temp.css';
       else window.addEventListener('resize', resize);
       new MutationObserver(render).observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['data-serious-mode', 'data-legacy-mode'],
+        attributeFilter: ['data-serious-mode', 'data-documentation-mode'],
       });
 
       resize();

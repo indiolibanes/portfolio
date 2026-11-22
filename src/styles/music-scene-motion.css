@@ -18,7 +18,7 @@
 /* Parallax: the painting and the light layers locked to it lean together
    (the old ::after target was display:none, so it never moved). */
 .music-shelf .music-heading--gallery .music-panorama { container-type: inline-size; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 .music-shelf .music-heading--gallery :is(.music-scene-art, .music-panorama-sky, .music-panorama-glows) {
   transform: translate3d(var(--music-px, 0px), var(--music-py, 0px), 0) scale(1.024);
   transition: transform .6s cubic-bezier(.2, .7, .2, 1);
@@ -39,7 +39,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
           mask-image: radial-gradient(ellipse at 50% 50%, #000 40%, transparent 72%);
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 .music-shelf .music-heading--gallery .music-panorama-shimmer {
   opacity: .9;
   animation: music-shimmer-drift 9s ease-in-out infinite alternate;
@@ -76,11 +76,11 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
 .music-shelf .music-heading--gallery .music-panorama-motes span:nth-child(5) { --mx: 88%; --my: 58%; }
 .music-shelf .music-heading--gallery .music-panorama-motes span:nth-child(6) { --mx: 46%; --my: 22%; width: 2px; height: 2px; }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 .music-shelf .music-heading--gallery .music-panorama-motes {
   opacity: 1;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 .music-shelf .music-heading--gallery .music-panorama-motes span {
   animation: music-mote-drift 11s ease-in-out infinite;
   animation-delay: var(--md, 0s);
@@ -122,7 +122,7 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
   .music-shelf .music-heading--gallery :is(.music-scene-art, .music-panorama-sky, .music-panorama-glows) { transform: none !important; transition: none; }
 }
 
-html:is([data-serious-mode='true'], [data-legacy-mode='true'])
+html:is([data-serious-mode='true'], [data-documentation-mode='true'])
 .music-shelf .music-heading--gallery :is(.music-panorama-shimmer, .music-panorama-motes, .music-ripple, .music-panorama-sky, .music-panorama-glows) {
   display: none !important;
 }

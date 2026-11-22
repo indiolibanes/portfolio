@@ -11,7 +11,7 @@
  *      existing value; it must not silently change one. The authorial identity
  *      (warm beige paper, brick ink, Benguiat chapters, pixel accents) is
  *      defined by the palette in global.css and stays there.
- *   3. Modes (Editorial, Legacy) override the colour tokens in mono-modes.css
+ *   3. Modes (Editorial, Documentação) override the colour tokens in mono-modes.css
  *      and mode-tokens.css. Alias tokens below point at those colour tokens
  *      with var(), so they follow the active mode automatically. Do not
  *      redeclare colours here.

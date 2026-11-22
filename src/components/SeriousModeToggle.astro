@@ -153,12 +153,12 @@ const showOmega = Astro.url.pathname === '/';
         </svg>
       </button>
     </span>
-    <span class="serious-node" data-mode-node="legacy" data-state="idle">
-      <button class="serious-emblem" type="button" data-mode-option="legacy" aria-pressed="false" aria-label="Mudar para Documentação">
+    <span class="serious-node" data-mode-node="documentation" data-state="idle">
+      <button class="serious-emblem" type="button" data-mode-option="documentation" aria-pressed="false" aria-label="Mudar para Documentação">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
           <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-g)"></circle></g></g><g class="serious-fx serious-jets" data-part="jets"><g class="serious-jets__tilt" transform="rotate(32 32 32)"><g class="serious-jets__pulse"><polygon points="32,32 10,-30 54,-30" fill="url(#serious-jet-glow-up)"></polygon><polygon points="32,32 10,94 54,94" fill="url(#serious-jet-glow-down)"></polygon><polygon points="32,32 22,-30 42,-30" fill="url(#serious-jet-up)"></polygon><polygon points="32,32 22,94 42,94" fill="url(#serious-jet-down)"></polygon><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="-30"></line><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="94"></line><line class="serious-jet__flow" x1="32" y1="26" x2="32" y2="-28"></line><line class="serious-jet__flow" x1="32" y1="38" x2="32" y2="92"></line></g><g class="serious-jets2__pulse"><polygon points="32,32 17,-22 47,-22" fill="url(#serious-jet-glow-up)" opacity="0.8"></polygon><polygon points="32,32 17,86 47,86" fill="url(#serious-jet-glow-down)" opacity="0.8"></polygon><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="-22"></line><line class="serious-jet__core" x1="32" y1="32" x2="32" y2="86"></line></g><ellipse class="serious-accretion__ring" cx="32" cy="32" rx="34" ry="6.5" fill="none"></ellipse><circle class="serious-gamma__blob serious-gamma__blob--u1" cx="32" cy="32" r="5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u3" cx="32" cy="32" r="6" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--u4" cx="32" cy="32" r="3.5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d1" cx="32" cy="32" r="5" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d2" cx="32" cy="32" r="4" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d3" cx="32" cy="32" r="6" fill="url(#serious-blob)"></circle><circle class="serious-gamma__blob serious-gamma__blob--d4" cx="32" cy="32" r="3.5" fill="url(#serious-blob)"></circle><path class="serious-gamma__flash" d="M32 -34 38.5 32 32 98 25.5 32Z" fill="url(#serious-flash)"></path></g></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
           <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
-          <circle class="serious-ornament serious-ornament--legacy" cx="32" cy="32" r="21" fill="none"></circle>
+          <circle class="serious-ornament serious-ornament--documentation" cx="32" cy="32" r="21" fill="none"></circle>
           <path class="serious-glyph" d="M37.54 28.47C35.4 31.66 33.66 33.97 32.24 35.38C32.24 37.16 31.8 39.14 30.95 41.28C30.02 43.75 28.97 45 27.88 45C27.03 45 26.62 44.51 26.62 43.5C26.62 42.37 27.15 40.84 28.2 38.86C29.13 37.12 30.02 35.82 30.87 34.98C30.99 33.68 30.67 31.58 29.94 28.67C29.53 26.93 28.93 25.4 28.16 24.06C27.31 22.61 26.54 21.88 25.78 21.92C24.6 22.04 23.71 22.85 23.19 24.35H22.66C22.62 24.06 22.62 23.82 22.62 23.54C22.62 20.67 23.59 19.17 25.57 19.01C27.96 18.81 29.86 21.84 31.27 28.18C31.92 31.14 32.24 32.91 32.24 33.52C35.27 29.8 37.21 26.16 37.98 22.57C38.31 21.11 38.47 20.3 38.51 20.18C38.79 19.41 39.28 19.05 39.96 19.05C40.89 19.05 41.38 19.45 41.38 20.3C41.38 21.88 40.08 24.63 37.54 28.47Z" fill="url(#serious-gold)" stroke="url(#serious-gold)" stroke-width="0.8" stroke-linejoin="round"></path>
           
         </svg>
@@ -189,7 +189,7 @@ const showOmega = Astro.url.pathname === '/';
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
     <p data-help-row="authorial"><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
     <p data-help-row="editorial"><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
-    <p data-help-row="legacy"><strong>γ · Documentação</strong>: leitura organizada com relevo suave e minimalismo sofisticado.</p>
+    <p data-help-row="documentation"><strong>γ · Documentação</strong>: leitura organizada com relevo suave e minimalismo sofisticado.</p>
   </div>
 
   {showOmega && (
@@ -206,22 +206,22 @@ const showOmega = Astro.url.pathname === '/';
   (() => {
     const key = 'portfolio-mode-v2';
     const oldKey = 'portfolio-mode';
-    const legacyKey = 'portfolio-serious-mode';
+    const oldSeriousKey = 'portfolio-serious-mode';
     // Ordem fixa dos emblemas, da esquerda para a direita: α · β · γ.
-    const modes = ['authorial', 'editorial', 'legacy'];
+    const modes = ['authorial', 'editorial', 'documentation'];
     const names = {
       authorial: 'Autoral',
       editorial: 'Editorial',
-      legacy: 'Documentação',
+      documentation: 'Documentação',
     };
     const themeColors = {
       authorial: '#f6efdc',
       editorial: '#ffffff',
-      legacy: '#ffffff',
+      documentation: '#ffffff',
     };
 
     // Cada modo tem a sua personalidade de movimento. Tudo usa a Web Animations
-    // API: o Editorial e o Legacy zeram animation e transition do CSS
+    // API: o Editorial e o Documentação zeram animation e transition do CSS
     // (mono-modes.css), e este controle precisa continuar mostrando a troca.
     const profiles = {
       authorial: {
@@ -246,7 +246,7 @@ const showOmega = Astro.url.pathname === '/';
         flare: false,
         tag: true,
       },
-      legacy: {
+      documentation: {
         travel: 360,
         travelEase: 'cubic-bezier(0.3, 0, 0.2, 1)',
         igniteAt: 0.6,
@@ -328,7 +328,7 @@ const showOmega = Astro.url.pathname === '/';
     const LANGS = {
       authorial: [['pt', 'Autoral'], ['en', 'Authorial'], ['it', "D'autore"], ['es', 'De autor'], ['fr', "D'auteur"], ['la', 'Auctoris']],
       editorial: [['pt', 'Editorial'], ['en', 'Editorial'], ['it', 'Editoriale'], ['es', 'Editorial'], ['fr', 'Éditorial'], ['la', 'Editorialis']],
-      legacy: [['pt', 'Documentação'], ['en', 'Documentation'], ['it', 'Documentazione'], ['es', 'Documentación'], ['fr', 'Documentation'], ['la', 'Documentatio']],
+      documentation: [['pt', 'Documentação'], ['en', 'Documentation'], ['it', 'Documentazione'], ['es', 'Documentación'], ['fr', 'Documentation'], ['la', 'Documentatio']],
     };
     let tagTimers = [];
     let tagClicks = 0;
@@ -437,10 +437,17 @@ const showOmega = Astro.url.pathname === '/';
       try {
         const url = new URL(window.location.href);
         url.searchParams.delete('serious');
-        if (mode === 'authorial') {
+        // The documentation view has a real, reloadable landing route.
+        const isDocumentationLanding = url.pathname === '/modo-documentacao/' || url.pathname === '/modo-documentacao';
+        const isLanding = url.pathname === '/' || isDocumentationLanding;
+        if (isLanding) {
+          url.pathname = mode === 'documentation' ? '/modo-documentacao/' : '/';
+          url.searchParams.delete('mode');
+          if (mode === 'editorial') url.searchParams.set('mode', 'editorial');
+        } else if (mode === 'authorial') {
           url.searchParams.delete('mode');
         } else {
-          url.searchParams.set('mode', mode);
+          url.searchParams.set('mode', mode === 'documentation' ? 'documentacao' : mode);
         }
         history.replaceState(
           history.state,
@@ -618,7 +625,7 @@ const showOmega = Astro.url.pathname === '/';
         });
         return out;
       },
-      legacy: (q, all) => {
+      documentation: (q, all) => {
         // Quasar: jatos grossos na diagonal, caóticos e furiosos; grumos de raios
         // gama disparam pelos dois lados e um clarão explode sem avisar.
         const walk = (n, make) => Array.from({ length: n }, make);
@@ -705,7 +712,7 @@ const showOmega = Astro.url.pathname === '/';
     // extremidades vibra em três harmônicos (ondas estacionárias), e a corda "b" vibra em
     // quadratura com a "a". Um laço fechado (corda fechada) desliza ao longo dela na direção do
     // modo vigente. Só o relógio de cada trecho avança; a forma é recalculada a cada quadro, então
-    // funciona também em Editorial e Legacy (sem CSS). Movimento reduzido: um quadro estático.
+    // funciona também em Editorial e Documentação (sem CSS). Movimento reduzido: um quadro estático.
     const STRING_MODES = [
       { n: 1, amp: 4.4, w: 2.1 },
       { n: 2, amp: 2.3, w: 3.7 },
@@ -923,8 +930,8 @@ const showOmega = Astro.url.pathname === '/';
       document.documentElement.dataset.portfolioMode = mode;
       document.documentElement.dataset.seriousMode =
         mode === 'editorial' ? 'true' : 'false';
-      document.documentElement.dataset.legacyMode =
-        mode === 'legacy' ? 'true' : 'false';
+      document.documentElement.dataset.documentationMode =
+        mode === 'documentation' ? 'true' : 'false';
 
       settle();
       const shouldPlay = animate && prev && prev !== mode && !reducedMotion.matches;
@@ -942,7 +949,7 @@ const showOmega = Astro.url.pathname === '/';
         try {
           localStorage.setItem(key, mode);
           localStorage.removeItem(oldKey);
-          localStorage.removeItem(legacyKey);
+          localStorage.removeItem(oldSeriousKey);
         } catch {}
       }
 
@@ -959,11 +966,11 @@ const showOmega = Astro.url.pathname === '/';
       document.documentElement.dataset.portfolioMode ||
       (document.documentElement.dataset.seriousMode === 'true'
         ? 'editorial'
-        : document.documentElement.dataset.legacyMode === 'true'
-          ? 'legacy'
+        : document.documentElement.dataset.documentationMode === 'true'
+          ? 'documentation'
           : 'authorial');
 
-    applyMode(initialMode, { persist: false, updateUrl: false });
+    applyMode(initialMode, { persist: true, updateUrl: true });
     if (!reducedMotion.matches) scheduleTagAmbient();
     if (!reducedMotion.matches && tag) {
       // A etiqueta respira em ouro, sempre.
@@ -1077,7 +1084,7 @@ const showOmega = Astro.url.pathname === '/';
 
   .serious-node[data-mode-node='authorial'] { left: 0; }
   .serious-node[data-mode-node='editorial'] { left: var(--pitch); }
-  .serious-node[data-mode-node='legacy'] { left: calc(var(--pitch) * 2); }
+  .serious-node[data-mode-node='documentation'] { left: calc(var(--pitch) * 2); }
 
   .serious-stage[data-animating] .serious-emblem {
     pointer-events: none;
@@ -1297,7 +1304,7 @@ const showOmega = Astro.url.pathname === '/';
     stroke-width: 0.8;
   }
 
-  .serious-ornament--legacy {
+  .serious-ornament--documentation {
     stroke-width: 1.1;
     stroke-dasharray: 1.6 2.1;
   }
@@ -1369,7 +1376,7 @@ const showOmega = Astro.url.pathname === '/';
     box-shadow: 0 0 8px 1px rgba(170, 150, 255, 0.85);
   }
 
-  .serious-control[data-portfolio-mode-current='legacy'] .serious-tag__dot {
+  .serious-control[data-portfolio-mode-current='documentation'] .serious-tag__dot {
     background: radial-gradient(circle at 35% 30%, #ffffff, #5fb4ff 70%);
     box-shadow: 0 0 8px 1px rgba(95, 180, 255, 0.85);
   }
@@ -1433,7 +1440,7 @@ const showOmega = Astro.url.pathname === '/';
   }
 
   @media (min-width: 1181px) {
-    :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-stage {
+    :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-stage {
       --side: 44px;
       --pitch: 48px;
       margin-left: .25rem;
@@ -1486,13 +1493,13 @@ const showOmega = Astro.url.pathname === '/';
     }
   }
 
-  /* Modos planos (Editorial e Legacy): mono-modes.css zera fundos, bordas,
+  /* Modos planos (Editorial e Documentação): mono-modes.css zera fundos, bordas,
      sombras, filtros e animações CSS com !important. Os emblemas seguem
      desenhados sem depender disso: sem filtro, só opacidade e transform, e as
      animações contínuas rodam por WAAPI. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem,
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:hover,
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem,
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem:hover,
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
     background: transparent !important;
     color: inherit !important;
     border: 0 !important;
@@ -1501,65 +1508,65 @@ const showOmega = Astro.url.pathname === '/';
   }
 
   /* mono-modes.css pinta de preto todo descendente de botão em hover/foco. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:is(:hover, :focus-visible) *,
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem * {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem:is(:hover, :focus-visible) *,
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem * {
     background: transparent !important;
     box-shadow: none !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node .serious-emblem.serious-emblem:focus-visible {
     outline: 2px solid #000000 !important;
     outline-offset: 4px;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-art[data-part='art'] {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-art[data-part='art'] {
     opacity: 0.5;
     filter: none;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-state='active'] .serious-art[data-part='art'] {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node[data-state='active'] .serious-art[data-part='art'] {
     opacity: 1;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-node[data-state='idle'] .serious-emblem:hover .serious-art[data-part='art'] {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-node[data-state='idle'] .serious-emblem:hover .serious-art[data-part='art'] {
     opacity: 0.85;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-burst {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-burst {
     display: none !important;
   }
 
   /* Etiqueta: preto no branco, ponto sólido; hover inverte como os outros botões. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag .serious-tag__dot {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-tag.serious-tag .serious-tag__dot {
     background: #000000 !important;
     box-shadow: none !important;
     border-radius: 50% !important;
   }
 
   /* Fora do português o ponto vira anel, já que não há cor nos modos planos. */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag[data-lang]:not([data-lang='pt']) .serious-tag__dot {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-tag.serious-tag[data-lang]:not([data-lang='pt']) .serious-tag__dot {
     box-sizing: border-box;
     background: transparent !important;
     border: 2px solid #000000 !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag[data-lang]:not([data-lang='pt']):is(:hover, :focus-visible) .serious-tag__dot {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-tag.serious-tag[data-lang]:not([data-lang='pt']):is(:hover, :focus-visible) .serious-tag__dot {
     border-color: #ffffff !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot {
     background: #ffffff !important;
   }
 
   /* Legenda translúcida também nos modos planos (mono-modes.css zera o blur). */
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-help-panel.serious-help-panel {
     -webkit-backdrop-filter: blur(10px) !important;
     backdrop-filter: blur(10px) !important;
     border: 1px solid #000000 !important;
     color: #000000 !important;
   }
 
-  :global(html:is([data-serious-mode='true'], [data-legacy-mode='true'])) .serious-help-panel.serious-help-panel * {
+  :global(html:is([data-serious-mode='true'], [data-documentation-mode='true'])) .serious-help-panel.serious-help-panel * {
     background: transparent !important;
   }
 
