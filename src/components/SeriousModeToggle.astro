@@ -143,7 +143,7 @@ const showOmega = Astro.url.pathname === '/';
       </button>
     </span>
     <span class="serious-node" data-mode-node="editorial" data-state="idle">
-      <button class="serious-emblem" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Mudar para Editorial">
+      <button class="serious-emblem" type="button" data-mode-option="editorial" aria-pressed="false" aria-label="Mudar para Volume (3D minimalista)">
         <svg class="serious-art" data-part="art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
           <g class="serious-fx serious-halo" data-part="halo"><g class="serious-halo__pulse"><circle cx="32" cy="32" r="31" fill="url(#serious-halo-b)"></circle></g></g><g class="serious-fx serious-beams" data-part="beams"><g class="serious-beams__tilt"><g class="serious-beams__spin"><g class="serious-beams__pulse"><polygon points="32,32 23,-16 41,-16" fill="url(#serious-beam-up)"></polygon><polygon points="32,32 23,80 41,80" fill="url(#serious-beam-down)"></polygon></g></g><g class="serious-beams2__spin"><polygon points="32,32 28,-6 36,-6" fill="url(#serious-beam-up)" opacity="0.75"></polygon><polygon points="32,32 28,70 36,70" fill="url(#serious-beam-down)" opacity="0.75"></polygon></g></g></g><g class="serious-fx serious-shock" data-part="shock"><circle class="serious-shock__ring" cx="32" cy="32" r="28" fill="none" stroke-width="1.4"></circle></g><g class="serious-fx serious-ring" data-part="ring"><g class="serious-ring__spin"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#serious-rainbow)" stroke-width="2.6"></circle></g></g>
           <circle class="serious-disc" cx="32" cy="32" r="24.5" fill="url(#serious-disc)"></circle>
@@ -188,7 +188,7 @@ const showOmega = Astro.url.pathname === '/';
 
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
     <p data-help-row="authorial"><strong>α · Autoral</strong>: a versão completa, com Sophia, cor e movimento. É o padrão.</p>
-    <p data-help-row="editorial"><strong>β · Editorial</strong>: sóbria, em tons de cinza, com o texto em primeiro plano.</p>
+    <p data-help-row="editorial"><strong>β · Volume</strong>: 3D minimalista, grafite e uma luz ciano, com as seções como planos em profundidade.</p>
     <p data-help-row="legacy"><strong>γ · Neumorfismo</strong>: relevo suave e minimalismo sofisticado.</p>
   </div>
 
@@ -211,12 +211,12 @@ const showOmega = Astro.url.pathname === '/';
     const modes = ['authorial', 'editorial', 'legacy'];
     const names = {
       authorial: 'Autoral',
-      editorial: 'Editorial',
+      editorial: 'Volume',
       legacy: 'Neumorfismo',
     };
     const themeColors = {
       authorial: '#f6efdc',
-      editorial: '#ffffff',
+      editorial: '#0e1013',
       legacy: '#ffffff',
     };
 
@@ -327,7 +327,7 @@ const showOmega = Astro.url.pathname === '/';
     // momento e devolve ao português.
     const LANGS = {
       authorial: [['pt', 'Autoral'], ['en', 'Authorial'], ['it', "D'autore"], ['es', 'De autor'], ['fr', "D'auteur"], ['la', 'Auctoris']],
-      editorial: [['pt', 'Editorial'], ['en', 'Editorial'], ['it', 'Editoriale'], ['es', 'Editorial'], ['fr', 'Éditorial'], ['la', 'Editorialis']],
+      editorial: [['pt', 'Volume'], ['en', 'Volume'], ['it', 'Volume'], ['es', 'Volumen'], ['fr', 'Volume'], ['la', 'Volumen']],
       legacy: [['pt', 'Neumorfismo'], ['en', 'Neumorphism'], ['it', 'Neumorfismo'], ['es', 'Neumorfismo'], ['fr', 'Néomorphisme'], ['la', 'Neumorphismus']],
     };
     let tagTimers = [];

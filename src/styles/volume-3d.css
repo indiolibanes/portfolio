@@ -1,0 +1,240 @@
+/*
+ * Volume — the editorial mode as a minimalist 3D stage (2026-11-22).
+ *
+ * Ideas, all CSS (no WebGL, no script, nothing that needs a library):
+ *   1. a floor grid in perspective under the whole page;
+ *   2. every section and card is a plane that tilts up out of the depth as it
+ *      scrolls into view (scroll-driven animation; static where unsupported);
+ *   3. a six-faced cube above the page, one word of the trade on each face;
+ *   4. hover lifts a card toward the viewer; one signal colour (cyan) marks
+ *      what can be acted on.
+ * Tokens (--e-*) and the flat reset live in mono-modes.css; this file only adds
+ * depth. Decoration is aria-hidden, paused on hover, and off with reduced motion.
+ * The internal key stays `data-serious-mode`.
+ */
+
+.volume-stage { display: none; }
+
+/* 1. Floor ---------------------------------------------------------------- */
+
+html[data-serious-mode='true'] body {
+  background:
+    radial-gradient(90% 60% at 50% -8%, #1d232d 0%, transparent 70%),
+    var(--e-paper);
+  background-attachment: fixed;
+}
+html[data-serious-mode='true'] body::before {
+  content: '';
+  position: fixed;
+  inset: auto -20% 0;
+  height: 52vh;
+  height: 52dvh;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--e-line) 1px, transparent 1px) 0 0 / 100% 64px,
+    linear-gradient(90deg, var(--e-line) 1px, transparent 1px) 0 0 / 64px 100%;
+  transform: perspective(520px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 85%);
+  opacity: .55;
+}
+
+/* 2. Planes --------------------------------------------------------------- */
+
+html[data-serious-mode='true'] body .portfolio-main :is(.hero, .background, .method-section, .github-showcase, .music-shelf, .closing, .curiosities-teaser) {
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--e-plane-2), var(--e-plane)) !important;
+  border: 1px solid var(--e-line) !important;
+  border-radius: var(--e-radius) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 60px 90px -56px #000 !important;
+  padding: clamp(1.25rem, 3.4vw, 3rem) !important;
+  margin-block: clamp(1.25rem, 3vw, 2.5rem) !important;
+  min-height: 0 !important;
+}
+html[data-serious-mode='true'] body .portfolio-main :is(.lab-project-card, .github-feature, .hero-note, .recent-track-card, .playlist-card, .lab-sophia-guide, .method-steps li, .background-case-study) {
+  background: linear-gradient(180deg, var(--e-plane-2), var(--e-plane)) !important;
+  border: 1px solid var(--e-line) !important;
+  border-radius: var(--e-radius) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 30px 50px -34px #000 !important;
+}
+html[data-serious-mode='true'] body .portfolio-main .lab { background: none !important; border: 0 !important; padding-inline: 0 !important; box-shadow: none !important; }
+html[data-serious-mode='true'] body .portfolio-main .lab-project-system { background: rgba(255, 255, 255, .03) !important; border: 1px solid var(--e-line) !important; }
+
+/* Cards: copy on the left, the diagram on the right, the mind map across the bottom. */
+@media (min-width: 861px) {
+  html[data-serious-mode='true'] body .portfolio-main .lab-project-card { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important; }
+  html[data-serious-mode='true'] body .portfolio-main .lab-project-card > .lab-project-copy { grid-column: 1; grid-row: 1; }
+  html[data-serious-mode='true'] body .portfolio-main .lab-project-card > :is(.lab-project-system, .lab-project-cover) { grid-column: 2; grid-row: 1; }
+  html[data-serious-mode='true'] body .portfolio-main .lab-project-card > .pi-map { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* Scroll-in: a plane stands up out of the floor. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    html[data-serious-mode='true'] body :is(.hero, .background, .method-section, .github-showcase, .music-shelf, .closing, .curiosities-teaser, .lab-project-card, .github-feature) {
+      transform-origin: 50% 100%;
+      animation: volume-rise linear both !important;
+      animation-timeline: view() !important;
+      animation-range-start: entry 0px !important;
+      animation-range-end: entry 360px !important;
+    }
+  }
+}
+@keyframes volume-rise {
+  from { transform: perspective(1400px) translateZ(-120px) rotateX(10deg); opacity: .15; }
+  to { transform: perspective(1400px) translateZ(0) rotateX(0); opacity: 1; }
+}
+
+/* Hover lifts a card toward the viewer. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html[data-serious-mode='true'] body .portfolio-main :is(.lab-project-card, .github-feature, .recent-track-card, .playlist-card, .method-steps li) {
+    transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease !important;
+  }
+  html[data-serious-mode='true'] body .portfolio-main :is(.lab-project-card, .github-feature, .recent-track-card, .playlist-card, .method-steps li):hover {
+    transform: perspective(1000px) translateZ(18px) rotateX(1.2deg);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 44px 64px -30px #000, 0 0 0 1px rgba(94, 225, 255, .35) !important;
+  }
+}
+
+/* 3. The cube ---------------------------------------------------------------- */
+
+html[data-serious-mode='true'] .volume-stage {
+  display: grid;
+  place-items: center;
+  position: relative;
+  height: clamp(14rem, 26vw, 19rem);
+  perspective: 900px;
+  margin-bottom: .5rem;
+}
+html[data-serious-mode='true'] .volume-cube {
+  --s: clamp(6.5rem, 11vw, 9rem);
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  transform: rotateX(-24deg) rotateY(35deg);
+}
+html[data-serious-mode='true'] body .volume-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(94, 225, 255, .6) !important;
+  background: rgba(94, 225, 255, .05) !important;
+  font: 600 .66rem/1 var(--font-ui);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--e-ink) !important;
+}
+html[data-serious-mode='true'] .volume-face--front { transform: translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] .volume-face--back { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] .volume-face--right { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] .volume-face--left { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] .volume-face--top { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] .volume-face--bottom { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+html[data-serious-mode='true'] body .volume-floor {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  width: clamp(9rem, 16vw, 13rem);
+  height: 1.6rem;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(94, 225, 255, .28), transparent) !important;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-serious-mode='true'] body .volume-cube { animation: volume-spin 30s linear infinite !important; }
+  html[data-serious-mode='true'] body .volume-stage:hover .volume-cube { animation-play-state: paused !important; }
+}
+@keyframes volume-spin { to { transform: rotateX(-24deg) rotateY(395deg); } }
+
+/* The diagrams stand on the floor too: steps are slabs stacked in depth, the measured step glows. */
+html[data-serious-mode='true'] body .portfolio-main .lab-project-system { display: grid; place-items: center; align-content: center; gap: 1.2rem; overflow: hidden; }
+html[data-serious-mode='true'] body .cellulose-flow {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; width: min(100%, 17rem);
+  transform: perspective(800px) rotateX(22deg) rotateZ(-7deg); transform-style: preserve-3d;
+}
+html[data-serious-mode='true'] body .cf-step {
+  padding: .5rem .8rem; border: 1px solid var(--e-line) !important; border-radius: var(--e-radius) !important;
+  background: var(--e-plane-2) !important; box-shadow: 0 8px 0 -3px rgba(0, 0, 0, .55) !important;
+  transform: translateZ(calc(var(--i, 0) * 8px));
+}
+html[data-serious-mode='true'] body .cf-step.is-measure { border-color: var(--e-accent) !important; background: rgba(94, 225, 255, .12) !important; box-shadow: 0 8px 0 -3px rgba(94, 225, 255, .35), 0 0 28px -6px rgba(94, 225, 255, .5) !important; }
+html[data-serious-mode='true'] body .cf-step small { display: block; color: var(--e-ink-soft) !important; }
+html[data-serious-mode='true'] body .cellulose-flow-title { text-align: center; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; }
+html[data-serious-mode='true'] body .documentation-pipeline { transform: perspective(800px) rotateX(18deg); display: flex; gap: .4rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+html[data-serious-mode='true'] body .documentation-step { border: 1px solid var(--e-line) !important; border-radius: var(--e-radius) !important; background: var(--e-plane-2) !important; padding: .5rem .7rem; box-shadow: 0 8px 0 -3px rgba(0, 0, 0, .55) !important; text-align: center; }
+html[data-serious-mode='true'] body .documentation-step-deploy { border-color: var(--e-accent) !important; }
+html[data-serious-mode='true'] body .documentation-step small { display: block; color: var(--e-ink-soft) !important; }
+
+/* NIR mind map: four small planes in a 2 x 2 grid. */
+html[data-serious-mode='true'] body .pi-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: .5rem; }
+html[data-serious-mode='true'] body .pi-map .mm-center { display: none !important; }
+html[data-serious-mode='true'] body .pi-map .mm-block { position: static !important; transform: none !important; width: auto !important; padding: 1rem 1.1rem; border: 1px solid var(--e-line) !important; border-radius: var(--e-radius) !important; background: var(--e-plane-2) !important; }
+html[data-serious-mode='true'] body .pi-map .mm-d { border-color: var(--e-accent) !important; }
+html[data-serious-mode='true'] body .pi-map .mm-title { margin: 0 0 .4rem; font-size: 1.1rem; }
+@media (max-width: 720px) { html[data-serious-mode='true'] body .pi-map { grid-template-columns: 1fr; } }
+
+/* 4. Type, links, controls ---------------------------------------------------- */
+
+html[data-serious-mode='true'] body :is(h1, h2, h3) { letter-spacing: -.025em; text-wrap: balance; }
+html[data-serious-mode='true'] body main a:not(.button, .work-index a, .editorial-primary, .nav-cta, .social-links a, .github-cta, .cv-download-button, .closing-actions a) {
+  text-decoration-color: var(--e-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+html[data-serious-mode='true'] body :is(.eyebrow, .note-label, .lab-project-meta, .method-index, .editorial-masthead) { letter-spacing: .16em; }
+html[data-serious-mode='true'] body :is(button, .button, .work-index a, .social-links a, .github-cta, .cv-download-button, .closing-actions a) { background-color: rgba(255, 255, 255, .04) !important; }
+html[data-serious-mode='true'] body :is(button, .button, .work-index a, .social-links a, .github-cta, .cv-download-button, .closing-actions a):is(:hover, :focus-visible),
+html[data-serious-mode='true'] body :is(button, .button, .work-index a, .social-links a, .github-cta, .cv-download-button, .closing-actions a):is(:hover, :focus-visible) * {
+  background-color: rgba(94, 225, 255, .14) !important;
+  color: var(--e-ink) !important;
+  border-color: var(--e-accent) !important;
+}
+html[data-serious-mode='true'] body :is(.editorial-primary, .nav-cta, .closing-email-button, .button.primary):is(:hover, :focus-visible),
+html[data-serious-mode='true'] body :is(.editorial-primary, .nav-cta, .closing-email-button, .button.primary):is(:hover, :focus-visible) * {
+  background-color: #ffffff !important;
+  color: var(--e-on-accent) !important;
+}
+
+/* Header: dark glass. */
+html[data-serious-mode='true'] body .site-header { background: color-mix(in srgb, var(--e-paper) 82%, transparent) !important; -webkit-backdrop-filter: blur(14px) !important; backdrop-filter: blur(14px) !important; }
+html[data-serious-mode='true'] body :is(.nav-links a, .nav-sections a) { color: var(--e-ink-soft) !important; }
+html[data-serious-mode='true'] body :is(.nav-links a, .nav-sections a):is(:hover, [aria-current]) { color: var(--e-ink) !important; }
+
+/* The translucent drawers (header, menu, footer, mode legend) are dark glass here. */
+html[data-serious-mode='true'] body :is(.site-header .nav-shell, .portfolio-footer .footer-shell, .site-header .nav-sections, .serious-help-panel) {
+  background: rgba(21, 24, 29, .88) !important;
+  border: 1px solid var(--e-line) !important;
+  border-radius: var(--e-radius) !important;
+}
+html[data-serious-mode='true'] body .site-header .nav-shell { background: transparent !important; border-width: 0 0 1px !important; border-radius: 0 !important; }
+html[data-serious-mode='true'] .footer-math { color: var(--e-ink) !important; opacity: .35; }
+
+/* Images keep their content but lose their colour; the album cover stays as it is. */
+html[data-serious-mode='true'] body :is(img, picture img):not(.recent-artwork, .playlist-artwork, .sophia-404__panel img) { filter: grayscale(1) contrast(1.05) brightness(.94) !important; }
+
+/* Light diagrams (SVG drawn for white paper) sit on a paper tile. */
+html[data-serious-mode='true'] body :is(.method-flow, .lab-project-system svg) { background: #eef1f5 !important; border-radius: var(--e-radius); padding: .5rem; }
+
+/* 5. Accessibility, contrast, small screens ---------------------------------- */
+
+@media (prefers-contrast: more) {
+  html[data-serious-mode='true'] { --e-line: rgba(238, 241, 245, .5); --e-ink-soft: #d6dce4; }
+  html[data-serious-mode='true'] body::before { opacity: .25; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-serious-mode='true'] body .site-header { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background: var(--e-paper) !important; }
+}
+@media (forced-colors: active) {
+  html[data-serious-mode='true'] .volume-stage, html[data-serious-mode='true'] body::before { display: none; }
+}
+@media (max-width: 720px) {
+  html[data-serious-mode='true'] .volume-stage { height: 11rem; }
+  html[data-serious-mode='true'] body::before { height: 34vh; height: 34dvh; }
+  html[data-serious-mode='true'] body :is(.hero, .background, .method-section, .github-showcase, .music-shelf, .closing, .curiosities-teaser) { padding: 1.1rem !important; }
+}
+
+/* Mode switcher: the focus ring must read on graphite. */
+html[data-serious-mode='true'] body .serious-node .serious-emblem.serious-emblem.serious-emblem:focus-visible { outline-color: var(--e-accent) !important; }
