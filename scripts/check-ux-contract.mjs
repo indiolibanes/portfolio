@@ -116,7 +116,7 @@ check('modes: Documentation home and creative route are reloadable; old bookmark
   read('src/components/ImmersiveModeEmblems.astro').includes('"href":PUBLIC_PAGES.creative.path') &&
   !modes.includes('data-legacy-mode'));
 check('modes: preserve three-state control',
-  modes.includes("['authorial', 'editorial', 'documentation']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
+  modes.includes("['documentation', 'editorial', 'authorial']") && modes.includes('Mudar para ') && modes.includes('aria-current'));
 check('modes: three fixed emblems (alpha, beta, gamma), one pressed at a time',
   ['authorial', 'editorial', 'documentation'].every((id) => modes.includes(`data-mode-node="${id}"`)) &&
   modes.includes("aria-pressed") && modes.includes("node.dataset.state = on ? 'active' : 'idle'") && !modes.includes('data-slot'));
