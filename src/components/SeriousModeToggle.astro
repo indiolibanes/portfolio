@@ -221,7 +221,7 @@ const showOmega = Astro.url.pathname === '/';
     };
 
     // Cada modo tem a sua personalidade de movimento. Tudo usa a Web Animations
-    // API: o Editorial e o Legacy zeram animation e transition do CSS
+    // API: o Volume (chave interna editorial) e o Neumórfico (legacy) partem do reset que zera animation e transition do CSS
     // (mono-modes.css), e este controle precisa continuar mostrando a troca.
     const profiles = {
       authorial: {
@@ -705,7 +705,7 @@ const showOmega = Astro.url.pathname === '/';
     // extremidades vibra em três harmônicos (ondas estacionárias), e a corda "b" vibra em
     // quadratura com a "a". Um laço fechado (corda fechada) desliza ao longo dela na direção do
     // modo vigente. Só o relógio de cada trecho avança; a forma é recalculada a cada quadro, então
-    // funciona também em Editorial e Legacy (sem CSS). Movimento reduzido: um quadro estático.
+    // funciona também no Volume e no Neumórfico (sem CSS). Movimento reduzido: um quadro estático.
     const STRING_MODES = [
       { n: 1, amp: 4.4, w: 2.1 },
       { n: 2, amp: 2.3, w: 3.7 },
@@ -1486,7 +1486,7 @@ const showOmega = Astro.url.pathname === '/';
     }
   }
 
-  /* Modos planos (Editorial e Legacy): mono-modes.css zera fundos, bordas,
+  /* Modos Volume (editorial) e Neumórfico (legacy): mono-modes.css zera fundos, bordas,
      sombras, filtros e animações CSS com !important. Os emblemas seguem
      desenhados sem depender disso: sem filtro, só opacidade e transform, e as
      animações contínuas rodam por WAAPI. */
