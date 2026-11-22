@@ -1,0 +1,49 @@
+/*
+ * Content profiles (2026-11-22). Orthogonal to the visual modes.
+ *   full (default)        — everything: Sophia, music, curiosities, experiments.
+ *   data-profile=documental — the professional cut linked from LinkedIn:
+ *     technical documentation, information architecture, translation and
+ *     publishing. Creative pieces are hidden, not deleted, and come back with
+ *     ?perfil=criativo. Set in BaseHead; persisted in localStorage.
+ */
+
+.profile-note { display: none; }
+
+html[data-profile='documental'] .profile-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 1rem;
+  padding: .6rem 1rem;
+  max-width: var(--content-max, 72rem);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-full);
+  font-size: .85rem;
+  opacity: .9;
+}
+html[data-profile='documental'] .profile-note a { font-weight: 600; }
+
+/* Creative pieces leave the documental cut. */
+html[data-profile='documental'] :is(
+  .immersive-banner,
+  .work-index a[href='#voo-prismatico'],
+  .sophia-lab-webp,
+  .lab-sophia-guide,
+  .music-shelf,
+  .curiosities-teaser,
+  .site-header .nav-links a[href='/#musica'],
+  .site-header .nav-links a[href='/curiosidades/'],
+  .site-header .nav-sections a[href='/#musica'],
+  .site-header .nav-sections a[href='/curiosidades/'],
+  .portfolio-footer a[href='/sophia/'],
+  .serious-omega-entry,
+  .atom-cursor,
+  .random-easter-layer,
+  [data-decorative-motion]
+) { display: none !important; }
+
+@media print {
+  .profile-note { display: none !important; }
+}
