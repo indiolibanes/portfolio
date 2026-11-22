@@ -141,7 +141,7 @@
 
 .curiosity__link {
   align-self: flex-start;
-  min-height: 44px;
+  min-height: var(--target-min);
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -297,7 +297,7 @@ html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
 }
 
 .curiosities-return a {
-  min-height: 44px;
+  min-height: var(--target-min);
   display: inline-flex;
   align-items: center;
   padding: 0.6rem 1.1rem;
@@ -319,7 +319,7 @@ html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
   .curiosity__link,
   .curiosities-return a,
   .curiosities-teaser__link {
-    transition: background-color 160ms ease, border-color 160ms ease;
+    transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
   }
 }
 
@@ -398,7 +398,7 @@ html[data-legacy-mode='true'] .nav-links a[aria-current='page'] {
 }
 
 .curiosities-teaser__link {
-  min-height: 44px;
+  min-height: var(--target-min);
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;

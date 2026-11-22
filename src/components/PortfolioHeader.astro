@@ -391,7 +391,7 @@ const NAV = [
     html:not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
 
     html:not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
-      min-height: 44px;
+      min-height: var(--target-min);
       display: inline-flex;
       align-items: center;
       gap: .4rem;
@@ -415,7 +415,7 @@ const NAV = [
       top: calc(100% + 8px);
       left: 0;
       right: 0;
-      z-index: 60;
+      z-index: var(--z-overlay);
       display: none;
       flex-direction: column;
       align-items: stretch;
@@ -440,7 +440,7 @@ const NAV = [
     }
 
     html:not([data-legacy-mode='true']) .site-header .nav-sections a {
-      min-height: 44px;
+      min-height: var(--target-min);
       display: flex !important;
       align-items: center;
       padding: .6rem 1rem;
@@ -467,14 +467,14 @@ const NAV = [
   .site-header .nav-elements { display: none; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-shell { position: relative; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-menu-toggle:not([hidden]) {
-    min-height: 44px; display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .85rem;
+    min-height: var(--target-min); display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .85rem;
     border: 1px solid rgba(205, 188, 165, .92); border-radius: var(--radius-full);
     background: rgba(255, 250, 240, .8); color: var(--ink); font-family: var(--font-ui);
     font-size: .78rem; font-weight: 800; cursor: pointer;
   }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-menu-toggle[aria-expanded='true'] { background: #2b2118; color: #f6e9c8; border-color: #2b2118; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-sections {
-    position: absolute; top: calc(100% + 10px); right: 0; left: auto; z-index: 60;
+    position: absolute; top: calc(100% + 10px); right: 0; left: auto; z-index: var(--z-overlay);
     width: min(640px, calc(100vw - 2rem));
     display: none; flex-direction: column; align-items: stretch; gap: .1rem; padding: .7rem;
     border: 1px solid #2b2118; border-radius: 20px;
@@ -497,7 +497,7 @@ const NAV = [
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .nav-elements { display: flex; flex-wrap: wrap; gap: 3px; }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el {
     position: relative; width: 42px; height: 52px; flex: 0 0 auto; display: block; text-align: center;
-    border: 1.5px solid #2b2118; border-radius: 6px; box-shadow: 2px 2px 0 #2b211833;
+    border: 1.5px solid #2b2118; border-radius: var(--radius-xs); box-shadow: 2px 2px 0 #2b211833;
     background: var(--el-bg, #e7dcc0); color: #2b2118; transition: transform .25s cubic-bezier(.2,.8,.2,1.2), box-shadow .25s;
   }
   html[data-nav-js='true']:not([data-serious-mode='true']):not([data-legacy-mode='true']) .site-header .el i { position: absolute; top: 3px; left: 5px; font: 700 8.5px/1 var(--font-ui); font-style: normal; opacity: .75; }
@@ -647,7 +647,7 @@ const NAV = [
       align-items: center;
       justify-content: center;
       gap: .4rem;
-      min-height: 44px;
+      min-height: var(--target-min);
       padding: .35rem .65rem;
       border: 1px outset #eee !important;
       background: #c0c0c0 !important;
@@ -657,7 +657,7 @@ const NAV = [
 
     html[data-nav-js='true'][data-legacy-mode='true'] .site-header .nav-sections {
       position: absolute;
-      z-index: 60;
+      z-index: var(--z-overlay);
       top: calc(100% + 4px);
       inset-inline: 0;
       display: none;
@@ -691,7 +691,7 @@ const NAV = [
     html[data-nav-js='true'][data-legacy-mode='true'] .site-header .nav-sections a {
       display: flex !important;
       align-items: center;
-      min-height: 44px;
+      min-height: var(--target-min);
     }
 
     html:not([data-nav-js='true']) .site-header .nav-shell,
@@ -725,7 +725,7 @@ const NAV = [
     }
 
     html[data-nav-js='true'] .site-header .nav-menu-toggle:not([hidden]) {
-      min-width: 44px;
+      min-width: var(--target-min);
       justify-content: center;
       padding: .4rem .55rem;
     }

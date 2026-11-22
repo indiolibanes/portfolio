@@ -12,7 +12,6 @@
 @keyframes attn-ring { 0% { box-shadow: 0 0 0 0 rgba(201, 154, 46, 0.55); } 70%, 100% { box-shadow: 0 0 0 14px rgba(201, 154, 46, 0); } }
 @keyframes attn-ring-ink { 0% { box-shadow: 0 0 0 0 rgba(20, 20, 20, 0.35); } 70%, 100% { box-shadow: 0 0 0 10px rgba(20, 20, 20, 0); } }
 @keyframes attn-drop { 0%, 100% { transform: translateY(-1px); } 45% { transform: translateY(4px); } 60% { transform: translateY(0); } }
-@keyframes attn-wiggle { 0%, 82%, 100% { transform: rotate(0); } 86% { transform: rotate(-14deg) scale(1.12); } 91% { transform: rotate(12deg) scale(1.12); } 96% { transform: rotate(-6deg); } }
 
 /* ---------- Currículo PDF ---------- */
 

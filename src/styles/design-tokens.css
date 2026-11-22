@@ -1,0 +1,88 @@
+/*
+ * Design tokens — the single source of truth for the portfolio's visual system.
+ *
+ * Loaded FIRST by BaseLayout, before global.css, so every other sheet can read
+ * these custom properties. Rules for this file:
+ *
+ *   1. Three tiers, as in Adobe Spectrum: GLOBAL (raw scale values) →
+ *      ALIAS (semantic roles) → COMPONENT (declared next to the component,
+ *      never here).
+ *   2. Values here are the values the site already used. A token may name an
+ *      existing value; it must not silently change one. The authorial identity
+ *      (warm beige paper, brick ink, Benguiat chapters, pixel accents) is
+ *      defined by the palette in global.css and stays there.
+ *   3. Modes (Editorial, Legacy) override the colour tokens in mono-modes.css
+ *      and mode-tokens.css. Alias tokens below point at those colour tokens
+ *      with var(), so they follow the active mode automatically. Do not
+ *      redeclare colours here.
+ *   4. Raw literals for the properties below are held by
+ *      scripts/check-design-tokens.mjs, which fails when their count grows.
+ *
+ * Mapping (see docs/design-system.md):
+ *   Spectrum  → global / alias / component tiers, role-based names.
+ *   Apple HIG → 44 pt minimum target, consistent focus, reduced motion.
+ *   Fluent 2  → named radius, duration and elevation ramps; neutral/brand split.
+ */
+
+:root {
+  /* ── Tier 1 · Global ─────────────────────────────────────────────── */
+
+  /* Spacing — 4 px grid (Fluent 2 / Spectrum). Adopt on touch; do not mass-edit. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Corner radius ramp (Fluent 2). Same values the site already shipped. */
+  --radius-xs: 6px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-xl: 38px;
+  --radius-full: 999px;
+
+  /* Touch target (Apple HIG 44 pt). */
+  --target-min: 44px;
+
+  /* Motion — durations (Fluent 2 ramp, tuned to the values already in use). */
+  --duration-instant: 120ms;
+  --duration-fast: 160ms;
+  --duration-base: 180ms;
+  --duration-slow: 220ms;
+  --duration-slower: 300ms;
+
+  /* Motion — easing. `--ease-emphasized` is the Material/Fluent "decelerate"
+     curve the reveal choreography already used as --motion-emphasized. */
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Focus ring (HIG / Fluent 2: one ring, two surface-adapted colours). */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+  --focus-ring-on-light: #ac652d;
+  --focus-ring-on-dark: #ffd15a;
+
+  /* Stacking order — named layers instead of magic numbers. */
+  --z-overlay: 60;
+  --z-skip-link: 10000;
+  --z-top: 2147483000;
+
+  /* ── Tier 2 · Alias (semantic roles; follow the active mode) ─────── */
+
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-soft);
+  --color-surface-strong: var(--surface-strong);
+  --color-text: var(--ink);
+  --color-text-subtle: var(--ink-soft);
+  --color-border: var(--line);
+
+  /* Elevation (Fluent 2). The site is deliberately flat: 0 = none,
+     1 = the hard 4 px "paper edge", 2 = soft lift. No other shadows. */
+  --elevation-0: none;
+  --elevation-1: var(--shadow-card);
+  --elevation-2: var(--shadow-soft);
+}

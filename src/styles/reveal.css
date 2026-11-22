@@ -7,7 +7,7 @@
  * continuam estáticos). Nunca em texto de leitura longa.
  * Efeitos: rise, drop, slide-l, slide-r, unfold, bloom, spin, flip, dim, lighten, blur (+ iris).
  */
-:root { --motion-emphasized: cubic-bezier(0.2, 0, 0, 1); }
+:root { --motion-emphasized: var(--ease-emphasized); }
 
 html.reveal-on:not([data-serious-mode='true']):not([data-legacy-mode='true']) [data-reveal] {
   transition:

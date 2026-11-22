@@ -1,0 +1,7 @@
+{
+  "border-radius: 6/12/18/28/38/999px  → var(--radius-*)": 1,
+  "min-height/min-width: 44px         → var(--target-min)": 0,
+  "transition 120/160/180/220/300ms   → var(--duration-*)": 0,
+  "outline 3px solid #ac652d/#ffd15a  → var(--focus-ring-*)": 0,
+  "z-index 60/10000/2147483000        → var(--z-*)": 1
+}
