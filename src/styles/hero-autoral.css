@@ -75,6 +75,12 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobr
   justify-content: flex-start;
 }
 
+/* Without the tiles, MarioNameTiles' dark veil (::after) would sit over the name
+   as a translucent box. The doubled class outranks the component's scoped rule. */
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate.name-brick-plate::after {
+  content: none;
+}
+
 /* Bloco-pergunta discreto (referência ao Super Mario), acima do nome. */
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate::before {
   content: '';
