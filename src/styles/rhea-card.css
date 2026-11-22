@@ -271,9 +271,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #lab .lab-pr
   18% { background-position: 0 0; }
 }
 
-/* Editorial and Legacy are austere: the route stays, the coloured face goes. */
-html[data-serious-mode='true'] .rhea-card-stage,
-html[data-legacy-mode='true'] .rhea-card-stage {
+/* Editorial is austere: the route stays, the coloured face goes. (Neumorphism shows it on a white disc.) */
+html[data-serious-mode='true'] .rhea-card-stage {
   display: none;
 }
 

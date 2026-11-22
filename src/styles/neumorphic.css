@@ -131,7 +131,7 @@ html[data-legacy-mode='true'] :is(
   .curiosities-teaser .corrida, .closing-marks, .mm-splash, .lab-sophia-guide, .lab-sophia-presence,
   .github-board-stage, .music-sophia-mini, .music-panorama, .music-panorama-action,
   .music-panorama-effects, .music-panorama-glint, .listening-note-score, .method-presenter,
-  .nav-plasma, .pi-map :is(.mm-arrow, .mm-splash, .mm-icon, .mm-brush), .hero-note .tape, .lab-project-system, .pi-leaf-field, .knowledge-stage, .method-presenter__beam, .prism-ray, .prism-spectrum
+  .nav-plasma, .pi-map :is(.mm-arrow, .mm-splash, .mm-icon, .mm-brush), .hero-note .tape, .pi-leaf-field, .method-presenter__beam, .prism-ray, .prism-spectrum
 ) {
   display: none !important;
 }
@@ -172,8 +172,6 @@ html[data-legacy-mode='true'] .block-name {
   white-space: normal;
 }
 
-/* The process diagrams are replaced by their text alternative, as before. */
-html[data-legacy-mode='true'] #lab #curadoria .cellulose-legacy-text { display: block; margin: 0 0 .8rem; font-size: .92rem; line-height: 1.6; }
 
 /* 3. Type ---------------------------------------------------------------- */
 
@@ -241,14 +239,25 @@ html[data-legacy-mode='true'] .hero {
     radial-gradient(60% 70% at 62% 104%, rgba(255, 111, 168, .18), transparent 64%),
     var(--neu-panel) !important;
 }
-/* The closing window gets the same mesh, mirrored, so the page ends where it began. */
-html[data-legacy-mode='true'] .closing {
+/* The closing window is the page's night: the orbiting-games scene from the authorial mode, as a still. */
+html[data-legacy-mode='true'] body .closing {
   background:
-    radial-gradient(55% 70% at 92% 8%, rgba(169, 139, 255, .22), transparent 62%),
-    radial-gradient(52% 66% at 6% 100%, rgba(123, 227, 160, .2), transparent 62%),
-    radial-gradient(40% 50% at 55% 0%, rgba(255, 179, 64, .16), transparent 64%),
-    var(--neu-panel) !important;
+    linear-gradient(90deg, rgba(8, 10, 24, .96) 0%, rgba(8, 10, 24, .84) 36%, rgba(8, 10, 24, 0) 68%),
+    url('/assets/neumorphic-contact-orbit.webp') right center / cover no-repeat,
+    #0a0d1c !important;
+  box-shadow: var(--elev-float) !important;
 }
+html[data-legacy-mode='true'] body .closing :is(h2, p) { color: #f5f5f7 !important; }
+html[data-legacy-mode='true'] body .closing :is(h2, p) span { color: inherit !important; }
+html[data-legacy-mode='true'] body .closing .eyebrow { color: #ffd08a !important; }
+/* The curiosities window wears the running-through-the-village scene, still, behind the copy card. */
+html[data-legacy-mode='true'] body .curiosities-teaser {
+  background: url('/assets/neumorphic-corrida-scene.webp') 66% bottom / cover no-repeat, #aac4e4 !important;
+  min-height: clamp(17rem, 30vw, 22rem) !important;
+  display: flex;
+  align-items: center;
+}
+html[data-legacy-mode='true'] body .curiosities-teaser__copy { max-width: 34rem; padding: clamp(1.25rem, 3vw, 2rem); }
 html[data-legacy-mode='true'] :is(.section, .hero) + :is(.section, .hero)::before { content: none; }
 
 html[data-legacy-mode='true']:root body :is(h1, h2, h3, h4) { font-weight: 400 !important; }
@@ -344,6 +353,35 @@ html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .imm
   background: var(--neu-accent) !important;
   box-shadow: inset 3px 4px 8px rgba(0, 0, 0, .3), inset -2px -2px 5px rgba(255, 255, 255, .14) !important;
 }
+
+/* 7b. Colour on the controls: soft pastel gradients with ink text (>= 12:1), same four hues
+   as the rest of the page. Primary actions keep the saturated copper with white text. */
+html[data-legacy-mode='true'] {
+  --grad-warm: linear-gradient(135deg, #ffe0a8 0%, #ffc2d6 100%);
+  --grad-cool: linear-gradient(135deg, #c4e9ff 0%, #d7ccff 100%);
+  --grad-fresh: linear-gradient(135deg, #c2f2d4 0%, #c4e9ff 100%);
+  --grad-violet: linear-gradient(135deg, #e3d6ff 0%, #ffd0e6 100%);
+  --grad-primary: linear-gradient(135deg, #a85f2d 0%, #9c3f63 100%);
+}
+html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link) { background: var(--grad-warm) !important; }
+html[data-legacy-mode='true'] body :is(.work-index a, .apple-music-link, .method-stage-link) { background: var(--grad-cool) !important; }
+html[data-legacy-mode='true'] body .social-links a { background: var(--grad-fresh) !important; }
+html[data-legacy-mode='true'] body .closing-actions .closing-whatsapp-button { background: var(--grad-fresh) !important; }
+html[data-legacy-mode='true'] body .closing-actions .closing-linkedin-button { background: var(--grad-cool) !important; }
+html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link, .work-index a, .apple-music-link, .method-stage-link, .social-links a, .closing-actions a):is(:hover, :focus-visible) { filter: saturate(1.2) brightness(1.03); }
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) { background: var(--grad-primary) !important; }
+html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) { background: #8d3a5a !important; }
+
+/* On the dark closing tile the buttons cast a dark shadow instead of a white highlight. */
+html[data-legacy-mode='true'] body .closing .closing-actions a { border: 0 !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 20px -8px rgba(0, 0, 0, .75) !important; }
+
+/* Text boxes: notes and callouts take a tinted gradient instead of a gray well. */
+html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { background: var(--grad-warm) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-legacy-mode='true'] body .method-disclosure { background: var(--grad-cool) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-legacy-mode='true'] body .hero-question { background: linear-gradient(135deg, rgba(255, 224, 168, .62), rgba(255, 194, 214, .5)) !important; }
+html[data-legacy-mode='true'] body .hero-note { background: linear-gradient(160deg, #fff6e4, #ffffff 70%) !important; }
+html[data-legacy-mode='true'] body .lab-project-status { background: var(--grad-fresh) !important; box-shadow: var(--neu-raise-s) !important; color: var(--neu-ink) !important; }
+html[data-legacy-mode='true'] body .lab-project-tags span { background: color-mix(in srgb, var(--tint, var(--tint-amber)) 30%, #fff) !important; box-shadow: none !important; color: var(--neu-ink) !important; }
 
 /* 8. Focus: a solid ring, never only a shadow ------------------------------ */
 
@@ -456,7 +494,8 @@ html[data-legacy-mode='true'] .background-entry {
   border-bottom: 1px solid var(--neu-rule) !important;
   padding-block: 1.1rem;
 }
-html[data-legacy-mode='true'] .background-mark { background: var(--neu-well) !important; box-shadow: var(--neu-inset-s) !important; border-radius: var(--radius-sm) !important; }
+/* The training icons already have transparent backgrounds: no plate behind them. */
+html[data-legacy-mode='true'] body .background-mark { background: none !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; }
 
 /* Música: the cover is the content, so it stays; the glass becomes a white card. */
 html[data-legacy-mode='true'] .music-listening-panel {
@@ -493,6 +532,117 @@ html[data-legacy-mode='true'] body .immersive-banner .immersive-banner__link { b
 html[data-legacy-mode='true'] body .immersive-banner .immersive-banner__link * { color: #ffffff !important; }
 html[data-legacy-mode='true']:root body .immersive-banner h2 { font-size: clamp(1.8rem, 3vw, 2.4rem) !important; max-width: none; }
 html[data-legacy-mode='true'] .immersive-banner__art { display: block !important; }
+
+/* 10a. Lab diagrams: the process flows come back as soft chips inside a sunken stage ---- */
+
+html[data-legacy-mode='true'] body .lab-project-system {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: clamp(1rem, 2.6vw, 1.75rem);
+  border: 0 !important;
+  border-radius: var(--neu-r-card) !important;
+  background: var(--neu-well) !important;
+  box-shadow: var(--neu-inset-m) !important;
+}
+html[data-legacy-mode='true'] body .lab-project-system :is(.cellulose-flow, .architecture-map, .documentation-pipeline) { background: none !important; box-shadow: none !important; border-radius: 0 !important; }
+html[data-legacy-mode='true'] body .cellulose-flow-title { margin: 0; font-size: .72rem !important; font-weight: 700 !important; letter-spacing: .1em; text-transform: uppercase; color: var(--neu-ink-soft) !important; text-align: center; }
+
+/* Kraft flow: a vertical chain; the light walks down it (the authorial cf-lit, in daylight). */
+html[data-legacy-mode='true'] body .cellulose-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; width: min(100%, 17rem); }
+html[data-legacy-mode='true'] body .cf-step {
+  position: relative;
+  margin: 0;
+  padding: .5rem .9rem;
+  border-radius: var(--neu-r-ctl) !important;
+  background: var(--grad-warm) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  font-size: .86rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  animation: neu-step-lit 9s ease-in-out infinite !important;
+  animation-delay: calc(var(--i) * 1.5s - 9s) !important;
+}
+html[data-legacy-mode='true'] body .cf-step:nth-child(2n) { background: var(--grad-cool) !important; }
+html[data-legacy-mode='true'] body .cf-step:nth-child(3n) { background: var(--grad-fresh) !important; }
+html[data-legacy-mode='true'] body .cf-step.is-measure { background: var(--grad-primary) !important; }
+html[data-legacy-mode='true'] body .cf-step.is-measure :is(span, small) { color: #ffffff !important; }
+html[data-legacy-mode='true'] body .cf-step small { display: block; font-size: .7rem; font-weight: 500; }
+html[data-legacy-mode='true'] body .cf-step + .cf-step { margin-top: 1rem; }
+html[data-legacy-mode='true'] body .cf-step + .cf-step::before { content: ''; position: absolute; left: 50%; top: -1rem; width: 2px; height: 1rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); }
+html[data-legacy-mode='true'] body .cf-step + .cf-step::after { content: ''; position: absolute; left: 50%; top: -.4rem; width: .45rem; height: .45rem; border-right: 2px solid rgba(29, 29, 31, .4); border-bottom: 2px solid rgba(29, 29, 31, .4); transform: translateX(-50%) rotate(45deg); }
+
+/* NIR stages (Pesquisa → Revisão → Reescrita → Apresentação): four chips, each breathing on its own clock. */
+html[data-legacy-mode='true'] body .knowledge-flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: .45rem .3rem; width: 100%; max-width: none; margin: .5rem 0 0; padding: 0; }
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage {
+  padding: .45rem .7rem;
+  font-size: .84rem;
+  border: 0 !important;
+  border-radius: var(--neu-r-ctl) !important;
+  background: var(--grad-warm) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  font-weight: 600;
+  animation: neu-step-lit 5s ease-in-out infinite !important;
+}
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='revisao'] { background: var(--grad-cool) !important; animation-duration: 5.7s !important; animation-delay: -3.4s !important; }
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='reescrita'] { background: var(--grad-fresh) !important; animation-duration: 3.9s !important; animation-delay: -.6s !important; }
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='apresentacao'] { background: var(--grad-violet) !important; animation-duration: 6.3s !important; animation-delay: -2.2s !important; }
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[aria-pressed='true'] { background: var(--grad-primary) !important; color: #ffffff !important; }
+html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage:disabled { opacity: 1; cursor: default; }
+html[data-legacy-mode='true'] body .knowledge-flow i { color: var(--neu-ink-soft) !important; font-style: normal; font-weight: 700; }
+
+/* Architecture and documentation: the same chips, in the same hues. */
+html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) { background: var(--grad-primary) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; padding: .55rem 1.1rem; font-weight: 700; }
+html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) * { color: #ffffff !important; }
+html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) { color: #ffffff !important; }
+html[data-legacy-mode='true'] body .architecture-node { background: var(--grad-cool) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; border: 0 !important; color: var(--neu-ink) !important; }
+html[data-legacy-mode='true'] body .architecture-node-notes { background: var(--grad-fresh) !important; }
+html[data-legacy-mode='true'] body .architecture-node-readings { background: var(--grad-violet) !important; }
+html[data-legacy-mode='true'] body .architecture-meta-node { background: var(--neu-card) !important; box-shadow: var(--neu-inset-s) !important; border: 0 !important; border-radius: var(--neu-r-ctl) !important; color: var(--neu-ink-soft) !important; }
+html[data-legacy-mode='true'] body .architecture-branches::before, html[data-legacy-mode='true'] body .architecture-meta::before { background: rgba(29, 29, 31, .2) !important; }
+html[data-legacy-mode='true'] body .documentation-step { padding: .5rem .35rem; text-align: center; animation: neu-step-lit 8s ease-in-out infinite !important; }
+html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-source { background: var(--grad-warm) !important; animation-delay: -8s !important; }
+html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-version { background: var(--grad-violet) !important; animation-delay: -6s !important; }
+html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-build { background: var(--grad-cool) !important; animation-delay: -4s !important; }
+html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-deploy { background: var(--grad-fresh) !important; animation-delay: -2s !important; }
+html[data-legacy-mode='true'] body .documentation-step :is(strong, small) { color: var(--neu-ink) !important; }
+html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { color: var(--neu-ink) !important; }
+html[data-legacy-mode='true'] body .documentation-arrow { color: var(--neu-ink-soft) !important; font-weight: 700; }
+
+/* RHEA: the lamp face keeps its own dark disc; here it simply floats above the stage. */
+html[data-legacy-mode='true'] body .rhea-card-stage { display: grid !important; place-items: center; }
+html[data-legacy-mode='true'] body .rhea-card-mark.rhea-lamps {
+  width: clamp(8rem, 14vw, 10.5rem) !important;
+  border-radius: var(--radius-full) !important;
+  box-shadow: var(--elev-float) !important;
+}
+html[data-legacy-mode='true'] body .rhea-card-route { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; justify-items: center; text-align: center; }
+html[data-legacy-mode='true'] body .rhea-card-route li {
+  position: relative;
+  min-width: 11rem;
+  padding: .5rem 1rem;
+  border-radius: var(--neu-r-ctl) !important;
+  background: var(--grad-fresh) !important;
+  box-shadow: var(--neu-raise-s) !important;
+  animation: neu-step-lit 7.2s ease-in-out infinite !important;
+}
+html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(1) { background: var(--grad-warm) !important; animation-delay: -7.2s !important; }
+html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(2) { background: var(--grad-cool) !important; animation-delay: -4.8s !important; }
+html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(3) { animation-delay: -2.4s !important; }
+html[data-legacy-mode='true'] body .rhea-card-route li:not(:last-child)::after { content: ''; position: absolute; left: 50%; bottom: -.9rem; width: 2px; height: .9rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); opacity: 1; }
+html[data-legacy-mode='true'] body .rhea-card-route :is(strong, small) { display: block; color: var(--neu-ink) !important; }
+html[data-legacy-mode='true'] body .rhea-card-route small { font-size: .74rem; font-weight: 500; opacity: 1; }
+
+@keyframes neu-step-lit {
+  0%, 22%, 100% { transform: none; outline: 0 solid rgba(255, 179, 64, 0); outline-offset: 0; }
+  6%, 14% { transform: translateY(-2px); outline: 4px solid rgba(255, 179, 64, .38); outline-offset: 1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-legacy-mode='true'] body :is(.cf-step, .documentation-step, .rhea-card-route li, .knowledge-flow .knowledge-stage) { animation: none !important; }
+}
 
 /* 10b. Mode switcher (SeriousModeToggle): same emblems, neumorphic chrome ------ */
 
@@ -552,4 +702,16 @@ html[data-legacy-mode='true'] .sophia-404__actions a { color: var(--mode-on-dark
 @media (max-width: 720px) {
   html[data-legacy-mode='true'] .site-header { position: relative; z-index: var(--z-overlay); padding-inline: .75rem; }
   html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) { padding: 1.1rem; }
+  html[data-legacy-mode='true'] body .closing {
+    background:
+      linear-gradient(180deg, rgba(8, 10, 24, .96) 0%, rgba(8, 10, 24, .86) 40%, rgba(8, 10, 24, 0) 68%),
+      url('/assets/neumorphic-contact-orbit.webp') 78% bottom / auto 70% no-repeat,
+      #0a0d1c !important;
+    padding-bottom: 12rem !important;
+  }
+  html[data-legacy-mode='true'] body .curiosities-teaser {
+    background: url('/assets/neumorphic-corrida-scene.webp') 66% bottom / auto 11rem no-repeat, #aac4e4 !important;
+    padding-bottom: 10.5rem !important;
+    align-items: flex-start;
+  }
 }
