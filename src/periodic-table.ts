@@ -1,4 +1,4 @@
-// Tabela periódica compartilhada pelo menu do modo-experimental.
+// Tabela periódica compartilhada pelo menu do modo-imersivo.
 // (O cabeçalho público mantém a própria cópia; unificar só quando o experimento for aprovado.)
 
 const ELEMENTS =

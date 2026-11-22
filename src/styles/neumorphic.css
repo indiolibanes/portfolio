@@ -1,5 +1,5 @@
 /*
- * Modo neumórfico (atributo interno: data-legacy-mode) — v2, 2026-11-22.
+ * Modo Documentação (estética neumórfica; atributo data-documentation-mode) — 2026-11-22.
  *
  * Referência de profundidade: o site da Apple. Fundo branco; as "janelas" (seções) em branco
  * acinzentado, que se destacam do fundo; cartões brancos por cima delas; poços afundados
@@ -15,13 +15,14 @@
  * é o único indicador (rótulos e contornos); prefers-contrast / forced-colors / reduced-motion /
  * reduced-transparency tratados no fim do arquivo.
  *
- * Carregado por último. É o antigo "Legacy": atributo, chave de armazenamento e ?mode=legacy /
- * ?mode=1998 continuam valendo; ?mode=neumorfismo é um apelido. Só afeta data-legacy-mode.
+ * Modo público "Documentação": / (ou ?mode=documentacao nas rotas secundárias).
+ * Atalhos e preferências anteriores são migrados pelo controlador de modo.
+ * Esta folha usa exclusivamente o atributo data-documentation-mode.
  */
 
 /* 1. Tokens ------------------------------------------------------------- */
 
-html[data-legacy-mode='true'] {
+html[data-documentation-mode='true'] {
   color-scheme: light;
 
   --neu-base: #ffffff;        /* página */
@@ -84,7 +85,7 @@ html[data-legacy-mode='true'] {
   scroll-behavior: auto;
 }
 
-html[data-legacy-mode='true'] body {
+html[data-documentation-mode='true'] body {
   background: var(--neu-base);
   color: var(--neu-ink);
   font-family: var(--font-ui);
@@ -98,9 +99,9 @@ html[data-legacy-mode='true'] body {
 /* Colour, gradients, shadows, motion and decoration go; layout stays. Every control and
    card below is re-skinned explicitly, so the relief appears only where it means something. */
 
-html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *)),
-html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::before,
-html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::after {
+html[data-documentation-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *)),
+html[data-documentation-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::before,
+html[data-documentation-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *))::after {
   text-shadow: none !important;
   box-shadow: none !important;
   animation: none !important;
@@ -113,7 +114,7 @@ html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404_
   background-color: transparent !important;
 }
 
-html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *, [aria-hidden='true'], [aria-hidden='true'] *, img, picture, svg, svg *, canvas, video)) {
+html[data-documentation-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404__panel *, [aria-hidden='true'], [aria-hidden='true'] *, img, picture, svg, svg *, canvas, video)) {
   color: var(--neu-ink) !important;
   -webkit-text-fill-color: currentColor !important;
   background-color: transparent !important;
@@ -121,7 +122,7 @@ html[data-legacy-mode='true'] body *:where(:not(.sophia-404__panel, .sophia-404_
 }
 
 /* Decoration that carries no information (same list as the flat modes, plus the scenes). */
-html[data-legacy-mode='true'] :is(
+html[data-documentation-mode='true'] :is(
   .ambient, .cosmic-starfield, .random-easter-layer, .atom-cursor,
   .sophia-animation, .pixel-mushroom, .closing-emil-triforce, .triforce-system,
   .github-gif-strip, .triforce-stage, .tape, .gold-block, .mario-name-tiles,
@@ -137,7 +138,7 @@ html[data-legacy-mode='true'] :is(
 }
 
 /* Hero: the cover art sits in a white frame; the name block stays. */
-html[data-legacy-mode='true'] .hero-cover-art {
+html[data-documentation-mode='true'] .hero-cover-art {
   display: block;
   overflow: hidden;
   border-radius: var(--neu-r-card);
@@ -147,9 +148,9 @@ html[data-legacy-mode='true'] .hero-cover-art {
   aspect-ratio: auto !important;
   height: auto !important;
 }
-html[data-legacy-mode='true'] .hero-cover-art img { position: static !important; border-radius: calc(var(--neu-r-card) - 6px); width: 100%; height: auto !important; display: block; }
-html[data-legacy-mode='true'] .hero-question { margin-bottom: 1.25rem; }
-html[data-legacy-mode='true'] .name-brick-plate {
+html[data-documentation-mode='true'] .hero-cover-art img { position: static !important; border-radius: calc(var(--neu-r-card) - 6px); width: 100%; height: auto !important; display: block; }
+html[data-documentation-mode='true'] .hero-question { margin-bottom: 1.25rem; }
+html[data-documentation-mode='true'] .name-brick-plate {
   display: block !important;
   container-type: normal !important;
   width: 100% !important;
@@ -158,7 +159,7 @@ html[data-legacy-mode='true'] .name-brick-plate {
   border: 0 !important;
   padding: 0 !important;
 }
-html[data-legacy-mode='true'] .block-name {
+html[data-documentation-mode='true'] .block-name {
   display: block;
   width: auto;
   max-width: 100%;
@@ -175,10 +176,10 @@ html[data-legacy-mode='true'] .block-name {
 
 /* 3. Type ---------------------------------------------------------------- */
 
-html[data-legacy-mode='true'] body :where(p, li, a, span, small, strong, em, i, b, button, label, dd, dt, figcaption, blockquote, time, summary, td, th) {
+html[data-documentation-mode='true'] body :where(p, li, a, span, small, strong, em, i, b, button, label, dd, dt, figcaption, blockquote, time, summary, td, th) {
   font-family: var(--font-ui) !important;
 }
-html[data-legacy-mode='true'] body :where(h1, h2, h3, h4) {
+html[data-documentation-mode='true'] body :where(h1, h2, h3, h4) {
   font-family: var(--font-display) !important;
   font-weight: 400 !important;
   letter-spacing: -0.012em !important;
@@ -186,42 +187,42 @@ html[data-legacy-mode='true'] body :where(h1, h2, h3, h4) {
   text-transform: none !important;
   text-wrap: balance;
 }
-html[data-legacy-mode='true'] body :where(h1 b, h2 b, h3 b, h1 i, h2 i, h3 i) {
+html[data-documentation-mode='true'] body :where(h1 b, h2 b, h3 b, h1 i, h2 i, h3 i) {
   font-family: inherit !important;
   font-weight: inherit !important;
 }
-html[data-legacy-mode='true'] body :is(.eyebrow, .role, .hello, .github-overline, .project-label, .background-meta, .lab-project-meta, .method-index, .note-label) {
+html[data-documentation-mode='true'] body :is(.eyebrow, .role, .hello, .github-overline, .project-label, .background-meta, .lab-project-meta, .method-index, .note-label) {
   color: var(--neu-ink-soft) !important;
   font-size: .74rem !important;
   font-weight: 600 !important;
   letter-spacing: .14em !important;
   text-transform: uppercase !important;
 }
-html[data-legacy-mode='true'] body :is(small, time, figcaption, .brand-copy small, .footer-legal, .footer-copy) {
+html[data-documentation-mode='true'] body :is(small, time, figcaption, .brand-copy small, .footer-legal, .footer-copy) {
   color: var(--neu-ink-soft) !important;
 }
-html[data-legacy-mode='true'] body :is(p, li, dd) { max-width: 68ch; }
-html[data-legacy-mode='true'] body :where(code, pre, kbd) { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace !important; }
+html[data-documentation-mode='true'] body :is(p, li, dd) { max-width: 68ch; }
+html[data-documentation-mode='true'] body :where(code, pre, kbd) { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace !important; }
 
-html[data-legacy-mode='true'] body a { text-decoration: none; }
-html[data-legacy-mode='true'] body :is(main, footer) :is(p, li, dd, small) a:not(.button, .nav-cta, [class*='cta'], [class*='button']) {
+html[data-documentation-mode='true'] body a { text-decoration: none; }
+html[data-documentation-mode='true'] body :is(main, footer) :is(p, li, dd, small) a:not(.button, .nav-cta, [class*='cta'], [class*='button']) {
   color: var(--neu-accent) !important;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-html[data-legacy-mode='true'] ::selection { background: var(--neu-accent); color: #fff; }
+html[data-documentation-mode='true'] ::selection { background: var(--neu-accent); color: #fff; }
 
 /* 4. Page: white canvas, gray-white windows -------------------------------- */
 
-html[data-legacy-mode='true'] :is(.hero-intro, .hero-statement, .portfolio-footer .footer-inner) {
+html[data-documentation-mode='true'] :is(.hero-intro, .hero-statement, .portfolio-footer .footer-inner) {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
 }
 
 /* Every major section is a window: gray-white, rounded, lifted off the white page. */
-html[data-legacy-mode='true'] :is(.hero, .lab, .background, .method-section, .github-showcase, .music-shelf, .closing, .curiosities-teaser) {
+html[data-documentation-mode='true'] :is(.hero, .lab, .background, .method-section, .github-showcase, .music-shelf, .closing, .curiosities-teaser) {
   box-sizing: border-box;
   background: var(--neu-panel) !important;
   border-radius: var(--neu-r-window) !important;
@@ -232,7 +233,7 @@ html[data-legacy-mode='true'] :is(.hero, .lab, .background, .method-section, .gi
   overflow: clip;
 }
 /* The hero window carries the colour: a soft mesh of warm and cool tints. */
-html[data-legacy-mode='true'] .hero {
+html[data-documentation-mode='true'] .hero {
   background:
     radial-gradient(55% 70% at 8% 6%, rgba(255, 179, 64, .26), transparent 62%),
     radial-gradient(48% 62% at 96% 12%, rgba(92, 195, 255, .24), transparent 62%),
@@ -240,54 +241,54 @@ html[data-legacy-mode='true'] .hero {
     var(--neu-panel) !important;
 }
 /* The closing window is the page's night: the orbiting-games scene from the authorial mode, as a still. */
-html[data-legacy-mode='true'] body .closing {
+html[data-documentation-mode='true'] body .closing {
   background:
     linear-gradient(90deg, rgba(8, 10, 24, .96) 0%, rgba(8, 10, 24, .84) 36%, rgba(8, 10, 24, 0) 68%),
     url('/assets/neumorphic-contact-orbit.webp') right center / cover no-repeat,
     #0a0d1c !important;
   box-shadow: var(--elev-float) !important;
 }
-html[data-legacy-mode='true'] body .closing :is(h2, p) { color: #f5f5f7 !important; }
-html[data-legacy-mode='true'] body .closing :is(h2, p) span { color: inherit !important; }
-html[data-legacy-mode='true'] body .closing .eyebrow { color: #ffd08a !important; }
+html[data-documentation-mode='true'] body .closing :is(h2, p) { color: #f5f5f7 !important; }
+html[data-documentation-mode='true'] body .closing :is(h2, p) span { color: inherit !important; }
+html[data-documentation-mode='true'] body .closing .eyebrow { color: #ffd08a !important; }
 /* The curiosities window wears the running-through-the-village scene, still, behind the copy card. */
-html[data-legacy-mode='true'] body .curiosities-teaser {
+html[data-documentation-mode='true'] body .curiosities-teaser {
   background: url('/assets/neumorphic-corrida-scene.webp') 80% bottom / cover no-repeat, #aac4e4 !important;
   min-height: clamp(17rem, 30vw, 22rem) !important;
   display: flex;
   align-items: center;
 }
-html[data-legacy-mode='true'] body .curiosities-teaser__copy { max-width: 34rem; padding: clamp(1.25rem, 3vw, 2rem); }
-html[data-legacy-mode='true'] :is(.section, .hero) + :is(.section, .hero)::before { content: none; }
+html[data-documentation-mode='true'] body .curiosities-teaser__copy { max-width: 34rem; padding: clamp(1.25rem, 3vw, 2rem); }
+html[data-documentation-mode='true'] :is(.section, .hero) + :is(.section, .hero)::before { content: none; }
 
-html[data-legacy-mode='true']:root body :is(h1, h2, h3, h4) { font-weight: 400 !important; }
-html[data-legacy-mode='true']:root body main :is(h2) { font-size: clamp(1.9rem, 3.2vw, 2.7rem) !important; max-width: 24ch; }
-html[data-legacy-mode='true']:root body main .hero-statement h2 { font-size: clamp(2rem, 3.6vw, 3.1rem) !important; max-width: none; }
-html[data-legacy-mode='true']:root body main :is(h3) { font-size: clamp(1.35rem, 2.2vw, 1.8rem) !important; }
+html[data-documentation-mode='true']:root body :is(h1, h2, h3, h4) { font-weight: 400 !important; }
+html[data-documentation-mode='true']:root body main :is(h2) { font-size: clamp(1.9rem, 3.2vw, 2.7rem) !important; max-width: 24ch; }
+html[data-documentation-mode='true']:root body main .hero-statement h2 { font-size: clamp(2rem, 3.6vw, 3.1rem) !important; max-width: none; }
+html[data-documentation-mode='true']:root body main :is(h3) { font-size: clamp(1.35rem, 2.2vw, 1.8rem) !important; }
 
 /* 5. Cards: white, lifted off the window ------------------------------------ */
 
-html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .curiosities-teaser__copy, .method-stage, .recent-track-card, .playlist-card, .architecture-map, .cellulose-flow, .documentation-pipeline) {
+html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .curiosities-teaser__copy, .method-stage, .recent-track-card, .playlist-card, .architecture-map, .cellulose-flow, .documentation-pipeline) {
   background: var(--neu-card) !important;
   border-radius: var(--neu-r-card) !important;
   box-shadow: var(--elev-card) !important;
   border: 0 !important;
 }
-html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature) {
+html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature) {
   padding: clamp(1.25rem, 3vw, 2.25rem);
   margin-block: clamp(1rem, 2.4vw, 1.75rem);
 }
 /* Each project card wears a tint at the top corner; the index badge picks up the same hue. */
-html[data-legacy-mode='true'] body article.lab-project-card { --tint: var(--tint-amber); background: radial-gradient(90% 38% at 0% 0%, color-mix(in srgb, var(--tint) 24%, transparent), transparent 70%), var(--neu-card) !important; }
-html[data-legacy-mode='true'] body article.lab-project-card:nth-of-type(5n + 2) { --tint: var(--tint-sky); }
-html[data-legacy-mode='true'] body article.lab-project-card:nth-of-type(5n + 3) { --tint: var(--tint-rose); }
-html[data-legacy-mode='true'] body article.lab-project-card:nth-of-type(5n + 4) { --tint: var(--tint-violet); }
-html[data-legacy-mode='true'] body article.lab-project-card:nth-of-type(5n + 5) { --tint: var(--tint-mint); }
-html[data-legacy-mode='true'] body .github-feature { background: radial-gradient(80% 50% at 100% 0%, rgba(92, 195, 255, .2), transparent 70%), var(--neu-card) !important; }
+html[data-documentation-mode='true'] body article.lab-project-card { --tint: var(--tint-amber); background: radial-gradient(90% 38% at 0% 0%, color-mix(in srgb, var(--tint) 24%, transparent), transparent 70%), var(--neu-card) !important; }
+html[data-documentation-mode='true'] body article.lab-project-card:nth-of-type(5n + 2) { --tint: var(--tint-sky); }
+html[data-documentation-mode='true'] body article.lab-project-card:nth-of-type(5n + 3) { --tint: var(--tint-rose); }
+html[data-documentation-mode='true'] body article.lab-project-card:nth-of-type(5n + 4) { --tint: var(--tint-violet); }
+html[data-documentation-mode='true'] body article.lab-project-card:nth-of-type(5n + 5) { --tint: var(--tint-mint); }
+html[data-documentation-mode='true'] body .github-feature { background: radial-gradient(80% 50% at 100% 0%, rgba(92, 195, 255, .2), transparent 70%), var(--neu-card) !important; }
 
 /* 6. Wells: tags, statuses, indexes, quotes (sunken) ------------------------ */
 
-html[data-legacy-mode='true'] body :is(.lab-project-status, .lab-project-tags span, .github-tags span, .music-source-label span, .method-presenter__badges span, .hero-current, .anchor-alias) {
+html[data-documentation-mode='true'] body :is(.lab-project-status, .lab-project-tags span, .github-tags span, .music-source-label span, .method-presenter__badges span, .hero-current, .anchor-alias) {
   background: var(--neu-well) !important;
   box-shadow: var(--neu-inset-s) !important;
   border-radius: 10px !important;
@@ -297,7 +298,7 @@ html[data-legacy-mode='true'] body :is(.lab-project-status, .lab-project-tags sp
   letter-spacing: .06em;
   color: var(--neu-ink-soft) !important;
 }
-html[data-legacy-mode='true'] body :is(.lab-project-index, .background-number) {
+html[data-documentation-mode='true'] body :is(.lab-project-index, .background-number) {
   background: color-mix(in srgb, var(--tint, var(--tint-amber)) 55%, #fff) !important;
   box-shadow: var(--neu-raise-s) !important;
   border-radius: 10px !important;
@@ -306,18 +307,18 @@ html[data-legacy-mode='true'] body :is(.lab-project-index, .background-number) {
   font-weight: 700 !important;
   color: var(--neu-ink) !important;
 }
-html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note, .method-disclosure, .hero-question) {
+html[data-documentation-mode='true'] body :is(.documentation-note, .cellulose-flow-note, .method-disclosure, .hero-question) {
   background: var(--neu-well) !important;
   box-shadow: var(--neu-inset-s) !important;
   border-radius: var(--neu-r-ctl) !important;
   padding: .9rem 1.1rem;
 }
 /* On a white card the well can be the window's gray. */
-html[data-legacy-mode='true'] .hero-question { background: rgba(255, 255, 255, .72) !important; box-shadow: var(--neu-inset-s), 0 0 0 1px rgba(29, 29, 31, .05) !important; margin-bottom: 1.25rem; }
+html[data-documentation-mode='true'] .hero-question { background: rgba(255, 255, 255, .72) !important; box-shadow: var(--neu-inset-s), 0 0 0 1px rgba(29, 29, 31, .05) !important; margin-bottom: 1.25rem; }
 
 /* 7. Controls: raised at rest, sunken when pressed ---------------------------- */
 
-html[data-legacy-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .documentation-step, .method-stage-link) {
+html[data-documentation-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .documentation-step, .method-stage-link) {
   background: var(--neu-control-bg) !important;
   border-radius: var(--neu-r-ctl) !important;
   box-shadow: var(--neu-raise-s) !important;
@@ -328,17 +329,17 @@ html[data-legacy-mode='true'] body :is(button, .button, .nav-cta, .github-cta, .
   min-height: var(--target-min);
   transition: box-shadow var(--duration-base) ease, transform var(--duration-base) ease !important;
 }
-html[data-legacy-mode='true'] body :is(button, .button, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link):is(:hover) {
+html[data-documentation-mode='true'] body :is(button, .button, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link):is(:hover) {
   box-shadow: inset 0 1px 0 #fff, -4px -4px 10px #fff, 5px 7px 15px rgba(29, 29, 31, .2) !important;
   transform: translateY(-1px);
 }
-html[data-legacy-mode='true'] body :is(button, .button, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link):is(:active, [aria-pressed='true'], [aria-expanded='true']) {
+html[data-documentation-mode='true'] body :is(button, .button, .github-cta, .cv-download-button, .work-index a, .social-links a, .closing-actions a, .curiosities-teaser__link, .immersive-banner__link, .lab-project-repo, .apple-music-link, .method-stage-link):is(:active, [aria-pressed='true'], [aria-expanded='true']) {
   background: var(--neu-well) !important;
   box-shadow: var(--neu-inset-s) !important;
   transform: none;
 }
 /* Primary actions carry the accent, with a tinted shadow. */
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) {
+html[data-documentation-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) {
   background: linear-gradient(180deg, #a85f2d, var(--neu-accent)) !important;
   color: #ffffff !important;
   border: 0 !important;
@@ -348,15 +349,15 @@ html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .imm
   font-weight: 600;
   text-decoration: none !important;
 }
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) * { color: #ffffff !important; }
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) {
+html[data-documentation-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) * { color: #ffffff !important; }
+html[data-documentation-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) {
   background: var(--neu-accent) !important;
   box-shadow: inset 3px 4px 8px rgba(0, 0, 0, .3), inset -2px -2px 5px rgba(255, 255, 255, .14) !important;
 }
 
 /* 7b. Colour on the controls: soft pastel gradients with ink text (>= 12:1), same four hues
    as the rest of the page. Primary actions keep the saturated copper with white text. */
-html[data-legacy-mode='true'] {
+html[data-documentation-mode='true'] {
   /* Saturated pairs for small things (buttons, chips): ink text, >= 5.2:1. */
   --grad-warm: linear-gradient(135deg, #ffb347 0%, #ff7a59 100%);
   --grad-cool: linear-gradient(135deg, #3fd0d4 0%, #4f8cff 100%);
@@ -372,37 +373,37 @@ html[data-legacy-mode='true'] {
   /* Primary actions: deep indigo to violet, white text (>= 5:1). */
   --grad-primary: linear-gradient(135deg, #3b4de8 0%, #8a3ffc 100%);
 }
-html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button) { background: var(--grad-lemon) !important; }
-html[data-legacy-mode='true'] body :is(.lab-project-repo, .curiosities-teaser__link) { background: var(--grad-warm) !important; }
-html[data-legacy-mode='true'] body :is(.work-index a, .apple-music-link, .method-stage-link) { background: var(--grad-cool) !important; }
-html[data-legacy-mode='true'] body .social-links a { background: var(--grad-violet) !important; }
-html[data-legacy-mode='true'] body .closing-actions .closing-whatsapp-button { background: var(--grad-fresh) !important; }
-html[data-legacy-mode='true'] body .closing-actions .closing-linkedin-button { background: var(--grad-cool) !important; }
-html[data-legacy-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link, .work-index a, .apple-music-link, .method-stage-link, .social-links a, .closing-actions a):is(:hover, :focus-visible) { filter: saturate(1.2) brightness(1.03); }
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) { background: var(--grad-primary) !important; }
-html[data-legacy-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) { background: #4a35d0 !important; }
+html[data-documentation-mode='true'] body :is(.github-cta, .cv-download-button) { background: var(--grad-lemon) !important; }
+html[data-documentation-mode='true'] body :is(.lab-project-repo, .curiosities-teaser__link) { background: var(--grad-warm) !important; }
+html[data-documentation-mode='true'] body :is(.work-index a, .apple-music-link, .method-stage-link) { background: var(--grad-cool) !important; }
+html[data-documentation-mode='true'] body .social-links a { background: var(--grad-violet) !important; }
+html[data-documentation-mode='true'] body .closing-actions .closing-whatsapp-button { background: var(--grad-fresh) !important; }
+html[data-documentation-mode='true'] body .closing-actions .closing-linkedin-button { background: var(--grad-cool) !important; }
+html[data-documentation-mode='true'] body :is(.github-cta, .cv-download-button, .lab-project-repo, .curiosities-teaser__link, .work-index a, .apple-music-link, .method-stage-link, .social-links a, .closing-actions a):is(:hover, :focus-visible) { filter: saturate(1.2) brightness(1.03); }
+html[data-documentation-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child) { background: var(--grad-primary) !important; }
+html[data-documentation-mode='true'] body :is(.button.primary, .editorial-primary, .immersive-banner__cta, .nav-cta, .closing-email-button, .hero-actions .button:first-child):is(:active) { background: #4a35d0 !important; }
 
 /* On the dark closing tile the buttons cast a dark shadow instead of a white highlight. */
-html[data-legacy-mode='true'] body .closing .closing-actions a { border: 0 !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 20px -8px rgba(0, 0, 0, .75) !important; }
+html[data-documentation-mode='true'] body .closing .closing-actions a { border: 0 !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 20px -8px rgba(0, 0, 0, .75) !important; }
 
 /* Text boxes: notes and callouts take a tinted gradient instead of a gray well. */
-html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { background: var(--soft-lemon) !important; box-shadow: var(--neu-raise-s) !important; }
-html[data-legacy-mode='true'] body .method-disclosure { background: var(--soft-cool) !important; box-shadow: var(--neu-raise-s) !important; }
-html[data-legacy-mode='true'] body .hero-question { background: linear-gradient(135deg, rgba(255, 226, 184, .75), rgba(255, 201, 184, .6)) !important; }
-html[data-legacy-mode='true'] body .hero-note { background: linear-gradient(160deg, #fff2a8 0%, #ffffff 72%) !important; }
-html[data-legacy-mode='true'] body .lab-project-status { background: var(--grad-fresh) !important; box-shadow: var(--neu-raise-s) !important; color: var(--neu-ink) !important; }
-html[data-legacy-mode='true'] body .lab-project-tags span { background: color-mix(in srgb, var(--tint, var(--tint-amber)) 30%, #fff) !important; box-shadow: none !important; color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { background: var(--soft-lemon) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-documentation-mode='true'] body .method-disclosure { background: var(--soft-cool) !important; box-shadow: var(--neu-raise-s) !important; }
+html[data-documentation-mode='true'] body .hero-question { background: linear-gradient(135deg, rgba(255, 226, 184, .75), rgba(255, 201, 184, .6)) !important; }
+html[data-documentation-mode='true'] body .hero-note { background: linear-gradient(160deg, #fff2a8 0%, #ffffff 72%) !important; }
+html[data-documentation-mode='true'] body .lab-project-status { background: var(--grad-fresh) !important; box-shadow: var(--neu-raise-s) !important; color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body .lab-project-tags span { background: color-mix(in srgb, var(--tint, var(--tint-amber)) 30%, #fff) !important; box-shadow: none !important; color: var(--neu-ink) !important; }
 
 /* 8. Focus: a solid ring, never only a shadow ------------------------------ */
 
-html[data-legacy-mode='true'] body :where(a, button, summary, [tabindex]):focus-visible {
+html[data-documentation-mode='true'] body :where(a, button, summary, [tabindex]):focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-on-light) !important;
   outline-offset: var(--focus-ring-offset) !important;
 }
 
 /* 9. Header (glass) and footer ---------------------------------------------- */
 
-html[data-legacy-mode='true'] .site-header {
+html[data-documentation-mode='true'] .site-header {
   position: sticky;
   top: 0;
   z-index: var(--z-overlay);
@@ -414,7 +415,7 @@ html[data-legacy-mode='true'] .site-header {
   border-bottom: 1px solid rgba(29, 29, 31, .09) !important;
   box-shadow: 0 8px 24px -16px rgba(29, 29, 31, .25) !important;
 }
-html[data-legacy-mode='true'] .nav-shell {
+html[data-documentation-mode='true'] .nav-shell {
   width: min(var(--page), 100%);
   margin-inline: auto;
   padding: 0;
@@ -422,17 +423,17 @@ html[data-legacy-mode='true'] .nav-shell {
   box-shadow: none !important;
   border-radius: 0 !important;
 }
-html[data-legacy-mode='true'] .nav-standards { display: none !important; }
-html[data-legacy-mode='true'] .brand { background: none !important; box-shadow: none !important; min-height: 0; }
-html[data-legacy-mode='true'] .brand-mark {
+html[data-documentation-mode='true'] .nav-standards { display: none !important; }
+html[data-documentation-mode='true'] .brand { background: none !important; box-shadow: none !important; min-height: 0; }
+html[data-documentation-mode='true'] .brand-mark {
   box-shadow: 0 0 0 2px #fff, 0 3px 10px rgba(29, 29, 31, .25) !important;
   border-radius: 50% !important;
   overflow: hidden;
 }
-html[data-legacy-mode='true'] .brand-copy strong { font-weight: 600; }
-html[data-legacy-mode='true'] :is(.nav-links, .nav-sections, .nav-sections .xm-glass) { background: none !important; box-shadow: none !important; border: 0 !important; }
+html[data-documentation-mode='true'] .brand-copy strong { font-weight: 600; }
+html[data-documentation-mode='true'] :is(.nav-links, .nav-sections, .nav-sections .xm-glass) { background: none !important; box-shadow: none !important; border: 0 !important; }
 /* Wide screens: plain text links like a product site; hover/current gets a soft pill. */
-html[data-legacy-mode='true'] .nav-sections a:not(.nav-cta) {
+html[data-documentation-mode='true'] .nav-sections a:not(.nav-cta) {
   background: transparent !important;
   box-shadow: none !important;
   border: 0 !important;
@@ -443,53 +444,53 @@ html[data-legacy-mode='true'] .nav-sections a:not(.nav-cta) {
   min-height: 0;
   color: var(--neu-ink) !important;
 }
-html[data-legacy-mode='true'] .nav-sections a:not(.nav-cta):is(:hover, [aria-current]) { background: rgba(29, 29, 31, .07) !important; }
-html[data-legacy-mode='true'] .nav-sections .nav-cta { padding: .45rem 1rem; font-size: .88rem; min-height: 0; border-radius: var(--radius-full) !important; }
-html[data-legacy-mode='true'] :is(.nav-links, .nav-sections, .xm-glass)::before, html[data-legacy-mode='true'] :is(.nav-links, .nav-sections, .xm-glass)::after, html[data-legacy-mode='true'] .nav-links a::before, html[data-legacy-mode='true'] .nav-links a::after { display: none !important; }
+html[data-documentation-mode='true'] .nav-sections a:not(.nav-cta):is(:hover, [aria-current]) { background: rgba(29, 29, 31, .07) !important; }
+html[data-documentation-mode='true'] .nav-sections .nav-cta { padding: .45rem 1rem; font-size: .88rem; min-height: 0; border-radius: var(--radius-full) !important; }
+html[data-documentation-mode='true'] :is(.nav-links, .nav-sections, .xm-glass)::before, html[data-documentation-mode='true'] :is(.nav-links, .nav-sections, .xm-glass)::after, html[data-documentation-mode='true'] .nav-links a::before, html[data-documentation-mode='true'] .nav-links a::after { display: none !important; }
 @media (min-width: 1181px) {
-  html[data-legacy-mode='true'] .nav-sections .xm-glass { display: flex; flex-wrap: wrap; gap: .15rem; align-items: center; }
+  html[data-documentation-mode='true'] .nav-sections .xm-glass { display: flex; flex-wrap: wrap; gap: .15rem; align-items: center; }
 }
 /* Below 1181px the links open as a floating panel under the bar. */
-html[data-legacy-mode='true'][data-nav-js='true'] .site-header .nav-sections {
+html[data-documentation-mode='true'][data-nav-js='true'] .site-header .nav-sections {
   background: rgba(255, 255, 255, .94) !important;
   border-radius: var(--neu-r-card) !important;
   box-shadow: var(--elev-float) !important;
 }
 @media (max-width: 1180px) {
-  html[data-legacy-mode='true'][data-nav-js='true'] .site-header .nav-sections a:not(.nav-cta) { background: var(--neu-panel) !important; border-radius: var(--neu-r-ctl) !important; }
+  html[data-documentation-mode='true'][data-nav-js='true'] .site-header .nav-sections a:not(.nav-cta) { background: var(--neu-panel) !important; border-radius: var(--neu-r-ctl) !important; }
 }
-html[data-legacy-mode='true'] .nav-menu-toggle[aria-expanded='true'] { background: var(--neu-well) !important; box-shadow: var(--neu-inset-s) !important; }
-html[data-legacy-mode='true'] .nav-elements { display: none !important; }
-html[data-legacy-mode='true'] .nav-menu-toggle { border-radius: 50% !important; }
-html[data-legacy-mode='true'] .portfolio-footer {
+html[data-documentation-mode='true'] .nav-menu-toggle[aria-expanded='true'] { background: var(--neu-well) !important; box-shadow: var(--neu-inset-s) !important; }
+html[data-documentation-mode='true'] .nav-elements { display: none !important; }
+html[data-documentation-mode='true'] .nav-menu-toggle { border-radius: 50% !important; }
+html[data-documentation-mode='true'] .portfolio-footer {
   background: var(--neu-panel) !important;
   border-radius: var(--neu-r-window) var(--neu-r-window) 0 0 !important;
   box-shadow: inset 0 1px 0 #fff, 0 -1px 2px rgba(29, 29, 31, .04) !important;
   margin-top: clamp(2rem, 5vw, 4rem);
   padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 4vw, 3.5rem) !important;
 }
-html[data-legacy-mode='true'] .footer-mark { font-family: var(--font-display) !important; font-size: 1.4rem; }
+html[data-documentation-mode='true'] .footer-mark { font-family: var(--font-display) !important; font-size: 1.4rem; }
 
 /* 10. Page-specific skins -------------------------------------------------- */
 
 /* Lab cards: copy on the left, a sunken frame for the cover on the right. */
-html[data-legacy-mode='true'] :is(.lab-project-cover-frame, .lab-project-cover-frame-essay) {
+html[data-documentation-mode='true'] :is(.lab-project-cover-frame, .lab-project-cover-frame-essay) {
   background: var(--neu-well) !important;
   box-shadow: var(--neu-inset-m) !important;
   border-radius: var(--neu-r-card) !important;
   overflow: hidden;
 }
-html[data-legacy-mode='true'] .lab-project-card .lab-project-title,
-html[data-legacy-mode='true'] .lab-project-card h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem) !important; }
-html[data-legacy-mode='true'] .lab-project-tags { margin-bottom: 1rem; }
-html[data-legacy-mode='true'] .lab-project-book { border-left: 3px solid var(--tint, var(--tint-amber)) !important; padding-left: 1rem; margin-block: .75rem; }
-html[data-legacy-mode='true'] .curiosities-teaser { width: auto !important; max-width: none !important; margin-inline: 0 !important; }
-html[data-legacy-mode='true'] body .social-links a { padding: .5rem .7rem !important; width: auto !important; min-width: var(--target-min); justify-content: center; }
-html[data-legacy-mode='true'] body :is(.lab-project-repo, .apple-music-link, .github-cta, .closing-actions a, .curiosities-teaser__link) { padding: .55rem 1rem; display: inline-flex; align-items: center; gap: .4rem; }
+html[data-documentation-mode='true'] .lab-project-card .lab-project-title,
+html[data-documentation-mode='true'] .lab-project-card h3 { font-size: clamp(1.5rem, 2.6vw, 2.2rem) !important; }
+html[data-documentation-mode='true'] .lab-project-tags { margin-bottom: 1rem; }
+html[data-documentation-mode='true'] .lab-project-book { border-left: 3px solid var(--tint, var(--tint-amber)) !important; padding-left: 1rem; margin-block: .75rem; }
+html[data-documentation-mode='true'] .curiosities-teaser { width: auto !important; max-width: none !important; margin-inline: 0 !important; }
+html[data-documentation-mode='true'] body .social-links a { padding: .5rem .7rem !important; width: auto !important; min-width: var(--target-min); justify-content: center; }
+html[data-documentation-mode='true'] body :is(.lab-project-repo, .apple-music-link, .github-cta, .closing-actions a, .curiosities-teaser__link) { padding: .55rem 1rem; display: inline-flex; align-items: center; gap: .4rem; }
 
 /* Mind map: the four questions become a 2 x 2 board of tinted, raised cards. */
-html[data-legacy-mode='true'] .pi-map { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; background: none !important; margin-top: .5rem; }
-html[data-legacy-mode='true'] .pi-map .mm-block {
+html[data-documentation-mode='true'] .pi-map { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; background: none !important; margin-top: .5rem; }
+html[data-documentation-mode='true'] .pi-map .mm-block {
   position: static !important;
   transform: none !important;
   width: auto !important;
@@ -499,92 +500,92 @@ html[data-legacy-mode='true'] .pi-map .mm-block {
   border-radius: var(--neu-r-card) !important;
   padding: 1.1rem 1.25rem 1.2rem;
 }
-html[data-legacy-mode='true'] .pi-map .mm-a { background: var(--soft-cool) !important; }
-html[data-legacy-mode='true'] .pi-map .mm-b { background: var(--soft-fresh) !important; }
-html[data-legacy-mode='true'] .pi-map .mm-c { background: var(--soft-violet) !important; }
-html[data-legacy-mode='true'] .pi-map .mm-d { background: var(--soft-warm) !important; }
-html[data-legacy-mode='true']:root body .pi-map .mm-title { margin: 0 0 .45rem; font-family: var(--font-display) !important; font-size: 1.25rem !important; font-weight: 600 !important; line-height: 1.2; }
-html[data-legacy-mode='true'] .pi-map .mm-block p { margin: 0; font-size: .94rem; line-height: 1.55; }
-html[data-legacy-mode='true'] .pi-map .mm-center { display: none !important; }
-html[data-legacy-mode='true']:root body .pi-map .mm-title span { font-family: inherit !important; font-weight: inherit !important; font-size: inherit !important; }
-html[data-legacy-mode='true'] .pi-map .mm-a { grid-area: 1 / 1; }
-html[data-legacy-mode='true'] .pi-map .mm-b { grid-area: 1 / 2; }
-html[data-legacy-mode='true'] .pi-map .mm-c { grid-area: 2 / 1; }
-html[data-legacy-mode='true'] .pi-map .mm-d { grid-area: 2 / 2; }
+html[data-documentation-mode='true'] .pi-map .mm-a { background: var(--soft-cool) !important; }
+html[data-documentation-mode='true'] .pi-map .mm-b { background: var(--soft-fresh) !important; }
+html[data-documentation-mode='true'] .pi-map .mm-c { background: var(--soft-violet) !important; }
+html[data-documentation-mode='true'] .pi-map .mm-d { background: var(--soft-warm) !important; }
+html[data-documentation-mode='true']:root body .pi-map .mm-title { margin: 0 0 .45rem; font-family: var(--font-display) !important; font-size: 1.25rem !important; font-weight: 600 !important; line-height: 1.2; }
+html[data-documentation-mode='true'] .pi-map .mm-block p { margin: 0; font-size: .94rem; line-height: 1.55; }
+html[data-documentation-mode='true'] .pi-map .mm-center { display: none !important; }
+html[data-documentation-mode='true']:root body .pi-map .mm-title span { font-family: inherit !important; font-weight: inherit !important; font-size: inherit !important; }
+html[data-documentation-mode='true'] .pi-map .mm-a { grid-area: 1 / 1; }
+html[data-documentation-mode='true'] .pi-map .mm-b { grid-area: 1 / 2; }
+html[data-documentation-mode='true'] .pi-map .mm-c { grid-area: 2 / 1; }
+html[data-documentation-mode='true'] .pi-map .mm-d { grid-area: 2 / 2; }
 @media (max-width: 720px) {
-  html[data-legacy-mode='true'] .pi-map { grid-template-columns: 1fr; }
-  html[data-legacy-mode='true'] .pi-map :is(.mm-a, .mm-b, .mm-c, .mm-d) { grid-area: auto; }
+  html[data-documentation-mode='true'] .pi-map { grid-template-columns: 1fr; }
+  html[data-documentation-mode='true'] .pi-map :is(.mm-a, .mm-b, .mm-c, .mm-d) { grid-area: auto; }
 }
 
 /* Method: each of the four steps sits on its own tinted card. */
-html[data-legacy-mode='true'] body .method-steps { gap: 1rem; }
-html[data-legacy-mode='true'] body .method-steps > li {
+html[data-documentation-mode='true'] body .method-steps { gap: 1rem; }
+html[data-documentation-mode='true'] body .method-steps > li {
   background: var(--soft-warm) !important;
   box-shadow: var(--neu-raise-s) !important;
   border-radius: var(--neu-r-card) !important;
   padding: 1.2rem 1.3rem 1.35rem !important;
   border: 0 !important;
 }
-html[data-legacy-mode='true'] body .method-steps > li:nth-child(2) { background: var(--soft-cool) !important; }
-html[data-legacy-mode='true'] body .method-steps > li:nth-child(3) { background: var(--soft-fresh) !important; }
-html[data-legacy-mode='true'] body .method-steps > li:nth-child(4) { background: var(--soft-violet) !important; }
+html[data-documentation-mode='true'] body .method-steps > li:nth-child(2) { background: var(--soft-cool) !important; }
+html[data-documentation-mode='true'] body .method-steps > li:nth-child(3) { background: var(--soft-fresh) !important; }
+html[data-documentation-mode='true'] body .method-steps > li:nth-child(4) { background: var(--soft-violet) !important; }
 
 /* Documentation: the flow always fits its box, from desktop to phone. */
-html[data-legacy-mode='true'] body .lab-project-system-documentation { overflow: hidden; }
-html[data-legacy-mode='true'] body .documentation-pipeline {
+html[data-documentation-mode='true'] body .lab-project-system-documentation { overflow: hidden; }
+html[data-documentation-mode='true'] body .documentation-pipeline {
   width: 100% !important;
   max-width: 100%;
   box-sizing: border-box;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) !important;
   gap: .25rem;
 }
-html[data-legacy-mode='true'] body .documentation-step { min-height: 0 !important; min-width: 0; padding: .5rem .15rem; overflow-wrap: normal; word-break: normal; }
-html[data-legacy-mode='true'] body .documentation-step strong { font-size: clamp(.66rem, .9vw, .8rem); letter-spacing: 0; }
-html[data-legacy-mode='true'] body .documentation-step small { font-size: .62rem; }
-html[data-legacy-mode='true'] body .documentation-arrow { font-size: .8rem; }
+html[data-documentation-mode='true'] body .documentation-step { min-height: 0 !important; min-width: 0; padding: .5rem .15rem; overflow-wrap: normal; word-break: normal; }
+html[data-documentation-mode='true'] body .documentation-step strong { font-size: clamp(.66rem, .9vw, .8rem); letter-spacing: 0; }
+html[data-documentation-mode='true'] body .documentation-step small { font-size: .62rem; }
+html[data-documentation-mode='true'] body .documentation-arrow { font-size: .8rem; }
 @media (max-width: 420px) {
-  html[data-legacy-mode='true'] body .documentation-pipeline { gap: .1rem; }
-  html[data-legacy-mode='true'] body .documentation-step strong { font-size: .6rem; }
-  html[data-legacy-mode='true'] body .documentation-step small { font-size: .56rem; }
-  html[data-legacy-mode='true'] body .documentation-arrow { font-size: .65rem; }
+  html[data-documentation-mode='true'] body .documentation-pipeline { gap: .1rem; }
+  html[data-documentation-mode='true'] body .documentation-step strong { font-size: .6rem; }
+  html[data-documentation-mode='true'] body .documentation-step small { font-size: .56rem; }
+  html[data-documentation-mode='true'] body .documentation-arrow { font-size: .65rem; }
 }
-html[data-legacy-mode='true'] body .documentation-note { width: 100%; max-width: 100%; box-sizing: border-box; text-align: center; font-size: clamp(.62rem, .85vw, .72rem); letter-spacing: .02em; padding: .6rem .6rem; }
+html[data-documentation-mode='true'] body .documentation-note { width: 100%; max-width: 100%; box-sizing: border-box; text-align: center; font-size: clamp(.62rem, .85vw, .72rem); letter-spacing: .02em; padding: .6rem .6rem; }
 
 /* Background / Percurso: a quiet timeline. */
-html[data-legacy-mode='true'] .background-entry {
+html[data-documentation-mode='true'] .background-entry {
   border-bottom: 1px solid var(--neu-rule) !important;
   padding-block: 1.1rem;
 }
 /* The training icons already have transparent backgrounds: no plate behind them. */
-html[data-legacy-mode='true'] body .background-mark { background: none !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; }
+html[data-documentation-mode='true'] body .background-mark { background: none !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; }
 
 /* Música: the cover is the content, so it stays; the glass becomes a white card. */
-html[data-legacy-mode='true'] .music-listening-panel {
+html[data-documentation-mode='true'] .music-listening-panel {
   background: var(--neu-card) !important;
   border-radius: var(--neu-r-card) !important;
   box-shadow: var(--elev-card) !important;
   border: 0 !important;
   overflow: hidden;
 }
-html[data-legacy-mode='true'] .music-listening-panel::before { content: none !important; }
-html[data-legacy-mode='true'] .cover-backdrop, html[data-legacy-mode='true'] .cover-dust, html[data-legacy-mode='true'] .cover-beam,
-html[data-legacy-mode='true'] .cover-notes, html[data-legacy-mode='true'] .cover-fx, html[data-legacy-mode='true'] .cover-wave { display: none !important; }
+html[data-documentation-mode='true'] .music-listening-panel::before { content: none !important; }
+html[data-documentation-mode='true'] .cover-backdrop, html[data-documentation-mode='true'] .cover-dust, html[data-documentation-mode='true'] .cover-beam,
+html[data-documentation-mode='true'] .cover-notes, html[data-documentation-mode='true'] .cover-fx, html[data-documentation-mode='true'] .cover-wave { display: none !important; }
 /* Last.fm cover: small, on the right, perfectly still. */
-html[data-legacy-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; min-height: 0 !important; align-items: center; gap: clamp(1rem, 3vw, 2rem); padding: clamp(1rem, 2.5vw, 1.6rem) !important; }
-html[data-legacy-mode='true'] body .recent-track-card .recent-track-copy { order: 1; background: none !important; box-shadow: none !important; padding: 0 !important; }
-html[data-legacy-mode='true'] body .recent-track-card .recent-artwork-shell { display: block !important; order: 2; width: clamp(5.5rem, 11vw, 8rem) !important; max-width: none !important; aspect-ratio: 1; margin: 0 !important; justify-self: end; background: none !important; border: 0 !important; box-shadow: none !important; transform: none !important; }
-html[data-legacy-mode='true'] body .recent-track-card .cover-frame { width: 100%; height: 100%; border-radius: var(--neu-r-ctl) !important; box-shadow: var(--neu-raise-s) !important; overflow: hidden; -webkit-mask-image: none !important; mask-image: none !important; transform: none !important; }
-html[data-legacy-mode='true'] body .recent-track-card .recent-artwork { width: 100%; height: 100%; object-fit: cover; transform: none !important; }
-html[data-legacy-mode='true'] body .recent-track-card :is(.cover-frame, .recent-artwork-shell, .recent-artwork, .recent-artwork-fallback) { transition: none !important; animation: none !important; }
-html[data-legacy-mode='true'] body .recent-track-card [hidden] { display: none !important; }
-html[data-legacy-mode='true'] body .recent-track-card .recent-artwork-fallback { transform: none !important; font-size: 2.4rem; display: grid; place-items: center; width: 100%; height: 100%; background: var(--soft-violet) !important; }
-@media (max-width: 720px) { html[data-legacy-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; } }
-html[data-legacy-mode='true'] .music-listening-panel :is(.music-kicker, .recent-artist, .recent-album, .music-track-age) { color: var(--neu-ink-soft) !important; }
-html[data-legacy-mode='true'] .music-listening-panel h3 { font-size: clamp(1.6rem, 3.2vw, 2.6rem) !important; }
-html[data-legacy-mode='true'] .music-kicker-dot { background: var(--neu-accent) !important; border-radius: 50%; }
+html[data-documentation-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; min-height: 0 !important; align-items: center; gap: clamp(1rem, 3vw, 2rem); padding: clamp(1rem, 2.5vw, 1.6rem) !important; }
+html[data-documentation-mode='true'] body .recent-track-card .recent-track-copy { order: 1; background: none !important; box-shadow: none !important; padding: 0 !important; }
+html[data-documentation-mode='true'] body .recent-track-card .recent-artwork-shell { display: block !important; order: 2; width: clamp(5.5rem, 11vw, 8rem) !important; max-width: none !important; aspect-ratio: 1; margin: 0 !important; justify-self: end; background: none !important; border: 0 !important; box-shadow: none !important; transform: none !important; }
+html[data-documentation-mode='true'] body .recent-track-card .cover-frame { width: 100%; height: 100%; border-radius: var(--neu-r-ctl) !important; box-shadow: var(--neu-raise-s) !important; overflow: hidden; -webkit-mask-image: none !important; mask-image: none !important; transform: none !important; }
+html[data-documentation-mode='true'] body .recent-track-card .recent-artwork { width: 100%; height: 100%; object-fit: cover; transform: none !important; }
+html[data-documentation-mode='true'] body .recent-track-card :is(.cover-frame, .recent-artwork-shell, .recent-artwork, .recent-artwork-fallback) { transition: none !important; animation: none !important; }
+html[data-documentation-mode='true'] body .recent-track-card [hidden] { display: none !important; }
+html[data-documentation-mode='true'] body .recent-track-card .recent-artwork-fallback { transform: none !important; font-size: 2.4rem; display: grid; place-items: center; width: 100%; height: 100%; background: var(--soft-violet) !important; }
+@media (max-width: 720px) { html[data-documentation-mode='true'] body .recent-track-card.cover-hero { grid-template-columns: minmax(0, 1fr) auto !important; } }
+html[data-documentation-mode='true'] .music-listening-panel :is(.music-kicker, .recent-artist, .recent-album, .music-track-age) { color: var(--neu-ink-soft) !important; }
+html[data-documentation-mode='true'] .music-listening-panel h3 { font-size: clamp(1.6rem, 3.2vw, 2.6rem) !important; }
+html[data-documentation-mode='true'] .music-kicker-dot { background: var(--neu-accent) !important; border-radius: 50%; }
 
 /* The Sophia flight banner is the colour moment of the page: a deep night-sky tile. */
-html[data-legacy-mode='true'] .immersive-banner {
+html[data-documentation-mode='true'] .immersive-banner {
   overflow: hidden;
   background:
     radial-gradient(70% 90% at 82% 30%, rgba(169, 139, 255, .45), transparent 62%),
@@ -595,16 +596,16 @@ html[data-legacy-mode='true'] .immersive-banner {
   padding: clamp(1.5rem, 4vw, 3rem);
   margin-block: clamp(1rem, 2.4vw, 1.75rem);
 }
-html[data-legacy-mode='true'] body .immersive-banner :is(h2, h3, p, span, small, div, li) { color: #f5f5f7 !important; }
-html[data-legacy-mode='true'] body .immersive-banner :is(.eyebrow, small) { color: #d2d2d7 !important; }
-html[data-legacy-mode='true'] body .immersive-banner .immersive-banner__link { background: rgba(255, 255, 255, .12) !important; border: 1px solid rgba(255, 255, 255, .28) !important; color: #ffffff !important; box-shadow: none !important; }
-html[data-legacy-mode='true'] body .immersive-banner .immersive-banner__link * { color: #ffffff !important; }
-html[data-legacy-mode='true']:root body .immersive-banner h2 { font-size: clamp(1.8rem, 3vw, 2.4rem) !important; max-width: none; }
-html[data-legacy-mode='true'] .immersive-banner__art { display: block !important; }
+html[data-documentation-mode='true'] body .immersive-banner :is(h2, h3, p, span, small, div, li) { color: #f5f5f7 !important; }
+html[data-documentation-mode='true'] body .immersive-banner :is(.eyebrow, small) { color: #d2d2d7 !important; }
+html[data-documentation-mode='true'] body .immersive-banner .immersive-banner__link { background: rgba(255, 255, 255, .12) !important; border: 1px solid rgba(255, 255, 255, .28) !important; color: #ffffff !important; box-shadow: none !important; }
+html[data-documentation-mode='true'] body .immersive-banner .immersive-banner__link * { color: #ffffff !important; }
+html[data-documentation-mode='true']:root body .immersive-banner h2 { font-size: clamp(1.8rem, 3vw, 2.4rem) !important; max-width: none; }
+html[data-documentation-mode='true'] .immersive-banner__art { display: block !important; }
 
 /* 10a. Lab diagrams: the process flows come back as soft chips inside a sunken stage ---- */
 
-html[data-legacy-mode='true'] body .lab-project-system {
+html[data-documentation-mode='true'] body .lab-project-system {
   display: grid;
   place-items: center;
   align-content: center;
@@ -616,12 +617,12 @@ html[data-legacy-mode='true'] body .lab-project-system {
   background: var(--neu-well) !important;
   box-shadow: var(--neu-inset-m) !important;
 }
-html[data-legacy-mode='true'] body .lab-project-system :is(.cellulose-flow, .architecture-map, .documentation-pipeline) { background: none !important; box-shadow: none !important; border-radius: 0 !important; }
-html[data-legacy-mode='true'] body .cellulose-flow-title { margin: 0; font-size: .72rem !important; font-weight: 700 !important; letter-spacing: .1em; text-transform: uppercase; color: var(--neu-ink-soft) !important; text-align: center; }
+html[data-documentation-mode='true'] body .lab-project-system :is(.cellulose-flow, .architecture-map, .documentation-pipeline) { background: none !important; box-shadow: none !important; border-radius: 0 !important; }
+html[data-documentation-mode='true'] body .cellulose-flow-title { margin: 0; font-size: .72rem !important; font-weight: 700 !important; letter-spacing: .1em; text-transform: uppercase; color: var(--neu-ink-soft) !important; text-align: center; }
 
 /* Kraft flow: a vertical chain; the light walks down it (the authorial cf-lit, in daylight). */
-html[data-legacy-mode='true'] body .cellulose-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; width: min(100%, 17rem); }
-html[data-legacy-mode='true'] body .cf-step {
+html[data-documentation-mode='true'] body .cellulose-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; width: min(100%, 17rem); }
+html[data-documentation-mode='true'] body .cf-step {
   position: relative;
   margin: 0;
   padding: .5rem .9rem;
@@ -635,18 +636,18 @@ html[data-legacy-mode='true'] body .cf-step {
   animation: neu-step-lit 9s ease-in-out infinite !important;
   animation-delay: calc(var(--i) * 1.5s - 9s) !important;
 }
-html[data-legacy-mode='true'] body .cf-step:nth-child(2n) { background: var(--grad-cool) !important; }
-html[data-legacy-mode='true'] body .cf-step:nth-child(3n) { background: var(--grad-fresh) !important; }
-html[data-legacy-mode='true'] body .cf-step.is-measure { background: var(--grad-primary) !important; }
-html[data-legacy-mode='true'] body .cf-step.is-measure :is(span, small) { color: #ffffff !important; }
-html[data-legacy-mode='true'] body .cf-step small { display: block; font-size: .7rem; font-weight: 500; }
-html[data-legacy-mode='true'] body .cf-step + .cf-step { margin-top: 1rem; }
-html[data-legacy-mode='true'] body .cf-step + .cf-step::before { content: ''; position: absolute; left: 50%; top: -1rem; width: 2px; height: 1rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); }
-html[data-legacy-mode='true'] body .cf-step + .cf-step::after { content: ''; position: absolute; left: 50%; top: -.4rem; width: .45rem; height: .45rem; border-right: 2px solid rgba(29, 29, 31, .4); border-bottom: 2px solid rgba(29, 29, 31, .4); transform: translateX(-50%) rotate(45deg); }
+html[data-documentation-mode='true'] body .cf-step:nth-child(2n) { background: var(--grad-cool) !important; }
+html[data-documentation-mode='true'] body .cf-step:nth-child(3n) { background: var(--grad-fresh) !important; }
+html[data-documentation-mode='true'] body .cf-step.is-measure { background: var(--grad-primary) !important; }
+html[data-documentation-mode='true'] body .cf-step.is-measure :is(span, small) { color: #ffffff !important; }
+html[data-documentation-mode='true'] body .cf-step small { display: block; font-size: .7rem; font-weight: 500; }
+html[data-documentation-mode='true'] body .cf-step + .cf-step { margin-top: 1rem; }
+html[data-documentation-mode='true'] body .cf-step + .cf-step::before { content: ''; position: absolute; left: 50%; top: -1rem; width: 2px; height: 1rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); }
+html[data-documentation-mode='true'] body .cf-step + .cf-step::after { content: ''; position: absolute; left: 50%; top: -.4rem; width: .45rem; height: .45rem; border-right: 2px solid rgba(29, 29, 31, .4); border-bottom: 2px solid rgba(29, 29, 31, .4); transform: translateX(-50%) rotate(45deg); }
 
 /* NIR stages (Pesquisa → Revisão → Reescrita → Apresentação): four chips, each breathing on its own clock. */
-html[data-legacy-mode='true'] body .knowledge-flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: .45rem .3rem; width: 100%; max-width: none; margin: .5rem 0 0; padding: 0; }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage {
+html[data-documentation-mode='true'] body .knowledge-flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: .45rem .3rem; width: 100%; max-width: none; margin: .5rem 0 0; padding: 0; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage {
   padding: .45rem .7rem;
   font-size: .84rem;
   border: 0 !important;
@@ -656,40 +657,40 @@ html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage {
   font-weight: 600;
   animation: neu-step-lit 5s ease-in-out infinite !important;
 }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='revisao'] { background: var(--grad-cool) !important; animation-duration: 5.7s !important; animation-delay: -3.4s !important; }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='reescrita'] { background: var(--grad-fresh) !important; animation-duration: 3.9s !important; animation-delay: -.6s !important; }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='apresentacao'] { background: var(--grad-violet) !important; animation-duration: 6.3s !important; animation-delay: -2.2s !important; }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage[aria-pressed='true'] { background: var(--grad-primary) !important; color: #ffffff !important; }
-html[data-legacy-mode='true'] body .knowledge-flow .knowledge-stage:disabled { opacity: 1; cursor: default; }
-html[data-legacy-mode='true'] body .knowledge-flow i { color: var(--neu-ink-soft) !important; font-style: normal; font-weight: 700; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='revisao'] { background: var(--grad-cool) !important; animation-duration: 5.7s !important; animation-delay: -3.4s !important; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='reescrita'] { background: var(--grad-fresh) !important; animation-duration: 3.9s !important; animation-delay: -.6s !important; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage[data-stage='apresentacao'] { background: var(--grad-violet) !important; animation-duration: 6.3s !important; animation-delay: -2.2s !important; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage[aria-pressed='true'] { background: var(--grad-primary) !important; color: #ffffff !important; }
+html[data-documentation-mode='true'] body .knowledge-flow .knowledge-stage:disabled { opacity: 1; cursor: default; }
+html[data-documentation-mode='true'] body .knowledge-flow i { color: var(--neu-ink-soft) !important; font-style: normal; font-weight: 700; }
 
 /* Architecture and documentation: the same chips, in the same hues. */
-html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) { background: var(--grad-primary) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; padding: .55rem 1.1rem; font-weight: 700; }
-html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) * { color: #ffffff !important; }
-html[data-legacy-mode='true'] body :is(.architecture-root, .architecture-output) { color: #ffffff !important; }
-html[data-legacy-mode='true'] body .architecture-node { background: var(--grad-cool) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; border: 0 !important; color: var(--neu-ink) !important; }
-html[data-legacy-mode='true'] body .architecture-node-notes { background: var(--grad-fresh) !important; }
-html[data-legacy-mode='true'] body .architecture-node-readings { background: var(--grad-violet) !important; }
-html[data-legacy-mode='true'] body .architecture-meta-node { background: var(--neu-card) !important; box-shadow: var(--neu-inset-s) !important; border: 0 !important; border-radius: var(--neu-r-ctl) !important; color: var(--neu-ink-soft) !important; }
-html[data-legacy-mode='true'] body .architecture-branches::before, html[data-legacy-mode='true'] body .architecture-meta::before { background: rgba(29, 29, 31, .2) !important; }
-html[data-legacy-mode='true'] body .documentation-step { padding: .5rem .35rem; text-align: center; animation: neu-step-lit 8s ease-in-out infinite !important; }
-html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-source { background: var(--grad-warm) !important; animation-delay: -8s !important; }
-html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-version { background: var(--grad-violet) !important; animation-delay: -6s !important; }
-html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-build { background: var(--grad-cool) !important; animation-delay: -4s !important; }
-html[data-legacy-mode='true'] body .documentation-pipeline .documentation-step-deploy { background: var(--grad-fresh) !important; animation-delay: -2s !important; }
-html[data-legacy-mode='true'] body .documentation-step :is(strong, small) { color: var(--neu-ink) !important; }
-html[data-legacy-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { color: var(--neu-ink) !important; }
-html[data-legacy-mode='true'] body .documentation-arrow { color: var(--neu-ink-soft) !important; font-weight: 700; }
+html[data-documentation-mode='true'] body :is(.architecture-root, .architecture-output) { background: var(--grad-primary) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; padding: .55rem 1.1rem; font-weight: 700; }
+html[data-documentation-mode='true'] body :is(.architecture-root, .architecture-output) * { color: #ffffff !important; }
+html[data-documentation-mode='true'] body :is(.architecture-root, .architecture-output) { color: #ffffff !important; }
+html[data-documentation-mode='true'] body .architecture-node { background: var(--grad-cool) !important; box-shadow: var(--neu-raise-s) !important; border-radius: var(--neu-r-ctl) !important; border: 0 !important; color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body .architecture-node-notes { background: var(--grad-fresh) !important; }
+html[data-documentation-mode='true'] body .architecture-node-readings { background: var(--grad-violet) !important; }
+html[data-documentation-mode='true'] body .architecture-meta-node { background: var(--neu-card) !important; box-shadow: var(--neu-inset-s) !important; border: 0 !important; border-radius: var(--neu-r-ctl) !important; color: var(--neu-ink-soft) !important; }
+html[data-documentation-mode='true'] body .architecture-branches::before, html[data-documentation-mode='true'] body .architecture-meta::before { background: rgba(29, 29, 31, .2) !important; }
+html[data-documentation-mode='true'] body .documentation-step { padding: .5rem .35rem; text-align: center; animation: neu-step-lit 8s ease-in-out infinite !important; }
+html[data-documentation-mode='true'] body .documentation-pipeline .documentation-step-source { background: var(--grad-warm) !important; animation-delay: -8s !important; }
+html[data-documentation-mode='true'] body .documentation-pipeline .documentation-step-version { background: var(--grad-violet) !important; animation-delay: -6s !important; }
+html[data-documentation-mode='true'] body .documentation-pipeline .documentation-step-build { background: var(--grad-cool) !important; animation-delay: -4s !important; }
+html[data-documentation-mode='true'] body .documentation-pipeline .documentation-step-deploy { background: var(--grad-fresh) !important; animation-delay: -2s !important; }
+html[data-documentation-mode='true'] body .documentation-step :is(strong, small) { color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body :is(.documentation-note, .cellulose-flow-note) { color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body .documentation-arrow { color: var(--neu-ink-soft) !important; font-weight: 700; }
 
 /* RHEA: the lamp face keeps its own dark disc; here it simply floats above the stage. */
-html[data-legacy-mode='true'] body .rhea-card-stage { display: grid !important; place-items: center; }
-html[data-legacy-mode='true'] body .rhea-card-mark.rhea-lamps {
+html[data-documentation-mode='true'] body .rhea-card-stage { display: grid !important; place-items: center; }
+html[data-documentation-mode='true'] body .rhea-card-mark.rhea-lamps {
   width: clamp(8rem, 14vw, 10.5rem) !important;
   border-radius: var(--radius-full) !important;
   box-shadow: var(--elev-float) !important;
 }
-html[data-legacy-mode='true'] body .rhea-card-route { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; justify-items: center; text-align: center; }
-html[data-legacy-mode='true'] body .rhea-card-route li {
+html[data-documentation-mode='true'] body .rhea-card-route { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; justify-items: center; text-align: center; }
+html[data-documentation-mode='true'] body .rhea-card-route li {
   position: relative;
   min-width: 11rem;
   padding: .5rem 1rem;
@@ -698,35 +699,35 @@ html[data-legacy-mode='true'] body .rhea-card-route li {
   box-shadow: var(--neu-raise-s) !important;
   animation: neu-step-lit 7.2s ease-in-out infinite !important;
 }
-html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(1) { background: var(--grad-warm) !important; animation-delay: -7.2s !important; }
-html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(2) { background: var(--grad-cool) !important; animation-delay: -4.8s !important; }
-html[data-legacy-mode='true'] body .rhea-card-route li:nth-child(3) { animation-delay: -2.4s !important; }
-html[data-legacy-mode='true'] body .rhea-card-route li:not(:last-child)::after { content: ''; position: absolute; left: 50%; bottom: -.9rem; width: 2px; height: .9rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); opacity: 1; }
-html[data-legacy-mode='true'] body .rhea-card-route :is(strong, small) { display: block; color: var(--neu-ink) !important; }
-html[data-legacy-mode='true'] body .rhea-card-route small { font-size: .74rem; font-weight: 500; opacity: 1; }
+html[data-documentation-mode='true'] body .rhea-card-route li:nth-child(1) { background: var(--grad-warm) !important; animation-delay: -7.2s !important; }
+html[data-documentation-mode='true'] body .rhea-card-route li:nth-child(2) { background: var(--grad-cool) !important; animation-delay: -4.8s !important; }
+html[data-documentation-mode='true'] body .rhea-card-route li:nth-child(3) { animation-delay: -2.4s !important; }
+html[data-documentation-mode='true'] body .rhea-card-route li:not(:last-child)::after { content: ''; position: absolute; left: 50%; bottom: -.9rem; width: 2px; height: .9rem; background: rgba(29, 29, 31, .22) !important; transform: translateX(-50%); opacity: 1; }
+html[data-documentation-mode='true'] body .rhea-card-route :is(strong, small) { display: block; color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body .rhea-card-route small { font-size: .74rem; font-weight: 500; opacity: 1; }
 
 @keyframes neu-step-lit {
   0%, 22%, 100% { transform: none; outline: 0 solid rgba(255, 179, 64, 0); outline-offset: 0; }
   6%, 14% { transform: translateY(-2px); outline: 4px solid rgba(255, 179, 64, .38); outline-offset: 1px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-legacy-mode='true'] body :is(.cf-step, .documentation-step, .rhea-card-route li, .knowledge-flow .knowledge-stage) { animation: none !important; }
+  html[data-documentation-mode='true'] body :is(.cf-step, .documentation-step, .rhea-card-route li, .knowledge-flow .knowledge-stage) { animation: none !important; }
 }
 
 /* 10b. Mode switcher (SeriousModeToggle): same emblems, neumorphic chrome ------ */
 
-html[data-legacy-mode='true'] .serious-control .serious-node .serious-emblem.serious-emblem:focus-visible {
+html[data-documentation-mode='true'] .serious-control .serious-node .serious-emblem.serious-emblem:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-on-light) !important;
   outline-offset: 4px;
 }
-html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag .serious-tag__dot { background: var(--neu-accent) !important; }
-html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']) .serious-tag__dot {
+html[data-documentation-mode='true'] .serious-control .serious-tag.serious-tag .serious-tag__dot { background: var(--neu-accent) !important; }
+html[data-documentation-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']) .serious-tag__dot {
   background: transparent !important;
   border: 2px solid var(--neu-accent) !important;
 }
-html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']):is(:hover, :focus-visible) .serious-tag__dot { border-color: var(--neu-accent) !important; }
-html[data-legacy-mode='true'] .serious-control .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot { background: var(--neu-accent) !important; }
-html[data-legacy-mode='true'] body .serious-help-panel.serious-help-panel {
+html[data-documentation-mode='true'] .serious-control .serious-tag.serious-tag[data-lang]:not([data-lang='pt']):is(:hover, :focus-visible) .serious-tag__dot { border-color: var(--neu-accent) !important; }
+html[data-documentation-mode='true'] .serious-control .serious-tag.serious-tag:is(:hover, :focus-visible) .serious-tag__dot { background: var(--neu-accent) !important; }
+html[data-documentation-mode='true'] body .serious-help-panel.serious-help-panel {
   background: rgba(255, 255, 255, .96) !important;
   border: 0 !important;
   border-radius: var(--neu-r-card) !important;
@@ -735,50 +736,50 @@ html[data-legacy-mode='true'] body .serious-help-panel.serious-help-panel {
   backdrop-filter: none !important;
   color: var(--neu-ink) !important;
 }
-html[data-legacy-mode='true'] body .serious-help-panel.serious-help-panel * { color: var(--neu-ink) !important; }
+html[data-documentation-mode='true'] body .serious-help-panel.serious-help-panel * { color: var(--neu-ink) !important; }
 /* 10c. Skip link and the 404 scene (exempt from the reset, as in the editorial mode) */
-html[data-legacy-mode='true'] body .skip-link {
+html[data-documentation-mode='true'] body .skip-link {
   background-color: var(--neu-accent) !important;
   color: #ffffff !important;
   border: 2px solid #ffffff !important;
   border-radius: var(--neu-r-ctl) !important;
 }
-html[data-legacy-mode='true'] .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) { color: var(--mode-on-dark) !important; }
-html[data-legacy-mode='true'] .sophia-404__aside { color: var(--mode-on-dark-soft) !important; }
-html[data-legacy-mode='true'] .sophia-404__actions a { color: var(--mode-on-dark-link) !important; }
+html[data-documentation-mode='true'] .sophia-404__panel :is(h1, .eyebrow, .sophia-404__copy > p) { color: var(--mode-on-dark) !important; }
+html[data-documentation-mode='true'] .sophia-404__aside { color: var(--mode-on-dark-soft) !important; }
+html[data-documentation-mode='true'] .sophia-404__actions a { color: var(--mode-on-dark-link) !important; }
 
 /* 11. Contrast, forced colours, motion, small screens ------------------------ */
 
 @media (prefers-contrast: more) {
-  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .method-stage, .recent-track-card, .music-listening-panel, .nav-shell, .immersive-banner, button, .button, .nav-cta, .work-index a, .nav-sections a, .social-links a, .closing-actions a, .lab-project-repo, .apple-music-link, .lab-project-status, .lab-project-tags span) {
+  html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature, .hero-note, .background-case-study, .method-stage, .recent-track-card, .music-listening-panel, .nav-shell, .immersive-banner, button, .button, .nav-cta, .work-index a, .nav-sections a, .social-links a, .closing-actions a, .lab-project-repo, .apple-music-link, .lab-project-status, .lab-project-tags span) {
     border: 2px solid var(--neu-ink) !important;
     box-shadow: none !important;
   }
-  html[data-legacy-mode='true'] body { --neu-ink-soft: var(--neu-ink); }
+  html[data-documentation-mode='true'] body { --neu-ink-soft: var(--neu-ink); }
 }
 @media (forced-colors: active) {
-  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, button, .button, .nav-cta, .nav-shell) { border: 1px solid CanvasText !important; }
+  html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature, button, .button, .nav-cta, .nav-shell) { border: 1px solid CanvasText !important; }
 }
 @media (prefers-reduced-transparency: reduce) {
-  html[data-legacy-mode='true'] .site-header { background: #ffffff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  html[data-documentation-mode='true'] .site-header { background: #ffffff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  html[data-legacy-mode='true'] .site-header { background: #ffffff !important; }
+  html[data-documentation-mode='true'] .site-header { background: #ffffff !important; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-legacy-mode='true'] body * { transition: none !important; }
+  html[data-documentation-mode='true'] body * { transition: none !important; }
 }
 @media (max-width: 720px) {
-  html[data-legacy-mode='true'] .site-header { position: relative; z-index: var(--z-overlay); padding-inline: .75rem; }
-  html[data-legacy-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) { padding: 1.1rem; }
-  html[data-legacy-mode='true'] body .closing {
+  html[data-documentation-mode='true'] .site-header { position: relative; z-index: var(--z-overlay); padding-inline: .75rem; }
+  html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) { padding: 1.1rem; }
+  html[data-documentation-mode='true'] body .closing {
     background:
       linear-gradient(180deg, rgba(8, 10, 24, .96) 0%, rgba(8, 10, 24, .86) 40%, rgba(8, 10, 24, 0) 68%),
       url('/assets/neumorphic-contact-orbit.webp') 78% bottom / auto 70% no-repeat,
       #0a0d1c !important;
     padding-bottom: 12rem !important;
   }
-  html[data-legacy-mode='true'] body .curiosities-teaser {
+  html[data-documentation-mode='true'] body .curiosities-teaser {
     background: url('/assets/neumorphic-corrida-scene.webp') 80% bottom / auto 11rem no-repeat, #aac4e4 !important;
     padding-bottom: 10.5rem !important;
     align-items: flex-start;

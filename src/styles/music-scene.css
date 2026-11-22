@@ -129,7 +129,7 @@ html[data-serious-mode='true'] .music-shelf.music-shelf--gallery { background: #
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel .recent-track-card,
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-listening-panel .music-loading { background: #fff; color: #111; border-color: #555; backdrop-filter: none; }
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery .recent-track-copy :is(h3, p, a) { color: #111; }
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track-copy :is(h3, p, a) { color: #111; }
+html[data-documentation-mode='true'] .music-shelf .music-heading--gallery .recent-track-copy :is(h3, p, a) { color: #111; }
 @media (max-width: 1199px) {
   .music-shelf .music-heading.music-heading--gallery {
     grid-template-columns: minmax(0, 1fr);
@@ -153,11 +153,11 @@ html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .recent-track
 }
 html .music-shelf.music-shelf--gallery.section { padding-top: clamp(1.25rem, 2.3vw, 2rem); }
 html[data-serious-mode='true'] .music-shelf .music-source-label span,
-html[data-legacy-mode='true'] .music-shelf .music-source-label span {
+html[data-documentation-mode='true'] .music-shelf .music-source-label span {
   color: #222;
   background: #fff;
   border-color: #666;
 }
-/* Legacy hides inline images globally; retain this scene like its old CSS background. */
+/* Documentação hides inline images globally; retain this scene like its old CSS background. */
 /* New artwork (v3): Shorekeeper's face sits at ~28% of the height, so on the wide
    layout the paper is kept short enough to stay in the Milky Way above her veil. */

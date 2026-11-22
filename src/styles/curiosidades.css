@@ -1,7 +1,7 @@
 /*
  * Curiosidades — /curiosidades/ and the teaser band on the home.
  * Content lives in src/curiosities.ts. Surfaces and tokens come from the
- * authorial palette; Editorial and Legacy text roles are listed under
+ * authorial palette; Editorial and Documentação text roles are listed under
  * "Consumers" in mode-tokens.css. Nothing here animates except a hover
  * transition that stops under prefers-reduced-motion.
  */

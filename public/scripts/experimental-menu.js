@@ -1,4 +1,4 @@
-// modo-experimental: comportamento do menu orbital (ExperimentalMenu.astro + experimental.css).
+// modo-imersivo: comportamento do menu orbital (ExperimentalMenu.astro + experimental.css).
 // Sem dependências. Respeita prefers-reduced-motion; sem JavaScript a gaveta fica aberta, no fluxo.
 (() => {
   const root = document.querySelector('[data-xm]');
@@ -25,7 +25,7 @@
   reduce.addEventListener('change', syncOrbit);
 
   // ---------------------------------------------------------------- plasma do botão
-  // Mesmo brilho do Autoral: gás contido na pílula, mais intenso ao passar, segurar ou abrir.
+  // Mesmo brilho do Criativo: gás contido na pílula, mais intenso ao passar, segurar ou abrir.
   (() => {
     const plasma = toggle.querySelector('[data-xm-plasma]');
     if (!plasma || reduce.matches) return;

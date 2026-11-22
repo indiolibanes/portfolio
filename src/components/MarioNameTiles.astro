@@ -200,7 +200,7 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
 
   /* Replace the prior smooth brick pattern only in authorial mode.
      The serious and 1998 versions preserve their plain typographic mark. */
-  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate) {
+  :global(html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate) {
     position: relative;
     isolation: isolate;
     min-height: clamp(60px, 8.5vw, 96px);
@@ -212,12 +212,12 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
     padding: clamp(.74rem, 1.55vw, 1rem) clamp(.65rem, 1.7vw, 1.12rem);
   }
 
-  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::before) {
+  :global(html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate::before) {
     content: none;
   }
 
   /* The dark veil and outlined name remain stationary while tiles turn. */
-  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate::after) {
+  :global(html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate::after) {
     content: '';
     position: absolute;
     inset: 1px;
@@ -226,7 +226,7 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
     background: linear-gradient(90deg, #22150f86, #291811ad 28% 72%, #22150f86);
   }
 
-  :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .block-name) {
+  :global(html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .block-name) {
     position: relative;
     z-index: 2;
     color: #fff6d8;
@@ -237,14 +237,14 @@ const columns = Array.from({ length: 12 }, (_, index) => ({
   }
 
   :global(html[data-serious-mode='true']) .mario-name-tiles,
-  :global(html[data-legacy-mode='true']) .mario-name-tiles { display: none; }
+  :global(html[data-documentation-mode='true']) .mario-name-tiles { display: none; }
 
   .mario-name-tiles[data-mario-name-visible='false'] :is(.mario-name-tiles__column, .mario-name-tiles__corner, .mario-name-tiles__coin) {
     animation-play-state: paused;
   }
 
   @media (max-width: 640px) {
-    :global(html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .name-brick-plate) {
+    :global(html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .name-brick-plate) {
       min-height: 58px;
       padding-inline: .53rem;
     }

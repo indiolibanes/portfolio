@@ -2,10 +2,10 @@
  * Mode tokens for section text — phase 1 (audit 2026-10-12).
  *
  * Why: every section was first painted for the authorial mode, with literal
- * colours for its own dark or tinted surface. Editorial and Legacy then
+ * colours for its own dark or tinted surface. Editorial and Documentação then
  * patched those colours selector by selector, and each new section leaked
  * (the whole Método was invisible in Editorial, the Percurso history in
- * Legacy). Here each quiet mode declares its inks once, and the text roles
+ * Documentação). Here each quiet mode declares its inks once, and the text roles
  * that sit on mode-dependent surfaces read them.
  *
  * Adding a section: list its text roles under "Consumers" below.

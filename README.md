@@ -27,13 +27,13 @@ A prioridade técnica é manter **leitura, acessibilidade, degradação graciosa
 
 | Rota | Papel |
 | --- | --- |
-| `/` | portfólio principal, com sete seções canônicas |
+| `/` | home documental do portfólio, com sete seções canônicas |
 | `/curiosidades/` | notas e curiosidades do autor |
 | `/sophia/` | registro narrativo da Sophia |
 | `/rhea/` | RHEA project page, a standalone identity in English |
 | `/experimentos/` | Hsin V2.0.1 no terraço lunar 3D; `noindex` |
 | `/experimentos/sk/` | laboratório Shorekeeper; entrega autenticada e importação local |
-| `/modo-experimental/` | protótipo WebGL2 isolado da Sophia; `noindex` |
+| `/modo-criativo/` | portfólio criativo com narrativa, UX writing, roteiro e projetos interativos |\n| `/modo-imersivo/` | experiência WebGL2 da Sophia, fora do índice |
 | `/404` | página de erro com Sophia e Tetris |
 
 A ordem das sete seções da página principal é definida em `src/section-order.ts`.
@@ -82,7 +82,7 @@ Sophia é a mascote/personagem autoral do portfólio.
 
 O site mantém dois modelos 3D porque possuem funções diferentes:
 
-- `public/experimental/sophia-alpha.glb` — protótipo rigado usado em `/modo-experimental/` e no retrato 3D progressivo da 404;
+- `public/experimental/sophia-alpha.glb` — protótipo rigado usado no retrato 3D progressivo da 404;
 - `public/experimental/sophia-7b-e1-latest.glb` — modelo usado no lounge 3D da 404.
 
 A 404 sempre possui fallback 2D. WebGL, redução de movimento, economia de dados ou falha de carregamento não impedem o acesso às ações de recuperação nem ao Tetris.
@@ -300,8 +300,8 @@ Detalhes e números estão em `docs/code-audit-2026-11-02.md`.
 
 A origem canônica deste portfólio é `https://indiolibanes.dev` (definida em `astro.config.mjs` e `src/config.ts`). Evite publicar uma segunda origem indexável sem redirecionamento permanente para a URL canônica.
 
-- **Indexáveis:** `/`, `/curiosidades/`, `/sophia/` e `/rhea/`. Essas URLs constam no sitemap e usam o domínio canônico.
-- **Fora do índice:** `/404`, `/modo-experimental/` e `/experimentos/**` (incluindo Hsin, Shorekeeper e o preview de dupla). A exclusão do índice não substitui autenticação.
+- **Indexáveis:** `/`, `/modo-criativo/`, `/curiosidades/`, `/sophia/` e `/rhea/`. Essas URLs constam no sitemap e usam o domínio canônico.
+- **Fora do índice:** `/404`, `/modo-imersivo/` e `/experimentos/**` (incluindo Hsin, Shorekeeper e o preview de dupla). A exclusão do índice não substitui autenticação.
 - **Metadados:** `src/components/BaseHead.astro` define título, descrição, canonical, Open Graph e Twitter Cards. A página inicial publica um grafo JSON-LD `Person` + `WebSite`; o cartão de compartilhamento continua a ser gerado por `scripts/generate-og.mjs`.
 - **Cabeçalhos:** `public/_headers` aplica `X-Robots-Tag: noindex` às rotas experimentais. Não aplicar `X-Robots-Tag: index` globalmente: isso conflita com páginas que solicitam `noindex`.
 - **Sitemap:** manter apenas as URLs públicas canônicas. Não preencher `lastmod` com a data do build nem datas estimadas; só publicar datas verificáveis de alteração do conteúdo.

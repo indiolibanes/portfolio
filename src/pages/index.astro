@@ -11,11 +11,13 @@ import MethodPresenter from '../components/MethodPresenter.astro';
 import MarioNameTiles from '../components/MarioNameTiles.astro';
 import ImmersiveBanner from '../components/ImmersiveBanner.astro';
 import SophiaCorrida from '../components/SophiaCorridaWebP.astro';
-import { PROFILE, SOCIALS } from '../config';
+import { PROFILE, SOCIALS, SITE, PUBLIC_PAGES, isCreativePath } from '../config';
 import '../styles/rhea-card.css';
 import '../styles/rhea-lamps.css';
 import RheaFace from '../components/rhea/RheaFace.astro';
 import { sectionNumber } from '../section-order';
+
+const isCreativeLanding = isCreativePath(Astro.url.pathname);
 
 const background = [
   {
@@ -42,8 +44,10 @@ const background = [
   },
   {
     meta: 'Direção atual',
-    title: 'Escrita e documentação',
-    text: 'Technical Writing, gestão da informação, pesquisa e organização do conhecimento como eixo principal do trabalho.',
+    title: isCreativeLanding ? 'Narrativas e experiências interativas' : 'Escrita e documentação',
+    text: isCreativeLanding
+      ? 'Narrativas, roteiros, escrita para interfaces e protótipos interativos com Sophia.'
+      : 'Technical Writing, gestão da informação, pesquisa e organização do conhecimento como eixo principal do trabalho.',
     mark: '/assets/percurso-writer.svg',
     markAlt: '',
   },
@@ -66,27 +70,19 @@ const METHOD_FLOWS = [
 ];
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={isCreativeLanding ? PUBLIC_PAGES.creative.title : SITE.title}
+  description={isCreativeLanding ? PUBLIC_PAGES.creative.description : SITE.description}
+>
   <main class="portfolio-main" id="conteudo">
-      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal</span><span>Escrita · estrutura · curiosidade</span></div>
-      <div class="volume-stage" aria-hidden="true">
-        <div class="volume-cube">
-          <span class="volume-face volume-face--front">Documentar</span>
-          <span class="volume-face volume-face--back">Publicar</span>
-          <span class="volume-face volume-face--right">Escrever</span>
-          <span class="volume-face volume-face--left">Pesquisar</span>
-          <span class="volume-face volume-face--top">Organizar</span>
-          <span class="volume-face volume-face--bottom">Revisar</span>
-        </div>
-        <span class="volume-floor"></span>
-      </div>
+      <div class="editorial-masthead" aria-label="Apresentação"><span>Portfólio pessoal</span><span>{isCreativeLanding ? "Narrativa · interfaces · experiências" : "Escrita · estrutura · curiosidade"}</span></div>
 
     <section
       class="hero"
       id="sobre"
       aria-labelledby="hero-title"
     >
-      <div class="hero-intro" data-reveal>
+      <div class="hero-intro">
 
         <p class="hello">
           <span
@@ -188,38 +184,63 @@ const METHOD_FLOWS = [
           </div>
 
           <p class="role">
-            <i lang="en">Technical Writing</i> · Documentação · Informação
+            {isCreativeLanding ? (
+              <span class="creative-roles" lang="en">
+                <span class="role-item">creative technologist<span class="sr-only">, </span></span>
+                <span class="role-item">narrative designer<span class="sr-only">, </span></span>
+                <span class="role-item">UX Writer<span class="sr-only">, </span></span>
+                <span class="role-item">scriptwriter</span>
+              </span>
+            ) : (
+              <><i lang="en">Technical Writing</i> · Documentação · Informação</>
+            )}
           </p>
 
+          <a class="editorial-text-link portfolio-view-link" href={isCreativeLanding ? '/' : PUBLIC_PAGES.creative.path}>
+            {isCreativeLanding ? 'Voltar à home documental' : 'Explorar o modo criativo'}
+          </a>
         </div>
       </div>
 
-      <div class="hero-statement" data-reveal>
+      <div class="hero-statement">
         <p class="eyebrow">
           {sectionNumber('sobre')} / Sobre · Uma forma de pensar
         </p>
 
         <div class="hero-question">
-          <p>Como fazer um conhecimento espalhado poder ser encontrado e reaproveitado?</p>
+          <p>{isCreativeLanding ? 'Como a interface pode fazer parte da história?' : 'Como fazer um conhecimento espalhado poder ser encontrado e reaproveitado?'}</p>
         </div>
 
         <h2>
-          Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.
+          {isCreativeLanding
+            ? 'Crio histórias para explorar e interfaces que ajudam a contá-las.'
+            : 'Escrevo para dar forma às ideias — e documento para que elas permaneçam compreensíveis depois.'}
         </h2>
 
-        <p>
-          Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reaproveitada:
-          pesquisar, escrever, estruturar, documentar e revisar. A escrita é o ponto de partida; a documentação permite que o
-          conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
-          sempre atualizado.
-        </p>
+        {isCreativeLanding ? (
+          <p>
+            Escrevo roteiros, desenho percursos narrativos e prototipo experiências com animação e 3D.
+            Trabalho também nas palavras que orientam a interação, do primeiro convite à próxima escolha.
+          </p>
+        ) : (
+          <p>
+            Meu interesse reside no intervalo entre uma ideia ainda difusa e uma forma que possa ser lida, encontrada e reaproveitada:
+            pesquisar, escrever, estruturar, documentar e revisar. A escrita é o ponto de partida; a documentação permite que o
+            conhecimento permaneça compreensível, verificável e compartilhável, enquanto a revisão possibilita ao conteúdo estar
+            sempre atualizado.
+          </p>
+        )}
         <p class="hero-current">
-          <strong>Agora:</strong> traduzindo <cite lang="en">The Big Picture</cite> e documentando fluxos de publicação.
+          {isCreativeLanding ? (
+            <><strong>Agora:</strong> desenvolvendo o Voo Prismático, uma experiência imersiva com Sophia, e escrevendo a interface da RHEA.</>
+          ) : (
+            <><strong>Agora:</strong> traduzindo <cite lang="en">The Big Picture</cite> e documentando fluxos de publicação.</>
+          )}
         </p>
 
         <div class="hero-actions">
-          <a class="button editorial-primary" href="#lab">
-            Explorar trabalhos <span aria-hidden="true">↘</span>
+          <a class="button editorial-primary" href={isCreativeLanding ? '#voo-prismatico' : '#lab'}>
+            {isCreativeLanding ? 'Conhecer o Voo Prismático' : 'Explorar trabalhos'} <span aria-hidden="true">↘</span>
           </a>
           <a class="editorial-text-link" href="#contato">Vamos conversar <span aria-hidden="true">↘</span></a>
           <a
@@ -251,11 +272,13 @@ const METHOD_FLOWS = [
         </p>
 
         <p class="note-big">
-          linguagem + estrutura + contexto
+          {isCreativeLanding ? 'linguagem + imaginação + interação' : 'linguagem + estrutura + contexto'}
         </p>
 
         <p class="note-small">
-          A tecnologia é uma aliada quando facilita a preservação, organização e publicação.
+          {isCreativeLanding
+            ? 'A tecnologia é uma aliada quando permite experimentar novas formas de contar e explorar histórias.'
+            : 'A tecnologia é uma aliada quando facilita a preservação, organização e publicação.'}
         </p>
       </aside>
     </section>
@@ -271,12 +294,15 @@ const METHOD_FLOWS = [
           <p class="eyebrow">{sectionNumber('lab')} / Laboratório</p>
           <div class="lab-title-with-sophia">
             <h2 id="lab-title">
-              <b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i>
+              {isCreativeLanding ? 'Narrativas, interfaces e protótipos' : (
+                <><b>5W2H</b>: <i>O que, por quê, onde, quando e com quem faço? Como e quanto custa?</i></>
+              )}
             </h2>
           </div>
           <p class="lab-note">
-            Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo:
-            transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.
+            {isCreativeLanding
+              ? 'Do voo da Sophia à interface da RHEA, o laboratório reúne projetos em que escrita, design e tecnologia se encontram.'
+              : 'Trabalhos objetiva e estruturalmente diferentes, embora interligados pelo mesmo processo: transformar informação dispersa em conteúdo conciso, estruturado e sempre disponível para consulta.'}
           </p>
         </div>
 
@@ -379,7 +405,7 @@ const METHOD_FLOWS = [
             <strong>Minha parte:</strong> revisar e reescrever o relatório técnico e apresentar o projeto em <mark class="pi-mark pi-mark-3">16 de dezembro</mark>.
           </p>
 
-          <p class="cellulose-legacy-text">Processo simplificado: cavacos de madeira, cozimento kraft, lavagem da polpa, número kappa (medição NIR), branqueamento e secagem em folhas.</p>
+          <p class="cellulose-documentation-text">Processo simplificado: cavacos de madeira, cozimento kraft, lavagem da polpa, número kappa (medição NIR), branqueamento e secagem em folhas.</p>
           <div class="pi-stages"><div
             class="knowledge-flow"
             role="group"
@@ -952,7 +978,7 @@ const METHOD_FLOWS = [
         </p>
 
         <h2 id="background-title">
-          Base técnica; vocação editorial.
+          {isCreativeLanding ? 'Da automação ao design de experiências.' : 'Base técnica; vocação editorial.'}
         </h2>
       </div>
 

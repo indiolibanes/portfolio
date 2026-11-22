@@ -258,7 +258,7 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
   function fxQuiet() {
     const root = document.documentElement;
-    return root.dataset.seriousMode === 'true' || root.dataset.legacyMode === 'true';
+    return root.dataset.seriousMode === 'true' || root.dataset.documentationMode === 'true';
   }
   // Esquema tonal ao estilo Material You: um matiz-semente gera papéis (primário, secundário,
   // terciário, contêiner, superfície) em tons fixos, como no tema dinâmico do Jetpack Compose.
@@ -451,9 +451,9 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
     let nextEffect = 'butterfly';
     const effectsQuiet = () => reducedMotion.matches
       || document.documentElement.dataset.seriousMode === 'true'
-      || document.documentElement.dataset.legacyMode === 'true';
+      || document.documentElement.dataset.documentationMode === 'true';
     // Only expose the control when it can actually animate; otherwise it is a
-    // focusable button that does nothing (Editorial, Legacy, reduced motion).
+    // focusable button that does nothing (Editorial, Documentação, reduced motion).
     const syncEffectToggle = () => { effectToggle.hidden = effectsQuiet(); };
     syncEffectToggle();
     window.addEventListener('portfolio:mode', syncEffectToggle);
@@ -661,12 +661,12 @@ const hasPlaylists = MUSIC.publicPlaylists.length > 0;
   }
 
   // Paralaxe de rolagem e inclinação por ponteiro (mesmo padrão de saint-hero.js).
-  // Só no modo Autoral, com movimento permitido e ponteiro fino.
+  // Só no modo Criativo, com movimento permitido e ponteiro fino.
   if (recentCard && typeof window.matchMedia === 'function') {
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
     const hover = window.matchMedia('(hover: hover) and (pointer: fine)');
     const root = document.documentElement;
-    const quiet = () => calm.matches || root.dataset.seriousMode === 'true' || root.dataset.legacyMode === 'true';
+    const quiet = () => calm.matches || root.dataset.seriousMode === 'true' || root.dataset.documentationMode === 'true';
     let frame = 0;
     const shift = () => {
       frame = 0;
