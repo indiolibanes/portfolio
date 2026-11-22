@@ -19,7 +19,8 @@ const sitemapUrl = new URL('/sitemap.xml', base).href;
 const rssUrl = new URL('/rss.xml', base).href;
 
 const sitemap = read('public/sitemap.xml');
-const sitemapPaths = ['/', '/modo-experimental/', '/curiosidades/', '/sophia/', '/rhea/'];
+const creativePath = '/modo-criativo/';
+const sitemapPaths = ['/', creativePath, '/curiosidades/', '/sophia/', '/rhea/'];
 // RHEA is a standalone, English-language project page.
 const pageLang = pathname => pathname === '/rhea/' ? 'en' : 'pt-BR';
 const expectedUrls = sitemapPaths.map(path => new URL(path, base).toString());
@@ -93,7 +94,7 @@ if (process.argv.includes('--dist')) {
     assert.match(item, /<description>[^<]+<\/description>/);
     return link;
   });
-  assert.deepEqual(feedUrls.sort(), expectedUrls.filter(url => url !== base && url !== new URL('/modo-experimental/', base).href).sort(),
+  assert.deepEqual(feedUrls.sort(), expectedUrls.filter(url => url !== base && url !== new URL(creativePath, base).href).sort(),
     'Feed must contain each public editorial or project page once');
 
   const titles = new Set();

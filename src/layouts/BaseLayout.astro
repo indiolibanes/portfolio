@@ -1,4 +1,5 @@
 ---
+import { isCreativePath } from '../config';
 import DecorativeMotion from '../components/DecorativeMotion.astro';
 import AtomCursor from '../components/AtomCursor.astro';
 import BaseHead from '../components/BaseHead.astro';
@@ -38,10 +39,16 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const isCreativeLanding = isCreativePath(Astro.url.pathname);
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html
+  lang="pt-BR"
+  data-portfolio-mode={isCreativeLanding ? 'authorial' : 'documentation'}
+  data-serious-mode="false"
+  data-documentation-mode={isCreativeLanding ? 'false' : 'true'}
+>
   <head>
     <BaseHead title={title} description={description} />
   </head>

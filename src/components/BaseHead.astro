@@ -1,5 +1,5 @@
 ---
-import { PROFILE, SITE, SOCIALS } from '../config';
+import { PROFILE, PUBLIC_PAGES, SITE, SOCIALS, isCreativePath } from '../config';
 import DiscoveryLinks from './DiscoveryLinks.astro';
 
 interface Props {
@@ -14,13 +14,14 @@ const {
 
 const pathname = Astro.url.pathname;
 const isNotFound = pathname.replace(/\/$/, '') === '/404';
-const isExperimentalLanding = /^\/modo-experimental\/?$/.test(pathname);
-const canonicalUrl = new URL(isExperimentalLanding ? '/modo-experimental/' : pathname, SITE.url).toString();
+const isCreativeLanding = isCreativePath(pathname);
+const creativePath = PUBLIC_PAGES.creative.path;
+const canonicalUrl = new URL(isCreativeLanding ? creativePath : pathname, SITE.url).toString();
 const ogImageUrl = new URL(SITE.ogImage, SITE.url).toString();
 // A página do palco experimental é acessível por URL direta, mas não é indexável.
 const isUnlistedStage = Astro.url.pathname.replace(/\/$/, '') === '/experimentos';
 // Canvas 2D scenes exist only on the landing page; omit their runtime elsewhere.
-const hasLandingScenes = pathname === '/' || isExperimentalLanding;
+const hasLandingScenes = pathname === '/' || isCreativeLanding;
 // Stable, public identity data for the portfolio's main page only.
 const personId = new URL('/#person', SITE.url).toString();
 const websiteId = new URL('/#website', SITE.url).toString();
@@ -56,60 +57,45 @@ const structuredData = {
 <meta name="robots" content={isNotFound || isUnlistedStage ? 'noindex, nofollow, noarchive' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 <meta name="theme-color" content="#f6efdc" />
 
-<script is:inline>
+<script is:inline define:vars={{ creativePath, isCreativeLanding, hasLandingScenes }}>
   (() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const requested = params.get('mode');
-      const seriousParam = params.get('serious');
-      const supportedModes = ['authorial', 'editorial', 'documentation'];
-      const canonicalRequested = ['legacy', '1998', 'neumorfismo', 'neumorphism', 'documentacao'].includes(requested)
-        ? 'documentation' : requested;
-      const pathname = window.location.pathname;
-      const isExperimental = /^\/modo-experimental\/?$/.test(pathname);
-      const isHome = pathname === '/';
-      let mode = null;
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.get('mode');
+    const seriousParam = params.get('serious');
+    const supportedModes = ['authorial', 'editorial', 'documentation'];
+    let mode = supportedModes.includes(requested) ? requested : null;
 
-      if (isHome || isExperimental) {
-        // A URL pública prevalece sobre preferências antigas; o modo editorial é uma opção de leitura.
-        const requestedLanding = canonicalRequested === 'authorial' || canonicalRequested === 'documentation'
-          ? canonicalRequested
-          : seriousParam === '0' || seriousParam === 'false' ? 'authorial' : null;
-        const target = requestedLanding === 'authorial' ? '/modo-experimental/' : '/';
-        if (requestedLanding && target !== (isExperimental ? '/modo-experimental/' : '/')) {
-          const destination = new URL(window.location.href);
-          destination.pathname = target;
-          destination.searchParams.delete('mode');
-          destination.searchParams.delete('serious');
-          window.location.replace(destination.pathname + destination.search + destination.hash);
-          return;
-        }
-        mode = canonicalRequested === 'editorial' || seriousParam === '1' || seriousParam === 'true'
-          ? 'editorial' : isExperimental ? 'authorial' : 'documentation';
-      } else if (supportedModes.includes(canonicalRequested)) {
-        mode = canonicalRequested;
-      } else if (seriousParam === '1' || seriousParam === 'true') {
-        mode = 'editorial';
-      } else if (seriousParam === '0' || seriousParam === 'false') {
-        mode = 'authorial';
-      } else {
+    if (['creative', 'criativo', 'experimental'].includes(requested)) mode = 'authorial';
+    if (['legacy', '1998', 'neumorfismo', 'neumorphism', 'documentacao'].includes(requested)) mode = 'documentation';
+    if (!mode && ['1', 'true'].includes(seriousParam)) mode = 'editorial';
+    if (!mode && ['0', 'false'].includes(seriousParam)) mode = 'authorial';
+
+    // The landing URL determines both the rendered content and its visual mode.
+    if (hasLandingScenes && mode && (mode === 'authorial') !== isCreativeLanding) {
+      const destination = new URL(window.location.href);
+      destination.pathname = mode === 'authorial' ? creativePath : '/';
+      destination.searchParams.delete('serious');
+      if (mode === 'editorial') destination.searchParams.set('mode', 'editorial');
+      else destination.searchParams.delete('mode');
+      window.location.replace(destination.pathname + destination.search + destination.hash);
+      return;
+    }
+
+    if (hasLandingScenes) {
+      mode ??= isCreativeLanding ? 'authorial' : 'documentation';
+    } else if (!mode) {
+      try {
         const stored = localStorage.getItem('portfolio-mode-v2');
         if (supportedModes.includes(stored) || stored === 'legacy') {
           mode = stored === 'legacy' ? 'documentation' : stored;
         }
-      }
-      if (!mode) mode = 'documentation';
-
-      document.documentElement.dataset.portfolioMode = mode;
-      document.documentElement.dataset.seriousMode = mode === 'editorial' ? 'true' : 'false';
-      document.documentElement.dataset.documentationMode = mode === 'documentation' ? 'true' : 'false';
-    } catch {
-      // Na ausência de storage, a página inicial permanece documental.
-      const isExperimental = /^\/modo-experimental\/?$/.test(window.location.pathname);
-      document.documentElement.dataset.portfolioMode = isExperimental ? 'authorial' : 'documentation';
-      document.documentElement.dataset.seriousMode = 'false';
-      document.documentElement.dataset.documentationMode = isExperimental ? 'false' : 'true';
+      } catch {}
     }
+
+    mode ??= 'documentation';
+    document.documentElement.dataset.portfolioMode = mode;
+    document.documentElement.dataset.seriousMode = mode === 'editorial' ? 'true' : 'false';
+    document.documentElement.dataset.documentationMode = mode === 'documentation' ? 'true' : 'false';
   })();
 </script>
 <script is:inline src="/scripts/reveal.js"></script>

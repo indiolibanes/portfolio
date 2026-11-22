@@ -1,7 +1,7 @@
 /*
- * modo-experimental — protótipo do menu (fora do site público).
+ * modo-imersivo — menu orbital da experiência da Sophia.
  *
- * Tom: o bege do Autoral (tokens de global.css). Só a rota /modo-experimental/
+ * Tom: o bege do Criativo (tokens de global.css). Só a rota /modo-imersivo/
  * importa este arquivo; nada daqui chega ao BaseLayout.
  *
  * Ajustes rápidos:
@@ -168,7 +168,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* Plasma: o mesmo brilho do Autoral, contido no círculo; JS regula a intensidade. */
+/* Plasma: o mesmo brilho do Criativo, contido no círculo; JS regula a intensidade. */
 .xm-plasma {
   position: absolute;
   inset: 0;
@@ -250,7 +250,7 @@
   transform: none;
 }
 
-/* Vidro translúcido, bege do Autoral. Abre na diagonal, a partir do canto do botão. */
+/* Vidro translúcido, bege do Criativo. Abre na diagonal, a partir do canto do botão. */
 .xm-glass {
   position: relative;
   max-height: calc(100dvh - 7.5rem);
@@ -306,7 +306,7 @@
   gap: 3px;
 }
 
-/* ---------- Tabela periódica (mesmo desenho do Autoral, sem a legenda à esquerda) ---------- */
+/* ---------- Tabela periódica (mesmo desenho do Criativo, sem a legenda à esquerda) ---------- */
 
 .xm-el {
   position: relative;

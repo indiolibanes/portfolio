@@ -85,10 +85,6 @@
     gap: .6rem .8rem;
   }
 
-  html:not([data-documentation-mode='true']) .hero-actions .portfolio-view-link {
-    grid-column: 1 / -1;
-  }
-
   html:not([data-documentation-mode='true']) .hero-actions .editorial-primary {
     grid-column: 1 / -1;
     justify-content: center;

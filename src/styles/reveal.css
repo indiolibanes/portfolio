@@ -3,7 +3,7 @@
  * Conduzido por /scripts/reveal.js, que só liga .reveal-on quando há movimento permitido.
  * Elementos com data-reveal ficam escondidos; ao entrarem, o script grava um data-rv sorteado
  * e põe .is-in; ao saírem, tira .is-in e o efeito toca de novo. O estado escondido É o efeito,
- * então a transição corre dele nos dois sentidos. Vale só no modo Autoral (Editorial e Documentação
+ * então a transição corre dele nos dois sentidos. Vale só no modo Criativo (Editorial e Documentação
  * continuam estáticos). Nunca em texto de leitura longa.
  * Efeitos: rise, drop, slide-l, slide-r, unfold, bloom, spin, flip, dim, lighten, blur (+ iris).
  */

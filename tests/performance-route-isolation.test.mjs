@@ -7,7 +7,7 @@ const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf
 const head = read('src/components/BaseHead.astro');
 const home = read('src/pages/index.astro');
 
-assert.match(head, /const hasLandingScenes = pathname === '\/' \|\| isExperimentalLanding;/);
+assert.match(head, /const hasLandingScenes = pathname === '\/' \|\| isCreativeLanding;/);
 assert.match(head, /\{hasLandingScenes && <script is:inline src="\/scripts\/scenes\.js" defer><\/script>\}/);
 assert.equal((head.match(/src="\/scripts\/scenes\.js"/g) || []).length, 1);
 assert.match(home, /data-scene="/);
