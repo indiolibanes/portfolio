@@ -75,8 +75,8 @@ check('music: error/fallback containers', music.includes('data-music-loading') &
 check('music: playback state available', music.includes('track.nowPlaying'));
 check('music: polling and visibility pause', music.includes('setInterval(') && music.includes('visibilitychange') && music.includes('document.hidden'));
 check('music: only announce track change', music.includes('trackKey !== lastTrackKey') && music.includes("aria-live', 'polite'"));
-check('nav: lab label aligned', header.includes("{ href: '/#lab', id: 'lab', label: 'Laboratório' }"));
-check('nav: music static link', header.includes("{ href: '/#musica', id: 'musica', label: 'Música' }"));
+check('nav: lab label aligned', header.includes("{ href: `${landingHref}#lab`, id: 'lab', label: 'Laboratório' }"));
+check('nav: music static link', header.includes("{ href: `${landingHref}#musica`, id: 'musica', label: 'Música' }"));
 check('nav: scrollspy state', header.includes("setAttribute('aria-current', 'true')"));
 check('hero: actions follow manifesto', home.indexOf('class="hero-actions"') > home.indexOf('class="hero-statement"'));
 check('hero: download action', home.includes('class="cv-download-button"') && home.includes('download="Kaue-Alencar-Curriculo.pdf"'));
