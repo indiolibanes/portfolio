@@ -49,7 +49,7 @@ test('Immersivo keeps orbital trigger and shows animated original α/β/γ plus 
   assert.match(menu, /<ImmersiveModeEmblems \/>/);
   assert.doesNotMatch(menu, /variant="authorial"|NAV\.map|MODE_CHOICES/);
   assert.match(animatedIcons, /data-xm-mode-nav/);
-  for (const [id, href] of [['authorial','/'],['editorial','/?mode=editorial'],['documentation','/modo-documentacao/']]) {
+  for (const [id, href] of [['authorial','/modo-experimental/'],['editorial','/?mode=editorial'],['documentation','/']]) {
     assert.ok(animatedIcons.includes('"id":"' + id + '"'), 'Original emblem missing: ' + id);
     assert.ok(animatedIcons.includes('"href":"' + href + '"'), 'Link missing: ' + href);
   }
@@ -85,16 +85,19 @@ test('Immersivo orbital menu proportions and Omega portal remain unchanged', () 
   assert.match(mode, /const modes = \['authorial', 'editorial', 'documentation'\];/);
 });
 
-test('Documentation has a real homepage route, a canonical URL and safe old-link migration', () => {
-  const docs = read('src/pages/modo-documentacao.astro');
+test('Documentation is the canonical home; Experimental is a separate route; old links migrate', () => {
+  const experimental = read('src/pages/modo-experimental.astro');
   const head = read('src/components/BaseHead.astro');
   const css = read('src/styles/neumorphic.css');
-  assert.match(docs, /import Home from '\.\/index\.astro'/);
-  assert.match(head, /isDocumentationLanding/);
+  const redirects = read('public/_redirects');
+  assert.match(experimental, /import Home from '\.\/index\.astro'/);
+  assert.match(head, /isExperimentalLanding/);
   assert.match(head, /'legacy', '1998', 'neumorfismo'/);
-  assert.match(head, /storedMode === 'legacy'/);
-  assert.match(mode, /url\.pathname = mode === 'documentation' \? '\/modo-documentacao\/' : '\/'/);
+  assert.match(head, /stored === 'legacy'/);
+  assert.match(head, /isExperimental \? 'authorial' : 'documentation'/);
+  assert.match(mode, /url\.pathname = mode === 'authorial' \? '\/modo-experimental\/' : '\/'/);
   assert.match(mode, /url\.searchParams\.set\('mode', mode === 'documentation' \? 'documentacao' : mode\)/);
+  assert.match(redirects, /\/modo-documentacao\/ \/ 301/);
   assert.match(css, /data-documentation-mode/);
   assert.doesNotMatch(css, /data-legacy-mode/);
   assert.doesNotMatch(mode, /data-legacy-mode|data-mode-node="legacy"|\?mode=legacy/);
