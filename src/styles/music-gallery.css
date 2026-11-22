@@ -703,7 +703,7 @@ html.music-experimental-transition-lock body {
 
 html[data-serious-mode='true']
 .music-experimental-mode,
-html[data-legacy-mode='true']
+html[data-documentation-mode='true']
 .music-experimental-mode {
   display: none !important;
 }
@@ -728,8 +728,8 @@ html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-headi
 html[data-serious-mode='true'] .music-shelf .music-heading--gallery .music-panel-label {
   text-shadow: none;
 }
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-panel-label,
-html[data-legacy-mode='true'] .music-shelf .music-heading--gallery .music-heading-copy :is(h2, p) {
+html[data-documentation-mode='true'] .music-shelf .music-heading--gallery .music-panel-label,
+html[data-documentation-mode='true'] .music-shelf .music-heading--gallery .music-heading-copy :is(h2, p) {
   color: #000;
   text-shadow: none;
 }

@@ -1,4 +1,4 @@
-// modo-experimental: a Sophia alpha (sophia-alpha.glb, candidata 6H), assustada, apontando para o menu.
+// sophia-alpha: a Sophia alpha (sophia-alpha.glb, candidata 6H), assustada, apontando para o menu.
 // - olhos arregalados que disparam de um lado ao outro; ao passar o cursor no menu/gaveta ela segue o cursor;
 // - o braço esquerdo (pv_arm_L) aponta para o botão do menu e, com o cursor no menu, para o cursor;
 // - tremor de medo, orelhas abertas, leve recuo do corpo;
@@ -41,7 +41,7 @@ async function boot() {
     const buf = await fetchGLB(GLB_URL, (p) => { if (hint) hint.textContent = `Chamando a Sophia… ${Math.round(p * 100)}%`; });
     model = await renderer.loadModel(buf);
   } catch (err) {
-    console.warn('[modo-experimental] Sophia não carregou:', err);
+    console.warn('[sophia-alpha] Sophia não carregou:', err);
     off();
     return;
   }

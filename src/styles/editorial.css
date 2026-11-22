@@ -9,6 +9,7 @@
 .work-index a span { color: var(--ink-soft); font-size: .68rem; }
 .work-index a:hover { background: var(--surface-soft); transform: translateY(-2px); }
 .editorial-text-link { display: inline-flex; align-items: center; min-height: var(--target-min); padding: .5rem .2rem; color: var(--ink); font-size: .85rem; font-weight: 650; text-underline-offset: 5px; }
+#sobre .portfolio-view-link { margin-block-start: .4rem; text-decoration: underline; }
 /* Keep the functional, monochrome mode independent of the art direction. */
 html:not([data-serious-mode='true']) .nav-shell { border-radius: 22px; box-shadow: 0 8px 28px #473c3309; }
 html:not([data-serious-mode='true']) .portfolio-main { padding-top: 1.4rem; }

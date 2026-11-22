@@ -2,7 +2,7 @@
  * Ilustrações vetoriais da Sophia na 404: retrato (topo) e sala gamer (base).
  * O desenho vive em src/sophia-portrait.ts e src/sophia-lounge.ts; aqui só
  * ficam o enquadramento e as animações. Sem animação (prefers-reduced-motion,
- * Legacy e Editorial), valem as poses iniciais. Fora da tela as animações
+ * Documentação e Editorial), valem as poses iniciais. Fora da tela as animações
  * pausam (data-paused, definido pelo script da página).
  */
 
@@ -13,8 +13,8 @@
   height: auto;
 }
 
-/* O Legacy esconde todo <svg> de <main>; as ilustrações do painel escuro ficam. */
-html[data-legacy-mode='true'] main .sophia-404__panel svg.sophia-art {
+/* O Documentação esconde todo <svg> de <main>; as ilustrações do painel escuro ficam. */
+html[data-documentation-mode='true'] main .sophia-404__panel svg.sophia-art {
   display: block !important;
 }
 

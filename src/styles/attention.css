@@ -1,5 +1,5 @@
 /* Botões em destaque: “Currículo PDF” (Sobre) e o alternador de modo de leitura.
-   Autoral = cor e brilho; Editorial = apenas movimento discreto em tinta; Legacy não anima. */
+   Criativo = cor e brilho; Editorial = apenas movimento discreto em tinta; Documentação não anima. */
 
 @property --attn-angle {
   syntax: '<angle>';
@@ -15,7 +15,7 @@
 
 /* ---------- Currículo PDF ---------- */
 
-html:not([data-legacy-mode='true']) #sobre .cv-download-button {
+html:not([data-documentation-mode='true']) #sobre .cv-download-button {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -23,19 +23,19 @@ html:not([data-legacy-mode='true']) #sobre .cv-download-button {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1.2), background-color 0.25s, color 0.25s;
 }
 
-html:not([data-legacy-mode='true']) #sobre .cv-download-button > span[aria-hidden] {
+html:not([data-documentation-mode='true']) #sobre .cv-download-button > span[aria-hidden] {
   display: inline-block;
   animation: attn-drop 2.2s ease-in-out infinite;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-download-button {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .cv-download-button {
   border-color: #c99a2e;
   background: linear-gradient(135deg, #fff4cf, #f7dc8d);
   color: #2b2118;
   animation: attn-ring 2.6s ease-out infinite;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-download-button::after {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .cv-download-button::after {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
@@ -46,8 +46,8 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-d
   pointer-events: none;
 }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-download-button:hover,
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #sobre .cv-download-button:focus-visible {
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .cv-download-button:hover,
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #sobre .cv-download-button:focus-visible {
   transform: translateY(-2px) scale(1.04);
   background: linear-gradient(135deg, #f7dc8d, #e8b94a);
 }
@@ -72,9 +72,9 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
 }
 
 /* ---------- Curiosidades e Contato: botões vivos (2026-10-22) ----------
-   Autoral: preenchimento vibrante por botão, borda cônica girando, brilho que varre e
+   Criativo: preenchimento vibrante por botão, borda cônica girando, brilho que varre e
    halo pulsando. Editorial: só um anel de tinta discreto e a seta que acena.
-   Legacy: nada se move. Movimento reduzido: tudo parado, cores mantidas. */
+   Documentação: nada se move. Movimento reduzido: tudo parado, cores mantidas. */
 
 @keyframes attn-halo {
   0%, 100% { box-shadow: 0 0 0 0 var(--attn-glow), 0 6px 20px -6px var(--attn-glow); }
@@ -82,7 +82,7 @@ html[data-serious-mode='true'] #sobre .cv-download-button:focus-visible {
 }
 @keyframes attn-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 :is(.curiosities-teaser__link, #contato .closing-actions .button) {
   --attn-a: #ffd36b; --attn-b: #ff7ab8; --attn-glow: rgba(255, 190, 90, .6); --attn-ink: #231526;
   position: relative;
@@ -99,11 +99,11 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
   animation: attn-spin 3.2s linear infinite, attn-halo 2.4s ease-in-out infinite;
   transition: transform .25s cubic-bezier(.2, .8, .2, 1.2), filter .25s;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .closing-actions .button.closing-whatsapp-button { --attn-a: #7dffb0; --attn-b: #1fd0a0; --attn-glow: rgba(60, 230, 150, .6); --attn-ink: #06281b; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) #contato .closing-actions .button.closing-linkedin-button { --attn-a: #8fd3ff; --attn-b: #6a7bff; --attn-glow: rgba(110, 150, 255, .65); --attn-ink: #0b1740; }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true']) .curiosities-teaser:not(#_) .curiosities-teaser__link { --attn-a: #c9a4ff; --attn-b: #ff8fd0; --attn-glow: rgba(210, 130, 255, .6); --attn-ink: #2a0f3a; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #contato .closing-actions .button.closing-whatsapp-button { --attn-a: #7dffb0; --attn-b: #1fd0a0; --attn-glow: rgba(60, 230, 150, .6); --attn-ink: #06281b; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #contato .closing-actions .button.closing-linkedin-button { --attn-a: #8fd3ff; --attn-b: #6a7bff; --attn-glow: rgba(110, 150, 255, .65); --attn-ink: #0b1740; }
+html:not([data-serious-mode='true']):not([data-documentation-mode='true']) .curiosities-teaser:not(#_) .curiosities-teaser__link { --attn-a: #c9a4ff; --attn-b: #ff8fd0; --attn-glow: rgba(210, 130, 255, .6); --attn-ink: #2a0f3a; }
 
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 :is(.curiosities-teaser__link, #contato .closing-actions .button)::after {
   content: '';
   position: absolute;
@@ -114,17 +114,17 @@ html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
   animation: attn-sheen 3s ease-in-out infinite;
   pointer-events: none;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 :is(.curiosities-teaser__link, #contato .closing-actions .button) > span[aria-hidden] {
   display: inline-block;
   animation: attn-nudge 1.6s ease-in-out infinite;
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 :is(.curiosities-teaser__link, #contato .closing-actions .button):is(:hover, :focus-visible) {
   transform: translateY(-3px) scale(1.05);
   filter: brightness(1.08) saturate(1.15);
 }
-html:not([data-serious-mode='true']):not([data-legacy-mode='true'])
+html:not([data-serious-mode='true']):not([data-documentation-mode='true'])
 :is(.curiosities-teaser__link, #contato .closing-actions .button):focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
 /* Editorial: discreto, só tinta. */

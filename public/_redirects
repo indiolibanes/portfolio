@@ -1,3 +1,11 @@
+# The former Documentation landing is now the canonical home.
+/modo-documentacao / 301
+/modo-documentacao/ / 301
+
+# Retired creative landing URL.
+/modo-experimental /modo-criativo/ 301
+/modo-experimental/ /modo-criativo/ 301
+
 /experimentos/modo-imersivo /modo-imersivo 301
 /experimentos/modo-imersivo/ /modo-imersivo 301
 # Canonical Hsin experience. Legacy experiment URLs remain non-breaking.

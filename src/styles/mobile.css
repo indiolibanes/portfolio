@@ -2,18 +2,18 @@
  * Phone composition (audit 2026-10-12).
  * One place for proportions that only exist below ~640 px, loaded last so it
  * can refine section rules without touching their desktop values.
- * Legacy · 1998 keeps its own text-first flow unless a rule says otherwise.
+ * Documentação · 1998 keeps its own text-first flow unless a rule says otherwise.
  */
 
 @media (max-width: 640px) {
   /* Lab — the system diagrams stacked four tall boxes per card (~400 px).
      As small horizontal flows they say the same thing in a third of the space. */
-  html:not([data-legacy-mode='true']) .lab-project-system {
+  html:not([data-documentation-mode='true']) .lab-project-system {
     min-height: 0;
     padding: 1.15rem 1rem 1.3rem;
   }
 
-  html:not([data-legacy-mode='true']) .knowledge-flow {
+  html:not([data-documentation-mode='true']) .knowledge-flow {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -21,95 +21,95 @@
     gap: .4rem .35rem;
   }
 
-  html:not([data-legacy-mode='true']) .knowledge-flow span {
+  html:not([data-documentation-mode='true']) .knowledge-flow span {
     min-height: 0;
     padding: .5rem .62rem;
     font-size: .74rem;
   }
 
-  html:not([data-legacy-mode='true']) .knowledge-flow i {
+  html:not([data-documentation-mode='true']) .knowledge-flow i {
     transform: none;
     justify-self: auto;
     font-size: .8rem;
   }
-  html:not([data-legacy-mode='true']) .documentation-pipeline {
+  html:not([data-documentation-mode='true']) .documentation-pipeline {
     width: 100%;
     grid-template-columns: repeat(3, minmax(0, 1fr) auto) minmax(0, 1fr);
     gap: .25rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step {
+  html:not([data-documentation-mode='true']) .documentation-step {
     min-height: 58px;
     padding: .5rem .2rem;
     border-radius: var(--radius-sm);
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step strong {
+  html:not([data-documentation-mode='true']) .documentation-step strong {
     font-size: .7rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step small {
+  html:not([data-documentation-mode='true']) .documentation-step small {
     font-size: .68rem;
     letter-spacing: .01em;
     overflow-wrap: anywhere;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-arrow {
+  html:not([data-documentation-mode='true']) .documentation-arrow {
     transform: none;
     font-size: .75rem;
   }
 
-  html:not([data-legacy-mode='true']) .architecture-map {
+  html:not([data-documentation-mode='true']) .architecture-map {
     gap: .7rem;
   }
 
-  html:not([data-legacy-mode='true']) :is(.architecture-root, .architecture-output) {
+  html:not([data-documentation-mode='true']) :is(.architecture-root, .architecture-output) {
     padding: .5rem .9rem;
   }
 
   /* Covers: a book jacket at 68vw was taller than its own card copy. */
-  html:not([data-legacy-mode='true']) .lab-project-cover {
+  html:not([data-documentation-mode='true']) .lab-project-cover {
     padding: 1rem;
   }
 
-  html:not([data-legacy-mode='true']) .lab-project-cover-frame:not(.lab-project-cover-frame-essay) {
+  html:not([data-documentation-mode='true']) .lab-project-cover-frame:not(.lab-project-cover-frame-essay) {
     width: min(48vw, 200px);
   }
 
   /* Hero actions: one primary action across the row, the two secondary
      actions side by side below it, instead of three ragged lines. */
-  html:not([data-legacy-mode='true']) .hero-actions {
+  html:not([data-documentation-mode='true']) .hero-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
     gap: .6rem .8rem;
   }
 
-  html:not([data-legacy-mode='true']) .hero-actions .editorial-primary {
+  html:not([data-documentation-mode='true']) .hero-actions .editorial-primary {
     grid-column: 1 / -1;
     justify-content: center;
     text-align: center;
   }
 
-  html:not([data-legacy-mode='true']) .hero-actions :is(.editorial-text-link, .cv-download-button) {
+  html:not([data-documentation-mode='true']) .hero-actions :is(.editorial-text-link, .cv-download-button) {
     justify-self: center;
     text-align: center;
     white-space: normal;
   }
 
   /* Contact: e-mail first and full width; WhatsApp and LinkedIn share a row. */
-  html:not([data-legacy-mode='true']) .closing-actions {
+  html:not([data-documentation-mode='true']) .closing-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .6rem;
   }
 
-  html:not([data-legacy-mode='true']) .closing-actions .button {
+  html:not([data-documentation-mode='true']) .closing-actions .button {
     justify-content: center;
     text-align: center;
   }
 
-  html:not([data-legacy-mode='true']) .closing-actions .closing-email-button {
+  html:not([data-documentation-mode='true']) .closing-actions .closing-email-button {
     grid-column: 1 / -1;
   }
 }
@@ -131,7 +131,7 @@
 @media (max-width: 680px) {
   /* Music: the moonlit terrace is a 3:2 painting; a 16:9 crop on a phone
      cut the characters the caption names. */
-  html:not([data-legacy-mode='true']) .music-shelf .music-heading--gallery .music-panorama {
+  html:not([data-documentation-mode='true']) .music-shelf .music-heading--gallery .music-panorama {
     aspect-ratio: 3 / 2;
   }
 }
@@ -169,25 +169,25 @@
 }
 
 @media (max-width: 420px) {
-  html:not([data-legacy-mode='true']) .documentation-pipeline {
+  html:not([data-documentation-mode='true']) .documentation-pipeline {
     grid-template-columns: minmax(0, 1fr);
     gap: .35rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step {
+  html:not([data-documentation-mode='true']) .documentation-step {
     min-height: 0;
     padding: .5rem .65rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step strong {
+  html:not([data-documentation-mode='true']) .documentation-step strong {
     font-size: .82rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-step small {
+  html:not([data-documentation-mode='true']) .documentation-step small {
     font-size: .73rem;
   }
 
-  html:not([data-legacy-mode='true']) .documentation-arrow {
+  html:not([data-documentation-mode='true']) .documentation-arrow {
     transform: rotate(90deg);
   }
 }

@@ -1,5 +1,5 @@
 /**
- * The same rigged GLB that powers /modo-experimental becomes a character on /404.
+ * The rigged Sophia alpha GLB becomes a character on /404.
  * This is intentionally plain Three.js (not a second React root): the page is
  * otherwise an Astro document and its Tetris engine remains canvas 2D.
  * No remote scripts, no video, no full-page renderer.

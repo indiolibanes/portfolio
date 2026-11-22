@@ -1,4 +1,4 @@
-// Cursor de notas musicais para a seção Música (modo Autoral).
+// Cursor de notas musicais para a seção Música (modo Criativo).
 // O cursor nativo some dentro da seção e uma nota segue o ponteiro. A cada 4 s a nota troca de
 // figura (colcheia, semicolcheia, semínima, mínima, semibreve, arpejo, tom, semitom, escala,
 // sustenido, bemol…) e de cor. Só com ponteiro fino; movimento reduzido mostra uma nota fixa, sem
