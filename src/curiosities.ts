@@ -61,7 +61,7 @@ export const CURIOSITIES: Curiosity[] = [
     text: 'Estou traduzindo The Big Picture, de Sean Carroll, do inglês para o português. O trabalho ainda está em fase inicial, e este portfólio é transparente ao admiti-lo. Conceitos densos da física teórica e da filosofia da ciência exigem um esforço considerável de compreensão — especialmente em um idioma estrangeiro.',
     why: 'Traduzir ensina a virtude da paciência; terminar ensina a decidir o que fica.',
     accent: 'rose',
-    link: { href: '/#lab', label: 'Ver no Laboratório' },
+    link: { href: '/#traducao', label: 'Ver no Laboratório' },
   },
   {
     id: 'ideia-central',

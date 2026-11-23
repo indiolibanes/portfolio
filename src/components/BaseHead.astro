@@ -1,5 +1,5 @@
 ---
-import { PROFILE, PUBLIC_PAGES, SITE, SOCIALS, isCreativePath } from '../config';
+import { PROFILE, PUBLIC_PAGES, SITE, SOCIALS, isCreativePath, projectLandingPaths } from '../config';
 import DiscoveryLinks from './DiscoveryLinks.astro';
 
 interface Props {
@@ -57,8 +57,26 @@ const structuredData = {
 <meta name="robots" content={isNotFound || isUnlistedStage ? 'noindex, nofollow, noarchive' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 <meta name="theme-color" content="#f6efdc" />
 
-<script is:inline define:vars={{ creativePath, isCreativeLanding, hasLandingScenes }}>
+<script is:inline define:vars={{ creativePath, isCreativeLanding, hasLandingScenes, projectLandingPaths }}>
   (() => {
+    if (hasLandingScenes) {
+      const currentPath = isCreativeLanding ? creativePath : '/';
+      const redirectProject = () => {
+        const destination = new URL(window.location.href);
+        const id = destination.hash.slice(1);
+        if (!Object.hasOwn(projectLandingPaths, id)) return false;
+        const projectPath = projectLandingPaths[id];
+        if (currentPath === projectPath) return false;
+        destination.pathname = projectPath;
+        destination.searchParams.delete('mode');
+        destination.searchParams.delete('serious');
+        window.location.replace(destination.pathname + destination.search + destination.hash);
+        return true;
+      };
+      if (redirectProject()) return;
+      window.addEventListener('hashchange', redirectProject);
+    }
+
     const params = new URLSearchParams(window.location.search);
     const requested = params.get('mode');
     const seriousParam = params.get('serious');
@@ -73,6 +91,8 @@ const structuredData = {
     // The landing URL determines both the rendered content and its visual mode.
     if (hasLandingScenes && mode && (mode === 'authorial') !== isCreativeLanding) {
       const destination = new URL(window.location.href);
+      const project = destination.hash.slice(1);
+      if (Object.hasOwn(projectLandingPaths, project)) destination.hash = '#lab';
       destination.pathname = mode === 'authorial' ? creativePath : '/';
       destination.searchParams.delete('serious');
       if (mode === 'editorial') destination.searchParams.set('mode', 'editorial');
@@ -103,7 +123,7 @@ const structuredData = {
   })();
 </script>
 <script is:inline src="/scripts/reveal.js"></script>
-{hasLandingScenes && <script is:inline src="/scripts/scenes.js" defer></script>}
+{hasLandingScenes && <script is:inline src="/scripts/scenes.js?v=project-scenes" defer></script>}
 
 {!isNotFound && <link rel="canonical" href={canonicalUrl} />}
 {!isNotFound && !isUnlistedStage && <DiscoveryLinks />}

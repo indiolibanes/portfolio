@@ -1,7 +1,7 @@
 /*
  * Cenas animadas de fundo (2026-10-21) — o motor está em /scripts/scenes.js.
- * Só no modo Criativo; Editorial e Documentação escondem tudo. Movimento reduzido: o script desenha um quadro
- * estático e não anima.
+ * Criativo exibe as cenas da página. Documentação exibe apenas as cenas dos
+ * projetos. Editorial oculta as cenas. Movimento reduzido usa um quadro estático.
  */
 
 /* ---------- Moonlight Sonata: sem animação (pedido) ---------- */
@@ -15,7 +15,23 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) [data
 .scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; border-radius: inherit; }
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) .lab-project-card[data-scene] > :is(.lab-project-copy, .lab-project-cover, .lab-project-system) { position: relative; z-index: 1; }
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) section[data-scene] > :not(.scene-canvas):not(.anchor-alias):not(.cosmic-starfield) { position: relative; z-index: 1; }
-html[data-serious-mode='true'] .scene-canvas, html[data-documentation-mode='true'] .scene-canvas { display: none !important; }
+html[data-serious-mode='true'] .scene-canvas,
+html[data-documentation-mode='true'] :not([data-project-scene]) > .scene-canvas { display: none !important; }
+
+/* Keep the technical reading surface while the original scene runs underneath. */
+html[data-documentation-mode='true'] [data-project-scene] { position: relative; isolation: isolate; }
+html[data-documentation-mode='true'] .lab-project-card[data-project-scene] > :is(.lab-project-copy, .lab-project-cover, .lab-project-system, .pi-map),
+html[data-documentation-mode='true'] .lab-project-system-architecture[data-project-scene] > .architecture-map { position: relative; z-index: 1; }
+html[data-documentation-mode='true'] [data-project-scene] > .scene-canvas { opacity: .28; }
+html[data-documentation-mode='true'] #traducao > .scene-canvas {
+  background: radial-gradient(ellipse at 60% 60%, #2c3250, #0d1425) !important;
+  opacity: .24;
+}
+html[data-documentation-mode='true'] .lab-project-system-architecture[data-project-scene] > .scene-canvas { opacity: .48; }
+
+@media (prefers-contrast: more), (forced-colors: active) {
+  html[data-documentation-mode='true'] [data-project-scene] > :is(.scene-canvas, .pi-leaf-field) { display: none !important; }
+}
 
 /* Tradução, Reflexão e Arquitetura: o véu do texto fica mais leve para a cena aparecer. */
 html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab :is(#traducao, #reflexao, #arquitetura) .lab-project-copy { background: linear-gradient(90deg, #080b1670, #080b1622); }

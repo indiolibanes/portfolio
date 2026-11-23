@@ -8,8 +8,8 @@ const head = read('src/components/BaseHead.astro');
 const home = read('src/pages/index.astro');
 
 assert.match(head, /const hasLandingScenes = pathname === '\/' \|\| isCreativeLanding;/);
-assert.match(head, /\{hasLandingScenes && <script is:inline src="\/scripts\/scenes\.js" defer><\/script>\}/);
-assert.equal((head.match(/src="\/scripts\/scenes\.js"/g) || []).length, 1);
+assert.match(head, /\{hasLandingScenes && <script is:inline src="\/scripts\/scenes\.js\?v=project-scenes" defer><\/script>\}/);
+assert.equal((head.match(/src="\/scripts\/scenes\.js\?v=project-scenes"/g) || []).length, 1);
 assert.match(home, /data-scene="/);
 
 for (const path of ['src/pages/curiosidades.astro', 'src/pages/sophia.astro', 'src/pages/404.astro']) {
