@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const css = readFileSync(new URL('../src/styles/neumorphic.css', import.meta.url), 'utf8');
-const mobile = css.split('@media (max-width: 720px) {')[1]?.split("\n}")[0];
+// Several 720px rules exist; use the final contact-specific mobile block.
+const mobileStart = css.lastIndexOf('@media (max-width: 720px) {');
+const mobile = mobileStart < 0 ? '' : css.slice(mobileStart);
 const contact = mobile?.match(/html\[data-documentation-mode='true'\] body \.closing \{([\s\S]*?)\n  \}/)?.[1];
 
 test('documentation-mode contact orbit keeps a centred viewport-scaled mobile still', () => {
