@@ -5,6 +5,7 @@ import AtomCursor from '../components/AtomCursor.astro';
 import BaseHead from '../components/BaseHead.astro';
 import PortfolioFooter from '../components/PortfolioFooter.astro';
 import PortfolioHeader from '../components/PortfolioHeader.astro';
+import PortfolioLanguage from '../components/PortfolioLanguage.astro';
 import RandomEasterSprites from '../components/RandomEasterSprites.astro';
 import '../styles/design-tokens.css';
 import '../styles/global.css';
@@ -60,6 +61,7 @@ const isCreativeLanding = isCreativePath(Astro.url.pathname);
     <div class="ambient ambient-two" aria-hidden="true"></div>
     <AtomCursor />
     <PortfolioHeader />
+    <PortfolioLanguage />
     <slot />
     <PortfolioFooter />
     <RandomEasterSprites />

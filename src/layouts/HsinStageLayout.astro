@@ -1,4 +1,6 @@
 ---
+import PortfolioLanguage from '../components/PortfolioLanguage.astro';
+
 const {title='Hsin · The Moon Fox'}=Astro.props;
 ---
 <!doctype html>
@@ -12,5 +14,5 @@ const {title='Hsin · The Moon Fox'}=Astro.props;
     <title>{title}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
-  <body><slot /></body>
+  <body><slot /><PortfolioLanguage placement="stage" /></body>
 </html>
