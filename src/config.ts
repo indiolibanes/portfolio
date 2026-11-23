@@ -40,6 +40,21 @@ export function isCreativePath(pathname: string) {
   return pathname === path || pathname + '/' === path;
 }
 
+export const PORTFOLIO_PROJECTS = [
+  { id: 'curadoria', track: 'documentation', index: '01', label: 'Tecnologia NIR' },
+  { id: 'traducao', track: 'documentation', index: '02', label: 'Tradução' },
+  { id: 'arquitetura', track: 'documentation', index: '03', label: 'Arquitetura' },
+  { id: 'documentacao', track: 'documentation', index: '04', label: 'Documentação' },
+  { id: 'voo-prismatico', track: 'creative', index: '✦', label: 'Voo Prismático' },
+  { id: 'rhea', track: 'creative', index: '01', label: 'RHEA' },
+  { id: 'reflexao', track: 'creative', index: '02', label: 'Reflexão' },
+  { id: 'astrofisica', track: 'creative', index: '03', label: 'Astrophysics Application' },
+] as const;
+
+export const projectLandingPaths = Object.fromEntries(
+  PORTFOLIO_PROJECTS.map(({ id, track }) => [id, track === 'creative' ? PUBLIC_PAGES.creative.path : '/']),
+);
+
 export const PROFILE = {
   name: 'Kauê Alencar',
   shortName: 'Kauê',

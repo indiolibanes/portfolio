@@ -128,11 +128,11 @@ html[data-documentation-mode='true'] :is(
   .github-gif-strip, .triforce-stage, .tape, .gold-block, .mario-name-tiles,
   .phrolova-underlay, .shorekeeper-underlay, .baton-fall-petal,
   .hero-ornaments, .hero-cover-art .prism-spectrum, .lab-companion,
-  .footer-math, .pi-leaf-field, .rhea-card-sky, .rhea-card-orbit, .rhea-card-moon,
+  .footer-math, .rhea-card-sky, .rhea-card-orbit, .rhea-card-moon,
   .curiosities-teaser .corrida, .closing-marks, .mm-splash, .lab-sophia-guide, .lab-sophia-presence,
   .github-board-stage, .music-sophia-mini, .music-panorama, .music-panorama-action,
   .music-panorama-effects, .music-panorama-glint, .listening-note-score, .method-presenter,
-  .nav-plasma, .pi-map :is(.mm-arrow, .mm-splash, .mm-icon, .mm-brush), .hero-note .tape, .pi-leaf-field, .method-presenter__beam, .prism-ray, .prism-spectrum
+  .nav-plasma, .pi-map :is(.mm-arrow, .mm-splash, .mm-icon, .mm-brush), .hero-note .tape, .method-presenter__beam, .prism-ray, .prism-spectrum
 ) {
   display: none !important;
 }

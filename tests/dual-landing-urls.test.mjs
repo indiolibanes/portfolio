@@ -9,6 +9,11 @@ const modes = read('src/components/SeriousModeToggle.astro');
 const redirects = read('public/_redirects');
 const sitemap = read('public/sitemap.xml');
 const creativePath = '/modo-criativo/';
+const projectLandingPaths = Object.fromEntries(
+  Array.from(read('src/config.ts').matchAll(/id: '([^']+)', track: '([^']+)'/g), ([, id, track]) => [
+    id, track === 'creative' ? creativePath : '/',
+  ]),
+);
 
 assert.match(read('src/pages/modo-criativo.astro'), /import Home from '\.\/index\.astro'/);
 assert.ok(!existsSync(new URL('../src/pages/modo-experimental.astro', import.meta.url)));
@@ -26,7 +31,7 @@ for (const alias of ['/modo-experimental', '/modo-experimental/']) {
 assert.ok(!sitemap.includes('/modo-documentacao/') && !sitemap.includes('/modo-experimental/'));
 assert.ok(sitemap.includes(creativePath));
 
-const initialization = head.match(/<script is:inline define:vars=\{\{ creativePath, isCreativeLanding, hasLandingScenes \}\}>([\s\S]*?)<\/script>/)?.[1];
+const initialization = head.match(/<script is:inline define:vars=\{\{ creativePath, isCreativeLanding, hasLandingScenes, projectLandingPaths \}\}>([\s\S]*?)<\/script>/)?.[1];
 assert.ok(initialization);
 
 function initialize(path, stored) {
@@ -38,9 +43,10 @@ function initialize(path, stored) {
     URL,
     URLSearchParams,
     creativePath,
+    projectLandingPaths,
     isCreativeLanding,
     hasLandingScenes: isCreativeLanding || url.pathname === '/',
-    window: { location: { search: url.search, href: url.href, replace: target => { redirect = target; } } },
+    window: { addEventListener() {}, location: { search: url.search, href: url.href, replace: target => { redirect = target; } } },
     document: { documentElement: { dataset } },
     localStorage: { getItem: () => stored },
   });
@@ -57,4 +63,11 @@ assert.equal(initialize('/?serious=0').redirect, creativePath);
 assert.equal(initialize('/modo-criativo/?mode=editorial#lab').redirect, '/?mode=editorial#lab');
 assert.equal(initialize('/modo-criativo/?mode=documentacao#sobre').redirect, '/#sobre');
 assert.equal(initialize('/sophia/', 'legacy').mode, 'documentation');
+assert.equal(initialize('/#traducao').mode, 'documentation');
+assert.equal(initialize('/modo-criativo/#rhea').mode, 'authorial');
+assert.equal(initialize('/?ref=share#voo-prismatico').redirect, '/modo-criativo/?ref=share#voo-prismatico');
+assert.equal(initialize('/modo-criativo/?mode=criativo#curadoria').redirect, '/#curadoria');
+assert.equal(initialize('/modo-criativo/#arquitetura').redirect, '/#arquitetura');
+assert.equal(initialize('/#reflexao').redirect, '/modo-criativo/#reflexao');
+assert.equal(initialize('/#toString').redirect, undefined);
 console.log('PASS: documentary home, creative route, metadata, bookmark migration and mode selection.');

@@ -2,7 +2,7 @@
 //
 // Cada elemento com data-scene="…" recebe um <canvas aria-hidden> atrás do conteúdo. As cenas só rodam
 // enquanto estão na tela e com a aba visível; com prefers-reduced-motion mostram um único quadro estático;
-// nos modos Editorial e Documentação ficam desligadas (o CSS também as esconde).
+// Documentação mantém as cenas dos projetos; Editorial mantém a leitura estática.
 //
 //   supernova  Tradução      estrela que colapsa, explode e deixa um remanescente
 //   spacetime  Reflexão      grade do espaço-tempo curvada por duas massas + relógio que anda para trás
@@ -21,8 +21,9 @@
 
   const root = document.documentElement;
   const TAU = Math.PI * 2;
-  let reduce = false;
-  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch {}
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const contrast = window.matchMedia('(prefers-contrast: more), (forced-colors: active)');
+  let reduce = motion.matches;
 
   if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h) { this.rect(x, y, w, h); };
@@ -280,6 +281,12 @@
   // Arquitetura — segundo cérebro: rede de notas ligadas
   // ======================================================================================================
   const NODE_LABELS = ['Ensaios', 'Notas', 'Leituras', 'Assunto', 'Série', 'Idioma', 'Citação', 'Obra', 'Tese', 'Fonte', 'Metadados', 'Slug'];
+  const ARCHITECTURE_EN = {
+    Ensaios: 'Essays', Notas: 'Notes', Leituras: 'Readings', Assunto: 'Topic',
+    Série: 'Series', Idioma: 'Language', Citação: 'Citation', Obra: 'Work',
+    Tese: 'Thesis', Fonte: 'Source', Metadados: 'Metadata', Taxonomia: 'Taxonomy',
+  };
+  const architectureLabel = (label) => root.lang === 'en' ? ARCHITECTURE_EN[label] ?? label : label;
   const NODE_COLORS = ['184,216,232', '232,210,154', '205,191,240', '191,224,184', '242,179,179'];
   const network = {
     still: 6,
@@ -406,7 +413,7 @@
       }
       ctx.font = '12px "Portfolio Typewriter", ui-monospace, monospace';
       ctx.fillStyle = 'rgba(250,236,240,0.78)';
-      for (const a of st.hubs) ctx.fillText(a.label, a.x + a.r + 4, a.y + 3);
+      for (const a of st.hubs) ctx.fillText(architectureLabel(a.label), a.x + a.r + 4, a.y + 3);
       if (px !== null) {
         const near = nodes.map((a) => [a, Math.hypot(a.x - px, a.y - py)]).filter(([, dd]) => dd < 170).sort((p, q) => p[1] - q[1]).slice(0, 3);
         ctx.strokeStyle = 'rgba(255,236,180,0.35)';
@@ -1649,7 +1656,7 @@
       // rótulos de projeto (gravados em letra miúda)
       ctx.font = `10.5px "Portfolio Typewriter", ui-monospace, monospace`;
       ctx.fillStyle = 'rgba(224,196,132,0.62)'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-      for (const p of parts) { const [lx, ly] = at(p.x, p.y); ctx.fillText(p.label, lx + m * 0.09, ly + m * 0.2 > h - 8 ? ly - m * 0.1 : ly + m * 0.2); }
+      for (const p of parts) { const [lx, ly] = at(p.x, p.y); ctx.fillText(architectureLabel(p.label), lx + m * 0.09, ly + m * 0.2 > h - 8 ? ly - m * 0.1 : ly + m * 0.2); }
       // poeira na luz
       ctx.globalCompositeOperation = 'lighter';
       for (const d of st.motes) {
@@ -1813,7 +1820,10 @@
   const items = [];
   let frame = 0;
   let last = 0;
-  const modeOn = () => root.dataset.seriousMode !== 'true' && root.dataset.documentationMode !== 'true';
+  const isEditorial = () => root.dataset.seriousMode === 'true';
+  const isDocumentary = () => root.dataset.documentationMode === 'true';
+  const modeOn = (item) => !isEditorial() && (!isDocumentary() || (item.projectScene && !contrast.matches));
+  const isPlaying = (item) => item.visible && !item.frozen && modeOn(item);
 
   const resize = (c) => {
     const r = c.host.getBoundingClientRect();
@@ -1840,11 +1850,15 @@
 
   const tick = (now) => {
     frame = 0;
+    if (reduce || document.hidden) {
+      last = 0;
+      return;
+    }
     const dt = last ? (now - last) / 1000 : 0.016;
     last = now;
     let any = false;
     for (const c of items) {
-      if (!c.visible || c.frozen || !modeOn()) continue;
+      if (!isPlaying(c)) continue;
       any = true;
       c.t += dt;
       paint(c, c.t, dt);
@@ -1852,17 +1866,29 @@
     if (any && !document.hidden) frame = requestAnimationFrame(tick);
     else last = 0;
   };
-  const wake = () => { if (!frame && !document.hidden && !reduce) { last = 0; frame = requestAnimationFrame(tick); } };
+  const wake = () => {
+    if (frame || document.hidden || reduce || !items.some(isPlaying)) return;
+    last = 0;
+    frame = requestAnimationFrame(tick);
+  };
+  const refresh = () => {
+    if (reduce) {
+      for (const c of items) if (modeOn(c) && !c.frozen) paint(c, c.scene.still || 0, 0.016);
+    } else {
+      wake();
+    }
+  };
 
   const mount = (host) => {
     const scene = SCENES[host.dataset.scene];
-    if (!scene || host._scene) return;
+    const projectScene = host.hasAttribute('data-project-scene');
+    if (!scene || host._scene || (!projectScene && (isDocumentary() || isEditorial()))) return;
     const canvas = document.createElement('canvas');
     canvas.className = 'scene-canvas';
     canvas.setAttribute('aria-hidden', 'true');
     host.insertBefore(canvas, host.firstChild);
     const c = {
-      host, canvas, ctx: canvas.getContext('2d'), scene, w: 0, h: 0, dpr: 1, st: {}, t: scene.still ? Math.random() * 3 : 0, visible: false,
+      host, canvas, ctx: canvas.getContext('2d'), scene, projectScene, w: 0, h: 0, dpr: 1, st: {}, t: scene.still ? Math.random() * 3 : 0, visible: false,
       reduced: reduce, pointer: { on: false, x: 0, y: 0 },
     };
     if (!c.ctx) return;
@@ -1871,7 +1897,7 @@
     resize(c);
     host.addEventListener('pointermove', (e) => { const r = host.getBoundingClientRect(); c.pointer.on = true; c.pointer.x = e.clientX - r.left; c.pointer.y = e.clientY - r.top; }, { passive: true });
     host.addEventListener('pointerleave', () => { c.pointer.on = false; }, { passive: true });
-    if (reduce) { if (modeOn()) paint(c, scene.still || 0, 0.016); }
+    if (reduce && modeOn(c)) paint(c, scene.still || 0, 0.016);
   };
 
   const init = () => {
@@ -1882,7 +1908,7 @@
           const c = e.target._scene;
           if (!c) continue;
           resize(c);
-          if (reduce && modeOn()) paint(c, c.scene.still || 0, 0.016);
+          if (reduce && modeOn(c)) paint(c, c.scene.still || 0, 0.016);
         }
       });
       items.forEach((c) => ro.observe(c.host));
@@ -1897,8 +1923,23 @@
       items.forEach((c) => { c.visible = true; });
       wake();
     }
-    document.addEventListener('visibilitychange', wake);
-    new MutationObserver(wake).observe(root, { attributes: true, attributeFilter: ['data-serious-mode', 'data-documentation-mode'] });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        last = 0;
+      } else {
+        wake();
+      }
+    });
+    new MutationObserver(refresh).observe(root, { attributes: true, attributeFilter: ['data-serious-mode', 'data-documentation-mode'] });
+    motion.addEventListener('change', () => {
+      reduce = motion.matches;
+      for (const c of items) c.reduced = reduce;
+      refresh();
+    });
+    contrast.addEventListener('change', refresh);
+    window.addEventListener('portfolio:language', refresh);
     window.PortfolioScenes = {
       renderAt(host, t) { const c = host._scene; if (!c) return false; c.frozen = true; resize(c); if (c.scene.persistent) { c.st = {}; c.scene.init(c); } c.reduced = true; paint(c, t, 0.016); c.reduced = reduce; return true; },
     };

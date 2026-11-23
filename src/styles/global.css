@@ -5918,6 +5918,7 @@ html[data-serious-mode='true'] .sophia-animation--music { display: block; width:
   .music-shelf,
   .closing,
   .lab-project-card,
+  #astrofisica,
   .anchor-alias
 ) {
   scroll-margin-top: clamp(5rem, 8vw, 6.5rem);

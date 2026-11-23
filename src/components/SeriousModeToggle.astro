@@ -1,5 +1,5 @@
 ---
-import { PUBLIC_PAGES, isCreativePath } from '../config';
+import { PUBLIC_PAGES, isCreativePath, projectLandingPaths } from '../config';
 
 // Ω continua acessível nas duas páginas principais; não altera os modos de leitura.
 const isCreativeLanding = isCreativePath(Astro.url.pathname);
@@ -207,7 +207,7 @@ const creativePath = PUBLIC_PAGES.creative.path;
   <span class="sr-only" role="status" aria-live="polite" data-mode-status></span>
 </div>
 
-<script is:inline define:vars={{ creativePath, isLanding: showOmega }}>
+<script is:inline define:vars={{ creativePath, isLanding: showOmega, projectLandingPaths }}>
   (() => {
     const key = 'portfolio-mode-v2';
     const oldKey = 'portfolio-mode';
@@ -1041,6 +1041,7 @@ const creativePath = PUBLIC_PAGES.creative.path;
           if (pathname !== target && pathname + '/' !== target) {
             const destination = new URL(window.location.href);
             destination.pathname = target;
+            if (Object.hasOwn(projectLandingPaths, destination.hash.slice(1))) destination.hash = '#lab';
             destination.searchParams.delete('mode');
             destination.searchParams.delete('serious');
             if (id === 'editorial') destination.searchParams.set('mode', 'editorial');

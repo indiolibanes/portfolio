@@ -276,18 +276,20 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab 
 
 /* ---------- Folhas caindo, ao fundo (visíveis) ---------- */
 
-html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .pi-leaf-field { position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
-html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .pi-leaf-field span {
+html:not([data-serious-mode='true']) #lab #curadoria .pi-leaf-field { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+html:not([data-serious-mode='true']) #lab #curadoria .pi-leaf-field span {
   position: absolute;
   top: -8%;
   left: var(--x);
   width: calc(var(--s) * 1.7);
   height: calc(var(--s) * 0.64);
-  background: url('/assets/textures/folha-eucalipto.svg') center / contain no-repeat;
+  background: url('/assets/textures/folha-eucalipto.svg') center / contain no-repeat !important;
   opacity: 0.72;
-  animation: pi-leaf-fall var(--t) linear infinite, pi-leaf-sway calc(var(--t) * 0.37) ease-in-out infinite;
-  animation-delay: var(--delay);
+  animation: pi-leaf-fall var(--t) linear var(--delay) infinite, pi-leaf-sway calc(var(--t) * 0.37) ease-in-out var(--delay) infinite !important;
 }
+html:not([data-serious-mode='true']) #lab #curadoria.is-offscreen .pi-leaf-field span { animation-play-state: paused !important; }
+html[data-documentation-mode='true'] #lab #curadoria .pi-leaf-field { opacity: .55; }
+html[data-serious-mode='true'] #lab #curadoria .pi-leaf-field { display: none; }
 @keyframes pi-leaf-fall { 0% { top: -8%; } 100% { top: 108%; } }
 @keyframes pi-leaf-sway {
   0%, 100% { transform: translateX(0) rotate(-20deg); }
@@ -295,7 +297,7 @@ html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab 
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .pi-leaf-field { display: none; }
+  html:not([data-serious-mode='true']) #lab #curadoria .pi-leaf-field { display: none; }
   html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .pi-mark { animation: none; background-size: 100% 100%; }
   html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .cf-step, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-block, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-block::after, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-icon, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-splash, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .knowledge-stage, html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-title span::before { animation: none; }
   html:not([data-serious-mode='true']):not([data-documentation-mode='true']) #lab #curadoria .mm-title span::before { transform: scaleX(1) rotate(-0.6deg); }
