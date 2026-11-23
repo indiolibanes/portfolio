@@ -773,9 +773,15 @@ html[data-documentation-mode='true'] .sophia-404__actions a { color: var(--mode-
   html[data-documentation-mode='true'] .site-header { position: relative; z-index: var(--z-overlay); padding-inline: .75rem; }
   html[data-documentation-mode='true'] body :is(.lab-project-card, .github-feature, .immersive-banner) { padding: 1.1rem; }
   html[data-documentation-mode='true'] body .closing {
+    /* The artwork's Triforce sits off-centre in its landscape source.
+       Size and offset by viewport width, not the height of the text card. */
+    --contact-orbit-art-height: clamp(15rem, 76vw, 22rem);
+    --contact-orbit-art-offset: clamp(6.4rem, 32.5vw, 9.4rem);
     background:
       linear-gradient(180deg, rgba(8, 10, 24, .96) 0%, rgba(8, 10, 24, .86) 40%, rgba(8, 10, 24, 0) 68%),
-      url('/assets/neumorphic-contact-orbit.webp') 78% bottom / auto 70% no-repeat,
+      url('/assets/neumorphic-contact-orbit.webp')
+        calc(50% - var(--contact-orbit-art-offset)) bottom /
+        auto var(--contact-orbit-art-height) no-repeat,
       #0a0d1c !important;
     padding-bottom: 12rem !important;
   }
