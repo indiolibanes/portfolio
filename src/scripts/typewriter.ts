@@ -14,8 +14,7 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 interface Job {
   el: HTMLElement;
-  text: string;
-  typed: HTMLElement;
+  ghost: HTMLElement;
   textNode: Text;
 }
 
@@ -46,21 +45,22 @@ function prepare(el: HTMLElement): Job | null {
   typed.append(textNode, caret);
 
   el.append(sr, ghost, typed);
-  return { el, text, typed, textNode };
+  return { el, ghost, textNode };
 }
 
 function type(job: Job): Promise<void> {
   return new Promise((resolve) => {
     let i = 0;
     const tick = () => {
+      const text = job.ghost.textContent ?? '';
       i += 1;
-      job.textNode.data = job.text.slice(0, i);
-      if (i >= job.text.length) {
+      job.textNode.data = text.slice(0, i);
+      if (i >= text.length) {
         job.el.classList.add('tw-done');
         resolve();
         return;
       }
-      const ch = job.text.charAt(i - 1);
+      const ch = text.charAt(i - 1);
       const wait = /[.,;:!?—]/.test(ch) ? SPEED * 6 : SPEED + Math.random() * 18;
       window.setTimeout(tick, wait);
     };
@@ -74,6 +74,13 @@ function start() {
     .map(prepare)
     .filter((job): job is Job => job !== null);
   if (!jobs.length) return;
+
+  window.addEventListener('portfolio:language', () => {
+    for (const job of jobs) {
+      const text = job.ghost.textContent ?? '';
+      job.textNode.data = job.el.classList.contains('tw-done') ? text : text.slice(0, job.textNode.length);
+    }
+  });
 
   let started = false;
   const run = async () => {

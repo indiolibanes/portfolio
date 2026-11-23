@@ -1,4 +1,5 @@
 ---
+import { englishCopy } from '../scripts/portfolio-copy.mjs';
 import { PROFILE, PUBLIC_PAGES, isCreativePath } from '../config';
 import SeriousModeToggle from './SeriousModeToggle.astro';
 
@@ -57,7 +58,7 @@ const NAV = [
   { href: `${landingHref}#musica`, id: 'musica', label: 'Música' },
   { href: '/curiosidades/', id: '', label: 'Curiosidades' },
   { href: `${landingHref}#contato`, id: 'contato', label: 'Contato', cta: true },
-].map((item) => ({ ...item, segs: spell(item.label) }));
+].map((item) => ({ ...item, segs: spell(item.label), englishSegs: spell(englishCopy(item.label)) }));
 ---
 
 <header class="site-header">
@@ -122,11 +123,13 @@ const NAV = [
             aria-current={item.id === '' && onCuriosities ? 'page' : undefined}
           >
             <span class="nav-label">{item.label}</span>
-            <span class="nav-elements" aria-hidden="true">
-              {item.segs.map((e) => 'sym' in e
-                ? <span class="el" data-cat={e.cat}><i>{e.z}</i><b>{e.sym}</b><u>{e.name}</u></span>
-                : <span class="ch">{e.ch}</span>)}
-            </span>
+            {[[item.segs, 'pt-BR'], [item.englishSegs, 'en']].map(([segments, language]) => (
+              <span class="nav-elements" data-nav-language={language} aria-hidden="true" lang={language}>
+                {(segments as Seg[]).map((e) => 'sym' in e
+                  ? <span class="el" data-cat={e.cat}><i>{e.z}</i><b>{e.sym}</b><u>{language === 'en' ? englishCopy(e.name) : e.name}</u></span>
+                  : <span class="ch">{e.ch}</span>)}
+              </span>
+            ))}
           </a>
         ))}
         </div>
@@ -336,6 +339,7 @@ const NAV = [
     });
     document.addEventListener('click', (event) => {
       if (panel.dataset.open !== 'true') return;
+      if (event.target instanceof Element && event.target.closest('[data-portfolio-language]')) return;
       if (event.target instanceof Node && (panel.contains(event.target) || button.contains(event.target))) return;
       setOpen(false);
     });
@@ -346,6 +350,9 @@ const NAV = [
 
 <style is:global>
   /* Avatar em vídeo: loop mudo circular. Reduced-motion e o modo neumórfico mostram o quadro fixo. */
+  html[lang='en'] .site-header [data-nav-language='pt-BR'],
+  html[lang='pt-BR'] .site-header [data-nav-language='en'] { display: none !important; }
+
   .brand-mark { overflow: hidden; border-radius: 50%; position: relative; padding: 0; }
   .brand-mark img, .brand-mark video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
   @media (prefers-reduced-motion: reduce) { .brand-mark .brand-video { display: none; } }

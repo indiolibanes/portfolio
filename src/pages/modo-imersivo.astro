@@ -1,5 +1,6 @@
 ---
 import ExperimentalMenu from '../components/ExperimentalMenu.astro';
+import PortfolioLanguage from '../components/PortfolioLanguage.astro';
 import '../styles/experimental.css';
 
 const astronautAssetUrl = '/api/sophia/rocket';
@@ -46,6 +47,7 @@ const astronautAssetUrl = '/api/sophia/rocket';
       <div class="immersive__navigation">
         <a class="immersive__back" href="/sophia/" aria-label="Voltar à página da Sophia">← Voltar</a>
         <button class="immersive__mute" type="button" data-mute aria-pressed="false">Silenciar sons</button>
+        <PortfolioLanguage placement="inline" />
       </div>
       <ExperimentalMenu />
       <p class="immersive__status" data-status role="status">Carregando Sophia…</p>

@@ -188,7 +188,7 @@ const creativePath = PUBLIC_PAGES.creative.path;
 
   <button class="serious-tag" type="button" data-mode-tag aria-expanded="false" aria-controls="serious-help-panel" aria-label={`Modo do portfólio atual: ${landingModeName}. Abrir legenda dos modos`} title="Legenda dos modos do portfólio">
     <span class="serious-tag__dot" aria-hidden="true"></span>
-    <span class="serious-tag__text" data-mode-tag-text>{landingModeName}</span>
+    <span class="serious-tag__text" data-mode-tag-text data-locale-static>{landingModeName}</span>
   </button>
 
   <div class="serious-help-panel" id="serious-help-panel" data-mode-help-panel hidden>
@@ -327,9 +327,7 @@ const creativePath = PUBLIC_PAGES.creative.path;
 
     let current = null;
 
-    // Etiqueta poliglota: de tempos em tempos ela percorre rapidamente outras
-    // línguas e sempre volta ao português. Um clique mostra outra língua por um
-    // momento e devolve ao português.
+    // The multilingual tag returns to the portfolio's selected language.
     const LANGS = {
       authorial: [['pt', 'Criativo'], ['en', 'Creative'], ['it', 'Creativo'], ['es', 'Creativo'], ['fr', 'Créatif'], ['la', 'Creativus']],
       editorial: [['pt', 'Editorial'], ['en', 'Editorial'], ['it', 'Editoriale'], ['es', 'Editorial'], ['fr', 'Éditorial'], ['la', 'Editorialis']],
@@ -397,11 +395,15 @@ const creativePath = PUBLIC_PAGES.creative.path;
         { duration: 700, easing: 'ease-out' },
       );
     };
-    const homeTag = () => {
-      const pt = LANGS[current || 'authorial'][0];
-      paintTag(pt[0], pt[1]);
+    const homeLanguage = () => document.documentElement.lang === 'en' ? 'en' : 'pt';
+    const homeTag = (mode = current || 'authorial') => {
+      const entry = LANGS[mode].find(([language]) => language === homeLanguage());
+      paintTag(entry[0], entry[1]);
     };
-    // Percorre as línguas depressa e pousa no português.
+    window.addEventListener('portfolio:language', () => {
+      clearTagTimers();
+      homeTag();
+    });
     const scrambleTag = () => {
       if (!tagText) return;
       if (reducedMotion.matches || document.hidden) {
@@ -410,7 +412,8 @@ const creativePath = PUBLIC_PAGES.creative.path;
       }
       clearTagTimers();
       const list = LANGS[current || 'authorial'];
-      const seq = list.slice(1).concat([list[0]]);
+      const base = homeLanguage();
+      const seq = list.filter(([language]) => language !== base).concat([list.find(([language]) => language === base)]);
       seq.forEach((entry, k) => {
         tagTimers.push(setTimeout(() => paintGlitch(entry[0], entry[1]), k * 140));
       });
@@ -419,8 +422,10 @@ const creativePath = PUBLIC_PAGES.creative.path;
     const showOtherLanguage = () => {
       clearTagTimers();
       const list = LANGS[current || 'authorial'];
-      const others = list.slice(1).filter((e, i, all) => e[1] !== list[0][1] || all.length === 1);
-      const entry = others[tagClicks % others.length] || list[1];
+      const base = homeLanguage();
+      const title = list.find(([language]) => language === base)[1];
+      const others = list.filter(([language, text]) => language !== base && text !== title);
+      const entry = others[tagClicks % others.length];
       tagClicks += 1;
       paintGlitch(entry[0], entry[1]);
       flashTag();
@@ -482,7 +487,7 @@ const creativePath = PUBLIC_PAGES.creative.path;
       });
       stage.style.setProperty('--i', String(at));
       clearTagTimers();
-      if (tagText) paintTag('pt', names[mode]);
+      if (tagText) homeTag(mode);
       if (tag) {
         tag.setAttribute(
           'aria-label',

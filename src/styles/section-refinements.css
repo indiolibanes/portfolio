@@ -608,7 +608,12 @@ html[data-serious-mode='true'] #curadoria .lab-project-brand img { filter: grays
 #curadoria .lab-project-features li { position: relative; padding-left: 0.95rem; }
 #curadoria .lab-project-features li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--mint); }
 #curadoria .lab-project-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
-@media (max-width: 600px) { #curadoria .lab-project-features { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) {
+  #curadoria .lab-project-features { grid-template-columns: minmax(0, 1fr); }
+  #lab .lab-project-footer:has(.lab-project-links) { flex-wrap: wrap; }
+  #lab .lab-project-links { flex-basis: 100%; }
+  #lab .lab-project-links .lab-project-repo { white-space: normal; }
+}
 
 /* PI NIR card (2026-10-20): layout próprio em coluna única, sobre textura de folha de eucalipto,
    com o logo do SpectrumLab Pro (SSE) em destaque. Difere do card de Documentação. */

@@ -124,8 +124,8 @@ check('modes: the current mode is named by a tag beside the emblems, which also 
   modes.includes('data-mode-tag') && modes.includes('data-mode-tag-text') && modes.includes('backdrop-filter') && modes.includes("button.setAttribute('aria-current', 'true')") && !modes.includes('tabIndex = -1'));
 check('modes: each emblem has its own signature loop (alpha colour, beta pulsar, gamma quasar) and reduced motion skips them',
   modes.includes('serious-beams') && modes.includes('serious-jets') && modes.includes('serious-flare') && modes.includes('if (loops.has(node) || reducedMotion.matches) return;'));
-check('modes: no separate help button; the tag is polyglot but always returns to Portuguese',
-  !modes.includes('data-mode-help]') && !modes.includes('serious-help"') && modes.includes('LANGS') && modes.includes('const scrambleTag') && modes.includes('const showOtherLanguage') && modes.includes("paintTag('pt', names[mode])"));
+check('modes: no separate help button; the polyglot tag returns to the selected portfolio language',
+  !modes.includes('data-mode-help]') && !modes.includes('serious-help"') && modes.includes('LANGS') && modes.includes('const scrambleTag') && modes.includes('const showOtherLanguage') && modes.includes("homeTag(mode)") && modes.includes("portfolio:language"));
 check('header: Menu button carries a contained plasma that calms when released; standards run inside the drawer',
   header.includes('data-nav-plasma') && header.includes('updatePlaybackRate') && header.includes('data-standards-row') && header.includes('STANDARDS_A'));
 check('modes: language change glitches, and the dot colour follows the language',
